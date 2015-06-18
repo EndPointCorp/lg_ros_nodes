@@ -4,6 +4,9 @@ import threading
 
 from lg_common.msg import WindowGeometry
 
+XDOTOOL_BIN = '/usr/bin/xdotool'
+
+
 class ManagedWindow:
     def __init__(self, w_name=None, w_class=None, w_instance=None, geometry=None, visible=True):
         self.w_name = w_name
@@ -54,7 +57,7 @@ class ManagedWindow:
 
     def _get_command(self):
         with self.lock:
-            cmd = ['/usr/bin/xdotool']
+            cmd = [XDOTOOL_BIN]
             self._search_args(cmd)
             self._geometry_args(cmd)
             self._visibility_args(cmd)
@@ -77,6 +80,9 @@ class ManagedWindow:
         with self.lock:
             cmd = self._get_command()
             self._cleanup_proc()
-            self.proc = subprocess.Popen(cmd)
+            try:
+                self.proc = subprocess.Popen(cmd)
+            except OSError:
+                rospy.logerror('failed to run {}',format(XDOTOOL_BIN)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
