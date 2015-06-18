@@ -1,3 +1,3 @@
 from managed_window import ManagedWindow
-from managed_process import ManagedProcess
+from managed_application import ManagedApplication
 from scene_listener import SceneListener

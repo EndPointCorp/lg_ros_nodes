@@ -7,7 +7,7 @@ from tempfile import gettempdir as systmp
 
 import rospy
 from lg_common.msg import ProcessState, WindowGeometry
-from lg_common import ManagedProcess, ManagedWindow
+from lg_common import ManagedApplication, ManagedWindow
 from client_config import ClientConfig
 
 TOOLBAR_HEIGHT = 22
@@ -28,7 +28,7 @@ class Client:
         cmd = ['/opt/google/earth/free/googleearth-bin']
         args, geplus_config, layers_config, kml_content, view_content = self._get_config()
         cmd.extend(args)
-        self.earth_proc = ManagedProcess(cmd, window=earth_window, suspend=True)
+        self.earth_proc = ManagedApplication(cmd, window=earth_window, suspend=True)
 
         self._make_dir()
 

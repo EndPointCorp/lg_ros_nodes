@@ -7,7 +7,7 @@ from appctl_support import ProcController
 from lg_common.msg import ProcessState
 
 
-class ManagedProcess:
+class ManagedApplication:
     def __init__(self, cmd, window=None, suspend=False):
         self.cmd = cmd
         self.window = window

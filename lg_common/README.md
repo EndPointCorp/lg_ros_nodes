@@ -3,7 +3,7 @@ lg\_common
 
 Common software for Liquid Galaxy ROS nodes.
 
-#### ManagedProcess
+#### ManagedApplication
 
 Combined process and window manager.
 
