@@ -21,6 +21,7 @@ Create a catkin workspace for this stack and symlink it back to the code.
     $ mkdir -p ~/src/lg_ros_nodes/catkin/src
     $ cd ~/src/lg_ros_nodes/catkin/src
     $ catkin_init_workspace
+    $ ln -snf ~/src/lg_ros_nodes/lg_common
     $ ln -snf ~/src/lg_ros_nodes/lg_earth
 
 Now you'll need to symlink `appctl` from the Portal ROS repo and `interactivespaces_msgs`from the director repo.
