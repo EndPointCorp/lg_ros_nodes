@@ -83,6 +83,6 @@ class ManagedWindow:
             try:
                 self.proc = subprocess.Popen(cmd)
             except OSError:
-                rospy.logerror('failed to run {}',format(XDOTOOL_BIN)
+                rospy.logerror('failed to run {}',format(XDOTOOL_BIN))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
