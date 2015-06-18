@@ -6,20 +6,29 @@ from xml.dom import minidom
 from tempfile import gettempdir as systmp
 
 import rospy
-from appctl_support import ProcController
-from window import ManagedWindow
+from lg_common.msg import ProcessState, WindowGeometry
+from lg_common import ManagedProcess, ManagedWindow
 from client_config import ClientConfig
-from scene_listener import SceneListener
 
 TOOLBAR_HEIGHT = 22
 
 
 class Client:
     def __init__(self):
+        x = rospy.get_param('~window_x', 0)
+        y = rospy.get_param('~window_y', 0) - TOOLBAR_HEIGHT
+        w = rospy.get_param('~window_w', 640)
+        h = rospy.get_param('~window_h', 480) + TOOLBAR_HEIGHT
+        geometry = WindowGeometry(x=x, y=y, width=w, height=h)
+        earth_window = ManagedWindow(
+            geometry=geometry,
+            w_instance=self._get_instance()
+        )
+
         cmd = ['/opt/google/earth/free/googleearth-bin']
         args, geplus_config, layers_config, kml_content, view_content = self._get_config()
         cmd.extend(args)
-        self.earth_proc = ProcController(cmd)
+        self.earth_proc = ManagedProcess(cmd, window=earth_window, suspend=True)
 
         self._make_dir()
 
@@ -40,20 +49,6 @@ class Client:
             os.environ['DISPLAY'] = ':0'
 
         os.environ['LD_LIBRARY_PATH'] += ':/opt/google/earth/free'
-
-        x = rospy.get_param('~window_x', 0)
-        y = rospy.get_param('~window_y', 0)
-        w = rospy.get_param('~window_w', 640)
-        h = rospy.get_param('~window_h', 480)
-        self.earth_window = ManagedWindow(
-            x=x,
-            y=y - TOOLBAR_HEIGHT,
-            w=w,
-            h=h + TOOLBAR_HEIGHT,
-            w_instance=self._get_instance()
-        )
-
-        self.scene_listener = SceneListener(self.handle_scene)
 
     def _get_instance(self):
         return '_earth_instance_' + rospy.get_name().strip('/')
@@ -90,17 +85,13 @@ class Client:
                     f.write(k + '=' + r + '\n')
                 f.write('\n')
 
-    def handle_scene(self, scene):
-        rospy.loginfo(scene)
-        visibility = True
-        for w in scene['windows']:
-            if w['activity'] == 'streetview':
-                visibility = False
-                break
-        self.earth_window.set_visibility(visibility)
-
     def run(self):
-        self.earth_proc.start()
-        self.earth_window.converge()
+        self.earth_proc.set_state(ProcessState.ACTIVE)
+
+        # temp/test activation code
+        def handle_state_msg(msg):
+            self.earth_proc.set_state(msg.state)
+
+        rospy.Subscriber('/earth/state', ProcessState, handle_state_msg)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

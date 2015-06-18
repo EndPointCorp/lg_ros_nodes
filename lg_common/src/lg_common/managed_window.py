@@ -1,21 +1,20 @@
+import rospy
 import subprocess
 import threading
 
-import rospy
-
+from lg_common.msg import WindowGeometry
 
 class ManagedWindow:
-    def __init__(self, w_name=None, w_class=None, w_instance=None, x=None, y=None, w=None, h=None, visible=True):
+    def __init__(self, w_name=None, w_class=None, w_instance=None, geometry=None, visible=True):
         self.w_name = w_name
         self.w_class = w_class
         self.w_instance = w_instance
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
+        self.geometry = geometry
         self.is_visible = visible
-        #self.proc = None
         self.lock = threading.RLock()
+        self.proc = None
+
+        rospy.on_shutdown(self._cleanup_proc)
 
     def _search_args(self, cmd):
         cmd.extend([
@@ -36,36 +35,22 @@ class ManagedWindow:
             ])
 
     def _geometry_args(self, cmd):
-        if self.x is not None and self.y is not None:
+        if self.geometry is not None:
             cmd.extend([
-                'windowmove', self.x, self.y
+                'windowmove', self.geometry.x, self.geometry.y
             ])
-        if self.w is not None and self.h is not None:
             cmd.extend([
-                'windowsize', self.w, self.h
+                'windowsize', self.geometry.width, self.geometry.height
             ])
 
     def _visibility_args(self, cmd):
         if self.is_visible:
-            cmd.extend(['windowactivate', 'windowfocus'])
+            cmd.append('windowactivate')
         else:
             cmd.append('windowminimize')
 
     def _sanitize_args(self, cmd):
         return map(str, cmd)
-
-    def set_visibility(self, visible):
-        with self.lock:
-            self.is_visible = visible
-            self.converge()
-
-    def set_geometry(self, x=None, y=None, w=None, h=None):
-        with self.lock:
-            self.x = x
-            self.y = y
-            self.w = w
-            self.h = h
-            self.converge()
 
     def _get_command(self):
         with self.lock:
@@ -76,18 +61,22 @@ class ManagedWindow:
         cmd = self._sanitize_args(cmd)
         return cmd
 
-    def converge_once(self):
+    def _cleanup_proc(self):
+            if self.proc is not None:
+                self.proc.kill()
+
+    def set_visibility(self, visible):
         with self.lock:
-            cmd = self._get_command()
-        #if self.proc is not None:
-        #    self.proc.stop()
-            subprocess.Popen(cmd)
+            self.is_visible = visible
+
+    def set_geometry(self, geometry):
+        with self.lock:
+            self.geometry = geometry
 
     def converge(self):
-        self.converge_once()
-        #with self.lock:
-        #    cmd = self._get_command()
-        #    if self.proc is not None:
-        #        self.proc.stop()
-        #    self.proc = ProcController(cmd)
-        #    self.proc.start()
+        with self.lock:
+            cmd = self._get_command()
+            self._cleanup_proc()
+            self.proc = subprocess.Popen(cmd)
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
