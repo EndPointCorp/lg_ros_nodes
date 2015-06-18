@@ -18,8 +18,15 @@ class ManagedProcess:
         self.proc = ProcController(cmd)
         self.sig_timer = None
 
+        rospy.on_shutdown(self._cleanup)
+
+    # explicit SIGCONT needed to prevent undeath
+    def _cleanup(self):
+        if self.suspend:
+            self._signal_proc(signal.SIGCONT, retry=False)
+
     # TODO(mv): better pid retrieval and/or signalling as a feature of ProcController
-    def _signal_proc(self, sig):
+    def _signal_proc(self, sig, retry=True):
         if self.sig_timer is not None:
             self.sig_timer.shutdown()
         if self.proc.watcher is not None and self.proc.watcher.proc is not None:
@@ -31,6 +38,9 @@ class ManagedProcess:
                 print "OSError while sending signal {} to pid {}".format(sig, pid)
         else:
             print "Can't signal, no proc"
+            if not retry:
+                return
+
             def retry_signal(ev):
                 self._signal_proc(sig)
             self.sig_timer = rospy.Timer(rospy.Duration(0.1), retry_signal, oneshot=True)
