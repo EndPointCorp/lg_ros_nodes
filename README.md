@@ -11,6 +11,16 @@ Earth client and support nodes.
 
 ### Quick Start
 
+Let's assume that you are using Ubuntu 14.04 and have Google Earth client, ros-indigo-ros-base, and xdotool installed.
+
+* <https://dl.google.com/earth/client/current/google-earth-stable_current_i386.deb>
+* <http://wiki.ros.org/indigo/Installation/Ubuntu>
+* <http://packages.ubuntu.com/trusty/xdotool>
+
+Also, you'll need to patch Earth for the homedir fix as described in the lg\_earth README, otherwise its configuration will be unmanaged.
+
+Now then.
+
 First, clone the repo.
 
     $ cd ~/src

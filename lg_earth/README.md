@@ -9,7 +9,16 @@ ROS software for running and interfacing with the Google Earth desktop client.
 
 Runs the Earth client.
 
-A hack is required to move some of the configuration files out of the user's home directory. See the `earth_homedir_fix` script. (yet to be copied from live image)
+A hack is required to move some of the configuration files out of the user's home directory. Earth will read /etc/passwd to find the current user's home directory instead of respecting the HOME environment variable. We can work around this by changing the string "/etc/passwd" to a void path in the library that does this lookup.
+
+A script to achieve this:
+
+    #!/usr/bin/env bash
+    LIB=/opt/google/earth/free/libfreebl3.so
+    [ -e $LIB.orig ] || cp $LIB $LIB.orig
+    sed -i "s_/etc/passwd_/not/anywhr_g" $LIB
+
+Run with sudo.
 
 ##### Parameters
 
