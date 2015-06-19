@@ -15,12 +15,12 @@ def ros_tornado_spin():
     ioloop.start()
 
 
-def ros_flask_spin(app):
+def ros_flask_spin(app, *args, **kwargs):
     """ Runs Flask. Shuts down when rospy shuts down. """
     from flask import request
     shutdown = request.environ.get('werkzeug.server.shutdown')
     rospy.on_shutdown(shutdown)
-    app.run()
+    app.run(*args, **kwargs)
 
 
 class RosbridgeWebSocket(WebSocketHandler):

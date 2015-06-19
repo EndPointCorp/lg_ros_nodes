@@ -17,7 +17,7 @@ Runs a callback upon scene messages.
 
 ### webapp module
 
-See `examples/webapp.py` for an example of a Tornado Application with an integrated rosbridge web socket. If using a different web server, just be sure to hook its shutdown method to `rospy.on_shutdown()`.
+See `examples/webapp_tornado_rosbridge.py` for an example of a Tornado Application with an integrated rosbridge web socket. If using a different web server, just be sure to hook its shutdown method to `rospy.on_shutdown()`.
 
 #### RosbridgeWebSocket
 
