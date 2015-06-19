@@ -41,7 +41,7 @@ class ClientConfig:
         ])
 
         if viewsync_send:
-            query_file = rospy.get_param('query_file', '/tmp/ge_queryfile')
+            query_file = rospy.get_param('~query_file', '/tmp/ge_queryfile')
             args.append(
                 '-sViewSync/queryFile={}'.format(query_file),
             )
