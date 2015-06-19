@@ -30,3 +30,7 @@ This class depends upon the `rosbridge_library` package.
 This convenience method spins the Tornado `IOLoop` instance and shuts down when appropriate. It is intended as a replacement for `rospy.spin()`.
 
 This method depends upon Tornado which is conveniently installed by the `rosbridge_server` package.
+
+#### ros\_flask\_spin(app)
+
+Similarly, spin a Flask app.
