@@ -77,5 +77,21 @@ Intercepts Earth viewsync datagrams, publishes the `Pose`, and re-transmits the 
 
 ##### Published Topics
 
-* `/earth/pose` [geometry\_msgs/Pose] - The current Earth view in degrees and meters ASL.
+* `/earth/pose` [`geometry\_msgs/Pose`] - The current Earth view in degrees and meters ASL.
 
+#### query
+
+Listens on topics for queries to write to the Earth query file.
+
+##### Parameters
+
+* `~query_file` [string] - Path to the Earth query file. Default: `/tmp/ge_queryfile`
+
+##### Subscribed Topics
+
+* `/earth/query/flyto_kml` [`std_msgs/String`] - A KML `AbstractView` to fly to.
+* `/earth/query/flyto_pose_camera` [`geometry_msgs/Pose`] - A `Pose` expressed in latitude, longitude, degrees, and meters ASL. A `<Camera>` view will be generated with the absolute `Pose` values.
+* `/earth/query/flyto_pose_lookat` [`geometry_msgs/Pose`] - A `Pose` expressed in latitude, longitude, degrees, and meters relative to sea floor. A `<LookAt>` view will be generated, with heading, tilt, and roll based on the `Pose` orientation.
+* `/earth/query/search` [`std_msgs/String`] - Search string.
+* `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
+* `/earth/query/planet` [`std_msgs/String`] - Change planets.
