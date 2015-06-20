@@ -15,6 +15,11 @@ If you ran `catkin_make install` and sourced `install/setup.bash`, it will serve
 
 If you installed `lg_common` from a `.deb` package and sourced the default `/opt/ros/indigo/setup.bash`, it will serve the system `/opt/ros/indigo/share` path. This is good for production (for now).
 
+##### Parameters
+
+* `port` [int] - The port on which to serve files. Default: `8008`
+* `cors` [bool] - If true, add `Access-Control-Allow-Origin: *` to response headers. Default: `true`
+
 ##### Convention for webapps
 
 If your ROS package has a static webapp you'd like to be served, put files in the package's `webapps/` and add a snippet to the bottom of `CMakeLists.txt`:
