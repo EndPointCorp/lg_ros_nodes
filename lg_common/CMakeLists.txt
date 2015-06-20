@@ -16,3 +16,12 @@ generate_messages()
 
 catkin_package()
 
+catkin_install_python(PROGRAMS
+  scripts/dev_webserver.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(
+  DIRECTORY webapps/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
+)
