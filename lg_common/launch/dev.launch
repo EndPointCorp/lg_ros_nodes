@@ -1,0 +1,41 @@
+<launch>
+  <!-- We can use the special broadcast string for Earth's broadcast address. -->
+  <arg name="broadcast_addr" default="&lt;broadcast&gt;" />
+
+  <!-- Development static file server. -->
+  <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+
+  <!-- Some Google Earths. -->
+  <!-- TODO: Use viewports for window geometry. -->
+  <node name="earth_left_one" pkg="lg_earth" type="client">
+    <param name="viewsync_recv" value="true" />
+    <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
+    <param name="yaw_offset" value="65" />
+    <param name="window_x" value="0" />
+    <param name="window_y" value="0" />
+    <param name="window_w" value="640" />
+    <param name="window_h" value="480" />
+  </node>
+  <node name="earth_center" pkg="lg_earth" type="client">
+    <param name="viewsync_send" value="true" />
+    <param name="show_compass" value="true" />
+    <param name="window_x" value="640" />
+    <param name="window_y" value="0" />
+    <param name="window_w" value="640" />
+    <param name="window_h" value="480" />
+  </node>
+  <node name="earth_right_one" pkg="lg_earth" type="client">
+    <param name="viewsync_recv" value="true" />
+    <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
+    <param name="yaw_offset" value="-65" />
+    <param name="window_x" value="1280" />
+    <param name="window_y" value="0" />
+    <param name="window_w" value="640" />
+    <param name="window_h" value="480" />
+  </node>
+
+  <!-- Google Earth viewsync sniffer. -->
+  <node name="viewsync_sniffer" pkg="lg_earth" type="viewsync_sniffer">
+    <param name="repeat_host" value="$(arg broadcast_addr)" />
+  </node>
+</launch>
