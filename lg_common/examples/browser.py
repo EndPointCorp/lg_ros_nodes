@@ -2,7 +2,7 @@
 
 import rospy
 from lg_common import ManagedBrowser
-from lg_common.msg import ProcessState
+from lg_common.msg import ApplicationState
 
 
 if __name__ == '__main__':
@@ -16,7 +16,7 @@ if __name__ == '__main__':
                    'Version/4.0.4 Mobile/7B314 Safari/531.21.10',
         remote_debugging_port=10000,
     )
-    browser.set_state(ProcessState.ACTIVE)
+    browser.set_state(ApplicationState.ACTIVE)
 
     rospy.spin()
 

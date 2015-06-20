@@ -9,7 +9,7 @@ catkin_python_setup()
 
 add_message_files(
   FILES
-  ProcessState.msg
+  ApplicationState.msg
   WindowGeometry.msg
 )
 generate_messages()

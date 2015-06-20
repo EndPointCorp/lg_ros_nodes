@@ -6,7 +6,7 @@ from xml.dom import minidom
 from tempfile import gettempdir as systmp
 
 import rospy
-from lg_common.msg import ProcessState, WindowGeometry
+from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
 from client_config import ClientConfig
 
@@ -86,12 +86,12 @@ class Client:
                 f.write('\n')
 
     def run(self):
-        self.earth_proc.set_state(ProcessState.ACTIVE)
+        self.earth_proc.set_state(ApplicationState.ACTIVE)
 
         # temp/test activation code
         def handle_state_msg(msg):
             self.earth_proc.set_state(msg.state)
 
-        rospy.Subscriber('/earth/state', ProcessState, handle_state_msg)
+        rospy.Subscriber('/earth/state', ApplicationState, handle_state_msg)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

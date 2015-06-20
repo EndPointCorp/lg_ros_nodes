@@ -4,7 +4,7 @@ import threading
 
 import rospy
 from appctl_support import ProcController
-from lg_common.msg import ProcessState
+from lg_common.msg import ApplicationState
 
 
 class ManagedApplication(object):
@@ -12,7 +12,7 @@ class ManagedApplication(object):
         self.cmd = cmd
         self.window = window
         self.suspend = suspend
-        self.state = ProcessState.STOPPED
+        self.state = ApplicationState.STOPPED
 
         self.lock = threading.Lock()
         self.proc = ProcController(cmd)
@@ -58,7 +58,7 @@ class ManagedApplication(object):
             if not state_changed:
                 return
 
-            if state == ProcessState.STOPPED:
+            if state == ApplicationState.STOPPED:
                 print "STOPPED"
                 if self.suspend:
                     self._signal_proc(signal.SIGCONT)
@@ -66,7 +66,7 @@ class ManagedApplication(object):
                 if self.window is not None:
                     self.window.set_visibility(False)
 
-            elif state == ProcessState.RUNNING:
+            elif state == ApplicationState.RUNNING:
                 print "RUNNING"
                 self.proc.start()
                 if self.window is not None:
@@ -75,7 +75,7 @@ class ManagedApplication(object):
                 if self.suspend:
                     self._signal_proc(signal.SIGSTOP)
 
-            elif state == ProcessState.ACTIVE:
+            elif state == ApplicationState.ACTIVE:
                 print "ACTIVE"
                 self.proc.start()
                 if self.window is not None:
@@ -86,7 +86,7 @@ class ManagedApplication(object):
 
     # TODO(mv): hook this up to ProcController
     def _handle_respawn(self):
-        if self.window is not None and self.state != ProcessState.STOPPED:
+        if self.window is not None and self.state != ApplicationState.STOPPED:
             self.window.converge()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
