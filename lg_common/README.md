@@ -3,34 +3,40 @@ lg\_common
 
 Common software for Liquid Galaxy ROS nodes.
 
-#### ManagedApplication
+### Scripts
+
+#### dev\_webserver.py
+
+A static HTTP server for the ROS share path. The location of the ROS share path is the parent directory of the `lg_common` package, which depends on which ROS `setup.bash` was sourced.
+
+If you ran `catkin_make` and sourced `devel/setup.bash`, it will serve the `src/` path of your Catkin workspace. This is good for development.
+
+If you ran `catkin_make install` and sourced `install/setup.bash`, it will serve the `install/share` path of your Catkin workspace. This is good for automated testing, since it verifies that `CMakeLists.txt` is complete.
+
+If you installed `lg_common` from a `.deb` package and sourced the default `/opt/ros/indigo/setup.bash`, it will serve the system `/opt/ros/indigo/share` path. This is good for production (for now).
+
+##### Convention for webapps
+
+If your ROS package has a static webapp you'd like to be served, put files in the package's `webapps/` and add a snippet to the bottom of `CMakeLists.txt`:
+
+    install(
+      DIRECTORY webapps/
+      DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
+    )
+
+For example, there is an `index.html` located in `lg_common/webapps/example/` which can be accessed at `http://localhost:8008/lg_common/webapps/example/index.html`.
+
+### lg\_common module
+
+#### lg\_common.ManagedApplication
 
 Combined process and window manager.
 
-#### ManagedWindow
+#### lg\_common.ManagedWindow
 
 Window manager.
 
-#### SceneListener
+#### lg\_common.SceneListener
 
 Runs a callback upon scene messages.
 
-### webapp module
-
-See `examples/webapp_tornado_rosbridge.py` for an example of a Tornado Application with an integrated rosbridge web socket. If using a different web server, just be sure to hook its shutdown method to `rospy.on_shutdown()`.
-
-#### RosbridgeWebSocket
-
-A fork of the `rosbridge_server` web socket handler, for insertion in your own Tornado Applications.
-
-This class depends upon the `rosbridge_library` package.
-
-#### ros\_tornado\_spin()
-
-This convenience method spins the Tornado `IOLoop` instance and shuts down when appropriate. It is intended as a replacement for `rospy.spin()`.
-
-This method depends upon Tornado which is conveniently installed by the `rosbridge_server` package.
-
-#### ros\_flask\_spin(app)
-
-Similarly, spin a Flask app.
