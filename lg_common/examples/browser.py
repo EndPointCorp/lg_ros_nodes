@@ -16,7 +16,7 @@ if __name__ == '__main__':
                    'Version/4.0.4 Mobile/7B314 Safari/531.21.10',
         remote_debugging_port=10000,
     )
-    browser.set_state(ApplicationState.ACTIVE)
+    browser.set_state(ApplicationState.VISIBLE)
 
     rospy.spin()
 

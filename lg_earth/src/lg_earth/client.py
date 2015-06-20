@@ -28,7 +28,7 @@ class Client:
         cmd = ['/opt/google/earth/free/googleearth-bin']
         args, geplus_config, layers_config, kml_content, view_content = self._get_config()
         cmd.extend(args)
-        self.earth_proc = ManagedApplication(cmd, window=earth_window, suspend=True)
+        self.earth_proc = ManagedApplication(cmd, window=earth_window)
 
         self._make_dir()
 
@@ -86,7 +86,7 @@ class Client:
                 f.write('\n')
 
     def run(self):
-        self.earth_proc.set_state(ApplicationState.ACTIVE)
+        self.earth_proc.set_state(ApplicationState.VISIBLE)
 
         # temp/test activation code
         def handle_state_msg(msg):
