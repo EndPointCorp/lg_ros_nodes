@@ -37,6 +37,22 @@ For example, there is an `index.html` located in `lg_common/webapps/example/` wh
 
 Combined process and window manager.
 
+#### lg\_common.ManagedBrowser
+
+A `ManagedApplication` subclass for running a browser.
+
+##### args
+
+* `url` [string] - URL to open. Optional.
+* `slug` [string] - A unique slug for this browser window. If none is provided, `ManagedBrowser` will attempt to use the node name.
+* `kiosk` [bool] - If true, launch the browser in kiosk mode. Default: `true`
+
+All other keyword arguments are passed on directly to the command line.
+
+See `examples/browser.py` for an example implementation.
+
+See `src/lg_common/managed_browser.py` for default args.
+
 #### lg\_common.ManagedWindow
 
 Window manager.
