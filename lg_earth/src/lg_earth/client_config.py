@@ -22,7 +22,7 @@ class ClientConfig:
 
         viewsync_send = rospy.get_param('~viewsync_send', False)
         viewsync_recv = rospy.get_param('~viewsync_recv', False)
-        viewsync_hostname = rospy.get_param('~viewsync_hostname', '10.42.42.255')
+        viewsync_hostname = rospy.get_param('~viewsync_hostname', '127.0.0.1')
         viewsync_port = rospy.get_param('~viewsync_port', 42000)
         horiz_fov = rospy.get_param('~horiz_fov', 65)
         yaw_offset = rospy.get_param('~yaw_offset', 0)
