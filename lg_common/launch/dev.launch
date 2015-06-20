@@ -5,6 +5,9 @@
   <!-- Development static file server. -->
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
+  <!-- Local rosbridge server. -->
+  <node name="dev_rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py" />
+
   <!-- Some Google Earths. -->
   <!-- TODO: Use viewports for window geometry. -->
   <node name="earth_left_one" pkg="lg_earth" type="client">

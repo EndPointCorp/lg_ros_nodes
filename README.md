@@ -11,7 +11,7 @@ Earth client and support nodes.
 
 ### Quick Start
 
-Let's assume that you are using Ubuntu 14.04 and have Google Earth client, ros-indigo-ros-base, and xdotool installed.
+Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, `ros-indigo-rosbridge-suite`, and `xdotool` installed.
 
 * <https://dl.google.com/earth/client/current/google-earth-stable_current_i386.deb>
 * <http://wiki.ros.org/indigo/Installation/Ubuntu>
@@ -48,8 +48,10 @@ Build the project.
     $ cd ~/src/lg_ros_nodes/catkin
     $ catkin_make
 
-Run a node.
+Run the development roslaunch.
 
     $ source ~/src/lg_ros_nodes/catkin/devel/setup.bash
-    $ rosrun lg_earth client.py
+    $ roslaunch lg_common dev.launch
+
+It may take a few seconds for Earth to start up. Use Ctrl+C to shut down.
 
