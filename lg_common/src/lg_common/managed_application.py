@@ -15,7 +15,7 @@ class ManagedApplication(object):
         self.window = window
         self.state = ApplicationState.STOPPED
 
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         self.proc = ProcController(cmd)
         self.sig_retry_timer = None
 
@@ -97,6 +97,11 @@ class ManagedApplication(object):
                 if self.window is not None:
                     self.window.set_visibility(True)
                     self.window.converge()
+
+    def handle_state_msg(self, msg):
+        rospy.loginfo('Got state message: {}'.format(msg))
+        with self.lock:
+            self.set_state(msg.state)
 
     # TODO(mv): hook this up to ProcController
     def _handle_respawn(self):

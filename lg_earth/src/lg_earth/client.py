@@ -86,12 +86,10 @@ class Client:
                 f.write('\n')
 
     def run(self):
+        rospy.Subscriber('/earth/state', ApplicationState,
+                         self.earth_proc.handle_state_msg)
+
         self.earth_proc.set_state(ApplicationState.VISIBLE)
 
-        # temp/test activation code
-        def handle_state_msg(msg):
-            self.earth_proc.set_state(msg.state)
-
-        rospy.Subscriber('/earth/state', ApplicationState, handle_state_msg)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
