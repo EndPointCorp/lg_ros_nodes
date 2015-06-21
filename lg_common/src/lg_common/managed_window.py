@@ -7,7 +7,7 @@ from lg_common.msg import WindowGeometry
 XDOTOOL_BIN = '/usr/bin/xdotool'
 
 
-class ManagedWindow:
+class ManagedWindow(object):
     def __init__(self, w_name=None, w_class=None, w_instance=None, geometry=None, visible=True):
         self.w_name = w_name
         self.w_class = w_class
