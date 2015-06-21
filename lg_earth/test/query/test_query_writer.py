@@ -98,9 +98,9 @@ class TestQueryWriter(unittest.TestCase):
         pose.position.x = TEST_POSE_LON
         pose.position.y = TEST_POSE_LAT
         pose.position.z = TEST_POSE_ALT
-        pose.orientation.x = TEST_POSE_HEADING
-        pose.orientation.y = TEST_POSE_TILT
-        pose.orientation.z = TEST_POSE_ROLL
+        pose.orientation.z = TEST_POSE_HEADING
+        pose.orientation.x = TEST_POSE_TILT
+        pose.orientation.y = TEST_POSE_ROLL
 
         self.writer.handle_flyto_pose_camera(pose)
 
@@ -125,9 +125,9 @@ class TestQueryWriter(unittest.TestCase):
         pose.position.x = TEST_POSE_LON
         pose.position.y = TEST_POSE_LAT
         pose.position.z = TEST_POSE_ALT
-        pose.orientation.x = TEST_POSE_HEADING
-        pose.orientation.y = TEST_POSE_TILT
-        pose.orientation.z = TEST_POSE_RANGE
+        pose.orientation.z = TEST_POSE_HEADING
+        pose.orientation.x = TEST_POSE_TILT
+        pose.orientation.y = TEST_POSE_RANGE
 
         self.writer.handle_flyto_pose_lookat(pose)
 
