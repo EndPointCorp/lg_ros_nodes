@@ -66,7 +66,7 @@ class ManagedBrowser(ManagedApplication):
         if url is not None:
             cmd.append(url)
 
-        w_instance = 'Google-chrome ({})'.format(tmp_dir)
+        w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance)
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
