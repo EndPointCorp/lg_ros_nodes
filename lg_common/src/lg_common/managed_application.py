@@ -37,11 +37,11 @@ class ManagedApplication(object):
             pid = self.proc.watcher.proc.pid
             try:
                 os.kill(pid, sig)
-                print "Sent signal {} to pid {}".format(sig, pid)
+                rospy.loginfo("Sent signal {} to pid {}".format(sig, pid))
             except OSError:
-                print "OSError sending signal {} to pid {}".format(sig, pid)
+                rospy.logerr("OSError sending signal {} to pid {}".format(sig, pid))
         else:
-            print "Can't signal, no proc"
+            rospy.logwarn("Can't signal, no proc")
             if not retry:
                 return
 
@@ -66,14 +66,14 @@ class ManagedApplication(object):
                 return
 
             if state == ApplicationState.STOPPED:
-                print "STOPPED"
+                rospy.loginfo("STOPPED")
                 self._signal_proc(signal.SIGCONT, retry=False)
                 self.proc.stop()
                 if self.window is not None:
                     self.window.set_visibility(False)
 
             elif state == ApplicationState.SUSPENDED:
-                print "SUSPENDED"
+                rospy.loginfo("SUSPENDED")
                 self.proc.start()
                 self._signal_proc(signal.SIGSTOP)
                 if self.window is not None:
@@ -81,7 +81,7 @@ class ManagedApplication(object):
                     self.window.converge()
 
             elif state == ApplicationState.HIDDEN:
-                print "HIDDEN"
+                rospy.loginfo("HIDDEN")
                 self.proc.start()
                 self._signal_proc(signal.SIGCONT)
                 if self.window is not None:
@@ -94,7 +94,7 @@ class ManagedApplication(object):
                     )
 
             elif state == ApplicationState.VISIBLE:
-                print "VISIBLE"
+                rospy.loginfo("VISIBLE")
                 self.proc.start()
                 self._signal_proc(signal.SIGCONT)
                 if self.window is not None:
