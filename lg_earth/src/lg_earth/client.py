@@ -85,11 +85,5 @@ class Client:
                     f.write(k + '=' + r + '\n')
                 f.write('\n')
 
-    def run(self):
-        rospy.Subscriber('/earth/state', ApplicationState,
-                         self.earth_proc.handle_state_msg)
-
-        self.earth_proc.set_state(ApplicationState.VISIBLE)
-
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
