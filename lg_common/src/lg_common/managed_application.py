@@ -33,13 +33,17 @@ class ManagedApplication(object):
 
         if self.sig_retry_timer is not None:
             self.sig_retry_timer.shutdown()
-        if self.proc.watcher is not None and self.proc.watcher.proc is not None:
+
+        if self.proc.watcher is not None and \
+           self.proc.watcher.proc is not None:
+
             pid = self.proc.watcher.proc.pid
             try:
                 os.kill(pid, sig)
                 rospy.loginfo("Sent signal {} to pid {}".format(sig, pid))
             except OSError:
-                rospy.logerr("OSError sending signal {} to pid {}".format(sig, pid))
+                rospy.logerr(
+                    "OSError sending signal {} to pid {}".format(sig, pid))
         else:
             rospy.logwarn("Can't signal, no proc")
             if not retry:
@@ -89,7 +93,7 @@ class ManagedApplication(object):
                     self.window.converge()
                 else:
                     rospy.logwarn(
-                        'Tried to hide a ManagedApplication ' + \
+                        'Tried to hide a ManagedApplication ' +
                         'without a ManagedWindow'
                     )
 

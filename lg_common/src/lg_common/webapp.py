@@ -39,13 +39,15 @@ class RosbridgeWebSocket(WebSocketHandler):
             assert hasattr(cls, 'client_id_seed')
             assert hasattr(cls, 'clients_connected')
         except Exception as exc:
-            rospy.logerr('Unable to accept incoming connection.  Reason: %s', str(exc))
+            rospy.logerr(
+                'Unable to accept incoming connection.  Reason: %s', str(exc))
             self.close(code=PROTO_OPEN_FAILED, reason=str(exc))
             return
 
         cls.client_id_seed += 1
         cls.clients_connected += 1
-        rospy.loginfo('Client connected.  %d clients total.', cls.clients_connected)
+        rospy.loginfo('Client connected.  %d clients total.',
+                      cls.clients_connected)
 
     def on_message(self, message):
         self.protocol.incoming(message)
@@ -57,7 +59,8 @@ class RosbridgeWebSocket(WebSocketHandler):
         cls = self.__class__
         cls.clients_connected -= 1
         self.protocol.finish()
-        rospy.loginfo('Client disconnected.  %d clients total.', cls.clients_connected)
+        rospy.loginfo('Client disconnected.  %d clients total.',
+                      cls.clients_connected)
 
     def send_message(self, message):
         IOLoop.instance().add_callback(partial(self.write_message, message))

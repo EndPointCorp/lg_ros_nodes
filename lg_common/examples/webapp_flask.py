@@ -40,6 +40,7 @@ def main():
     )
 
     app = Flask(__name__)
+
     @app.route(r'/([^/]+)')
     def get(slug):
         s = stringer.string

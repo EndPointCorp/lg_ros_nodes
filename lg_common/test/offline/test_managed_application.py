@@ -12,14 +12,6 @@ from lg_common.msg import ApplicationState
 from appctl_support import ProcController
 
 TEST_CMD = ['/usr/bin/python']
-SPINUP_WAIT = 1.5
-
-
-def proc_status(pid):
-    for line in open("/proc/%d/status" % pid).readlines():
-        if line.startswith("State:"):
-            return line.split(":",1)[1].strip().split(' ')[0]
-    return None
 
 
 class MockWindow(ManagedWindow):

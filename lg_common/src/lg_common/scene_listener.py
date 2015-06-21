@@ -6,7 +6,8 @@ from interactivespaces_msgs.msg import GenericMessage
 
 class SceneListener:
     def __init__(self, callback):
-        self.sub = rospy.Subscriber('/director/scene', GenericMessage, self.handle_scene)
+        self.sub = rospy.Subscriber('/director/scene', GenericMessage,
+                                    self.handle_scene)
         self.callback = callback
 
     def handle_scene(self, msg):
