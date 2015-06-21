@@ -6,6 +6,8 @@ import rospy
 from appctl_support import ProcController
 from lg_common.msg import ApplicationState
 
+SIG_RETRY_DELAY = 0.05
+
 
 class ManagedApplication(object):
     def __init__(self, cmd, window=None):
@@ -43,7 +45,7 @@ class ManagedApplication(object):
             def retry_signal(ev):
                 self._signal_proc(sig)
             self.sig_retry_timer = rospy.Timer(
-                rospy.Duration(0.1), retry_signal, oneshot=True
+                rospy.Duration(SIG_RETRY_DELAY), retry_signal, oneshot=True
             )
 
     def get_state(self):
@@ -64,6 +66,8 @@ class ManagedApplication(object):
                 print "STOPPED"
                 self._signal_proc(signal.SIGCONT, retry=False)
                 self.proc.stop()
+                if self.window is not None:
+                    self.window.set_visibility(False)
 
             elif state == ApplicationState.SUSPENDED:
                 print "SUSPENDED"
