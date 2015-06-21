@@ -9,7 +9,8 @@ A ROS software stack for running Liquid Galaxy applications.
 
 Earth client and support nodes.
 
-### Quick Start
+Quick Start
+===========
 
 Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, `ros-indigo-rosbridge-suite`, and `xdotool` installed.
 
@@ -55,3 +56,7 @@ Run the development roslaunch.
 
 It may take a few seconds for Earth to start up. Use Ctrl+C to shut down.
 
+Development
+===========
+
+LINT is configured, run `pep8` in the root of this repo to check.
