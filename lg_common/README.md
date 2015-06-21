@@ -46,6 +46,8 @@ A `ManagedApplication` subclass for running a browser.
 * `url` [string] - URL to open. Optional.
 * `slug` [string] - A unique slug for this browser window. If none is provided, `ManagedBrowser` will attempt to use the node name.
 * `kiosk` [bool] - If true, launch the browser in kiosk mode. Default: `true`
+* `geometry` [WindowGeometry] - Where to put the window. Optional.
+* `binary` [string] - Absolute path to the browser binary. Default: `/usr/bin/google-chrome`
 
 All other keyword arguments are passed on directly to the command line.
 

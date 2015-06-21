@@ -23,8 +23,8 @@ DEFAULT_ARGS = [
 
 
 class ManagedBrowser(ManagedApplication):
-    def __init__(self, url=None, slug=None, kiosk=True, binary=DEFAULT_BINARY,
-                 **kwargs):
+    def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
+                 binary=DEFAULT_BINARY, **kwargs):
 
         cmd = [binary]
 
@@ -67,7 +67,7 @@ class ManagedBrowser(ManagedApplication):
             cmd.append(url)
 
         w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
-        window = ManagedWindow(w_instance=w_instance)
+        window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
 
