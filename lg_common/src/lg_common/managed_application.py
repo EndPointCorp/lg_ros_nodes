@@ -47,7 +47,8 @@ class ManagedApplication(object):
             )
 
     def get_state(self):
-        return self.state
+        with self.lock:
+            return self.state
 
     def set_state(self, state):
         state_changed = False
