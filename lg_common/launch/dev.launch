@@ -2,6 +2,8 @@
   <!-- We can use the special broadcast string for Earth's broadcast address. -->
   <arg name="broadcast_addr" default="&lt;broadcast&gt;" />
 
+  <arg name="spnav_path" default="/dev/input/spacenavigator" />
+
   <!-- Development static file server. -->
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
@@ -21,6 +23,7 @@
   </node>
   <node name="earth_center" pkg="lg_earth" type="client">
     <param name="viewsync_send" value="true" />
+    <param name="spacenav_device" value="$(arg spnav_path)" />
     <param name="show_compass" value="true" />
     <param name="window_x" value="640" />
     <param name="window_y" value="0" />
