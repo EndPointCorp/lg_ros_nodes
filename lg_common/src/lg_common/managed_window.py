@@ -65,6 +65,7 @@ class ManagedWindow(object):
         return cmd
 
     def _cleanup_proc(self):
+        with self.lock:
             if self.proc is not None:
                 self.proc.kill()
 
