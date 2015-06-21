@@ -1,3 +1,3 @@
 from client import Client
-from viewsync_sniffer import ViewsyncSniffer
+from viewsync_relay import ViewsyncRelay
 from query_writer import QueryWriter

@@ -40,8 +40,8 @@
     <param name="window_h" value="480" />
   </node>
 
-  <!-- Google Earth viewsync sniffer. -->
-  <node name="viewsync_sniffer" pkg="lg_earth" type="viewsync_sniffer">
+  <!-- Google Earth viewsync relay. -->
+  <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay">
     <param name="repeat_host" value="$(arg broadcast_addr)" />
   </node>
 </launch>
