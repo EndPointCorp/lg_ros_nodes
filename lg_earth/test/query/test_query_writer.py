@@ -22,14 +22,15 @@ TEST_POSE_HEADING = 270
 TEST_POSE_TILT = -12
 TEST_POSE_ROLL = 0
 TEST_POSE_RANGE = 5000
-FLYTO_KML = '<Camera><latitude>{}</latitude><longitude>{}</longitude><altitude>{}</altitude><heading>{}</heading><tilt>{}</tilt><roll>{}</roll><altitudeMode>absolute</altitudeMode></Camera>'.format(
-    TEST_POSE_LAT,
-    TEST_POSE_LON,
-    TEST_POSE_ALT,
-    TEST_POSE_HEADING,
-    TEST_POSE_TILT,
-    TEST_POSE_ROLL
-)
+FLYTO_KML = '<Camera><latitude>{}</latitude><longitude>{}</longitude>' + \
+    '<altitude>{}</altitude><heading>{}</heading><tilt>{}</tilt>' + \
+    '<roll>{}</roll><altitudeMode>absolute</altitudeMode></Camera>'.format(
+        TEST_POSE_LAT,
+        TEST_POSE_LON,
+        TEST_POSE_ALT,
+        TEST_POSE_HEADING,
+        TEST_POSE_TILT,
+        TEST_POSE_ROLL)
 
 
 class TestQueryWriter(unittest.TestCase):
@@ -111,14 +112,16 @@ class TestQueryWriter(unittest.TestCase):
         self.assertEqual(2, len(parts))
         self.assertEqual('flytoview', parts[0])
         kml = parts[1]
-        expected_kml = '<Camera><latitude>{}</latitude><longitude>{}</longitude><altitude>{}</altitude><heading>{}</heading><tilt>{}</tilt><roll>{}</roll><altitudeMode>absolute</altitudeMode></Camera>'.format(
-            TEST_POSE_LAT,
-            TEST_POSE_LON,
-            TEST_POSE_ALT,
-            TEST_POSE_HEADING,
-            TEST_POSE_TILT,
-            TEST_POSE_ROLL
-        )
+        expected_kml = '<Camera><latitude>{}</latitude>' + \
+            '<longitude>{}</longitude><altitude>{}</altitude>' + \
+            '<heading>{}</heading><tilt>{}</tilt><roll>{}</roll>' + \
+            '<altitudeMode>absolute</altitudeMode></Camera>'.format(
+                TEST_POSE_LAT,
+                TEST_POSE_LON,
+                TEST_POSE_ALT,
+                TEST_POSE_HEADING,
+                TEST_POSE_TILT,
+                TEST_POSE_ROLL)
 
     def test_flyto_pose_lookat(self):
         pose = Pose()
@@ -138,14 +141,17 @@ class TestQueryWriter(unittest.TestCase):
         self.assertEqual(2, len(parts))
         self.assertEqual('flytoview', parts[0])
         kml = parts[1]
-        expected_kml = '<LookAt><latitude>{}</latitude><longitude>{}</longitude><altitude>{}</altitude><heading>{}</heading><tilt>{}</tilt><range>{}</range><gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'.format(
-            TEST_POSE_LAT,
-            TEST_POSE_LON,
-            TEST_POSE_ALT,
-            TEST_POSE_HEADING,
-            TEST_POSE_TILT,
-            TEST_POSE_RANGE
-        )
+        expected_kml = '<LookAt><latitude>{}</latitude>' + \
+            '<longitude>{}</longitude><altitude>{}</altitude>' + \
+            '<heading>{}</heading><tilt>{}</tilt><range>{}</range>' + \
+            '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>' + \
+            '</LookAt>'.format(
+                TEST_POSE_LAT,
+                TEST_POSE_LON,
+                TEST_POSE_ALT,
+                TEST_POSE_HEADING,
+                TEST_POSE_TILT,
+                TEST_POSE_RANGE)
         self.assertEqual(expected_kml, kml)
 
 

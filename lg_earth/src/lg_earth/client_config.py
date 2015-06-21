@@ -50,28 +50,42 @@ class ClientConfig:
         spacenav_gutter = rospy.get_param('~spacenav_gutter', 0.1)
         spacenav_sensitivity = rospy.get_param('~spacenav_sensitivity', 1.0)
         spacenav_sensitivity_yaw = \
-            rospy.get_param('~spacenav_sensitivity_yaw', 0.0035) * spacenav_sensitivity
+            rospy.get_param('~spacenav_sensitivity_yaw', 0.0035) * \
+            spacenav_sensitivity
         spacenav_sensitivity_pitch = \
-            rospy.get_param('~spacenav_sensitivity_pitch', 0.01) * spacenav_sensitivity
+            rospy.get_param('~spacenav_sensitivity_pitch', 0.01) * \
+            spacenav_sensitivity
         spacenav_sensitivity_roll = \
-            rospy.get_param('~spacenav_sensitivity_roll', 0.01) * spacenav_sensitivity
+            rospy.get_param('~spacenav_sensitivity_roll', 0.01) * \
+            spacenav_sensitivity
         spacenav_sensitivity_x = \
-            rospy.get_param('~spacenav_sensitivity_x', 0.25) * spacenav_sensitivity
+            rospy.get_param('~spacenav_sensitivity_x', 0.25) * \
+            spacenav_sensitivity
         spacenav_sensitivity_y = \
-            rospy.get_param('~spacenav_sensitivity_y', 0.25) * spacenav_sensitivity
+            rospy.get_param('~spacenav_sensitivity_y', 0.25) * \
+            spacenav_sensitivity
         spacenav_sensitivity_z = \
-            rospy.get_param('~spacenav_sensitivity_z', 0.025) * spacenav_sensitivity
+            rospy.get_param('~spacenav_sensitivity_z', 0.025) * \
+            spacenav_sensitivity
 
         if spacenav_device is not None:
             args.extend([
-                '-sSpaceNavigator/device={}'.format(str(spacenav_device)),
-                '-sSpaceNavigator/gutterValue={}'.format(float(spacenav_gutter)),
-                '-sSpaceNavigator/sensitivityYaw={}'.format(float(spacenav_sensitivity_yaw)),
-                '-sSpaceNavigator/sensitivityPitch={}'.format(float(spacenav_sensitivity_pitch)),
-                '-sSpaceNavigator/sensitivityRoll={}'.format(float(spacenav_sensitivity_roll)),
-                '-sSpaceNavigator/sensitivityX={}'.format(float(spacenav_sensitivity_x)),
-                '-sSpaceNavigator/sensitivityY={}'.format(float(spacenav_sensitivity_y)),
-                '-sSpaceNavigator/sensitivityZ={}'.format(float(spacenav_sensitivity_z)),
+                '-sSpaceNavigator/device={}'.format(
+                    str(spacenav_device)),
+                '-sSpaceNavigator/gutterValue={}'.format(
+                    float(spacenav_gutter)),
+                '-sSpaceNavigator/sensitivityYaw={}'.format(
+                    float(spacenav_sensitivity_yaw)),
+                '-sSpaceNavigator/sensitivityPitch={}'.format(
+                    float(spacenav_sensitivity_pitch)),
+                '-sSpaceNavigator/sensitivityRoll={}'.format(
+                    float(spacenav_sensitivity_roll)),
+                '-sSpaceNavigator/sensitivityX={}'.format(
+                    float(spacenav_sensitivity_x)),
+                '-sSpaceNavigator/sensitivityY={}'.format(
+                    float(spacenav_sensitivity_y)),
+                '-sSpaceNavigator/sensitivityZ={}'.format(
+                    float(spacenav_sensitivity_z)),
                 '-sSpaceNavigator/zeroYaw=0',
                 '-sSpaceNavigator/zeroPitch=0',
                 '-sSpaceNavigator/zeroRoll=0',
@@ -476,31 +490,52 @@ class ClientConfig:
             kml_sync_master_nl = ET.SubElement(kml_sync_folder, 'NetworkLink')
             ET.SubElement(kml_sync_master_nl, 'name').text = 'Master KML CMS'
             kml_sync_master_nl_link = ET.SubElement(kml_sync_master_nl, 'Link')
-            ET.SubElement(kml_sync_master_nl_link, 'href').text = '{}/master.kml'.format(kml_sync_base)
+            ET.SubElement(kml_sync_master_nl_link, 'href').text = \
+                '{}/master.kml'.format(kml_sync_base)
 
             kml_sync_update_nl = ET.SubElement(kml_sync_folder, 'NetworkLink')
             ET.SubElement(kml_sync_update_nl, 'name').text = 'KML Update CMS'
             kml_sync_update_nl_link = ET.SubElement(kml_sync_update_nl, 'Link')
-            ET.SubElement(kml_sync_update_nl_link, 'href').text = '{}/network_link_update.kml?window_slug={}'.format(kml_sync_base.rstrip('/'), kml_sync_slug)
-            ET.SubElement(kml_sync_update_nl_link, 'refreshMode').text = 'onInterval'
-            ET.SubElement(kml_sync_update_nl_link, 'refreshInterval').text = '1'
-            ET.SubElement(kml_sync_update_nl_link, 'viewRefreshMode').text = 'onStop'
-            ET.SubElement(kml_sync_update_nl_link, 'viewRefreshTime').text = '1'
-            ET.SubElement(kml_sync_update_nl_link, 'viewFormat').text = 'bboxWest=[bboxWest]&bboxSouth=[bboxSouth]&bboxEast=[bboxEast]&bboxNorth=[bboxNorth]&lookatLon=[lookatLon]&lookatLat=[lookatLat]&lookatRange=[lookatRange]&lookatTilt=[lookatTilt]&lookatHeading=[lookatHeading]&cameraLon=[cameraLon]&cameraLat=[cameraLat]&cameraAlt=[cameraAlt]'
+            ET.SubElement(kml_sync_update_nl_link, 'href').text = \
+                '{}/network_link_update.kml?window_slug={}'.format(
+                    kml_sync_base.rstrip('/'), kml_sync_slug)
+            ET.SubElement(kml_sync_update_nl_link, 'refreshMode').text = \
+                'onInterval'
+            ET.SubElement(kml_sync_update_nl_link, 'refreshInterval').text = \
+                '1'
+            ET.SubElement(kml_sync_update_nl_link, 'viewRefreshMode').text = \
+                'onStop'
+            ET.SubElement(kml_sync_update_nl_link, 'viewRefreshTime').text = \
+                '1'
+            ET.SubElement(kml_sync_update_nl_link, 'viewFormat').text = \
+                'bboxWest=[bboxWest]&bboxSouth=[bboxSouth]&' + \
+                'bboxEast=[bboxEast]&bboxNorth=[bboxNorth]&' + \
+                'lookatLon=[lookatLon]&lookatLat=[lookatLat]&' + \
+                'lookatRange=[lookatRange]&lookatTilt=[lookatTilt]&' + \
+                'lookatHeading=[lookatHeading]&cameraLon=[cameraLon]&' + \
+                'cameraLat=[cameraLat]&cameraAlt=[cameraAlt]'
 
         kml_reparsed = minidom.parseString(ET.tostring(kml_root))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
 
         default_view = rospy.get_param(
             '~default_view',
-            '<LookAt><longitude>-122.4661297737901</longitude><latitude>37.71903477888115</latitude><altitude>0</altitude><heading>42.60360249388481</heading><tilt>66.02791701475958</tilt><range>36611.51655091633</range><gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'
+
+            '<LookAt><longitude>-122.4661297737901</longitude>' +
+            '<latitude>37.71903477888115</latitude><altitude>0</altitude>' +
+            '<heading>42.60360249388481</heading>' +
+            '<tilt>66.02791701475958</tilt><range>36611.51655091633</range>' +
+            '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'
         )
 
         # the parser requires namespaces to be declared
-        default_view_fix = '<kml xmlns:gx="http://www.google.com/kml/ext/2.2">{}</kml>'.format(default_view)
+        default_view_fix = \
+            '<kml xmlns:gx="http://www.google.com/kml/ext/2.2">{}</kml>'.format(default_view)
         default_view_parsed = minidom.parseString(default_view_fix)
-        default_view_lat = default_view_parsed.getElementsByTagName('latitude')[0].childNodes[0].data
-        default_view_lng = default_view_parsed.getElementsByTagName('longitude')[0].childNodes[0].data
+        default_view_lat = \
+            default_view_parsed.getElementsByTagName('latitude')[0].childNodes[0].data
+        default_view_lng = \
+            default_view_parsed.getElementsByTagName('longitude')[0].childNodes[0].data
 
         view_root = ET.Element('kml', attrib={
             'xmlns': 'http://www.opengis.net/kml/2.2',
@@ -515,11 +550,13 @@ class ClientConfig:
         ET.SubElement(view_placemark, 'name').text = 'Starting Location'
 
         view_point = ET.SubElement(view_placemark, 'Point')
-        ET.SubElement(view_point, 'coordinates').text = '{},{}'.format(default_view_lat, default_view_lng)
+        ET.SubElement(view_point, 'coordinates').text = '{},{}'.format(
+            default_view_lat, default_view_lng)
 
         ET.SubElement(view_placemark, 'dummy')
 
-        view_reparsed = minidom.parseString(ET.tostring(view_root).replace('<dummy />', default_view))
+        view_reparsed = minidom.parseString(ET.tostring(view_root).replace(
+            '<dummy />', default_view))
         view_content = view_reparsed.toprettyxml(indent='\t')
 
         return args, geplus_config, layers_config, kml_content, view_content

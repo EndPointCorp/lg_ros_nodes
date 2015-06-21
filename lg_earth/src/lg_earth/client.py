@@ -26,7 +26,10 @@ class Client:
         )
 
         cmd = ['/opt/google/earth/free/googleearth-bin']
-        args, geplus_config, layers_config, kml_content, view_content = self._get_config()
+
+        args, geplus_config, layers_config, kml_content, view_content = \
+            self._get_config()
+
         cmd.extend(args)
         self.earth_proc = ManagedApplication(cmd, window=earth_window)
 
@@ -36,10 +39,15 @@ class Client:
         os.mkdir(self._get_dir() + '/.googleearth/Cache')
         os.mkdir(self._get_dir() + '/.config')
         os.mkdir(self._get_dir() + '/.config/Google')
-        self._render_config(geplus_config, '.config/Google/GoogleEarthPlus.conf')
-        self._render_config(layers_config, '.config/Google/GECommonSettings.conf')
-        self._render_file(kml_content, '.googleearth/myplaces.kml')
-        self._render_file(view_content, '.googleearth/cached_default_view.kml')
+
+        self._render_config(geplus_config,
+                            '.config/Google/GoogleEarthPlus.conf')
+        self._render_config(layers_config,
+                            '.config/Google/GECommonSettings.conf')
+        self._render_file(kml_content,
+                          '.googleearth/myplaces.kml')
+        self._render_file(view_content,
+                          '.googleearth/cached_default_view.kml')
 
         os.environ['HOME'] = self._get_dir()
 
