@@ -14,7 +14,9 @@ add_message_files(
 )
 generate_messages()
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS message_runtime
+)
 
 catkin_install_python(PROGRAMS
   scripts/dev_webserver.py
