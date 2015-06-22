@@ -18,8 +18,8 @@ catkin_install_python(PROGRAMS
   scripts/client.py
   scripts/query
   scripts/query.py
-  scripts/viewsync_sniffer
-  scripts/viewsync_sniffer.py
+  scripts/viewsync_relay
+  scripts/viewsync_relay.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

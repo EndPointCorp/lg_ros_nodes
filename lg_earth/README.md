@@ -64,7 +64,7 @@ Run with sudo.
 * `kml_sync_slug` [string] - Identifier for KML sync. Default: `default`
 * `default_view` [string] - KML AbstractView for starting location. Default: `<LookAt><longitude>-122.4661297737901</longitude><latitude>37.71903477888115</latitude><altitude>0</altitude><heading>42.60360249388481</heading><tilt>66.02791701475958</tilt><range>36611.51655091633</range><gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>`
 
-#### viewsync\_sniffer
+#### viewsync\_relay
 
 Intercepts Earth viewsync datagrams, publishes the `Pose`, and re-transmits the datagram. Best if run on the same host as the Earth ViewSync master client.
 
@@ -72,7 +72,7 @@ Intercepts Earth viewsync datagrams, publishes the `Pose`, and re-transmits the 
 
 * `listen_host` [string] - Host to bind listening socket to. Default: `127.0.0.1`
 * `listen_port` [int] - Port to bind listening socket to. Default: `42000`
-* `repeat_host` [string] - Host to repeat datagrams to. Default: `127.0.0.255`
+* `repeat_host` [string] - Host to repeat datagrams to. Default: `<broadcast>`
 * `repeat_port` [int] - Port to repeat datagrams to. Default: `42000`
 
 ##### Published Topics
