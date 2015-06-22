@@ -3,6 +3,7 @@
 import rospy
 from lg_common import ManagedBrowser
 from lg_common.msg import ApplicationState
+from std_msgs.msg import String
 
 
 if __name__ == '__main__':
@@ -23,6 +24,12 @@ if __name__ == '__main__':
     # Provide a state topic for debugging.
     rospy.Subscriber('/example_browser/state', ApplicationState,
                      browser.handle_state_msg)
+
+    # Provide a debug socket topic for debugging.
+    # i.e. {"id":1,"method":"Page.reload","params":{"ignoreCache":"True"}}
+    def handle_debug_sock_msg(msg):
+        browser.send_debug_sock_msg(msg.data)
+    rospy.Subscriber('/example_browser/debug', String, handle_debug_sock_msg)
 
     rospy.spin()
 
