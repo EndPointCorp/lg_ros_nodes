@@ -15,11 +15,10 @@ TOOLBAR_HEIGHT = 22
 
 class Client:
     def __init__(self):
-        x = rospy.get_param('~window_x', 0)
-        y = rospy.get_param('~window_y', 0) - TOOLBAR_HEIGHT
-        w = rospy.get_param('~window_w', 640)
-        h = rospy.get_param('~window_h', 480) + TOOLBAR_HEIGHT
-        geometry = WindowGeometry(x=x, y=y, width=w, height=h)
+        geometry = ManagedWindow.get_viewport_geometry()
+        geometry.y -= TOOLBAR_HEIGHT
+        geometry.height += TOOLBAR_HEIGHT
+
         earth_window = ManagedWindow(
             geometry=geometry,
             w_instance=self._get_instance()

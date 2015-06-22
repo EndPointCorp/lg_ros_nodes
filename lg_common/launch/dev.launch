@@ -4,6 +4,10 @@
 
   <arg name="spnav_path" default="/dev/input/spacenavigator" />
 
+  <param name="/viewport/left_one" value="640x480+0+0" />
+  <param name="/viewport/center" value="640x480+640+0" />
+  <param name="/viewport/right_one" value="640x480+1280+0" />
+
   <!-- Development static file server. -->
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
@@ -16,28 +20,19 @@
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
     <param name="yaw_offset" value="65" />
-    <param name="window_x" value="0" />
-    <param name="window_y" value="0" />
-    <param name="window_w" value="640" />
-    <param name="window_h" value="480" />
+    <param name="viewport" value="left_one" />
   </node>
   <node name="earth_center" pkg="lg_earth" type="client">
     <param name="viewsync_send" value="true" />
     <param name="spacenav_device" value="$(arg spnav_path)" />
     <param name="show_compass" value="true" />
-    <param name="window_x" value="640" />
-    <param name="window_y" value="0" />
-    <param name="window_w" value="640" />
-    <param name="window_h" value="480" />
+    <param name="viewport" value="center" />
   </node>
   <node name="earth_right_one" pkg="lg_earth" type="client">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
     <param name="yaw_offset" value="-65" />
-    <param name="window_x" value="1280" />
-    <param name="window_y" value="0" />
-    <param name="window_w" value="640" />
-    <param name="window_h" value="480" />
+    <param name="viewport" value="right_one" />
   </node>
 
   <!-- Google Earth viewsync relay. -->
