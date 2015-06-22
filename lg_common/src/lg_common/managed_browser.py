@@ -95,6 +95,9 @@ class ManagedBrowser(ManagedApplication):
         """
         Writes a string to the browser's debug web socket.
         """
+        rospy.warn(
+            'ManagedBrowser.send_debug_sock_msg() probably not yet working'
+        )
         ws_url = 'ws://localhost:{}'.format(self.debug_port)
         conn = yield websocket_connect(ws_url, connect_timeout=1)
         conn.write_message(msg)
