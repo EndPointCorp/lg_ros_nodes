@@ -2,7 +2,6 @@
 PKG = 'lg_common'
 NAME = 'test_managed_application'
 
-import rospy
 import unittest
 import os
 import signal
@@ -38,7 +37,6 @@ class MockController(ProcController):
 
 class TestManagedApplication(unittest.TestCase):
     def setUp(self):
-        rospy.init_node(NAME)
         window = MockWindow(w_instance='NULL', visible=False)
         self.app = ManagedApplication(cmd=TEST_CMD, window=window)
 

@@ -19,5 +19,5 @@
   <run_depend>appctl</run_depend>
   <run_depend>interactivespaces_msgs</run_depend>
   <run_depend>lg_support</run_depend>
-  <test_depend>rostest</test_depend>
+  <test_depend>unittest</test_depend>
 </package>

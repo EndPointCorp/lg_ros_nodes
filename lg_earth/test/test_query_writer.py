@@ -2,7 +2,6 @@
 PKG = 'lg_earth'
 NAME = 'test_query_writer'
 
-import rospy
 import unittest
 import os
 
@@ -35,7 +34,6 @@ FLYTO_KML = '<Camera><latitude>{}</latitude><longitude>{}</longitude>' + \
 
 class TestQueryWriter(unittest.TestCase):
     def setUp(self):
-        rospy.init_node(NAME)
         self.writer = QueryWriter(TEST_FILE)
 
     def tearDown(self):

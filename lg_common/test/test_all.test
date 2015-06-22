@@ -1,3 +1,0 @@
-<launch>
-  <include file="$(find lg_common)/test/offline/test_offline.test" />
-</launch>
