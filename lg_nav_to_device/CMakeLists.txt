@@ -13,6 +13,12 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+catkin_install_python(PROGRAMS
+  scripts/device_writer
+  scripts/device_writer.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 # if (CATKIN_ENABLE_TESTING)
 #   catkin_add_nosetests(test/test_something.py)
 # endif()
