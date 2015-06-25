@@ -1,0 +1,9 @@
+<launch>
+    <node name="lg_video" pkg="lg_video" type="video_manager.py">
+        <param name="application" value="mplayer"/>
+        <param name="application_path" value="/usr/bin/mplayer"/>
+    </node>
+
+    <!-- Local rosbridge server. -->
+    <node name="dev_rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py" />
+</launch>
