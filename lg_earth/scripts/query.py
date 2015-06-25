@@ -8,8 +8,8 @@ from lg_earth import QueryWriter
 if __name__ == '__main__':
     rospy.init_node('earth_query')
 
-    query_file = rospy.get_param('~query_file', '/tmp/ge_queryfile')
-
+    query_file = rospy.get_param('~query_file', '/tmp/ge_queryfile1')
+    rospy.loginfo('Parameter %s has value %s', rospy.resolve_name('~query_file'), query_file)
     writer = QueryWriter(query_file)
 
     rospy.Subscriber(
