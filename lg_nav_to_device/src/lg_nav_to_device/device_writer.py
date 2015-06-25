@@ -1,5 +1,6 @@
 from geometry_msgs.msg import Twist
-from evdev import AbsInfo, UInput, ecodes as e
+from evdev import AbsInfo, UInput, InputEvent, ecodes as e
+import time
 
 class DeviceWriter:
     def __init__(self):
@@ -35,5 +36,25 @@ class DeviceWriter:
 
     def make_event(self, data):
         # write some event to self.ui based off of the twist data
-        pass
+        _time = time.time()
+        stime = int(_time)
+        utime = int((float(_time) - stime) * 10 ** 6)
+        # linear and angular might need to be switched here...
+        x = InputEvent(stime, utime, e.EV_REL, e.REL_X, translate(data.linear.x))
+        y = InputEvent(stime, utime, e.EV_REL, e.REL_Y, translate(data.linear.y))
+        z = InputEvent(stime, utime, e.EV_REL, e.REL_Z, translate(data.linear.z))
+        ax = InputEvent(stime, utime, e.EV_REL, e.REL_RX, translate(data.angular.x))
+        ay = InputEvent(stime, utime, e.EV_REL, e.REL_RY, translate(data.angular.y))
+        az = InputEvent(stime, utime, e.EV_REL, e.REL_RZ, translate(data.angular.z))
+        # write all events
+        self.ui.write_event(x)
+        self.ui.write_event(y)
+        self.ui.write_event(z)
+        self.ui.write_event(ax)
+        self.ui.write_event(ay)
+        self.ui.write_event(az)
+        # syn to alert input subsystem
+        self.ui.syn()
 
+    def translate(n):
+        return n # TODO find the translation...
