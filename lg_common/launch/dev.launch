@@ -7,8 +7,8 @@
   <!-- Development static file server. -->
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
-  <!-- Local rosbridge server. -->
-  <node name="dev_rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py" />
+  <!-- Local rosbridge and rosapi. -->
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
 
   <!-- Some Google Earths. -->
   <!-- TODO: Use viewports for window geometry. -->
