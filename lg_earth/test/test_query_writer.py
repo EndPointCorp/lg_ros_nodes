@@ -85,12 +85,10 @@ class TestQueryWriter(unittest.TestCase):
     def test_flyto_kml(self):
         kml = String(FLYTO_KML)
         self.writer.handle_flyto_kml(kml)
-        print FLYTO_KML
         expected = 'flytoview={}'.format(FLYTO_KML)
 
         with open(TEST_FILE, 'r') as f:
             content = f.read()
-        print content
         self.assertEqual(content, expected)
 
     def test_flyto_pose_camera(self):
