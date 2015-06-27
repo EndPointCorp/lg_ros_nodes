@@ -10,7 +10,20 @@ SIG_RETRY_DELAY = 0.05
 
 
 class ManagedApplication(object):
+    """Provides a combination of process state control and window management.
+
+    A ManagedApplication is always initialized to an inert state. No processes
+    are spawned or windows moved until its state is changed.
+    """
+
     def __init__(self, cmd, window=None):
+        """Creates a ManagedApplication instance.
+
+        Args:
+            cmd (List[str]): The command to run as a managed process.
+            window (Optional[ManagedWindow]): A window to manage along with
+                the process.
+        """
         self.cmd = cmd
         self.window = window
         self.state = ApplicationState.STOPPED
@@ -22,12 +35,26 @@ class ManagedApplication(object):
         rospy.on_shutdown(self._cleanup)
 
     def _cleanup(self):
+        """Clean up the instance for shutdown.
+
+        This is intended to be called upon `rospy` shutdown.
+        """
         # explicit SIGCONT needed to prevent undeath
         self._signal_proc(signal.SIGCONT, retry=False)
 
-    # TODO(mv): better pid retrieval and/or signalling as a feature of
-    #           ProcController.
     def _signal_proc(self, sig, retry=True):
+        """Send a signal to the managed process.
+
+        This method is presently disabled and may be considered deprecated.
+
+        TODO(mv): better pid retrieval and/or signalling as a feature of
+            ProcController.
+
+        Args:
+            sig (int): signum to send to the process.
+            retry (Optional[bool]): If the process is not available, schedule
+                a retry. Any existing retries will be cancelled.
+        """
         rospy.logwarn('_signal_proc disabled')
         return
 
@@ -56,10 +83,19 @@ class ManagedApplication(object):
             )
 
     def get_state(self):
+        """Return the current goal state."""
         with self.lock:
             return self.state
 
     def set_state(self, state):
+        """Set the goal state.
+
+        This method only takes action if the goal state is different from the
+        previous goal state.
+
+        Args:
+            state (ApplicationState): Desired state for this instance.
+        """
         state_changed = False
         with self.lock:
             if state != self.state:
