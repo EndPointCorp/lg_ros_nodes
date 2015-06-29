@@ -1,6 +1,7 @@
 import rospy
 import subprocess
 import threading
+import re
 
 from lg_common.msg import WindowGeometry
 
@@ -33,8 +34,9 @@ class ManagedWindow(object):
             raise ValueError(
                 'Invalid window geometry: {}'.format(geometry))
 
-        dims = m.groups()
-        return WindowGeometry(w=dims[0], h=dims[1], x=dims[2], y=dims[3])
+        dims = map(int, m.groups())
+        return WindowGeometry(width=dims[0], height=dims[1],
+                              x=dims[2], y=dims[3])
 
     @staticmethod
     def lookup_viewport(viewport_key):

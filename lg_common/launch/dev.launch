@@ -1,5 +1,4 @@
 <launch>
-  <!-- We can use the special broadcast string for Earth's broadcast address. -->
   <arg name="broadcast_addr" />
 
   <arg name="spnav_path" default="/dev/input/spacenavigator" />
@@ -15,7 +14,6 @@
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
 
   <!-- Some Google Earths. -->
-  <!-- TODO: Use viewports for window geometry. -->
   <node name="earth_left_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
