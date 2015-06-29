@@ -2,7 +2,6 @@ import rospy
 import xml.etree.ElementTree as ET
 from lg_common import SceneListener
 from lg_common import webapp
-from flask import render_template
 from xml.dom import minidom
 
 
@@ -51,7 +50,11 @@ class KMLFlaskApp:
         except AssertionError, e:
             rospy.logerror("Director message error %s" % e)
 
-        self.assets_state[viewport] = assets
+        self.assets_state[viewport] = {'assets': assets,
+                                       'cookie': self._generate_cookie(assets) }
+
+    def _generate_cookie(self, assets):
+        return "asset_slug=foo&asset_slug=bar&asset_slug=baz"
 
     def _get_kml_xml_root(self):
         kml_root = ET.Element('kml', attrib={})
@@ -73,13 +76,46 @@ class KMLFlaskApp:
 
     @app.route('/network_link_update.kml')
     def networklink_update(self):
+        """
+        Return XML with latest list of assets for specific window_slug
+            - get window slug and calculate difference between loaded assets and the desired state
+            - create the KML and return it only if cookie was different and the window slug came in the request
+        """
         rospy.debuginfo("Got network_link_update.kml GET request with params: %s" % request.args)
-        window_slug = request.args.get('window_slug
-        kml_root = self._get_kml_xml_root()
-        
-        cookie_string = request.args.get('key', '')
-        window_slug = request.args.get('window_slug', '')
+        window_slug = request.args.get('window_slug', None)
+        incoming_cookie_string = request.args.split(',')[-1]
 
+        rospy.logdebug("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, cookie_string))
+
+        if window_slug \
+            and (incoming_cookie_string != self.asset_state.get(window_slug, {'cookie': None, 'assets': None})['cookie']):
+            assets_to_remove = []
+            assets_to_create = []
+            return self._get_kml_for_networklink_update(assets_to_remove, assets_to_create)
+
+    def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create):
+            kml_root = self._get_kml_xml_root()
+            kml_networklink = ET.SubElement(kml_root, 'NetworkLinkControl')
+            kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
+            kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
+            cookie_cdata_string = "<![CDATA[%s]]" % self.asset_state.get(window_slug, {'cookie': None, 'assets': None})['cookie']
+            kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = cookie_cdata_string
+            kml_update = ET.SubElement(kml_networklink, 'Update')
+            kml_target_href = ET.SubElement(kml_update, 'targetHref').text = 'http://' + self.host + ':' + self.port + '/master.kml'
+
+"""
+    <Create><Document targetId="master">
+        <NetworkLink id="some_asset_slug">
+            <name>Asset Title</name>
+            <Link><href>asset_url</href></Link>
+        </NetworkLink>
+        <!-- Repeat the above NetworkLink stuff for each asset we need to load -->
+    </Document></Create>
+    <Delete>
+        <NetworkLink targetId="asset_slug" />
+        <!-- Repeat for each slug we want to delete -->
+    </Delete>
+"""
 
 
 class KMLSyncServer:
