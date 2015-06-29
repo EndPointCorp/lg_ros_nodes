@@ -44,4 +44,7 @@
   <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay" clear_params="true">
     <param name="repeat_host" value="$(arg broadcast_addr)" />
   </node>
+
+  <!-- Google earth query interface. -->
+  <node name="query_writer" pkg="lg_earth" type="query" clear_params="true" />
 </launch>
