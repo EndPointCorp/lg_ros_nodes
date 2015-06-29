@@ -1,0 +1,8 @@
+<launch>
+    <node name="image_browser" pkg="lg_adhoc_browser" type="client">
+        <param name="url" value="http://endpoint.com/" />
+    </node>
+
+    <!-- Local rosbridge server. -->
+    <node name="dev_rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py" />
+</launch>
