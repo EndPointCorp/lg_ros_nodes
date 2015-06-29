@@ -1,11 +1,14 @@
 import rospy
+import xml.etree.ElementTree as ET
 from lg_common import SceneListener
 from lg_common import webapp
 from flask import render_template
+from xml.dom import minidom
 
 
 class KMLFlaskApp:
     """ Run a KMLsync HTTP server
+        Overview:
         - GE loads 'myplaces.kml' after it starts (lg_earth should create it)
         - myplaces.kml contains networklinks to master.kml and to regular
           updates
@@ -50,18 +53,33 @@ class KMLFlaskApp:
 
         self.assets_state[viewport] = assets
 
+    def _get_kml_xml_root(self):
+        kml_root = ET.Element('kml', attrib={})
+        kml_root.attrib['xmlns'] = 'http://www.opengis.net/kml/2.2'
+        kml_root.attrib['xmlns:gx'] = 'http://www.google.com/kml/ext/2.2'
+        kml_root.attrib['xmlns:kml'] = 'http://www.opengis.net/kml/2.2'
+        kml_root.attrib['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
+        return kml_root
+
     @app.route('/master.kml')
     def master_kml(self):
-        params = ""
+        rospy.loginfo("Got master.kml GET request")
+        kml_root = self._get_kml_xml_root()
+        kml_document = ET.SubElement(kml_root, 'Document')
+        kml_document.attrib['id'] = 'master'
+        kml_reparsed = minidom.parseString(ET.tostring(kml_root))
+        kml_content = kml_reparsed.toprettyxml(indent='\t')
+        return kml_content
 
-        render_template("master.kml", params=params)
-
-    @app.route('/networklink_update.kml')
+    @app.route('/network_link_update.kml')
     def networklink_update(self):
+        rospy.debuginfo("Got network_link_update.kml GET request with params: %s" % request.args)
+        window_slug = request.args.get('window_slug
+        kml_root = self._get_kml_xml_root()
+        
         cookie_string = request.args.get('key', '')
         window_slug = request.args.get('window_slug', '')
 
-        render_template("networklink_update.kml", params=params)
 
 
 class KMLSyncServer:
