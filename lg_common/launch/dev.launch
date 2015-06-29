@@ -1,6 +1,6 @@
 <launch>
   <!-- We can use the special broadcast string for Earth's broadcast address. -->
-  <arg name="broadcast_addr" default="&lt;broadcast&gt;" />
+  <arg name="broadcast_addr" />
 
   <arg name="spnav_path" default="/dev/input/spacenavigator" />
 
