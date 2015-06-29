@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import rospy
-from lg_common import webapp
 from lg_earth import KMLSyncServer
 
 
@@ -13,6 +12,7 @@ def main():
 
     server = KMLSyncServer(host=host, port=port)
 
+    server.run()
     rospy.spin()
 
 if __name__ == '__main__':
