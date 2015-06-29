@@ -12,11 +12,10 @@ Earth client and support nodes.
 Quick Start
 ===========
 
-Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, `ros-indigo-rosbridge-suite`, and `xdotool` installed.
+Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, installed, and your `rosdep` updated.
 
 * <https://dl.google.com/earth/client/current/google-earth-stable_current_i386.deb>
 * <http://wiki.ros.org/indigo/Installation/Ubuntu>
-* <http://packages.ubuntu.com/trusty/xdotool>
 
 Also, you'll need to patch Earth for the homedir fix as described in the lg\_earth README, otherwise its configuration will be unmanaged.
 
@@ -44,12 +43,17 @@ Now you'll need to symlink `appctl` from the Portal ROS repo and `interactivespa
     $ ln -snf ~/src/portal-ros/catkin/src/appctl
     $ ln -snf ~/src/ros_cms/director/src/interactivespaces_msgs
 
+Install system dependencies with `rosdep`.
+
+    $ cd ~/src/lg_ros_nodes/catkin
+    $ rosdep install --from-paths src --ignore-src --rosdistro indigo -y
+
 Build the project.
 
     $ cd ~/src/lg_ros_nodes/catkin
     $ catkin_make
 
-Run the development roslaunch. You'll need to specify your local broadcast address, which can be found with `ifconfig`.
+Run the development roslaunch. You'll need to specify your local broadcast address, which can be found with `ifconfig`. Replace `1.2.3.255` with that address.
 
     $ source ~/src/lg_ros_nodes/catkin/devel/setup.bash broadcast_addr:=1.2.3.255
     $ roslaunch lg_common dev.launch
