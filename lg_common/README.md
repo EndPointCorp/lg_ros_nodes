@@ -48,6 +48,7 @@ A `ManagedApplication` subclass for running a browser.
 * `kiosk` [bool] - If true, launch the browser in kiosk mode. Default: `true`
 * `geometry` [WindowGeometry] - Where to put the window. Optional.
 * `binary` [string] - Absolute path to the browser binary. Default: `/usr/bin/google-chrome`
+* `remote_debugging_port` [int] - Specify a remote debugging port. If not provided, a port will be assigned.
 
 All other keyword arguments are passed on directly to the command line.
 

@@ -34,6 +34,5 @@ install(
 )
 
 if (CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  add_rostest(test/test_all.test)
+  catkin_add_nosetests(test/offline/test_managed_application.py)
 endif()

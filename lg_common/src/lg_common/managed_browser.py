@@ -1,8 +1,10 @@
+import socket
 import sys
 
 import rospy
 
 from lg_common import ManagedApplication, ManagedWindow
+from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'
 DEFAULT_ARGS = [
@@ -24,9 +26,16 @@ DEFAULT_ARGS = [
 
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
-                 binary=DEFAULT_BINARY, **kwargs):
+                 binary=DEFAULT_BINARY, remote_debugging_port=None, **kwargs):
 
         cmd = [binary]
+
+        # If no debug port provided, pick one.
+        if remote_debugging_port is None:
+            remote_debugging_port = ManagedBrowser.get_os_port()
+        self.debug_port = remote_debugging_port
+
+        cmd.append('--remote-debugging-port={}'.format(self.debug_port))
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -70,5 +79,28 @@ class ManagedBrowser(ManagedApplication):
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
+
+    @staticmethod
+    def get_os_port():
+        """
+        Lets the OS assign a port number.
+        """
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(('', 0))
+        port = sock.getsockname()[1]
+        sock.close()
+        return port
+
+    def send_debug_sock_msg(self, msg):
+        """
+        Writes a string to the browser's debug web socket.
+        """
+        rospy.warn(
+            'ManagedBrowser.send_debug_sock_msg() probably not yet working'
+        )
+        ws_url = 'ws://localhost:{}'.format(self.debug_port)
+        conn = yield websocket_connect(ws_url, connect_timeout=1)
+        conn.write_message(msg)
+        conn.close()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

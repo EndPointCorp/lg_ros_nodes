@@ -1,3 +1,0 @@
-<launch>
-  <test test-name="test_managed_application" pkg="lg_common" type="test_managed_application.py" />
-</launch>

@@ -1,3 +1,0 @@
-<launch>
-  <include file="$(find lg_earth)/test/query/test_query.test" />
-</launch>

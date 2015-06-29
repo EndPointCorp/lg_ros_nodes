@@ -1,6 +1,6 @@
 <launch>
   <!-- We can use the special broadcast string for Earth's broadcast address. -->
-  <arg name="broadcast_addr" default="&lt;broadcast&gt;" />
+  <arg name="broadcast_addr" />
 
   <arg name="spnav_path" default="/dev/input/spacenavigator" />
 
@@ -11,24 +11,24 @@
   <!-- Development static file server. -->
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
-  <!-- Local rosbridge server. -->
-  <node name="dev_rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py" />
+  <!-- Local rosbridge and rosapi. -->
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
 
   <!-- Some Google Earths. -->
   <!-- TODO: Use viewports for window geometry. -->
-  <node name="earth_left_one" pkg="lg_earth" type="client">
+  <node name="earth_left_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
     <param name="yaw_offset" value="65" />
     <param name="viewport" value="left_one" />
   </node>
-  <node name="earth_center" pkg="lg_earth" type="client">
+  <node name="earth_center" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_send" value="true" />
     <param name="spacenav_device" value="$(arg spnav_path)" />
     <param name="show_compass" value="true" />
     <param name="viewport" value="center" />
   </node>
-  <node name="earth_right_one" pkg="lg_earth" type="client">
+  <node name="earth_right_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
     <param name="yaw_offset" value="-65" />
@@ -36,7 +36,10 @@
   </node>
 
   <!-- Google Earth viewsync relay. -->
-  <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay">
+  <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay" clear_params="true">
     <param name="repeat_host" value="$(arg broadcast_addr)" />
   </node>
+
+  <!-- Google earth query interface. -->
+  <node name="query_writer" pkg="lg_earth" type="query" clear_params="true" />
 </launch>
