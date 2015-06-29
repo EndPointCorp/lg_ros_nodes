@@ -1,5 +1,6 @@
 import rospy
 
+
 class QueryWriter:
     def __init__(self, filename):
         self.filename = filename
