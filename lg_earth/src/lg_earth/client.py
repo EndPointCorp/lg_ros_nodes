@@ -37,6 +37,12 @@ class Client:
 
         os.mkdir(self._get_dir() + '/.googleearth')
         os.mkdir(self._get_dir() + '/.googleearth/Cache')
+
+        if rospy.get_param('~show_google_logo', True):
+            pass
+        else:
+            self._touch_file((self._get_dir() + '/.googleearth/' + 'localdbrootproto'))
+
         os.mkdir(self._get_dir() + '/.config')
         os.mkdir(self._get_dir() + '/.config/Google')
 
@@ -57,6 +63,12 @@ class Client:
             os.environ['DISPLAY'] = ':0'
 
         os.environ['LD_LIBRARY_PATH'] += ':/opt/google/earth/free'
+
+    def _touch_file(self, fname):
+        if os.path.exists(fname):
+            os.utime(fname, None)
+        else:
+            open(fname, 'a').close()
 
     def _get_instance(self):
         return '_earth_instance_' + rospy.get_name().strip('/')
