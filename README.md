@@ -55,8 +55,8 @@ Build the project.
 
 Run the development roslaunch. You'll need to specify your local broadcast address, which can be found with `ifconfig`. Replace `1.2.3.255` with that address.
 
-    $ source ~/src/lg_ros_nodes/catkin/devel/setup.bash broadcast_addr:=1.2.3.255
-    $ roslaunch lg_common dev.launch
+    $ source ~/src/lg_ros_nodes/catkin/devel/setup.bash
+    $ roslaunch lg_common dev.launch broadcast_addr:=1.2.3.255
 
 It may take a few seconds for Earth to start up. Use Ctrl+C to shut down.
 
