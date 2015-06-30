@@ -20,6 +20,8 @@ catkin_install_python(PROGRAMS
   scripts/query.py
   scripts/viewsync_relay
   scripts/viewsync_relay.py
+  scripts/kmlsync
+  scripts/kmlsync.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
