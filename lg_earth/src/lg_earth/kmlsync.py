@@ -167,7 +167,7 @@ class KMLFlaskApp(FlaskView):
 
         kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root)))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
-        return kml_content
+        return unescape(kml_content)
 
     def _get_kml_for_create_assets(self, assets_to_create, parent):
         kml_create = ET.SubElement(parent, 'Create')
