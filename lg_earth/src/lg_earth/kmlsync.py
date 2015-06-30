@@ -37,6 +37,14 @@ class KMLFlaskApp(FlaskView):
           section - those elements need to be children of "Update" element
         - example networklinkupdate: https://github.com/EndPointCorp/lg_ros_nodes/issues/2#issuecomment-116727990
 
+        Special case - tours:
+        - when a tour KML is loaded - GE will try to reach KMLSyncServer's URL to send "playtour" command to itself (weird xD)
+        - KMLSyncServer needs to listen on /query.html link and accept GE's requests like:
+            - /query.html?query=playtour=taipei (http://pastebin.com/3M5xHj0g)
+
+            the query argument "playtour=taipei" needs to be forwarded to queryfile ROS node so GE gets a command to go
+            to certain position
+
         asset example: 'http://lg-head:8060/media/blah.kml'
         cookie example: asset_slug=http___lg-head_8060_media_blah_kml
 
@@ -79,8 +87,8 @@ class KMLFlaskApp(FlaskView):
 
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
-        if window_slug \
-            and (incoming_cookie_string != self.assets_state.get(window_slug, {'cookie': '', 'assets': []})['cookie']):
+        if window_slug:
+            #and (incoming_cookie_string != self.assets_state.get(window_slug, {'cookie': '', 'assets': []})['cookie']):
             assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, window_slug)
             assets_to_create = self._get_assets_to_create(incoming_cookie_string, window_slug)
             return self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, window_slug)

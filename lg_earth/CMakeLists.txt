@@ -26,5 +26,8 @@ catkin_install_python(PROGRAMS
 )
 
 if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_query_writer.py)
+  add_rostest(test/kmlsync/kmlsync.test)
 endif()
+

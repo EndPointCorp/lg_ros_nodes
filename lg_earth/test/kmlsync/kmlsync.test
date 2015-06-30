@@ -1,0 +1,4 @@
+<launch>
+  <test test-name="test_kmlsync_server" pkg="lg_earth" type="test_kmlsync.py" />
+  <node name="testing_kmlsync_node" pkg="lg_earth" type="kmlsync.py" />
+</launch>
