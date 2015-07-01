@@ -9,6 +9,10 @@ class SceneListener:
         self.sub = rospy.Subscriber('/director/scene', GenericMessage,
                                     self.handle_scene)
         self.callback = callback
+        try:
+            rospy.loginfo("Registered scene listener with callback: %s" % self.callback.__name__)
+        except AttributeError, e:
+            pass
 
     def handle_scene(self, msg):
         assert msg.type == 'json'

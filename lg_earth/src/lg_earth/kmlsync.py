@@ -1,16 +1,14 @@
 import rospy
 import xml.etree.ElementTree as ET
-from lg_common import SceneListener
-from lg_common.webapp import ros_flask_spin
+
 from xml.dom import minidom
-from xml.sax.saxutils import unescape, escape
 from flask import Flask, request
+from lg_common import SceneListener
+from lg_common.helpers import escape_asset_url
+from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
 
-
-app = Flask(__name__)
-
-class KMLFlaskApp(FlaskView):
+class KMLSyncServer(FlaskView):
     """ Run a KMLsync HTTP server
         Overview:
         - GE loads 'myplaces.kml' after it starts (lg_earth should create it)
@@ -53,10 +51,12 @@ class KMLFlaskApp(FlaskView):
     """
 
     def __init__(self):
-        self.host = rospy.get_param('kmlsync_listen_host', '127.0.0.1')
-        self.port = rospy.get_param('kmlsync_listen_port', 8765)
+        self.host = rospy.get_param('~kmlsync_listen_host', '127.0.0.1')
+        self.port = rospy.get_param('~kmlsync_listen_port', 8765)
 
-        self.app = app
+        self.scene_listener = SceneListener(self._scene_listener_callback)
+
+        rospy.loginfo("Initialized scene listener: %s with callback %s" % (self.scene_listener, self._scene_listener_callback.__name__))
 
         self.assets_state = {}
 
@@ -92,31 +92,46 @@ class KMLFlaskApp(FlaskView):
             assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, window_slug)
             assets_to_create = self._get_assets_to_create(incoming_cookie_string, window_slug)
             return self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, window_slug)
-        return ''
+        else:
+            return '', 400
+
+    def _scene_listener_callback(self, scene):
+        """
+        Scene listener callback for KMLSyncServer
+
+        - unpack director message only if the activity attrib == 'ge clients'
+        - return the state of the assets for the webserver
+         - return the "assets" list per viewport
+        {
+         "viewport_name1": [ "asset1", "asset2" ],
+         "viewport_name2": [ "asset3", "asset4" ]
+        }
+        """
+        if 'windows' not in scene:
+            rospy.loginfo("received invalid message... ignoring")
+            return
+        for window in scene['windows']:
+            if window['activity'] == 'earth':
+                #TODO fix this here, used to be self.http_server which doesn't exist,
+                # so how are we supposed to _set_assets now?
+                self._set_assets(window['presentation_viewport'], window['assets'])
 
     def _set_assets(self, viewport, assets):
         try:
             assert isinstance(viewport, str), "Viewport name was invalid"
             assert isinstance(assets, list), "Director message did not contain window list"
         except AssertionError, e:
-            rospy.logerror("Director message error %s" % e)
+            rospy.loginfo("Director message error %s" % e)
+
+        rospy.loginfo("Got assets from the director %s for viewport %s" % (assets, viewport))
 
         self.assets_state[viewport] = {'assets': assets,
                                        'cookie': self._generate_cookie(assets) }
 
     """ Private methods below """
 
-    def _escape_asset_url(self, asset_url):
-        ss = ''
-        for ch in asset_url:
-            if str.isalnum(ch):
-                ss += ch
-            else:
-                ss += "_"
-        return ss
-
     def _generate_cookie(self, assets):
-        cookie = ('&').join([ 'asset_slug=' + self._escape_asset_url(asset) for asset in assets ])
+        cookie = ('&').join([ 'asset_slug=' + escape_asset_url(asset) for asset in assets ])
         rospy.logdebug("Generated cookie = %s after new state was set" % cookie)
         return cookie
 
@@ -155,7 +170,7 @@ class KMLFlaskApp(FlaskView):
         client_state_slugs = self._get_client_slugs_state(incoming_cookie_string)
 
         for url in self.assets_state.get(window_slug, {'assets': []})['assets']:
-            if self._escape_asset_url(url) in loaded_slugs:
+            if escape_asset_url(url) in loaded_slugs:
                 continue
             urls_to_create.append(url)
 
@@ -181,8 +196,8 @@ class KMLFlaskApp(FlaskView):
         kml_create = ET.SubElement(parent, 'Create')
         kml_document = ET.SubElement(kml_create, 'Document', {'targetId': 'master'})
         for asset in assets_to_create:
-            new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': self._escape_asset_url(asset)})
-            ET.SubElement(new_asset, 'name').text = self._escape_asset_url(asset)
+            new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
+            ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
             link = ET.SubElement(new_asset, 'Link')
             ET.SubElement(link, 'href').text = asset
         return kml_create #not sure if this is needed since we're already building on the xml tree...
@@ -191,30 +206,8 @@ class KMLFlaskApp(FlaskView):
         if assets_to_delete:
             kml_delete = ET.SubElement(parent, 'Delete')
             for asset in assets_to_delete:
-                ET.SubElement(kml_delete, 'NetworkLink', {'targetId': self._escape_asset_url(asset)})
+                ET.SubElement(kml_delete, 'NetworkLink', {'targetId': escape_asset_url(asset)})
             return kml_delete
 
 
-class KMLSyncServer:
-    def __init__(self):
-        self.host = rospy.get_param('kmlsync_listen_host', '127.0.0.1')
-        self.port = rospy.get_param('kmlsync_listen_port', 8765)
 
-        self.scene_listener = SceneListener(self.scene_listener_callback)
-
-    def scene_listener_callback(self, scene):
-        """
-        - unpack director message only if the slug=='ge clients'
-        - return the state of the assets for the webserver
-         - return the "assets" list per viewport
-        {
-         "viewport_name1": [ "asset1", "asset2" ],
-         "viewport_name2": [ "asset3", "asset4" ]
-        }
-        """
-        for window in scene['windows']:
-            if activity == 'earth':
-                self.http_server._set_assets(window['presentation_viewport'], window['assets'])
-
-    def run(self):
-        ros_flask_spin(app, host=self.host, port=self.port, debug=True, flask_classes=[KMLFlaskApp])
