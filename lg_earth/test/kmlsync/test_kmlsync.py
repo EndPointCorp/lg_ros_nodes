@@ -32,6 +32,8 @@ class TestKMLSync(unittest.TestCase):
         pass
 
 
+def get_cookie(s):
+    return s[s.find("<cookie>") + len("<cookie>"): s.find("</cookie>")]
 
 if __name__ == '__main__':
     import rostest
