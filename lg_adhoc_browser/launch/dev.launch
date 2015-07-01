@@ -1,6 +1,6 @@
 <launch>
     <node name="image_browser" pkg="lg_adhoc_browser" type="client">
-        <param name="url" value="http://endpoint.com/" />
+        <param name="viewport" value="superone" />
     </node>
 
     <!-- Local rosbridge server. -->

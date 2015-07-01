@@ -77,6 +77,8 @@ class ManagedBrowser(ManagedApplication):
 
         w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
+        
+        rospy.loginfo("Command {}".format(cmd))
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
 
