@@ -1,6 +1,7 @@
 import rospy
 
 from functools import partial
+from multiprocessing import Process
 from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketHandler
 
@@ -22,11 +23,14 @@ def ros_flask_spin(app, *args, **kwargs):
         for flask_class in kwargs['flask_classes']:
             flask_class.register(app, route_base='/')
         kwargs.pop('flask_classes')
-    app.run(*args, **kwargs)
-    with app.test_request_context():
-        from flask import request
-        shutdown = request.environ.get('werkzeug.server.shutdown')
-        rospy.on_shutdown(shutdown)
+
+    def run_server():
+        app.run(*args, **kwargs)
+    server = Process(target=run_server)
+    server.daemon = True
+
+    server.start()
+    rospy.spin()
 
 
 class RosbridgeWebSocket(WebSocketHandler):
