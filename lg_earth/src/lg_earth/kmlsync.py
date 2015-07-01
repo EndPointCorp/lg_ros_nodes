@@ -170,7 +170,7 @@ class KMLSyncServer(FlaskView):
         client_state_slugs = self._get_client_slugs_state(incoming_cookie_string)
 
         for url in self.assets_state.get(window_slug, {'assets': []})['assets']:
-            if escape_asset_url(url) in loaded_slugs:
+            if escape_asset_url(url) in client_state_slugs:
                 continue
             urls_to_create.append(url)
 

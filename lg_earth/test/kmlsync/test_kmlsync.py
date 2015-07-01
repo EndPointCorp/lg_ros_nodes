@@ -5,6 +5,25 @@ NAME = 'test_kmlsync'
 KMLSYNC_HOST = '127.0.0.1'
 KMLSYNC_PORT = 8765
 KML_ENDPOINT = 'http://' + KMLSYNC_HOST + ':' + str(KMLSYNC_PORT)
+
+WINDOW_SLUG = 'test_window_slug'
+
+import sys
+import re
+import rospy
+import rostest
+import time
+import unittest
+import requests
+import xml.etree.ElementTree as ET
+
+from lg_common.helpers import escape_asset_url
+from interactivespaces_msgs.msg import GenericMessage
+from subprocess import Popen
+
+PUBTOPIC = '/director/scene'
+LPNODE = 'testing_kmlsync_node'
+
 DIRECTOR_MESSAGE = """
     {
             "description": "bogus",
@@ -41,45 +60,32 @@ DIRECTOR_MESSAGE = """
     }
     """
 
-WINDOW_SLUG = 'test_window_slug'
-
-import re
-import rospy
-import unittest
-import requests
-import xml.etree.ElementTree as ET
-
-from lg_common.helpers import escape_asset_url
-from interactivespaces_msgs.msg import GenericMessage
-
-
-class DirectorPublisher:
-    def __init__(self):
-        self.director_publisher = rospy.Publisher('/director/scene', GenericMessage, queue_size=10, latch=True)
-        rospy.loginfo("Initliazed %s" % self.__class__)
-
-    def publish(self):
-        msg = GenericMessage()
-        msg.type = 'json'
-        msg.message = DIRECTOR_MESSAGE
-        rospy.loginfo("About to publish message %s" % msg.message)
-        self.director_publisher.publish(msg)
-        rospy.loginfo("Pubished the message from %s" % self.__class__)
-
 
 class TestKMLSync(unittest.TestCase):
     def setUp(self):
-        rospy.loginfo("Starting test for KMLSync and TestDirectorPublisher")
-        self.director_publisher = rospy.Publisher('/director/scene', GenericMessage, queue_size=10, latch=True)
+        self.wait_for_http()
 
-    def publish(self):
+    def get_director_msg(self):
         msg = GenericMessage()
         msg.type = 'json'
         msg.message = DIRECTOR_MESSAGE
-        rospy.loginfo("About to publish message %s" % msg.message)
-        self.director_publisher.publish(msg)
-        rospy.loginfo("Pubished the message from %s" % self.__class__)
+        return msg
 
+    def wait_for_pubsub(self):
+        # wait at most 5 seconds for listenerpublisher to be registered
+        timeout_t = time.time() + 5.0
+        while not rostest.is_subscriber(
+            rospy.resolve_name(PUBTOPIC),
+            rospy.resolve_name(LPNODE)) and time.time() < timeout_t:
+            time.sleep(0.1)
+
+        self.assert_(rostest.is_subscriber(
+            rospy.resolve_name(PUBTOPIC),
+            rospy.resolve_name(LPNODE)), "%s is not up"%LPNODE)
+
+    def wait_for_http(self):
+        # TODO: implement this
+        rospy.sleep(1.0)
 
     def test_1_master_kml_200(self):
         r = requests.get(KML_ENDPOINT + '/master.kml')
@@ -114,8 +120,13 @@ class TestKMLSync(unittest.TestCase):
             - CREATE/DELETE sections
         """
 
+        self.wait_for_pubsub()
+
+        director_publisher = rospy.Publisher(PUBTOPIC, GenericMessage)
+        msg = self.get_director_msg()
+        director_publisher.publish(msg)
+
         r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
-        rospy.loginfo("response from networklink XXX: %s" % r.content)
         expected_cookie = ''
         expected_number_of_create_elements = 3
         expected_list_of_slugs = map( escape_asset_url, ["http://lg-head:8060/media.kml", "http://lg-head:8060/media/blah.kml", "http://lg-head/zomgflolrlmao.kml"])
@@ -125,8 +136,7 @@ def get_cookie_string(s):
     return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
 
 if __name__ == '__main__':
-    import rostest
-    rospy.sleep(1)
-    rostest.rosrun(PKG, NAME, TestKMLSync)
+    rospy.init_node('test_director')
+    rostest.rosrun(PKG, NAME, TestKMLSync, sys.argv)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
