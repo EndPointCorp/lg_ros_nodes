@@ -1,5 +1,6 @@
 import rospy
 
+import atexit
 from functools import partial
 from multiprocessing import Process
 from tornado.ioloop import IOLoop
