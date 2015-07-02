@@ -91,7 +91,7 @@ class TestKMLSync(unittest.TestCase):
 
     def wait_for_http(self):
         # TODO: implement this
-        rospy.sleep(1.0)
+        rospy.sleep(3.0)
 
     def test_1_master_kml_200(self):
         r = requests.get(KML_ENDPOINT + '/master.kml')
