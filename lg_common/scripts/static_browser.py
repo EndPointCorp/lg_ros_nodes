@@ -15,12 +15,18 @@ if __name__ == '__main__':
     window_w = rospy.getparam('~window_w', None)
     window_h = rospy.getparam('~window_h', None)
 
-    geometry = WindowGeometry(x=window_x, y=window_x,
-        width=window_w, height=window_height)
+    geometry = WindowGeometry(
+        x=window_x,
+        y=window_x,
+        width=window_w,
+        height=window_height
+    )
 
-    user_agent = rospy.getparam('~user_agent', 'Mozilla/5.0(iPad; U; ' +
-        'CPU iPhone OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 ' +
-        '(KHTML, like Gecko) Version/4.0.4 Mobile/7B314 Safari/531.21.10',
+    user_agent = rospy.getparam(
+        '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
+        'en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
+        'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
+    )
     debug_port = rospy.getparam('~debug_port', 10000),
 
     browser = ManagedBrowser(
@@ -33,7 +39,7 @@ if __name__ == '__main__':
     browser.set_state(ApplicateionState.VISIBLE)
 
     rospy.Subscriber('{}/state'.format(rospy.getname()), ApplicationState,
-        browser.handle_state_msg)
+                     browser.handle_state_msg)
 
     def handle_debug_sock_msg(msg):
         browser.send_debug_sock_msg(msg.data)
