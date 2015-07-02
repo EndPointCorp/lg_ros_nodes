@@ -144,10 +144,18 @@ class TestKMLSync(unittest.TestCase):
         expected_number_of_create_elements = 3
         expected_list_of_slugs = map( escape_asset_url, asset_urls)
         expected_number_of_delete_elements = 0
+
+        # start testing...
         self.assertEqual(expected_cookie, get_cookie_string(r.content))
 
 def get_cookie_string(s):
     return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
+
+def get_created_elements(x):
+    pass
+
+def get_deleted_elements(x):
+    pass
 
 if __name__ == '__main__':
     rospy.init_node('test_director')
