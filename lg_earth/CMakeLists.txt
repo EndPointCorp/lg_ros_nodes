@@ -3,9 +3,17 @@ project(lg_earth)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  message_generation
 )
 
 catkin_python_setup()
+
+add_service_files(
+  FILES
+  KmlState.srv
+)
+
+generate_messages()
 
 catkin_package()
 
@@ -22,6 +30,8 @@ catkin_install_python(PROGRAMS
   scripts/viewsync_relay.py
   scripts/kmlsync
   scripts/kmlsync.py
+  scripts/simple_service
+  scripts/simple_service.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
