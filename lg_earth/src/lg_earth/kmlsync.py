@@ -8,7 +8,7 @@ from flask import Flask, request
 from lg_common import SceneListener
 from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
-from lg_common.helpers import escape_asset_url
+from lg_common.helpers import escape_asset_url, generate_cookie
 from lg_common.helpers import write_log_to_file
 from lg_earth.srv import KmlState
 from interactivespaces_msgs.msg import GenericMessage
@@ -123,7 +123,7 @@ class KMLSyncServer(FlaskView):
         write_log_to_file("Making request inside shutdown_hook at %s" % self.__repr__)
         try:
             requests.get('http://' + self.host + ':' + str(self.port) + '/shutdown')
-        except ConnectionError, e:
+        except Exception, e:
             rospy.logerr("Couldnt execute shutdown hook")
             write_log_to_file("Couldnt execute shutdown hook")
 
@@ -166,16 +166,11 @@ class KMLSyncServer(FlaskView):
             write_log_to_file("Director message error")
 
         self.assets_state[viewport] = {'assets': assets,
-                                       'cookie': self._generate_cookie(assets) }
+                                       'cookie': generate_cookie(assets) }
 
         write_log_to_file("Here's the full state: %s (%s)" % (self.assets_state, self.assets_state.__repr__))
 
     """ Private methods below """
-
-    def _generate_cookie(self, assets):
-        cookie = ('&').join([ 'asset_slug=' + escape_asset_url(asset) for asset in assets ])
-        rospy.logdebug("Generated cookie = %s after new state was set" % cookie)
-        return cookie
 
     def _get_kml_root(self):
         kml_root = ET.Element('kml', attrib={})
@@ -186,7 +181,7 @@ class KMLSyncServer(FlaskView):
         return kml_root
 
     def _get_cookie(self, window_slug):
-            return self._generate_cookie(self.asset_service(window_slug).assets)
+            return generate_cookie(self.asset_service(window_slug).assets)
 
     def _get_server_slugs_state(self, window_slug):
         try:

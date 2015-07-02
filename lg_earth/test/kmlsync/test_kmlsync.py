@@ -18,7 +18,7 @@ import requests
 import xml.etree.ElementTree as ET
 
 from xml.sax.saxutils import escape
-from lg_common.helpers import escape_asset_url
+from lg_common.helpers import escape_asset_url, generate_cookie
 from lg_common.helpers import write_log_to_file
 from interactivespaces_msgs.msg import GenericMessage
 from subprocess import Popen
@@ -139,10 +139,12 @@ class TestKMLSync(unittest.TestCase):
 
         rospy.loginfo("r.content => '%s'" % escape(r.content))
 
-        expected_cookie = ''
+        asset_urls = ["http://lg-head:8060/media.kml", "http://lg-head:8060/media/blah.kml", "http://lg-head/zomgflolrlmao.kml"]
+        expected_cookie = generate_cookie(asset_urls)
         expected_number_of_create_elements = 3
-        expected_list_of_slugs = map( escape_asset_url, ["http://lg-head:8060/media.kml", "http://lg-head:8060/media/blah.kml", "http://lg-head/zomgflolrlmao.kml"])
+        expected_list_of_slugs = map( escape_asset_url, asset_urls)
         expected_number_of_delete_elements = 0
+        self.assertEqual(expected_cookie, get_cookie_string(r.content))
 
 def get_cookie_string(s):
     return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
