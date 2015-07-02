@@ -10,6 +10,7 @@ from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
 from lg_common.helpers import escape_asset_url
 from lg_common.helpers import write_log_to_file
+from lg_earth.srv import KmlState
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -58,12 +59,15 @@ class KMLSyncServer(FlaskView):
     def __init__(self):
         self.host = rospy.get_param('~kmlsync_listen_host', '127.0.0.1')
         self.port = rospy.get_param('~kmlsync_listen_port', 8765)
+        self.service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
 
         self.sub = rospy.Subscriber('/director/scene', GenericMessage, self._scene_listener_callback)
 
         write_log_to_file("Initialized scene listener (%s)" % self.__repr__)
 
         self.assets_state = {}
+        self.kml_state = KmlState()
+        self.asset_service = rospy.ServiceProxy('/%s' % self.service_channel, self.kml_state)
 
         rospy.on_shutdown(self._shutdown_hook)
 
@@ -181,9 +185,13 @@ class KMLSyncServer(FlaskView):
         kml_root.attrib['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
         return kml_root
 
+    def _get_cookie(self, window_slug):
+            return self._generate_cookie(self.asset_service(window_slug).assets)
+
     def _get_server_slugs_state(self, window_slug):
         try:
-            return [ z.replace("asset_slug=", "") for z in self.assets_state.get(window_slug, {'cookie': ''})['cookie'].split('&')]
+            cookie = self._get_cookie(window_slug)
+            return [ z.replace("asset_slug=", "") for z in cookie.split('&')]
         except AttributeError, e:
             return []
 
@@ -207,7 +215,8 @@ class KMLSyncServer(FlaskView):
         urls_to_create = []
         client_state_slugs = self._get_client_slugs_state(incoming_cookie_string)
 
-        for url in self.assets_state.get(window_slug, {'assets': []})['assets']:
+        assets = self.asset_service(window_slug).assets
+        for url in assets:
             if escape_asset_url(url) in client_state_slugs:
                 continue
             urls_to_create.append(url)
@@ -219,7 +228,7 @@ class KMLSyncServer(FlaskView):
         kml_networklink = ET.SubElement(kml_root, 'NetworkLinkControl')
         kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
         kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
-        cookie_cdata_string = "<![CDATA[%s]]>" % self.assets_state.get(window_slug, {'cookie': '', 'assets': []})['cookie']
+        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_cookie(window_slug)
         write_log_to_file("Retrieved cookie: %s from state: %s with window_slug: %s (%s)" % (cookie_cdata_string, self.assets_state, window_slug, self.assets_state.__repr__))
         kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
         kml_update = ET.SubElement(kml_networklink, 'Update')
