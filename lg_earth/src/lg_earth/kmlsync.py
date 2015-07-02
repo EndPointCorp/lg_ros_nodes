@@ -1,12 +1,17 @@
+import json
 import rospy
 import xml.etree.ElementTree as ET
+import requests
 
 from xml.dom import minidom
 from flask import Flask, request
 from lg_common import SceneListener
-from lg_common.helpers import escape_asset_url
 from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
+from lg_common.helpers import escape_asset_url
+from lg_common.helpers import write_log_to_file
+from interactivespaces_msgs.msg import GenericMessage
+
 
 class KMLSyncServer(FlaskView):
     """ Run a KMLsync HTTP server
@@ -54,15 +59,23 @@ class KMLSyncServer(FlaskView):
         self.host = rospy.get_param('~kmlsync_listen_host', '127.0.0.1')
         self.port = rospy.get_param('~kmlsync_listen_port', 8765)
 
-        self.scene_listener = SceneListener(self._scene_listener_callback)
+        self.sub = rospy.Subscriber('/director/scene', GenericMessage, self._scene_listener_callback)
 
-        rospy.loginfo("Initialized scene listener: %s with callback %s" % (self.scene_listener, self._scene_listener_callback.__name__))
+        write_log_to_file("Initialized scene listener (%s)" % self.__repr__)
 
         self.assets_state = {}
+
+        rospy.on_shutdown(self._shutdown_hook)
+
+    @route('/shutdown')
+    def shutdown(self):
+        self.shutdown_server()
+        return "Flask server shutting down at %s" % self.__repr__
 
     @route('/master.kml')
     def master_kml(self):
         rospy.loginfo("Got master.kml GET request")
+        write_log_to_file("master.kml repr of self.assets_state => %s" % self.assets_state.__repr__)
         kml_root = self._get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
@@ -88,12 +101,27 @@ class KMLSyncServer(FlaskView):
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
         if window_slug:
-            #and (incoming_cookie_string != self.assets_state.get(window_slug, {'cookie': '', 'assets': []})['cookie']):
             assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, window_slug)
             assets_to_create = self._get_assets_to_create(incoming_cookie_string, window_slug)
             return self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, window_slug)
         else:
             return '', 400
+
+    def shutdown_server(self):
+        func = request.environ.get('werkzeug.server.shutdown')
+        rospy.loginfo("Shutting down flask server")
+        write_log_to_file("Shutting down flask server at %s" % self.__repr__)
+        if func is None:
+            raise RuntimeError('Not running with the Werkzeug Server')
+        func()
+
+    def _shutdown_hook(self):
+        write_log_to_file("Making request inside shutdown_hook at %s" % self.__repr__)
+        try:
+            requests.get('http://' + self.host + ':' + str(self.port) + '/shutdown')
+        except ConnectionError, e:
+            rospy.logerr("Couldnt execute shutdown hook")
+            write_log_to_file("Couldnt execute shutdown hook")
 
     def _scene_listener_callback(self, scene):
         """
@@ -107,26 +135,36 @@ class KMLSyncServer(FlaskView):
          "viewport_name2": [ "asset3", "asset4" ]
         }
         """
-        if 'windows' not in scene:
+        write_log_to_file("Got a message on _scene_listener_callback" )
+        assert scene.type == 'json'
+
+        message = json.loads(scene.message)
+
+        if 'windows' not in message:
             rospy.loginfo("received invalid message... ignoring")
+            write_log_to_file("invalid message being ignored %s \n" % scene)
             return
-        for window in scene['windows']:
+
+        for window in message['windows']:
             if window['activity'] == 'earth':
                 #TODO fix this here, used to be self.http_server which doesn't exist,
                 # so how are we supposed to _set_assets now?
                 self._set_assets(window['presentation_viewport'], window['assets'])
 
     def _set_assets(self, viewport, assets):
+        write_log_to_file("Begining assets setting")
         try:
-            assert isinstance(viewport, str), "Viewport name was invalid"
+            write_log_to_file("Trying to make an assert about %s and %s" % (viewport, assets))
+            assert isinstance(viewport, unicode), "Viewport name was invalid"
             assert isinstance(assets, list), "Director message did not contain window list"
         except AssertionError, e:
             rospy.loginfo("Director message error %s" % e)
-
-        rospy.loginfo("Got assets from the director %s for viewport %s" % (assets, viewport))
+            write_log_to_file("Director message error")
 
         self.assets_state[viewport] = {'assets': assets,
                                        'cookie': self._generate_cookie(assets) }
+
+        write_log_to_file("Here's the full state: %s (%s)" % (self.assets_state, self.assets_state.__repr__))
 
     """ Private methods below """
 
@@ -182,6 +220,7 @@ class KMLSyncServer(FlaskView):
         kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
         kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
         cookie_cdata_string = "<![CDATA[%s]]>" % self.assets_state.get(window_slug, {'cookie': '', 'assets': []})['cookie']
+        write_log_to_file("Retrieved cookie: %s from state: %s with window_slug: %s (%s)" % (cookie_cdata_string, self.assets_state, window_slug, self.assets_state.__repr__))
         kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
         kml_update = ET.SubElement(kml_networklink, 'Update')
         kml_target_href = ET.SubElement(kml_update, 'targetHref').text = 'http://' + self.host + ':' + str(self.port) + '/master.kml'
@@ -210,4 +249,5 @@ class KMLSyncServer(FlaskView):
             return kml_delete
 
 
-
+if __name__ == "__main__":
+    print "Dont call me directly please"

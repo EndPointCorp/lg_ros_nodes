@@ -17,7 +17,9 @@ import unittest
 import requests
 import xml.etree.ElementTree as ET
 
+from xml.sax.saxutils import escape
 from lg_common.helpers import escape_asset_url
+from lg_common.helpers import write_log_to_file
 from interactivespaces_msgs.msg import GenericMessage
 from subprocess import Popen
 
@@ -63,7 +65,11 @@ DIRECTOR_MESSAGE = """
 
 class TestKMLSync(unittest.TestCase):
     def setUp(self):
+        write_log_to_file("starting a test")
         self.wait_for_http()
+
+    def _scene_listener(self, msg):
+        write_log_to_file("Received message (inside TestKMLSync) %s" % msg)
 
     def get_director_msg(self):
         msg = GenericMessage()
@@ -121,12 +127,18 @@ class TestKMLSync(unittest.TestCase):
         """
 
         self.wait_for_pubsub()
-
+        self.sub = rospy.Subscriber('/director/scene', GenericMessage, self._scene_listener)
         director_publisher = rospy.Publisher(PUBTOPIC, GenericMessage)
+        rospy.sleep(1)
         msg = self.get_director_msg()
         director_publisher.publish(msg)
+        write_log_to_file("Published a message on topic: %s with %s" % (msg, director_publisher))
+        rospy.sleep(1)
 
         r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
+
+        rospy.loginfo("r.content => '%s'" % escape(r.content))
+
         expected_cookie = ''
         expected_number_of_create_elements = 3
         expected_list_of_slugs = map( escape_asset_url, ["http://lg-head:8060/media.kml", "http://lg-head:8060/media/blah.kml", "http://lg-head/zomgflolrlmao.kml"])
