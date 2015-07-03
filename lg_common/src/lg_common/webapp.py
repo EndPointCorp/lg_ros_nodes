@@ -31,6 +31,9 @@ def ros_flask_spin(app, *args, **kwargs):
     server.daemon = True
 
     server.start()
+    rospy.on_shutdown(server.terminate)
+    server.join()
+
     write_log_to_file("Starting flask server at %s" % server.__repr__)
     rospy.spin()
 

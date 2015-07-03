@@ -17,14 +17,14 @@ import rostest
 import unittest
 import requests
 import xml.etree.ElementTree as ET
-
+from std_msgs.msg import String
 from xml.sax.saxutils import escape
 from lg_common.helpers import escape_asset_url, generate_cookie
 from lg_common.helpers import write_log_to_file
 from interactivespaces_msgs.msg import GenericMessage
 from subprocess import Popen
 
-PUBTOPIC = '/director/scene'
+PUBTOPIC = '/earth/query/tour'
 LPNODE = 'testing_kmlsync_node'
 
 DIRECTOR_MESSAGE = """
@@ -67,10 +67,16 @@ DIRECTOR_MESSAGE = """
 class TestKMLSync(unittest.TestCase):
     def setUp(self):
         write_log_to_file("starting a test")
+        self.session = requests.Session()
         self.wait_for_http()
+        self.query_string = ''
 
     def _scene_listener(self, msg):
-        write_log_to_file("Received message (inside TestKMLSync) %s" % msg)
+        write_log_to_file("Receiveu message (inside TestKMLSync) %s" % msg)
+
+    def _listen_query_string(self, msg):
+        self.query_string = msg.data
+        write_log_to_file("Received query string %s" % self.query_string)
 
     def get_director_msg(self):
         msg = GenericMessage()
@@ -79,8 +85,7 @@ class TestKMLSync(unittest.TestCase):
         return msg
 
     def get_request(self, url):
-        r = requests.get(url)
-        r.connection.close()
+        r = self.session.get(url)
         return r
 
     def wait_for_pubsub(self):
@@ -176,12 +181,43 @@ class TestKMLSync(unittest.TestCase):
         self.assertEqual(sorted(expected_list_of_created_slugs), sorted(get_created_elements(r.content)))
         self.assertEqual(expected_list_of_deleted_slugs, get_deleted_elements(r.content))
 
+    def test_7_queryfile_message(self):
+        """
+        make a bad get request to get html and assert for 400
+        make a legit get request to get 'OK' and status_code 200 and assert for the message that was sent
+        """
+        rospy.Subscriber('/earth/query/tour', String, self._listen_query_string)
+        expected_status = 400
+        bad1 = self.get_request(KML_ENDPOINT+"/query.html")
+        bad2 = self.get_request(KML_ENDPOINT+"/query.html?query")
+        bad3 = self.get_request(KML_ENDPOINT+"/query.html?query=")
+        self.assertEqual(bad1.status_code, expected_status)
+        self.assertEqual(bad2.status_code, expected_status)
+        self.assertEqual(bad3.status_code, expected_status)
+
+        expected_status = 200
+        expected_string = "OK"
+
+        #self.wait_for_pubsub()
+        good1 = self.get_request(KML_ENDPOINT+"/query.html?query=tour=myworldtour")
+        good1_expected_string = "myworldtour"
+        self.assertEqual(self.query_string, good1_expected_string)
+
+        good2 = self.get_request(KML_ENDPOINT+"/query.html?query=tour=My World Tour")
+        good2_expected_string = "My World Tour"
+        self.assertEqual(self.query_string, good2_expected_string)
+
+        self.assertEqual(good1.status_code, expected_status)
+        self.assertEqual(good2.status_code, expected_status)
+        self.assertEqual(good1.content, expected_string)
+        self.assertEqual(good2.content, expected_string)
+
     def _send_director_message(self):
         director_publisher = rospy.Publisher(PUBTOPIC, GenericMessage)
         rospy.sleep(1)
         msg = self.get_director_msg()
         director_publisher.publish(msg)
-        write_log_to_file("Published a message on topic: %s with %s" % (msg, director_publisher))
+        write_log_to_file("Published a message on topic: %s " % (director_publisher))
         rospy.sleep(1)
 
 
@@ -189,8 +225,11 @@ def get_cookie_string(s):
     return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
 
 def get_created_elements(x):
-    tmp = ET.fromstring(x).find('.//{http://www.opengis.net/kml/2.2}Create').findall('.//{http://www.opengis.net/kml/2.2}name')
-    return [elem.text for elem in tmp]
+    try:
+        tmp = ET.fromstring(x).find('.//{http://www.opengis.net/kml/2.2}Create').findall('.//{http://www.opengis.net/kml/2.2}name')
+        return [elem.text for elem in tmp]
+    except AttributeError:
+        return []
 
 def get_deleted_elements(x):
     try:

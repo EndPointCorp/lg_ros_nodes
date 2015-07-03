@@ -2,6 +2,9 @@ import json
 import rospy
 import xml.etree.ElementTree as ET
 import requests
+import urllib2
+
+from tendo import singleton
 
 from xml.dom import minidom
 from flask import Flask, request
@@ -11,7 +14,7 @@ from flask.ext.classy import FlaskView, route
 from lg_common.helpers import write_log_to_file
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import escape_asset_url, generate_cookie
-
+from std_msgs.msg import String
 
 class KMLSyncServer(FlaskView):
     """ Run a KMLsync HTTP server
@@ -56,6 +59,7 @@ class KMLSyncServer(FlaskView):
     """
 
     def __init__(self):
+        me = singleton.SingleInstance()
         self.host = rospy.get_param('~kmlsync_listen_host', '127.0.0.1')
         self.port = rospy.get_param('~kmlsync_listen_port', 8765)
         self.service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
@@ -64,7 +68,7 @@ class KMLSyncServer(FlaskView):
 
         self.kml_state = KmlState()
         self.asset_service = rospy.ServiceProxy('/%s' % self.service_channel, self.kml_state)
-
+        self.tour_pub = rospy.Publisher('/earth/query/tour', String, queue_size=10)
         rospy.on_shutdown(self._shutdown_hook)
 
     @route('/shutdown')
@@ -106,6 +110,24 @@ class KMLSyncServer(FlaskView):
             return self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, window_slug)
         else:
             return '', 400
+
+    @route('/query.html')
+    def query_html(self):
+        """
+        Publish play tour message on the topic /earth/query/tour
+        """
+        query_string = request.args.get('query', '')
+        write_log_to_file("Inside query html, query string is (%s)" % query_string)
+        try:
+            tour_string = query_string.split('=')[1]
+            tour_string = urllib2.unquote(tour_string)
+            write_log_to_file("about to publish string (%s)" % tour_string)
+            self.tour_pub.publish(String(tour_string))
+            return "OK", 200
+        except IndexError, e:
+            rospy.logerr("Got the wrong query string %s" % e)
+            return "Got the wrong query string", 400
+
 
     def shutdown_server(self):
         func = request.environ.get('werkzeug.server.shutdown')
