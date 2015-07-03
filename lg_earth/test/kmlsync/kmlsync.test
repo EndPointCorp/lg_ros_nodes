@@ -1,5 +1,5 @@
 <launch>
   <node name="testing_kmlsync_node" pkg="lg_earth" type="kmlsync" />
-  <node name="testing_kmlsync_node_service" pkg="lg_earth" type="simple_service" />
+  <node name="testing_kmlsync_node_service" pkg="lg_earth" type="kmlsync_state" />
   <test test-name="test_kmlsync_server" pkg="lg_earth" type="test_kmlsync.py" />
 </launch>

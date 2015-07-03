@@ -78,6 +78,11 @@ class TestKMLSync(unittest.TestCase):
         msg.message = DIRECTOR_MESSAGE
         return msg
 
+    def get_request(self, url):
+        r = requests.get(url)
+        r.connection.close()
+        return r
+
     def wait_for_pubsub(self):
         # wait at most 5 seconds for listenerpublisher to be registered
         timeout_t = time.time() + 5.0
@@ -95,25 +100,26 @@ class TestKMLSync(unittest.TestCase):
         rospy.sleep(3.0)
 
     def test_1_master_kml_200(self):
-        r = requests.get(KML_ENDPOINT + '/master.kml')
+        r = self.get_request(KML_ENDPOINT + '/master.kml')
         result = r.status_code
         expected = 200
         self.assertEqual(result, expected)
 
     def test_2_master_kml_content(self):
-        r = requests.get(KML_ENDPOINT + '/master.kml')
+        r = self.get_request(KML_ENDPOINT + '/master.kml')
         result = ET.fromstring(r.content).find('.//{http://www.opengis.net/kml/2.2}Document').attrib['id']
         expected = 'master'
         self.assertEqual(result, expected)
 
     def test_3_network_link_update_kml_without_params(self):
-        r = requests.get(KML_ENDPOINT + '/network_link_update.kml')
+        r = self.get_request(KML_ENDPOINT + '/network_link_update.kml')
         result = r.status_code
         expected = 400
         self.assertEqual(result, expected)
 
     def test_4_network_link_update_cookie_string_is_initially_empty(self):
-        r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
+        r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
+        write_log_to_file("r.content => '%s'" % r.content)
         result = get_cookie_string(r.content)
         expected = ''
         self.assertEqual(result, expected)
@@ -142,7 +148,7 @@ class TestKMLSync(unittest.TestCase):
 
         self._send_director_message()
 
-        r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
+        r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
 
         rospy.loginfo("r.content => '%s'" % escape(r.content))
 
@@ -163,7 +169,7 @@ class TestKMLSync(unittest.TestCase):
         assets = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
         delete_slug = 'http___foo_bar_kml'
         cookie = 'asset_slug=' + generate_cookie([assets[0], delete_slug])
-        r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=center&%s' % cookie)
+        r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center&%s' % cookie)
 
         expected_list_of_created_slugs = map(escape_asset_url, assets[1:])
         expected_list_of_deleted_slugs = [delete_slug]
@@ -191,8 +197,6 @@ def get_deleted_elements(x):
         return [elem.attrib['targetId'] for elem in ET.fromstring(x).find('.//{http://www.opengis.net/kml/2.2}Delete').getchildren()]
     except AttributeError:
         return []
-
-
 
 if __name__ == '__main__':
     rospy.init_node('test_director')
