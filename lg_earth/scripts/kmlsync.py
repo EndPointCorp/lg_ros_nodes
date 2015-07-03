@@ -3,7 +3,6 @@
 import rospy
 
 from flask import Flask
-from tendo import singleton
 from lg_earth import KMLSyncServer
 from multiprocessing import Process
 from lg_common.webapp import ros_flask_spin

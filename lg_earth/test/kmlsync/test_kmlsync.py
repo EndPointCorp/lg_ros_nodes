@@ -126,8 +126,6 @@ class TestKMLSync(unittest.TestCase):
             - CREATE/DELETE sections
         """
 
-        self.wait_for_pubsub()
-        self.sub = rospy.Subscriber('/director/scene', GenericMessage, self._scene_listener)
         director_publisher = rospy.Publisher(PUBTOPIC, GenericMessage)
         rospy.sleep(1)
         msg = self.get_director_msg()

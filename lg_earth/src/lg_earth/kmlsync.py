@@ -5,7 +5,6 @@ import requests
 
 from xml.dom import minidom
 from flask import Flask, request
-from lg_common import SceneListener
 from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
 from lg_common.helpers import escape_asset_url, generate_cookie
@@ -61,11 +60,8 @@ class KMLSyncServer(FlaskView):
         self.port = rospy.get_param('~kmlsync_listen_port', 8765)
         self.service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
 
-        self.sub = rospy.Subscriber('/director/scene', GenericMessage, self._scene_listener_callback)
-
         write_log_to_file("Initialized scene listener (%s)" % self.__repr__)
 
-        self.assets_state = {}
         self.kml_state = KmlState()
         self.asset_service = rospy.ServiceProxy('/%s' % self.service_channel, self.kml_state)
 
@@ -79,7 +75,6 @@ class KMLSyncServer(FlaskView):
     @route('/master.kml')
     def master_kml(self):
         rospy.loginfo("Got master.kml GET request")
-        write_log_to_file("master.kml repr of self.assets_state => %s" % self.assets_state.__repr__)
         kml_root = self._get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
@@ -127,48 +122,6 @@ class KMLSyncServer(FlaskView):
             rospy.logerr("Couldnt execute shutdown hook")
             write_log_to_file("Couldnt execute shutdown hook")
 
-    def _scene_listener_callback(self, scene):
-        """
-        Scene listener callback for KMLSyncServer
-
-        - unpack director message only if the activity attrib == 'ge clients'
-        - return the state of the assets for the webserver
-         - return the "assets" list per viewport
-        {
-         "viewport_name1": [ "asset1", "asset2" ],
-         "viewport_name2": [ "asset3", "asset4" ]
-        }
-        """
-        write_log_to_file("Got a message on _scene_listener_callback" )
-        assert scene.type == 'json'
-
-        message = json.loads(scene.message)
-
-        if 'windows' not in message:
-            rospy.loginfo("received invalid message... ignoring")
-            write_log_to_file("invalid message being ignored %s \n" % scene)
-            return
-
-        for window in message['windows']:
-            if window['activity'] == 'earth':
-                #TODO fix this here, used to be self.http_server which doesn't exist,
-                # so how are we supposed to _set_assets now?
-                self._set_assets(window['presentation_viewport'], window['assets'])
-
-    def _set_assets(self, viewport, assets):
-        write_log_to_file("Begining assets setting")
-        try:
-            write_log_to_file("Trying to make an assert about %s and %s" % (viewport, assets))
-            assert isinstance(viewport, unicode), "Viewport name was invalid"
-            assert isinstance(assets, list), "Director message did not contain window list"
-        except AssertionError, e:
-            rospy.loginfo("Director message error %s" % e)
-            write_log_to_file("Director message error")
-
-        self.assets_state[viewport] = {'assets': assets,
-                                       'cookie': generate_cookie(assets) }
-
-        write_log_to_file("Here's the full state: %s (%s)" % (self.assets_state, self.assets_state.__repr__))
 
     """ Private methods below """
 
@@ -224,7 +177,6 @@ class KMLSyncServer(FlaskView):
         kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
         kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
         cookie_cdata_string = "<![CDATA[%s]]>" % self._get_cookie(window_slug)
-        write_log_to_file("Retrieved cookie: %s from state: %s with window_slug: %s (%s)" % (cookie_cdata_string, self.assets_state, window_slug, self.assets_state.__repr__))
         kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
         kml_update = ET.SubElement(kml_networklink, 'Update')
         kml_target_href = ET.SubElement(kml_update, 'targetHref').text = 'http://' + self.host + ':' + str(self.port) + '/master.kml'
