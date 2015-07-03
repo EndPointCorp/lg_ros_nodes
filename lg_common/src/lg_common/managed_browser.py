@@ -26,7 +26,8 @@ DEFAULT_ARGS = [
 
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
-                 binary=DEFAULT_BINARY, remote_debugging_port=None, **kwargs):
+                 binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
+                 **kwargs):
 
         cmd = [binary]
 
@@ -70,10 +71,13 @@ class ManagedBrowser(ManagedApplication):
         args = map(consume_kwarg, kwargs.iteritems())
         cmd.extend(args)
 
-        if kiosk:
-            cmd.append('--kiosk')
-        if url is not None:
-            cmd.append(url)
+        if app:
+            cmd.append('--app={}'.format(url))
+        else:
+            if kiosk:
+                cmd.append('--kiosk')
+            if url is not None:
+                cmd.append(url)
 
         w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)

@@ -48,6 +48,7 @@ class ManagedWindow(object):
             ])
 
     def _visibility_args(self, cmd):
+
         if self.is_visible:
             cmd.append('windowactivate')
         else:
@@ -82,6 +83,7 @@ class ManagedWindow(object):
         with self.lock:
             cmd = self._get_command()
             self._cleanup_proc()
+            rospy.loginfo(cmd)
             try:
                 self.proc = subprocess.Popen(cmd)
             except OSError:
