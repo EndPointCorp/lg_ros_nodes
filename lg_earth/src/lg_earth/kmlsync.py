@@ -5,12 +5,12 @@ import requests
 
 from xml.dom import minidom
 from flask import Flask, request
+from lg_earth.srv import KmlState
 from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
-from lg_common.helpers import escape_asset_url, generate_cookie
 from lg_common.helpers import write_log_to_file
-from lg_earth.srv import KmlState
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import escape_asset_url, generate_cookie
 
 
 class KMLSyncServer(FlaskView):
@@ -35,7 +35,7 @@ class KMLSyncServer(FlaskView):
         - since it doesnt have anything loaded, we tell GE to load all the assets
         - we have a list of slugs and URLs from the director that we want to load
         - networklinkupdate will return a different cookie string with a list of the slugs e.g.
-            asset_slug=foo&asset_slug=bar&asset_slug=baz
+            asset_slug=foo,bar,baz
         - for every asset not loaded on GE we need to create it by "<Create></Create>" section and delete by "Delete"
           section - those elements need to be children of "Update" element
         - example networklinkupdate: https://github.com/EndPointCorp/lg_ros_nodes/issues/2#issuecomment-116727990
@@ -69,11 +69,13 @@ class KMLSyncServer(FlaskView):
 
     @route('/shutdown')
     def shutdown(self):
+        """ Shutdown route for process management """
         self.shutdown_server()
         return "Flask server shutting down at %s" % self.__repr__
 
     @route('/master.kml')
     def master_kml(self):
+        """ Master.kml route for GE """
         rospy.loginfo("Got master.kml GET request")
         kml_root = self._get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
@@ -93,9 +95,8 @@ class KMLSyncServer(FlaskView):
         window_slug = request.args.get('window_slug', None)
         incoming_cookie_string = ''
 
-        for argument, value in request.args.iteritems():
-            if argument == "asset_slug":
-                incoming_cookie_string += argument + "=" + value
+        incoming_cookie_string = request.args.get('asset_slug', '')
+        write_log_to_file("incoming cookie string => '%s'" % incoming_cookie_string)
 
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
@@ -126,6 +127,7 @@ class KMLSyncServer(FlaskView):
     """ Private methods below """
 
     def _get_kml_root(self):
+        """ Get headers of KML file - shared by all kml generation methods """
         kml_root = ET.Element('kml', attrib={})
         kml_root.attrib['xmlns'] = 'http://www.opengis.net/kml/2.2'
         kml_root.attrib['xmlns:gx'] = 'http://www.google.com/kml/ext/2.2'
@@ -134,30 +136,64 @@ class KMLSyncServer(FlaskView):
         return kml_root
 
     def _get_cookie(self, window_slug):
-            return generate_cookie(self.asset_service(window_slug).assets)
+        """
+        Return comma separated list of slugs e.g. 'asd_kml,blah_kml'
+        rtype: str
+        """
+        return generate_cookie(self.asset_service(window_slug).assets)
 
     def _get_server_slugs_state(self, window_slug):
+        """
+        Return a list of slugs that server expects to be loaded
+        """
         try:
             cookie = self._get_cookie(window_slug)
-            return [ z.replace("asset_slug=", "") for z in cookie.split('&')]
+            return [ z for z in cookie.split(',')]
         except AttributeError, e:
             return []
 
     def _get_client_slugs_state(self, incoming_cookie_string):
-        return [ z.replace("asset_slug=", "") for z in incoming_cookie_string.split('&')]
+        """
+        Return list of slugs submitted by client in a cookie string
+        param incoming_cookie_string: str
+            (e.g. 'blah_kml,zomg_foo_bar_kml')
+        rtype: list
+            e.g. ['blah_kml', 'zomg_foo_bar_kml']
+        """
+        if not incoming_cookie_string:
+            return []
+        return [ z for z in incoming_cookie_string.split(',')]
 
     def _get_assets_to_delete(self, incoming_cookie_string, window_slug):
+        """
+        Calculate the difference between assets loaded on GE client and those expected to be loaded by server.
+        Return a list of slugs to be deleted from client e.g. ['blah_kml', 'zomg_kml']
+        param incoming_cookie_string: str
+            e.g. 'blah_kml,zomg_kml'
+        param window_slug: str
+            e.g. 'right_one'
+        rtype: list
+            e.g. ['blah_kml']
+        """
         server_slugs_list = self._get_server_slugs_state(window_slug)
         client_slugs_list = self._get_client_slugs_state(incoming_cookie_string)
-        ret = list(set(server_slugs_list) - set(client_slugs_list))
+        write_log_to_file("server = %s and client = %s" % (server_slugs_list, client_slugs_list))
+        write_log_to_file("incoming cookie string is '%s'" % incoming_cookie_string)
+        ret = list(set(client_slugs_list) - set(server_slugs_list))
+        write_log_to_file("ret was %s" % ret)
         rospy.logdebug("Got the assets to delete as: %s" % ret)
         return ret
 
     def _get_assets_to_create(self, incoming_cookie_string,  window_slug):
         """
-        For every url on server state list,
-        take url's slug and check if it's loaded on client (according to client's cookie string)
-        if it's not there - tell client to load it
+        Calculate the difference between assets loaded on GE client and those expected to be loaded by server.
+        Return a list of slugs to be created in GE client e.g. ['blah_kml', 'zomg_kml']
+        param incoming_cookie_string: str
+            e.g. 'blah_kml,zomg_kml'
+        param window_slug: str
+            e.g. 'right_one'
+        rtype: list
+            e.g. ['http://lg-head:8060/blah.kml', 'http://lg-head:8060/zomg.kml']
         """
 
         urls_to_create = []
@@ -172,11 +208,12 @@ class KMLSyncServer(FlaskView):
         return urls_to_create
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, window_slug):
+        """ Generate static part of NetworkLinkUpdate xml"""
         kml_root = self._get_kml_root()
         kml_networklink = ET.SubElement(kml_root, 'NetworkLinkControl')
         kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
         kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
-        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_cookie(window_slug)
+        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_full_cookie(window_slug)
         kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
         kml_update = ET.SubElement(kml_networklink, 'Update')
         kml_target_href = ET.SubElement(kml_update, 'targetHref').text = 'http://' + self.host + ':' + str(self.port) + '/master.kml'
@@ -187,17 +224,32 @@ class KMLSyncServer(FlaskView):
         kml_content = kml_reparsed.toprettyxml(indent='\t')
         return unescape(kml_content)
 
+    def _get_full_cookie(self, window_slug):
+        """return the cookie prepended by asset_slug= only if cookie is not blank"""
+        cookie = self._get_cookie(window_slug)
+        if cookie != '':
+            cookie = 'asset_slug=' + cookie
+        return cookie
+
     def _get_kml_for_create_assets(self, assets_to_create, parent):
-        kml_create = ET.SubElement(parent, 'Create')
-        kml_document = ET.SubElement(kml_create, 'Document', {'targetId': 'master'})
-        for asset in assets_to_create:
-            new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
-            ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
-            link = ET.SubElement(new_asset, 'Link')
-            ET.SubElement(link, 'href').text = asset
-        return kml_create #not sure if this is needed since we're already building on the xml tree...
+        """
+        Generate a networklinkupdate xml 'Create' section with assets_to_create (if any)
+        """
+        if assets_to_create:
+            kml_create = ET.SubElement(parent, 'Create')
+            kml_document = ET.SubElement(kml_create, 'Document', {'targetId': 'master'})
+            for asset in assets_to_create:
+                new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
+                ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
+                link = ET.SubElement(new_asset, 'Link')
+                ET.SubElement(link, 'href').text = asset
+            return kml_create #not sure if this is needed since we're already building on the xml tree...
+        return parent
 
     def _get_kml_for_delete_assets(self, assets_to_delete, parent):
+        """
+        Generate a networklinkupdate xml 'Delete' section with assets_to_delete (if any)
+        """
         if assets_to_delete:
             kml_delete = ET.SubElement(parent, 'Delete')
             for asset in assets_to_delete:

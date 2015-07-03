@@ -10,9 +10,10 @@ WINDOW_SLUG = 'test_window_slug'
 
 import sys
 import re
+import time
+import json
 import rospy
 import rostest
-import time
 import unittest
 import requests
 import xml.etree.ElementTree as ET
@@ -124,8 +125,52 @@ class TestKMLSync(unittest.TestCase):
          - make GET request to assert:
             - cookie string
             - CREATE/DELETE sections
+        When there no assets to be loaded or unloaded, the KML should look like this:
+
+            <?xml version="1.0" encoding="UTF-8"?>
+            <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+            <NetworkLinkControl>
+            <minRefreshPeriod>1</minRefreshPeriod>
+            <maxSessionLength>-1</maxSessionLength>
+            <cookie><![CDATA[]]></cookie>
+            <Update>
+                <targetHref>http://localhost:9001/master.kml</targetHref>
+            </Update>
+            </NetworkLinkControl>
+            </kml>
         """
 
+        self._send_director_message()
+
+        r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
+
+        rospy.loginfo("r.content => '%s'" % escape(r.content))
+
+        asset_urls = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
+
+        expected_cookie = 'asset_slug=' + generate_cookie(asset_urls)
+        expected_list_of_created_slugs = map( escape_asset_url, asset_urls)
+        expected_list_of_deleted_slugs = []
+
+        # start testing...
+        self.assertEqual(expected_cookie, get_cookie_string(r.content))
+        self.assertEqual(sorted(expected_list_of_created_slugs), sorted(get_created_elements(r.content)))
+        self.assertEqual(expected_list_of_deleted_slugs, get_deleted_elements(r.content))
+
+    def test_6_asset_state_in_url(self):
+        self._send_director_message()
+
+        assets = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
+        delete_slug = 'http___foo_bar_kml'
+        cookie = 'asset_slug=' + generate_cookie([assets[0], delete_slug])
+        r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=center&%s' % cookie)
+
+        expected_list_of_created_slugs = map(escape_asset_url, assets[1:])
+        expected_list_of_deleted_slugs = [delete_slug]
+        self.assertEqual(sorted(expected_list_of_created_slugs), sorted(get_created_elements(r.content)))
+        self.assertEqual(expected_list_of_deleted_slugs, get_deleted_elements(r.content))
+
+    def _send_director_message(self):
         director_publisher = rospy.Publisher(PUBTOPIC, GenericMessage)
         rospy.sleep(1)
         msg = self.get_director_msg()
@@ -133,27 +178,21 @@ class TestKMLSync(unittest.TestCase):
         write_log_to_file("Published a message on topic: %s with %s" % (msg, director_publisher))
         rospy.sleep(1)
 
-        r = requests.get(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
-
-        rospy.loginfo("r.content => '%s'" % escape(r.content))
-
-        asset_urls = ["http://lg-head:8060/media.kml", "http://lg-head:8060/media/blah.kml", "http://lg-head/zomgflolrlmao.kml"]
-        expected_cookie = generate_cookie(asset_urls)
-        expected_number_of_create_elements = 3
-        expected_list_of_slugs = map( escape_asset_url, asset_urls)
-        expected_number_of_delete_elements = 0
-
-        # start testing...
-        self.assertEqual(expected_cookie, get_cookie_string(r.content))
 
 def get_cookie_string(s):
     return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
 
 def get_created_elements(x):
-    pass
+    tmp = ET.fromstring(x).find('.//{http://www.opengis.net/kml/2.2}Create').findall('.//{http://www.opengis.net/kml/2.2}name')
+    return [elem.text for elem in tmp]
 
 def get_deleted_elements(x):
-    pass
+    try:
+        return [elem.attrib['targetId'] for elem in ET.fromstring(x).find('.//{http://www.opengis.net/kml/2.2}Delete').getchildren()]
+    except AttributeError:
+        return []
+
+
 
 if __name__ == '__main__':
     rospy.init_node('test_director')
