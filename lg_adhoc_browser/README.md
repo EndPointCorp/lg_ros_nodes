@@ -49,20 +49,20 @@ The list of browsers in the message is compared with the list of currently opene
 
 * This should show one window with the `endpoint.com` website:
  
-  ```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}]"
-  ```
+```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}]"
+```
 
 * This should show another window, with the `google.com` website:
 
-  ```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}, {id: '42x', geometry: {x: 600, y: 600, width: 300, height: 400}, url: 'http://google.com'}]"
-  ```
+```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}, {id: '42x', geometry: {x: 600, y: 600, width: 300, height: 400}, url: 'http://google.com'}]"
+```
 
 * This should leave just the `endpoint.com` window shown:
   
-  ```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}]"
-  ```
+```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}]"
+```
 
 * This should close all existing windows:
 
-  ```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[]"
-  ```
+```rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[]"
+```
