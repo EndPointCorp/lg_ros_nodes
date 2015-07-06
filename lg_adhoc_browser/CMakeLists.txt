@@ -3,11 +3,26 @@ project(lg_adhoc_browser)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  message_generation
 )
 
 catkin_python_setup()
 
-catkin_package()
+add_message_files(
+  FILES
+  AdhocBrowser.msg
+  AdhocBrowsers.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  lg_common
+)
+
+
+catkin_package(
+  CATKIN_DEPENDS lg_common
+)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
