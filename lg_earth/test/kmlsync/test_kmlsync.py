@@ -23,8 +23,8 @@ from lg_common.helpers import escape_asset_url, generate_cookie
 from lg_common.helpers import write_log_to_file
 from interactivespaces_msgs.msg import GenericMessage
 from subprocess import Popen
-
-PUBTOPIC = '/earth/query/tour'
+QUERY_TOPIC = '/earth/query/tour'
+SCENE_TOPIC = '/director/scene'
 LPNODE = 'testing_kmlsync_node'
 
 DIRECTOR_MESSAGE = """
@@ -186,7 +186,7 @@ class TestKMLSync(unittest.TestCase):
         make a bad get request to get html and assert for 400
         make a legit get request to get 'OK' and status_code 200 and assert for the message that was sent
         """
-        rospy.Subscriber('/earth/query/tour', String, self._listen_query_string)
+        rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         expected_status = 400
         bad1 = self.get_request(KML_ENDPOINT+"/query.html")
         bad2 = self.get_request(KML_ENDPOINT+"/query.html?query")
@@ -213,7 +213,7 @@ class TestKMLSync(unittest.TestCase):
         self.assertEqual(good2.content, expected_string)
 
     def _send_director_message(self):
-        director_publisher = rospy.Publisher(PUBTOPIC, GenericMessage)
+        director_publisher = rospy.Publisher(SCENE_TOPIC, GenericMessage)
         rospy.sleep(1)
         msg = self.get_director_msg()
         director_publisher.publish(msg)

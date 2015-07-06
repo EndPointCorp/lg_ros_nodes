@@ -6,7 +6,7 @@ from multiprocessing import Process
 from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketHandler
 from lg_common.helpers import write_log_to_file
-
+from std_msgs.msg import String
 # use a reserved code for protocol instantiation failure
 PROTO_OPEN_FAILED = 4000
 
@@ -31,9 +31,6 @@ def ros_flask_spin(app, *args, **kwargs):
     server.daemon = True
 
     server.start()
-    rospy.on_shutdown(server.terminate)
-    server.join()
-
     write_log_to_file("Starting flask server at %s" % server.__repr__)
     rospy.spin()
 

@@ -4,17 +4,16 @@ import xml.etree.ElementTree as ET
 import requests
 import urllib2
 
-from tendo import singleton
-
 from xml.dom import minidom
 from flask import Flask, request
 from lg_earth.srv import KmlState
+from subprocess import Popen
 from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
 from lg_common.helpers import write_log_to_file
-from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String
+
 
 class KMLSyncServer(FlaskView):
     """ Run a KMLsync HTTP server
@@ -59,7 +58,6 @@ class KMLSyncServer(FlaskView):
     """
 
     def __init__(self):
-        me = singleton.SingleInstance()
         self.host = rospy.get_param('~kmlsync_listen_host', '127.0.0.1')
         self.port = rospy.get_param('~kmlsync_listen_port', 8765)
         self.service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
@@ -68,10 +66,11 @@ class KMLSyncServer(FlaskView):
 
         self.kml_state = KmlState()
         self.asset_service = rospy.ServiceProxy('/%s' % self.service_channel, self.kml_state)
+        #rospy.init_node('query_sender_node')
         self.tour_pub = rospy.Publisher('/earth/query/tour', String, queue_size=10)
         rospy.on_shutdown(self._shutdown_hook)
 
-    @route('/shutdown')
+    @route('/shutdown', methods=['POST'])
     def shutdown(self):
         """ Shutdown route for process management """
         self.shutdown_server()
@@ -128,7 +127,6 @@ class KMLSyncServer(FlaskView):
             rospy.logerr("Got the wrong query string %s" % e)
             return "Got the wrong query string", 400
 
-
     def shutdown_server(self):
         func = request.environ.get('werkzeug.server.shutdown')
         rospy.loginfo("Shutting down flask server")
@@ -140,7 +138,8 @@ class KMLSyncServer(FlaskView):
     def _shutdown_hook(self):
         write_log_to_file("Making request inside shutdown_hook at %s" % self.__repr__)
         try:
-            requests.get('http://' + self.host + ':' + str(self.port) + '/shutdown')
+            Popen('curl -X POST http://127.0.0.1:8765/shutdown',
+                             shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
         except Exception, e:
             rospy.logerr("Couldnt execute shutdown hook")
             write_log_to_file("Couldnt execute shutdown hook")
