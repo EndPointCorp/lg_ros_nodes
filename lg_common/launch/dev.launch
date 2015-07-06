@@ -40,4 +40,11 @@
 
   <!-- Google earth query interface. -->
   <node name="query_writer" pkg="lg_earth" type="query" clear_params="true" />
+
+  <!-- Google earth KMLSync <-> KMLSyncState http proxy -->
+  <node name="kmlsync_proxy" pkg="lg_earth" type="kmlsync" clear_params="true" />
+
+  <!-- Google earth KMLSyncState -->
+  <node name="kmlsync_state" pkg="lg_earth" type="kmlsync_state" clear_params="true" />
+
 </launch>

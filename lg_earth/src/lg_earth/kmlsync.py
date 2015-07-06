@@ -142,7 +142,7 @@ class KMLSyncServer(FlaskView):
     def _shutdown_hook(self):
         write_log_to_file("Making request inside shutdown_hook at %s" % self.__repr__)
         try:
-            Popen('curl --silent -X POST http://127.0.0.1:8765/shutdown',
+            Popen('curl --silent -X POST http://%s:%s/shutdown' % (self.host, str(self.port)),
                              shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
         except Exception, e:
             rospy.logerr("Couldnt execute shutdown hook")
