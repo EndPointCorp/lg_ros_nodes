@@ -45,6 +45,14 @@ The list of browsers in the message is compared with the list of currently opene
 
 ### Example
 
+The below examples assume that the node is configured like this:
+
+```
+    <node name="image_browser" pkg="lg_adhoc_browser" type="client">
+        <param name="viewport" value="superone" />
+    </node>
+```
+
 * After a fresh start, there should be no browsers.
 
 * This should show one window with the `endpoint.com` website:
