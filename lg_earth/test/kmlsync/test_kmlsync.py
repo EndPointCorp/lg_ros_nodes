@@ -20,7 +20,6 @@ import xml.etree.ElementTree as ET
 from std_msgs.msg import String
 from xml.sax.saxutils import escape
 from lg_common.helpers import escape_asset_url, generate_cookie
-from lg_common.helpers import write_log_to_file
 from interactivespaces_msgs.msg import GenericMessage
 from subprocess import Popen
 QUERY_TOPIC = '/earth/query/tour'
@@ -66,7 +65,6 @@ DIRECTOR_MESSAGE = """
 
 class TestKMLSync(unittest.TestCase):
     def setUp(self):
-        write_log_to_file("starting a test")
         self.session = requests.Session()
         rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         self.wait_for_http()
@@ -75,12 +73,8 @@ class TestKMLSync(unittest.TestCase):
     def tearDown(self):
         self.session.close()
 
-    def _scene_listener(self, msg):
-        write_log_to_file("Receiveu message (inside TestKMLSync) %s" % msg)
-
     def _listen_query_string(self, msg):
         self.query_string = msg.data
-        write_log_to_file("Received query string %s" % self.query_string)
 
     def get_director_msg(self):
         msg = GenericMessage()
@@ -128,7 +122,6 @@ class TestKMLSync(unittest.TestCase):
 
     def test_4_network_link_update_cookie_string_is_initially_empty(self):
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
-        write_log_to_file("r.content => '%s'" % r.content)
         result = get_cookie_string(r.content)
         expected = ''
         self.assertEqual(result, expected)
@@ -222,7 +215,6 @@ class TestKMLSync(unittest.TestCase):
         rospy.sleep(1)
         msg = self.get_director_msg()
         director_publisher.publish(msg)
-        write_log_to_file("Published a message on topic: %s " % (director_publisher))
         rospy.sleep(1)
 
 

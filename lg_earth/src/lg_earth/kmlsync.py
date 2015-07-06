@@ -10,7 +10,6 @@ from lg_earth.srv import KmlState, PlaytourQuery
 from subprocess import Popen
 from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
-from lg_common.helpers import write_log_to_file
 from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String
 
@@ -63,8 +62,6 @@ class KMLSyncServer(FlaskView):
         self.service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
         self.playtour_channel = rospy.get_param('~playtour_channel', 'kmlsync/playtour_query')
 
-        write_log_to_file("Initialized scene listener (%s)" % self.__repr__)
-
         self.kml_state = KmlState()
         self.playtour = PlaytourQuery()
         self.asset_service = rospy.ServiceProxy('/%s' % self.service_channel, self.kml_state)
@@ -100,7 +97,6 @@ class KMLSyncServer(FlaskView):
         incoming_cookie_string = ''
 
         incoming_cookie_string = request.args.get('asset_slug', '')
-        write_log_to_file("incoming cookie string => '%s'" % incoming_cookie_string)
 
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
@@ -117,12 +113,10 @@ class KMLSyncServer(FlaskView):
         Publish play tour message on the topic /earth/query/tour
         """
         query_string = request.args.get('query', '')
-        write_log_to_file("Inside query html, query string is (%s)" % query_string)
         try:
             while not rospy.is_shutdown():
                 tour_string = query_string.split('=')[1]
                 tour_string = urllib2.unquote(tour_string)
-                write_log_to_file("about to publish string (%s)" % tour_string)
                 self.playtour.tourname = str(tour_string)
                 self.playtour_service(tour_string)
                 return "OK", 200
@@ -134,19 +128,16 @@ class KMLSyncServer(FlaskView):
     def shutdown_server(self):
         func = request.environ.get('werkzeug.server.shutdown')
         rospy.loginfo("Shutting down flask server")
-        write_log_to_file("Shutting down flask server at %s" % self.__repr__)
         if func is None:
             raise RuntimeError('Not running with the Werkzeug Server')
         func()
 
     def _shutdown_hook(self):
-        write_log_to_file("Making request inside shutdown_hook at %s" % self.__repr__)
         try:
             Popen('curl --silent -X POST http://%s:%s/shutdown' % (self.host, str(self.port)),
                              shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
         except Exception, e:
             rospy.logerr("Couldnt execute shutdown hook")
-            write_log_to_file("Couldnt execute shutdown hook")
 
 
     """ Private methods below """
@@ -202,10 +193,7 @@ class KMLSyncServer(FlaskView):
         """
         server_slugs_list = self._get_server_slugs_state(window_slug)
         client_slugs_list = self._get_client_slugs_state(incoming_cookie_string)
-        write_log_to_file("server = %s and client = %s" % (server_slugs_list, client_slugs_list))
-        write_log_to_file("incoming cookie string is '%s'" % incoming_cookie_string)
         ret = list(set(client_slugs_list) - set(server_slugs_list))
-        write_log_to_file("ret was %s" % ret)
         rospy.logdebug("Got the assets to delete as: %s" % ret)
         return ret
 
