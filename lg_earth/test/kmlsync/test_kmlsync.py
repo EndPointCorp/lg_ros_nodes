@@ -68,8 +68,12 @@ class TestKMLSync(unittest.TestCase):
     def setUp(self):
         write_log_to_file("starting a test")
         self.session = requests.Session()
+        rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         self.wait_for_http()
         self.query_string = ''
+
+    def tearDown(self):
+        self.session.close()
 
     def _scene_listener(self, msg):
         write_log_to_file("Receiveu message (inside TestKMLSync) %s" % msg)
@@ -85,7 +89,7 @@ class TestKMLSync(unittest.TestCase):
         return msg
 
     def get_request(self, url):
-        r = self.session.get(url)
+        r = self.session.get(url, timeout=0.1, stream=False)
         return r
 
     def wait_for_pubsub(self):
@@ -186,7 +190,6 @@ class TestKMLSync(unittest.TestCase):
         make a bad get request to get html and assert for 400
         make a legit get request to get 'OK' and status_code 200 and assert for the message that was sent
         """
-        rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         expected_status = 400
         bad1 = self.get_request(KML_ENDPOINT+"/query.html")
         bad2 = self.get_request(KML_ENDPOINT+"/query.html?query")
@@ -200,10 +203,12 @@ class TestKMLSync(unittest.TestCase):
 
         #self.wait_for_pubsub()
         good1 = self.get_request(KML_ENDPOINT+"/query.html?query=tour=myworldtour")
+        rospy.sleep(1)
         good1_expected_string = "myworldtour"
         self.assertEqual(self.query_string, good1_expected_string)
 
         good2 = self.get_request(KML_ENDPOINT+"/query.html?query=tour=My World Tour")
+        rospy.sleep(1)
         good2_expected_string = "My World Tour"
         self.assertEqual(self.query_string, good2_expected_string)
 

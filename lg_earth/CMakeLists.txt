@@ -11,6 +11,7 @@ catkin_python_setup()
 add_service_files(
   FILES
   KmlState.srv
+  PlaytourQuery.srv
 )
 
 generate_messages()

@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 import rospy
 from interactivespaces_msgs.msg import GenericMessage
-from lg_earth.srv import KmlState
+from std_msgs.msg import String
+from lg_earth.srv import KmlState, PlaytourQuery
 import json
 
 
 class KmlSyncState:
     def __init__(self):
         self.state = None
+        self.playtour_pub = rospy.Publisher('/earth/query/tour', String, queue_size=10)
 
     def _save_state(self, msg):
         try:
@@ -37,3 +39,7 @@ class KmlSyncState:
             return {'assets': window['assets']}
         # couldn't find specific window_slug inside state
         return {'assets': []}
+
+    def _send_playtour_query(self, req):
+        self.playtour_pub.publish(String(req.tourname))
+        return {'response': True}

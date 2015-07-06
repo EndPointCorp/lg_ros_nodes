@@ -1,12 +1,12 @@
 import json
 import rospy
-import xml.etree.ElementTree as ET
-import requests
 import urllib2
+import requests
+import xml.etree.ElementTree as ET
 
 from xml.dom import minidom
 from flask import Flask, request
-from lg_earth.srv import KmlState
+from lg_earth.srv import KmlState, PlaytourQuery
 from subprocess import Popen
 from xml.sax.saxutils import unescape, escape
 from flask.ext.classy import FlaskView, route
@@ -61,13 +61,14 @@ class KMLSyncServer(FlaskView):
         self.host = rospy.get_param('~kmlsync_listen_host', '127.0.0.1')
         self.port = rospy.get_param('~kmlsync_listen_port', 8765)
         self.service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
+        self.playtour_channel = rospy.get_param('~playtour_channel', 'kmlsync/playtour_query')
 
         write_log_to_file("Initialized scene listener (%s)" % self.__repr__)
 
         self.kml_state = KmlState()
+        self.playtour = PlaytourQuery()
         self.asset_service = rospy.ServiceProxy('/%s' % self.service_channel, self.kml_state)
-        #rospy.init_node('query_sender_node')
-        self.tour_pub = rospy.Publisher('/earth/query/tour', String, queue_size=10)
+        self.playtour_service = rospy.ServiceProxy('/%s' % self.playtour_channel, self.playtour)
         rospy.on_shutdown(self._shutdown_hook)
 
     @route('/shutdown', methods=['POST'])
@@ -118,11 +119,14 @@ class KMLSyncServer(FlaskView):
         query_string = request.args.get('query', '')
         write_log_to_file("Inside query html, query string is (%s)" % query_string)
         try:
-            tour_string = query_string.split('=')[1]
-            tour_string = urllib2.unquote(tour_string)
-            write_log_to_file("about to publish string (%s)" % tour_string)
-            self.tour_pub.publish(String(tour_string))
-            return "OK", 200
+            while not rospy.is_shutdown():
+                tour_string = query_string.split('=')[1]
+                tour_string = urllib2.unquote(tour_string)
+                write_log_to_file("about to publish string (%s)" % tour_string)
+                self.playtour.tourname = str(tour_string)
+                self.playtour_service(tour_string)
+                return "OK", 200
+            return "ERROR", 400
         except IndexError, e:
             rospy.logerr("Got the wrong query string %s" % e)
             return "Got the wrong query string", 400
@@ -138,7 +142,7 @@ class KMLSyncServer(FlaskView):
     def _shutdown_hook(self):
         write_log_to_file("Making request inside shutdown_hook at %s" % self.__repr__)
         try:
-            Popen('curl -X POST http://127.0.0.1:8765/shutdown',
+            Popen('curl --silent -X POST http://127.0.0.1:8765/shutdown',
                              shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
         except Exception, e:
             rospy.logerr("Couldnt execute shutdown hook")
