@@ -7,7 +7,7 @@ class DeviceWriter:
         # most values were taken from running
         # InputDevice('/dev/input/event$N').capabilities()
         vendor=1133
-        product = 50726
+        product = 0
         version = 273
         bustype = 3
         common_abs = AbsInfo(value=0, min=0, max=32767, fuzz=0, flat=0,
