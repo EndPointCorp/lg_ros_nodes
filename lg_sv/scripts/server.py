@@ -3,6 +3,7 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from std_msgs.msg import String
+from math import atan2, cos, sin, pi
 
 
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
@@ -32,6 +33,19 @@ def wrap(val, low, high):
     if val < low:
         val += (high - low)
     return val
+
+def bearing(lat1d, lon1d, lat2d, lon2d):
+	lat1 = lat1d * (pi / 180)
+	lat2 = lat2d * (pi / 180)
+	lon1 = lon1d * (pi / 180)
+	lat2 = lat2d * (pi / 180)
+	bearing_r = atan2(sin(lon2 - lon1) * cos(lat2),
+				 cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(lon2 - lon1))
+	return bearing_r * 180 / pi
+
+def headingDifference(source, target):
+	diff = abs(target - source) % 360
+	return diff if diff < 180 else diff - (diff - 180)
 
 
 class StreetviewServer:
@@ -77,6 +91,42 @@ class StreetviewServer:
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
         pov_msg.z = wrap(heading, 0, 360)
         self.pov_pub.publish(pov_msg)
+
+	def get_nearby_panos(self, panoid):
+		# this url may change someday...
+		url = 'http://maps.google.com/cbk?output=json&v=4&dm=0&pm=0&panoid={}'
+		r = requests.get(url.format(panoid))
+		if r.status_code != 200:
+			return False #maybe raise exception?
+		content = {}
+		try:
+			content = json.loads(r.content)
+			assert content['Links']
+		except ValueError:
+			return False
+		except KeyError:
+			return False
+		links = []
+		for link in content['Links']:
+			links.append(str(link['panoId']))
+		return links
+
+	def get_panoid_from_lat_lon(self, lat, lon, radius=2000):
+		# this url may change someday...
+		url = 'http://maps.google.com/cbk??output=json&v=4&dm=0&pm=0&ll={},{}&radius={}'
+		r = requests.get(url.format(lat, lon, radius))
+		if r.status_code != 200:
+			return False
+		content = {}
+		try:
+			content = json.loads(r.content)
+			assert content['Location']
+			assert content['Location']['panoId']
+		except ValueError:
+			return False
+		except KeyError:
+			return False
+		return str(content['Location']['panoId'])
 
 
 if __name__ == '__main__':
