@@ -32,14 +32,10 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/client
   scripts/client.py
-#  scripts/query
-#  scripts/query.py
-#  scripts/viewsync_relay
-#  scripts/viewsync_relay.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-#if (CATKIN_ENABLE_TESTING)
-#  catkin_add_nosetests(test/test_query_writer.py)
-#endif()
+if (CATKIN_ENABLE_TESTING)
+  catkin_add_nosetests(test/test_client.py)
+endif()
 

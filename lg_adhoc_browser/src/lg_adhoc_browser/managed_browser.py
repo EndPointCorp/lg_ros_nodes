@@ -10,6 +10,10 @@ from lg_common.msg import ApplicationState
 class ManagedAdhocBrowser(ManagedBrowser):
 
     def __init__(self, geometry, slug, url):
+        self.slug = slug
+        self.url = url
+        self.geometry = geometry
+
         super(ManagedAdhocBrowser, self).__init__(
                 geometry=geometry,
                 slug=slug,
@@ -20,8 +24,9 @@ class ManagedAdhocBrowser(ManagedBrowser):
         pass
 
     def update_url(self, url):
-        #TODO
-        pass
+        import os
+        self.url = url
+        os.system('chromium-remote.py --slug={} --page-url="{}"'.format(self.slug, url))
 
     def close(self):
         self.set_state(ApplicationState.STOPPED)

@@ -18,7 +18,6 @@ The list of browsers in the message is compared with the list of currently opene
 * if there is not a browser for an `id`, then the browser is created
 * if there already is a browser with the `id`, then the url and geometry are updated **[TODO: NOT IMPLEMENTED YET]**
 
-
 ##### Parameters
 
 * `~viewport` [string] - name of the viewport to run at. This is a mandatory argument.
