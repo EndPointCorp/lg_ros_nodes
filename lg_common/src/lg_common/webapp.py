@@ -16,22 +16,6 @@ def ros_tornado_spin():
     rospy.on_shutdown(ioloop.stop)
     ioloop.start()
 
-def ros_flask_spin(app, *args, **kwargs):
-    """ Runs Flask. Shuts down when rospy shuts down. """
-    rospy.loginfo("Starting flask server for %s" % app)
-    if kwargs['flask_classes']:
-        for flask_class in kwargs['flask_classes']:
-            flask_class.register(app, route_base='/')
-        kwargs.pop('flask_classes')
-
-    def run_server():
-        app.run(*args, **kwargs)
-    server = Process(target=run_server)
-    server.daemon = True
-
-    server.start()
-    rospy.spin()
-
 
 class RosbridgeWebSocket(WebSocketHandler):
     """ This was ripped off from rosbridge and should be worked back in. """
