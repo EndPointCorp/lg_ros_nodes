@@ -1,184 +1,122 @@
+"""Handlers for KMLSync server.
+
+Overview:
+- GE loads 'myplaces.kml' after it starts (lg_earth should create it)
+- myplaces.kml contains networklinks to master.kml and to regular
+  updates
+- master.kml is a container for content
+- network_link_update.kml returns commands to change the contents of
+  the container
+
+Example scenario:
+- GE loads myplaces (contains networklinks to master and networklinkupdate.kml with viewport name)
+- master.kml returns ampty document
+- networklinkupdate will return list of commands with empty cookiestring
+
+<director message loads smthn>
+
+- earth hits networklinkupdate.kml - we see the viewport - it should
+  have something loaded now - we check the cookiestring (which is empty)
+- since it doesnt have anything loaded, we tell GE to load all the assets
+- we have a list of slugs and URLs from the director that we want to load
+- networklinkupdate will return a different cookie string with a list of the slugs e.g.
+    asset_slug=foo,bar,baz
+- for every asset not loaded on GE we need to create it by "<Create></Create>" section and delete by "Delete"
+  section - those elements need to be children of "Update" element
+- example networklinkupdate: https://github.com/EndPointCorp/lg_ros_nodes/issues/2#issuecomment-116727990
+
+Special case - tours:
+- when a tour KML is loaded - GE will try to reach KMLSyncServer's URL to send "playtour" command to itself (weird xD)
+- Application needs to listen on /query.html link and accept GE's requests like:
+    - /query.html?query=playtour=taipei (http://pastebin.com/3M5xHj0g)
+
+    the query argument "playtour=taipei" needs to be forwarded to queryfile ROS node so GE gets a command to go
+    to certain position
+
+asset example: 'http://lg-head:8060/media/blah.kml'
+cookie example: asset_slug=http___lg-head_8060_media_blah_kml
+
+State data structure:
+{ "right_one" : { "cookie": '', "assets": ['http://lg-head:8060/media/blah.kml] }
+"""
+
 import json
 import rospy
 import urllib2
-import requests
 import xml.etree.ElementTree as ET
 
 from xml.dom import minidom
-from flask import Flask, request
 from lg_earth.srv import KmlState, PlaytourQuery
-from subprocess import Popen
 from xml.sax.saxutils import unescape, escape
-from flask.ext.classy import FlaskView, route
 from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String
+import tornado.web
 
 
-class KMLSyncServer(FlaskView):
-    """ Run a KMLsync HTTP server
-        Overview:
-        - GE loads 'myplaces.kml' after it starts (lg_earth should create it)
-        - myplaces.kml contains networklinks to master.kml and to regular
-          updates
-        - master.kml is a container for content
-        - network_link_update.kml returns commands to change the contents of
-          the container
+def get_kml_root():
+    """Get headers of KML file - shared by all kml generation methods."""
+    kml_root = ET.Element('kml', attrib={})
+    kml_root.attrib['xmlns'] = 'http://www.opengis.net/kml/2.2'
+    kml_root.attrib['xmlns:gx'] = 'http://www.google.com/kml/ext/2.2'
+    kml_root.attrib['xmlns:kml'] = 'http://www.opengis.net/kml/2.2'
+    kml_root.attrib['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
+    return kml_root
 
-        Example scenario:
-        - GE loads myplaces (contains networklinks to master and networklinkupdate.kml with viewport name)
-        - master.kml returns ampty document
-        - networklinkupdate will return list of commands with empty cookiestring
 
-        <director message loads smthn>
-
-        - earth hits networklinkupdate.kml - we see the viewport - it should
-          have something loaded now - we check the cookiestring (which is empty)
-        - since it doesnt have anything loaded, we tell GE to load all the assets
-        - we have a list of slugs and URLs from the director that we want to load
-        - networklinkupdate will return a different cookie string with a list of the slugs e.g.
-            asset_slug=foo,bar,baz
-        - for every asset not loaded on GE we need to create it by "<Create></Create>" section and delete by "Delete"
-          section - those elements need to be children of "Update" element
-        - example networklinkupdate: https://github.com/EndPointCorp/lg_ros_nodes/issues/2#issuecomment-116727990
-
-        Special case - tours:
-        - when a tour KML is loaded - GE will try to reach KMLSyncServer's URL to send "playtour" command to itself (weird xD)
-        - KMLSyncServer needs to listen on /query.html link and accept GE's requests like:
-            - /query.html?query=playtour=taipei (http://pastebin.com/3M5xHj0g)
-
-            the query argument "playtour=taipei" needs to be forwarded to queryfile ROS node so GE gets a command to go
-            to certain position
-
-        asset example: 'http://lg-head:8060/media/blah.kml'
-        cookie example: asset_slug=http___lg-head_8060_media_blah_kml
-
-        State data structure:
-        { "right_one" : { "cookie": '', "assets": ['http://lg-head:8060/media/blah.kml] }
-    """
-
-    def __init__(self):
-        self.host = rospy.get_param('~kmlsync_listen_host', '127.0.0.1')
-        self.port = rospy.get_param('~kmlsync_listen_port', 8765)
-        self.service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
-        self.playtour_channel = rospy.get_param('~playtour_channel', 'kmlsync/playtour_query')
-
-        self.kml_state = KmlState()
-        self.playtour = PlaytourQuery()
-        self.asset_service = rospy.ServiceProxy('/%s' % self.service_channel, self.kml_state)
-        self.playtour_service = rospy.ServiceProxy('/%s' % self.playtour_channel, self.playtour)
-        rospy.on_shutdown(self._shutdown_hook)
-
-    @route('/shutdown', methods=['POST'])
-    def shutdown(self):
-        """ Shutdown route for process management """
-        self.shutdown_server()
-        return "Flask server shutting down at %s" % self.__repr__
-
-    @route('/master.kml')
-    def master_kml(self):
-        """ Master.kml route for GE """
+class KmlMasterHandler(tornado.web.RequestHandler):
+    def get(self):
+        """Serve the master.kml which is updated by NLC."""
         rospy.loginfo("Got master.kml GET request")
-        kml_root = self._get_kml_root()
+        kml_root = get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
         kml_reparsed = minidom.parseString(ET.tostring(kml_root))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
-        return kml_content
+        self.finish(kml_content)
 
-    @route('/network_link_update.kml')
-    def network_link_update(self):
+
+class KmlUpdateHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self.asset_service = self.application.asset_service
+
+    def get(self):
         """
         Return XML with latest list of assets for specific window_slug
             - get window slug and calculate difference between loaded assets and the desired state
             - create the KML and return it only if cookie was different and the window slug came in the request
         """
-        rospy.loginfo("Got network_link_update.kml GET request with params: %s" % request.args)
-        window_slug = request.args.get('window_slug', None)
+        rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
+        window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = ''
 
-        incoming_cookie_string = request.args.get('asset_slug', '')
+        incoming_cookie_string = self.get_query_argument('asset_slug', default='')
 
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
         if window_slug:
             assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, window_slug)
             assets_to_create = self._get_assets_to_create(incoming_cookie_string, window_slug)
-            return self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, window_slug)
+            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, window_slug))
         else:
-            return '', 400
+            self.set_status(400, "No window slug provided")
+            self.finish("400 Bad Request: No window slug provided")
 
-    @route('/query.html')
-    def query_html(self):
-        """
-        Publish play tour message on the topic /earth/query/tour
-        """
-        query_string = request.args.get('query', '')
-        try:
-            while not rospy.is_shutdown():
-                tour_string = query_string.split('=')[1]
-                tour_string = urllib2.unquote(tour_string)
-                self.playtour.tourname = str(tour_string)
-                self.playtour_service(tour_string)
-                return "OK", 200
-            return "ERROR", 400
-        except IndexError, e:
-            rospy.logerr("Got the wrong query string %s" % e)
-            return "Got the wrong query string", 400
+    def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, window_slug):
+        """ Generate static part of NetworkLinkUpdate xml"""
+        kml_root = get_kml_root()
+        kml_networklink = ET.SubElement(kml_root, 'NetworkLinkControl')
+        kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
+        kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
+        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_full_cookie(window_slug)
+        kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
+        kml_update = ET.SubElement(kml_networklink, 'Update')
+        kml_target_href = ET.SubElement(kml_update, 'targetHref').text = self.request.protocol + '://' + self.request.host + '/master.kml'
+        kml_create_assets = self._get_kml_for_create_assets(assets_to_create, kml_update)
+        kml_delete_assets = self._get_kml_for_delete_assets(assets_to_delete, kml_update)
 
-    def shutdown_server(self):
-        func = request.environ.get('werkzeug.server.shutdown')
-        rospy.loginfo("Shutting down flask server")
-        if func is None:
-            raise RuntimeError('Not running with the Werkzeug Server')
-        func()
-
-    def _shutdown_hook(self):
-        try:
-            Popen('curl --silent -X POST http://%s:%s/shutdown' % (self.host, str(self.port)),
-                             shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
-        except Exception, e:
-            rospy.logerr("Couldnt execute shutdown hook")
-
-
-    """ Private methods below """
-
-    def _get_kml_root(self):
-        """ Get headers of KML file - shared by all kml generation methods """
-        kml_root = ET.Element('kml', attrib={})
-        kml_root.attrib['xmlns'] = 'http://www.opengis.net/kml/2.2'
-        kml_root.attrib['xmlns:gx'] = 'http://www.google.com/kml/ext/2.2'
-        kml_root.attrib['xmlns:kml'] = 'http://www.opengis.net/kml/2.2'
-        kml_root.attrib['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
-        return kml_root
-
-    def _get_cookie(self, window_slug):
-        """
-        Return comma separated list of slugs e.g. 'asd_kml,blah_kml'
-        rtype: str
-        """
-        return generate_cookie(self.asset_service(window_slug).assets)
-
-    def _get_server_slugs_state(self, window_slug):
-        """
-        Return a list of slugs that server expects to be loaded
-        """
-        try:
-            cookie = self._get_cookie(window_slug)
-            return [ z for z in cookie.split(',')]
-        except AttributeError, e:
-            return []
-
-    def _get_client_slugs_state(self, incoming_cookie_string):
-        """
-        Return list of slugs submitted by client in a cookie string
-        param incoming_cookie_string: str
-            (e.g. 'blah_kml,zomg_foo_bar_kml')
-        rtype: list
-            e.g. ['blah_kml', 'zomg_foo_bar_kml']
-        """
-        if not incoming_cookie_string:
-            return []
-        return [ z for z in incoming_cookie_string.split(',')]
+        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root)))
+        kml_content = kml_reparsed.toprettyxml(indent='\t')
+        return unescape(kml_content)
 
     def _get_assets_to_delete(self, incoming_cookie_string, window_slug):
         """
@@ -220,22 +158,34 @@ class KMLSyncServer(FlaskView):
 
         return urls_to_create
 
-    def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, window_slug):
-        """ Generate static part of NetworkLinkUpdate xml"""
-        kml_root = self._get_kml_root()
-        kml_networklink = ET.SubElement(kml_root, 'NetworkLinkControl')
-        kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
-        kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
-        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_full_cookie(window_slug)
-        kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
-        kml_update = ET.SubElement(kml_networklink, 'Update')
-        kml_target_href = ET.SubElement(kml_update, 'targetHref').text = 'http://' + self.host + ':' + str(self.port) + '/master.kml'
-        kml_create_assets = self._get_kml_for_create_assets(assets_to_create, kml_update)
-        kml_delete_assets = self._get_kml_for_delete_assets(assets_to_delete, kml_update)
+    def _get_client_slugs_state(self, incoming_cookie_string):
+        """
+        Return list of slugs submitted by client in a cookie string
+        param incoming_cookie_string: str
+            (e.g. 'blah_kml,zomg_foo_bar_kml')
+        rtype: list
+            e.g. ['blah_kml', 'zomg_foo_bar_kml']
+        """
+        if not incoming_cookie_string:
+            return []
+        return [ z for z in incoming_cookie_string.split(',')]
 
-        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root)))
-        kml_content = kml_reparsed.toprettyxml(indent='\t')
-        return unescape(kml_content)
+    def _get_cookie(self, window_slug):
+        """
+        Return comma separated list of slugs e.g. 'asd_kml,blah_kml'
+        rtype: str
+        """
+        return generate_cookie(self.asset_service(window_slug).assets)
+
+    def _get_server_slugs_state(self, window_slug):
+        """
+        Return a list of slugs that server expects to be loaded
+        """
+        try:
+            cookie = self._get_cookie(window_slug)
+            return [ z for z in cookie.split(',')]
+        except AttributeError, e:
+            return []
 
     def _get_full_cookie(self, window_slug):
         """return the cookie prepended by asset_slug= only if cookie is not blank"""
@@ -270,5 +220,28 @@ class KMLSyncServer(FlaskView):
             return kml_delete
 
 
-if __name__ == "__main__":
-    print "Dont call me directly please"
+class KmlQueryHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self.playtour = self.application.playtour
+        self.playtour_service = self.application.playtour_service
+
+    def get(self):
+        """
+        Publish play tour message on the topic /earth/query/tour
+        """
+        query_string = self.get_query_argument('query', default='')
+        try:
+            while not rospy.is_shutdown():
+                tour_string = query_string.split('=')[1]
+                tour_string = urllib2.unquote(tour_string)
+                self.playtour.tourname = str(tour_string)
+                self.playtour_service(tour_string)
+                self.finish("OK")
+            self.set_status(503, "Server shutting down")
+            self.finish("Server shutting down")
+        except IndexError as e:
+            rospy.logerr("Got the wrong query string %s" % e)
+            self.set_status(400, "Got the wrong query string")
+            self.finish("Bad Request: Got a bad query string")
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
