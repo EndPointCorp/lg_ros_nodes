@@ -29,27 +29,26 @@ This will fix uinput permissions at boot. You can also manually set permissions 
 
 Now then.
 
-First, clone the repo.
+First, clone the repo (you can replace ~/src if you want).
 
     $ cd ~/src
     $ git clone git@github.com:EndPointCorp/lg_ros_nodes.git
 
-Create a catkin workspace for this stack and symlink it back to the code.
+Then run the init script.
 
-    $ mkdir -p ~/src/lg_ros_nodes/catkin/src
-    $ cd ~/src/lg_ros_nodes/catkin/src
-    $ catkin_init_workspace
-    $ ln -snf ~/src/lg_ros_nodes/lg_common
-    $ ln -snf ~/src/lg_ros_nodes/lg_earth
+    $ cd ~/src/lg_ros_nodes/
+    $ ./scripts/init_workspace
 
-Now you'll need to symlink `appctl` from the Portal ROS repo and `interactivespaces_msgs`from the director repo.
+It will warn you that appctl & interactivespaces_msgs aren't there, and since the ros nodes depend on those, you should include them
 
     $ cd ~/src
     $ git clone git@github.com:EndPointCorp/portal-ros.git
     $ git clone git@github.com:EndPointCorp/ros_cms.git
-    $ cd ~/src/lg_ros_nodes/catkin/src
-    $ ln -snf ~/src/portal-ros/catkin/src/appctl
-    $ ln -snf ~/src/ros_cms/director/src/interactivespaces_msgs
+
+Then re-run the init script with arguments to direct the script to those new repos
+
+    $ cd ~/src/lg_ros_nodes
+    $ ./scripts/init_workspace --appctl ~/src/portal-ros/catkin/src/appctl --interactive ~/src/ros_cms/director/src/interactivespaces_msgs
 
 Install system dependencies with `rosdep`.
 
