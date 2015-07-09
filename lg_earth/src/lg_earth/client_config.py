@@ -28,6 +28,7 @@ class ClientConfig:
         yaw_offset = rospy.get_param('~yaw_offset', 0)
         pitch_offset = rospy.get_param('~pitch_offset', 0)
         roll_offset = rospy.get_param('~roll_offset', 0)
+        show_google_logo = rospy.get_param('~show_google_logo', True)
 
         args.extend([
             '-sViewSync/send={}'.format(str(viewsync_send).lower()),

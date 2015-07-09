@@ -15,13 +15,14 @@ TOOLBAR_HEIGHT = 22
 
 class Client:
     def __init__(self):
-        x = rospy.get_param('~window_x', 0)
-        y = rospy.get_param('~window_y', 0) - TOOLBAR_HEIGHT
-        w = rospy.get_param('~window_w', 640)
-        h = rospy.get_param('~window_h', 480) + TOOLBAR_HEIGHT
-        geometry = WindowGeometry(x=x, y=y, width=w, height=h)
+        geometry = ManagedWindow.get_viewport_geometry()
+        geometry.y -= TOOLBAR_HEIGHT
+        geometry.height += TOOLBAR_HEIGHT
+
         earth_window = ManagedWindow(
             geometry=geometry,
+            w_class='Googleearth-bin',
+            w_name='Google Earth',
             w_instance=self._get_instance()
         )
 
@@ -37,6 +38,12 @@ class Client:
 
         os.mkdir(self._get_dir() + '/.googleearth')
         os.mkdir(self._get_dir() + '/.googleearth/Cache')
+
+        if rospy.get_param('~show_google_logo', True):
+            pass
+        else:
+            self._touch_file((self._get_dir() + '/.googleearth/' + 'localdbrootproto'))
+
         os.mkdir(self._get_dir() + '/.config')
         os.mkdir(self._get_dir() + '/.config/Google')
 
@@ -57,6 +64,12 @@ class Client:
             os.environ['DISPLAY'] = ':0'
 
         os.environ['LD_LIBRARY_PATH'] += ':/opt/google/earth/free'
+
+    def _touch_file(self, fname):
+        if os.path.exists(fname):
+            os.utime(fname, None)
+        else:
+            open(fname, 'a').close()
 
     def _get_instance(self):
         return '_earth_instance_' + rospy.get_name().strip('/')

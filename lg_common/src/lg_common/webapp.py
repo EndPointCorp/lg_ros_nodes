@@ -1,9 +1,11 @@
 import rospy
 
+import atexit
 from functools import partial
+from multiprocessing import Process
 from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketHandler
-
+from std_msgs.msg import String
 # use a reserved code for protocol instantiation failure
 PROTO_OPEN_FAILED = 4000
 
@@ -13,14 +15,6 @@ def ros_tornado_spin():
     ioloop = IOLoop.instance()
     rospy.on_shutdown(ioloop.stop)
     ioloop.start()
-
-
-def ros_flask_spin(app, *args, **kwargs):
-    """ Runs Flask. Shuts down when rospy shuts down. """
-    from flask import request
-    shutdown = request.environ.get('werkzeug.server.shutdown')
-    rospy.on_shutdown(shutdown)
-    app.run(*args, **kwargs)
 
 
 class RosbridgeWebSocket(WebSocketHandler):
