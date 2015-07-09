@@ -1,9 +1,19 @@
 <launch>
-    <node name="lg_video" pkg="lg_video" type="video_manager.py">
+    <param name="/viewport/left_one" value="640x480+0+0" />
+    <param name="/viewport/center" value="640x480+640+0" />
+    <param name="/viewport/right_one" value="640x480+1280+0" />
+
+    <node name="lg_media" pkg="lg_media" type="media_app_manager.py">
         <param name="application" value="mplayer"/>
         <param name="application_path" value="/usr/bin/mplayer"/>
+        <param name="application_flags" value="-cache 8192 -quiet -osdlevel 0 -nomouseinput -nograbpointer"/>
+        <param name="viewport" value="left_one" />
     </node>
 
-    <!-- Local rosbridge server. -->
-    <node name="dev_rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py" />
+    <!-- Development static file server. -->
+    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
 </launch>
