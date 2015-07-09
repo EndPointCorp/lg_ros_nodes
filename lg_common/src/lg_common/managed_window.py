@@ -1,6 +1,7 @@
 import rospy
 import subprocess
 import threading
+import re
 
 from lg_common.msg import WindowGeometry
 
@@ -20,22 +21,66 @@ class ManagedWindow(object):
 
         rospy.on_shutdown(self._cleanup_proc)
 
-    def _search_args(self, cmd):
-        cmd.extend([
-            'search', '--maxdepth', '1', '--limit', '1', '--sync'
-        ])
+    @staticmethod
+    def parse_geometry(geometry):
+        """
+        Parses Xorg window geometry in the form WxH[+-]X[+-]Y
 
+        Raises ValueError if the geometry string is invalid.
+        """
+        m = re.match(r'^(\d+)x(\d+)([+-]\d+)([+-]\d+)$', geometry)
+
+        if m is None:
+            raise ValueError(
+                'Invalid window geometry: {}'.format(geometry))
+
+        dims = map(int, m.groups())
+        return WindowGeometry(width=dims[0], height=dims[1],
+                              x=dims[2], y=dims[3])
+
+    @staticmethod
+    def lookup_viewport(viewport_key):
+        """
+        Looks up geometry for the given viewport name.
+
+        Raises KeyError if the viewport is not configured.
+        """
+        param_name = '/viewport/{}'.format(viewport_key)
+
+        if not rospy.has_param(param_name):
+            raise KeyError(
+                'Viewport parameter not set: {}'.format(param_name))
+
+        viewport_value = rospy.get_param(param_name)
+        return ManagedWindow.parse_geometry(viewport_value)
+
+    @staticmethod
+    def get_viewport_geometry():
+        """
+        Returns WindowGeometry if the private '~viewport' param is set.
+
+        Returns None if the private '~viewport' param is not set.
+        """
+        if rospy.has_param('~viewport'):
+            viewport = rospy.get_param('~viewport')
+            geometry = ManagedWindow.lookup_viewport(viewport)
+        else:
+            geometry = None
+
+        return geometry
+
+    def _search_args(self, cmd):
+        if self.w_class is not None:
+            cmd.extend([
+                'search', '--sync', '--class', self.w_class
+            ])
+        if self.w_name is not None:
+            cmd.extend([
+                'search', '--sync', '--name', self.w_name
+            ])
         if self.w_instance is not None:
             cmd.extend([
-                '--classname', self.w_instance
-            ])
-        elif self.w_name is not None:
-            cmd.extend([
-                '--name', self.w_name
-            ])
-        elif self.w_class is not None:
-            cmd.extend([
-                '--class', self.w_class
+                'search', '--sync', '--classname', self.w_instance
             ])
 
     def _geometry_args(self, cmd):
