@@ -70,21 +70,17 @@ class ManagedWindow(object):
         return geometry
 
     def _search_args(self, cmd):
-        cmd.extend([
-            'search', '--maxdepth', '1', '--limit', '1', '--sync'
-        ])
-
+        if self.w_class is not None:
+            cmd.extend([
+                'search', '--sync', '--class', self.w_class
+            ])
+        if self.w_name is not None:
+            cmd.extend([
+                'search', '--sync', '--name', self.w_name
+            ])
         if self.w_instance is not None:
             cmd.extend([
-                '--classname', self.w_instance
-            ])
-        elif self.w_name is not None:
-            cmd.extend([
-                '--name', self.w_name
-            ])
-        elif self.w_class is not None:
-            cmd.extend([
-                '--class', self.w_class
+                'search', '--sync', '--classname', self.w_instance
             ])
 
     def _geometry_args(self, cmd):
