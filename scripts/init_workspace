@@ -74,9 +74,9 @@ def get_ros_nodes():
     return nodes
 
 def append_node(nodes, node):
-    node = os.path.expanduser(node)
     if not node:
         return
+    node = os.path.expanduser(node)
     if not os.path.exists(node):
         return
     while node[-1] == '/':
