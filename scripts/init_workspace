@@ -103,9 +103,16 @@ def catkin_init():
     Runs catkin_init_workspace in root_dir/catkin/src folder
     """
     os.chdir("%s/catkin/src" % ROOT_DIR)
+    # No need to init workspace if this already exists
+    if os.path.exists('CMakeLists.txt'):
+        return
     try:
-        p = Popen("catkin_init_workspace")
+        p = None
+        with open('/dev/null') as out:
+            p = Popen("catkin_init_workspace", stdout=out, stderr=out)
         p.wait()
+        if p.returncode != 0:
+            raise Exception("catkin_init_workspace exited with a code of %d" % p.return_code)
     except OSError:
         raise Exception("Error running catkin_init_workspace, is it not in your PATH?")
 
@@ -126,10 +133,14 @@ def check_validity():
     """
     Just checks to see if appctl and interactivespaces_msgs exist in catkin/src
     """
+    passed = True
     links = os.listdir("%s/catkin/src" % ROOT_DIR)
     for needed in NEEDED_DIRS:
         if needed not in links:
+            passed = False
             print "############## WARNING catkin/src SHOULD HAVE %s LINK ##############" % needed
+    if passed:
+        print "Successfully completed workspace initialization"
 
 def main():
     global ARGS
