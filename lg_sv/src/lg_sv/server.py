@@ -99,6 +99,10 @@ class StreetviewServer:
         self.move_pano(twist)
 
     def movement(self, twist):
+        """
+        Only moves if the linear x is > or < the x_threshold and that it has
+        been that way for atleast {backward,forward}_threshold publications
+        """
         if twist.linear.x > X_THRESHOLD:
             self.move_forward += 1
             if self.move_forward > FORWARD_THRESHOLD:
@@ -108,19 +112,29 @@ class StreetviewServer:
             if self.move_backward > BACKWARD_THRESHOLD:
                 self.move_backward()
         else:
-            # reset counte)rs
+            # reset counters
             self.move_forward = 0
             self.move_backward = 0
 
     def move_forward(self):
+        """
+        Wrapper around move function, resets counter
+        """
         self.move_forward = 0
         self.move(self.pov.z)
 
     def move_backward(self):
+        """
+        Wrapper around move function, resets counter and passes an adjusted
+        heading
+        """
         self.move_backward = 0
         self.move((self.pov.z + 180) % 360)
 
     def move(self, heading):
+        """
+        Moves to the closest pano in the direction of the heading
+        """
         move_to = self.nearby_panos.find_closest(self.panoid, pov.z)
         self.pub_panoid.publish(move_to)
 
@@ -129,6 +143,11 @@ class NearbyPanos:
         self.panoid = None
 
     def find_closest(self, panoid, pov_z):
+        """
+        Returns the pano that is closest to the direction pressed on the
+        spacenav (either forwards or backwards) based on the nearby panos
+        bearing to the current pano
+        """
         self.panoid = panoid
         our_metadata = self.get_pano_metadata(self.panoid)
         my_lat = float(our_metadata['Location']['lat'])
@@ -146,6 +165,9 @@ class NearbyPanos:
         return closest_pano
 
     def get_pano_metadata(self, panoid):
+        """
+        Returns a pano's metadata, uses an undocumented google api call...
+        """
         # this url may change someday...
         url = 'http://maps.google.com/cbk?output=json&v=4&dm=0&pm=0&panoid={}'
         r = requests.get(url.format(panoid))
@@ -158,7 +180,12 @@ class NearbyPanos:
             return False
         return content
 
-    def get_nearby_panos(self):
+    def get_nearby_panos(self, panoid=None):
+        """
+        Returns an array of nearby panos
+
+        nearby panos are found in the pano metadata['Links'] section
+        """
         content = self.get_pano_metadata(self.panoid)
         links = []
         for link in content['Links']:
@@ -166,6 +193,12 @@ class NearbyPanos:
         return links
 
     def bearing(self, lat1d, lon1d, lat2d, lon2d):
+        """
+        Returns the bearing from {lat,lon}1 to {lat,lon}2
+
+        arguments given in degrees
+        returns degrees
+        """
         lat1 = lat1d * (pi / 180)
         lat2 = lat2d * (pi / 180)
         lon1 = lon1d * (pi / 180)
@@ -175,5 +208,9 @@ class NearbyPanos:
         return bearing_r * 180 / pi
 
     def headingDifference(self, source, target):
+        """
+        Finds the difference between two headings, takes into account that
+        the value 359 degrees is closer to 0 degrees than 10 degrees is
+        """
         diff = abs(target - source) % 360
         return diff if diff < 180 else diff - (diff - 180)
