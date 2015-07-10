@@ -98,6 +98,7 @@ def setup_environ():
         return pair[0], pair[1]
     pairs = map(split_environ, awesome_environ_raw.split('\0'))
     awesome_environ = dict((p[0], p[1]) for p in pairs)
+    # TODO(mv): return environment for Popen instead of messing with parent environment
     def copy_environ(k):
         os.environ[k] = awesome_environ[k]
     copy_environ('DISPLAY')
