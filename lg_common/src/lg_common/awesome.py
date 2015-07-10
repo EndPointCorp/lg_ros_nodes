@@ -83,6 +83,7 @@ def get_apply_script(window):
 
 def get_script(window):
     return ' '.join([
+        "local awful = require('awful') awful.rules = require('awful.rules')",
         get_subtractive_script(window),
         get_additive_script(window),
         get_apply_script(window)
