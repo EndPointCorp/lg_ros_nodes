@@ -92,7 +92,12 @@ class ManagedWindow(object):
             cmd = self._get_command()
             self._cleanup_proc()
             rospy.loginfo(' '.join(cmd))
-            awesome.setup_environ()
+            try:
+                awesome.setup_environ()
+            except Exception as e:
+                rospy.logerror(
+                    'failed to setup awesome environment: {}'.format(e.message)
+                )
             try:
                 self.proc = subprocess.Popen(cmd)
             except OSError:
