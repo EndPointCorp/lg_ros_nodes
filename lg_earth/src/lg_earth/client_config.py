@@ -370,6 +370,7 @@ class ClientConfig:
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_outreach_root2_root_en.kmz\USHMM%3A%20World%20is%20Witness': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_outreach_root2_root_en.kmz\WaterAid': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_outreach_root2_root_en.kmz\WWF%20Conservation%20Projects': False,
+            r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Happy%2010th%20Birthday%2C%20Google%20Earth%21': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-weather_base_files_kml_weather_en.kmz\Clouds': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-weather_base_files_kml_weather_en.kmz\Conditions%20and%20Forecasts': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-weather_base_files_kml_weather_en.kmz\Information': False,
