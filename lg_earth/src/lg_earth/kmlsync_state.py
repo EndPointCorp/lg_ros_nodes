@@ -16,10 +16,7 @@ class KmlSyncState:
             state = json.loads(msg.message)
             assert isinstance(state, dict)
             assert 'windows' in state
-            for window in state['windows']:
-                if window.get('activity', '') == 'earth':
-                    self.state = state
-                    return
+            self.state = state
         except AssertionError:
             rospy.logerr('Invalid message - keeping previous state')
         except ValueError:
