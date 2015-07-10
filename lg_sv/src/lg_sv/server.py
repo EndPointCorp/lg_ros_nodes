@@ -135,7 +135,7 @@ class StreetviewServer:
         """
         Moves to the closest pano in the direction of the heading
         """
-        move_to = self.nearby_panos.find_closest(self.panoid, pov.z)
+        move_to = self.nearby_panos.find_closest(self.panoid, heading)
         self.pub_panoid.publish(move_to)
 
 class NearbyPanos:
@@ -186,8 +186,14 @@ class NearbyPanos:
 
         nearby panos are found in the pano metadata['Links'] section
         """
-        content = self.get_pano_metadata(self.panoid)
+        if not panoid:
+            panoid = self.panoid
+
+        content = self.get_pano_metadata(panoid)
         links = []
+        # make sure the Links key exists
+        if not 'Links' in content:
+            return []
         for link in content['Links']:
             links.append(str(link['panoId']))
         return links
