@@ -60,6 +60,8 @@ Build the project.
     $ cd ~/src/lg_ros_nodes/catkin
     $ catkin_make
 
+As new ros nodes are added to this git repo, re-run `./scripts/init_workspace` and the `rosdep install` command.
+
 Run the development roslaunch. You'll need to specify your local broadcast address, which can be found with `ifconfig`. Replace `1.2.3.255` with that address.
 
     $ source ~/src/lg_ros_nodes/catkin/devel/setup.bash
