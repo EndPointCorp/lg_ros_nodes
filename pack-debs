@@ -11,6 +11,7 @@ fi
 STAGES=(
     "appctl"
     "lg_common"
+    "interactivespaces_msgs"
 )
 PACK_STAGE="${2:-0}"
 ((PACK_STAGE++)) || true
