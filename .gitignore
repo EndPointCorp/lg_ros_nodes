@@ -54,3 +54,6 @@ CATKIN_IGNORE
 
 # Catkin workspace
 catkin/
+
+# debian building stuff
+ros_metapackage/ns-control
