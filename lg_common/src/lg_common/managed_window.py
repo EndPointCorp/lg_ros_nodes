@@ -4,8 +4,7 @@ import threading
 import re
 
 from lg_common.msg import WindowGeometry
-
-XDOTOOL_BIN = '/usr/bin/xdotool'
+import awesome
 
 
 class ManagedWindow(object):
@@ -69,49 +68,10 @@ class ManagedWindow(object):
 
         return geometry
 
-    def _search_args(self, cmd):
-        cmd.extend([
-            'search', '--maxdepth', '1', '--limit', '1', '--sync'
-        ])
-
-        if self.w_instance is not None:
-            cmd.extend([
-                '--classname', self.w_instance
-            ])
-        elif self.w_name is not None:
-            cmd.extend([
-                '--name', self.w_name
-            ])
-        elif self.w_class is not None:
-            cmd.extend([
-                '--class', self.w_class
-            ])
-
-    def _geometry_args(self, cmd):
-        if self.geometry is not None:
-            cmd.extend([
-                'windowmove', self.geometry.x, self.geometry.y
-            ])
-            cmd.extend([
-                'windowsize', self.geometry.width, self.geometry.height
-            ])
-
-    def _visibility_args(self, cmd):
-        if self.is_visible:
-            cmd.append('windowactivate')
-        else:
-            cmd.append('windowminimize')
-
-    def _sanitize_args(self, cmd):
-        return map(str, cmd)
-
     def _get_command(self):
         with self.lock:
-            cmd = [XDOTOOL_BIN]
-            self._search_args(cmd)
-            self._geometry_args(cmd)
-            self._visibility_args(cmd)
-        cmd = self._sanitize_args(cmd)
+            cmd = ['/bin/sh', '-c']
+            cmd.append('echo "{}" | /usr/bin/awesome-client'.format(awesome.get_script(self)))
         return cmd
 
     def _cleanup_proc(self):
@@ -131,6 +91,13 @@ class ManagedWindow(object):
         with self.lock:
             cmd = self._get_command()
             self._cleanup_proc()
+            rospy.loginfo(' '.join(cmd))
+            try:
+                awesome.setup_environ()
+            except Exception as e:
+                rospy.logerror(
+                    'failed to setup awesome environment: {}'.format(e.message)
+                )
             try:
                 self.proc = subprocess.Popen(cmd)
             except OSError:
