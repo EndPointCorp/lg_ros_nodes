@@ -373,7 +373,7 @@ class ClientConfig:
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\3D%20cities': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Earth%20View%20landscapes': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_teaser-en.kmz': False,
-            r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Happy%2010th%20Birthday%2C%20Google%20Earth%21': False,
+            r'http%3A__kh.google.com%3A80_\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Happy%2010th%20Birthday%2C%20Google%20Earth%21': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Satellite%20imagery%20updates': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Street%20View%20highlights': False,
             r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\%3Ca%20href_%22https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_nl-voyager-en.kmz%22%3EDownload%3C_a%3E': False,
