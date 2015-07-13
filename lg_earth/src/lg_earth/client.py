@@ -21,6 +21,8 @@ class Client:
 
         earth_window = ManagedWindow(
             geometry=geometry,
+            w_class='Googleearth-bin',
+            w_name='Google Earth',
             w_instance=self._get_instance()
         )
 
