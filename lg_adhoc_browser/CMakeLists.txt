@@ -3,6 +3,7 @@ project(lg_adhoc_browser)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  lg_common
   message_generation
 )
 
