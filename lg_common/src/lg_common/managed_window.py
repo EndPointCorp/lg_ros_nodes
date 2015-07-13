@@ -97,12 +97,12 @@ class ManagedWindow(object):
             try:
                 awesome.setup_environ()
             except Exception as e:
-                rospy.logerror(
+                rospy.logerr(
                     'failed to setup awesome environment: {}'.format(e.message)
                 )
             try:
                 self.proc = subprocess.Popen(cmd)
             except OSError:
-                rospy.logerror('failed to run {}'.format(XDOTOOL_BIN))
+                rospy.logerr('failed to run {}'.format(XDOTOOL_BIN))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
