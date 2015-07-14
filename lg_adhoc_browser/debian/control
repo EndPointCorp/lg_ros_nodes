@@ -8,7 +8,7 @@ Standards-Version: 3.9.2
 
 Package: ros-indigo-lg-adhoc-browser
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-std-msgs, ros-indigo-message-runtime, ros-indigo-rospy
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-geometry-msgs, ros-indigo-rospy, ros-indigo-appctl, ros-indigo-interactivespaces-msgs, ros-indigo-lg-common
 Description: Adhoc browser for displaying content on screen
 Replaces: __REPLACES__
 Conflicts: __REPLACES__

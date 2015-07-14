@@ -8,7 +8,7 @@ Standards-Version: 3.9.2
 
 Package: ros-indigo-lg-common
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-std-msgs, ros-indigo-message-runtime, ros-indigo-rospy
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-std-msgs, ros-indigo-message-runtime, ros-indigo-rospy, ros-indigo-appctl, ros-indigo-interactivespaces-msgs, ros-indigo-rosbridge-suite
 Description: Common set of libraries and functionality for lg-ros systems
 Replaces: __REPLACES__
 Conflicts: __REPLACES__
