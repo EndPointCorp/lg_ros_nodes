@@ -1,5 +1,6 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
+from lg_common.msg import ApplicationState
 from math import atan2, cos, sin, pi
 import requests
 import json
@@ -64,6 +65,7 @@ class StreetviewServer:
         self.pov = Quaternion()
         self.panoid = str()
         self.metadata = dict()
+        self.state = True
         ### parameterize
         self.nav_sensitivity = nav_sensitivity
         self.tilt_max = tilt_max
@@ -114,7 +116,12 @@ class StreetviewServer:
         """
         self.panoid = panoid
 
+    def handle_state_msg(self, app_state):
+        self.state = (app_state.state == ApplicationState.VISIBLE)
+
     def handle_spacenav_msg(self, twist):
+        if not self.state:
+            return
         # attempt deep copy
         pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.z)
         # or maybe Quaternion(self.pov.x, self.pov.y, ...)
