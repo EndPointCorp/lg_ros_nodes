@@ -97,6 +97,13 @@ class StreetviewServer:
         """
         self.last_metadata = metadata
 
+    def pub_pov(self, pov):
+        """
+        Publishes the new pov after setting the instance variable
+        """
+        self.pov = pov
+        self.pov_pub.publish(pov)
+
     def handle_pov_msg(self, quaternion):
         """
         Grabs the new pov from a publisher
@@ -117,9 +124,16 @@ class StreetviewServer:
         self.panoid = panoid
 
     def handle_state_msg(self, app_state):
+        """
+        Set state to true if the application is visible
+        """
         self.state = (app_state.state == ApplicationState.VISIBLE)
 
     def handle_spacenav_msg(self, twist):
+        """
+        Adjust pov based on the twist message received, also handle
+        a possible change of pano
+        """
         if not self.state:
             return
         # attempt deep copy
@@ -129,11 +143,11 @@ class StreetviewServer:
         heading = pov_msg.z + twist.angular.z * self.nav_sensitivity
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
         pov_msg.z = wrap(heading, 0, 360)
-        self.pov_pub.publish(pov_msg)
+        self.pub_pov(pov_msg)
         # check to see if the pano should be moved
-        self.move_pano(twist)
+        self.handle_possible_pano_change(twist)
 
-    def move_pano(self, twist):
+    def handle_possible_pano_change(self, twist):
         """
         Only moves if the linear x is > or < the x_threshold and that it has
         been that way for atleast {backward,forward}_threshold publications
