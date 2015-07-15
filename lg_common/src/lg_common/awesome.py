@@ -44,6 +44,8 @@ def get_properties(window):
         "border_width = 0",
         "size_hints_honor = false",
         "floating = true",
+        "fullscreen = false",
+        "maximized = false",
         "width = {}".format(window.geometry.width),
         "height = {}".format(window.geometry.height),
         "hidden = {}".format('false' if window.is_visible else 'true'),
