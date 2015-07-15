@@ -38,7 +38,7 @@ class ManagedWindow(object):
                               x=dims[2], y=dims[3])
 
     @staticmethod
-    def lookup_viewport(viewport_key):
+    def lookup_viewport_geometry(viewport_key):
         """
         Looks up geometry for the given viewport name.
 
@@ -62,7 +62,7 @@ class ManagedWindow(object):
         """
         if rospy.has_param('~viewport'):
             viewport = rospy.get_param('~viewport')
-            geometry = ManagedWindow.lookup_viewport(viewport)
+            geometry = ManagedWindow.lookup_viewport_geometry(viewport)
         else:
             geometry = None
 
@@ -71,7 +71,9 @@ class ManagedWindow(object):
     def _get_command(self):
         with self.lock:
             cmd = ['/bin/sh', '-c']
-            cmd.append('echo "{}" | /usr/bin/awesome-client'.format(awesome.get_script(self)))
+            cmd.append('echo "{}" | /usr/bin/awesome-client'.format(
+                awesome.get_script(self)
+            ))
         return cmd
 
     def _cleanup_proc(self):
@@ -95,12 +97,12 @@ class ManagedWindow(object):
             try:
                 awesome.setup_environ()
             except Exception as e:
-                rospy.logerror(
+                rospy.logerr(
                     'failed to setup awesome environment: {}'.format(e.message)
                 )
             try:
                 self.proc = subprocess.Popen(cmd)
             except OSError:
-                rospy.logerror('failed to run {}'.format(XDOTOOL_BIN))
+                rospy.logerr('failed to run {}'.format(XDOTOOL_BIN))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

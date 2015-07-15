@@ -8,7 +8,7 @@ from subprocess import Popen
 ROOT_DIR = os.path.realpath(os.curdir)
 ARGS = None
 # add more directories here as needed
-IGNORE_DIRS = ['catkin', 'scripts', '.git']
+IGNORE_DIRS = ['catkin', 'scripts', '.git', 'tmp']
 NEEDED_DIRS = ['appctl', 'interactivespaces_msgs']
 
 if os.path.basename(ROOT_DIR) == 'scripts':
