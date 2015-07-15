@@ -121,11 +121,11 @@ function update_replaces() {
 function update_metapackage_replaces() {
     # $1 should be git branch
     if [ "$1" == "development" ]; then
-        REPLACES="$ROS_REL-portal-master, $ROS_REL-portal-staging"
+        REPLACES="$ROS_REL-lg-master, $ROS_REL-lg-staging"
     elif  [ "$1" == "master" ]; then
-         REPLACES="$ROS_REL-portal-development, $ROS_REL-portal-staging"
+         REPLACES="$ROS_REL-lg-development, $ROS_REL-lg-staging"
     elif  [ "$1" == "staging" ]; then
-         REPLACES="$ROS_REL-portal-development, $ROS_REL-portal-master"
+         REPLACES="$ROS_REL-lg-development, $ROS_REL-lg-master"
     fi
     echo "Updating file ${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control with s/__REPLACES__/$REPLACES/g"
     sed -i s/__REPLACES__/"$REPLACES"/g ${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control
