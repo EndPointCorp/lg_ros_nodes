@@ -91,10 +91,32 @@ def get_script(window):
         get_apply_script(window)
     ])
 
+def get_awesome_pid():
+    awesome_pid = None
+
+    try:
+        awesome_pid = int(subprocess.check_output(['pidof', 'x-window-manager']))
+    except:
+        pass
+    try:
+        awesome_pid = int(subprocess.check_output(['pidof', 'awesome']))
+    except:
+        pass
+    try:
+        awesome_pid = int(subprocess.check_output(['pidof', '/usr/bin/awesome']))
+    except:
+        pass
+
+    return awesome_pid
+
 def setup_environ():
-    awesome_pid = int(subprocess.check_output(['pidof', 'x-window-manager']))
+    awesome_pid = get_awesome_pid()
+    if awesome_pid is None:
+        raise Exception('Could not find awesome pid')
+
     with open('/proc/{}/environ'.format(awesome_pid), 'r') as f:
         awesome_environ_raw = f.read().strip('\0')
+
     def split_environ(raw):
         pair = raw.split('=', 1)
         return pair[0], pair[1]
