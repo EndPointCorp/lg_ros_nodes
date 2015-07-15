@@ -52,13 +52,9 @@
   <!-- Google earth KMLSyncState -->
   <node name="kmlsync_state" pkg="lg_earth" type="kmlsync_state" clear_params="true" />
 
-  <!-- StreetView globals -->
-  <arg name="streetview_url" default="127.0.0.1:9876" />
-
-  <!-- StreetView Launcher -->
-  <node name="launcher" pkg="lg_sv" type="launcher" clear_params="true">
-    <param name="yaw_offset" value="0" />
-    <param name="pitch_offset" value="0" />
-    <param name="url" value="$(arg streetview_url)" />
+  <!-- StreetView -->
+  <node name="sv_server" pkg="lg_sv" type="server.py" clear_params="true" />
+  <node name="sv_launcher" pkg="lg_sv" type="launcher.py" clear_params="true">
+    <param name="viewport" value="touchscreen" />
   </node>
 </launch>
