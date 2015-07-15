@@ -19,6 +19,14 @@ Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-
 
 Also, you'll need to patch Earth for the homedir fix as described in the lg\_earth README, otherwise its configuration will be unmanaged.
 
+Additionally, you'll need to set up permissions for the special `/dev/uinput` file for the SpaceNav emulator to work. To make it persistent, write this udev rule to `/etc/udev/rules.d/42-uinput.rules`:
+
+    SUBSYSTEM=="misc", KERNEL=="uinput", GROUP="plugdev", MODE:="0660"
+
+This will fix uinput permissions at boot. You can also manually set permissions for the current session.
+
+    $ sudo chown root:plugdev /dev/uinput ; sudo chmod 0660 /dev/uinput
+
 Now then.
 
 First, clone the repo.

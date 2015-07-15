@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>lg_earth</name>
-  <version>0.0.1</version>
-  <description>ROS software for running and interfacing with the Google Earth desktop client.</description>
+  <name>lg_adhoc_browser</name>
+  <version>0.0.0</version>
+  <description>ROS software for running and interfacing with Chrome browser.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
 
@@ -10,17 +10,15 @@
 
   <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
 
-  <author email="matt@endpoint.com">Matt Vollrath</author>
+  <author email="szymon@endpoint.com">Szymon Guz</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>
+  <build_depend>lg_common</build_depend>
   <build_depend>message_generation</build_depend>
-  <run_depend>message_runtime</run_depend>
-  <run_depend>std_msgs</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>appctl</run_depend>
   <run_depend>interactivespaces_msgs</run_depend>
   <run_depend>lg_common</run_depend>
-  <test_depend>python-requests</test_depend>
 </package>

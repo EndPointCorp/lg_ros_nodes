@@ -1,0 +1,6 @@
+ros-indigo-lg-nav-to-device (1.0.0-0trusty) trusty; urgency=high
+
+  * First package creation for indigo release
+
+ -- End Point Corp LG R&D <lg-rad@endpoint.com>  Thu, 13 Jul 2015 17:20:33 -0400
+
