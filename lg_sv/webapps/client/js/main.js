@@ -51,11 +51,12 @@ function initialize() {
   });
 
   svClient.on('pov_changed', function(povQuaternion) {
+    // TODO(mv): move quaternion parsing into StreetviewClient library
     var pov = {
-      heading: povQuaternion.y,
+      heading: povQuaternion.z,
       pitch: povQuaternion.x
     };
-    var roll = povQuaternion.z;
+    var roll = povQuaternion.y;
     var zoom = povQuaternion.w;
     console.log('Changing pov to', pov, roll, zoom);
     sv.setPov(pov);

@@ -137,10 +137,10 @@ class StreetviewServer:
         if not self.state:
             return
         # attempt deep copy
-        pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.z)
+        pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
         # or maybe Quaternion(self.pov.x, self.pov.y, ...)
-        tilt = pov_msg.x + twist.angular.x * self.nav_sensitivity
-        heading = pov_msg.z + twist.angular.z * self.nav_sensitivity
+        tilt = pov_msg.x - twist.angular.y * self.nav_sensitivity
+        heading = pov_msg.z - twist.angular.z * self.nav_sensitivity
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
         pov_msg.z = wrap(heading, 0, 360)
         self.pub_pov(pov_msg)
