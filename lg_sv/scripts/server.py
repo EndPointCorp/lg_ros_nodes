@@ -2,6 +2,7 @@
 
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
+from lg_common.msg import ApplicationState
 from std_msgs.msg import String
 from math import atan2, cos, sin, pi
 from lg_sv import StreetviewServer
@@ -49,6 +50,8 @@ def main():
                      server.handle_pov_msg)
     rospy.Subscriber('/spacenav/twist', Twist,
                      server.handle_spacenav_msg)
+    rospy.Subscriber('/streetview/state', ApplicationState,
+                     server.handle_state_msg)
     rospy.spin()
 
 if __name__ == '__main__':
