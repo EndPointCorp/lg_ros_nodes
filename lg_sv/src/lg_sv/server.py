@@ -55,7 +55,7 @@ class StreetviewUtils:
 
 
 class StreetviewServer:
-    def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max, nav_sensitivty):
+    def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max, nav_sensitivity):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
