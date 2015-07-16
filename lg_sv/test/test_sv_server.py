@@ -15,6 +15,7 @@ import rospy
 import rostest
 import unittest
 from lg_sv import StreetviewUtils, StreetviewServer
+from geometry_msgs.msg import Quaternion, Pose2D
 
 class MockPublisher:
     def __init__(self):
@@ -53,6 +54,22 @@ class TestSVServer(unittest.TestCase):
         self.assertEqual(self.server.panoid, new_pano,
                          'panoid should not be set yet')
         self.assertEqual(self.pano_pub.data[0], new_pano,
+                         'pano_pub data did not have the correct value')
+
+    def test_2_pov_pub(self):
+        # test initial state
+        self.assertEqual(len(self.pov_pub.data), 0,
+                         'pov_pub data should not have anything in it')
+        self.assertEqual(self.server.pov, Quaternion(),
+                         'pov should not be set yet')
+        new_pov = Quaternion(x=1.0, y=1.0, z=1.0, w=1.0)
+        self.server.pub_pov(new_pov)
+        # test final state
+        self.assertEqual(len(self.pov_pub.data), 1,
+                         'pov_pub data did not have the correct amount of data')
+        self.assertEqual(self.server.pov, new_pov,
+                         'panoid should not be set yet')
+        self.assertEqual(self.pov_pub.data[0], new_pov,
                          'pano_pub data did not have the correct value')
 
 

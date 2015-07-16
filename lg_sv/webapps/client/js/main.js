@@ -37,6 +37,7 @@ function initialize() {
   map.setStreetView(sv);
 
   var ros = new ROSLIB.Ros({
+    // TODO (wz) parametrize this
     url: 'ws://localhost:9090'
   });
   ros.on('connection', function() {
