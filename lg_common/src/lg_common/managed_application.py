@@ -16,7 +16,7 @@ class ManagedApplication(object):
         self.state = ApplicationState.STOPPED
 
         self.lock = threading.RLock()
-        self.proc = ProcController(cmd)
+        self.proc = ProcController(cmd, spawn_hooks=[self._handle_respawn])
         self.sig_retry_timer = None
 
         rospy.on_shutdown(self._cleanup)
