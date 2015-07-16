@@ -1,6 +1,7 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from lg_common.msg import ApplicationState
+from lg_common.helpers import write_log_to_file
 from math import atan2, cos, sin, pi
 import requests
 import json
@@ -36,7 +37,8 @@ def wrap(val, low, high):
     return val
 
 class StreetviewUtils:
-    def get_panoid_from_lat_lon(lat, lon, radius=2000):
+    @staticmethod
+    def get_metadata_from_lat_lon(lat, lon, radius=2000):
         """
         Returns a panoid if one exists within $radius meters(?) of the lat/lon
         """
@@ -48,11 +50,17 @@ class StreetviewUtils:
         content = {}
         try:
             content = json.loads(r.content)
-            assert content['Location']
-            assert content['Location']['panoId']
         except ValueError:
             return False
-        except KeyError:
+        return content
+
+    @staticmethod
+    def get_panoid_from_lat_lon(lat, lon, radius=2000):
+        content = StreetviewUtils.get_metadata_from_lat_lon(lat, lon, radius)
+        try:
+            assert content['Location']
+            assert content['Location']['panoId']
+        except AssertionError:
             return False
         return str(content['Location']['panoId'])
 

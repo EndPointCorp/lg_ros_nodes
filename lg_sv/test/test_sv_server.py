@@ -10,6 +10,7 @@ import rospy
 import rostest
 import unittest
 from lg_sv import StreetviewUtils
+from lg_common.helpers import write_log_to_file
 
 class TestSVServer(unittest.TestCase):
     def setUp(self):
@@ -19,8 +20,8 @@ class TestSVServer(unittest.TestCase):
         pass
 
     def test_sv_utils(self):
-        sv_utils = StreetviewUtils()
-        response = sv_utils.get_panoid_from_lat_lon(LAT, LON)
+        response = StreetviewUtils.get_panoid_from_lat_lon(LAT, LON)
+        write_log_to_file("Response from get_panoid_from_latlon: {}".format(response))
         self.assertIsInstance(response, str)
 
 
