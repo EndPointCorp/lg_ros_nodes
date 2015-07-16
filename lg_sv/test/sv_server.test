@@ -1,0 +1,4 @@
+<launch>
+    <test test-name="test_sv_server" pkg="lg_sv" type="test_sv_server.py" />
+</launch>
+

@@ -38,7 +38,7 @@ class StreetviewUtils:
         Returns a panoid if one exists within $radius meters(?) of the lat/lon
         """
         # this url may change someday...
-        url = 'http://maps.google.com/cbk??output=json&v=4&dm=0&pm=0&ll={},{}&radius={}'
+        url = 'http://maps.google.com/cbk?output=json&v=4&dm=0&pm=0&ll={},{}&radius={}'
         r = requests.get(url.format(lat, lon, radius))
         if r.status_code != 200:
             return False
