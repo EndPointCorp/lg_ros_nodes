@@ -1,7 +1,6 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from lg_common.msg import ApplicationState
-from lg_common.helpers import write_log_to_file
 from math import atan2, cos, sin, pi
 import requests
 import json
