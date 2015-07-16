@@ -68,7 +68,6 @@ class StreetviewServer:
         self.location = Pose2D()
         self.pov = Quaternion()
         self.panoid = str()
-        self.metadata = dict()
         self.state = True
         ### parameterize
         self.nav_sensitivity = nav_sensitivity
@@ -101,7 +100,7 @@ class StreetviewServer:
         """
         Grabs the new metadata from a publisher
         """
-        self.last_metadata = metadata
+        self.nearby_panos.handle_metadata_msg(metadata)
 
     def pub_pov(self, pov):
         """
@@ -120,7 +119,7 @@ class StreetviewServer:
         """
         Publishes a new panoid after setting the instance variable
         """
-        self.panoid = panoid
+        self.handle_panoid_msg(panoid)
         self.panoid_pub.publish(panoid)
 
     def handle_panoid_msg(self, panoid):
@@ -128,6 +127,7 @@ class StreetviewServer:
         Grabs the new panoid from a publisher
         """
         self.panoid = panoid
+        self.nearby_panos.set_panoid(panoid)
 
     def handle_state_msg(self, app_state):
         """
@@ -210,6 +210,21 @@ class StreetviewServer:
 class NearbyPanos:
     def __init__(self):
         self.panoid = None
+        self.metadata = None
+
+    def handle_metadata_msg(self, metadata):
+        tmp = None
+        try:
+            tmp = json.loads(metadata.data)
+            if tmp['location']['pano'] == self.panoid:
+                self.metadata = tmp
+        except ValueError:
+            pass
+        except KeyError:
+            pass
+
+    def set_panoid(self, panoid):
+        self.panoid = panoid
 
     def find_closest(self, panoid, pov_z):
         """
@@ -217,73 +232,24 @@ class NearbyPanos:
         spacenav (either forwards or backwards) based on the nearby panos
         bearing to the current pano
         """
+        if not self.metadata or not self.panoid:
+            return None
+        if self.metadata['location']['pano'] != self.panoid:
+            return None
+        if 'links' not in self.metadata or not isinstance(self.metadata['links'], list):
+            return None
         self.panoid = panoid
-        our_metadata = self.get_pano_metadata(self.panoid)
-        my_lat = float(our_metadata['Location']['lat'])
-        my_lng = float(our_metadata['Location']['lng'])
-        nearby = self.get_nearby_panos()
-        nearby_metadata = map(self.get_pano_metadata, nearby)
+        my_lat = self.metadata['location']['latLng']['lat']
+        my_lng = self.metadata['location']['latLng']['lng']
         # set closest to the farthest possible result
         closest = 180
-        closest_pano = ''
-        for data in nearby_metadata:
-            bearing = self.bearing(
-                    my_lat, my_lng, float(data['Location']['lat']),
-                    float(data['Location']['lng']))
-            tmp = self.headingDifference(pov_z, bearing)
+        closest_pano = None
+        for data in self.metadata['links']:
+            tmp = self.headingDifference(pov_z, data['heading'])
             if tmp <= closest:
                 closest = tmp
-                closest_pano = data['Location']['panoId']
+                closest_pano = data['pano']
         return closest_pano
-
-    def get_pano_metadata(self, panoid):
-        """
-        Returns a pano's metadata, uses an undocumented google api call...
-        """
-        # this url may change someday...
-        url = 'http://maps.google.com/cbk?output=json&v=4&dm=0&pm=0&panoid={}'
-        r = requests.get(url.format(panoid))
-        if r.status_code != 200:
-            return False #maybe raise exception?
-        content = {}
-        try:
-            content = json.loads(r.content)
-        except ValueError:
-            return False
-        return content
-
-    def get_nearby_panos(self, panoid=None):
-        """
-        Returns an array of nearby panos
-
-        nearby panos are found in the pano metadata['Links'] section
-        """
-        if not panoid:
-            panoid = self.panoid
-
-        content = self.get_pano_metadata(panoid)
-        links = []
-        # make sure the Links key exists
-        if not 'Links' in content:
-            return []
-        for link in content['Links']:
-            links.append(str(link['panoId']))
-        return links
-
-    def bearing(self, lat1d, lon1d, lat2d, lon2d):
-        """
-        Returns the bearing from {lat,lon}1 to {lat,lon}2
-
-        arguments given in degrees
-        returns degrees
-        """
-        lat1 = lat1d * (pi / 180)
-        lat2 = lat2d * (pi / 180)
-        lon1 = lon1d * (pi / 180)
-        lon2 = lon2d * (pi / 180)
-        bearing_r = atan2(sin(lon2 - lon1) * cos(lat2),
-                    cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(lon2 - lon1))
-        return bearing_r * 180 / pi
 
     def headingDifference(self, source, target):
         """
