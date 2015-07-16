@@ -1,0 +1,14 @@
+Source: ros-indigo-lg-adhoc-browser
+Section: misc
+Priority: extra
+Maintainer: End Point Corp LG R&D <lg-rad@endpoint.com>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-message-generation, ros-indigo-rospy
+Homepage: http://liquid-galaxy.endpoint.com
+Standards-Version: 3.9.2
+
+Package: ros-indigo-lg-adhoc-browser
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-geometry-msgs, ros-indigo-rospy, ros-indigo-appctl, ros-indigo-interactivespaces-msgs, ros-indigo-lg-common
+Description: Adhoc browser for displaying content on screen
+Replaces: __REPLACES__
+Conflicts: __REPLACES__

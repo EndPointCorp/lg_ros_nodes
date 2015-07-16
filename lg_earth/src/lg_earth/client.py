@@ -16,11 +16,14 @@ TOOLBAR_HEIGHT = 22
 class Client:
     def __init__(self):
         geometry = ManagedWindow.get_viewport_geometry()
-        geometry.y -= TOOLBAR_HEIGHT
-        geometry.height += TOOLBAR_HEIGHT
+        if geometry is not None:
+            geometry.y -= TOOLBAR_HEIGHT
+            geometry.height += TOOLBAR_HEIGHT
 
         earth_window = ManagedWindow(
             geometry=geometry,
+            w_class='Googleearth-bin',
+            w_name='Google Earth',
             w_instance=self._get_instance()
         )
 
