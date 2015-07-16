@@ -23,6 +23,7 @@ from lg_sv import StreetviewServer
 DEFAULT_TILT_MIN = -80
 DEFAULT_TILT_MAX = 80
 DEFAULT_NAV_SENSITIVITY = 1.0
+DEFAULT_NAV_INTERVAL = 0.1
 
 
 def main():
@@ -37,8 +38,10 @@ def main():
     tilt_min = rospy.get_param('~tilt_min', DEFAULT_TILT_MIN)
     tilt_max = rospy.get_param('~tilt_max', DEFAULT_TILT_MAX)
     nav_sensitivity = rospy.get_param('~nav_sensitivity', DEFAULT_NAV_SENSITIVITY)
+    space_nav_interval = rospy.get_param('~space_nav_interval', DEFAULT_NAV_INTERVAL)
 
-    server = StreetviewServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max, nav_sensitivity)
+    server = StreetviewServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
+                              nav_sensitivity, space_nav_interval)
 
     rospy.Subscriber('/streetview/location', Pose2D,
                      server.handle_location_msg)
