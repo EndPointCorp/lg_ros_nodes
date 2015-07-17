@@ -148,7 +148,7 @@ class StreetviewServer:
         """
         Get the metadata from nearby panos
         """
-        return self.nearby_panos.metadata
+        return self.nearby_panos.get_metadata()
 
     def pub_pov(self, pov):
         """
@@ -280,9 +280,7 @@ class NearbyPanos:
         spacenav (either forwards or backwards) based on the nearby panos
         bearing to the current pano
         """
-        if not self.metadata or not self.panoid:
-            return None
-        if self.metadata['location']['pano'] != self.panoid:
+        if not self.get_metadata():
             return None
         if 'links' not in self.metadata or not isinstance(self.metadata['links'], list):
             return None
@@ -306,3 +304,13 @@ class NearbyPanos:
         """
         diff = abs(target - source) % 360
         return diff if diff < 180 else diff - (diff - 180)
+
+    def get_metadata(self):
+        """
+        Only return the metadata if it matches the current panoid
+        """
+        if not self.metadata or not self.panoid:
+            return None
+        if self.metadata['location']['pano'] != self.panoid:
+            return None
+        return self.metadata
