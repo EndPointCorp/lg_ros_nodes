@@ -291,7 +291,7 @@ class NearbyPanos:
         closest = 180
         closest_pano = None
         for data in self.metadata['links']:
-            tmp = self.headingDifference(pov_z, data['heading'])
+            tmp = self.headingDifference(pov_z, float(data['heading']))
             if tmp <= closest:
                 closest = tmp
                 closest_pano = data['pano']
