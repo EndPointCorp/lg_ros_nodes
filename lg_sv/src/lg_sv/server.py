@@ -219,25 +219,25 @@ class StreetviewServer:
             if self.move_forward == 0:
                 self.move_forward = self.last_nav_msg_t
             if self.last_nav_msg_t - self.move_forward > FORWARD_THRESHOLD:
-                self.move_forward()
+                self._move_forward()
         elif twist.linear.x < -X_THRESHOLD:
             if self.move_backward == 0:
                 self.move_backward = self.last_nav_msg_t
             if self.last_nav_msg_t - self.move_backward > BACKWARDS_THRESHOLD:
-                self.move_backward()
+                self._move_backward()
         else:
             # reset counters
             self.move_forward = 0
             self.move_backward = 0
 
-    def move_forward(self):
+    def _move_forward(self):
         """
         Wrapper around move function, resets counter
         """
         if self.move(self.pov.z):
             self.move_forward = 0
 
-    def move_backward(self):
+    def _move_backward(self):
         """
         Wrapper around move function, resets counter and passes an adjusted
         heading
