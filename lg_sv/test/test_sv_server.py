@@ -47,6 +47,9 @@ class TestSVServer(unittest.TestCase):
         self.assertIsInstance(response, dict)
         self.assertTrue('Location' in response)
         self.assertTrue('panoId' in response['Location'])
+        webapp_metadata = StreetviewUtils.translate_server_metadata_to_client_form(response)
+        self.assertEqual(response['Location']['panoId'], webapp_metadata['location']['pano'],
+                         'webapp metadata does not match the google version')
 
 
     def test_1_pano_pub(self):
