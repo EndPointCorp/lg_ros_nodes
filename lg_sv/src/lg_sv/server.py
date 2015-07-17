@@ -63,6 +63,41 @@ class StreetviewUtils:
             return False
         return str(content['Location']['panoId'])
 
+    @staticmethod
+    def translate_server_metadata_to_client_form(metadata):
+        """
+        The metadata we get from the webapp client looks different from
+        the metadata we get directly from google, we should use the webapp
+        style as that is where our metadata will come from most of the time
+
+        This is a stripped down metadata with just the essiential bits of
+        information in it
+        """
+        assert isinstance(metadata, dict)
+        links = []
+        ret = {}
+        try:
+            for link in metadata['Links']:
+                links.append(
+                    {
+                        'heading': link['yawDeg'],
+                        'pano': link['panoId']
+                    }
+                )
+            ret = {
+                'links': links,
+                'location': {
+                    'latLng': {
+                        'lat': metadata['Location']['lat'],
+                        'lng': metadata['Location']['lng']
+                    },
+                'pano': metadata['Location']['panoId']
+                }
+            }
+        except KeyError:
+            return {}
+        return ret
+
 
 class StreetviewServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
@@ -108,6 +143,12 @@ class StreetviewServer:
         Grabs the new metadata from a publisher
         """
         self.nearby_panos.handle_metadata_msg(metadata)
+
+    def get_metadata(self):
+        """
+        Get the metadata from nearby panos
+        """
+        return self.nearby_panos.metadata
 
     def pub_pov(self, pov):
         """
