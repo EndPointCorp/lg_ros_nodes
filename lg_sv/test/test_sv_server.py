@@ -145,6 +145,37 @@ class TestSVServer(unittest.TestCase):
         self.server.handle_metadata_msg(msg)
         self.assertEqual(self.server.get_metadata(), metadata)
 
+    def test_6_pano_change(self):
+        # set up initial state
+        # grab the metadata for the pano we will be working with
+        metadata = StreetviewUtils.get_metadata_from_lat_lon(LAT, LON)
+        metadata = StreetviewUtils.translate_server_metadata_to_client_form(metadata)
+        # publish the pano so the server.panoid and nearby_panos.panoid get set
+        self.server.pub_panoid(metadata['location']['pano'])
+        msg = String(json.dumps(metadata))
+        # allow the nearby_pano member to set the metadata
+        self.server.handle_metadata_msg(msg)
+        # check that links has members, otherwise there will be no pano change
+        if len(metadata['links']) == 0:
+            return
+        pov = Quaternion()
+        pov_z = pov.z
+        # store the return of find_closest to check to test
+        new_pano = self.server.nearby_panos.find_closest(metadata['location']['pano'], pov_z)
+        self.assertNotEqual(new_pano, None,
+                            'there should be a new pano since there were links')
+        self.assertNotEqual(new_pano, metadata['location']['pano'],
+                            'the new pano should not be the same as the old pano')
+
+        # publish a pov since it is needed to move
+        self.server.pub_pov(pov)
+        self.server._move_forward()
+        # check that after moving forward the server's panoid matches the expected
+        self.assertEqual(self.server.panoid, new_pano,
+                         'the new pano should match the one returned from find_closest')
+        self.assertEqual(self.server.get_metadata(), None,
+                         'metadata should be none since the new metadata has not been published yet')
+
 
 if __name__ == '__main__':
     rostest.rosrun(PKG, NAME, TestSVServer, sys.argv)
