@@ -4,6 +4,7 @@ import rospy
 
 from lg_common import ManagedWindow, ManagedBrowser
 from lg_common.msg import ApplicationState
+from lg_common.helpers import add_url_params
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
 
@@ -12,11 +13,11 @@ def main():
     rospy.init_node('streetview_browser', anonymous=True)
     geometry = ManagedWindow.get_viewport_geometry()
     url = str(rospy.get_param('~url', DEFAULT_URL))
-    yawOffset = float(rospy.get_param('~yaw_offset', 0))
-    pitchOffset = float(rospy.get_param('~pitch_offset', 0))
-    showLinks = bool(rospy.get_param('~show_links', False))
+    yaw_offset = float(rospy.get_param('~yaw_offset', 0))
+    pitch_offset = float(rospy.get_param('~pitch_offset', 0))
+    show_links = str(rospy.get_param('~show_links', False)).lower()
     # put parameters into one big url
-    url = "%s?yawOffset=%s&pitchOffset=%s&showLinks=%s" % (url, yawOffset, pitchOffset, str(showLinks).lower())
+    url = add_url_params(url, yawOffset=yaw_offset, pitchOffset=pitch_offset, showLinks=show_links)
     # create the managed browser
     managed_browser = ManagedBrowser(url=url, geometry=geometry)
 
