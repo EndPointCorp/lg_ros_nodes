@@ -16,22 +16,26 @@ TOOLBAR_HEIGHT = 22
 class Client:
     """Google Earth client launcher."""
     def __init__(self):
-        geometry = ManagedWindow.get_viewport_geometry()
-        if geometry is not None:
-            geometry.y -= TOOLBAR_HEIGHT
-            geometry.height += TOOLBAR_HEIGHT
-
-        earth_window = ManagedWindow(
-            geometry=geometry,
-            w_class='Googleearth-bin',
-            w_name='Google Earth',
-            w_instance=self._get_instance()
-        )
-
-        cmd = ['/opt/google/earth/free/googleearth-bin']
-
         args, geplus_config, layers_config, kml_content, view_content = \
             self._get_config()
+
+        # Skip window management if this window is hidden.
+        if '--hidegui' in args:
+            earth_window = None
+        else:
+            geometry = ManagedWindow.get_viewport_geometry()
+            if geometry is not None:
+                geometry.y -= TOOLBAR_HEIGHT
+                geometry.height += TOOLBAR_HEIGHT
+
+            earth_window = ManagedWindow(
+                geometry=geometry,
+                w_class='Googleearth-bin',
+                w_name='Google Earth',
+                w_instance=self._get_instance()
+            )
+
+        cmd = ['/opt/google/earth/free/googleearth-bin']
 
         cmd.extend(args)
         self.earth_proc = ManagedApplication(cmd, window=earth_window)
