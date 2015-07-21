@@ -49,7 +49,7 @@ Run with sudo.
 * `high_quality_terrain` [bool] - Show high quality terrain. Default: `true`
 * `texture_compression` [bool] - Use texture compression. Default: `true`
 * `status_bar_visible` [bool] - Show the status bar at the bottom of the window. Default: `true`
-* `mem_cache_size` [int] - Size of the memory cache in MB. Default: `32`
+* `mem_cache_size` [int] - Size of the memory cache in MB. Default: `64`
 * `disk_cache_size` [int] - Size of the disk cache in MB. Default: `512`
 * `show_state_borders` [bool] - Show state/province borders. Default: `false`
 * `show_country_borders` [bool] - Show country borders. Default: `false`

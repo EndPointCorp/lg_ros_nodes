@@ -210,7 +210,7 @@ class ClientConfig:
             'WaterSurface': True,
         }
 
-        mem_cache_size = rospy.get_param('~mem_cache_size', 32)
+        mem_cache_size = rospy.get_param('~mem_cache_size', 64)
         disk_cache_size = rospy.get_param('~disk_cache_size', 256)
 
         geplus_config['Cache'] = {
