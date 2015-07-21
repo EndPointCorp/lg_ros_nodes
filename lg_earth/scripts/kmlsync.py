@@ -19,10 +19,13 @@ def main():
         (r'/query.html', KmlQueryHandler),
     ], debug=True)
 
+    rospy.wait_for_service('/kmlsync/state')
+    rospy.wait_for_service('/kmlsync/playtour_query')
+
     kml_state = KmlState()
     kmlsync_server.playtour = PlaytourQuery()
-    kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state)
-    kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour)
+    kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)
+    kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=True)
 
     kmlsync_server.listen(port)
     ros_tornado_spin()

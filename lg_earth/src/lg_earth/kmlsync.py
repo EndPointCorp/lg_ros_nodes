@@ -94,20 +94,31 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
         if window_slug:
-            assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, window_slug)
-            assets_to_create = self._get_assets_to_create(incoming_cookie_string, window_slug)
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, window_slug))
+            try:
+                assets = self._get_assets(window_slug)
+            except Exception as e:
+                rospy.logerr('Failed to get assets for {}: {}'.format(
+                    window_slug,
+                    e.message
+                ))
+                # Always return a valid KML or Earth will stop requesting updates
+                self.finish(get_kml_root())
+                return
+
+            assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
+            assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
         else:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
 
-    def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, window_slug):
+    def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
         kml_root = get_kml_root()
         kml_networklink = ET.SubElement(kml_root, 'NetworkLinkControl')
         kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
         kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
-        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_full_cookie(window_slug)
+        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_full_cookie(assets)
         kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
         kml_update = ET.SubElement(kml_networklink, 'Update')
         kml_target_href = ET.SubElement(kml_update, 'targetHref').text = self.request.protocol + '://' + self.request.host + '/master.kml'
@@ -118,31 +129,34 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         kml_content = kml_reparsed.toprettyxml(indent='\t')
         return unescape(kml_content)
 
-    def _get_assets_to_delete(self, incoming_cookie_string, window_slug):
+    def _get_assets_to_delete(self, incoming_cookie_string, assets):
         """
         Calculate the difference between assets loaded on GE client and those expected to be loaded by server.
         Return a list of slugs to be deleted from client e.g. ['blah_kml', 'zomg_kml']
         param incoming_cookie_string: str
             e.g. 'blah_kml,zomg_kml'
-        param window_slug: str
-            e.g. 'right_one'
+        param assets: list
+            list of assets for the request window_slug
         rtype: list
             e.g. ['blah_kml']
         """
-        server_slugs_list = self._get_server_slugs_state(window_slug)
+        server_slugs_list = self._get_server_slugs_state(assets)
         client_slugs_list = self._get_client_slugs_state(incoming_cookie_string)
         ret = list(set(client_slugs_list) - set(server_slugs_list))
         rospy.logdebug("Got the assets to delete as: %s" % ret)
         return ret
 
-    def _get_assets_to_create(self, incoming_cookie_string,  window_slug):
+    def _get_assets(self, window_slug):
+        return self.asset_service(window_slug).assets
+
+    def _get_assets_to_create(self, incoming_cookie_string, assets):
         """
         Calculate the difference between assets loaded on GE client and those expected to be loaded by server.
         Return a list of slugs to be created in GE client e.g. ['blah_kml', 'zomg_kml']
         param incoming_cookie_string: str
             e.g. 'blah_kml,zomg_kml'
-        param window_slug: str
-            e.g. 'right_one'
+        param assets: list
+            list of assets for the request window_slug
         rtype: list
             e.g. ['http://lg-head:8060/blah.kml', 'http://lg-head:8060/zomg.kml']
         """
@@ -150,7 +164,6 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         urls_to_create = []
         client_state_slugs = self._get_client_slugs_state(incoming_cookie_string)
 
-        assets = self.asset_service(window_slug).assets
         for url in assets:
             if escape_asset_url(url) in client_state_slugs:
                 continue
@@ -168,28 +181,28 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         """
         if not incoming_cookie_string:
             return []
-        return [ z for z in incoming_cookie_string.split(',')]
+        return [z for z in incoming_cookie_string.split(',')]
 
-    def _get_cookie(self, window_slug):
+    def _get_cookie(self, assets):
         """
         Return comma separated list of slugs e.g. 'asd_kml,blah_kml'
         rtype: str
         """
-        return generate_cookie(self.asset_service(window_slug).assets)
+        return generate_cookie(assets)
 
-    def _get_server_slugs_state(self, window_slug):
+    def _get_server_slugs_state(self, assets):
         """
         Return a list of slugs that server expects to be loaded
         """
         try:
-            cookie = self._get_cookie(window_slug)
-            return [ z for z in cookie.split(',')]
+            cookie = self._get_cookie(assets)
+            return [z for z in cookie.split(',')]
         except AttributeError, e:
             return []
 
-    def _get_full_cookie(self, window_slug):
+    def _get_full_cookie(self, assets):
         """return the cookie prepended by asset_slug= only if cookie is not blank"""
-        cookie = self._get_cookie(window_slug)
+        cookie = self._get_cookie(assets)
         if cookie != '':
             cookie = 'asset_slug=' + cookie
         return cookie

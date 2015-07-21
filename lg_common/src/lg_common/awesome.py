@@ -44,19 +44,25 @@ def get_properties(window):
         "border_width = 0",
         "size_hints_honor = false",
         "floating = true",
-        "width = {}".format(window.geometry.width),
-        "height = {}".format(window.geometry.height),
         "hidden = {}".format('false' if window.is_visible else 'true'),
         "minimized = {}".format('false' if window.is_visible else 'true'),
         "opacity = {}".format(1 if window.is_visible else 0),
     ]
+    if window.geometry is not None:
+        prop_list.extend([
+            "width = {}".format(window.geometry.width),
+            "height = {}".format(window.geometry.height),
+        ])
     return ', '.join(prop_list)
 
 def get_callback(window):
-    return "function(c) c:geometry({x=%d, y=%d}) end" % (
-        window.geometry.x,
-        window.geometry.y,
-    )
+    if window.geometry is not None:
+        return "function(c) c:geometry({x=%d, y=%d}) end" % (
+            window.geometry.x,
+            window.geometry.y,
+        )
+    else:
+        return ""
 
 def get_entry(window):
     rule = get_rule_pattern(window)
