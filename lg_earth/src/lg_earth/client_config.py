@@ -7,11 +7,20 @@ import rospy
 
 
 class ClientConfig:
+    """
+    Configuration helper for Google Earth client.
+    """
     def __init__(self, base_path, instance_name):
         self.base_path = base_path
         self.instance_name = instance_name
 
     def get_config(self):
+        """
+        Generate configuration based on ROS parameters.
+
+        Returns:
+            Tuple of configuration maps.
+        """
         args = []
 
         args.extend([
