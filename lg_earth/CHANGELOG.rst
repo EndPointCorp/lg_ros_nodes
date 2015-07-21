@@ -2,6 +2,13 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Document changes to Earth client params
+* Increase default Earth memory cache size
+* Don't manage Earth window if gui is hidden
+* Contributors: Matt Vollrath
+
 0.0.2 (2015-07-21)
 ------------------
 * Reduce default disk cache size for Earth client
