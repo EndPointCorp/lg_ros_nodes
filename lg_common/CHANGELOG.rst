@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-07-21)
+------------------
 * Allow missing window geometry
 * Fix rospy.logerr method names
 * Clean up and rename some window mgmt items

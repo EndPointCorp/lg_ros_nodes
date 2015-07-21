@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-07-21)
+------------------
 * Reduce default disk cache size for Earth client
 * Optimize service requests in kmlsync
 * Use persistent service proxies in kmlsync

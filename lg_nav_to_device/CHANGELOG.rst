@@ -2,8 +2,8 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-07-21)
+------------------
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
 0.0.1 (2015-07-08)
