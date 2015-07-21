@@ -14,6 +14,16 @@ var showLinks = getParameterByName('showLinks', stringToBoolean, false);
 var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 
+function wrap(val, low, high) {
+  if (val > high) {
+    val = val - (high - low);
+  }
+  if (val < low) {
+    val = val + (high - low);
+  }
+  return val;
+}
+
 function initialize() {
   console.log('initializing Street View');
 
@@ -53,15 +63,19 @@ function initialize() {
 
   svClient.on('pov_changed', function(povQuaternion) {
     // TODO(mv): move quaternion parsing into StreetviewClient library
+    // TODO(wjp): Set FOV somewhere outside of the client
+    var placeHolderFOV = 33;
+    var newHeading = wrap(yawOffset*placeHolderFOV+povQuaternion.z, 0, 360);
     var pov = {
-      heading: povQuaternion.z,
+      heading: newHeading,
       pitch: povQuaternion.x
     };
     var roll = povQuaternion.y;
     var zoom = povQuaternion.w;
     console.log('Changing pov to', pov, roll, zoom);
     sv.setPov(pov);
-    sv.setZoom(zoom);
+    // TODO(wjp): create zoom function
+    sv.setZoom(3);
   });
 }
 
