@@ -57,8 +57,8 @@ def get_rule_pattern(window):
     Returns:
         str: Comma-separated awesome rules to match the window.
     """
-    def pattern(t, v):
-        return "%s = '%s'" % (t, v)
+    def pattern(r):
+        return "%s = '%s'" % r
     patternized = map(pattern, get_rule_types(window).iteritems())
     return ', '.join(patternized)
 
@@ -128,9 +128,9 @@ def get_subtractive_script(window):
         str: Lua code to remove existing rules for the window.
     """
     rules = get_rule_types(window)
-    def match(rule):
-        return "rule['rule']['%s'] == '%s'" % rule
-    checks = ' and '.join(map(match, rules))
+    def rule(r):
+        return "rule['rule']['%s'] == '%s'" % r
+    checks = ' and '.join(map(rule, rules.iteritems()))
     return "for key,rule in pairs(awful.rules.rules) do if {checks} then table.remove(awful.rules.rules, key) end end".format(
         checks=checks
     )
