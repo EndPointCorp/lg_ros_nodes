@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_sv</name>
+  <version>0.0.1</version>
+  <description>The lg_sv package</description>
+  <maintainer email="will@endpoint.com">will</maintainer>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+  <license>TODO</license>
+
+  <author email="will@endpoint.com">will</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>lg_common</run_depend>
+  <run_depend>spacenav_node</run_depend>
+
+</package>

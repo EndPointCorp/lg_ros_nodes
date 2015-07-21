@@ -1,4 +1,6 @@
 import rospy
+import urllib
+import urlparse
 
 def escape_asset_url(asset_url):
     """
@@ -16,6 +18,22 @@ def escape_asset_url(asset_url):
         rospy.logerr("Got invalid type when trying to escape assets url %s" % asset_url)
         return ss
 
+def add_url_params(url, **params):
+    """
+    Add GET params to the url
+    url: string of the URL 
+    params: dict containing the keyword arguments
+
+    return string, updated url with the params
+    """
+    url_parts = list(urlparse.urlparse(url))
+    query_dict = dict(urlparse.parse_qsl(url_parts[4]))
+    query_dict.update(params)
+
+    #4th index is the query params position
+    url_parts[4] = urllib.urlencode(query_dict)
+
+    return urlparse.urlunparse(url_parts)
 
 def write_log_to_file(message):
     """
