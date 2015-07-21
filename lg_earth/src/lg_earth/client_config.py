@@ -202,7 +202,7 @@ class ClientConfig:
         }
 
         mem_cache_size = rospy.get_param('~mem_cache_size', 32)
-        disk_cache_size = rospy.get_param('~disk_cache_size', 512)
+        disk_cache_size = rospy.get_param('~disk_cache_size', 256)
 
         geplus_config['Cache'] = {
             'MemoryCacheSize': mem_cache_size,
