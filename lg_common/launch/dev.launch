@@ -5,8 +5,11 @@
 
   <param name="/viewport/left_one" value="640x480+0+0" />
   <param name="/viewport/center" value="640x480+640+0" />
-  <param name="/viewport/touchscreen" value="640x480+640+480" />
+  <param name="/viewport/touchscreen" value="640x480+640+960" />
   <param name="/viewport/right_one" value="640x480+1280+0" />
+  <param name="/viewport/sv_left_one" value="640x480+0+480" />
+  <param name="/viewport/sv_center" value="640x480+640+480" />
+  <param name="/viewport/sv_right_one" value="640x480+1280+480" />
 
   <!-- Development static file server. -->
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
@@ -30,15 +33,15 @@
     <param name="show_compass" value="true" />
     <param name="viewport" value="center" />
   </node>
-  <node name="touchscreen_browser" pkg="lg_common" type="static_browser.py" clear_params="true">
-    <param name="url" value="http://r33b.net/" />
-    <param name="viewport" value="touchscreen" />
-  </node>
   <node name="earth_right_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
     <param name="yaw_offset" value="-65" />
     <param name="viewport" value="right_one" />
+  </node>
+  <node name="touchscreen_browser" pkg="lg_common" type="static_browser.py" clear_params="true">
+    <param name="url" value="http://r33b.net/" />
+    <param name="viewport" value="touchscreen" />
   </node>
 
   <!-- Google Earth viewsync relay. -->
@@ -57,7 +60,15 @@
 
   <!-- StreetView -->
   <node name="sv_server" pkg="lg_sv" type="server.py" clear_params="true" />
-  <node name="sv_launcher" pkg="lg_sv" type="launcher.py" clear_params="true">
-    <param name="viewport" value="touchscreen" />
+  <node name="sv_launcher_left_one" pkg="lg_sv" type="launcher.py" clear_params="true">
+    <param name="viewport" value="sv_left_one" />
+    <param name="yaw_offset" value="-1" />
+  </node>
+  <node name="sv_launcher_center" pkg="lg_sv" type="launcher.py" clear_params="true">
+    <param name="viewport" value="sv_center" />
+  </node>
+  <node name="sv_launcher_right_one" pkg="lg_sv" type="launcher.py" clear_params="true">
+    <param name="viewport" value="sv_right_one" />
+    <param name="yaw_offset" value="1" />
   </node>
 </launch>
