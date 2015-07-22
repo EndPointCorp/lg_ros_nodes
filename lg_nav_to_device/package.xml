@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_nav_to_device</name>
-  <version>0.0.1</version>
+  <version>0.0.3</version>
   <description>Subscribes to events published over ros, and writes them back into a virtual device</description>
 
   <maintainer email="jacob@endpoint.com">jacob</maintainer>
@@ -13,7 +13,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>
   <run_depend>rospy</run_depend>
-  <!--<run_depend>python-evdev</run_depend>-->
+  <run_depend>python-evdev</run_depend>
   <run_depend>geometry_msgs</run_depend>
 
 </package>

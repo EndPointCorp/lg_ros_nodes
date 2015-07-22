@@ -1,3 +1,15 @@
+ros-indigo-lg-common (1.0.3-0trusty) trusty; urgency=high
+
+  * 1.0.3
+
+ -- Matt Vollrath <matt@endpoint.com>  Tue, 21 Jul 2015 20:05:42 -0400
+
+ros-indigo-lg-common (1.0.2-0trusty) trusty; urgency=high
+
+  * Bumped for deployment
+
+ -- Wojciech Ziniewicz <wojtek@endpoint.com>  Tue, 21 Jul 2015 18:25:33 +0100
+
 ros-indigo-lg-common (1.0.1-0trusty) trusty; urgency=high
 
   * Added missing static_browser.py
