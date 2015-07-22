@@ -33,7 +33,7 @@ def parse_config():
     """
     Sets globals which are better set in a config file
     """
-    config_file = 'setup.cfg'
+    config_file = 'scripts/init.cfg'
     if not os.path.exists(config_file):
         print 'WARNING, no %s found, using possibly outdated configuration' % config_file
         return # rely on hard coded values... maybe an exception would work
