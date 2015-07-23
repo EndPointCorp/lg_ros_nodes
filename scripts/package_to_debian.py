@@ -10,6 +10,24 @@ ROS_OS = 'ubuntu'
 ROS_OS_VERSION = 'trusty'
 DEBIAN_STANDARDS_VERSION = '3.9.2'
 
+def rosdep_sanity_check():
+    """Make sure rosdep is working."""
+    rosdep_cmd = [
+        'rosdep',
+        'resolve',
+        'rospy',  # this name should always resolve
+        '--os={}:{}'.format(ROS_OS, ROS_OS_VERSION),
+        '--rosdistro={}'.format(ROS_DISTRO)
+    ]
+    try:
+        subprocess.check_output(
+            rosdep_cmd
+        )
+    except:
+        return False
+    return True
+
+
 def catkin_to_apt_name(catkin_name):
     """Resolve a catkin package name to an APT package name.
 
@@ -55,6 +73,9 @@ def debianize(package_path):
     """
     package = parse_package(package_path)
     package.validate()
+
+    if not rosdep_sanity_check():
+        raise Exception('rosdep sanity check failed! is rosdep installed?')
 
     control = generate_control(package)
     print control
