@@ -191,6 +191,7 @@ class StreetviewServer:
         if not self.state:
             return
         # On the first ever nav msg, just set last nav time
+        """
         if self.last_nav_msg_t == 0:
             self.last_nav_msg_t = rospy.get_time()
             return
@@ -199,6 +200,8 @@ class StreetviewServer:
         self.last_nav_msg_t = now
         coefficient = time_since_last / self.space_nav_interval
         coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
+        """
+        coefficient = 1
         # attempt deep copy
         pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
         # or maybe Quaternion(self.pov.x, self.pov.y, ...)

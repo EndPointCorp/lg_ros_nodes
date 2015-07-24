@@ -14,7 +14,7 @@ function StreetviewClient(ros, streetView) {
     ros: ros,
     name: '/streetview/pov',
     messageType: 'geometry_msgs/Quaternion',
-    throttle_rate: 16,
+    throttle_rate: 33,
     queue_length: 1
   });
   this.panoTopic = new ROSLIB.Topic({

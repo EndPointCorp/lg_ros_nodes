@@ -24,9 +24,18 @@ function wrap(val, low, high) {
   return val;
 }
 
+function toRadians(degrees) {
+  return degrees * Math.PI / 180;
+}
+
+function toDegrees(radians) {
+  return radians * 180 / Math.PI;
+}
+
 function initialize() {
   console.log('initializing Street View');
-
+ 
+  
   var canvas = document.getElementById('map-canvas');
 
   var mapOptions = {
@@ -64,19 +73,34 @@ function initialize() {
   svClient.on('pov_changed', function(povQuaternion) {
     // TODO(mv): move quaternion parsing into StreetviewClient library
     // TODO(wjp): Set FOV somewhere outside of the client
-    var placeHolderFOV = 33;
-    var newHeading = wrap(yawOffset*placeHolderFOV+povQuaternion.z, 0, 360);
+    var placeHolderFOV = 28.125/2;
+    var radianOffset = toRadians(placeHolderFOV*yawOffset)
+    //var newHeading = wrap(yawOffset*placeHolderFOV+povQuaternion.z, 0, 360);
+    //var radianHeading = toRadians(newHeading);
+    var htr = [ povQuaternion.z, povQuaternion.x, 0 ]
+    var transform = M33.headingTiltRollToLocalOrientationMatrix( htr );
+    transform[0] = V3.rotate(transform[0], transform[2], -radianOffset);
+    transform[1] = V3.rotate(transform[1], transform[2], -radianOffset);
+    var transformedHTR = M33.localOrientationMatrixToHeadingTiltRoll( transform );
+    var roll = -transformedHTR[2];
     var pov = {
-      heading: newHeading,
-      pitch: povQuaternion.x
+      heading: transformedHTR[0],
+      pitch: transformedHTR[1]
     };
-    var roll = povQuaternion.y;
     var zoom = povQuaternion.w;
-    console.log('Changing pov to', pov, roll, zoom);
+    //console.log('Changing pov to', pov, roll, zoom);
     sv.setPov(pov);
+    canvas.setAttribute("style","transform: rotate(" + roll + "deg);");
     // TODO(wjp): create zoom function
     sv.setZoom(3);
   });
+  // get the width of the textarea minus scrollbar
+  //var textareaWidth = document.getElementById("map-canvas").scrollWidth;
+
+  // width of our wrapper equals width of the inner part of the textarea
+  //document.body.style.width = textareaWidth + "px";
+  //window.scrollTo((document.body.offsetWidth/2), (document.body.offsetHeight)/2)
+  //$(".page").each(function(){this.style.visibility = "visible";})
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
