@@ -21,6 +21,7 @@
   <node name="spacenav" pkg="spacenav_node" type="spacenav_node" clear_params="true" />
 
   <!-- Some Google Earths. -->
+  <!--
   <node name="earth_left_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
@@ -43,7 +44,7 @@
     <param name="url" value="http://r33b.net/" />
     <param name="viewport" value="touchscreen" />
   </node>
-
+  -->
   <!-- Google Earth viewsync relay. -->
   <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay" clear_params="true">
     <param name="repeat_host" value="$(arg broadcast_addr)" />
