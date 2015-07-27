@@ -16,6 +16,15 @@ ROS_OS_VERSION = 'trusty'
 DEBIAN_STANDARDS_VERSION = '3.9.2'
 
 
+def rosdep_update():
+    """Update the rosdep database."""
+    rosdep_cmd = [
+        'rosdep',
+        'update'
+    ]
+    subprocess.check_output(rosdep_cmd)
+
+
 def rosdep_sanity_check():
     """Make sure rosdep is working."""
     rosdep_cmd = [
@@ -282,6 +291,7 @@ def _catkin_to_apt_name(catkin_name):
 
 
 if __name__ == '__main__':
+    rosdep_update()
     debianize(sys.argv[1])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
