@@ -73,7 +73,7 @@ function initialize() {
   svClient.on('pov_changed', function(povQuaternion) {
     // TODO(mv): move quaternion parsing into StreetviewClient library
     // TODO(wjp): Set FOV somewhere outside of the client
-    var placeHolderFOV = 28.125/2;
+    var placeHolderFOV = 28.125/1.5;
     var radianOffset = toRadians(placeHolderFOV*yawOffset)
     var htr = [ povQuaternion.z, povQuaternion.x, 0 ]
     var transform = M33.headingTiltRollToLocalOrientationMatrix( htr );
