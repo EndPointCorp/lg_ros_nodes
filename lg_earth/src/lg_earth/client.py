@@ -14,38 +14,46 @@ TOOLBAR_HEIGHT = 22
 
 
 class Client:
+    """Google Earth client launcher."""
     def __init__(self):
-        geometry = ManagedWindow.get_viewport_geometry()
-        geometry.y -= TOOLBAR_HEIGHT
-        geometry.height += TOOLBAR_HEIGHT
-
-        earth_window = ManagedWindow(
-            geometry=geometry,
-            w_class='Googleearth-bin',
-            w_name='Google Earth',
-            w_instance=self._get_instance()
-        )
-
-        cmd = ['/opt/google/earth/free/googleearth-bin']
-
         args, geplus_config, layers_config, kml_content, view_content = \
             self._get_config()
+
+        # Skip window management if this window is hidden.
+        if '--hidegui' in args:
+            earth_window = None
+        else:
+            geometry = ManagedWindow.get_viewport_geometry()
+            if geometry is not None:
+                geometry.y -= TOOLBAR_HEIGHT
+                geometry.height += TOOLBAR_HEIGHT
+
+            earth_window = ManagedWindow(
+                geometry=geometry,
+                w_class='Googleearth-bin',
+                w_name='Google Earth',
+                w_instance=self._get_instance()
+            )
+
+        cmd = ['/opt/google/earth/free/googleearth-bin']
 
         cmd.extend(args)
         self.earth_proc = ManagedApplication(cmd, window=earth_window)
 
-        self._make_dir()
+        self._make_tempdir()
 
-        os.mkdir(self._get_dir() + '/.googleearth')
-        os.mkdir(self._get_dir() + '/.googleearth/Cache')
+        os.mkdir(self._get_tempdir() + '/.googleearth')
+        os.mkdir(self._get_tempdir() + '/.googleearth/Cache')
 
         if rospy.get_param('~show_google_logo', True):
             pass
         else:
-            self._touch_file((self._get_dir() + '/.googleearth/' + 'localdbrootproto'))
+            self._touch_file(
+                (self._get_tempdir() + '/.googleearth/' + 'localdbrootproto')
+            )
 
-        os.mkdir(self._get_dir() + '/.config')
-        os.mkdir(self._get_dir() + '/.config/Google')
+        os.mkdir(self._get_tempdir() + '/.config')
+        os.mkdir(self._get_tempdir() + '/.config/Google')
 
         self._render_config(geplus_config,
                             '.config/Google/GoogleEarthPlus.conf')
@@ -56,49 +64,95 @@ class Client:
         self._render_file(view_content,
                           '.googleearth/cached_default_view.kml')
 
-        os.environ['HOME'] = self._get_dir()
+        # Override the HOME location. This requires a hack to the Earth
+        # libraries. See the lg_earth README.
+        os.environ['HOME'] = self._get_tempdir()
 
+        # Prevent external browser launch.
         os.environ['BROWSER'] = '/dev/null'
 
+        # If the Xorg DISPLAY is not in our environment, assume :0
         if os.getenv('DISPLAY') is None:
             os.environ['DISPLAY'] = ':0'
 
+        # Google Earth has its own copies of some libraries normally found on
+        # the system, so we need to tell the loader to look there. This is
+        # normally done in the google-earth wrapper script.
         os.environ['LD_LIBRARY_PATH'] += ':/opt/google/earth/free'
 
     def _touch_file(self, fname):
+        """Touch a file, updating its access time.
+
+        Args:
+            fname (str): Absolute path of the file to be touched.
+        """
         if os.path.exists(fname):
             os.utime(fname, None)
         else:
             open(fname, 'a').close()
 
     def _get_instance(self):
+        """Get a unique instance name for this client.
+
+        Returns:
+            str: This node's ROS name, sanitized for use as a temp path and
+                window identifier.
+        """
         return '_earth_instance_' + rospy.get_name().strip('/')
 
-    def _get_dir(self):
+    def _get_tempdir(self):
+        """Get this client's unique temporary path.
+
+        Returns:
+            str: Path to this client's temporary directory.
+        """
         return os.path.normpath(systmp() + '/' + self._get_instance())
 
-    def _make_dir(self):
-        self._clean_dir()
-        os.mkdir(self._get_dir())
-        assert os.path.exists(self._get_dir())
-        rospy.on_shutdown(self._clean_dir)
+    def _make_tempdir(self):
+        """Create a temporary directory and register cleanup on shutdown."""
+        self._clean_tempdir()
+        os.mkdir(self._get_tempdir())
+        assert os.path.exists(self._get_tempdir())
+        rospy.on_shutdown(self._clean_tempdir)
 
-    def _clean_dir(self):
+    def _clean_tempdir(self):
+        """Attempt to delete temporary directory."""
         try:
-            shutil.rmtree(self._get_dir())
+            shutil.rmtree(self._get_tempdir())
         except OSError:
             pass
 
     def _get_config(self):
-        config = ClientConfig(self._get_dir(), self._get_instance())
+        """Grab configuration from the ClientConfig helper.
+
+        Returns:
+            tuple: See ClientConfig.get_config().
+        """
+        config = ClientConfig(self._get_tempdir(), self._get_instance())
         return config.get_config()
 
     def _render_file(self, content, path):
-        with open(self._get_dir() + '/' + path, 'w') as f:
+        """Write content to a file.
+
+        Args:
+            content (str)
+            path (str): File path relative to the temporary directory.
+        """
+        with open(self._get_tempdir() + '/' + path, 'w') as f:
             f.write(content)
 
     def _render_config(self, config, path):
-        with open(self._get_dir() + '/' + path, 'w') as f:
+        """Render a configuration file.
+
+        This takes a dictionary and writes the values as key value pairs.
+        Boolean values are written lowercase.
+
+        Args:
+            config (Dict[str, object]): Key value pairs to write to the config
+                file.
+            path (str): Config file path relative to the temp directory.
+        """
+        with open(self._get_tempdir() + '/' + path, 'w') as f:
             for section, settings in config.iteritems():
                 f.write('[' + section + ']\n')
                 for k, v in settings.iteritems():

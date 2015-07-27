@@ -2,7 +2,7 @@
 import rospy
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
-from lg_earth.srv import KmlState, PlaytourQuery
+from lg_earth.srv import KmlState, PlaytourQueryRequest
 import json
 
 
@@ -17,6 +17,8 @@ class KmlSyncState:
             assert isinstance(state, dict)
             assert 'windows' in state
             self.state = state
+            # send blank playtour query to unload any kmls
+            self._send_playtour_query(PlaytourQueryRequest())
         except AssertionError:
             rospy.logerr('Invalid message - keeping previous state')
         except ValueError:
