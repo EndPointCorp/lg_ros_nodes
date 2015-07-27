@@ -2,6 +2,13 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* kmlsync: send playtourqueryrequest object instead of string
+* kmlsync: move flyto unloading to state changes
+* unload any flytos in progress on networkling_update & when searching
+* Contributors: Jacob Minshall
+
 0.0.3 (2015-07-21)
 ------------------
 * Document changes to Earth client params

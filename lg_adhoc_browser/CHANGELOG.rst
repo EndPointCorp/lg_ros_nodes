@@ -2,6 +2,9 @@
 Changelog for package lg_adhoc_browser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.3 (2015-07-21)
 ------------------
 
