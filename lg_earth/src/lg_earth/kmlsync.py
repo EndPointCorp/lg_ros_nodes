@@ -78,7 +78,6 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 class KmlUpdateHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.asset_service = self.application.asset_service
-        self.playtour_service = self.application.playtour_service
 
     def get(self):
         """
@@ -87,7 +86,6 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             - create the KML and return it only if cookie was different and the window slug came in the request
         """
         rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
-        self.playtour_service(str())
         window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = ''
 
