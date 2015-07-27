@@ -21,7 +21,6 @@
   <node name="spacenav" pkg="spacenav_node" type="spacenav_node" clear_params="true" />
 
   <!-- Some Google Earths. -->
-  <!--
   <node name="earth_left_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
@@ -48,7 +47,6 @@
     <param name="url" value="http://r33b.net/" />
     <param name="viewport" value="touchscreen" />
   </node>
-  -->
   <!-- Google Earth viewsync relay. -->
   <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay" clear_params="true">
     <param name="repeat_host" value="$(arg broadcast_addr)" />
@@ -64,6 +62,7 @@
   <node name="kmlsync_state" pkg="lg_earth" type="kmlsync_state" clear_params="true" />
 
   <!-- StreetView -->
+  <!--
   <node name="sv_server" pkg="lg_sv" type="server.py" clear_params="true" />
   <node name="sv_launcher_left_one" pkg="lg_sv" type="launcher.py" clear_params="true">
     <param name="viewport" value="sv_left_one" />
@@ -76,4 +75,5 @@
     <param name="viewport" value="sv_right_one" />
     <param name="yaw_offset" value="1" />
   </node>
+  -->
 </launch>
