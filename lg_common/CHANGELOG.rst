@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2015-07-27)
+------------------
 * Added a helper method to generate url with GET params
 * Launch spacenav_node in dev.launch
 * Broader search for awesome pid
