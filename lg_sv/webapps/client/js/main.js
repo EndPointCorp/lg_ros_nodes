@@ -75,8 +75,6 @@ function initialize() {
     // TODO(wjp): Set FOV somewhere outside of the client
     var placeHolderFOV = 28.125/2;
     var radianOffset = toRadians(placeHolderFOV*yawOffset)
-    //var newHeading = wrap(yawOffset*placeHolderFOV+povQuaternion.z, 0, 360);
-    //var radianHeading = toRadians(newHeading);
     var htr = [ povQuaternion.z, povQuaternion.x, 0 ]
     var transform = M33.headingTiltRollToLocalOrientationMatrix( htr );
     transform[0] = V3.rotate(transform[0], transform[2], -radianOffset);
@@ -94,13 +92,6 @@ function initialize() {
     // TODO(wjp): create zoom function
     sv.setZoom(3);
   });
-  // get the width of the textarea minus scrollbar
-  //var textareaWidth = document.getElementById("map-canvas").scrollWidth;
-
-  // width of our wrapper equals width of the inner part of the textarea
-  //document.body.style.width = textareaWidth + "px";
-  //window.scrollTo((document.body.offsetWidth/2), (document.body.offsetHeight)/2)
-  //$(".page").each(function(){this.style.visibility = "visible";})
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
