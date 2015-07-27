@@ -58,4 +58,6 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-	main()
+    main()
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
