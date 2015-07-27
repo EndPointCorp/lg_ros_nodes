@@ -4,7 +4,8 @@
   <version>0.0.3</version>
   <description>Subscribes to events published over ros, and writes them back into a virtual device</description>
 
-  <maintainer email="jacob@endpoint.com">jacob</maintainer>
+  <author email="jacob@endpoint.com">Jacob Minshall</author>
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
 
   <license>TODO</license>
 
