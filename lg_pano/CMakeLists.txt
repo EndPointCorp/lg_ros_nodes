@@ -3,15 +3,9 @@ project(lg_pano)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
 )
 
 catkin_python_setup()
-
-add_service_files(
-)
-
-generate_messages()
 
 catkin_package()
 
@@ -21,6 +15,7 @@ include_directories(
 
 catkin_install_python(PROGRAMS
   scripts/master
+  scripts/master.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
