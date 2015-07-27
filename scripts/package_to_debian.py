@@ -181,26 +181,19 @@ def generate_changelog(package):
             author=maintainer,
             date=_datetime_to_rfc2822(date),
         )
-        if len(changes) > 0:
-            map(transfer_version_change, changes)
-        else:
-            # If no changes, create one to avoid exceptions
-            debian_changelog.add_change('')
+        debian_changelog.add_change('')
+        map(transfer_version_change, changes)
+        debian_changelog.add_change('')
 
     if package_changelog is not None:
         map(transfer_version_block, package_changelog.foreach_version())
     else:
         # If CHANGELOG.rst is missing, generate a phony one
-        full_version = str(package.version) + '-0' + ROS_OS_VERSION
-        debian_changelog.new_block(
-            package=package_name,
-            version=Version(full_version),
-            distributions=ROS_OS_VERSION,
-            urgency='high',
-            author=maintainer,
-            date=_datetime_to_rfc2822(datetime.datetime.now()),
-        )
-        debian_changelog.add_change('* {}'.format(str(package.version)))
+        version = str(package.version)
+        date = datetime.datetime.now()
+        changes = []
+        block = (version, date, changes)
+        transfer_version_block(block)
 
     return debian_changelog
 
