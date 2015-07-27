@@ -52,6 +52,7 @@ def debianize(package_path):
     package = parse_package(package_path)
     package.validate()
 
+    rosdep_update()
     if not rosdep_sanity_check():
         raise Exception('rosdep sanity check failed! is rosdep installed?')
 
@@ -291,7 +292,6 @@ def _catkin_to_apt_name(catkin_name):
 
 
 if __name__ == '__main__':
-    rosdep_update()
     debianize(sys.argv[1])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
