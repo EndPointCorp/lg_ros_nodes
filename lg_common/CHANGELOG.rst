@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2015-07-27)
+------------------
 * Chamber of understanding
 * Contributors: Neil Elliott
 
