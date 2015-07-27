@@ -134,13 +134,13 @@ def generate_control(package):
 
     control.append('Description: {}'.format(description))
 
-    replaces = '__REPLACES__'
+    #replaces = '__REPLACES__'
 
-    control.append('Replaces: {}'.format(replaces))
+    #control.append('Replaces: {}'.format(replaces))
 
-    conflicts = '__REPLACES__'
+    #conflicts = '__REPLACES__'
 
-    control.append('Conflicts: {}'.format(conflicts))
+    #control.append('Conflicts: {}'.format(conflicts))
 
     return '\n'.join(control)
 
