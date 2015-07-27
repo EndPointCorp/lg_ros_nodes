@@ -1,3 +1,9 @@
+ros-indigo-lg-earth (1.0.4-0trusty) trusty; urgency=high
+
+  * 1.0.4 removes flytos on networklink_update and when  searching
+
+ -- Jacob Minshall <jacob@endpoint.com>  Mon, 27 Jul 2015 07:55:42 -0700
+
 ros-indigo-lg-earth (1.0.3-0trusty) trusty; urgency=high
 
   * 1.0.3
