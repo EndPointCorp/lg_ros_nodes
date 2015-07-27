@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
+import datetime
+import os.path
 import subprocess
 import sys
+import time
 
 from catkin_pkg.package import parse_package
+from catkin_pkg import changelog as catkin_changelog
+from debian.changelog import Changelog, Version
 
 ROS_DISTRO = 'indigo'
 ROS_OS = 'ubuntu'
@@ -26,7 +31,6 @@ def rosdep_sanity_check():
     except:
         return False
     return True
-
 
 def catkin_to_apt_name(catkin_name):
     """Resolve a catkin package name to an APT package name.
@@ -65,6 +69,23 @@ def catkin_to_apt_name(catkin_name):
         )
     return deb_name
 
+def datetime_to_rfc2822(dt):
+    from email import utils
+    timestamp = time.mktime(dt.timetuple())
+    return utils.formatdate(timestamp)
+
+def get_debian_path(package, sub_path=None):
+    path = os.path.abspath(get_package_path(package, 'debian'))
+    if sub_path is not None:
+        path = os.path.join(path, sub_path)
+    return path
+
+def get_package_path(package, sub_path=None):
+    path = os.path.abspath(os.path.join(package.filename, os.pardir))
+    if sub_path is not None:
+        path = os.path.join(path, sub_path)
+    return path
+
 def debianize(package_path):
     """Create debian artifacts for a catkin package at the given path.
 
@@ -79,6 +100,11 @@ def debianize(package_path):
 
     control = generate_control(package)
     print control
+    print
+
+    changelog = generate_changelog(package)
+    print changelog
+    print
 
 def generate_control(package):
     """Generate Debian control file for a catkin package.
@@ -158,6 +184,55 @@ def generate_control(package):
     control.append('Conflicts: {}'.format(conflicts))
 
     return '\n'.join(control)
+
+def generate_changelog(package):
+    package_path = get_package_path(package)
+    package_changelog = catkin_changelog.get_changelog_from_path(package_path)
+
+    debian_changelog = Changelog()
+
+    package_name = catkin_to_apt_name(package.name)
+    maintainer = '{} <{}>'.format(
+        package.maintainers[0].name,
+        package.maintainers[0].email
+    )
+
+    def transfer_version_change(change):
+        debian_changelog.add_change(str(change))
+
+    def transfer_version_block(v):
+        print v
+        version = v[0]
+        date = v[1]
+        changes = v[2]
+        full_version = version + '-0' + ROS_OS_VERSION
+        debian_changelog.new_block(
+            package=package_name,
+            version=Version(full_version),
+            distributions=ROS_OS_VERSION,
+            urgency='high',
+            author=maintainer,
+            date=datetime_to_rfc2822(date),
+        )
+        map(transfer_version_change, changes)
+
+    if package_changelog is not None:
+        map(transfer_version_block, package_changelog.foreach_version())
+    else:
+        # If CHANGELOG.rst is missing, generate a phony one
+        full_version = str(package.version) + '-0' + ROS_OS_VERSION
+        debian_changelog.new_block(
+            package=package_name,
+            version=Version(full_version),
+            distributions=ROS_OS_VERSION,
+            urgency='high',
+            author=maintainer,
+            date=datetime_to_rfc2822(datetime.datetime.now()),
+        )
+        debian_changelog.add_change('* {}'.format(str(package.version)))
+
+    return debian_changelog
+
 
 if __name__ == '__main__':
     debianize(sys.argv[1])
