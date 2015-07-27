@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_sv</name>
-  <version>0.0.1</version>
-  <description>The lg_sv package</description>
-  <maintainer email="will@endpoint.com">will</maintainer>
+  <version>0.0.4</version>
+  <description>Liquid Galaxy Street View module</description>
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
 
   <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
   <license>TODO</license>
 
-  <author email="will@endpoint.com">will</author>
+  <author email="will@endpoint.com">Will Plaut</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>
