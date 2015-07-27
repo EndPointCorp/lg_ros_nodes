@@ -68,6 +68,7 @@ function initialize() {
   svClient.on('pano_changed', function(panoId) {
     console.log('Changing pano to', panoId);
     sv.setPano(panoId);
+    sv.setZoom(3);
   });
 
   svClient.on('pov_changed', function(povQuaternion) {
@@ -88,9 +89,9 @@ function initialize() {
     var zoom = povQuaternion.w;
     //console.log('Changing pov to', pov, roll, zoom);
     sv.setPov(pov);
-    canvas.setAttribute("style","transform: rotate(" + roll + "deg);");
+    canvas.setAttribute("style","transform: rotateZ(" + roll + "deg);");
     // TODO(wjp): create zoom function
-    sv.setZoom(3);
+    //sv.setZoom(3);
   });
 }
 

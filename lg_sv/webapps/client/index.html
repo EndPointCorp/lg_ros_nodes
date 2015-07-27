@@ -18,18 +18,19 @@
             overflow: hidden;
         }
         #wrapper {
-            height: 150%;
-            width: 150%;
-            position: absolute;
+            /*height: 150%;
+            width: 150%;*/
+            transform: scale3d(1.5, 1.5, 1.0);
+            /*position: absolute;
             left: -33%;
-            top: -33%;
+            top: -33%;*/
             padding: 0;
         }
     </style>
               
     <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.20&signed_in=true"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?v=3.20&signed_in=true"></script>
     <script src="../lib/math3d.js"></script>
     <script src="../lib/sv_client.js"></script>
     <script src="js/main.js"></script>
