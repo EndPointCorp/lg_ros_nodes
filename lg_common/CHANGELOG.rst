@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.3 (2015-07-21)
+------------------
+* Fix awesome rule generation errors
+* Contributors: Matt Vollrath
+
 0.0.2 (2015-07-21)
 ------------------
 * Allow missing window geometry

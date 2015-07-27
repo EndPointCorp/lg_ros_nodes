@@ -34,6 +34,10 @@
     <param name="show_compass" value="true" />
     <param name="viewport" value="center" />
   </node>
+  <node name="touchscreen_browser" pkg="lg_common" type="static_browser.py" clear_params="true">
+    <param name="url" value="http://i.imgur.com/0MPdu31.gif" />
+    <param name="viewport" value="touchscreen" />
+  </node>
   <node name="earth_right_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />

@@ -1,4 +1,5 @@
 import rospy
+from std_msgs.msg import String
 
 
 class QueryWriter:
@@ -63,6 +64,8 @@ class QueryWriter:
             f.write(query)
 
     def handle_search(self, msg):
+        # call handle_tour with empty tour to stop any flyto in progress
+        self.handle_tour(String())
         search_query = msg.data
         query = 'search={}'.format(search_query)
         with open(self.filename, 'w') as f:
