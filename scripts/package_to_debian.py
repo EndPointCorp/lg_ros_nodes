@@ -185,7 +185,7 @@ def generate_changelog(package):
             map(transfer_version_change, changes)
         else:
             # If no changes, create one to avoid exceptions
-            debian_changelog.add_change('* {}'.format(version))
+            debian_changelog.add_change('')
 
     if package_changelog is not None:
         map(transfer_version_block, package_changelog.foreach_version())
