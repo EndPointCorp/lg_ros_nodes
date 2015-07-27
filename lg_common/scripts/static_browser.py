@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     geometry = ManagedWindow.get_viewport_geometry()
     url = rospy.get_param('~url', None)
-    scale_factor = rospy.get_param('~force_device_scale_factor', 2)
+    scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', 10000)
     user_agent = rospy.get_param(
         '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
