@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2015-07-28)
+------------------
 * Fix up lg_sv formatting for pep8
 * Contributors: Will Plaut
 

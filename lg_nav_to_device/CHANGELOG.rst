@@ -2,8 +2,8 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2015-07-28)
+------------------
 * Change device name in lg_nav_to_device
 * Fix some catkin_lint issues
 * Contributors: Matt Vollrath

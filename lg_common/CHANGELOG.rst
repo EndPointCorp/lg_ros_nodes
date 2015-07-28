@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2015-07-28)
+------------------
 * adhoc browser
   - moved everything to lg_common
   - added README for adhoc browser
