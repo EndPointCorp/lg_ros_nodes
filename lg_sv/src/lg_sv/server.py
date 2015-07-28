@@ -24,6 +24,7 @@ BACKWARDS_THRESHOLD = 2
 COEFFICIENT_LOW = 0.1
 COEFFICIENT_HIGH = 3
 
+
 def clamp(val, low, high):
     return min(max(val, low), high)
 
@@ -34,6 +35,7 @@ def wrap(val, low, high):
     if val < low:
         val += (high - low)
     return val
+
 
 class StreetviewUtils:
     @staticmethod
@@ -91,7 +93,7 @@ class StreetviewUtils:
                         'lat': metadata['Location']['lat'],
                         'lng': metadata['Location']['lng']
                     },
-                'pano': metadata['Location']['panoId']
+                    'pano': metadata['Location']['panoId']
                 }
             }
         except KeyError:
@@ -254,9 +256,10 @@ class StreetviewServer:
         """
         move_to = self.nearby_panos.find_closest(self.panoid, heading)
         if not move_to:
-            return None # don't update anything
+            return None  # don't update anything
         self.pub_panoid(move_to)
         return True
+
 
 class NearbyPanos:
     def __init__(self):
