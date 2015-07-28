@@ -12,12 +12,14 @@ def main():
     rospy.init_node('lg_adhoc_browser', anonymous=True)
 
     vieport_name = rospy.get_param('~viewport', None)
+    browser_binary = rospy.get_param('~browser_binary', '/usr/bin/google-chrome')
 
     if not vieport_name:
         rospy.logerr("Viewport is not set in the roslaunch file. Exiting.")
         exit(1)
 
     topic_name = '/browser_service/{}'.format(vieport_name)
+
     client = AdhocBrowserPool()
 
     rospy.Subscriber(topic_name, AdhocBrowsers, client.handle_ros_message)

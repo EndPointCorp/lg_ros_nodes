@@ -2,5 +2,5 @@ from managed_window import ManagedWindow
 from managed_application import ManagedApplication
 from managed_browser import ManagedBrowser
 from managed_adhoc_browser import ManagedAdhocBrowser
-from managed_adhoc_browser import AdhocBrowserPool
+from adhoc_browser_pool import AdhocBrowserPool
 from scene_listener import SceneListener
