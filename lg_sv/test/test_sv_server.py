@@ -19,6 +19,7 @@ from lg_sv import StreetviewUtils, StreetviewServer
 from geometry_msgs.msg import Quaternion, Pose2D
 from std_msgs.msg import String
 
+
 class MockPublisher:
     def __init__(self):
         self.data = []
@@ -26,15 +27,16 @@ class MockPublisher:
     def publish(self, data):
         self.data.append(data)
 
+
 class TestSVServer(unittest.TestCase):
     def setUp(self):
         self.location_pub = MockPublisher()
         self.pano_pub = MockPublisher()
         self.pov_pub = MockPublisher()
         self.server = StreetviewServer(
-             self.location_pub, self.pano_pub, self.pov_pub, TILT_MAX,
-             TILT_MIN, NAV_SENSITIVITY, NAV_INTERVAL)
-    
+            self.location_pub, self.pano_pub, self.pov_pub, TILT_MAX,
+            TILT_MIN, NAV_SENSITIVITY, NAV_INTERVAL)
+
     def tearDown(self):
         pass
 
@@ -50,7 +52,6 @@ class TestSVServer(unittest.TestCase):
         webapp_metadata = StreetviewUtils.translate_server_metadata_to_client_form(response)
         self.assertEqual(response['Location']['panoId'], webapp_metadata['location']['pano'],
                          'webapp metadata does not match the google version')
-
 
     def test_1_pano_pub(self):
         # test initial state
