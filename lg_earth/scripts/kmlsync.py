@@ -3,7 +3,7 @@
 import rospy
 
 from lg_earth import KmlMasterHandler, KmlUpdateHandler, KmlQueryHandler
-from lg_earth.srv import KmlState, PlaytourQuery, LastSceneModified
+from lg_earth.srv import KmlState, PlaytourQuery, SceneModifiedTime
 from lg_common.webapp import ros_tornado_spin
 import tornado.web
 import tornado.ioloop
@@ -22,15 +22,15 @@ def main():
 
     rospy.wait_for_service('/kmlsync/state')
     rospy.wait_for_service('/kmlsync/playtour_query')
-    rospy.wait_for_service('/kmlsync/last_scene_modified')
+    rospy.wait_for_service('/kmlsync/scene_modified_time')
 
     kml_state = KmlState()
     kmlsync_server.playtour = PlaytourQuery()
-    kmlsync_server.scene_modified = LastSceneModified()
+    kmlsync_server.scene_modified_time = SceneModifiedTime()
 
     kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)
     kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=True)
-    kmlsync_server.scene_update_service = rospy.ServiceProxy('/kmlsync/last_scene_modified', kmlsync_server.scene_modified, persistent=True)
+    kmlsync_server.scene_update_service = rospy.ServiceProxy('/kmlsync/scene_modified_time', kmlsync_server.scene_modified_time, persistent=True)
     kmlsync_server.nlc_timeout = nlc_timeout
     kmlsync_server.listen(port)
     ros_tornado_spin()
