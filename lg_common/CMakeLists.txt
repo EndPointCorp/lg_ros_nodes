@@ -11,6 +11,8 @@ add_message_files(
   FILES
   ApplicationState.msg
   WindowGeometry.msg
+  AdhocBrowser.msg
+  AdhocBrowsers.msg
 )
 generate_messages()
 
@@ -21,6 +23,7 @@ catkin_package(
 catkin_install_python(PROGRAMS
   scripts/dev_webserver.py
   scripts/static_browser.py
+  scripts/adhoc_browser.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

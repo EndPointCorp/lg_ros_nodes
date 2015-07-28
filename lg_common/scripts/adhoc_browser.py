@@ -4,12 +4,12 @@ TODO: Browser is not changing url yet.
 """
 
 import rospy
-from lg_adhoc_browser.msg import AdhocBrowsers
-from lg_adhoc_browser import Client
+from lg_common.msg import AdhocBrowsers
+from lg_common import AdhocBrowserPool
 
 
 def main():
-    rospy.init_node('lg_adhoc_browser')
+    rospy.init_node('lg_adhoc_browser', anonymous=True)
 
     vieport_name = rospy.get_param('~viewport', None)
 
@@ -18,9 +18,9 @@ def main():
         exit(1)
 
     topic_name = '/browser_service/{}'.format(vieport_name)
-    client = Client()
+    client = AdhocBrowserPool()
 
-    rospy.Subscriber(topic_name, AdhocBrowsers, client.handle_ros_message) 
+    rospy.Subscriber(topic_name, AdhocBrowsers, client.handle_ros_message)
 
     rospy.spin()
 
