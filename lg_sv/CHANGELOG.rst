@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-07-28)
+------------------
 * Cleanup debugging output
 * Fix movement and tune thresholds
 * Use canvas/viewport ratio
