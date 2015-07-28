@@ -3,7 +3,6 @@ project(lg_nav_to_device)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  geometry_msgs
 )
 
 catkin_python_setup()

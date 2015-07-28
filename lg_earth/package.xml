@@ -22,5 +22,6 @@
   <run_depend>appctl</run_depend>
   <run_depend>interactivespaces_msgs</run_depend>
   <run_depend>lg_common</run_depend>
+  <test_depend>rostest</test_depend>
   <test_depend>python-requests</test_depend>
 </package>
