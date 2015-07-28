@@ -76,9 +76,9 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
-    def initialize(self, nlc_timeout_dict):
+    def initialize(self):
         self.asset_service = self.application.asset_service
-        self.timeout = nlc_timeout_dict['nlc_timeout']
+        self.timeout = self.application.nlc_timeout
         self.scene_update_service = self.application.scene_update_service
         self.scene_modified_time = ''
 
