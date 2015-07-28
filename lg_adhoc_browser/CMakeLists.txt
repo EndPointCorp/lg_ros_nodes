@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_adhoc_browser)
 
 find_package(catkin REQUIRED COMPONENTS
-  rospy
-  lg_common
-  message_generation
+  lg_common message_generation rospy
 )
 
 catkin_python_setup()
@@ -22,7 +20,7 @@ generate_messages(
 
 
 catkin_package(
-  CATKIN_DEPENDS lg_common
+  CATKIN_DEPENDS lg_common message_runtime
 )
 
 include_directories(

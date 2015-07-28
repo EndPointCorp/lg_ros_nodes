@@ -1,7 +1,7 @@
-import socket
 import sys
-
 import rospy
+import socket
+import shutil
 
 from lg_common import ManagedApplication, ManagedWindow
 from tornado.websocket import websocket_connect
@@ -48,6 +48,12 @@ class ManagedBrowser(ManagedApplication):
                 raise e
 
         tmp_dir = '/tmp/lg_browser-{}'.format(slug)
+        try:
+            rospy.loginfo("Purging ManagedBrowser directory: %s" % tmp_dir)
+            shutil.rmtree(tmp_dir)
+        except OSError, e:
+            pass
+
         cmd.append('--user-data-dir={}'.format(tmp_dir))
         cmd.append('--disk-cache-dir={}'.format(tmp_dir))
         cmd.append('--crash-dumps-dir={}/crashes'.format(tmp_dir))
@@ -81,7 +87,7 @@ class ManagedBrowser(ManagedApplication):
 
         w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
-        
+
         rospy.loginfo("Command {}".format(cmd))
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)

@@ -16,7 +16,9 @@ add_service_files(
 
 generate_messages()
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS message_runtime
+)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
