@@ -42,8 +42,8 @@ function init() {
 
   povListener = new ROSLIB.Topic({
     ros : ros,
-              name : '/panoviewer/pov',
-              messageType : 'geometry_msgs/Vector3'
+    name : '/panoviewer/pov',
+    messageType : 'geometry_msgs/Vector3'
   });
 
   povListener.subscribe(function(msg) {
@@ -54,18 +54,19 @@ function init() {
 
   panoListener = new ROSLIB.Topic({
     ros : ros,
-               name : '/panoviewer/pano',
-               messageType : 'std_msgs/String'
+    name : '/panoviewer/pano',
+    messageType : 'std_msgs/String'
   });
 
   panoListener.subscribe(function(msg) {
     console.log("Received new pano: " + msg.data);
+    pano_url = msg.data;
   });
 
   var initPublisher = new ROSLIB.Topic({
     ros : ros,
-      name : '/panoviewer/init',
-      messageType : 'std_msgs/String'
+    name : '/panoviewer/init',
+    messageType : 'std_msgs/String'
   })
 
   // If you do this immediately, you tend not to catch the responses
@@ -108,14 +109,13 @@ function init() {
   var shader = THREE.ShaderLib[ "cube" ];
   shader.uniforms[ "tCube" ].value = cubeTexture;
   material = new THREE.ShaderMaterial( {
-
     fragmentShader: shader.fragmentShader,
-           vertexShader: shader.vertexShader,
-           uniforms: shader.uniforms,
-           depthWrite: false,
-           side: THREE.BackSide
+    vertexShader: shader.vertexShader,
+    uniforms: shader.uniforms,
+    depthWrite: false,
+    side: THREE.BackSide
+  });
 
-  } );
   mesh = new THREE.Mesh( new THREE.BoxGeometry( 100, 100, 100 ), material );
 
   scene.add( mesh );
