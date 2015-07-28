@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Show links on center sv
+* Contributors: Will Plaut
+
 0.0.6 (2015-07-28)
 ------------------
 * adhoc browser
