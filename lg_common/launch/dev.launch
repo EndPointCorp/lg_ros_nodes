@@ -70,6 +70,7 @@
   </node>
   <node name="sv_launcher_center" pkg="lg_sv" type="launcher.py" clear_params="true">
     <param name="viewport" value="sv_center" />
+    <param name="show_links" value="true" />
   </node>
   <node name="sv_launcher_right_one" pkg="lg_sv" type="launcher.py" clear_params="true">
     <param name="viewport" value="sv_right_one" />

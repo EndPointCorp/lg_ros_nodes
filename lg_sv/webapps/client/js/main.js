@@ -6,7 +6,7 @@ function getParameterByName(name, type, def) {
 }
 
 function stringToBoolean(s) {
-  var truePattern = /^1$|^true&/i;
+  var truePattern = /^1$|^true$/i;
   return s.search(truePattern) === 0;
 }
 
