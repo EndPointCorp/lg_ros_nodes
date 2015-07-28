@@ -131,6 +131,7 @@ class MediaService(object):
         for app_id, app in self.apps.items():
             rospy.loginfo("Stopping app id '%s' ..." % app_id)
             app.proc.stop()
+            del self.apps[app_id]
 
     def _get_instance(self):
         """
