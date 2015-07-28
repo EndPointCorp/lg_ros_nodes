@@ -80,7 +80,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         self.asset_service = self.application.asset_service
         self.timeout = self.application.nlc_timeout
         self.scene_update_service = self.application.scene_update_service
-        self.scene_modified_time = ''
+        self.scene_modified_time = None
 
     def get(self):
         """
@@ -93,17 +93,18 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         incoming_cookie_string = ''
         incoming_cookie_string = self.get_query_argument('asset_slug', default='')
 
-        scene_modified_time_client = int(self.get_query_arguement('scene_modified_time', default='0'))
+        scene_modified_time_client = int(self.get_query_argument('scene_modified_time', default='0'))
         is_scene_changed = False
         secs= 0
+        # Long Polling till timeout or scene update
         while secs < self.timeout:
-            rospy.sleep(1)
-            secs +=1
-            scene_modified_time_server = self._get_scene_modified_time()
+            scene_modified_time_server = int(self._get_scene_modified_time())
             if scene_modified_time_server > scene_modified_time_client:
                 self.scene_modified_time = scene_modified_time_server
                 is_scene_changed = True
                 break
+            rospy.sleep(1)
+            secs +=1
 
         if not is_scene_changed:
             self.scene_modified_time = scene_modified_time_client
@@ -129,12 +130,8 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
 
-    def _get_scene_modified_time_cookie(self):
-        return "scene_modified_time={}".format(self.scene_modified_time)
-
     def _get_scene_modified_time(self):
-        scene_modified_time = self.scene_update_service().scene_modified_time
-        return scene_modifed_time
+        return self.scene_update_service().scene_modified_time
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
@@ -142,7 +139,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         kml_networklink = ET.SubElement(kml_root, 'NetworkLinkControl')
         kml_min_refresh_period = ET.SubElement(kml_networklink, 'minRefreshPeriod').text = '1'
         kml_max_session_length = ET.SubElement(kml_networklink, 'maxSessionLength').text = '-1'
-        cookie_cdata_string = "<![CDATA[%s&%s]]>" % (self._get_scene_modified_time_cookie(), self._get_full_cookie(assets))
+        cookie_cdata_string = "<![CDATA[%s]]>" % self._get_full_cookie(assets)
         kml_cookies = ET.SubElement(kml_networklink, 'cookie').text = escape(cookie_cdata_string)
         kml_update = ET.SubElement(kml_networklink, 'Update')
         kml_target_href = ET.SubElement(kml_update, 'targetHref').text = self.request.protocol + '://' + self.request.host + '/master.kml'
@@ -227,9 +224,15 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     def _get_full_cookie(self, assets):
         """return the cookie prepended by asset_slug= only if cookie is not blank"""
         cookie = self._get_cookie(assets)
-        if cookie != '':
+        modified_time = self.scene_modified_time
+        result = []
+        if cookie:
             cookie = 'asset_slug=' + cookie
-        return cookie
+            result.append(cookie)
+        if modified_time:
+            modified_time = 'scene_modified_time='+str(modified_time)
+            result.append(modified_time)
+        return '&'.join(result)
 
     def _get_kml_for_create_assets(self, assets_to_create, parent):
         """

@@ -1,2 +1,2 @@
 ---
-int32 last_modified_time
+string scene_modified_time
