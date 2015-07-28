@@ -10,67 +10,6 @@ Package: ros-indigo-lg-common
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-message-runtime, ros-indigo-appctl, ros-indigo-std-msgs, ros-indigo-interactivespaces-msgs, ros-indigo-rospy, ros-indigo-rosbridge-suite
 Description: Common software for Liquid Galaxy ROS nodes.
-
-ros-indigo-lg-common (0.0.6-0trusty) trusty; urgency=high
-
-* adhoc browser
-  - moved everything to lg_common
-  - added README for adhoc browser
-* ManagedBrowser fix
-  - added shutil.rmtree before initialization for --user-data-dir
-* Contributors: Will Plaut, Wojciech Ziniewicz
-
- -- End Point Liquid Galaxy Team <lg@endpoint.com>  Tue, 28 Jul 2015 04:00:00 -0000
-
-ros-indigo-lg-common (0.0.5-0trusty) trusty; urgency=high
-
-* Added a helper method to generate url with GET params
-* Launch spacenav_node in dev.launch
-* Broader search for awesome pid
-* Set windows to non-fullscreen, non-maximized
-* Eliminate caching in dev_webserver.py
-* Contributors: Kannan Ponnusamy, Matt Vollrath, Will Plaut
-
- -- End Point Liquid Galaxy Team <lg@endpoint.com>  Mon, 27 Jul 2015 04:00:00 -0000
-
-ros-indigo-lg-common (0.0.4-0trusty) trusty; urgency=high
-
-* Chamber of understanding
-* Contributors: Neil Elliott
-
- -- End Point Liquid Galaxy Team <lg@endpoint.com>  Mon, 27 Jul 2015 04:00:00 -0000
-
-ros-indigo-lg-common (0.0.3-0trusty) trusty; urgency=high
-
-* Fix awesome rule generation errors
-* Contributors: Matt Vollrath
-
- -- End Point Liquid Galaxy Team <lg@endpoint.com>  Tue, 21 Jul 2015 04:00:00 -0000
-
-ros-indigo-lg-common (0.0.2-0trusty) trusty; urgency=high
-
-* Allow missing window geometry
-* Fix rospy.logerr method names
-* Clean up and rename some window mgmt items
-* use spawn hook rather than respawn hook
-* Added geometry, updated dev.launch with TS
-* manage_application: set respawn hook
-* Fix imports in awesome script
-* Remove xdotool dep
-* Use awesome rules for window management
-* Revise window searching for reliability over speed
-* Add app argument to chrome
-* Make the adhoc window showing
-* Contributors: Jacob Minshall, Matt Vollrath, Neil Elliott, Szymon Guz, Wojciech Ziniewicz
-
- -- End Point Liquid Galaxy Team <lg@endpoint.com>  Tue, 21 Jul 2015 04:00:00 -0000
-
-ros-indigo-lg-common (0.0.1-0trusty) trusty; urgency=high
-
-* Initial release
-* Contributors: Jacob Minshall, Kannan Ponnusamy, Matt Vollrath, Wojciech Ziniewicz
-
- -- End Point Liquid Galaxy Team <lg@endpoint.com>  Wed, 08 Jul 2015 04:00:00 -0000
-
-
+Replaces: __REPLACES__
+Conflicts: __REPLACES__
 
