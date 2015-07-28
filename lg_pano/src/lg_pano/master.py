@@ -16,7 +16,7 @@ class PanoMaster:
         """
         Changes the point of view based on incoming message
 
-        ignores if state is False
+        ignores if state is False or the message has all zeros
         """
         if not self.state:
             return
@@ -46,5 +46,14 @@ class PanoMaster:
         rospy.loginfo('Received init msg: %s', msg.data)
         self.send_pano()
         self.send_pov()
+
+    def handle_pano_msg(self, msg):
+        """
+        Stores any panos that are broadcasted on /panoviewer/pano
+        """
+        self.pano_url = msg.data
+
+    def handle_pov_msg(self, msg):
+        self.pov = msg
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

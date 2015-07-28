@@ -35,6 +35,18 @@ if __name__ == '__main__':
         pm.handle_state_msg
     )
 
+    rospy.Subscriber(
+        '/panoviewer/pano',
+        String,
+        pm.handle_pano_msg
+    )
+
+    rospy.Subscriber(
+        '/panoviewer/pov',
+        Vector3,
+        pm.handle_pov_msg
+    )
+
     rospy.spin()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
