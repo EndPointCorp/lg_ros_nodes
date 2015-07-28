@@ -1,14 +1,15 @@
 Source: ros-indigo-lg-nav-to-device
 Section: misc
 Priority: extra
-Maintainer: End Point Corp LG R&D <lg-rad@endpoint.com>
+Maintainer: End Point Liquid Galaxy Team <lg@endpoint.com>
 Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-rospy
-Homepage: http://liquid-galaxy.endpoint.com
+Homepage: https://github.com/EndPointCorp/lg_ros_nodes
 Standards-Version: 3.9.2
 
 Package: ros-indigo-lg-nav-to-device
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-geometry-msgs, ros-indigo-rospy, python-evdev
-Description: Writes spacenav messages to /dev/uinput
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-rospy, python-evdev, ros-indigo-geometry-msgs
+Description: Subscribes to events published over ros, and writes them back into a virtual device
 Replaces: __REPLACES__
 Conflicts: __REPLACES__
+
