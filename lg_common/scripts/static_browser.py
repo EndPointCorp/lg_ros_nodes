@@ -26,7 +26,7 @@ if __name__ == '__main__':
         url=url,
         force_device_scale_factor=scale_factor,
         debug_port=debug_port,
-        user_agent=user_agent,
+        user_agent=user_agent
     )
 
     browser.set_state(state)
