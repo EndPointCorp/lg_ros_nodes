@@ -2,6 +2,15 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* adhoc browser
+  - moved everything to lg_common
+  - added README for adhoc browser
+* ManagedBrowser fix
+  - added shutil.rmtree before initialization for --user-data-dir
+* Contributors: Will Plaut, Wojciech Ziniewicz
+
 0.0.5 (2015-07-27)
 ------------------
 * Added a helper method to generate url with GET params
