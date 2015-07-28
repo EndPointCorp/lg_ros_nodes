@@ -3,6 +3,7 @@
 import os
 import argparse
 from subprocess import Popen
+from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
 
 # make sure to set the root directory
 ROOT_DIR = os.path.realpath(os.curdir)
@@ -14,9 +15,41 @@ NEEDED_DIRS = ['appctl', 'interactivespaces_msgs']
 if os.path.basename(ROOT_DIR) == 'scripts':
     os.chdir('..')
 if not os.path.isdir('.git'):
-    raise Exception('Must run this script from the root'
+    raise Exception('Must run this script from the lg_ros_nodes project root'
             ' directory or inside the scripts dir')
 
+
+def get_option(config, section, option):
+    opt = None
+    try:
+        opt = config.get(section, option)
+    except NoSectionError:
+        pass
+    except NoOptionError:
+        pass
+    return opt
+
+def parse_config():
+    """
+    Sets globals which are better set in a config file
+    """
+    config_file = 'scripts/init.cfg'
+    if not os.path.exists(config_file):
+        print 'WARNING, no %s found, using possibly outdated configuration' % config_file
+        return # rely on hard coded values... maybe an exception would work
+    # setting these globals
+    global IGNORE_DIRS
+    global NEEDED_DIRS
+
+    config = RawConfigParser()
+    config.read(config_file)
+    section = 'init_workspace'
+    needed = get_option(config, section, 'needed_dirs')
+    if needed:
+        NEEDED_DIRS = [need.strip() for need in needed.split(',')]
+    ignores = get_option(config, section, 'ignore_dirs')
+    if ignores:
+        IGNORE_DIRS = [ignore.strip() for ignore in ignores.split(',')]
 
 def setup_catkin():
     """
@@ -69,6 +102,7 @@ def get_ros_nodes():
     # append any args with paths that exist to our nodes
     append_node(nodes, ARGS.appctl)
     append_node(nodes, ARGS.interactive)
+    append_node(nodes, ARGS.director)
     for arg in ARGS.extra:
         append_node(nodes, arg)
     return nodes
@@ -125,6 +159,7 @@ def parse_args():
     parser.add_argument('-a', '--appctl', type=str, help='location of appctl directory')
     parser.add_argument('-i', '--interactive', type=str,
             help='location of interactivespaces_msgs directory')
+    parser.add_argument('-d', '--director', type=str, help='location of lg_cms_director')
     parser.add_argument('-x', '--extra', type=str, nargs='*', default=[],
             help='a list of any extra paths to ros nodes you want linked to')
     return parser.parse_args()
@@ -144,6 +179,7 @@ def check_validity():
 
 def main():
     global ARGS
+    parse_config()
     ARGS = parse_args()
     setup_catkin()
     check_validity()

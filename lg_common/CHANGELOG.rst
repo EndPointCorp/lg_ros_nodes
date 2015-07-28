@@ -2,6 +2,20 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.5 (2015-07-27)
+------------------
+* Added a helper method to generate url with GET params
+* Launch spacenav_node in dev.launch
+* Broader search for awesome pid
+* Set windows to non-fullscreen, non-maximized
+* Eliminate caching in dev_webserver.py
+* Contributors: Kannan Ponnusamy, Matt Vollrath, Will Plaut
+
+0.0.4 (2015-07-27)
+------------------
+* Chamber of understanding
+* Contributors: Neil Elliott
+
 0.0.3 (2015-07-21)
 ------------------
 * Fix awesome rule generation errors

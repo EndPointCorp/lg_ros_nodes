@@ -18,7 +18,6 @@ If you installed `lg_common` from a `.deb` package and sourced the default `/opt
 ##### Parameters
 
 * `port` [int] - The port on which to serve files. Default: `8008`
-* `cors` [bool] - If true, add `Access-Control-Allow-Origin: *` to response headers. Default: `true`
 
 ##### Convention for webapps
 

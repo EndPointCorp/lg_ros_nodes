@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lg_nav_to_device)
+project(lg_sv)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-)
+  )
 
 catkin_python_setup()
+
 catkin_package()
 
 include_directories(
@@ -13,11 +14,12 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
-  scripts/device_writer
-  scripts/device_writer.py
+  scripts/launcher.py
+  scripts/server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-# if (CATKIN_ENABLE_TESTING)
-#   catkin_add_nosetests(test/test_something.py)
-# endif()
+install(
+  DIRECTORY webapps/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
+)
