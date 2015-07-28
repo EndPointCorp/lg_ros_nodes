@@ -5,7 +5,6 @@ from math import atan2, cos, sin, pi
 import requests
 import json
 
-
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
 # 2. check for movement -> /streetview/panoid
@@ -293,10 +292,8 @@ class NearbyPanos:
         bearing to the current pano
         """
         if not self.get_metadata():
-            rospy.logwarn("no metadata")
             return None
         if 'links' not in self.metadata or not isinstance(self.metadata['links'], list):
-            rospy.logwarn("no links")
             return None
         self.panoid = panoid
         my_lat = self.metadata['location']['latLng']['lat']
