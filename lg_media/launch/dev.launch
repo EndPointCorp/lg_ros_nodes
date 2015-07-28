@@ -3,7 +3,7 @@
     <param name="/viewport/center" value="640x480+640+0" />
     <param name="/viewport/right_one" value="640x480+1280+0" />
 
-    <node name="lg_media" pkg="lg_media" type="media_app_manager.py">
+    <node name="lg_media" pkg="lg_media" type="client">
         <param name="application" value="mplayer"/>
         <param name="application_path" value="/usr/bin/mplayer"/>
         <param name="application_flags" value="-cache 8192 -quiet -osdlevel 0 -nomouseinput -nograbpointer"/>
@@ -15,5 +15,4 @@
 
     <!-- Local rosbridge and rosapi. -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
-
 </launch>

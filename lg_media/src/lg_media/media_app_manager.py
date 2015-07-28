@@ -23,8 +23,7 @@ source catkin/devel/setup.bash
 roslaunch lg_media/launch/dev.launch --screen
 rostopic list
 rostopic pub --once /media_service/test_viewport_1 std_msgs/String -- "aa bb cc"
-rostopic pub --once /media_service/left_one lg_media/AdhocMedia '{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv}'
-rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv},{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv}]'
+rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv}]'
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 
 # mplayer window is not placed on a desired geometry, investigate
@@ -139,10 +138,6 @@ class MediaService(object):
 
         """
         return '_mplayer_instance_' + rospy.get_name().strip('/')
-
-
-if __name__ == "__main__":
-    MediaService()
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
