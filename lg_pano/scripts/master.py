@@ -21,18 +21,18 @@ if __name__ == '__main__':
     rospy.Subscriber(
         '/panoviewer/init',
         String,
-        pm.initApp
+        pm.handle_init_msg
     )
     rospy.Subscriber(
         '/spacenav/twist',
         Twist,
-        pm.spacenavTwist
+        pm.handle_spacenav_msg
     )
 
     rospy.Subscriber(
         '/panoviewer/state',
         ApplicationState,
-        pm.handle_state
+        pm.handle_state_msg
     )
 
     rospy.spin()

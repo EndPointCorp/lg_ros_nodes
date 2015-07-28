@@ -6,13 +6,13 @@ from std_msgs.msg import String
 
 class PanoMaster:
     def __init__(self, pov, pano):
-        self.povPublisher  = pov
-        self.panoPublisher = pano
+        self.pov_publisher  = pov
+        self.pano_publisher = pano
         self.pov = Vector3(0, 0, 0)
-        self.panoUrl = String("")
+        self.pano_url = String("")
         self.state = False
 
-    def spacenavTwist(self, msg):
+    def handle_spacenav_msg(self, msg):
         """
         Changes the point of view based on incoming message
 
@@ -25,26 +25,26 @@ class PanoMaster:
         self.pov.x += msg.angular.x
         self.pov.y += msg.angular.y
         self.pov.z += msg.angular.z
-        self.sendPov()
+        self.send_pov()
 
-    def sendPano(self):
-        self.panoPublisher.publish(self.panoUrl)
+    def send_pano(self):
+        self.pano_publisher.publish(self.pano_url)
 
-    def sendPov(self):
-        self.povPublisher.publish(self.pov)
+    def send_pov(self):
+        self.pov_publisher.publish(self.pov)
 
-    def handle_state(self, app_state):
+    def handle_state_msg(self, app_state):
         """
         Sets state to true, if visible
         """
         self.state = (app_state.state == ApplicationState.VISIBLE)
 
-    def initApp(self, msg):
+    def handle_init_msg(self, msg):
         # A new instance has connected; send it the current pano and pov
         # It doesn't really matter what the new instance sends; the presence of
         # any message tells us to send these messages.
         rospy.loginfo('Received init msg: %s', msg.data)
-        self.sendPano()
-        self.sendPov()
+        self.send_pano()
+        self.send_pov()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
