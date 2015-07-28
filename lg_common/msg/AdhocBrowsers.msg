@@ -1,1 +1,1 @@
-lg_adhoc_browser/AdhocBrowser[] browsers
+lg_common/AdhocBrowser[] browsers
