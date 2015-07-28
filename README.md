@@ -39,7 +39,7 @@ Then run the init script.
     $ cd ~/src/lg_ros_nodes/
     $ ./scripts/init_workspace
 
-It will warn you that appctl & interactivespaces_msgs aren't there, and since the ros nodes depend on those, you should include them
+It will warn you that appctl,  interactivespaces_msgs & lg_cms_director aren't there, and since the ros nodes depend on those, you should include them
 
     $ cd ~/src
     $ git clone git@github.com:EndPointCorp/portal-ros.git
@@ -48,7 +48,7 @@ It will warn you that appctl & interactivespaces_msgs aren't there, and since th
 Then re-run the init script with arguments to direct the script to those new repos
 
     $ cd ~/src/lg_ros_nodes
-    $ ./scripts/init_workspace --appctl ~/src/portal-ros/catkin/src/appctl --interactive ~/src/ros_cms/director/src/interactivespaces_msgs
+    $ ./scripts/init_workspace --appctl ~/src/portal-ros/catkin/src/appctl --interactive ~/src/ros_cms/director/src/interactivespaces_msgs --director ~/src/ros_cms/director/src/lg_cms_director
 
 Install system dependencies with `rosdep`.
 
