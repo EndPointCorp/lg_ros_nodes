@@ -2,6 +2,7 @@
 
 import rospy
 from geometry_msgs.msg import Twist, Vector3
+from lg_common.msg import ApplicationState
 from std_msgs.msg import String
 from lg_pano import PanoMaster
 
@@ -26,6 +27,12 @@ if __name__ == '__main__':
         '/spacenav/twist',
         Twist,
         pm.spacenavTwist
+    )
+
+    rospy.Subscriber(
+        '/panoviewer/state',
+        ApplicationState,
+        pm.handle_state
     )
 
     rospy.spin()

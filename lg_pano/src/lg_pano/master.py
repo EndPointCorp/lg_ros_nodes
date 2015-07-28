@@ -1,5 +1,6 @@
 import rospy
 
+from lg_common.msg import ApplicationState
 from geometry_msgs.msg import Vector3
 from std_msgs.msg import String
 
@@ -9,8 +10,16 @@ class PanoMaster:
         self.panoPublisher = pano
         self.pov = Vector3(0, 0, 0)
         self.panoUrl = String("")
+        self.state = False
 
     def spacenavTwist(self, msg):
+        """
+        Changes the point of view based on incoming message
+
+        ignores if state is False
+        """
+        if not self.state:
+            return
         if (msg.angular.x == 0 and msg.angular.y == 0 and msg.angular.z == 0):
             return 
         self.pov.x += msg.angular.x
@@ -23,6 +32,12 @@ class PanoMaster:
 
     def sendPov(self):
         self.povPublisher.publish(self.pov)
+
+    def handle_state(self, app_state):
+        """
+        Sets state to true, if visible
+        """
+        self.state = (app_state.state == ApplicationState.VISIBLE)
 
     def initApp(self, msg):
         # A new instance has connected; send it the current pano and pov
