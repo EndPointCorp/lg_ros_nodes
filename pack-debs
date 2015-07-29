@@ -13,6 +13,12 @@ rm -rf $DEBDIR
 mkdir -p $DEBDIR
 cd $DEBDIR
 
+sudo rosdep init
+rosdep update
+rosdep install --from-paths $DIR --ignore-src \
+    --rosdistro=indigo --os=ubuntu:trusty \
+    --skip-keys="appctl interactivespaces_msgs"
+
 $BUILD $DIR/lg_common
 sudo dpkg -i ros-indigo-lg-common_*.deb
 $BUILD $DIR/lg_builder
