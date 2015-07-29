@@ -36,7 +36,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
     def update_url(self, url):
         import os
         self.url = url
-        os.system('chromium-remote.py --slug={} --page-url="{}"'.format(self.slug, url))
+        os.system('chromium-remote.py --debug-host=localhost --debug-port={} --page-url="{}"'.format(self.debug_port, url))
 
     def close(self):
         self.set_state(ApplicationState.STOPPED)
