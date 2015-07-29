@@ -39,11 +39,9 @@ import os
 import rospy
 from std_msgs.msg import String
 
+from appctl_support import ProcController
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.msg import ApplicationState
-from appctl_support import ProcController
-from lg_media.msg import AdhocMedias
-from lg_media.msg import AdhocMedia
 from lg_common.msg import WindowGeometry
 
 
@@ -65,33 +63,23 @@ class MediaService(object):
 
     def __init__(self):
         self.apps = {}  # key: app id, value: app instance
-        rospy.init_node(ROS_NODE_NAME)
-        # TODO
-        # there will be multiple topics, multiple viewports
-        # as the desired number of instances (viewports) will
-        # be defined by the launch file
-        topic_name = ("/media_service/" +
-                      rospy.get_param("~viewport", DEFAULT_VIEWPORT))
-        rospy.Subscriber(topic_name, AdhocMedias, self.listener)
-        rospy.loginfo("lg_media started.")
-        rospy.spin()
 
     def listener(self, data):
         """
         Listener on a ROS topic.
 
         """
-        rospy.loginfo("'listener' invoked, received data: '%s'" % data)
+        rospy.logdebug("'listener' invoked, received data: '%s'" % data)
         if len(data.medias) > 0:
             curr_apps = {}
             for media in data.medias:
                 if media.id in self.apps:
-                    rospy.logdebug("App id '%s' exists, updating ...")
+                    rospy.logdebug("App id '%s' exists, updating ..." % media.id)
                     app = self.apps[media.id]
                     # TODO
                     # update the url and geometry of the process app accordingly
                 else:
-                    rospy.logdebug("App id '%s' doesn't exist, starting ...")
+                    rospy.logdebug("App id '%s' doesn't exist, starting ..." % media.id)
                     curr_apps[media.id] = self._start_and_get_app(media)
             self.apps.update(curr_apps)
         else:
@@ -108,6 +96,7 @@ class MediaService(object):
         # "640x480+0+0" x, y, width, height
         # TODO
         # mplayer window is not placed on a desired geometry, investigate
+        # -> should be up to awesome window manager
         geometry = WindowGeometry(x=media.geometry.x,
                                   y=media.geometry.y,
                                   width=media.geometry.width,

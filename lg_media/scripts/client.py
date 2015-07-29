@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import rospy
-from lg_media.media_app_manager import MediaService
-from lg_media.media_app_manager import ROS_NODE_NAME, DEFAULT_VIEWPORT
+from lg_media import MediaService
+from lg_media import ROS_NODE_NAME
+from lg_media import DEFAULT_VIEWPORT
 from lg_media.msg import AdhocMedias
 
 
 def main():
-    rospy.init_node(ROS_NODE_NAME)
+    rospy.init_node(ROS_NODE_NAME, log_level=rospy.DEBUG)
     media_service = MediaService()
     # TODO
     # there will be multiple topics, multiple viewports
