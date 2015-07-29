@@ -2,7 +2,7 @@
 
 set -e
 
-DIR=$( dirname "${BASH_SOURCE[0]}" )o
+DIR=$( dirname "${BASH_SOURCE[0]}" )
 cd $DIR
 DIR=`pwd`
 
