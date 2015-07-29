@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Normalize website url
+* Contributors: Matt Vollrath
+
 1.0.2 (2015-07-29)
 ------------------
 

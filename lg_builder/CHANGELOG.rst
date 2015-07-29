@@ -1,14 +1,14 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package lg_media
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package lg_builder
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
+* Initial lg_builder package
+* Contributors: Matt Vollrath
 
-1.0.2 (2015-07-29)
-------------------
-* Initial release
-* Contributors: Matt Vollrath, Wojciech Ziniewicz, Zdenek Maxa
+1.0.2 (2015-07-29 13:05)
+------------------------
 
 1.0.1 (2015-07-29 08:17)
 ------------------------
