@@ -10,8 +10,8 @@ Changelog for package lg_earth
 * Fix some catkin_lint issues
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+1.0.1 (2015-07-29)
+------------------
 
 * Bumped versions
 * 0.0.7

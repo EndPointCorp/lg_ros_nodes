@@ -11,8 +11,8 @@ Changelog for package lg_nav_to_device
 * Fix some catkin_lint issues
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+1.0.1 (2015-07-29)
+------------------
 
 * Bumped versions
 * 0.0.7

@@ -8,8 +8,8 @@ Changelog for package liquidgalaxy
 0.0.6 (2015-07-28)
 ------------------
 
-Forthcoming
------------
+1.0.1 (2015-07-29)
+------------------
 
 * 0.0.7
 * 0.0.7 Changelogs

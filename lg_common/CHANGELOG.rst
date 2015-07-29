@@ -16,8 +16,8 @@ Changelog for package lg_common
   - added shutil.rmtree before initialization for --user-data-dir
 * Contributors: Will Plaut, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.0.1 (2015-07-29)
+------------------
 
 * Bumped versions
 * Removed ambiguous var def thanks to @zdenekmaxa
