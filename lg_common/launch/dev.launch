@@ -43,10 +43,6 @@
     <param name="yaw_offset" value="-65" />
     <param name="viewport" value="right_one" />
   </node>
-  <node name="touchscreen_browser" pkg="lg_common" type="static_browser.py" clear_params="true">
-    <param name="url" value="http://r33b.net/" />
-    <param name="viewport" value="touchscreen" />
-  </node>
   <!-- Google Earth viewsync relay. -->
   <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay" clear_params="true">
     <param name="repeat_host" value="$(arg broadcast_addr)" />
