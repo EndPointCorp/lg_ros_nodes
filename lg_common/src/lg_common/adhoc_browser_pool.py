@@ -1,5 +1,6 @@
 import rospy
 
+from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
 from lg_common.msg import AdhocBrowser, AdhocBrowsers

@@ -1,0 +1,10 @@
+<launch>
+  <arg name="broadcast_addr" />
+  <arg name="spnav_path" default="/dev/input/spacenavigator" />
+  <param name="/viewport/center" value="640x480+640+0" />
+
+  <node name="adhoc_browser" pkg="lg_common" type="adhoc_browser.py">
+    <param name="viewport" value="center"/>
+  </node>
+
+</launch>
