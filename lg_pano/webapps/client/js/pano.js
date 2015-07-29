@@ -60,7 +60,6 @@ function init() {
 
   panoListener.subscribe(function(msg) {
     console.log("Received new pano: " + msg.data);
-    pano_url = msg.data;
   });
 
   var initPublisher = new ROSLIB.Topic({
