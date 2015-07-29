@@ -11,8 +11,6 @@ class AdhocBrowserPool():
     Handlers to all opened browsers
     Dict(id => ManagedAdhocBrowser)
     """
-    browsers = {}
-
     def __init__(self):
         self.browsers = {}
 
