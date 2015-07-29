@@ -158,7 +158,7 @@ def generate_changelog(package):
     Returns:
         debian.Changelog
     """
-    package_path = _get_package_path(package)
+    package_path = get_package_path(package)
     package_changelog = catkin_changelog.get_changelog_from_path(package_path)
 
     debian_changelog = Changelog()
@@ -202,23 +202,7 @@ def generate_changelog(package):
     return debian_changelog
 
 
-def _datetime_to_rfc2822(dt):
-    """Convert a datetime to an RFC 2822 date.
-
-    This is the date format specified for Debian changelogs.
-
-    Args:
-        dt (datetime.datetime)
-
-    Returns:
-        str: RFC 2822 date/time string.
-    """
-    from email import utils
-    timestamp = time.mktime(dt.timetuple())
-    return utils.formatdate(timestamp)
-
-
-def _get_package_path(package, sub_path=None):
+def get_package_path(package, sub_path=None):
     """Get the package path, or a path relative to it.
 
     Args:
@@ -234,5 +218,19 @@ def _get_package_path(package, sub_path=None):
     return path
 
 
+def _datetime_to_rfc2822(dt):
+    """Convert a datetime to an RFC 2822 date.
+
+    This is the date format specified for Debian changelogs.
+
+    Args:
+        dt (datetime.datetime)
+
+    Returns:
+        str: RFC 2822 date/time string.
+    """
+    from email import utils
+    timestamp = time.mktime(dt.timetuple())
+    return utils.formatdate(timestamp)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
