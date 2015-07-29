@@ -21,7 +21,7 @@ sudo rosdep install -y --from-paths $DIR/catkin/src --ignore-src \
 
 $BUILD $DIR/lg_common
 sudo dpkg -i ros-indigo-lg-common_*.deb \
-    --ignore-depends ros-indigo-appctl,ros-indigo-interactivespaces-msgs
+    --ignore-depends=ros-indigo-appctl,ros-indigo-interactivespaces-msgs
 $BUILD $DIR/lg_builder
 $BUILD $DIR/lg_earth
 $BUILD $DIR/lg_media
