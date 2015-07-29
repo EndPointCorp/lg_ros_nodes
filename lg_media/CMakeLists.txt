@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_media)
 
 find_package(catkin REQUIRED COMPONENTS
-  rospy
-  message_generation
   lg_common
-  std_msgs
+  message_generation
+  rospy
 )
 
 catkin_python_setup()
@@ -18,7 +17,6 @@ add_message_files(
 
 generate_messages(
   DEPENDENCIES
-  std_msgs
   lg_common
 )
 
@@ -29,7 +27,6 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
-
 
 catkin_install_python(PROGRAMS
   scripts/client
