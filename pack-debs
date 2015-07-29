@@ -15,7 +15,7 @@ cd $DEBDIR
 
 sudo rosdep init || /bin/true
 rosdep update
-sudo rosdep install --from-paths $DIR/catkin/src --ignore-src \
+sudo rosdep install -y --from-paths $DIR/catkin/src --ignore-src \
     --rosdistro=indigo --os=ubuntu:trusty \
     --skip-keys="appctl interactivespaces_msgs"
 
