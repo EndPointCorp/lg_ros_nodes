@@ -7,7 +7,7 @@ d = generate_distutils_setup(
     packages=['lg_builder'],
     package_dir={'': 'src'},
     scripts=['scripts/lg-ros-build'],
-    requires=['catkin_pkg', 'python-debian']
+    install_requires=['catkin_pkg', 'python-debian', 'rospkg']
 )
 
 setup(**d)

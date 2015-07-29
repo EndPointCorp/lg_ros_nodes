@@ -40,6 +40,20 @@ def rosdep_sanity_check():
     return True
 
 
+def rosdep_install_deps(package_path):
+    """Install all dependencies for the package at the given path."""
+    rosdep_cmd = [
+        'rosdep',
+        'install',
+        '--from-paths',
+        package_path,
+        '--os={}:{}'.format(ROS_OS, ROS_OS_VERSION),
+        '--rosdistro={}'.format(ROS_DISTRO),
+        '-y'
+    ]
+    subprocess.check_output(rosdep_cmd)
+
+
 def catkin_to_apt_name(catkin_name):
     """Resolve a catkin package name to an APT package name.
 
