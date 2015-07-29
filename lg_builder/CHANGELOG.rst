@@ -2,8 +2,8 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.3 (2015-07-29)
+------------------
 * Initial lg_builder package
 * Contributors: Matt Vollrath
 
