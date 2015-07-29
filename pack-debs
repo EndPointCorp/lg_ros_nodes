@@ -13,7 +13,7 @@ rm -rf $DEBDIR
 mkdir -p $DEBDIR
 cd $DEBDIR
 
-sudo rosdep init
+sudo rosdep init || /bin/true
 rosdep update
 sudo rosdep install --from-paths $DIR --ignore-src \
     --rosdistro=indigo --os=ubuntu:trusty \
