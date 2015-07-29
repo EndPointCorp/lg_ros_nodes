@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from geometry_msgs.msg import Twist, Vector3
+from geometry_msgs.msg import Twist, Quaternion
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String
 from lg_pano import PanoMaster
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     rospy.init_node('pano_master')
 
     # Does it really matter what the queue size is?
-    pov  = rospy.Publisher('/panoviewer/pov',  Vector3, queue_size=10)
+    pov  = rospy.Publisher('/panoviewer/pov',  Quaternion, queue_size=10)
     pano = rospy.Publisher('/panoviewer/pano', String,  queue_size=10)
 
     pm = PanoMaster(pov, pano)
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     rospy.Subscriber(
         '/panoviewer/pov',
-        Vector3,
+        Quaternion,
         pm.handle_pov_msg
     )
 

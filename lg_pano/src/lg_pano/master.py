@@ -1,14 +1,14 @@
 import rospy
 
 from lg_common.msg import ApplicationState
-from geometry_msgs.msg import Vector3
+from geometry_msgs.msg import Quaternion
 from std_msgs.msg import String
 
 class PanoMaster:
     def __init__(self, pov, pano):
         self.pov_publisher  = pov
         self.pano_publisher = pano
-        self.pov = Vector3(0, 0, 0)
+        self.pov = Quaternion()
         self.pano_url = String("")
         self.state = False
 

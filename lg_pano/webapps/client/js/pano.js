@@ -43,7 +43,7 @@ function init() {
   povListener = new ROSLIB.Topic({
     ros : ros,
     name : '/panoviewer/pov',
-    messageType : 'geometry_msgs/Vector3'
+    messageType : 'geometry_msgs/Quaternion'
   });
 
   povListener.subscribe(function(msg) {
@@ -77,7 +77,7 @@ function init() {
 
   vertFov = getConfig('vertFov', 75);
   camera = new THREE.PerspectiveCamera( vertFov, window.innerWidth / window.innerHeight, 1, 1100 );
-  camera.target = new THREE.Vector3( 0, 0, 0 );
+  camera.target = new THREE.Quaternion(0, 0, 0, 0);
 
   scene = new THREE.Scene();
 
