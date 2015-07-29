@@ -6,7 +6,7 @@ function getParameterByName(name, type, def) {
 }
 
 function stringToBoolean(s) {
-  var truePattern = /^1$|^true&/i;
+  var truePattern = /^1$|^true$/i;
   return s.search(truePattern) === 0;
 }
 
@@ -71,10 +71,21 @@ function initialize() {
     sv.setZoom(3);
   });
 
+  var wrapper = document.getElementById("wrapper");
+
+  this.parseMatrix = function(_str)
+  {
+    return _str.replace(/^matrix(3d)?\((.*)\)$/,'$2').split(/, /);
+  };
+
+  var canvasRatio = parseMatrix(
+                    window.getComputedStyle(wrapper, null)
+                          .getPropertyValue("transform"))[0];
+
   svClient.on('pov_changed', function(povQuaternion) {
     // TODO(mv): move quaternion parsing into StreetviewClient library
     // TODO(wjp): Set FOV somewhere outside of the client
-    var placeHolderFOV = 28.125/1.5;
+    var placeHolderFOV = 28.125/canvasRatio;
     var radianOffset = toRadians(placeHolderFOV*yawOffset)
     var htr = [ povQuaternion.z, povQuaternion.x, 0 ]
     var transform = M33.headingTiltRollToLocalOrientationMatrix( htr );

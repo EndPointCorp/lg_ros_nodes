@@ -2,9 +2,14 @@
 """
 TODO: Implement the changing geometry, and url.
 """
+import rospy
+
 
 from lg_common import ManagedBrowser
 from lg_common.msg import ApplicationState
+from lg_common.msg import ApplicationState
+from lg_common.msg import WindowGeometry
+from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 
 class ManagedAdhocBrowser(ManagedBrowser):
@@ -21,7 +26,12 @@ class ManagedAdhocBrowser(ManagedBrowser):
                 app=True)
 
     def update_geometry(self, geometry):
-        pass
+        """
+        ManagedAdhocBrowser << ManagedBrowser << ManagedApplication.window.geometry = 'WxH[+-]X[+-]Y'
+        ManagedAdhocBrowser << ManagedBrowser << ManagedApplication.window.converge()
+        """
+        self.window.geometry = geometry
+        self.window.converge()
 
     def update_url(self, url):
         import os
@@ -30,3 +40,5 @@ class ManagedAdhocBrowser(ManagedBrowser):
 
     def close(self):
         self.set_state(ApplicationState.STOPPED)
+
+

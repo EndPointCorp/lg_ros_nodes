@@ -31,8 +31,9 @@ class DeviceWriter:
             4L: [4L],
             17L: [8L]
         }
+        device_name = 'Virtual SpaceNav'
         self.ui = UInput(spacenav_events, vendor=vendor, product=product,
-                         version=version, bustype=bustype)
+                         version=version, bustype=bustype, name=device_name)
 
     def make_event(self, data):
         # write some event to self.ui based off of the twist data

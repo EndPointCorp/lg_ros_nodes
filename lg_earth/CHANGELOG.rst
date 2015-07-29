@@ -2,6 +2,26 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.7 (2015-07-28)
+------------------
+
+0.0.6 (2015-07-28)
+------------------
+* Fix some catkin_lint issues
+* Contributors: Matt Vollrath
+
+1.0.1 (2015-07-29)
+------------------
+
+* Bumped versions
+* 0.0.7
+* 0.0.7 Changelogs
+* Populate debian files from script
+* 0.0.6
+* 0.0.6 Changelogs
+* Fix some catkin_lint issues
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 0.0.5 (2015-07-27)
 ------------------
 

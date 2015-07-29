@@ -2,6 +2,35 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.7 (2015-07-28)
+------------------
+* Cleanup debugging output
+* Fix movement and tune thresholds
+* Use canvas/viewport ratio
+  -Also increased canvas size
+* Contributors: Will Plaut
+
+0.0.6 (2015-07-28)
+------------------
+* Fix up lg_sv formatting for pep8
+* Contributors: Will Plaut
+
+1.0.1 (2015-07-29)
+------------------
+
+* Bumped versions
+* 0.0.7
+* 0.0.7 Changelogs
+* Cleanup debugging output
+* Fix movement and tune thresholds
+* Use canvas/viewport ratio
+  -Also increased canvas size
+* Show links on center sv
+* 0.0.6
+* 0.0.6 Changelogs
+* Fix up lg_sv formatting for pep8
+* Contributors: Matt Vollrath, Will Plaut, Wojciech Ziniewicz
+
 0.0.5 (2015-07-27)
 ------------------
 * Initial lg_sv package

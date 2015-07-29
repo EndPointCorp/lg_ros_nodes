@@ -1,30 +1,52 @@
-ros-indigo-lg-earth (1.0.5-0trusty) trusty; urgency=high
+ros-indigo-lg-earth (0.0.6-0trusty) trusty; urgency=high
 
-  * 1.0.5 slight fix to pervious flyto unloading
+* Fix some catkin_lint issues
+* Contributors: Matt Vollrath
 
- -- Jacob Minshall <jacob@endpoint.com>  Mon, 27 Jul 2015 08:55:42 -0700
+ -- End Point Liquid Galaxy Team <lg@endpoint.com>  Tue, 28 Jul 2015 04:00:00 -0000
 
-ros-indigo-lg-earth (1.0.4-0trusty) trusty; urgency=high
+ros-indigo-lg-earth (0.0.5-0trusty) trusty; urgency=high
 
-  * 1.0.4 removes flytos on networklink_update and when  searching
 
- -- Jacob Minshall <jacob@endpoint.com>  Mon, 27 Jul 2015 07:55:42 -0700
+ -- End Point Liquid Galaxy Team <lg@endpoint.com>  Mon, 27 Jul 2015 04:00:00 -0000
 
-ros-indigo-lg-earth (1.0.3-0trusty) trusty; urgency=high
+ros-indigo-lg-earth (0.0.4-0trusty) trusty; urgency=high
 
-  * 1.0.3
+* kmlsync: send playtourqueryrequest object instead of string
+* kmlsync: move flyto unloading to state changes
+* unload any flytos in progress on networkling_update & when searching
+* Contributors: Jacob Minshall
 
- -- Matt Vollrath <matt@endpoint.com>  Tue, 21 Jul 2015 20:05:42 -0400
+ -- End Point Liquid Galaxy Team <lg@endpoint.com>  Mon, 27 Jul 2015 04:00:00 -0000
 
-ros-indigo-lg-earth (1.0.1-0trusty) trusty; urgency=high
+ros-indigo-lg-earth (0.0.3-0trusty) trusty; urgency=high
 
-  * Bumped for new deploy
+* Document changes to Earth client params
+* Increase default Earth memory cache size
+* Don't manage Earth window if gui is hidden
+* Contributors: Matt Vollrath
 
- -- Wojciech Ziniewicz <wojtek@endpoint.com>  Thu, 21 Jul 2015 18:24:33 +0100
+ -- End Point Liquid Galaxy Team <lg@endpoint.com>  Tue, 21 Jul 2015 04:00:00 -0000
 
-ros-indigo-lg-earth (1.0.0-0trusty) trusty; urgency=high
+ros-indigo-lg-earth (0.0.2-0trusty) trusty; urgency=high
 
-  * First package creation for indigo release
+* Reduce default disk cache size for Earth client
+* Optimize service requests in kmlsync
+* Use persistent service proxies in kmlsync
+* Allow unset viewport in lg_earth::client
+* client_config: more google earth config lines
+* remove google "Happy Birthday Earth" splash page
+* kmlsync: unload assets even if no earth activity is supplied
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
- -- End Point Corp LG R&D <lg-rad@endpoint.com>  Thu, 13 Jul 2015 17:20:33 -0400
+ -- End Point Liquid Galaxy Team <lg@endpoint.com>  Tue, 21 Jul 2015 04:00:00 -0000
+
+ros-indigo-lg-earth (0.0.1-0trusty) trusty; urgency=high
+
+* Initial release
+* Contributors: Jacob Minshall, Kannan, Kannan Ponnusamy, Matt Vollrath, Wojciech Ziniewicz
+
+ -- End Point Liquid Galaxy Team <lg@endpoint.com>  Wed, 08 Jul 2015 04:00:00 -0000
+
+
 

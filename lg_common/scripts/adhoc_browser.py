@@ -4,23 +4,25 @@ TODO: Browser is not changing url yet.
 """
 
 import rospy
-from lg_adhoc_browser.msg import AdhocBrowsers
-from lg_adhoc_browser import Client
+from lg_common.msg import AdhocBrowsers
+from lg_common import AdhocBrowserPool
 
 
 def main():
-    rospy.init_node('lg_adhoc_browser')
+    rospy.init_node('lg_adhoc_browser', anonymous=True)
 
     vieport_name = rospy.get_param('~viewport', None)
+    browser_binary = rospy.get_param('~browser_binary', '/usr/bin/google-chrome')
 
     if not vieport_name:
         rospy.logerr("Viewport is not set in the roslaunch file. Exiting.")
         exit(1)
 
     topic_name = '/browser_service/{}'.format(vieport_name)
-    client = Client()
 
-    rospy.Subscriber(topic_name, AdhocBrowsers, client.handle_ros_message) 
+    client = AdhocBrowserPool()
+
+    rospy.Subscriber(topic_name, AdhocBrowsers, client.handle_ros_message)
 
     rospy.spin()
 
