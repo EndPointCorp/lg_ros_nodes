@@ -14,6 +14,7 @@ NEEDED_DIRS = ['appctl', 'interactivespaces_msgs']
 
 if os.path.basename(ROOT_DIR) == 'scripts':
     os.chdir('..')
+    ROOT_DIR = os.path.realpath(os.curdir)
 if not os.path.isdir('.git'):
     raise Exception('Must run this script from the lg_ros_nodes project root'
             ' directory or inside the scripts dir')
