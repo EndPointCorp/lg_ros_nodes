@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove redefinition of touchscreen
+* Fixed adhoc browser URL handling
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
 1.0.1 (2015-07-29)
 ------------------
 
