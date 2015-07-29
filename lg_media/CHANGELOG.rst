@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.2 (2015-07-29)
+------------------
 * Initial release
 * Contributors: Matt Vollrath, Wojciech Ziniewicz, Zdenek Maxa
 
