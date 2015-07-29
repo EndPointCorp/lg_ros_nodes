@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+DIR=$( dirname "${BASH_SOURCE[0]}" )
+BUILD=$DIR/lg_builder/scripts/lg-ros-build
+DEBDIR=$DIR/catkin/debs
+
+rm -rf $DEBDIR
+mkdir -p $DEBDIR
+cd $DEBDIR
+
+$BUILD $DIR/lg_common
+dpkg -i ros-indigo-lg-common_*.deb
+$BUILD $DIR/lg_builder
+$BUILD $DIR/lg_earth
+$BUILD $DIR/lg_media
+$BUILD $DIR/lg_nav_to_device
+$BUILD $DIR/lg_sv
+$BUILD $DIR/liquidgalaxy
+
