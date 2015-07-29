@@ -8,7 +8,7 @@
 
   <license>TODO</license>
 
-  <url type="website">https://liquidgalaxy.endpoint.com</url>
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>lg_common</run_depend>
