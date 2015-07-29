@@ -11,10 +11,11 @@
   <url type="website">https://liquidgalaxy.endpoint.com</url>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>lg_adhoc_browser</run_depend>
   <run_depend>lg_common</run_depend>
   <run_depend>lg_earth</run_depend>
+  <run_depend>lg_media</run_depend>
   <run_depend>lg_nav_to_device</run_depend>
+  <run_depend>lg_sv</run_depend>
 
   <export>
     <metapackage/>
