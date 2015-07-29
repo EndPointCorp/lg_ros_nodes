@@ -27,7 +27,11 @@ rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 
 # mplayer window is not placed on a desired geometry, investigate
+local file URL works without quotes or with quotes:
+rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}},{id: "2", url: /mnt/data/video/humour/walker_texas_ranger.flv, geometry: {x: 0, y: 0, width: 0, height: 0}}]'
+http URL has to have quotes, rostopic command parsing fails otherwise:
+rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: "https://zdenek.endpoint.com/kaiser_labus-7_statecnych.flv", geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 
 # shutdown test
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[]'
