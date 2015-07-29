@@ -8,6 +8,15 @@ Changelog for package liquidgalaxy
 0.0.6 (2015-07-28)
 ------------------
 
+Forthcoming
+-----------
+
+* 0.0.7
+* 0.0.7 Changelogs
+* 0.0.6
+* 0.0.6 Changelogs
+* Contributors: Matt Vollrath
+
 0.0.5 (2015-07-27)
 ------------------
 

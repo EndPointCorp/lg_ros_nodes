@@ -15,6 +15,22 @@ Changelog for package lg_sv
 * Fix up lg_sv formatting for pep8
 * Contributors: Will Plaut
 
+Forthcoming
+-----------
+
+* Bumped versions
+* 0.0.7
+* 0.0.7 Changelogs
+* Cleanup debugging output
+* Fix movement and tune thresholds
+* Use canvas/viewport ratio
+  -Also increased canvas size
+* Show links on center sv
+* 0.0.6
+* 0.0.6 Changelogs
+* Fix up lg_sv formatting for pep8
+* Contributors: Matt Vollrath, Will Plaut, Wojciech Ziniewicz
+
 0.0.5 (2015-07-27)
 ------------------
 * Initial lg_sv package

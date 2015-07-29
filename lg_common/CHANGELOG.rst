@@ -16,6 +16,33 @@ Changelog for package lg_common
   - added shutil.rmtree before initialization for --user-data-dir
 * Contributors: Will Plaut, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+
+* Bumped versions
+* Removed ambiguous var def thanks to @zdenekmaxa
+* Bumped adhocbrowser version manually for glory
+* AdhocBrowser
+  - added roslaunch
+  - fixed import
+* Fix lg_common debian/control
+* 0.0.7
+* 0.0.7 Changelogs
+* Populate debian files from script
+* Show links on center sv
+* 0.0.6
+* 0.0.6 Changelogs
+* Managed Adhoc Browser changes
+* Fixes for adhocbrowser
+* Added messages and script for adhoc browser
+* adhoc browser
+  - moved everything to lg_common
+  - added README for adhoc browser
+* lg_common version bump
+* ManagedBrowser fix
+  - added shutil.rmtree before initialization for --user-data-dir
+* Contributors: Matt Vollrath, Will Plaut, Wojciech Ziniewicz
+
 0.0.5 (2015-07-27)
 ------------------
 * Added a helper method to generate url with GET params
