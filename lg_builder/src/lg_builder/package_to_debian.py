@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-
 import datetime
 import os.path
 import subprocess
-import sys
 import time
 
 from catkin_pkg.package import parse_package
@@ -237,7 +234,5 @@ def _get_package_path(package, sub_path=None):
     return path
 
 
-if __name__ == '__main__':
-    debianize(sys.argv[1])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
