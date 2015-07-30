@@ -21,11 +21,11 @@ sudo rosdep install -y --from-paths $SRCDIR --ignore-src \
 
 if [ -e $SRCDIR/appctl ]; then
     $BUILD $SRCDIR/appctl
-    sudo dpkg -i ros-indigo-appctl_*.deb
+    sudo dpkg --force-conflicts -i ros-indigo-appctl_*.deb
 fi
 if [ -e $SRCDIR/interactivespaces_msgs ]; then
     $BUILD $SRCDIR/interactivespaces_msgs
-    sudo dpkg -i ros-indigo-interactivespaces-msgs_*.deb
+    sudo dpkg --force-conflicts -i ros-indigo-interactivespaces-msgs_*.deb
 fi
 if [ -e $SRCDIR/lg_cms_director ]; then
     $BUILD $SRCDIR/lg_cms_director
