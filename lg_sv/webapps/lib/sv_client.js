@@ -7,6 +7,7 @@
  * @param {ROSLIB.Ros} ros
  * @param {google.maps.StreetViewPanorama} streetView
  */
+
 function StreetviewClient(ros, streetView) {
   this.streetView = streetView;
 
