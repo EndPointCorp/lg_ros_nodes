@@ -1,14 +1,10 @@
 #!/usr/bin/env python
-"""
-TODO: Implement the changing geometry, and url.
-"""
 import rospy
 
-
 from lg_common import ManagedBrowser
-from lg_common.msg import ApplicationState
-from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
+from lg_common.msg import ApplicationState
+from lg_common.msg import ApplicationState
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 
@@ -40,5 +36,3 @@ class ManagedAdhocBrowser(ManagedBrowser):
 
     def close(self):
         self.set_state(ApplicationState.STOPPED)
-
-
