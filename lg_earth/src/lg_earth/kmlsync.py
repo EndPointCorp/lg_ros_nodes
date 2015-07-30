@@ -42,6 +42,8 @@ State data structure:
 
 import json
 import rospy
+
+import time
 import urllib2
 import xml.etree.ElementTree as ET
 
@@ -52,26 +54,40 @@ from lg_common.helpers import escape_asset_url, generate_cookie, write_log_to_fi
 from std_msgs.msg import String
 from Queue import Queue
 import tornado.web
+import collections
+from tornado import gen
 
-MAX_QUEUE_SIZE = 3
+MAX_QUEUE_SIZE = 10
 global_queue = {}
 
 def add_to_global_queue(reference, window_slug):
     global global_queue
     if window_slug not in global_queue:
-        global_queue[window_slug] = Queue()
-    global_queue[window_slug].put(reference)
-    if global_queue[window_slug].qsize() >= MAX_QUEUE_SIZE:
-        handle_reference_request(global_queue[window_slug].get_nowait())
+        global_queue[window_slug] = collections.deque()
+    write_log_to_file("Added {} to global_queue".format(str(reference.__repr__)))
+    global_queue[window_slug].append(reference)
+    write_log_to_file("Length of current queue"+str(len(global_queue[window_slug])))
+    if len(global_queue[window_slug]) > MAX_QUEUE_SIZE:
+        req = global_queue[window_slug].pop()
+        write_log_to_file("Queue is getting bigger, gonna finish {}".format(str(req.__repr__)))
+        handle_reference_request(req)
 
 def handle_reference_request(ref):
-    #ref.get(True)
-    pass
+    write_log_to_file("Inside the habdle reference, gonna send the second get request")
+    ref.get(True)
+
+
 def finish_all_requests():
-    for item, value in global_queue.items():
-        while not value.empty():
-            request_object = value.get()
-            #request_object.get(True)
+    write_log_to_file("Got the new scene, gonna finish all the requests")
+    for slug_q in global_queue.values():
+        write_log_to_file("Inside finish all requests")
+        while True:
+            try:
+                req = slug_q.pop()
+                write_log_to_file("Gonna send second get request for {}".format(str(req.__repr__)))
+                req.get(True)
+            except IndexError:
+                break
 
 def get_kml_root():
     """Get headers of KML file - shared by all kml generation methods."""
@@ -87,7 +103,6 @@ class KmlMasterHandler(tornado.web.RequestHandler):
     def get(self):
         """Serve the master.kml which is updated by NLC."""
         rospy.loginfo("Got master.kml GET request")
-        write_log_to_file(str(self.request))
         kml_root = get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
@@ -102,23 +117,23 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             write_log_to_file("hello")
             finish_all_requests()
-            #write_log_to_file(msg.message)
-
-        except Exception:
-            write_log_to_file("Exception saving scene")
+        except Exception as e:
+            write_log_to_file("Exception saving scene"+str(e))
 
 
     def initialize(self):
         self.asset_service = self.application.asset_service
-
+    @gen.coroutine
     def get(self, second_time=False):
         """
         Return XML with latest list of assets for specific window_slug
             - get window slug and calculate difference between loaded assets and the desired state
             - create the KML and return it only if cookie was different and the window slug came in the request
         """
-        write_log_to_file(str(self.__repr__))
-        #rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
+        if not second_time:
+            write_log_to_file("##############"+str(self.__repr__))
+            rospy.loginfo("##############")
+        rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
         window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = ''
 
@@ -137,15 +152,27 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 # Always return a valid KML or Earth will stop requesting updates
                 self.finish(get_kml_root())
                 return
-
             assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
             assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
             if (assets_to_delete or assets_to_create) or second_time:
+                if second_time:
+                    write_log_to_file("This is second time! and gonna finish")
+                else:
+                    write_log_to_file("Change in the assets, so finishing ")
                 self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             else:
+                write_log_to_file("About to add the request reference to global_dict")
                 add_to_global_queue(self, window_slug)
-                rospy.sleep(10)
-                self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+                write_log_to_file("Gonna sleep for 10 seconds")
+                from tornado import gen
+                yield gen.sleep(10)
+                #time.sleep(10)
+                #rospy.sleep(10)
+                if self in global_queue[window_slug]:
+                        write_log_to_file("Woke up, gonna finish")
+                        global_queue[window_slug].remove(self)
+                        self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+                        write_log_to_file("After woke up, finished")
         else:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
