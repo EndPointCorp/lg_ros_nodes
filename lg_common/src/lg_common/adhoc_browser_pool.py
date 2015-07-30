@@ -39,7 +39,7 @@ class AdhocBrowserPool():
         browsers_ids_to_create = incoming_browsers_ids - self._get_current_browsers_ids()
         return list(browsers_ids_to_create)
 
-    def _get_browsers_to_update(self, incoming_browsers_ids):
+    def _get_browsers_ids_to_update(self, incoming_browsers_ids):
         """
         returns a list of browsers that are not on the list of incoming message
         this means that it returns list of browsers to remove
@@ -68,7 +68,7 @@ class AdhocBrowserPool():
                                                 url=new_browser.url)
         browser_to_create.set_state(ApplicationState.VISIBLE)
 
-        self.browsers[browser_id] = browser_to_create
+        self.browsers[new_browser_id] = browser_to_create
         return True
 
     def _update_browser(self, browser_id, updated_browser):
@@ -82,15 +82,15 @@ class AdhocBrowserPool():
                                       width=updated_browser.geometry.width,
                                       height=updated_browser.geometry.height)
 
-        if new_geometry != old_geometry:
+        if new_geometry != old_browser.geometry:
             """
             TODO(wz): make url updatable
             """
             rospy.logdebug("Updating geometry of browser id %s" % browser_id)
             old_browser.update_geometry(new_geometry)
 
-        if new_url != old_url:
-            rospy.logdebug("Updating URL of browser id %s from %s to %s" % (browser_id, old_url, new_url))
+        if updated_browser.url != old_browser.url:
+            rospy.logdebug("Updating URL of browser id %s from %s to %s" % (browser_id, old_browser.url, updated_browser.url))
             old_browser.update_url(updated_browser.url)
 
         return True

@@ -2,6 +2,21 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.3 (2015-07-29)
+------------------
+
+1.0.2 (2015-07-29)
+------------------
+* remove redefinition of touchscreen
+* Fixed adhoc browser URL handling
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.0.1 (2015-07-29)
+------------------
+
+* Removed ambiguous var def thanks to @zdenekmaxa
+* Contributors: Wojciech Ziniewicz
+
 0.0.7 (2015-07-28)
 ------------------
 * Show links on center sv
@@ -15,33 +30,6 @@ Changelog for package lg_common
 * ManagedBrowser fix
   - added shutil.rmtree before initialization for --user-data-dir
 * Contributors: Will Plaut, Wojciech Ziniewicz
-
-1.0.1 (2015-07-29)
-------------------
-
-* Bumped versions
-* Removed ambiguous var def thanks to @zdenekmaxa
-* Bumped adhocbrowser version manually for glory
-* AdhocBrowser
-  - added roslaunch
-  - fixed import
-* Fix lg_common debian/control
-* 0.0.7
-* 0.0.7 Changelogs
-* Populate debian files from script
-* Show links on center sv
-* 0.0.6
-* 0.0.6 Changelogs
-* Managed Adhoc Browser changes
-* Fixes for adhocbrowser
-* Added messages and script for adhoc browser
-* adhoc browser
-  - moved everything to lg_common
-  - added README for adhoc browser
-* lg_common version bump
-* ManagedBrowser fix
-  - added shutil.rmtree before initialization for --user-data-dir
-* Contributors: Matt Vollrath, Will Plaut, Wojciech Ziniewicz
 
 0.0.5 (2015-07-27)
 ------------------
