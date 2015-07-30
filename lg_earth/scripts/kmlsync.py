@@ -7,7 +7,8 @@ from lg_earth.srv import KmlState, PlaytourQuery
 from lg_common.webapp import ros_tornado_spin
 import tornado.web
 import tornado.ioloop
-
+from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import write_log_to_file
 
 def main():
     rospy.init_node('kmlsync_server')
@@ -22,6 +23,10 @@ def main():
     rospy.wait_for_service('/kmlsync/state')
     rospy.wait_for_service('/kmlsync/playtour_query')
 
+    write_log_to_file("Before subscriber")
+    topic = rospy.get_param('~director_topic', '/director/scene')
+    #rospy.Subscriber(topic, GenericMessage, KmlUpdateHandler.get_scene_msg)
+    write_log_to_file("Created subscriber")
     kml_state = KmlState()
     kmlsync_server.playtour = PlaytourQuery()
     kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)

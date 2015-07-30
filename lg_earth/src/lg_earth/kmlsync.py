@@ -48,7 +48,7 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from lg_earth.srv import KmlState, PlaytourQuery
 from xml.sax.saxutils import unescape, escape
-from lg_common.helpers import escape_asset_url, generate_cookie
+from lg_common.helpers import escape_asset_url, generate_cookie, write_log_to_file
 from std_msgs.msg import String
 import tornado.web
 
@@ -76,6 +76,15 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
+    @classmethod
+    def get_scene_msg(msg):
+        try:
+            write_log_to_file("hello")
+            write_log_to_file(msg.message)
+        except Exception:
+            write_log_to_file("Exception saving scene")
+
+
     def initialize(self):
         self.asset_service = self.application.asset_service
 
