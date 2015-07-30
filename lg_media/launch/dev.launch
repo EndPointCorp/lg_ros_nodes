@@ -6,7 +6,8 @@
     <node name="lg_media" pkg="lg_media" type="client">
         <param name="application" value="mplayer"/>
         <param name="application_path" value="/usr/bin/mplayer"/>
-        <param name="application_flags" value="-cache 8192 -quiet -osdlevel 0 -nomouseinput -nograbpointer"/>
+        <!-- <param name="application_flags" value="-cache 8192 -quiet -osdlevel 0 -nomouseinput -nograbpointer -slave"/> -->
+        <param name="application_flags" value="-slave"/>
         <param name="viewport" value="left_one" />
     </node>
 

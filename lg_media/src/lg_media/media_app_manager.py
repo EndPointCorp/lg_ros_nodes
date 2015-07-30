@@ -35,6 +35,7 @@ rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[]'
 """
 
 import os
+import time
 
 import rospy
 from std_msgs.msg import String
@@ -50,6 +51,12 @@ DEFAULT_VIEWPORT = "test_viewport_0"
 DEFAULT_APP = "mplayer"
 
 
+class AppInstance(object):
+    def __init__(self, app, fifo_path):
+        self.app = app
+        self.fifo_path = fifo_path
+
+
 class MediaService(object):
     """
 
@@ -62,7 +69,7 @@ class MediaService(object):
         return cmd
 
     def __init__(self):
-        self.apps = {}  # key: app id, value: app instance
+        self.apps = {}  # key: app id, value: AppInstance
 
     def listener(self, data):
         """
@@ -70,26 +77,43 @@ class MediaService(object):
 
         """
         rospy.logdebug("'listener' invoked, received data: '%s'" % data)
-        if len(data.medias) > 0:
-            curr_apps = {}
-            for media in data.medias:
-                if media.id in self.apps:
-                    rospy.logdebug("App id '%s' exists, updating ..." % media.id)
-                    app = self.apps[media.id]
-                    # TODO
-                    # update the url and geometry of the process app accordingly
-                else:
-                    rospy.logdebug("App id '%s' doesn't exist, starting ..." % media.id)
-                    curr_apps[media.id] = self._start_and_get_app(media)
-            self.apps.update(curr_apps)
-        else:
+
+        if len(data.medias) == 0:
             rospy.logdebug("Media array empty, shutting existing applications down ...")
             self._shutdown()
+            return
+
+        received_ids = [media.id for media in data.medias]
+
+        # update applications (intersection of received_ids and existing app ids)
+        for media in data.medias:
+            if media.id in self.apps.keys():
+                fifo = self.apps[media.id].fifo_path
+                rospy.logdebug("App id '%s' exists, updating, FIFO: '%s') ..." % (media.id, fifo))
+                # TODO
+                # test via python write into FIFO (did not work in a stand-alone test)
+                os.system("echo 'loadfile %s' > %s" % (media.url, fifo))
+                # TODO
+                # update geometry via change_rectangle <val1> <val2> commands
+                rospy.logdebug("Updated instance '%s' with URL '%s'" % (media.id, media.url))
+
+        # shutdown applications
+        to_shutdown = set(self.apps.keys()) - set(received_ids)
+        [self._shutdown_instance(app_id) for app_id in to_shutdown]
+
+        # create applications
+        new_apps = {}
+        for media in data.medias:
+            if media.id in set(received_ids) - set(self.apps.keys()):
+                rospy.logdebug("App id '%s' doesn't exist, starting ..." % media.id)
+                new_apps[media.id] = AppInstance(*self._start_and_get_app(media))
+        self.apps.update(new_apps)
 
     def _start_and_get_app(self, media):
         """
         Start a ManagedApplication instance according to the details in the
-        media argument and return instance.
+        media argument and return instance and fifo file descriptor to drive
+        the application.
 
         """
         # geometry = ManagedWindow.get_viewport_geometry()
@@ -108,19 +132,30 @@ class MediaService(object):
                                        w_name="mplayer",
                                        w_instance=self._get_instance())
         cmd = self.app_cmd
+        name = "lg-%s-%s.fifo" % (self.__class__.__name__, time.time())
+        path = os.path.join("/tmp", name)
+        os.mkfifo(path)
+        rospy.loginfo("Created FIFO file '%s'" % path)
+        cmd.extend(["-input", "file=%s" % path])
         cmd.extend([media.url])
         rospy.loginfo("starting: '%s' ..." % cmd)
         app = ManagedApplication(cmd, window=mplayer_window)
         app.set_state(ApplicationState.VISIBLE)
         rospy.loginfo("Application '%s' started." % cmd)
-        return app
+        return app, path
+
+    def _shutdown_instance(self, app_id):
+        app_instance = self.apps[app_id]
+        rospy.loginfo("Stopping app id '%s', FIFO: '%s' ..." % (app_id, app_instance.fifo_path))
+        app_instance.app.proc.stop()
+        os.unlink(app_instance.fifo_path)
+        assert not os.path.exists(app_instance.fifo_path)
+        del self.apps[app_id]
 
     def _shutdown(self):
-        rospy.loginfo("Stopping managed applications ...")
-        for app_id, app in self.apps.items():
-            rospy.loginfo("Stopping app id '%s' ..." % app_id)
-            app.proc.stop()
-            del self.apps[app_id]
+        rospy.loginfo("Stopping all (num: %s) managed applications ..." % (len(self.apps)))
+        for app_id in self.apps.keys()[:]:
+            self._shutdown_instance(app_id)
 
     def _get_instance(self):
         """
