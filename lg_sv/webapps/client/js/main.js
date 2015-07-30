@@ -5,7 +5,7 @@ var fieldOfView = getParameterByName('fov', Number, 0);
 
 function initialize() {
   console.log('initializing Street View');
- 
+
   var ros = new ROSLIB.Ros({
     // TODO (wz) parametrize this
     url: 'ws://localhost:9090'
@@ -16,8 +16,8 @@ function initialize() {
 
   var mapOptions = {
     disableDefaultUI: true,
-    center: new google.maps.LatLng(45,45),
-    backgroundColor: "black",
+    center: new google.maps.LatLng(45, 45),
+    backgroundColor: 'black',
     zoom: 8
   };
   var svOptions = {
@@ -40,35 +40,36 @@ function initialize() {
     sv.setZoom(3);
   });
 
-  var wrapper = document.getElementById("wrapper");
+  var wrapper = document.getElementById('wrapper');
   var canvasRatio = parseMatrix(
                     window.getComputedStyle(wrapper, null)
-                          .getPropertyValue("transform"))[0];
+                          .getPropertyValue('transform'))[0];
 
 
   svClient.on('pov_changed', function(povQuaternion) {
     // TODO(mv): move quaternion parsing into StreetviewClient library
-    var viewportFOV = fieldOfView/canvasRatio;
-    var radianOffset = toRadians(viewportFOV*yawOffset)
-    var htr = [ povQuaternion.z, povQuaternion.x, 0 ]
-    var transformedHTR = transformHTR( htr, radianOffset );
+    var viewportFOV = fieldOfView / canvasRatio;
+    var radianOffset = toRadians(viewportFOV * yawOffset);
+    var htr = [povQuaternion.z, povQuaternion.x, 0];
+    var transformedHTR = transformHTR(htr, radianOffset);
     var roll = -transformedHTR[2];
     var pov = {
       heading: transformedHTR[0],
       pitch: transformedHTR[1]
     };
     sv.setPov(pov);
-    canvas.setAttribute("style","transform: rotateZ(" + roll + "deg);");
+    canvas.setAttribute('style', 'transform: rotateZ(' + roll + 'deg);');
   });
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
 function getParameterByName(name, type, def) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(location.search);
-  return results === null ? def : type(decodeURIComponent(results[1].replace(/\+/g, " ")));
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+                         results = regex.exec(location.search);
+  return (results === null ? def : type(
+          decodeURIComponent(results[1].replace(/\+/g, ' '))));
 }
 
 function stringToBoolean(s) {
