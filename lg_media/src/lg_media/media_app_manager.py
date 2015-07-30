@@ -2,11 +2,6 @@
 """
 Adhoc media service.
 
-define video playing commands (String),
-http://www.mplayerhq.hu/DOCS/HTML/en/control.html
-http://www.mplayerhq.hu/DOCS/tech/slave.txt
-http://stackoverflow.com/questions/4976276/is-it-possible-to-control-mplayer-from-another-program-easily
-
 notes:
     rospy.loginfo()
     while not rospy.is_shutdown() ...
@@ -94,9 +89,12 @@ class MediaService(object):
             if media.id in self.apps.keys():
                 fifo = self.apps[media.id].fifo_path
                 rospy.logdebug("App id '%s' exists, updating, FIFO: '%s') ..." % (media.id, fifo))
-                # TODO
-                # test via python write into FIFO (did not work in a stand-alone test)
                 os.system("echo 'loadfile %s' > %s" % (media.url, fifo))
+                # TODO
+                # this way it doesn't work ...
+                #fifo_desc = open(fifo, 'w')
+                #fifo_desc.write('loadfile %s' % media.url)
+                #fifo_desc.close()
                 # TODO
                 # update geometry via change_rectangle <val1> <val2> commands
                 rospy.logdebug("Updated instance '%s' with URL '%s'" % (media.id, media.url))
@@ -112,6 +110,8 @@ class MediaService(object):
                 rospy.logdebug("App id '%s' doesn't exist, starting ..." % media.id)
                 new_apps[media.id] = AppInstance(*self._start_and_get_app(media))
         self.apps.update(new_apps)
+
+    
 
     def _start_and_get_app(self, media):
         """
