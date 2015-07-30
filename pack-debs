@@ -1,234 +1,41 @@
-#!/bin/bash
-# vim:set ai sts=4 ts=4 sw=4 expandtab filetype=sh:
+#!/usr/bin/env bash
 
 set -e
 
-MY_DIR="$( dirname "${0}" )"
-if [ "${MY_DIR}" == "." ]; then
-    MY_DIR="${PWD}"
+DIR=$( dirname "${BASH_SOURCE[0]}" )
+cd $DIR
+DIR=`pwd`
+
+BUILD=$DIR/lg_builder/scripts/lg-ros-build
+SRCDIR=$DIR/catkin/src
+DEBDIR=$DIR/catkin/debs
+
+rm -rf $DEBDIR
+mkdir -p $DEBDIR
+cd $DEBDIR
+
+sudo rosdep init || /bin/true
+rosdep update
+sudo rosdep install -y --from-paths $SRCDIR --ignore-src \
+    --rosdistro=indigo --os=ubuntu:trusty
+
+if [ -e $SRCDIR/appctl ]; then
+    $BUILD $SRCDIR/appctl
+    sudo dpkg --force-overwrite -i ros-indigo-appctl_*.deb
 fi
-
-STAGES=(
-    "appctl"
-    "interactivespaces_msgs"
-    "lg_common"
-)
-PACK_STAGE="${2:-0}"
-((PACK_STAGE++)) || true
-
-echo "Over HERE!!! pack_stage: ${PACK_STAGE}"
-
-REGEX_MOD=''
-STAGE=''
-if [ "${PACK_STAGE,,}" -gt ${#STAGES[@]} ]; then
-    echo "Final stage"
-    ALL_STAGES=()
-    for stage in ${STAGES[@]}; do
-        ALL_STAGES="${ALL_STAGES[@]} ${stage[@]}"
-    done
-    STAGE=${ALL_STAGES}
-    REGEX_MOD='!'
-else
-    i=$((PACK_STAGE - 1))
-    STAGE=${STAGES[$i]}
+if [ -e $SRCDIR/interactivespaces_msgs ]; then
+    $BUILD $SRCDIR/interactivespaces_msgs
+    sudo dpkg --force-overwrite -i ros-indigo-interactivespaces-msgs_*.deb
 fi
-
-DEPS_REGEX_PRE='.*/\('
-DEPS_REGEX_POST='\)/.*'
-DEPS_REGEX_MID=""
-for dep in ${STAGE[@]}; do
-    DEPS_REGEX_MID="${DEPS_REGEX_MID}\\|${dep}"
-done
-DEPS_REGEX_MID=${DEPS_REGEX_MID/\\|}
-
-DEPS_REGEX="${DEPS_REGEX_PRE}${DEPS_REGEX_MID}${DEPS_REGEX_POST}"
-
-DEB_DIR="catkin"
-ROS_REL="ros-indigo"
-
-if [ "$1" == "" ]; then
-    echo "You haven't supplied any version - must provide full git branch like origin/development"
-    exit 1
-else
-    GIT_BRANCH=`echo $1 | awk -F '/' {'print $2'}`
-    if [ "$GIT_BRANCH" == "" ]; then
-      echo "Specified branch is invalid. You need to provide with origin e.g. 'origin/master'"
-      exit 1
-    fi
-    echo "Packages will be built with '$GIT_BRANCH' version"
+if [ -e $SRCDIR/lg_cms_director ]; then
+    $BUILD $SRCDIR/lg_cms_director
 fi
+$BUILD $SRCDIR/lg_common
+sudo dpkg -i ros-indigo-lg-common_*.deb
+$BUILD $SRCDIR/lg_builder
+$BUILD $SRCDIR/lg_earth
+$BUILD $SRCDIR/lg_media
+$BUILD $SRCDIR/lg_nav_to_device
+$BUILD $SRCDIR/lg_sv
+$BUILD $SRCDIR/liquidgalaxy
 
-O_IFS="${IFS}"
-IFS=$'\n'
-
-
-function build_deb () {
-    echo "Soon"
-}
-
-function purge_previous_builds() {
-    if [ "${PACK_STAGE,,}" -eq 1 ]; then
-        echo "Purging directory $1"
-        rm -fr $1/*
-        echo "Recreating directory $1"
-        mkdir -p $1
-    fi
-}
-
-function create_metapackage_template() {
- # $1 should be a directory with all ros nodes inside
- _all_packages=$(for i in `find "${MY_DIR}/${DEB_DIR}/debs" -follow -mindepth 1 -maxdepth 1 -type d` ; do echo -n "$ROS_REL-$(basename $i), "; done | sed s/', $'//g)
- _git_branch=$GIT_BRANCH
- echo "Going to do following replacements:  sed s/__GIT_BRANCH__/$_git_branch/g | sed s/__DEPENDS__/$_all_packages/g | sed s/__REPLACES__/$_replaces/g"
- cat "${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control.template" | sed s/__GIT_BRANCH__/"$_git_branch"/g | sed s/__DEPENDS__/"$_all_packages"/g
- cat "${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control.template" | sed s/__GIT_BRANCH__/"$_git_branch"/g | sed s/__DEPENDS__/"$_all_packages"/g > "${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control"
- }
-
-function build_metapackage() {
- equivs-build "${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control" && mv *.deb "${MY_DIR}/${DEB_DIR}/debs/"
-}
-
-
-function update_dependencies() {
-    # $1 should be file path to debian/control
-    # $2 should be git branch
-    for package_path in `find "${MY_DIR}/${DEB_DIR}/src" -follow -type f -path "*/debian/rules"`; do
-        echo "package_path: $package_path"
-        package_name=$(echo $(basename $(dirname $(dirname $package_path))) | sed s/'_'/'-'/g)
-        echo "Updating dependency in file $1 for branch $2 and package name $package_name"
-        echo "Substituting file $1 with sed s/' $ROS_REL-$package_name'/' $ROS_REL-$package_name-$2'/g"
-        sed -i s/" $ROS_REL-$package_name$"/"$ROS_REL-$package_name-$2"/g $1
-        sed -i s/" $ROS_REL-$package_name,"/"$ROS_REL-$package_name-$2,"/g $1
-    done
-}
-
-function update_replaces() {
-    # $1 should be file path to debian/control
-    # $2 should be git branch
-    # $3 should be package name e.g. 'appctl'
-    package_name=$3
-    if [ "$2" == "development" ]; then
-        REPLACES="$ROS_REL-$package_name-master, $ROS_REL-$package_name-staging"
-    elif  [ "$2" == "master" ]; then
-         REPLACES="$ROS_REL-$package_name-development, $ROS_REL-$package_name-staging"
-    elif  [ "$2" == "staging" ]; then
-         REPLACES="$ROS_REL-$package_name-development, $ROS_REL-$package_name-master"
-    fi
-    echo "Updating file $1 with s/__REPLACES__/$REPLACES/g"
-    sed -i s/__REPLACES__/"$REPLACES"/g $1
-}
-
-function update_metapackage_replaces() {
-    # $1 should be git branch
-    if [ "$1" == "development" ]; then
-        REPLACES="$ROS_REL-lg-master, $ROS_REL-lg-staging"
-    elif  [ "$1" == "master" ]; then
-         REPLACES="$ROS_REL-lg-development, $ROS_REL-lg-staging"
-    elif  [ "$1" == "staging" ]; then
-         REPLACES="$ROS_REL-lg-development, $ROS_REL-lg-master"
-    fi
-    echo "Updating file ${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control with s/__REPLACES__/$REPLACES/g"
-    sed -i s/__REPLACES__/"$REPLACES"/g ${MY_DIR}/${DEB_DIR}/src/ros_metapackage/ns-control
-}
-
-echo "Going to build following packages"
-for pkg_debian_rules in `find "${MY_DIR}/${DEB_DIR}/src" -follow -type f -path '*/debian/rules' ${REGEX_MOD} -iregex "${DEPS_REGEX}"`; do
-    echo "Package to build: $pkg_debian_rules"
-done
-
-purge_previous_builds "${MY_DIR}/${DEB_DIR}/debs/"
-
-for pkg_debian_rules in `find "${MY_DIR}/${DEB_DIR}/src" -follow -type f -path '*/debian/rules' ${REGEX_MOD} -iregex "${DEPS_REGEX}"`; do
-    # reset IFS to Original IFS and quote pkg_debian_rules variable usage everywhere
-    IFS="${O_IFS}"
-
-    pkg_dir="$( dirname $( dirname $pkg_debian_rules ) )"
-    echo "Going to build $GIT_BRANCH package out of $pkg_dir"
-
-    pkg_orig_name="$( basename ${pkg_dir})"
-
-    if [ "$pkg_orig_name" == "geodata" ] ; then
-        echo "Downloading geodata npz to $pkg_dir/data/geodata_population.npz"
-        if [ -f $pkg_dir/data/geodata_population.npz ]; then
-            echo "Package already exists"
-        else
-            mkdir -p $pkg_dir/data/
-            wget http://galaxy.endpoint.com/portal/geodata_population.npz -O $pkg_dir/data/geodata_population.npz
-        fi
-    fi
-
-    pkg_orig_name_tred="$( echo $pkg_orig_name | tr '_' '-')"
-    if [ "$GIT_BRANCH" == "" ]; then
-        pkg_name="$( basename ${pkg_dir} | tr '_' '-' )"
-    else
-        pkg_name="$( basename ${pkg_dir} | tr '_' '-' )-$GIT_BRANCH"
-    fi
-
-    pkg_dir_new=${MY_DIR}/${DEB_DIR}/debs/$pkg_name
-
-    echo "pkg_dir_new: $pkg_dir_new, pkg_orig_name_tred: $pkg_orig_name_tred"
-
-    echo "Copying ${MY_DIR}/${DEB_DIR}/src/$pkg_orig_name to temporary directory ${MY_DIR}/${DEB_DIR}/debs/$pkg_name"
-    rm -fr "${MY_DIR}/${DEB_DIR}/debs/$pkg_name"
-    rsync -avz --delete "${MY_DIR}/${DEB_DIR}/src/$pkg_orig_name/" "${MY_DIR}/${DEB_DIR}/debs/$pkg_name"
-
-
-    echo "Getting version string from ${pkg_dir_new}/debian/changelog"
-    pkg_ver_orig="$( dpkg-parsechangelog -l${pkg_dir_new}/debian/changelog --show-field Version | cut -d'-' -f1 )"
-    pkg_ver_new="$pkg_ver_orig-$GIT_BRANCH"
-
-    echo "Rewriting some package information under ${pkg_dir_new}/debian/"
-    #read
-
-    # Appending "-$GT_BRANCH" to package name
-    echo "Changing s/\($pkg_ver_orig/\($pkg_ver_new/ in ${pkg_dir_new}/debian/changelog"
-    sed -i s/\($pkg_ver_orig\)/\($pkg_ver_new\)/ ${pkg_dir_new}/debian/changelog
-    echo "Changing s/\"$pkg_orig_name_tred$\"/\"$pkg_name\"/g in ${pkg_dir_new}/debian/control"
-    sed -i s/"$pkg_orig_name_tred$"/"$pkg_name"/g ${pkg_dir_new}/debian/control
-    echo "Changing s/\"$pkg_orig_name_tred \"/\"$pkg_name \"/g in ${pkg_dir_new}/debian/changelog"
-    sed -i s/"$pkg_orig_name_tred "/"$pkg_name "/g ${pkg_dir_new}/debian/changelog
-    echo "Changing s/\"\/$pkg_orig_name\/\"/\"\/$pkg_name\//\"g in ${pkg_dir_new}/debian/rules"
-    sed -i s/"\/$pkg_orig_name_tred\/"/"\/$pkg_name\//"g ${pkg_dir_new}/debian/rules
-
-    update_dependencies ${pkg_dir_new}/debian/control $GIT_BRANCH
-    update_replaces ${pkg_dir_new}/debian/control $GIT_BRANCH $pkg_orig_name_tred
-
-
-    echo "pkg_ver_new: $pkg_ver_new, pkg_ver_orig: $pkg_ver_orig"
-    echo "pkg_dir: $pkg_dir, pkg_name: $pkg_name, pkg_orig_name: $pkg_orig_name"
-    #read # debugging
-
-    tar -C ${pkg_dir_new}/.. \
-        --exclude='*/.git' \
-        --exclude='*/data/*.npz' \
-        --exclude="*/debian/${ROS_REL}-*" \
-        --exclude='*/obj-*-linux-gnu' \
-        -czvvf ${pkg_dir_new}/../${ROS_REL}-$( echo ${pkg_name} | tr '_' '-' )_${pkg_ver_orig}.orig.tar.gz \
-        ./${pkg_name}
-    echo "Changing directory to $pkg_dir_new"
-    pushd ${pkg_dir_new}
-    #read
-    echo "Building package ${pkg_name}"
-    dpkg-buildpackage -uc -us
-    popd
-    if [ "${PACK_STAGE,,}" -le ${#STAGES[@]} ]; then
-        if dpkg-query --showformat='${binary:Package}\t${Version}\t${Architecture}\n' --show "${ROS_REL}-${pkg_orig_name_tred}-*"; then
-            sudo apt-get remove "${ROS_REL}-${pkg_orig_name_tred}-*" --yes
-        fi
-        sudo dpkg -i ${pkg_dir_new}/../${ROS_REL}-${pkg_name}_${pkg_ver}*.deb
-    fi
-done
-
-if [ "${PACK_STAGE,,}" -le ${#STAGES[@]} ]; then
-    exec ${0} $1 $PACK_STAGE
-fi
-
-find ${MY_DIR}/${DEB_DIR} -iname "*.deb"
-
-echo "Building metapackage"
-
-create_metapackage_template "${MY_DIR}/${DEB_DIR}/debs"
-update_metapackage_replaces $GIT_BRANCH
-build_metapackage
-
-echo "You packages should be located in ${MY_DIR}/${DEB_DIR}/debs"
