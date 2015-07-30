@@ -72,6 +72,8 @@ class Builder(object):
         package = parse_package(package_path)
         package_dir = lg_builder.get_package_path(package)
 
+        print "Building {} version {}".format(package.name, package.version)
+
         print "Validating package"
         package.validate()
 
