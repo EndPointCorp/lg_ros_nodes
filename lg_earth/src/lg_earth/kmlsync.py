@@ -116,6 +116,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             cls.finish_all_requests()
         except Exception as e:
             write_log_to_file("Exception saving scene"+str(e))
+            pass
 
     def initialize(self):
         self.asset_service = self.application.asset_service
@@ -156,8 +157,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 self.__class__.add_to_global_queue(self, window_slug)
                 yield gen.sleep(self.__class__.TIMEOUT)
                 if self in self.__class__.global_queue[window_slug]:
-                        self.__class__.global_queue[window_slug].remove(self)
-                        self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+                    self.__class__.global_queue[window_slug].remove(self)
+                    assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
+                    assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+                    #write_to_log("create %s\ndelete %s" % (assets_to_create, assets_to_delete))
+                    self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
         else:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
