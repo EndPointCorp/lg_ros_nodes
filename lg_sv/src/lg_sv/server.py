@@ -16,9 +16,9 @@ import json
 # /streetview/metadata -> handle_metadata_msg:
 # 1. update self.metadata
 
-X_THRESHOLD = 0.67
-FORWARD_THRESHOLD = .13
-BACKWARDS_THRESHOLD = .13
+X_THRESHOLD = 0.50
+FORWARD_THRESHOLD = .3
+BACKWARDS_THRESHOLD = .3
 # TODO figure out some good values here
 COEFFICIENT_LOW = 0.1
 COEFFICIENT_HIGH = 3
@@ -191,21 +191,18 @@ class StreetviewServer:
         """
         if not self.state:
             return
-        # On the first ever nav msg, just set last nav time
 
+        # On the first ever nav msg, just set last nav time
         if self.last_nav_msg_t == 0:
             self.last_nav_msg_t = rospy.get_time()
             return
+
         now = rospy.get_time()
         self.time_since_last_nav_msg = now - self.last_nav_msg_t
         self.last_nav_msg_t = now
-        coefficient = self.time_since_last_nav_msg / self.space_nav_interval
-        coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
-        #TODO(wjp): use coefficient
-        coefficient = 1
+        coefficient = self.getCoefficient()
         # attempt deep copy
         pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
-        # or maybe Quaternion(self.pov.x, self.pov.y, ...)
         tilt = pov_msg.x - coefficient * twist.angular.y * self.nav_sensitivity
         heading = pov_msg.z - coefficient * twist.angular.z * self.nav_sensitivity
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
@@ -264,6 +261,15 @@ class StreetviewServer:
             return None  # don't update anything
         self.pub_panoid(move_to)
         return True
+
+    def getCoefficient(self):
+        """
+        Find the ratio of time in between nav messages and
+        expected interval. Clamp the result and return.
+        """
+        coefficient = self.time_since_last_nav_msg / self.space_nav_interval
+        coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
+        return coefficient
 
 
 class NearbyPanos:
