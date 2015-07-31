@@ -20,12 +20,14 @@ class AdhocBrowserDirectorBridge():
         self.browser_pool_publisher = browser_pool_publisher
 
     def translate_director(self, data):
+        """
+        Translates /director/scene messages to one AdhocBrowsers message
+        """
         adhoc_browsers_list = self._extract_adhoc_browsers(data)
 
-        if adhoc_browsers_list:
-            adhoc_browsers = AdhocBrowsers()
-            adhoc_browsers.browsers = adhoc_browsers_list
-            self.browser_pool_publisher.publish(adhoc_browsers)
+        adhoc_browsers = AdhocBrowsers()
+        adhoc_browsers.browsers = adhoc_browsers_list
+        self.browser_pool_publisher.publish(adhoc_browsers)
 
     def _extract_adhoc_browsers(self, data):
         """
