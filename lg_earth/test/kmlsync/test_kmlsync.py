@@ -177,6 +177,9 @@ class TestKMLSync(unittest.TestCase):
         self._test_director_state()
 
     def _test_director_state(self):
+        """
+        Tests for the expected state when a director message has been sent.
+        """
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
 
         rospy.loginfo("r.content => '%s'" % escape(r.content))
@@ -251,6 +254,11 @@ class TestKMLSync(unittest.TestCase):
         t.join()
 
     def test_9_multiple_requests_before_state_change(self):
+        """
+        This tests when requests are made that require no state change
+        sit on the queue while the state changes, and return with that
+        new changed state.
+        """
         if TIMEOUT_FOR_REQUESTS <= 1:
             return # not tesable with small timeout for requests
         async_requests = []
@@ -266,6 +274,12 @@ class TestKMLSync(unittest.TestCase):
                 self.fail("Invalid director message retuned from queued request")
 
     def test_10_overflow_queue_once_before_state_change(self):
+        """
+        This tests that when the queue fills up, it will return with the proper
+        data, in this case, it first should return with an empty cookie string,
+        because there is no state. Then it will return the rest of the queue with
+        the expected state after the director message is sent.
+        """
         if TIMEOUT_FOR_REQUESTS <= 1:
             return # not tesable with small timeout for requests
         async_requests = []
@@ -298,9 +312,11 @@ class TestKMLSync(unittest.TestCase):
         rospy.sleep(1)
 
     def _sleep_and_send_director(self):
+        """
+        Used to sleep then send a director message, helpful in our threads.
+        """
         rospy.sleep(3)
         self._send_director_message()
-
 
 
 def get_cookie_string(s):
