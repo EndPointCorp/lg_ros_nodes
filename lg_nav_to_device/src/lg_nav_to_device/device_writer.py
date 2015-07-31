@@ -3,7 +3,8 @@ from evdev import AbsInfo, UInput, InputEvent, ecodes as e
 import time
 
 class DeviceWriter:
-    def __init__(self):
+    def __init__(self, scale):
+        self.scale = scale
         # most values were taken from running
         # InputDevice('/dev/input/event$N').capabilities()
         vendor=1133
@@ -58,4 +59,4 @@ class DeviceWriter:
         self.ui.syn()
 
     def translate(self, n):
-        return int(n) # TODO find the translation...
+        return int(n * self.scale) # TODO find the translation...
