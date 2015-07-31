@@ -75,7 +75,25 @@ If Earth isn't syncing, make sure that your firewall isn't blocking broadcast da
 
 Where 1.2.3.255 is your broadcast address.
 
-Development
-===========
+##Development
 
 LINT is configured, run `pep8` in the root of this repo to check.
+
+##Making new release
+
+Currently Debian packages are published under
+
+- to make new release you need to:
+
+```shell
+$ catkin_generate_changelog
+```
+
+- then edit all your `.rst` changelogs - remove unwanted or bogus messages
+and make them look pretty
+
+- once that's done, create debian/changelog with `scripts/xxxx` and prepare release:
+
+```shell
+$ catkin_prepare_release
+```
