@@ -20,6 +20,7 @@ import xml.etree.ElementTree as ET
 from std_msgs.msg import String
 from xml.sax.saxutils import escape
 from lg_common.helpers import escape_asset_url, generate_cookie
+from lg_earth import KmlUpdateHandler
 from interactivespaces_msgs.msg import GenericMessage
 from subprocess import Popen
 QUERY_TOPIC = '/earth/query/tour'
@@ -69,6 +70,7 @@ class TestKMLSync(unittest.TestCase):
         rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         self.wait_for_http()
         self.query_string = ''
+        KmlUpdateHandler.TIMEOUT = 1
 
     def tearDown(self):
         self.session.close()

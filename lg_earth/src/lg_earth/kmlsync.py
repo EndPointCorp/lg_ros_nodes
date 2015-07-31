@@ -57,29 +57,6 @@ import tornado.web
 import collections
 from tornado import gen
 
-MAX_QUEUE_SIZE = 10
-global_queue = {}
-
-def add_to_global_queue(reference, window_slug):
-    global global_queue
-    if window_slug not in global_queue:
-        global_queue[window_slug] = collections.deque()
-    global_queue[window_slug].append(reference)
-    if len(global_queue[window_slug]) > MAX_QUEUE_SIZE:
-        req = global_queue[window_slug].pop()
-        handle_reference_request(req)
-
-def handle_reference_request(ref):
-    ref.get(True)
-
-def finish_all_requests():
-    for slug_q in global_queue.values():
-        while True:
-            try:
-                req = slug_q.pop()
-                req.get(True)
-            except IndexError:
-                break
 
 def get_kml_root():
     """Get headers of KML file - shared by all kml generation methods."""
@@ -104,10 +81,37 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
+    MAX_QUEUE_SIZE = 10
+    TIMEOUT = 10
+    global_queue = {}
+
+    @classmethod
+    def add_to_global_queue(cls, reference, window_slug):
+        if window_slug not in cls.global_queue:
+            cls.global_queue[window_slug] = collections.deque()
+        cls.global_queue[window_slug].append(reference)
+        if len(cls.global_queue[window_slug]) > cls.MAX_QUEUE_SIZE:
+            req = cls.global_queue[window_slug].pop()
+            cls.handle_reference_request(cls, req)
+
     @staticmethod
-    def get_scene_msg(msg):
+    def handle_reference_request(ref):
+        ref.get(True)
+
+    @classmethod
+    def finish_all_requests(cls):
+        for slug_q in cls.global_queue.values():
+            while True:
+                try:
+                    req = slug_q.pop()
+                    req.get(True)
+                except IndexError:
+                    break
+
+    @classmethod
+    def get_scene_msg(cls, msg):
         try:
-            finish_all_requests()
+            cls.finish_all_requests()
         except Exception as e:
             write_log_to_file("Exception saving scene"+str(e))
 
@@ -145,10 +149,10 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             if (assets_to_delete or assets_to_create) or second_time:
                 self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             else:
-                add_to_global_queue(self, window_slug)
-                yield gen.sleep(10)
-                if self in global_queue[window_slug]:
-                        global_queue[window_slug].remove(self)
+                self.__class__.add_to_global_queue(self, window_slug)
+                yield gen.sleep(self.__class__.TIMEOUT)
+                if self in self.__class__.global_queue[window_slug]:
+                        self.__class__.global_queue[window_slug].remove(self)
                         self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
         else:
             self.set_status(400, "No window slug provided")
