@@ -111,7 +111,13 @@ class MediaService(object):
                 new_apps[media.id] = AppInstance(*self._start_and_get_app(media))
         self.apps.update(new_apps)
 
-    
+    def get_application_info(self):
+        """
+        Connected to a service call, returns content of the internal
+        container tracking currently running managed applications.
+
+        """
+        return self.apps
 
     def _start_and_get_app(self, media):
         """
