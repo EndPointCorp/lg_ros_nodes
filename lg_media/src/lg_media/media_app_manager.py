@@ -34,6 +34,7 @@ rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[]'
 """
 
 import os
+import json
 import time
 
 import rospy
@@ -43,6 +44,7 @@ from appctl_support import ProcController
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
+from lg_media.srv import MediaAppsInfoResponse
 
 
 ROS_NODE_NAME = "lg_media"
@@ -54,6 +56,10 @@ class AppInstance(object):
     def __init__(self, app, fifo_path):
         self.app = app
         self.fifo_path = fifo_path
+
+    def __str__(self):
+        r = "cmd:%s state:%s FIFO:%s" % (self.app.cmd, self.app.state, self.fifo_path)
+        return r
 
 
 class MediaService(object):
@@ -111,13 +117,14 @@ class MediaService(object):
                 new_apps[media.id] = AppInstance(*self._start_and_get_app(media))
         self.apps.update(new_apps)
 
-    def get_application_info(self):
+    def get_media_apps_info(self, request):
         """
         Connected to a service call, returns content of the internal
         container tracking currently running managed applications.
 
         """
-        return self.apps
+        d = {app_id: str(app_info) for app_id, app_info in self.apps.items()}
+        return MediaAppsInfoResponse(json=json.dumps(d))
 
     def _start_and_get_app(self, media):
         """
