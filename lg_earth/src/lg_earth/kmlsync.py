@@ -90,9 +90,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         if window_slug not in cls.global_queue:
             cls.global_queue[window_slug] = collections.deque()
         cls.global_queue[window_slug].append(reference)
+        write_log_to_file("%s" % cls.global_queue)
         if len(cls.global_queue[window_slug]) > cls.MAX_QUEUE_SIZE:
-            req = cls.global_queue[window_slug].pop()
-            cls.handle_reference_request(cls, req)
+            req = cls.global_queue[window_slug].popleft()
+            write_log_to_file("Inside max q: "+str(req.__repr__))
+            cls.handle_reference_request(req)
 
     @staticmethod
     def handle_reference_request(ref):
@@ -103,7 +105,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         for slug_q in cls.global_queue.values():
             while True:
                 try:
-                    req = slug_q.pop()
+                    req = slug_q.popleft()
                     req.get(True)
                 except IndexError:
                     break
