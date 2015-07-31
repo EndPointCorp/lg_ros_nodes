@@ -6,7 +6,7 @@ KMLSYNC_HOST = '127.0.0.1'
 KMLSYNC_PORT = 8765
 KML_ENDPOINT = 'http://' + KMLSYNC_HOST + ':' + str(KMLSYNC_PORT)
 
-WINDOW_SLUG = 'test_window_slug'
+WINDOW_SLUG = 'center'
 
 import sys
 import re
@@ -19,9 +19,11 @@ import requests
 import xml.etree.ElementTree as ET
 from std_msgs.msg import String
 from xml.sax.saxutils import escape
-from lg_common.helpers import escape_asset_url, generate_cookie
+from lg_common.helpers import escape_asset_url, generate_cookie, write_log_to_file
 from lg_earth import KmlUpdateHandler
 from interactivespaces_msgs.msg import GenericMessage
+from threading import Thread
+from multiprocessing.pool import ThreadPool
 from subprocess import Popen
 QUERY_TOPIC = '/earth/query/tour'
 SCENE_TOPIC = '/director/scene'
@@ -103,7 +105,7 @@ class TestKMLSync(unittest.TestCase):
         return msg
 
     def get_request(self, url):
-        r = self.session.get(url, timeout=1, stream=False)
+        r = self.session.get(url, timeout=TIMEOUT_FOR_REQUESTS, stream=False)
         return r
 
     def wait_for_pubsub(self):
@@ -235,12 +237,70 @@ class TestKMLSync(unittest.TestCase):
         self.assertEqual(good1.content, expected_string)
         self.assertEqual(good2.content, expected_string)
 
-    def _send_director_message(self):
+    def test_8_send_request_before_state_change(self):
+        """
+        This test will make sure that requests sent before a statechange will
+        get the proper return when the statechange happens before the request
+        is returned
+        """
+        if TIMEOUT_FOR_REQUESTS <= 1:
+            return # not tesable with small timeout for requests
+        t = Thread(target=self._sleep_and_send_director)
+        t.start()
+        self._test_director_state()
+        t.join()
+
+    def test_9_multiple_requests_before_state_change(self):
+        if TIMEOUT_FOR_REQUESTS <= 1:
+            return # not tesable with small timeout for requests
+        async_requests = []
+        queue_size = rospy.get_param("~max_queue_size", 5)
+        for i in range(queue_size):
+            pool = ThreadPool(processes=2)
+            async_requests.append(pool.apply_async(self._test_director_state))
+        self._send_director_message()
+        for thread in async_requests:
+            try:
+                thread.get()
+            except Exception:
+                self.fail("Invalid director message retuned from queued request")
+
+    def test_10_overflow_queue_once_before_state_change(self):
+        if TIMEOUT_FOR_REQUESTS <= 1:
+            return # not tesable with small timeout for requests
+        async_requests = []
+        queue_size = rospy.get_param("~max_queue_size", 5)
+        dequeued_request = ThreadPool(processes=2).apply_async(self._test_empty_cookie_string_when_no_state_is_set)
+        for i in range(queue_size):
+            pool = ThreadPool(processes=2)
+            async_requests.append(pool.apply_async(self._test_director_state))
+        self._send_director_message()
+        try:
+            dequeued_request.get()
+        except Exception, e:
+            write_log_to_file("exception is %s" % e)
+            self.fail("Invalid director message retuned from dequeued request")
+        try:
+            for thread in async_requests:
+                thread.get()
+        except Exception:
+            self.fail("Invalid director message retuned from queued request")
+
+
+
+    def _send_director_message(self, empty=False):
         director_publisher = rospy.Publisher(SCENE_TOPIC, GenericMessage)
         rospy.sleep(1)
         msg = self.get_director_msg()
+        if empty:
+            msg = self.get_empty_director_msg()
         director_publisher.publish(msg)
         rospy.sleep(1)
+
+    def _sleep_and_send_director(self):
+        rospy.sleep(3)
+        self._send_director_message()
+
 
 
 def get_cookie_string(s):
@@ -261,6 +321,7 @@ def get_deleted_elements(x):
 
 if __name__ == '__main__':
     rospy.init_node('test_director')
+    TIMEOUT_FOR_REQUESTS = rospy.get_param('~timeout_requests_session', 1)
     rostest.rosrun(PKG, NAME, TestKMLSync, sys.argv)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
