@@ -12,6 +12,7 @@ add_service_files(
   FILES
   KmlState.srv
   PlaytourQuery.srv
+  SceneModifiedTime.srv
 )
 
 generate_messages()

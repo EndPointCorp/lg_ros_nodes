@@ -1,5 +1,7 @@
 <launch>
-  <node name="testing_kmlsync_node" pkg="lg_earth" type="kmlsync" />
+  <node name="testing_kmlsync_node" pkg="lg_earth" type="kmlsync" >
+      <param name="nlc_timeout" value="0" />
+  </node>
   <node name="testing_kmlsync_node_service" pkg="lg_earth" type="kmlsync_state" />
   <test test-name="test_kmlsync_server" pkg="lg_earth" type="test_kmlsync.py" />
 </launch>

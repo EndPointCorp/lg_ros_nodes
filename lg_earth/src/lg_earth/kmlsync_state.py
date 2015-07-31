@@ -10,12 +10,15 @@ class KmlSyncState:
     def __init__(self):
         self.state = None
         self.playtour_pub = rospy.Publisher('/earth/query/tour', String, queue_size=10)
+        self.scene_modified_time = None
 
     def _save_state(self, msg):
         try:
             state = json.loads(msg.message)
             assert isinstance(state, dict)
             assert 'windows' in state
+            if self.state != state:
+                self.scene_modified_time = rospy.Time.now()
             self.state = state
             # send blank playtour query to unload any kmls
             self._send_playtour_query(PlaytourQueryRequest())
@@ -42,3 +45,8 @@ class KmlSyncState:
     def _send_playtour_query(self, req):
         self.playtour_pub.publish(String(req.tourname))
         return {'response': True}
+
+    def _get_scene_modified_time(self, req):
+        if not self.scene_modified_time:
+            return {'scene_modified_time': '0'}
+        return {'scene_modified_time':str(self.scene_modified_time)}
