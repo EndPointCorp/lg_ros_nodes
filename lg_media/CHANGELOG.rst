@@ -2,6 +2,14 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* service call, return info on tracked apps, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* fifo writing test, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* URL updates via FIFO file commands, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* http URL video playing
+* Contributors: Zdenek Maxa
+
 1.0.3 (2015-07-29)
 ------------------
 
