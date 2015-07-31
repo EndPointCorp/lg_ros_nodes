@@ -26,6 +26,18 @@ from subprocess import Popen
 QUERY_TOPIC = '/earth/query/tour'
 SCENE_TOPIC = '/director/scene'
 LPNODE = 'testing_kmlsync_node'
+TIMEOUT_FOR_REQUESTS = 1
+
+EMPTY_MESSAGE = """
+    {
+            "description": "bogus",
+            "duration": 0,
+            "name": "test whatever",
+            "resource_uri": "bogus",
+            "slug": "test message",
+            "windows": []
+    }
+    """
 
 DIRECTOR_MESSAGE = """
     {
@@ -70,6 +82,7 @@ class TestKMLSync(unittest.TestCase):
         rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         self.wait_for_http()
         self.query_string = ''
+        self._send_director_message(empty=True)
 
     def tearDown(self):
         self.session.close()
@@ -81,6 +94,12 @@ class TestKMLSync(unittest.TestCase):
         msg = GenericMessage()
         msg.type = 'json'
         msg.message = DIRECTOR_MESSAGE
+        return msg
+
+    def get_empty_director_msg(self):
+        msg = GenericMessage()
+        msg.type = 'json'
+        msg.message = EMPTY_MESSAGE
         return msg
 
     def get_request(self, url):
@@ -122,6 +141,9 @@ class TestKMLSync(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_4_network_link_update_cookie_string_is_initially_empty(self):
+        self._test_empty_cookie_string_when_no_state_is_set()
+
+    def _test_empty_cookie_string_when_no_state_is_set(self):
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
         result = get_cookie_string(r.content)
         expected = ''
@@ -150,7 +172,9 @@ class TestKMLSync(unittest.TestCase):
         """
 
         self._send_director_message()
+        self._test_director_state()
 
+    def _test_director_state(self):
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
 
         rospy.loginfo("r.content => '%s'" % escape(r.content))
