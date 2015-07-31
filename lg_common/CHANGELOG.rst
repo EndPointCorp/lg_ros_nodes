@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.4 (2015-07-31)
+------------------
 * Workaround for Chrome kiosk fullscreen behavior
   Set fullscreen to 'true' in rule properties, then back to false in the callback.
   This seems to be compatible with other applications too.

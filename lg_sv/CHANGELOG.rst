@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.4 (2015-07-31)
+------------------
 * JS lint cleanup and added JSDoc to sv_pov
 * Tune spacenav handling
 * Cleaned up client code and moved pov functions out
