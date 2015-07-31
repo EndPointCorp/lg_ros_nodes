@@ -42,12 +42,12 @@ class DeviceWriter:
         stime = int(_time)
         utime = int((float(_time) - stime) * 10 ** 6)
         # linear and angular might need to be switched here...
-        x = InputEvent(stime, utime, e.EV_REL, e.REL_X, self.translate(data.linear.x))
-        y = InputEvent(stime, utime, e.EV_REL, e.REL_Y, self.translate(data.linear.y))
-        z = InputEvent(stime, utime, e.EV_REL, e.REL_Z, self.translate(data.linear.z))
-        ax = InputEvent(stime, utime, e.EV_REL, e.REL_RX, self.translate(data.angular.x))
-        ay = InputEvent(stime, utime, e.EV_REL, e.REL_RY, self.translate(data.angular.y))
-        az = InputEvent(stime, utime, e.EV_REL, e.REL_RZ, self.translate(data.angular.z))
+        x = InputEvent(stime, utime, e.EV_REL, e.REL_X, -self.translate(data.linear.y))
+        y = InputEvent(stime, utime, e.EV_REL, e.REL_Y, -self.translate(data.linear.x))
+        z = InputEvent(stime, utime, e.EV_REL, e.REL_Z, -self.translate(data.linear.z))
+        ax = InputEvent(stime, utime, e.EV_REL, e.REL_RX, -self.translate(data.angular.y))
+        ay = InputEvent(stime, utime, e.EV_REL, e.REL_RY, -self.translate(data.angular.x))
+        az = InputEvent(stime, utime, e.EV_REL, e.REL_RZ, -self.translate(data.angular.z))
         # write all events
         self.ui.write_event(x)
         self.ui.write_event(y)
