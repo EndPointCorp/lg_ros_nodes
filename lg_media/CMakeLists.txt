@@ -15,6 +15,11 @@ add_message_files(
   AdhocMedias.msg
 )
 
+add_service_files(
+  FILES
+  MediaAppsInfo.srv
+)
+
 generate_messages(
   DEPENDENCIES
   lg_common

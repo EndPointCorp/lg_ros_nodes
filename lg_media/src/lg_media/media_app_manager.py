@@ -2,11 +2,6 @@
 """
 Adhoc media service.
 
-define video playing commands (String),
-http://www.mplayerhq.hu/DOCS/HTML/en/control.html
-http://www.mplayerhq.hu/DOCS/tech/slave.txt
-http://stackoverflow.com/questions/4976276/is-it-possible-to-control-mplayer-from-another-program-easily
-
 notes:
     rospy.loginfo()
     while not rospy.is_shutdown() ...
@@ -27,7 +22,11 @@ rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 
 # mplayer window is not placed on a desired geometry, investigate
+local file URL works without quotes or with quotes:
+rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}},{id: "2", url: /mnt/data/video/humour/walker_texas_ranger.flv, geometry: {x: 0, y: 0, width: 0, height: 0}}]'
+http URL has to have quotes, rostopic command parsing fails otherwise:
+rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: "https://zdenek.endpoint.com/kaiser_labus-7_statecnych.flv", geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 
 # shutdown test
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[]'
@@ -35,6 +34,7 @@ rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[]'
 """
 
 import os
+import json
 import time
 
 import rospy
@@ -44,6 +44,7 @@ from appctl_support import ProcController
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
+from lg_media.srv import MediaAppsInfoResponse
 
 
 ROS_NODE_NAME = "lg_media"
@@ -55,6 +56,10 @@ class AppInstance(object):
     def __init__(self, app, fifo_path):
         self.app = app
         self.fifo_path = fifo_path
+
+    def __str__(self):
+        r = "cmd:%s state:%s FIFO:%s" % (self.app.cmd, self.app.state, self.fifo_path)
+        return r
 
 
 class MediaService(object):
@@ -90,9 +95,12 @@ class MediaService(object):
             if media.id in self.apps.keys():
                 fifo = self.apps[media.id].fifo_path
                 rospy.logdebug("App id '%s' exists, updating, FIFO: '%s') ..." % (media.id, fifo))
-                # TODO
-                # test via python write into FIFO (did not work in a stand-alone test)
                 os.system("echo 'loadfile %s' > %s" % (media.url, fifo))
+                # TODO
+                # this way it doesn't work ...
+                #fifo_desc = open(fifo, 'w')
+                #fifo_desc.write('loadfile %s' % media.url)
+                #fifo_desc.close()
                 # TODO
                 # update geometry via change_rectangle <val1> <val2> commands
                 rospy.logdebug("Updated instance '%s' with URL '%s'" % (media.id, media.url))
@@ -108,6 +116,15 @@ class MediaService(object):
                 rospy.logdebug("App id '%s' doesn't exist, starting ..." % media.id)
                 new_apps[media.id] = AppInstance(*self._start_and_get_app(media))
         self.apps.update(new_apps)
+
+    def get_media_apps_info(self, request):
+        """
+        Connected to a service call, returns content of the internal
+        container tracking currently running managed applications.
+
+        """
+        d = {app_id: str(app_info) for app_id, app_info in self.apps.items()}
+        return MediaAppsInfoResponse(json=json.dumps(d))
 
     def _start_and_get_app(self, media):
         """
