@@ -117,6 +117,8 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
     def initialize(self):
         self.asset_service = self.application.asset_service
+        self.__class__.TIMEOUT = self.application.request_timeout
+        self.__class__.MAX_QUEUE_SIZE = self.application.max_queue_size
 
     @gen.coroutine
     def get(self, second_time=False):

@@ -70,7 +70,6 @@ class TestKMLSync(unittest.TestCase):
         rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         self.wait_for_http()
         self.query_string = ''
-        KmlUpdateHandler.TIMEOUT = 1
 
     def tearDown(self):
         self.session.close()
@@ -85,7 +84,7 @@ class TestKMLSync(unittest.TestCase):
         return msg
 
     def get_request(self, url):
-        r = self.session.get(url, timeout=0.1, stream=False)
+        r = self.session.get(url, timeout=1, stream=False)
         return r
 
     def wait_for_pubsub(self):
