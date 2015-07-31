@@ -1,3 +1,4 @@
+import json
 import rospy
 import urllib
 import urlparse
@@ -91,8 +92,16 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             }
               """
 
+    try:
+        message = json.loads(message.message)
+    except (ValueError, SyntaxErorr) as e:
+        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
+        rospy.logdebug("Message: %s" % message)
+        return []
+
+    rospy.logdebug("Message: %s, activity_type: %s, viewport: %s" % (message, activity_type, viewport))
     assets = []
-    for window in message.data['windows']:
+    for window in message['windows']:
         if (window['activity'] == activity_type) and (window['presentation_viewport'] == viewport):
             asset_object = {}
             asset_object['path'] = window['assets'][0]
@@ -101,6 +110,9 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             asset_object['height'] = window['height']
             asset_object['width'] = window['width']
             assets.append(asset_object)
+        else:
+            rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window['activity'], window['presentation_viewport']))
 
+    rospy.logdebug("Returning assets: %s" % assets)
     return assets
 

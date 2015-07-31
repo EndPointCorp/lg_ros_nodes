@@ -19,7 +19,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
                 geometry=geometry,
                 slug=slug,
                 url=url,
-                app=True)
+                kiosk=True)
 
     def update_geometry(self, geometry):
         """
