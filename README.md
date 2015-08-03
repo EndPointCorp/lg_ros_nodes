@@ -98,3 +98,5 @@ create `CHANGELOG.rst` for a new package.
 ```shell
 $ catkin_prepare_release
 ```
+
+Documentation for these tools: <http://wiki.ros.org/bloom/Tutorials/ReleaseCatkinPackage> (we are not using bloom yet, only steps 1 and 2).
