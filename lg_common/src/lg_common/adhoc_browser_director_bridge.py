@@ -43,7 +43,6 @@ class AdhocBrowserDirectorBridge():
 
         for browser in browsers:
             browser_name = 'adhoc_browser_' + self.viewport_name + '_' + str(browser_id)
-            geometry = ""
             adhoc_browser = AdhocBrowser()
             adhoc_browser.id=browser_name
             adhoc_browser.url=browser['path']
