@@ -305,18 +305,16 @@ function update(nowMsec) {
 
 function getMesh() {
   setQuaternion();
-  if (mesh != null && mesh.map.sourceFile === pano_url)
+  if (mesh != null && mesh.material.map.sourceFile === pano_url)
     return mesh;
-  var geometry = new THREE.SphereGeometry( 500, 60, 40 );
-  geometry.computeTangents();
-  geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
-  material = new THREE.MeshBasicMaterial( {
-      map: THREE.ImageUtils.loadTexture( pano_url )
-  } );
-
-  mesh = new THREE.Mesh( geometry, material );
-  mesh.map = THREE.ImageUtils.loadTexture(pano_url);
+  mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(100, 32, 32),
+      new THREE.MeshBasicMaterial({
+        map: THREE.ImageUtils.loadTexture(pano_url)
+      })
+  );
+  mesh.scale.x = -1;
   return mesh;
 }
 
@@ -325,6 +323,5 @@ function setQuaternion() {
     return;
   mesh.quaternion.x = _xTwist;
   mesh.quaternion.y = -_yTwist;
-  console.log("setting quaternion");
   //mesh.quaternion.z = _zTwist;
 }

@@ -25,9 +25,9 @@ class PanoMaster:
             return
         if (msg.angular.x == 0 and msg.angular.y == 0 and msg.angular.z == 0):
             return 
-        self.pov.x = clamp(self.pov.x + msg.angular.x / self.scale, -1, 1)
-        self.pov.y = clamp(self.pov.z + msg.angular.y / self.scale, -1, 1)
-        self.pov.z = clamp(self.pov.z + msg.angular.z / self.scale, -1, 1)
+        self.pov.x = wrap(self.pov.x + msg.angular.x / self.scale, -1, 1)
+        self.pov.y = wrap(self.pov.y + msg.angular.y / self.scale, -1, 1)
+        #self.pov.z = wrap(self.pov.z + msg.angular.z / self.scale, -1, 1)
         self.send_pov()
 
     def send_pano(self):
@@ -59,7 +59,15 @@ class PanoMaster:
     def handle_pov_msg(self, msg):
         self.pov = msg
 
+
 def clamp(val, low, high):
     return min(max(val, low), high)
+
+def wrap(val, low, high):
+    if val > high:
+        val -= (high - low)
+    if val < low:
+        val += (high - low)
+    return val
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
