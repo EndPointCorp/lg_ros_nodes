@@ -5,7 +5,6 @@ from math import atan2, cos, sin, pi
 import requests
 import json
 
-
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
 # 2. check for movement -> /streetview/panoid
@@ -17,12 +16,13 @@ import json
 # /streetview/metadata -> handle_metadata_msg:
 # 1. update self.metadata
 
-X_THRESHOLD = 0.67
-FORWARD_THRESHOLD = 2
-BACKWARDS_THRESHOLD = 2
+X_THRESHOLD = 0.50
+FORWARD_THRESHOLD = .3
+BACKWARDS_THRESHOLD = .3
 # TODO figure out some good values here
 COEFFICIENT_LOW = 0.1
 COEFFICIENT_HIGH = 3
+
 
 def clamp(val, low, high):
     return min(max(val, low), high)
@@ -34,6 +34,7 @@ def wrap(val, low, high):
     if val < low:
         val += (high - low)
     return val
+
 
 class StreetviewUtils:
     @staticmethod
@@ -91,7 +92,7 @@ class StreetviewUtils:
                         'lat': metadata['Location']['lat'],
                         'lng': metadata['Location']['lng']
                     },
-                'pano': metadata['Location']['panoId']
+                    'pano': metadata['Location']['panoId']
                 }
             }
         except KeyError:
@@ -120,6 +121,7 @@ class StreetviewServer:
         self.move_backward = 0
         self.nearby_panos = NearbyPanos()
         self.last_nav_msg_t = 0
+        self.time_since_last_nav_msg = 0
 
     def pub_location(self, pose2d):
         """
@@ -167,15 +169,14 @@ class StreetviewServer:
         """
         Publishes a new panoid after setting the instance variable
         """
-        self.handle_panoid_msg(panoid)
         self.panoid_pub.publish(panoid)
 
     def handle_panoid_msg(self, panoid):
         """
         Grabs the new panoid from a publisher
         """
-        self.panoid = panoid
-        self.nearby_panos.set_panoid(panoid)
+        self.panoid = panoid.data
+        self.nearby_panos.set_panoid(self.panoid)
 
     def handle_state_msg(self, app_state):
         """
@@ -190,21 +191,18 @@ class StreetviewServer:
         """
         if not self.state:
             return
+
         # On the first ever nav msg, just set last nav time
-        """
         if self.last_nav_msg_t == 0:
             self.last_nav_msg_t = rospy.get_time()
             return
+
         now = rospy.get_time()
-        time_since_last = now - self.last_nav_msg_t
+        self.time_since_last_nav_msg = now - self.last_nav_msg_t
         self.last_nav_msg_t = now
-        coefficient = time_since_last / self.space_nav_interval
-        coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
-        """
-        coefficient = 1
+        coefficient = self.getCoefficient()
         # attempt deep copy
         pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
-        # or maybe Quaternion(self.pov.x, self.pov.y, ...)
         tilt = pov_msg.x - coefficient * twist.angular.y * self.nav_sensitivity
         heading = pov_msg.z - coefficient * twist.angular.z * self.nav_sensitivity
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
@@ -219,14 +217,18 @@ class StreetviewServer:
         been that way for atleast {backward,forward}_threshold publications
         """
         if twist.linear.x > X_THRESHOLD:
-            if self.move_forward == 0:
-                self.move_forward = self.last_nav_msg_t
-            if self.last_nav_msg_t - self.move_forward > FORWARD_THRESHOLD:
+            if (self.move_forward == 0 or
+                    self.time_since_last_nav_msg +
+                    self.move_forward < FORWARD_THRESHOLD):
+                self.move_forward += self.time_since_last_nav_msg
+            if self.time_since_last_nav_msg + self.move_forward > FORWARD_THRESHOLD:
                 self._move_forward()
         elif twist.linear.x < -X_THRESHOLD:
-            if self.move_backward == 0:
-                self.move_backward = self.last_nav_msg_t
-            if self.last_nav_msg_t - self.move_backward > BACKWARDS_THRESHOLD:
+            if (self.move_backward == 0 or
+                    self.time_since_last_nav_msg +
+                    self.move_backward < BACKWARDS_THRESHOLD):
+                self.move_backward += self.time_since_last_nav_msg
+            if self.time_since_last_nav_msg + self.move_backward > BACKWARDS_THRESHOLD:
                 self._move_backward()
         else:
             # reset counters
@@ -239,6 +241,7 @@ class StreetviewServer:
         """
         if self.move(self.pov.z):
             self.move_forward = 0
+            self.move_backward = 0
 
     def _move_backward(self):
         """
@@ -247,6 +250,7 @@ class StreetviewServer:
         """
         if self.move((self.pov.z + 180) % 360):
             self.move_backward = 0
+            self.move_forward = 0
 
     def move(self, heading):
         """
@@ -254,9 +258,19 @@ class StreetviewServer:
         """
         move_to = self.nearby_panos.find_closest(self.panoid, heading)
         if not move_to:
-            return None # don't update anything
+            return None  # don't update anything
         self.pub_panoid(move_to)
         return True
+
+    def getCoefficient(self):
+        """
+        Find the ratio of time in between nav messages and
+        expected interval. Clamp the result and return.
+        """
+        coefficient = self.time_since_last_nav_msg / self.space_nav_interval
+        coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
+        return coefficient
+
 
 class NearbyPanos:
     def __init__(self):
@@ -267,7 +281,7 @@ class NearbyPanos:
         tmp = None
         try:
             tmp = json.loads(metadata.data)
-            if tmp['location']['pano'] == self.panoid:
+            if tmp['location']['pano'] == self.panoid or self.panoid is None:
                 self.metadata = tmp
         except ValueError:
             pass
@@ -291,7 +305,7 @@ class NearbyPanos:
         my_lat = self.metadata['location']['latLng']['lat']
         my_lng = self.metadata['location']['latLng']['lng']
         # set closest to the farthest possible result
-        closest = 180
+        closest = 90
         closest_pano = None
         for data in self.metadata['links']:
             tmp = self.headingDifference(pov_z, float(data['heading']))
@@ -312,7 +326,7 @@ class NearbyPanos:
         """
         Only return the metadata if it matches the current panoid
         """
-        if not self.metadata or not self.panoid:
+        if not self.panoid:
             return None
         if self.metadata['location']['pano'] != self.panoid:
             return None

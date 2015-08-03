@@ -2,6 +2,50 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.4 (2015-07-31)
+------------------
+* Workaround for Chrome kiosk fullscreen behavior
+  Set fullscreen to 'true' in rule properties, then back to false in the callback.
+  This seems to be compatible with other applications too.
+* Final fixing of managed adhoc browser logic
+  - turned loginfo to logdebug here and there
+  - fixed helpers
+  - general fixing
+* Added initial director bridge and dev deployment script
+* lg_common helper for extracting asset types for viewports
+* AdhocBrowserPool
+  - added adhoc browser director bridge
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
+1.0.3 (2015-07-29)
+------------------
+
+1.0.2 (2015-07-29)
+------------------
+* remove redefinition of touchscreen
+* Fixed adhoc browser URL handling
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.0.1 (2015-07-29)
+------------------
+
+* Removed ambiguous var def thanks to @zdenekmaxa
+* Contributors: Wojciech Ziniewicz
+
+0.0.7 (2015-07-28)
+------------------
+* Show links on center sv
+* Contributors: Will Plaut
+
+0.0.6 (2015-07-28)
+------------------
+* adhoc browser
+  - moved everything to lg_common
+  - added README for adhoc browser
+* ManagedBrowser fix
+  - added shutil.rmtree before initialization for --user-data-dir
+* Contributors: Will Plaut, Wojciech Ziniewicz
+
 0.0.5 (2015-07-27)
 ------------------
 * Added a helper method to generate url with GET params
