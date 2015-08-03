@@ -1,4 +1,4 @@
-var camera, scene, renderer, viewSyncEffect, material, pano_url, videoTexture, ws;
+var camera, scene, renderer, viewSyncEffect, material, pano_url, videoTexture, ws, mesh;
 var _xTwist, _yTwist, _zTwist;
 
 var isUserInteracting = false,
@@ -7,7 +7,7 @@ var isUserInteracting = false,
     lat = 0, onMouseDownLat = 0,
     phi = 0, theta = 0;
 
-pano_url = 'textures/nothing-loaded.png';
+pano_url = '../media/harvard-hall_6277-pano6432r.jpg';
 
 function pano_runner() {
   init();
@@ -23,7 +23,7 @@ function getConfig(key, def) {
 
 function init() {
 
-  var container, mesh, vertFov;
+  var container, vertFov;
   var config;
 
   ros = new ROSLIB.Ros({ url : 'ws://localhost:9090' });
@@ -60,6 +60,7 @@ function init() {
 
   panoListener.subscribe(function(msg) {
     console.log("Received new pano: " + msg.data);
+    pano_url = msg.data;
   });
 
   var initPublisher = new ROSLIB.Topic({
@@ -81,22 +82,24 @@ function init() {
 
   scene = new THREE.Scene();
 
-  //                var geometry = new THREE.SphereGeometry( 500, 60, 40 );
-  //                geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
-  //
-  //                material = new THREE.MeshBasicMaterial( {
-  //                    map: THREE.ImageUtils.loadTexture( pano_url )
-  //                } );
-  //
-  //                mesh = new THREE.Mesh( geometry, material );
+  mesh = getMesh();
 
-  var path = "textures/downsize/ov2_point5_50per_q90/";
+  //var path = "textures/downsize/ov2_point5_50per_q90/";
+  var path = "../media/"
   var format = '.jpg';
+  /*
   var urls = [
     path + 'px' + format, path + 'nx' + format,
          path + 'py' + format, path + 'ny' + format,
          path + 'pz' + format, path + 'nz' + format
            ];
+  */
+  var urls = [
+    path + 'harvard-hall_6277-pano6432r' + format,
+    path + 'panorama-YDFq-5cL4hqTkx5Bg0yFQA-1.png'
+  ];
+
+
 
   var cubeTexture = THREE.ImageUtils.loadTextureCube( urls );
   cubeTexture.format = THREE.RGBFormat;
@@ -115,7 +118,7 @@ function init() {
     side: THREE.BackSide
   });
 
-  mesh = new THREE.Mesh( new THREE.BoxGeometry( 100, 100, 100 ), material );
+  //mesh = new THREE.Mesh( new THREE.BoxGeometry( 100, 100, 100 ), material );
 
   scene.add( mesh );
 
@@ -136,7 +139,6 @@ function init() {
   document.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
   window.addEventListener( 'resize', onWindowResize, false );
-
 }
 
 function navigationCallback(navData) {
@@ -283,6 +285,7 @@ function update(nowMsec) {
   if (typeof(videoTexture) !== 'undefined') {
     videoTexture.update(.2, nowMsec - 100 / 6);
   }
+  scene.children[0] = getMesh();
   // viewSyncEffect.render( scene, camera );
   renderer.render(scene, camera);
 
@@ -297,4 +300,19 @@ function update(nowMsec) {
 
   //     camera.lookAt( camera.target );
   // }
+}
+
+function getMesh() {
+  if (mesh != null && mesh.map.sourceFile === pano_url)
+    return mesh;
+  var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+  geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
+
+  material = new THREE.MeshBasicMaterial( {
+      map: THREE.ImageUtils.loadTexture( pano_url )
+  } );
+
+  mesh = new THREE.Mesh( geometry, material );
+  mesh.map = THREE.ImageUtils.loadTexture(pano_url);
+  return mesh;
 }
