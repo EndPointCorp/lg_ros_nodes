@@ -2,6 +2,9 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.5 (2015-08-03)
+------------------
+
 1.0.4 (2015-07-31)
 ------------------
 * JS lint cleanup and added JSDoc to sv_pov

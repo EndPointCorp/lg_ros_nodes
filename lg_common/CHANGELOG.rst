@@ -2,6 +2,9 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.5 (2015-08-03)
+------------------
+
 1.0.4 (2015-07-31)
 ------------------
 * Workaround for Chrome kiosk fullscreen behavior
