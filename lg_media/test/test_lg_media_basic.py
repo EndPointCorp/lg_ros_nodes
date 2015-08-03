@@ -1,55 +1,46 @@
+#!/usr/bin/env python
+
 """
 Ad hoc media application manager tests.
 
 """
 
-import subprocess
-import tempfile
-import time
+import os
+import unittest
 
 import pytest
 import rostest
+import rospy
+import rospkg
 
 
+#class TestMediaService(unittest.TestCase):  # object
 class TestMediaService(object):
-
-    roslaunch = None  # roslaunch process
-    stdout, stderr = None, None
 
     @classmethod
     def setup_class(cls):
-        cmd = "roslaunch lg_media/launch/dev.launch --screen"
-        print "Starting roslaunch ('%s') ..." % cmd
-        cls.stdout, cls.stderr = tempfile.TemporaryFile("w+"), tempfile.TemporaryFile("w+")
-        cls.roslaunch = subprocess.Popen(cmd.split(),
-                                         stdout=cls.stdout,
-                                         stderr=cls.stderr,
-                                         close_fds=False)
-        time.sleep(2)
-        assert cls.roslaunch.poll() is None
-        print dir(cls.roslaunch)
+        pass
         # TODO
-        # make some inteligent assert on services, topics available
+        # do some asserts on services, ros topics
 
     @classmethod
     def teardown_class(cls):
-        assert cls.roslaunch.poll() is None
-        cls.roslaunch.kill()
-        time.sleep(1)
-        assert cls.roslaunch.poll() is not None
-        cls.stdout.seek(0)
-        cls.stderr.seek(0)
-        print "roslaunch output:"
-        print "stdout: --------------------------\n"
-        print cls.stdout.read()
-        print "stderr: --------------------------\n"
-        print cls.stderr.read()
+        #pass
+        # TODO
+        # do shutdown as seen in rostest.rosrun
+        # assert ros services are not run anymore
+        rospy.signal_shutdown('test complete')
+        # TODO
+        # make some asserts it's all cleared up ...
+        # perhaps start tracking ros services proceses per this test class in setup_class
+        # check they are all terminated here
 
     def setup_method(self, method):
-        print "setup_method, running '%s' ..." % method.__name__
+        #     print "setup_method, running '%s' ..." % method.__name__
+        pass
 
     def teardown_method(self, _):
-        print "teardown_method"
+        pass
 
     def test_1(self):
         print "test_1"
@@ -59,4 +50,27 @@ class TestMediaService(object):
 
 
 if __name__ == "__main__":
-    rostest.rosrun("lg_media", "test_lg_media_basic", TestMediaService)
+    # above layer of rostest handles roslaunch file run ros services
+
+    # test class must inherit from unittest.TestCase, not from object
+    #rostest.rosrun("lg_media", "test_lg_media_basic", TestMediaService)
+    #import sys
+    #sys.exit(0)
+
+    # pytest must provide result XML file just as rostest.rosrun would do
+    # otherwise: FAILURE: test [test_lg_media_basic] did not generate test results
+
+    # TODO
+    # integrate .test roslauch file with package's main roslauch file
+
+    test_pkg = "lg_media"
+    test_name = "test_lg_media_basic"
+    test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
+
+    # TODO
+    # rename xml_result_path
+    #xml_result_path = "/home/xmax/.ros/test_results/lg_media/rosunit-test_lg_media_basic.xml"
+    pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
+    # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
+    pytest.main(['-s', '-v', "--junit-xml=%s" % pytest_result_path])
+    #pytest.main(['-s', '-v'])

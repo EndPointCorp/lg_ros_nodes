@@ -1,0 +1,4 @@
+<launch>
+    <!-- later to embed with .launch file -->
+    <test test-name="test_lg_media_basic" pkg="lg_media" type="test_lg_media_basic.py"/>
+</launch>

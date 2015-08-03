@@ -38,3 +38,9 @@ catkin_install_python(PROGRAMS
   scripts/client.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest(test/test_lg_media_basic.test)
+  # catkin_add_nosetests(test/offline/test_managed_application.py)
+endif()
