@@ -1,5 +1,5 @@
 var camera, scene, renderer, viewSyncEffect, material, pano_url, videoTexture, ws, mesh;
-var _xTwist, _yTwist, _zTwist;
+var _xTwist = 0, _yTwist = 0, _zTwist = 0;
 
 var isUserInteracting = false,
     onMouseDownMouseX = 0, onMouseDownMouseY = 0,
@@ -47,9 +47,9 @@ function init() {
   });
 
   povListener.subscribe(function(msg) {
-    _xTwist += msg.x;
-    _yTwist += msg.y;
-    _zTwist += msg.z;
+    _xTwist = msg.x;
+    _yTwist = msg.y;
+    _zTwist = msg.z;
   });
 
   panoListener = new ROSLIB.Topic({
@@ -120,7 +120,8 @@ function init() {
 
   //mesh = new THREE.Mesh( new THREE.BoxGeometry( 100, 100, 100 ), material );
 
-  scene.add( mesh );
+  scene.add(mesh);
+  scene.add(camera);
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio( window.devicePixelRatio );
@@ -303,9 +304,11 @@ function update(nowMsec) {
 }
 
 function getMesh() {
+  setQuaternion();
   if (mesh != null && mesh.map.sourceFile === pano_url)
     return mesh;
   var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+  geometry.computeTangents();
   geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
   material = new THREE.MeshBasicMaterial( {
@@ -315,4 +318,13 @@ function getMesh() {
   mesh = new THREE.Mesh( geometry, material );
   mesh.map = THREE.ImageUtils.loadTexture(pano_url);
   return mesh;
+}
+
+function setQuaternion() {
+  if (mesh == null)
+    return;
+  mesh.quaternion.x = _xTwist;
+  mesh.quaternion.y = -_yTwist;
+  console.log("setting quaternion");
+  //mesh.quaternion.z = _zTwist;
 }

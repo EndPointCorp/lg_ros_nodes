@@ -10,7 +10,7 @@ if __name__ == '__main__':
     rospy.init_node('pano_master')
 
     # Does it really matter what the queue size is?
-    pov  = rospy.Publisher('/panoviewer/pov',  Quaternion, queue_size=10)
+    pov  = rospy.Publisher('/panoviewer/pov',  Quaternion, queue_size=2)
     pano = rospy.Publisher('/panoviewer/pano', String,  queue_size=10)
 
     pm = PanoMaster(pov, pano)
