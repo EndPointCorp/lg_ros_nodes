@@ -1,5 +1,5 @@
 Liquid Galaxy ROS Nodes
------------------------
+=======================
 
 A ROS software stack for running Liquid Galaxy applications.
 
@@ -10,7 +10,7 @@ A ROS software stack for running Liquid Galaxy applications.
 Earth client and support nodes.
 
 Quick Start
-===========
+-----------
 
 Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, installed, and your `rosdep` updated.
 
@@ -75,24 +75,25 @@ If Earth isn't syncing, make sure that your firewall isn't blocking broadcast da
 
 Where 1.2.3.255 is your broadcast address.
 
-##Development
+## Development
 
-LINT is configured, run `pep8` in the root of this repo to check.
+LINT is configured, run `pep8` in the root of this repo to check Python
+and use `catkin_lint` to check for errors in `package.xml` and
+`CMakeLists.txt`.
 
-##Making new release
+## Making new release
 
-Currently Debian packages are published under
-
-- to make new release you need to:
+- To make new release you need to:
 
 ```shell
 $ catkin_generate_changelog
 ```
 
-- then edit all your `.rst` changelogs - remove unwanted or bogus messages
-and make them look pretty
+- Then edit all your `.rst` changelogs - remove unwanted or bogus messages
+and make them look pretty. Use `catkin_generate_changelog --all` to
+create `CHANGELOG.rst` for a new package.
 
-- once that's done, create debian/changelog with `scripts/xxxx` and prepare release:
+- Once that's done, prepare release:
 
 ```shell
 $ catkin_prepare_release
