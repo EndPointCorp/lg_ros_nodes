@@ -2,8 +2,8 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.5 (2015-08-03)
+------------------
 * Add README
 * Install lg_builder templates properly
 * Contributors: Matt Vollrath
