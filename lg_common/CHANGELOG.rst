@@ -2,6 +2,21 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.4 (2015-07-31)
+------------------
+* Workaround for Chrome kiosk fullscreen behavior
+  Set fullscreen to 'true' in rule properties, then back to false in the callback.
+  This seems to be compatible with other applications too.
+* Final fixing of managed adhoc browser logic
+  - turned loginfo to logdebug here and there
+  - fixed helpers
+  - general fixing
+* Added initial director bridge and dev deployment script
+* lg_common helper for extracting asset types for viewports
+* AdhocBrowserPool
+  - added adhoc browser director bridge
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.0.3 (2015-07-29)
 ------------------
 

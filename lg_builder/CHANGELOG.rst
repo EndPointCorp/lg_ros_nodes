@@ -2,6 +2,11 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.4 (2015-07-31)
+------------------
+* Output package name and version in lg-ros-build
+* Contributors: Matt Vollrath
+
 1.0.3 (2015-07-29)
 ------------------
 * Initial lg_builder package
