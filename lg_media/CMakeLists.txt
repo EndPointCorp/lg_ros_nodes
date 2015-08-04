@@ -41,6 +41,8 @@ catkin_install_python(PROGRAMS
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  add_rostest(test/test_lg_media_basic.test)
-  # catkin_add_nosetests(test/offline/test_managed_application.py)
+  # reporting within the entire test suite is not right
+  # add_rostest(test/test_lg_media_basic.test)
+  # reporting is right via nosetests
+  catkin_add_nosetests(test/test_lg_media_basic.py)
 endif()

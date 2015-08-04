@@ -1,4 +1,4 @@
 <launch>
-    <!-- later to embed with .launch file -->
+    <!-- later to embed with .launch file, just a test experiment file -->
     <test test-name="test_lg_media_basic" pkg="lg_media" type="test_lg_media_basic.py"/>
 </launch>

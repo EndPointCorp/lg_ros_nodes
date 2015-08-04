@@ -3,6 +3,13 @@
 """
 Ad hoc media application manager tests.
 
+run tests on an individual package:
+    rostest lg_media/launch/dev.launch
+
+run entire lg_ros_notes test suite:
+    catkin_make run_tests
+    catkin_test_results build/test_results
+
 """
 
 import os
@@ -48,6 +55,10 @@ class TestMediaService(object):
     def test_2(self):
         print "test_2"
 
+    def test_3(self):
+        print "test_3"
+        assert 1 == 2
+
 
 if __name__ == "__main__":
     # above layer of rostest handles roslaunch file run ros services
@@ -60,17 +71,12 @@ if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
     # otherwise: FAILURE: test [test_lg_media_basic] did not generate test results
 
-    # TODO
-    # integrate .test roslauch file with package's main roslauch file
-
     test_pkg = "lg_media"
     test_name = "test_lg_media_basic"
     test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
 
-    # TODO
-    # rename xml_result_path
-    #xml_result_path = "/home/xmax/.ros/test_results/lg_media/rosunit-test_lg_media_basic.xml"
     pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
+    test_path = os.path.abspath(os.path.dirname(__file__))
     # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
-    pytest.main(['-s', '-v', "--junit-xml=%s" % pytest_result_path])
+    pytest.main("%s -s -v --junit-xml=%s" % (test_path, pytest_result_path))
     #pytest.main(['-s', '-v'])
