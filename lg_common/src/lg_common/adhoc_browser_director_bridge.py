@@ -4,6 +4,7 @@ from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common import ManagedWindow
+from lg_common.msg import WindowGeometry
 from lg_common.helpers import extract_first_asset_from_director_message
 
 
@@ -41,7 +42,8 @@ class AdhocBrowserDirectorBridge():
         This method will add viewport offset
         """
         viewport_geometry = ManagedWindow.get_viewport_geometry()
-
+        if not viewport_geometry:
+            viewport_geometry = WindowGeometry()
         return {'x': viewport_geometry.x, 'y': viewport_geometry.y}
 
     def _extract_adhoc_browsers(self, data):
