@@ -82,7 +82,8 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     counter = 0
     timeout = 10
     global_dict = {}
-    lock = threading.Lock()
+    counter_lock = threading.Lock()
+    dict_lock = threading.Lock()
 
     @classmethod
     def add_to_global_dict(cls, reference, unique_id):
@@ -90,16 +91,17 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
     @classmethod
     def get_unique_id(cls):
-        with cls.lock:
+        with cls.counter_lock:
             unique_id = cls.counter
             cls.counter += 1
         return unique_id
 
     @classmethod
     def finish_all_requests(cls):
-        for req in cls.global_dict.itervalues():
-            req.get(True)
-        cls.global_dict = {}
+        with cls.dict_lock:
+            for req in cls.global_dict.itervalues():
+                req.get(True)
+            cls.global_dict = {}
 
     @classmethod
     def get_scene_msg(cls, msg):
@@ -149,7 +151,8 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
                 yield gen.sleep(KmlUpdateHandler.timeout)
                 if self.unique_id in KmlUpdateHandler.global_dict:
-                    del KmlUpdateHandler.global_dict[self.unique_id]
+                    with KmlUpdateHandler.dict_lock:
+                        del KmlUpdateHandler.global_dict[self.unique_id]
                     assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
                     assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
                     self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
