@@ -1,7 +1,6 @@
 <launch>
   <node name="testing_kmlsync_node" pkg="lg_earth" type="kmlsync" >
 	<param name="request_timeout" value="0.5" />
-	<param name="max_queue_size" value="4" />
   </node>
   <node name="testing_kmlsync_node_service" pkg="lg_earth" type="kmlsync_state" />
   <test test-name="test_kmlsync_server" pkg="lg_earth" type="test_kmlsync.py" />

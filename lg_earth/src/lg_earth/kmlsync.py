@@ -51,7 +51,7 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from lg_earth.srv import KmlState, PlaytourQuery
 from xml.sax.saxutils import unescape, escape
-from lg_common.helpers import escape_asset_url, generate_cookie, write_log_to_file
+from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String
 from Queue import Queue
 import tornado.web
@@ -83,41 +83,38 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
     counter = 0
-    TIMEOUT = 10
-    global_queue = {}
+    timeout = 10
+    global_dict = {}
     lock = threading.Lock()
 
     @classmethod
-    def add_to_global_queue(cls, reference, unique_id):
-        cls.global_queue[unique_id] = reference
-        write_log_to_file("%s" % cls.global_queue)
+    def add_to_global_dict(cls, reference, unique_id):
+        cls.global_dict[unique_id] = reference
 
     @classmethod
     def get_unique_id(cls):
         with cls.lock:
             unique_id = cls.counter
             cls.counter += 1
-            write_log_to_file("Counter Value: %d" % unique_id)
         return unique_id
 
     @classmethod
     def finish_all_requests(cls):
-        for req in cls.global_queue.itervalues():
+        for req in cls.global_dict.itervalues():
             req.get(True)
-        cls.global_queue = {}
+        cls.global_dict = {}
 
     @classmethod
     def get_scene_msg(cls, msg):
         try:
             cls.finish_all_requests()
         except Exception as e:
-            write_log_to_file("Exception saving scene"+str(e))
+            rospy.loginfo("Exception getting scene changes"+str(e))
             pass
 
     def initialize(self):
         self.asset_service = self.application.asset_service
-        self.__class__.timeout = self.application.request_timeout
-
+    
     @gen.coroutine
     def get(self, second_time=False):
         """
@@ -150,13 +147,14 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             else:
                 self.unique_id = unique_id = KmlUpdateHandler.get_unique_id()
-                KmlUpdateHandler.add_to_global_queue(self, self.unique_id)
+                rospy.loginfo("Request Counter Value {}".format(self.unique_id))
+                rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.global_dict))
+                KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
                 yield gen.sleep(KmlUpdateHandler.timeout)
-                if self.unique_id in KmlUpdateHandler.global_queue:
-                    del KmlUpdateHandler.global_queue[self.unique_id]
+                if self.unique_id in KmlUpdateHandler.global_dict:
+                    del KmlUpdateHandler.global_dict[self.unique_id]
                     assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
                     assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
-                    #write_to_log("create %s\ndelete %s" % (assets_to_create, assets_to_delete))
                     self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
         else:
             self.set_status(400, "No window slug provided")

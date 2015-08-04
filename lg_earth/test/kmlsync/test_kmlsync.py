@@ -19,7 +19,7 @@ import requests
 import xml.etree.ElementTree as ET
 from std_msgs.msg import String
 from xml.sax.saxutils import escape
-from lg_common.helpers import escape_asset_url, generate_cookie, write_log_to_file
+from lg_common.helpers import escape_asset_url, generate_cookie
 from lg_earth import KmlUpdateHandler
 from interactivespaces_msgs.msg import GenericMessage
 from threading import Thread
@@ -28,7 +28,7 @@ from subprocess import Popen
 QUERY_TOPIC = '/earth/query/tour'
 SCENE_TOPIC = '/director/scene'
 LPNODE = 'testing_kmlsync_node'
-TIMEOUT_FOR_REQUESTS = 1
+timeout_for_requests = 1
 
 EMPTY_MESSAGE = """
     {
@@ -105,7 +105,7 @@ class TestKMLSync(unittest.TestCase):
         return msg
 
     def get_request(self, url):
-        r = self.session.get(url, timeout=TIMEOUT_FOR_REQUESTS, stream=False)
+        r = self.session.get(url, timeout=timeout_for_requests, stream=False)
         return r
 
     def wait_for_pubsub(self):
@@ -147,7 +147,6 @@ class TestKMLSync(unittest.TestCase):
 
     def _test_empty_cookie_string_when_no_state_is_set(self):
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
-        write_log_to_file(r.content)
         result = get_cookie_string(r.content)
         expected = ''
         self.assertEqual(result, expected)
@@ -198,7 +197,6 @@ class TestKMLSync(unittest.TestCase):
 
     def test_6_asset_state_in_url(self):
         self._send_director_message()
-
         assets = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
         delete_slug = 'http___foo_bar_kml'
         cookie = 'asset_slug=' + generate_cookie([assets[0], delete_slug])
@@ -247,7 +245,7 @@ class TestKMLSync(unittest.TestCase):
         get the proper return when the statechange happens before the request
         is returned
         """
-        if TIMEOUT_FOR_REQUESTS <= 1:
+        if timeout_for_requests <= 1:
             return # not tesable with small timeout for requests
         t = Thread(target=self._sleep_and_send_director)
         t.start()
@@ -257,14 +255,13 @@ class TestKMLSync(unittest.TestCase):
     def test_9_multiple_requests_before_state_change(self):
         """
         This tests when requests are made that require no state change
-        sit on the queue while the state changes, and return with that
+        sit on the dict while the state changes, and return with that
         new changed state.
         """
-        if TIMEOUT_FOR_REQUESTS <= 1:
+        if timeout_for_requests <= 1:
             return # not tesable with small timeout for requests
         async_requests = []
-        queue_size = rospy.get_param("~max_queue_size", 5)
-        for i in range(queue_size):
+        for i in range(5):
             pool = ThreadPool(processes=2)
             async_requests.append(pool.apply_async(self._test_director_state))
         self._send_director_message()
@@ -273,35 +270,6 @@ class TestKMLSync(unittest.TestCase):
                 thread.get()
             except Exception:
                 self.fail("Invalid director message retuned from queued request")
-
-    def test_10_overflow_queue_once_before_state_change(self):
-        """
-        This tests that when the queue fills up, it will return with the proper
-        data, in this case, it first should return with an empty cookie string,
-        because there is no state. Then it will return the rest of the queue with
-        the expected state after the director message is sent.
-        """
-        if TIMEOUT_FOR_REQUESTS <= 1:
-            return # not tesable with small timeout for requests
-        async_requests = []
-        queue_size = rospy.get_param("~max_queue_size", 5)
-        dequeued_request = ThreadPool(processes=2).apply_async(self._test_empty_cookie_string_when_no_state_is_set)
-        for i in range(queue_size):
-            pool = ThreadPool(processes=2)
-            async_requests.append(pool.apply_async(self._test_director_state))
-        self._send_director_message()
-        try:
-            dequeued_request.get()
-        except Exception, e:
-            write_log_to_file("exception is %s" % e)
-            self.fail("Invalid director message retuned from dequeued request")
-        try:
-            for thread in async_requests:
-                thread.get()
-        except Exception:
-            self.fail("Invalid director message retuned from queued request")
-
-
 
     def _send_director_message(self, empty=False):
         director_publisher = rospy.Publisher(SCENE_TOPIC, GenericMessage)
@@ -338,7 +306,7 @@ def get_deleted_elements(x):
 
 if __name__ == '__main__':
     rospy.init_node('test_director')
-    TIMEOUT_FOR_REQUESTS = rospy.get_param('~timeout_requests_session', 1)
+    timeout_for_requests = rospy.get_param('~timeout_requests_session', 1)
     rostest.rosrun(PKG, NAME, TestKMLSync, sys.argv)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

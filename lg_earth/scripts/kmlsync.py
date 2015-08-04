@@ -14,6 +14,7 @@ def main():
     rospy.init_node('kmlsync_server')
     port = rospy.get_param('~port', 8765)
 
+    KmlUpdateHandler.timeout = float(rospy.get_param('~request_timeout', 10))
     kmlsync_server = tornado.web.Application([
         (r'/master.kml', KmlMasterHandler),
         (r'/network_link_update.kml', KmlUpdateHandler),
@@ -23,10 +24,8 @@ def main():
     rospy.wait_for_service('/kmlsync/state')
     rospy.wait_for_service('/kmlsync/playtour_query')
 
-    topic = rospy.get_param('~director_topic', '/director/scene')
-    kmlsync_server.request_timeout = float(rospy.get_param('~request_timeout', 10))
-    kmlsync_server.max_queue_size = int(rospy.get_param('~max_queue_size', 10))
-    rospy.Subscriber(topic, GenericMessage, KmlUpdateHandler.get_scene_msg)
+    director_scene_topic = rospy.get_param('~director_topic', '/director/scene')
+    rospy.Subscriber(director_scene_topic, GenericMessage, KmlUpdateHandler.get_scene_msg)
     kml_state = KmlState()
     kmlsync_server.playtour = PlaytourQuery()
     kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)
