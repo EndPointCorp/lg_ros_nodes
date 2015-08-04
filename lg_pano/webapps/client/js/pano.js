@@ -1,5 +1,10 @@
 var camera, scene, renderer, pano_url, mesh;
 var _xTwist = 0, _yTwist = 0, _zTwist = 0;
+var yawRads, pitchRads, rollRads;
+
+var PITCH_AXIS  = new THREE.Vector3( 1,0,0 );
+var YAW_AXIS    = new THREE.Vector3( 0,1,0 );
+var ROLL_AXIS   = new THREE.Vector3( 0,0,1 );
 
 pano_url = '../media/harvard-hall_6277-pano6432r.jpg';
 
@@ -72,9 +77,20 @@ function init() {
 
   container = document.getElementById( 'container' );
 
-  vertFov = getConfig('vertFov', 75);
-  camera = new THREE.PerspectiveCamera( vertFov, window.innerWidth / window.innerHeight, 1, 1100 );
+  vertFov = getConfig('vertFov', 75) * 1.0;
+  yawRads = toRad(getConfig('yawOffset', 0) * 1.0)
+  pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0)
+  rollRads = toRad(getConfig('rollOffset', 0) * 1.0)
+
+  camera = new THREE.PerspectiveCamera();
   camera.target = new THREE.Vector3(0, 0, 0);
+
+  offsetCamera = new THREE.PerspectiveCamera(vertFov, window.innerWidth / window.innerHeight, 1, 1100 );
+  camera.add(offsetCamera);
+
+  offsetCamera.rotateOnAxis(YAW_AXIS, -yawRads);
+  offsetCamera.rotateOnAxis(PITCH_AXIS, pitchRads);
+  offsetCamera.rotateOnAxis(ROLL_AXIS, rollRads);
 
   scene = new THREE.Scene();
   mesh = getMesh();
@@ -108,7 +124,7 @@ function animate(nowMsec) {
 
 function update(nowMsec) {
   scene.children[0] = getMesh();
-  renderer.render(scene, camera);
+  renderer.render(scene, offsetCamera);
 }
 
 function getMesh() {
