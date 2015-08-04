@@ -31,7 +31,6 @@ class PanoMaster:
             return 
         self.pov.x = clamp(self.pov.x - msg.angular.y / self.scale,
                            self.tilt_min, self.tilt_max)
-        #self.pov.y = self.pov.y - msg.angular.y / self.scale
         self.pov.z = wrap(self.pov.z - msg.angular.z / self.scale, 0, 360)
         self.send_pov()
 
