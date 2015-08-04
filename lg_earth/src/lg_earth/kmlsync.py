@@ -45,6 +45,7 @@ import rospy
 
 import time
 import urllib2
+import threading
 import xml.etree.ElementTree as ET
 
 from xml.dom import minidom
@@ -96,7 +97,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         with cls.lock:
             unique_id = cls.counter
             cls.counter += 1
-            write_log_to_file("Counter Value: %d" % id)
+            write_log_to_file("Counter Value: %d" % unique_id)
         return unique_id
 
     @classmethod

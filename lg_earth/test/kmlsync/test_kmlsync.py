@@ -147,6 +147,7 @@ class TestKMLSync(unittest.TestCase):
 
     def _test_empty_cookie_string_when_no_state_is_set(self):
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
+        write_log_to_file(r.content)
         result = get_cookie_string(r.content)
         expected = ''
         self.assertEqual(result, expected)
