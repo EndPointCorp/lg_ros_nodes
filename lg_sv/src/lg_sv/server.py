@@ -328,6 +328,10 @@ class NearbyPanos:
         """
         if not self.panoid:
             return None
+        if not self.metadata:
+            return None
+        if 'location' not in self.metadata or 'pano' not in self.metadata['location']:
+            return None
         if self.metadata['location']['pano'] != self.panoid:
             return None
         return self.metadata
