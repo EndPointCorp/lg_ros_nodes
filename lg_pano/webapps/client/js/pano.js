@@ -55,7 +55,7 @@ function init() {
 
   panoListener = new ROSLIB.Topic({
     ros : ros,
-    name : '/panoviewer/pano',
+    name : '/panoviewer/panoid',
     messageType : 'std_msgs/String'
   });
 
