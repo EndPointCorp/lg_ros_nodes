@@ -40,4 +40,5 @@ install(
 if (CATKIN_ENABLE_TESTING)
   catkin_add_nosetests(test/offline/test_managed_application.py)
   catkin_add_nosetests(test/offline/test_adhoc_browser_director_bridge.py)
+  catkin_add_nosetests(test/offline/test_managed_adhoc_browser.py)
 endif()
