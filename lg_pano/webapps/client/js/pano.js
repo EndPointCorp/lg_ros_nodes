@@ -43,6 +43,8 @@ function init() {
   povListener = new ROSLIB.Topic({
     ros : ros,
     name : '/panoviewer/pov',
+    throttle_rate: 33,
+    queue_length: 1,
     messageType : 'geometry_msgs/Quaternion'
   });
 
@@ -321,7 +323,11 @@ function getMesh() {
 function setQuaternion() {
   if (mesh == null)
     return;
-  mesh.quaternion.x = _xTwist;
-  mesh.quaternion.y = -_yTwist;
-  //mesh.quaternion.z = _zTwist;
+  camera.rotation.x = toRad(_xTwist);
+  //camera.rotation.z = toRad(_yTwist);
+  camera.rotation.y = toRad(_zTwist);
+}
+
+function toRad(deg) {
+  return THREE.Math.degToRad(deg);
 }
