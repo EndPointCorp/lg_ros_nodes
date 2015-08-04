@@ -4,16 +4,20 @@ from lg_common.msg import ApplicationState
 from geometry_msgs.msg import Quaternion
 from std_msgs.msg import String
 
-SCALE = 100
+SCALE = 1
+TILT_MIN = -80
+TILT_MAX = 80
 
 class PanoMaster:
-    def __init__(self, pov, pano, scale=SCALE):
+    def __init__(self, pov, pano, scale=SCALE, tilt_min=TILT_MIN, tilt_max=TILT_MAX):
         self.pov_publisher  = pov
         self.pano_publisher = pano
         self.pov = Quaternion()
         self.pano_url = String("")
         self.state = True
         self.scale = scale
+        self.tilt_min = tilt_min
+        self.tilt_max = tilt_max
 
     def handle_spacenav_msg(self, msg):
         """
@@ -25,9 +29,10 @@ class PanoMaster:
             return
         if (msg.angular.x == 0 and msg.angular.y == 0 and msg.angular.z == 0):
             return 
-        self.pov.x = wrap(self.pov.x + msg.angular.x / self.scale, -1, 1)
-        self.pov.y = wrap(self.pov.y + msg.angular.y / self.scale, -1, 1)
-        #self.pov.z = wrap(self.pov.z + msg.angular.z / self.scale, -1, 1)
+        self.pov.x = clamp(self.pov.x + msg.angular.y / self.scale,
+                           self.tilt_min, self.tilt_max)
+        #self.pov.y = self.pov.y - msg.angular.y / self.scale
+        self.pov.z = wrap(self.pov.z + msg.angular.z / self.scale, 0, 360)
         self.send_pov()
 
     def send_pano(self):
