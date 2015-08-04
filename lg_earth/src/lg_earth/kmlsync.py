@@ -81,34 +81,29 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
-    MAX_QUEUE_SIZE = 10
+    counter = 0
     TIMEOUT = 10
     global_queue = {}
+    lock = threading.Lock()
 
     @classmethod
-    def add_to_global_queue(cls, reference, window_slug):
-        if window_slug not in cls.global_queue:
-            cls.global_queue[window_slug] = collections.deque()
-        cls.global_queue[window_slug].append(reference)
+    def add_to_global_queue(cls, reference, unique_id):
+        cls.global_queue[unique_id] = reference
         write_log_to_file("%s" % cls.global_queue)
-        if len(cls.global_queue[window_slug]) > cls.MAX_QUEUE_SIZE:
-            req = cls.global_queue[window_slug].popleft()
-            write_log_to_file("Inside max q: "+str(req.__repr__))
-            cls.handle_reference_request(req)
 
-    @staticmethod
-    def handle_reference_request(ref):
-        ref.get(True)
+    @classmethod
+    def get_unique_id(cls):
+        with cls.lock:
+            unique_id = cls.counter
+            cls.counter += 1
+            write_log_to_file("Counter Value: %d" % id)
+        return unique_id
 
     @classmethod
     def finish_all_requests(cls):
-        for slug_q in cls.global_queue.values():
-            while True:
-                try:
-                    req = slug_q.popleft()
-                    req.get(True)
-                except IndexError:
-                    break
+        for req in cls.global_queue.itervalues():
+            req.get(True)
+        cls.global_queue = {}
 
     @classmethod
     def get_scene_msg(cls, msg):
@@ -120,8 +115,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
     def initialize(self):
         self.asset_service = self.application.asset_service
-        self.__class__.TIMEOUT = self.application.request_timeout
-        self.__class__.MAX_QUEUE_SIZE = self.application.max_queue_size
+        self.__class__.timeout = self.application.request_timeout
 
     @gen.coroutine
     def get(self, second_time=False):
@@ -154,10 +148,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             if (assets_to_delete or assets_to_create) or second_time:
                 self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             else:
-                self.__class__.add_to_global_queue(self, window_slug)
-                yield gen.sleep(self.__class__.TIMEOUT)
-                if self in self.__class__.global_queue[window_slug]:
-                    self.__class__.global_queue[window_slug].remove(self)
+                self.unique_id = unique_id = KmlUpdateHandler.get_unique_id()
+                KmlUpdateHandler.add_to_global_queue(self, self.unique_id)
+                yield gen.sleep(KmlUpdateHandler.timeout)
+                if self.unique_id in KmlUpdateHandler.global_queue:
+                    del KmlUpdateHandler.global_queue[self.unique_id]
                     assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
                     assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
                     #write_to_log("create %s\ndelete %s" % (assets_to_create, assets_to_delete))
