@@ -42,6 +42,8 @@ State data structure:
 
 import json
 import rospy
+
+import time
 import urllib2
 import xml.etree.ElementTree as ET
 
@@ -50,7 +52,10 @@ from lg_earth.srv import KmlState, PlaytourQuery
 from xml.sax.saxutils import unescape, escape
 from lg_common.helpers import escape_asset_url, generate_cookie, write_log_to_file
 from std_msgs.msg import String
+from Queue import Queue
 import tornado.web
+import collections
+from tornado import gen
 
 
 def get_kml_root():
@@ -62,8 +67,8 @@ def get_kml_root():
     kml_root.attrib['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
     return kml_root
 
-
 class KmlMasterHandler(tornado.web.RequestHandler):
+
     def get(self):
         """Serve the master.kml which is updated by NLC."""
         rospy.loginfo("Got master.kml GET request")
@@ -76,19 +81,44 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
-    @classmethod
-    def get_scene_msg(msg):
-        try:
-            write_log_to_file("hello")
-            write_log_to_file(msg.message)
-        except Exception:
-            write_log_to_file("Exception saving scene")
+    counter = 0
+    TIMEOUT = 10
+    global_queue = {}
+    lock = threading.Lock()
 
+    @classmethod
+    def add_to_global_queue(cls, reference, unique_id):
+        cls.global_queue[unique_id] = reference
+        write_log_to_file("%s" % cls.global_queue)
+
+    @classmethod
+    def get_unique_id(cls):
+        with cls.lock:
+            unique_id = cls.counter
+            cls.counter += 1
+            write_log_to_file("Counter Value: %d" % id)
+        return unique_id
+
+    @classmethod
+    def finish_all_requests(cls):
+        for req in cls.global_queue.itervalues():
+            req.get(True)
+        cls.global_queue = {}
+
+    @classmethod
+    def get_scene_msg(cls, msg):
+        try:
+            cls.finish_all_requests()
+        except Exception as e:
+            write_log_to_file("Exception saving scene"+str(e))
+            pass
 
     def initialize(self):
         self.asset_service = self.application.asset_service
+        self.__class__.timeout = self.application.request_timeout
 
-    def get(self):
+    @gen.coroutine
+    def get(self, second_time=False):
         """
         Return XML with latest list of assets for specific window_slug
             - get window slug and calculate difference between loaded assets and the desired state
@@ -113,13 +143,24 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 # Always return a valid KML or Earth will stop requesting updates
                 self.finish(get_kml_root())
                 return
-
             assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
             assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            if (assets_to_delete or assets_to_create) or second_time:
+                self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            else:
+                self.unique_id = unique_id = KmlUpdateHandler.get_unique_id()
+                KmlUpdateHandler.add_to_global_queue(self, self.unique_id)
+                yield gen.sleep(KmlUpdateHandler.timeout)
+                if self.unique_id in KmlUpdateHandler.global_queue:
+                    del KmlUpdateHandler.global_queue[self.unique_id]
+                    assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
+                    assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+                    #write_to_log("create %s\ndelete %s" % (assets_to_create, assets_to_delete))
+                    self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
         else:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
+
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
