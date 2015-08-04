@@ -29,10 +29,10 @@ class PanoMaster:
             return
         if (msg.angular.x == 0 and msg.angular.y == 0 and msg.angular.z == 0):
             return 
-        self.pov.x = clamp(self.pov.x + msg.angular.y / self.scale,
+        self.pov.x = clamp(self.pov.x - msg.angular.y / self.scale,
                            self.tilt_min, self.tilt_max)
         #self.pov.y = self.pov.y - msg.angular.y / self.scale
-        self.pov.z = wrap(self.pov.z + msg.angular.z / self.scale, 0, 360)
+        self.pov.z = wrap(self.pov.z - msg.angular.z / self.scale, 0, 360)
         self.send_pov()
 
     def send_pano(self):

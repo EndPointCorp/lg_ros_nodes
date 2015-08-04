@@ -80,7 +80,7 @@ function init() {
 
   vertFov = getConfig('vertFov', 75);
   camera = new THREE.PerspectiveCamera( vertFov, window.innerWidth / window.innerHeight, 1, 1100 );
-  camera.target = new THREE.Quaternion(0, 0, 0, 0);
+  camera.target = new THREE.Vector3(0, 0, 0);
 
   scene = new THREE.Scene();
 
@@ -306,7 +306,7 @@ function update(nowMsec) {
 }
 
 function getMesh() {
-  setQuaternion();
+  setTarget();
   if (mesh != null && mesh.material.map.sourceFile === pano_url)
     return mesh;
 
@@ -320,12 +320,17 @@ function getMesh() {
   return mesh;
 }
 
-function setQuaternion() {
+function setTarget() {
   if (mesh == null)
     return;
-  camera.rotation.x = toRad(_xTwist);
-  //camera.rotation.z = toRad(_yTwist);
-  camera.rotation.y = toRad(_zTwist);
+  var phi = toRad(90 - _xTwist);
+  var theta = toRad(_zTwist);
+
+  camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+  camera.target.y = 500 * Math.cos(phi);
+  camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+  camera.lookAt(camera.target);
 }
 
 function toRad(deg) {
