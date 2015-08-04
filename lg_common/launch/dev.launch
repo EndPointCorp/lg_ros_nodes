@@ -59,7 +59,9 @@
 
   <!-- StreetView -->
   <!--
-  <node name="sv_server" pkg="lg_sv" type="server.py" clear_params="true" />
+  <node name="sv_server" pkg="lg_sv" type="server.py" clear_params="true" >
+    <param name="server_type" value="streetview" />
+  </node>
   <node name="sv_launcher_left_one" pkg="lg_sv" type="launcher.py" clear_params="true">
     <param name="viewport" value="sv_left_one" />
     <param name="yaw_offset" value="-1" />
@@ -71,6 +73,13 @@
   <node name="sv_launcher_right_one" pkg="lg_sv" type="launcher.py" clear_params="true">
     <param name="viewport" value="sv_right_one" />
     <param name="yaw_offset" value="1" />
+  </node>
+  -->
+
+  <!-- PanoViewer -->
+  <!--
+  <node name="pv_server" pkg="lg_sv" type="server.py" clear_params="true" >
+    <param name="server_type" value="panoviewer" />
   </node>
   -->
 </launch>
