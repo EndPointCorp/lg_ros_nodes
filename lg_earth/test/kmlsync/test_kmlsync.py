@@ -119,6 +119,7 @@ class TestKMLSync(unittest.TestCase):
         result = r.status_code
         expected = 400
         self.assertEqual(result, expected)
+        self.assertEqual(1, 2)
 
     def test_4_network_link_update_cookie_string_is_initially_empty(self):
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
