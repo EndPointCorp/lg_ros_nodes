@@ -11,11 +11,11 @@
         <param name="viewport" value="left_one" />
     </node>
 
-    <test test-name="test_lg_media_basic" pkg="lg_media" type="test_lg_media_basic.py"/>
-
     <!-- Development static file server. -->
     <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
     <!-- Local rosbridge and rosapi. -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
+    <test test-name="test_lg_media_basic" pkg="lg_media" type="test_lg_media_basic.py"/>
 </launch>

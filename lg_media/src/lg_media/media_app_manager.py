@@ -31,6 +31,9 @@ rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url
 # shutdown test
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[]'
 
+# call service
+rosservice call /lg_media/query
+
 """
 
 import os
@@ -50,6 +53,7 @@ from lg_media.srv import MediaAppsInfoResponse
 ROS_NODE_NAME = "lg_media"
 DEFAULT_VIEWPORT = "test_viewport_0"
 DEFAULT_APP = "mplayer"
+SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
 
 
 class AppInstance(object):

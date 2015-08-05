@@ -43,6 +43,7 @@ if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   # reporting within the entire test suite is not right
   # add_rostest(test/test_lg_media_basic.test)
+  add_rostest(test/test_lg_media_basic.test)
   # reporting is right via nosetests
-  catkin_add_nosetests(test/test_lg_media_basic.py)
+  #catkin_add_nosetests(test/test_lg_media_basic.py)
 endif()
