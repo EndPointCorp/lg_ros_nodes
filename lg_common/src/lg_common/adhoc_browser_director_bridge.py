@@ -3,6 +3,8 @@ import rospy
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common import ManagedWindow
+from lg_common.msg import WindowGeometry
 from lg_common.helpers import extract_first_asset_from_director_message
 
 
@@ -16,24 +18,38 @@ class AdhocBrowserDirectorBridge():
     """
 
     def __init__(self, browser_pool_publisher, viewport_name):
+        """
+        AdhocBrowserDirectorBridge should be configured per each viewport to achieve nice separation and granularity
+        """
         self.viewport_name = viewport_name
         self.browser_pool_publisher = browser_pool_publisher
 
     def translate_director(self, data):
         """
-        Translates /director/scene messages to one AdhocBrowsers message
+        Translates /director/scene messages to one AdhocBrowsers message and publishes it immediately
         """
         adhoc_browsers_list = self._extract_adhoc_browsers(data)
 
         adhoc_browsers = AdhocBrowsers()
         adhoc_browsers.browsers = adhoc_browsers_list
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
+
         self.browser_pool_publisher.publish(adhoc_browsers)
+
+    def _get_viewport_offset(self):
+        """
+        Adhoc browser needs geometry that's honoring viewport offsets
+        This method will add viewport offset
+        """
+        viewport_geometry = ManagedWindow.get_viewport_geometry()
+        if not viewport_geometry:
+            viewport_geometry = WindowGeometry()
+        return {'x': viewport_geometry.x, 'y': viewport_geometry.y}
 
     def _extract_adhoc_browsers(self, data):
         """
-        Returns a list containing AdhocBrowser objects that should be sent to
-        viewport specific to this bridge
+        Returns a list containing AdhocBrowser objects extracted from director message for viewport
+        specific to adhoc_browser that this instance of bridge is tied to.
         """
         rospy.logdebug("Got data on _extract_adhoc_browsers: %s" % data)
         adhoc_browsers = []
@@ -46,8 +62,8 @@ class AdhocBrowserDirectorBridge():
             adhoc_browser = AdhocBrowser()
             adhoc_browser.id=browser_name
             adhoc_browser.url=browser['path']
-            adhoc_browser.geometry.x=browser['x_coord']
-            adhoc_browser.geometry.y=browser['y_coord']
+            adhoc_browser.geometry.x=browser['x_coord'] + self._get_viewport_offset()['x']
+            adhoc_browser.geometry.y=browser['y_coord'] + self._get_viewport_offset()['y']
             adhoc_browser.geometry.height=browser['height']
             adhoc_browser.geometry.width=browser['width']
 
