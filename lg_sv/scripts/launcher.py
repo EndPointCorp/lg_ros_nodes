@@ -12,8 +12,9 @@ DEFAULT_FOV = 28.125
 
 
 def main():
-    rospy.init_node('streetview_browser', anonymous=True)
+    rospy.init_node('panoviewer_browser', anonymous=True)
     geometry = ManagedWindow.get_viewport_geometry()
+    server_type = rospy.get_param('`server_type', 'streetview')
     url = str(rospy.get_param('~url', DEFAULT_URL))
     field_of_view = float(rospy.get_param('~fov', DEFAULT_FOV))
     pitch_offset = float(rospy.get_param('~pitch_offset', 0))
@@ -33,7 +34,7 @@ def main():
     managed_browser.set_state(state)
 
     # listen to state messages
-    rospy.Subscriber('/streetview/state', ApplicationState, managed_browser.handle_state_msg)
+    rospy.Subscriber('/%s/state' % server_type, ApplicationState, managed_browser.handle_state_msg)
 
     rospy.spin()
 
