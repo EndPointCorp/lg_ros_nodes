@@ -7,7 +7,7 @@ var ROLL_AXIS   = new THREE.Vector3( 0,0,1 );
 
 pano_url = '../media/harvard-hall_6277-pano6432r.jpg';
 
-function pano_runner() {
+function panoRunner() {
   init();
   animate(0);
 }
@@ -105,3 +105,5 @@ function setTarget(xTwist, yTwist, zTwist) {
 function toRad(deg) {
   return THREE.Math.degToRad(deg);
 }
+
+window.onload = panoRunner;
