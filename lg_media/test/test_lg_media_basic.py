@@ -70,13 +70,19 @@ class TestMediaService(object):
 
         # issues in mixing nosetests and rostests (plus rosunit ...)
 
+        # need to run via rosunit ... then it should be fine
+        # also rostets understand 1 test by 1 entry in the .test file
+
+        # for offline tests: nosetests, for test interactive with ros services: rostest in CMakeLists.txt
+
+
         rospy.wait_for_service(SRV_QUERY)
         proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo)
         r = proxy()
         assert isinstance(r, MediaAppsInfoResponse)
         data = json.loads(r.json)
         assert data == {}
-        assert data == []
+        #assert data == []
 
     def test_lg_media_topic_presence(self):
         """
@@ -101,6 +107,8 @@ if __name__ == "__main__":
 
     # pytest must provide result XML file just as rostest.rosrun would do
     # otherwise: FAILURE: test [test_lg_media_basic] did not generate test results
+
+    # install ros-indigo-desktop-full ... need to run via rosunit
 
     test_pkg = "lg_media"
     test_name = "test_lg_media_basic"
