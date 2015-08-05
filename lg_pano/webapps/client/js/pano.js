@@ -51,6 +51,7 @@ function init() {
     _xTwist = msg.x;
     _yTwist = msg.y;
     _zTwist = msg.z;
+    setTarget();
   });
 
   panoListener = new ROSLIB.Topic({
@@ -128,7 +129,6 @@ function update(nowMsec) {
 }
 
 function getMesh() {
-  setTarget();
   if (mesh != null && mesh.material.map.sourceFile === pano_url)
     return mesh;
 
