@@ -1,5 +1,4 @@
 var camera, scene, renderer, pano_url, mesh;
-var _xTwist = 0, _yTwist = 0, _zTwist = 0;
 var yawRads, pitchRads, rollRads;
 
 var PITCH_AXIS  = new THREE.Vector3( 1,0,0 );
@@ -23,58 +22,6 @@ function getConfig(key, def) {
 function init() {
 
   var container, vertFov;
-  var config;
-
-  ros = new ROSLIB.Ros({ url : 'ws://localhost:9090' });
-
-  ros.on('connection', function() {
-    console.log("Connected to rosbridge");
-  });
-
-  ros.on('error', function(e) {
-    console.log("rosbridge error: " + e);
-  });
-
-  ros.on('close', function() {
-    console.log("Disconnected from rosbridge");
-  });
-
-  povListener = new ROSLIB.Topic({
-    ros : ros,
-    name : '/panoviewer/pov',
-    throttle_rate: 33,
-    queue_length: 1,
-    messageType : 'geometry_msgs/Quaternion'
-  });
-
-  povListener.subscribe(function(msg) {
-    _xTwist = msg.x;
-    _yTwist = msg.y;
-    _zTwist = msg.z;
-    setTarget();
-  });
-
-  panoListener = new ROSLIB.Topic({
-    ros : ros,
-    name : '/panoviewer/panoid',
-    messageType : 'std_msgs/String'
-  });
-
-  panoListener.subscribe(function(msg) {
-    console.log("Received new pano: " + msg.data);
-    pano_url = msg.data;
-  });
-
-  var initPublisher = new ROSLIB.Topic({
-    ros : ros,
-    name : '/panoviewer/init',
-    messageType : 'std_msgs/String'
-  })
-
-  // If you do this immediately, you tend not to catch the responses
-  window.setTimeout( function() {
-    initPublisher.publish(new ROSLIB.Message({ data: "Hello" }));
-  }, 250);
 
   container = document.getElementById( 'container' );
 
@@ -142,11 +89,11 @@ function getMesh() {
   return mesh;
 }
 
-function setTarget() {
+function setTarget(xTwist, yTwist, zTwist) {
   if (mesh == null)
     return;
-  var phi = toRad(90 - _xTwist);
-  var theta = toRad(_zTwist);
+  var phi = toRad(90 - xTwist);
+  var theta = toRad(zTwist);
 
   camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
   camera.target.y = 500 * Math.cos(phi);
