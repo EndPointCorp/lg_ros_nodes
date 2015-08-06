@@ -1,0 +1,6 @@
+<launch>
+    <param name="/viewport/left" value="640x480+0+0" />
+    <param name="/viewport/center" value="640x480+640+0" />
+    <param name="/viewport/right" value="640x480+1280+0" />
+    <test test-name="test_lg_common_adhoc_browser_director_bridge" pkg="lg_common" type="test_adhoc_browser_director_bridge.py"/>
+</launch>
