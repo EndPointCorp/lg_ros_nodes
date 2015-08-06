@@ -9,6 +9,7 @@ import unittest
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
 from lg_common.msg import WindowGeometry
+from lg_common import ManagedWindow
 from lg_common import AdhocBrowserDirectorBridge
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
@@ -238,8 +239,10 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         """
         self.bridge_center.translate_director(self.message_center)
         self.bridge_right.translate_director(self.message_center)
+
         self.assertEqual(1, len(self.mock_publisher_center.published_messages))
         self.assertEqual(1, len(self.mock_publisher_right.published_messages))
+
         center_browser = AdhocBrowser(id='adhoc_browser_center_0',
                                       geometry=WindowGeometry(x=10,
                                                               y=10,
@@ -249,6 +252,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         rospy.loginfo("published adhoc browser => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc browser => %s" % AdhocBrowsers(browsers=center_browser))
+
         self.assertEqual(AdhocBrowsers(browsers=[center_browser]), self.mock_publisher_center.published_messages[0])
         self.assertEqual(AdhocBrowsers(browsers=[]), self.mock_publisher_right.published_messages[0])
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
