@@ -8,7 +8,7 @@ run tests on an individual package:
 
 run entire lg_ros_notes test suite:
     catkin_make run_tests
-    catkin_test_results build/test_results
+    catkin_test_results build/test_results --all --verbose
 
 """
 
@@ -57,49 +57,25 @@ class TestMediaService(object):
         Assert on presence of service, call the service.
 
         """
-        # problem is - via rostest - requisite ros nodes are run so the test pass,
-        #   from within catkin_make run_tests, the ros nodes are (most likely) not
-        #   run and the test cases hang
-
-        # pure code tests via nosetets
-        # ros interacting tests via .test file and declared via rostest
-
-
-        #CONTINUE, CONTINUE - FIND THIS:
-        # problem: how to harvest correct results from rostests (nosetests are OK)
-
-        # issues in mixing nosetests and rostests (plus rosunit ...)
-
-        # need to run via rosunit ... then it should be fine
-        # also rostets understand 1 test by 1 entry in the .test file
-
-        # for offline tests: nosetests, for test interactive with ros services: rostest in CMakeLists.txt
-
-
         rospy.wait_for_service(SRV_QUERY)
         proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo)
         r = proxy()
         assert isinstance(r, MediaAppsInfoResponse)
         data = json.loads(r.json)
         assert data == {}
-        #assert data == []
 
     def test_lg_media_topic_presence(self):
         """
         Check lg_media topic is there.
 
         """
-        #return
         master = rosgraph.masterapi.Master("caller")
         topics = master.getTopicTypes()
         assert ["/media_service/left_one", "lg_media/AdhocMedias"] in topics
 
 
 if __name__ == "__main__":
-    # other lg_ros_nodes use mock, do not interact with ros services via rospy ...
-
-    # above layer of rostest handles roslaunch file run ros services
-
+    # unittest test
     # test class must inherit from unittest.TestCase, not from object
     #rostest.rosrun("lg_media", "test_lg_media_basic", TestMediaService)
     #import sys
@@ -107,8 +83,6 @@ if __name__ == "__main__":
 
     # pytest must provide result XML file just as rostest.rosrun would do
     # otherwise: FAILURE: test [test_lg_media_basic] did not generate test results
-
-    # install ros-indigo-desktop-full ... need to run via rosunit
 
     test_pkg = "lg_media"
     test_name = "test_lg_media_basic"
