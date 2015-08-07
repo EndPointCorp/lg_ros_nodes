@@ -1,11 +1,12 @@
 var camera, scene, renderer, pano_url, mesh;
 var yawRads, pitchRads, rollRads;
+var videoTexture, last_pano_url;
 
 var PITCH_AXIS  = new THREE.Vector3( 1,0,0 );
 var YAW_AXIS    = new THREE.Vector3( 0,1,0 );
 var ROLL_AXIS   = new THREE.Vector3( 0,0,1 );
 
-pano_url = '../media/harvard-hall_6277-pano6432r.jpg';
+pano_url = '../media/Avicii.mp4';
 
 function panoRunner() {
   init();
@@ -26,9 +27,9 @@ function init() {
   container = document.getElementById( 'container' );
 
   vertFov = getConfig('vertFov', 75) * 1.0;
-  yawRads = toRad(getConfig('yawOffset', 0) * 1.0)
-  pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0)
-  rollRads = toRad(getConfig('rollOffset', 0) * 1.0)
+  yawRads = toRad(vertFov * getConfig('yawOffset', 0));
+  pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0);
+  rollRads = toRad(getConfig('rollOffset', 0) * 1.0);
 
   camera = new THREE.PerspectiveCamera();
   camera.target = new THREE.Vector3(0, 0, 0);
@@ -70,19 +71,41 @@ function animate(nowMsec) {
 
 }
 
+var lastTimeMsec = null;
 function update(nowMsec) {
+  lastTimeMsec  = lastTimeMsec || nowMsec-1000/60
+  var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
+  lastTimeMsec  = nowMsec
+
   scene.children[0] = getMesh();
+  if (videoTexture != null) {
+    videoTexture.update(deltaMsec / 1000, nowMsec / 1000);
+  }
   renderer.render(scene, offsetCamera);
 }
 
 function getMesh() {
-  if (mesh != null && mesh.material.map.sourceFile === pano_url)
+  if (mesh != null && last_pano_url === pano_url)
     return mesh;
+  last_pano_url = pano_url;
 
+  if (videoTexture != null)
+    videoTexture.destroy();
+
+  var material;
+  if (pano_url.search(/.mp4/) != -1) {
+    videoTexture = new THREEx.VideoTexture(pano_url);
+    material = videoTexture.texture;
+    updateVideo = videoTexture.update;
+    videoTexture.video.loop = false;
+  } else {
+    material = THREE.ImageUtils.loadTexture(pano_url);
+    videoTexture = null;
+  }
   mesh = new THREE.Mesh(
       new THREE.SphereGeometry(100, 32, 32),
       new THREE.MeshBasicMaterial({
-        map: THREE.ImageUtils.loadTexture(pano_url)
+        map: material
       })
   );
   mesh.scale.x = -1;
