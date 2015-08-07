@@ -13,10 +13,6 @@ run entire lg_ros_notes test suite:
 """
 
 
-# TODO
-# refactor the code - lots of repetitions
-
-
 import os
 import unittest
 import time
@@ -44,7 +40,6 @@ class MockProc(object):
 
 
 class TestAppInstance(object):
-
     def test_basic(self):
         proc = MockProc("/command/path", "my_state")
         ai = AppInstance(proc, "/some/path", "/some/url")
@@ -154,6 +149,27 @@ class TestMediaService(object):
         media.geometry.height = 0
         return media
 
+    def perform_test(self, wait_iterations=10, time_sleep=2, len_data=1, media_msg=None):
+        """
+        Perform a test on a message and application start oriented test case.
+
+        """
+        count = 0
+        while count < wait_iterations:
+            time.sleep(time_sleep)
+            data = self.lg_media_service_call()
+            try:
+                assert len(data) == len_data
+                assert media_msg.id in data.keys()
+                assert data[media_msg.id].find(media_msg.url) > 1
+                break
+            except AssertionError:
+                pass
+            count += 1
+        else:
+            pytest.fail("mplayer doesn't seem to start on "
+                        "media: %s, app status: %s" % (media_msg, data))
+
     def test_lg_media_start_app_request(self):
         """
         Emit onto a topic mplayer app start request and check
@@ -164,22 +180,7 @@ class TestMediaService(object):
         rospy.init_node("talker", anonymous=True)
         media = self.get_media_msg(msg_id="1")
         pub.publish(AdhocMedias(medias=[media]))
-        count = 0
-        while count < 10:
-            time.sleep(2)
-            data = self.lg_media_service_call()
-            try:
-                assert len(data) == 1
-                assert media.id in data.keys()
-                assert data[media.id].find(media.url) > 1
-                break
-            except AssertionError:
-                pass
-            count += 1
-        else:
-            pytest.fail("mplayer doesn't seem to start on "
-                        "media: %s, app status: %s" % (media, data))
-
+        self.perform_test(len_data=1, media_msg=media)
         self.shutdown_check_clean_up()
 
     def test_lg_media_start_app_and_update_it(self):
@@ -192,43 +193,13 @@ class TestMediaService(object):
         rospy.init_node("talker", anonymous=True)
         media = self.get_media_msg(msg_id="1")
         pub.publish(AdhocMedias(medias=[media]))
-        count = 0
-        while count < 10:
-            time.sleep(2)
-            data = self.lg_media_service_call()
-            try:
-                assert len(data) == 1
-                assert media.id in data.keys()
-                assert data[media.id].find(media.url) > 1
-                break
-            except AssertionError:
-                pass
-            count += 1
-        else:
-            pytest.fail("mplayer doesn't seem to start on "
-                        "media: %s, app status: %s" % (media, data))
-
+        self.perform_test(len_data=1, media_msg=media)
         # update
         media = self.get_media_msg(msg_id="2")
         # got different media message now, but publish it under the previously used id
         media.id = "1"
         pub.publish(AdhocMedias(medias=[media]))
-        count = 0
-        while count < 10:
-            time.sleep(2)
-            data = self.lg_media_service_call()
-            try:
-                assert len(data) == 1
-                assert media.id in data.keys()
-                assert data[media.id].find(media.url) > 1
-                break
-            except AssertionError:
-                pass
-            count += 1
-        else:
-            pytest.fail("mplayer doesn't seem to start on "
-                        "media: %s, app status: %s" % (media, data))
-
+        self.perform_test(len_data=1, media_msg=media)
         self.shutdown_check_clean_up()
 
     def test_lg_media_start_app_and_start_another_one(self):
@@ -242,42 +213,14 @@ class TestMediaService(object):
         rospy.init_node("talker", anonymous=True)
         media1 = self.get_media_msg(msg_id="1")
         pub.publish(AdhocMedias(medias=[media1]))
-        count = 0
-        while count < 10:
-            time.sleep(2)
-            data = self.lg_media_service_call()
-            try:
-                assert len(data) == 1
-                assert media1.id in data.keys()
-                assert data[media1.id].find(media1.url) > 1
-                break
-            except AssertionError:
-                pass
-            count += 1
-        else:
-            pytest.fail("mplayer doesn't seem to start on "
-                        "media: %s, app status: %s" % (media1, data))
-
+        self.perform_test(len_data=1, media_msg=media1)
+        # trigger another message, another application
         media2 = self.get_media_msg(msg_id="2")
         pub.publish(AdhocMedias(medias=[media2]))
-        count = 0
-        while count < 10:
-            time.sleep(2)
-            data = self.lg_media_service_call()
-            try:
-                # the previous app should be closed now, hence untracked
-                # and only the recent app request running
-                assert len(data) == 1
-                assert media2.id in data.keys()
-                assert data[media2.id].find(media2.url) > 1
-                break
-            except AssertionError:
-                pass
-            count += 1
-        else:
-            pytest.fail("mplayer doesn't seem to start on "
-                        "media: %s, app status: %s" % (media2, data))
-
+        # there should remain just 1 application, so len_data=1
+        # the previous app should be closed now, hence untracked
+        # and only the recent app request running
+        self.perform_test(len_data=1, media_msg=media2)
         self.shutdown_check_clean_up()
 
     def test_lg_media_start_two_apps_at_once(self):
