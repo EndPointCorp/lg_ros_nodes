@@ -2,6 +2,9 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.5 (2015-08-03)
 ------------------
 * Fix axis translation in spacenav emulator

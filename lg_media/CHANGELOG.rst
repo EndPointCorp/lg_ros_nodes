@@ -2,6 +2,21 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_media: add non-default port to rosbridge
+  Tests on the jenkins machine were interfering with eachother because
+  port 9090 was in use.
+* test module refactoring, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* tests cases coverage done (without geometry), touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* test files clean up, continue implementing ..., touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* rostest, rosunit, pytest experiments, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* py.test, rostest, nosetests experiments, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* rostest plus py.test works, incl. correct reporting, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* rostest plus py.test test class foundation, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* wrong way of handling roslaunch, media services test started, touch: `#31 <https://github.com/EndPointCorp/lg_ros_nodes/issues/31>`_
+* Contributors: Jacob Minshall, Zdenek Maxa
+
 1.0.5 (2015-08-03)
 ------------------
 

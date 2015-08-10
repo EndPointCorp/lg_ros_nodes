@@ -2,6 +2,25 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* ManagedAdhocBrowser
+  - enabled online tests for director bridge
+  - added some gitignore lines
+* ManagedAdhocBrowser
+  - added some tests coverage
+  - added tests to cmakelists.txt
+* AdhocBrowserDirectorBridge tests
+  - added basic unit tests
+  - updated cmakelist to honor them
+* AdhocBrowser
+  - added more docstrings
+  - added files for rests
+  - introduced nosy.cfg for clever nosetesting
+* AdhocBrowser
+  - added honoring of the offset
+* Contributors: Wojciech Ziniewicz
+
 1.0.5 (2015-08-03)
 ------------------
 

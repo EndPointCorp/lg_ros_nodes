@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove faulty KML unload
+* Contributors: Will Plaut, Zdenek Maxa
+
 1.0.5 (2015-08-03)
 ------------------
 
