@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_cms_director</name>
+  <version>1.0.6</version>
+  <description>The lg_cms_director package</description>
+
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+
+  <author email="adam@endpoint.com">Adam Vollrath</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>interactivespaces_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>rosnode</run_depend>
+</package>
