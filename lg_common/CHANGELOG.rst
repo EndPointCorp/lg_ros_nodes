@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.6 (2015-08-10)
+------------------
 * ManagedAdhocBrowser
   - enabled online tests for director bridge
   - added some gitignore lines
