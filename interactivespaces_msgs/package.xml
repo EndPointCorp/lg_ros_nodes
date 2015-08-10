@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>interactivespaces_msgs</name>
+  <version>1.0.6</version>
+  <description>
+These messages are used by the ECSj system.
+  </description>
+
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://www.interactive-spaces.org/</url>
+
+  <author>Keith Hughes</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <run_depend>message_runtime</run_depend>
+</package>

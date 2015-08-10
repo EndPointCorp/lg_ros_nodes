@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:docname="volume3_2.svg"
+   inkscape:export-filename="C:\Users\Kristian\Desktop\mute.png"
+   viewBox="0 0 48 48.033"
+   inkscape:export-xdpi="90"
+   version="1.1"
+   inkscape:export-ydpi="90"
+   inkscape:version="0.48.5 r10040"
+   width="100%"
+   height="100%">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3880">
+      <stop
+         id="stop3882"
+         style="stop-color:#57b7ec"
+         offset="0" />
+      <stop
+         id="stop3884"
+         style="stop-color:#066b9d"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3859"
+       y2="1015"
+       gradientUnits="userSpaceOnUse"
+       x2="-44.51"
+       gradientTransform="matrix(1.662,0,0,1.662,91.972,-660.54)"
+       y1="995.68"
+       x1="-48.639"
+       inkscape:collect="always">
+      <stop
+         id="stop3633-5"
+         style="stop-color:#ffffff"
+         offset="0" />
+      <stop
+         id="stop3635-5"
+         style="stop-color:#ffffff;stop-opacity:0"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3863"
+       y2="1029.9"
+       xlink:href="#linearGradient3880"
+       gradientUnits="userSpaceOnUse"
+       x2="-39.823"
+       gradientTransform="matrix(1.662,0,0,1.662,91.972,-660.54)"
+       y1="993.39"
+       x1="-39.823"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient3903"
+       y2="1051.1"
+       xlink:href="#linearGradient3880"
+       gradientUnits="userSpaceOnUse"
+       x2="45.626"
+       y1="991.23"
+       x1="45.626"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient3945"
+       y2="1050.4"
+       xlink:href="#linearGradient3880"
+       gradientUnits="userSpaceOnUse"
+       x2="42.42"
+       y1="991.03"
+       x1="42.42"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient3947"
+       y2="1050.3"
+       xlink:href="#linearGradient3880"
+       gradientUnits="userSpaceOnUse"
+       x2="49.172"
+       y1="990.6"
+       x1="49.172"
+       inkscape:collect="always" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3880"
+       id="linearGradient3002"
+       gradientUnits="userSpaceOnUse"
+       x1="42.42"
+       y1="991.03"
+       x2="42.42"
+       y2="1050.4" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3880"
+       id="linearGradient3014"
+       gradientUnits="userSpaceOnUse"
+       x1="42.42"
+       y1="991.03"
+       x2="42.42"
+       y2="1050.4"
+       gradientTransform="matrix(0.79082,0,0,0.79082,-58.187,172.92)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3859"
+       id="linearGradient3017"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.3143428,0,0,1.3143428,14.546297,-341.44824)"
+       x1="-48.639"
+       y1="995.68"
+       x2="-44.51"
+       y2="1015" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:window-y="31"
+     fit-margin-left="0"
+     pagecolor="#ffffff"
+     inkscape:window-height="847"
+     inkscape:window-maximized="1"
+     inkscape:zoom="3.620168"
+     inkscape:window-x="0"
+     showgrid="false"
+     borderopacity="1.0"
+     inkscape:current-layer="layer1"
+     inkscape:cx="12.020253"
+     inkscape:cy="8.717166"
+     fit-margin-top="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1600"
+     inkscape:pageopacity="0"
+     inkscape:document-units="px" />
+  <g
+     id="layer1"
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     transform="translate(56.402 -964.1)">
+    <path
+       d="m -32.883923,964.53563 c -0.354454,-0.0292 -0.855984,0.17479 -1.560763,0.65717 -2.819273,1.9296 -13.061183,13.10231 -13.061183,13.10231 -0.08933,0 -0.15973,0.0316 -0.246435,0.0411 h -7.894677 v 19.6329 h 8.141492 c 0,0 10.060021,11.21389 13.061183,13.14349 3.001083,1.9295 2.382266,-1.0688 2.382266,-2.3823 v -41.19622 c 0,-0.98528 0.241912,-2.91061 -0.821425,-2.99831 v 2.6e-4 z"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cscccccscccc"
+       style="fill:#000000;stroke:#000000;stroke-width:0.79081999999999986;stroke-opacity:1"
+       id="path2842" />
+    <path
+       inkscape:connector-curvature="0"
+       style="text-indent:0;text-transform:none;block-progression:tb;color:#000000;fill:#000000;stroke:#000000;stroke-width:0.79081999999999986;stroke-linejoin:round;stroke-opacity:1"
+       sodipodi:nodetypes="cccsccccssc"
+       d="m -22.124026,970.965 -1.90904,1.6449 c 0,0 1.266973,1.19161 2.570165,3.73172 1.303192,2.54004 2.619591,6.40122 2.619591,11.6646 0,5.26338 -1.319878,9.01693 -2.619591,11.46689 -1.299713,2.44999 -2.545491,3.53389 -2.545491,3.53389 l 1.776181,1.6698 c 0,0 2.145337,-1.9375 3.537101,-4.5612 1.391764,-2.62365 2.76787,-6.62164 2.76787,-12.10907 0,-5.48773 -1.379585,-9.57683 -2.76787,-12.28222 -1.388284,-2.70603 -3.428521,-4.7794 -3.428521,-4.7794 z"
+       id="path4007" />
+    <path
+       d="m -16.95839,966.03819 -1.761631,1.72288 c 0,0 1.6196,1.56218 3.286806,4.91795 1.667207,3.35577 3.336312,8.46019 3.336312,15.39647 0,6.93637 -1.672426,11.91054 -3.336312,15.14891 -1.663806,3.2388 -3.262132,4.6955 -3.262132,4.6955 l 1.800934,1.6064 c 0,0 2.501759,-2.2735 4.253821,-5.684 1.752457,-3.4005 3.4851437,-8.61993 3.4851437,-15.73731 0,-7.15352 -1.7359287,-12.46965 -3.4845107,-15.98959 -1.748662,-3.51962 -4.317798,-6.04771 -4.317798,-6.04771 z"
+       style="text-indent:0;text-transform:none;block-progression:tb;color:#000000;fill:#000000;stroke:#000000;stroke-width:0.79081999999999986;stroke-linejoin:round;stroke-opacity:1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccsssccsssc"
+       id="path3939" />
+    <path
+       d="m -27.953951,975.61502 -1.986303,1.85803 c 0,0 4.670741,3.28696 4.670741,10.45385 0,7.16657 -4.646067,10.23163 -4.646067,10.23163 l 1.936876,2.07587 c 0,0 5.62534,-4.54805 5.62534,-12.30671 0,-7.75921 -5.600666,-12.31149 -5.600666,-12.31149 z"
+       inkscape:connector-curvature="0"
+       style="text-indent:0;text-transform:none;block-progression:tb;color:#000000;fill:#000000;stroke:#000000;stroke-width:0.79081999999999986;stroke-linejoin:round;stroke-opacity:1"
+       sodipodi:nodetypes="ccsccsc"
+       id="path3943" />
+  </g>
+  <metadata
+     id="metadata25">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2011-12-01T16:42:15</dc:date>
+        <dc:description />
+        <dc:source>https://openclipart.org/detail/166028/volume-level-3-by-mightyman-166028</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>mightyman</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>high volume</rdf:li>
+            <rdf:li>high_volume</rdf:li>
+            <rdf:li>highvolume</rdf:li>
+            <rdf:li>loud</rdf:li>
+            <rdf:li>sound</rdf:li>
+            <rdf:li>sound on</rdf:li>
+            <rdf:li>sound_on</rdf:li>
+            <rdf:li>soundon</rdf:li>
+            <rdf:li>speaker</rdf:li>
+            <rdf:li>volume</rdf:li>
+            <rdf:li>volume 3</rdf:li>
+            <rdf:li>volume level</rdf:li>
+            <rdf:li>volume level 3</rdf:li>
+            <rdf:li>volume3</rdf:li>
+            <rdf:li>volume_3</rdf:li>
+            <rdf:li>volume_level</rdf:li>
+            <rdf:li>volume_level_3</rdf:li>
+            <rdf:li>volumelevel</rdf:li>
+            <rdf:li>volumelevel3</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
