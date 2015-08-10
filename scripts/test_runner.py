@@ -1,4 +1,16 @@
 #!/usr/bin/env python
+"""
+Custom script to run nosetests and rostests as defined in CMakeLists.txt
+files.
+
+catkin commands (catkin_make run_tests, catkin_make tests and
+catkin_make tests_results) were troublesome, esp. in the jenkiins environment.
+One was giving nice output but always returning 0 exit status (so jenkins was
+still green), the other command was reliable on exit status but had 0
+unhelpful output ... Hence this script runs directly rostests and nosetests
+commands and checks exit status from them.
+
+"""
 
 import os
 import re
