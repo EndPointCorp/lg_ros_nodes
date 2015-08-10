@@ -17,8 +17,6 @@ class KmlSyncState:
             assert isinstance(state, dict)
             assert 'windows' in state
             self.state = state
-            # send blank playtour query to unload any kmls
-            self._send_playtour_query(PlaytourQueryRequest())
         except AssertionError:
             rospy.logerr('Invalid message - keeping previous state')
         except ValueError:
