@@ -40,15 +40,11 @@ def lookup(path):
         for l in f:
             res = re.search("^[^#]*add_rostest\((.*)\)", l)
             if res:
-                print "ROS"
                 rostest_path = res.groups()[0]
-                print rostest_path
                 ros_tests.append(rostest_path)
             res = re.search("^[^#]*catkin_add_nosetests\((.*)\)", l)
             if res:
-                print "NOSE"
                 nosetest_path = res.groups()[0]
-                print nosetest_path
                 nose_tests.append(nosetest_path)
     return nose_tests, ros_tests
 
