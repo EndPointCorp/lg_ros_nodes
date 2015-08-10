@@ -146,7 +146,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             if (assets_to_delete or assets_to_create) or second_time:
                 self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             else:
-                self.unique_id = unique_id = KmlUpdateHandler.get_unique_id()
+                self.unique_id = KmlUpdateHandler.get_unique_id()
                 rospy.loginfo("Request Counter Value {}".format(self.unique_id))
                 rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.global_dict))
                 KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
