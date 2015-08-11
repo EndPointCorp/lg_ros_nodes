@@ -56,3 +56,6 @@ catkin/
 
 # debian building stuff
 ros_metapackage/ns-control
+
+# personal launch file
+tmp.launch

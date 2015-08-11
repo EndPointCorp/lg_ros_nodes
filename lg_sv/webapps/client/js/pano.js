@@ -1,6 +1,13 @@
 var camera, scene, renderer, pano_url, mesh;
+var leaderPosition, isLeader;
 var yawRads, pitchRads, rollRads;
 var videoTexture, last_pano_url;
+
+var MIN_PLAYBACKRATE = 0.5;
+
+var MAX_PLAYBACKRATE = 1.5;
+
+var HARD_SYNC_DIFF = 1;
 
 var PITCH_AXIS  = new THREE.Vector3( 1,0,0 );
 var YAW_AXIS    = new THREE.Vector3( 0,1,0 );
@@ -20,16 +27,58 @@ function getConfig(key, def) {
   return results === null ? def : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
+var timeTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/panoviewer/video_time',
+  messageType: 'std_msgs/Float64',
+  throttle_rate: 33,
+  queue_length: 1
+});
+
+function sendTime() {
+  var msg = new ROSLIB.Message({
+    data: videoTexture.video.currentTime
+  });
+  timeTopic.publish(msg);
+}
+
+timeTopic.subscribe(function(msg) {
+  leaderPosition = msg.data;
+});
+/*
+var isPlaying = false;
+var playTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/panoviewer/is_playing',
+  messageType: 'std_msgs/Bool'
+}
+
+function sendPlay() {
+  var msg = new ROSLIB.Message({
+    data: !videoTexture.video.paused
+  });
+  playTopic.publish(msg);
+}
+
+playTopic.subscribe(function(msg) {
+  isPlaying = msg.data;
+});
+*/
+
 function init() {
 
   var container, vertFov;
 
   container = document.getElementById( 'container' );
 
-  vertFov = getConfig('vertFov', 75) * 1.0;
+  vertFov = getConfig('fov', 75) * 1.0;
   yawRads = toRad(vertFov * getConfig('yawOffset', 0));
   pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0);
   rollRads = toRad(getConfig('rollOffset', 0) * 1.0);
+  isLeader = getConfig('leader', 'false').toLowerCase() == "true";
+  console.log("vertFov: " + vertFov);
+  console.log("yawRads: " + yawRads);
+  console.log("pitchRads: " + pitchRads);
 
   camera = new THREE.PerspectiveCamera();
   camera.target = new THREE.Vector3(0, 0, 0);
@@ -79,6 +128,7 @@ function update(nowMsec) {
 
   scene.children[0] = getMesh();
   if (videoTexture != null) {
+    setPlaybackRate();
     videoTexture.update(deltaMsec / 1000, nowMsec / 1000);
   }
   renderer.render(scene, offsetCamera);
@@ -98,6 +148,8 @@ function getMesh() {
     material = videoTexture.texture;
     updateVideo = videoTexture.update;
     videoTexture.video.loop = false;
+    if (!isLeader)
+      videoTexture.video.muted = true;
   } else {
     material = THREE.ImageUtils.loadTexture(pano_url);
     videoTexture = null;
@@ -127,6 +179,30 @@ function setTarget(xTwist, yTwist, zTwist) {
 
 function toRad(deg) {
   return THREE.Math.degToRad(deg);
+}
+
+function setPlaybackRate() {
+  /* just in case no messages have been received */
+  var currentPosition = videoTexture.video.currentTime;
+  leaderPosition = leaderPosition || currentPosition;
+  if (isLeader) {
+    sendTime();
+    //sendPlay();
+    return;
+  }
+  var diff = currentPosition - leaderPosition;
+  if (Math.abs(diff) > HARD_SYNC_DIFF) {
+    videoTexture.video.playbackRate = 1;
+    videoTexture.video.currentTime = leaderPosition;
+    console.log("seek to: " + leaderPosition);
+  } else {
+    var rate = clamp(1 - diff, MIN_PLAYBACKRATE, MAX_PLAYBACKRATE);
+    videoTexture.video.playbackRate = rate;
+  }
+}
+
+function clamp(val, low, high) {
+  return THREE.Math.clamp(val, low, high);
 }
 
 window.onload = panoRunner;
