@@ -7,7 +7,7 @@ import rospy
 import unittest
 
 from lg_common import ManagedAdhocBrowser
-from lg_common.msg import WindowGeometry
+from lg_common.msg import WindowGeometry, ApplicationState
 
 class TestManagedAdhocBrowser(unittest.TestCase):
     def setUp(self):
@@ -48,6 +48,6 @@ class TestManagedAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.y, self.mab.geometry.y)
         self.assertEqual(self.slug, self.mab.slug)
         self.assertEqual(self.url, self.mab.url)
-        self.assertEqual('STOPPED', self.mab.state)
+        self.assertEqual(ApplicationState.STOPPED, self.mab.state)
         self.assertTrue((self.url in self.mab.cmd))
         self.assertTrue(('--kiosk' in self.mab.cmd))
