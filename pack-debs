@@ -24,7 +24,6 @@ if [ -e $SRCDIR/appctl ]; then
     sudo dpkg --force-overwrite -i ros-indigo-appctl_*.deb
 fi
 $BUILD $SRCDIR/interactivespaces_msgs
-sudo dpkg --force-overwrite -i ros-indigo-interactivespaces-msgs_*.deb
 $BUILD $SRCDIR/lg_cms_director
 $BUILD $SRCDIR/lg_common
 sudo dpkg -i ros-indigo-lg-common_*.deb
