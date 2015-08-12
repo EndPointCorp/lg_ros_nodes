@@ -2,6 +2,11 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Properly package director dependencies
+* Contributors: Matt Vollrath
+
 1.0.7 (2015-08-12)
 ------------------
 * Add director and IS msg packages

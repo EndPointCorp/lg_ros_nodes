@@ -2,6 +2,9 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2015-08-12)
 ------------------
 * Fixed state assert

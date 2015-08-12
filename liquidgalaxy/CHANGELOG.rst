@@ -2,6 +2,9 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2015-08-12)
 ------------------
 * Add director and IS msg packages
