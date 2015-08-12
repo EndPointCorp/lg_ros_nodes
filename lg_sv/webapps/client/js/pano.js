@@ -1,5 +1,5 @@
 var camera, scene, renderer, pano_url, mesh;
-var leaderPosition, isLeader;
+var leaderPosition, isLeader, state = false;
 var yawRads, pitchRads, rollRads;
 var videoTexture, last_pano_url;
 
@@ -26,6 +26,24 @@ function getConfig(key, def) {
       results = regex.exec(location.search);
   return results === null ? def : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
+
+var stateTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/panoviewer/state',
+  messageType: 'lg_common/ApplicationState',
+  throttle_rate: 33,
+  queue_length: 10
+});
+
+stateTopic.subscribe(function(msg) {
+  // ApplicationState.VISIBLE == "visible" ... hopefully that lasts
+  state = (msg.state == "visible" || msg.state == 3);
+  if (state) {
+    playVideo();
+  } else {
+    pauseVideo();
+  }
+});
 
 var timeTopic = new ROSLIB.Topic({
   ros: ros,
@@ -150,6 +168,8 @@ function getMesh() {
     videoTexture.video.loop = false;
     if (!isLeader)
       videoTexture.video.muted = true;
+    if (!state)
+      pauseVideo();
   } else {
     material = THREE.ImageUtils.loadTexture(pano_url);
     videoTexture = null;
@@ -203,6 +223,16 @@ function setPlaybackRate() {
 
 function clamp(val, low, high) {
   return THREE.Math.clamp(val, low, high);
+}
+
+function playVideo() {
+  if (videoTexture)
+    videoTexture.video.play();
+}
+
+function pauseVideo() {
+  if (videoTexture)
+    videoTexture.video.pause();
 }
 
 window.onload = panoRunner;
