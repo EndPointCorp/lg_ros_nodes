@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.7 (2015-08-12)
+------------------
 * Fixed state assert
 * Change ApplicationState to string field
   This is more human-friendly.
