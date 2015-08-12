@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add director and IS msg packages
+* Contributors: Matt Vollrath
+
 1.0.6 (2015-08-10)
 ------------------
 

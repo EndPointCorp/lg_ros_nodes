@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed state assert
+* Change ApplicationState to string field
+  This is more human-friendly.
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.0.6 (2015-08-10)
 ------------------
 * ManagedAdhocBrowser

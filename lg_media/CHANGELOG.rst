@@ -2,6 +2,9 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.6 (2015-08-10)
 ------------------
 * lg_media: add non-default port to rosbridge
