@@ -48,6 +48,6 @@ class TestManagedAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.y, self.mab.geometry.y)
         self.assertEqual(self.slug, self.mab.slug)
         self.assertEqual(self.url, self.mab.url)
-        self.assertEqual(0, self.mab.state)
+        self.assertEqual('STOPPED', self.mab.state)
         self.assertTrue((self.url in self.mab.cmd))
         self.assertTrue(('--kiosk' in self.mab.cmd))
