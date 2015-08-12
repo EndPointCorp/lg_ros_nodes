@@ -2,8 +2,8 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.8 (2015-08-12)
+------------------
 * Properly package director dependencies
 * Contributors: Matt Vollrath
 
