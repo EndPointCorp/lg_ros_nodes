@@ -85,12 +85,13 @@ playTopic.subscribe(function(msg) {
 
 function init() {
 
-  var container, vertFov;
+  var container, vertFov, aspectRatio;
 
   container = document.getElementById( 'container' );
 
   vertFov = getConfig('fov', 75) * 1.0;
-  yawRads = toRad(vertFov * getConfig('yawOffset', 0));
+  aspectRatio = window.innerWidth / window.innerHeight;
+  yawRads = aspectRatio * toRad(vertFov * getConfig('yawOffset', 0));
   pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0);
   rollRads = toRad(getConfig('rollOffset', 0) * 1.0);
   isLeader = getConfig('leader', 'false').toLowerCase() == "true";
@@ -101,7 +102,7 @@ function init() {
   camera = new THREE.PerspectiveCamera();
   camera.target = new THREE.Vector3(0, 0, 0);
 
-  offsetCamera = new THREE.PerspectiveCamera(vertFov, window.innerWidth / window.innerHeight, 1, 1100 );
+  offsetCamera = new THREE.PerspectiveCamera(vertFov, aspectRatio, 1, 1100 );
   camera.add(offsetCamera);
 
   offsetCamera.rotateOnAxis(YAW_AXIS, -yawRads);
