@@ -54,7 +54,8 @@ from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String
 import tornado.web
 from tornado import gen
-
+from tornado.concurrent import Future
+from tornado.ioloop import IOLoop
 
 def get_kml_root():
     """Get headers of KML file - shared by all kml generation methods."""
@@ -112,6 +113,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             rospy.loginfo("Exception getting scene changes"+str(e))
             pass
 
+    def non_blocking_sleep(self, duration):
+        f = Future()
+        IOLoop.current().call_later(duration, lambda: f.set_result(None))
+        return f
+
     def initialize(self):
         self.asset_service = self.application.asset_service
     
@@ -150,7 +156,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 rospy.loginfo("Request Counter Value {}".format(self.unique_id))
                 rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.global_dict))
                 KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
-                yield gen.sleep(KmlUpdateHandler.timeout)
+                yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
                 if self.unique_id in KmlUpdateHandler.global_dict:
                     with KmlUpdateHandler.dict_lock:
                         del KmlUpdateHandler.global_dict[self.unique_id]
