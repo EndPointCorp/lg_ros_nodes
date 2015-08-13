@@ -1,0 +1,135 @@
+/* Fonts */
+@font-face {
+    font-family: 'spartan book';
+    src: url('fonts/spartan-bookclassified.eot');
+    src: url('fonts/spartan-bookclassified.eot?#iefix') format('embedded-opentype'),
+         url('fonts/spartan-bookclassified.woff') format('woff'),
+         url('fonts/spartan-bookclassified.ttf') format('truetype'),
+         url('fonts/spartan-bookclassified.svg#spartan_book_classifiedRg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+html {
+    /* overflow: hidden; */
+}
+
+::-webkit-scrollbar {
+    width: 3em;
+    height: 3em;
+}
+::-webkit-scrollbar-button {
+    background: #000;
+    height: 0;
+}
+::-webkit-scrollbar-track-piece {
+    background: #888;
+}
+::-webkit-scrollbar-thumb {
+    background: #222;
+    height: 3em;
+}
+
+body {
+    background-image: url(exported/background2.png);
+    font-family: "spartan book", sans-serif;
+    height: 100%;
+    margin: 0;
+}
+
+h1 {
+    margin: 0em;
+}
+
+div.tabWrap {
+    float: left;
+    margin-left: 1em;
+    width: 20em;
+}
+div.tab {
+    background-color: #b7c4c8;
+    border: 1px solid black;
+    font-size: 2em;
+    width: 10em;
+}
+div.active {
+    background-color: white;
+}
+
+div#mainView {
+    height: 100%;
+    margin-left: 21em;
+    margin-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+div#tabContents {
+    background-color: white;
+    border: 1px solid black;
+    bottom: 1em;
+    left: 21em;
+    right: 1em;
+    overflow: scroll;
+    position: absolute;
+    top: 1em;
+}
+
+div#lowerControls {
+    background-color: #b7c4c8;
+    border: 1px solid black;
+    bottom: 1em;
+    font-size: 2em;
+    left: 1em;
+    position: absolute;
+    width: 8em;
+}
+
+table.freeflight {
+    font-size: 4em;
+}
+table.freeflight span {
+    position: relative;
+    top: -20px;
+}
+
+div.presentationback {
+    border: 1px solid black;
+    float: right;
+    font-size: 1.75em;
+    margin-right: 1em;
+    padding: 0.5em;
+}
+div.presentationheader {
+    text-align: center;
+}
+div.presentationitem {
+    border: 1px solid black;
+    margin: 1em;
+    padding: 1em;
+    display: inline-block;
+}
+p.scene_description {
+    display: none;
+}
+
+iframe#panorama_frame {
+    border-width: 0;
+    height: 100%;
+    width: 100%;
+}
+
+div#searchtab {
+    text-align: center;
+}
+textarea#searchbox {
+    font-size: 5em;
+    height: 100px;
+    margin-top: 20px;
+    width: 80%;
+}
+canvas#keyboardcanvas {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}

@@ -10,7 +10,7 @@ ROOT_DIR = os.path.realpath(os.curdir)
 ARGS = None
 # add more directories here as needed
 IGNORE_DIRS = ['catkin', 'scripts', '.git', 'tmp']
-NEEDED_DIRS = ['appctl', 'interactivespaces_msgs']
+NEEDED_DIRS = ['appctl']
 
 if os.path.basename(ROOT_DIR) == 'scripts':
     os.chdir('..')
@@ -102,8 +102,6 @@ def get_ros_nodes():
     global ARGS
     # append any args with paths that exist to our nodes
     append_node(nodes, ARGS.appctl)
-    append_node(nodes, ARGS.interactive)
-    append_node(nodes, ARGS.director)
     for arg in ARGS.extra:
         append_node(nodes, arg)
     return nodes
@@ -158,9 +156,6 @@ def parse_args():
     parser = argparse.ArgumentParser(
             description='initializes a the catkin workspace for this project')
     parser.add_argument('-a', '--appctl', type=str, help='location of appctl directory')
-    parser.add_argument('-i', '--interactive', type=str,
-            help='location of interactivespaces_msgs directory')
-    parser.add_argument('-d', '--director', type=str, help='location of lg_cms_director')
     parser.add_argument('-x', '--extra', type=str, nargs='*', default=[],
             help='a list of any extra paths to ros nodes you want linked to')
     return parser.parse_args()

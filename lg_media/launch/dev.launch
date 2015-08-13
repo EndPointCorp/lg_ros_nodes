@@ -15,5 +15,9 @@
     <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
     <!-- Local rosbridge and rosapi. -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_lg_media_basic" pkg="lg_media" type="test_lg_media_basic.py"/>
 </launch>

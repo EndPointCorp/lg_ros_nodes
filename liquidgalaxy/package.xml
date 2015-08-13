@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>liquidgalaxy</name>
-  <version>1.0.4</version>
+  <version>1.0.8</version>
   <description>Liquid Galaxy metapackage</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -11,6 +11,7 @@
   <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>lg_cms_director</run_depend>
   <run_depend>lg_common</run_depend>
   <run_depend>lg_earth</run_depend>
   <run_depend>lg_media</run_depend>

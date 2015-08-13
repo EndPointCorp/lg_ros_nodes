@@ -56,3 +56,12 @@ catkin/
 
 # debian building stuff
 ros_metapackage/ns-control
+
+# dont commit ctags
+tags
+
+# whatever dude
+*pycache*
+
+# pulsnowflake
+pulsar.log

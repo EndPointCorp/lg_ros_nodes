@@ -3,6 +3,7 @@ import rospy
 
 from lg_common import ManagedBrowser
 from lg_common.msg import WindowGeometry
+from lg_common import ManagedWindow
 from lg_common.msg import ApplicationState
 from lg_common.msg import ApplicationState
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
@@ -23,13 +24,15 @@ class ManagedAdhocBrowser(ManagedBrowser):
 
     def update_geometry(self, geometry):
         """
-        ManagedAdhocBrowser << ManagedBrowser << ManagedApplication.window.geometry = 'WxH[+-]X[+-]Y'
-        ManagedAdhocBrowser << ManagedBrowser << ManagedApplication.window.converge()
+        Updates the geometry and converges window with new settings
         """
         self.window.geometry = geometry
         self.window.converge()
 
     def update_url(self, url):
+        """
+        Updates URL of the browser using 'chromium-remote.py' script
+        """
         import os
         self.url = url
         os.system('chromium-remote.py --debug-host=localhost --debug-port={} --page-url="{}"'.format(self.debug_port, url))

@@ -12,57 +12,63 @@ class AdhocBrowserPool():
     Dict(id => ManagedAdhocBrowser)
     """
     def __init__(self):
+        """
+        AdhocBrowserPool manages a pool of browsers on one viewport.
+        """
         self.browsers = {}
 
     def _unpack_incoming_browsers(self, browsers):
         """
-        Return dict(id: AdhocBrowser) with all AdhocBrowsers
+        Return dict(id: AdhocBrowser) with all AdhocBrowsers with ids as keys
         """
         return {b.id: b for b in browsers}
 
     def _get_current_browsers_ids(self):
+        """
+        Returns a mathematical set of ids of currently running browsers
+        """
         return set(self.browsers.keys())
 
     def _get_browsers_ids_to_remove(self, incoming_browsers_ids):
         """
-        returns a list of browsers that are not on the list of incoming message
-        this means that it returns list of browsers to remove
+        Returns a list of browsers that are not on the list of incoming message.
+        Effectively it's a list of ids of browsers that should be killed.
         """
         browsers_ids_to_remove = self._get_current_browsers_ids() - incoming_browsers_ids
         return list(browsers_ids_to_remove)
 
     def _get_browsers_ids_to_create(self, incoming_browsers_ids):
         """
-        returns a list of browsers that are not on the list of current browsers
-        this means that it returns list of browsers to create
+        Returns a list of browsers that are not on the list of current browsers.
+        This means that it returns list of browsers to create.
         """
         browsers_ids_to_create = incoming_browsers_ids - self._get_current_browsers_ids()
         return list(browsers_ids_to_create)
 
     def _get_browsers_ids_to_update(self, incoming_browsers_ids):
         """
-        returns a list of browsers that are not on the list of incoming message
-        this means that it returns list of browsers to remove
+        Returns a list of browsers that **are** on the list of incoming message.
+        This means that it returns list of browsers that possibly needs URL or geometry update.
         """
         browser_ids_to_update = self._get_current_browsers_ids() & incoming_browsers_ids
         return list(browser_ids_to_update)
 
     def _remove_browser(self, browser_id):
         """
-        call .close() on browser object and delete the object
+        call .close() on browser object and cleanly delete the object
         """
         self.browsers[browser_id].close()
         del self.browsers[browser_id]
 
     def _create_browser(self, new_browser_id, new_browser):
         """
-        Create new browser instance
+        Create new browser instance with desired geometry.
         """
-
         geometry = WindowGeometry(x=new_browser.geometry.x,
                                   y=new_browser.geometry.y,
                                   width=new_browser.geometry.width,
                                   height=new_browser.geometry.height)
+
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
                                                 slug=new_browser_id,
                                                 url=new_browser.url)

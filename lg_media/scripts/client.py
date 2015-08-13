@@ -4,11 +4,9 @@ import rospy
 from lg_media import MediaService
 from lg_media import ROS_NODE_NAME
 from lg_media import DEFAULT_VIEWPORT
+from lg_media import SRV_QUERY
 from lg_media.msg import AdhocMedias
 from lg_media.srv import MediaAppsInfo
-
-
-SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
 
 
 def main():
