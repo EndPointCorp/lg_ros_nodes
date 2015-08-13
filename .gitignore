@@ -56,3 +56,15 @@ catkin/
 
 # debian building stuff
 ros_metapackage/ns-control
+
+<<<<<<< HEAD
+# dont commit ctags
+tags
+
+# whatever dude
+*pycache*
+
+# pulsnowflake
+pulsar.log
+# personal launch file
+tmp.launch

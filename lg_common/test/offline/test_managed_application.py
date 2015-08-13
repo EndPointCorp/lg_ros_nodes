@@ -2,13 +2,12 @@
 PKG = 'lg_common'
 NAME = 'test_managed_application'
 
-import unittest
 import os
-import signal
+import unittest
 
-from lg_common import ManagedApplication, ManagedWindow
 from lg_common.msg import ApplicationState
 from appctl_support import ProcController
+from lg_common import ManagedApplication, ManagedWindow
 
 TEST_CMD = ['/usr/bin/python']
 

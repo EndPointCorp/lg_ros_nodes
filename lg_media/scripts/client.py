@@ -4,7 +4,9 @@ import rospy
 from lg_media import MediaService
 from lg_media import ROS_NODE_NAME
 from lg_media import DEFAULT_VIEWPORT
+from lg_media import SRV_QUERY
 from lg_media.msg import AdhocMedias
+from lg_media.srv import MediaAppsInfo
 
 
 def main():
@@ -18,6 +20,10 @@ def main():
                   rospy.get_param("~viewport", DEFAULT_VIEWPORT))
     rospy.Subscriber(topic_name, AdhocMedias, media_service.listener)
     rospy.loginfo(ROS_NODE_NAME + " has started.")
+    rospy.Service(SRV_QUERY,
+                  MediaAppsInfo,
+                  media_service.get_media_apps_info)
+    rospy.loginfo(ROS_NODE_NAME + " service registered..")
     rospy.spin()
 
 

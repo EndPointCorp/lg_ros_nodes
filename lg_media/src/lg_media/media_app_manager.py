@@ -2,11 +2,6 @@
 """
 Adhoc media service.
 
-define video playing commands (String),
-http://www.mplayerhq.hu/DOCS/HTML/en/control.html
-http://www.mplayerhq.hu/DOCS/tech/slave.txt
-http://stackoverflow.com/questions/4976276/is-it-possible-to-control-mplayer-from-another-program-easily
-
 notes:
     rospy.loginfo()
     while not rospy.is_shutdown() ...
@@ -27,27 +22,52 @@ rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 
 # mplayer window is not placed on a desired geometry, investigate
+local file URL works without quotes or with quotes:
+rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: /mnt/data/video/humour/kaiser_labus-7_statecnych.flv, geometry: {x: 640, y: 480, width: 0, height: 0}},{id: "2", url: /mnt/data/video/humour/walker_texas_ranger.flv, geometry: {x: 0, y: 0, width: 0, height: 0}}]'
+http URL has to have quotes, rostopic command parsing fails otherwise:
+rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[{id: "1", url: "https://zdenek.endpoint.com/kaiser_labus-7_statecnych.flv", geometry: {x: 640, y: 480, width: 0, height: 0}}]'
 
 # shutdown test
 rostopic pub --once /media_service/left_one lg_media/AdhocMedias '[]'
 
+# call service
+rosservice call /lg_media/query
+
 """
 
 import os
+import json
+import time
 
 import rospy
 from std_msgs.msg import String
 
 from appctl_support import ProcController
+from lg_common.helpers import write_log_to_file
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
+from lg_media.srv import MediaAppsInfoResponse
 
 
 ROS_NODE_NAME = "lg_media"
 DEFAULT_VIEWPORT = "test_viewport_0"
 DEFAULT_APP = "mplayer"
+SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
+
+
+class AppInstance(object):
+    def __init__(self, app, fifo_path, url):
+        # dangerous to test against self.app.cmd since it is the initial
+        # command with which the process was started, URL may have been updated ...
+        self.app = app
+        self.fifo_path = fifo_path
+        self.url = url
+
+    def __str__(self):
+        r = "state='%s' FIFO='%s' URL='%s'" % (self.app.state, self.fifo_path, self.url)
+        return r
 
 
 class MediaService(object):
@@ -62,7 +82,7 @@ class MediaService(object):
         return cmd
 
     def __init__(self):
-        self.apps = {}  # key: app id, value: app instance
+        self.apps = {}  # key: app id, value: AppInstance
 
     def listener(self, data):
         """
@@ -70,26 +90,56 @@ class MediaService(object):
 
         """
         rospy.logdebug("'listener' invoked, received data: '%s'" % data)
-        if len(data.medias) > 0:
-            curr_apps = {}
-            for media in data.medias:
-                if media.id in self.apps:
-                    rospy.logdebug("App id '%s' exists, updating ..." % media.id)
-                    app = self.apps[media.id]
-                    # TODO
-                    # update the url and geometry of the process app accordingly
-                else:
-                    rospy.logdebug("App id '%s' doesn't exist, starting ..." % media.id)
-                    curr_apps[media.id] = self._start_and_get_app(media)
-            self.apps.update(curr_apps)
-        else:
+
+        if len(data.medias) == 0:
             rospy.logdebug("Media array empty, shutting existing applications down ...")
             self._shutdown()
+            return
+
+        received_ids = [media.id for media in data.medias]
+
+        # update applications (intersection of received_ids and existing app ids)
+        for media in data.medias:
+            if media.id in self.apps.keys():
+                fifo = self.apps[media.id].fifo_path
+                rospy.logdebug("App id '%s' exists, updating, FIFO: '%s') ..." % (media.id, fifo))
+                os.system("echo 'loadfile %s' > %s" % (media.url, fifo))
+                # TODO
+                # this way it doesn't work ...
+                #fifo_desc = open(fifo, 'w')
+                #fifo_desc.write('loadfile %s' % media.url)
+                #fifo_desc.close()
+                # TODO
+                # update geometry via change_rectangle <val1> <val2> commands
+                self.apps[media.id].url = media.url
+                rospy.logdebug("Updated instance '%s' with URL '%s'" % (media.id, media.url))
+
+        to_shutdown = set(self.apps.keys()) - set(received_ids)
+        [self._shutdown_instance(app_id) for app_id in to_shutdown]
+
+        # create applications
+        new_apps = {}
+        to_create = set(received_ids) - set(self.apps.keys())
+        for media in data.medias:
+            if media.id in to_create:
+                rospy.logdebug("App id '%s' doesn't exist, starting ..." % media.id)
+                new_apps[media.id] = AppInstance(*self._start_and_get_app(media))
+        self.apps.update(new_apps)
+
+    def get_media_apps_info(self, request):
+        """
+        Connected to a service call, returns content of the internal
+        container tracking currently running managed applications.
+
+        """
+        d = {app_id: str(app_info) for app_id, app_info in self.apps.items()}
+        return MediaAppsInfoResponse(json=json.dumps(d))
 
     def _start_and_get_app(self, media):
         """
         Start a ManagedApplication instance according to the details in the
-        media argument and return instance.
+        media argument and return process instance, FIFO file (full path) to
+        drive the mplayer application and resource URL.
 
         """
         # geometry = ManagedWindow.get_viewport_geometry()
@@ -108,19 +158,30 @@ class MediaService(object):
                                        w_name="mplayer",
                                        w_instance=self._get_instance())
         cmd = self.app_cmd
+        name = "lg-%s-%s.fifo" % (self.__class__.__name__, time.time())
+        path = os.path.join("/tmp", name)
+        os.mkfifo(path)
+        rospy.loginfo("Created FIFO file '%s'" % path)
+        cmd.extend(["-input", "file=%s" % path])
         cmd.extend([media.url])
         rospy.loginfo("starting: '%s' ..." % cmd)
         app = ManagedApplication(cmd, window=mplayer_window)
         app.set_state(ApplicationState.VISIBLE)
         rospy.loginfo("Application '%s' started." % cmd)
-        return app
+        return app, path, media.url
+
+    def _shutdown_instance(self, app_id):
+        app_instance = self.apps[app_id]
+        rospy.loginfo("Stopping app id '%s', FIFO: '%s' ..." % (app_id, app_instance.fifo_path))
+        app_instance.app.proc.stop()
+        os.unlink(app_instance.fifo_path)
+        assert not os.path.exists(app_instance.fifo_path)
+        del self.apps[app_id]
 
     def _shutdown(self):
-        rospy.loginfo("Stopping managed applications ...")
-        for app_id, app in self.apps.items():
-            rospy.loginfo("Stopping app id '%s' ..." % app_id)
-            app.proc.stop()
-            del self.apps[app_id]
+        rospy.loginfo("Stopping all (num: %s) managed applications ..." % (len(self.apps)))
+        for app_id in self.apps.keys()[:]:
+            self._shutdown_instance(app_id)
 
     def _get_instance(self):
         """

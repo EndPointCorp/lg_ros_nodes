@@ -2,6 +2,24 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.8 (2015-08-12)
+------------------
+
+1.0.7 (2015-08-12)
+------------------
+
+1.0.6 (2015-08-10)
+------------------
+
+1.0.5 (2015-08-03)
+------------------
+* Fix axis translation in spacenav emulator
+* Add scale feature to spacenav emulator
+* Contributors: Matt Vollrath
+
+1.0.4 (2015-07-31)
+------------------
+
 1.0.3 (2015-07-29)
 ------------------
 

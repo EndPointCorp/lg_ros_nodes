@@ -75,7 +75,9 @@ def get_properties(window):
         "border_width = 0",
         "size_hints_honor = false",
         "floating = true",
-        "fullscreen = false",
+        # Trick Chrome in kiosk mode by setting fullscreen to true here.
+        # In the callback we will set it to false.
+        "fullscreen = true",
         "maximized = false",
         "hidden = {}".format('false' if window.is_visible else 'true'),
         "minimized = {}".format('false' if window.is_visible else 'true'),
@@ -98,7 +100,7 @@ def get_callback(window):
         str: awesome callback for window geometry.
     """
     if window.geometry is not None:
-        return "function(c) c:geometry({x=%d, y=%d}) end" % (
+        return "function(c) awful.client.property.set(c, 'fullscreen', false) c:geometry({x=%d, y=%d}) end" % (
             window.geometry.x,
             window.geometry.y,
         )

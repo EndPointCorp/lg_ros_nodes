@@ -7,6 +7,7 @@
  * @param {ROSLIB.Ros} ros
  * @param {google.maps.StreetViewPanorama} streetView
  */
+
 function StreetviewClient(ros, streetView) {
   this.streetView = streetView;
 
@@ -83,7 +84,7 @@ StreetviewClient.prototype.sendMetadata = function() {
       pitch: photographerPov.pitch
     }
   };
-  for(var i = 0; i < links.length; i++) {
+  for (var i = 0; i < links.length; i++) {
     var link = links[i];
     metadata.links.push({
       description: link.description,

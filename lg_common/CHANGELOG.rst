@@ -2,6 +2,53 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.8 (2015-08-12)
+------------------
+
+1.0.7 (2015-08-12)
+------------------
+* Fixed state assert
+* Change ApplicationState to string field
+  This is more human-friendly.
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
+1.0.6 (2015-08-10)
+------------------
+* ManagedAdhocBrowser
+  - enabled online tests for director bridge
+  - added some gitignore lines
+* ManagedAdhocBrowser
+  - added some tests coverage
+  - added tests to cmakelists.txt
+* AdhocBrowserDirectorBridge tests
+  - added basic unit tests
+  - updated cmakelist to honor them
+* AdhocBrowser
+  - added more docstrings
+  - added files for rests
+  - introduced nosy.cfg for clever nosetesting
+* AdhocBrowser
+  - added honoring of the offset
+* Contributors: Wojciech Ziniewicz
+
+1.0.5 (2015-08-03)
+------------------
+
+1.0.4 (2015-07-31)
+------------------
+* Workaround for Chrome kiosk fullscreen behavior
+  Set fullscreen to 'true' in rule properties, then back to false in the callback.
+  This seems to be compatible with other applications too.
+* Final fixing of managed adhoc browser logic
+  - turned loginfo to logdebug here and there
+  - fixed helpers
+  - general fixing
+* Added initial director bridge and dev deployment script
+* lg_common helper for extracting asset types for viewports
+* AdhocBrowserPool
+  - added adhoc browser director bridge
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.0.3 (2015-07-29)
 ------------------
 

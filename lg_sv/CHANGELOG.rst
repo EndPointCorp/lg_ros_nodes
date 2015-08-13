@@ -2,6 +2,26 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.8 (2015-08-12)
+------------------
+
+1.0.7 (2015-08-12)
+------------------
+
+1.0.6 (2015-08-10)
+------------------
+
+1.0.5 (2015-08-03)
+------------------
+
+1.0.4 (2015-07-31)
+------------------
+* JS lint cleanup and added JSDoc to sv_pov
+* Tune spacenav handling
+* Cleaned up client code and moved pov functions out
+  -Also parameterized FOV into the launcher URL
+* Contributors: Will Plaut
+
 1.0.3 (2015-07-29)
 ------------------
 

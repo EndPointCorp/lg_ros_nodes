@@ -15,6 +15,11 @@ add_message_files(
   AdhocMedias.msg
 )
 
+add_service_files(
+  FILES
+  MediaAppsInfo.srv
+)
+
 generate_messages(
   DEPENDENCIES
   lg_common
@@ -33,3 +38,9 @@ catkin_install_python(PROGRAMS
   scripts/client.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  #add_rostest(test/test_lg_media_basic.test), the same defined directly by the dev launch file:
+  add_rostest(launch/dev.launch)
+endif()

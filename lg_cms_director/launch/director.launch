@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="director" type="director" name="director.py" respawn="true"></node>
+</launch>
