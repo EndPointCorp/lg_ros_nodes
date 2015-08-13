@@ -100,7 +100,7 @@ class StreetviewUtils:
         return ret
 
 
-class StreetviewServer:
+class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                  nav_sensitivity, space_nav_interval):
         self.location_pub = location_pub
@@ -327,6 +327,10 @@ class NearbyPanos:
         Only return the metadata if it matches the current panoid
         """
         if not self.panoid:
+            return None
+        if not self.metadata:
+            return None
+        if 'location' not in self.metadata or 'pano' not in self.metadata['location']:
             return None
         if self.metadata['location']['pano'] != self.panoid:
             return None

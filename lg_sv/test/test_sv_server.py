@@ -15,7 +15,7 @@ import json
 import rospy
 import rostest
 import unittest
-from lg_sv import StreetviewUtils, StreetviewServer
+from lg_sv import StreetviewUtils, PanoViewerServer
 from geometry_msgs.msg import Quaternion, Pose2D
 from std_msgs.msg import String
 
@@ -33,7 +33,7 @@ class TestSVServer(unittest.TestCase):
         self.location_pub = MockPublisher()
         self.pano_pub = MockPublisher()
         self.pov_pub = MockPublisher()
-        self.server = StreetviewServer(
+        self.server = PanoViewerServer(
             self.location_pub, self.pano_pub, self.pov_pub, TILT_MAX,
             TILT_MIN, NAV_SENSITIVITY, NAV_INTERVAL)
 
