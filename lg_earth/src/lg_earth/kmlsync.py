@@ -42,7 +42,9 @@ State data structure:
 
 import json
 import rospy
+
 import urllib2
+import threading
 import xml.etree.ElementTree as ET
 
 from xml.dom import minidom
@@ -51,7 +53,9 @@ from xml.sax.saxutils import unescape, escape
 from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String
 import tornado.web
-
+from tornado import gen
+from tornado.concurrent import Future
+from tornado.ioloop import IOLoop
 
 def get_kml_root():
     """Get headers of KML file - shared by all kml generation methods."""
@@ -62,8 +66,8 @@ def get_kml_root():
     kml_root.attrib['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
     return kml_root
 
-
 class KmlMasterHandler(tornado.web.RequestHandler):
+
     def get(self):
         """Serve the master.kml which is updated by NLC."""
         rospy.loginfo("Got master.kml GET request")
@@ -76,10 +80,49 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
+    counter = 0
+    timeout = 10
+    global_dict = {}
+    counter_lock = threading.Lock()
+    dict_lock = threading.Lock()
+
+    @classmethod
+    def add_to_global_dict(cls, reference, unique_id):
+        with cls.dict_lock:
+            cls.global_dict[unique_id] = reference
+
+    @classmethod
+    def get_unique_id(cls):
+        with cls.counter_lock:
+            unique_id = cls.counter
+            cls.counter += 1
+        return unique_id
+
+    @classmethod
+    def finish_all_requests(cls):
+        with cls.dict_lock:
+            for req in cls.global_dict.itervalues():
+                req.get(True)
+            cls.global_dict = {}
+
+    @classmethod
+    def get_scene_msg(cls, msg):
+        try:
+            cls.finish_all_requests()
+        except Exception as e:
+            rospy.loginfo("Exception getting scene changes"+str(e))
+            pass
+
+    def non_blocking_sleep(self, duration):
+        f = Future()
+        IOLoop.current().call_later(duration, lambda: f.set_result(None))
+        return f
+
     def initialize(self):
         self.asset_service = self.application.asset_service
-
-    def get(self):
+    
+    @gen.coroutine
+    def get(self, second_time=False):
         """
         Return XML with latest list of assets for specific window_slug
             - get window slug and calculate difference between loaded assets and the desired state
@@ -104,13 +147,26 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 # Always return a valid KML or Earth will stop requesting updates
                 self.finish(get_kml_root())
                 return
-
             assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
             assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            if (assets_to_delete or assets_to_create) or second_time:
+                self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            else:
+                self.unique_id = KmlUpdateHandler.get_unique_id()
+                rospy.loginfo("Request Counter Value {}".format(self.unique_id))
+                rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.global_dict))
+                KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
+                yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
+                if self.unique_id in KmlUpdateHandler.global_dict:
+                    with KmlUpdateHandler.dict_lock:
+                        del KmlUpdateHandler.global_dict[self.unique_id]
+                    assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
+                    assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+                    self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
         else:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
+
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
