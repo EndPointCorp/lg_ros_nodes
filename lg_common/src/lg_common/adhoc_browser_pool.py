@@ -11,10 +11,11 @@ class AdhocBrowserPool():
     Handles browser pool in self.browsers
     Dict(id => ManagedAdhocBrowser)
     """
-    def __init__(self):
+    def __init__(self, viewport_name):
         """
         AdhocBrowserPool manages a pool of browsers on one viewport.
         """
+        self.viewport_name = viewport_name
         self.browsers = {}
 
     def _unpack_incoming_browsers(self, browsers):
@@ -57,8 +58,10 @@ class AdhocBrowserPool():
         """
         call .close() on browser object and cleanly delete the object
         """
+        rospy.loginfo("POOL %s: Removing browser with id %s" % (self.viewport_name, browser_pool_id))
         self.browsers[browser_pool_id].close()
         del self.browsers[browser_pool_id]
+        rospy.loginfo("POOL %s: state after removal: %s" % (self.viewport_name, self.browsers))
 
     def _create_browser(self, new_browser_pool_id, new_browser):
         """
@@ -74,13 +77,16 @@ class AdhocBrowserPool():
                                                 url=new_browser.url)
         browser_to_create.set_state(ApplicationState.VISIBLE)
 
+        rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
         self.browsers[new_browser_pool_id] = browser_to_create
+        rospy.loginfo("POOL %s: state after addition: %s" % (self.viewport_name, self.browsers))
         return True
 
     def _update_browser(self, browser_pool_id, updated_browser):
         """
         Update existing browser instance
         """
+        rospy.loginfo("POOL %s: state during updating: %s" % (self.viewport_name, self.browsers))
         current_browser = self.browsers[browser_pool_id]
         rospy.loginfo("Updating browser %s to it's new state: %s" % (current_browser, updated_browser))
         future_url = updated_browser.url
@@ -90,7 +96,6 @@ class AdhocBrowserPool():
                                       height=updated_browser.geometry.height)
 
         current_geometry = current_browser.geometry
-
 
         if current_geometry != future_geometry:
             geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
@@ -108,8 +113,8 @@ class AdhocBrowserPool():
 
     def _update_browser_url(self, browser_pool_id, current_browser, future_url):
         try:
+            rospy.loginfo("Updating URL of browser id %s from %s to %s" % (browser_pool_id, current_browser.url, future_url))
             current_browser.update_url(future_url)
-            rospy.logdebug("Updated URL of browser id %s from %s to %s" % (browser_pool_id, current_browser.url, future_url))
             return True
         except Exception, e:
             rospy.logerr("Could not update url of browser id %s because: %s" % (browser_pool_id, e))
@@ -119,7 +124,7 @@ class AdhocBrowserPool():
     def _update_browser_geometry(self, browser_pool_id, current_browser, future_geometry):
         try:
             current_browser.update_geometry(future_geometry)
-            rospy.logdebug("Updated geometry of browser id %s" % browser_pool_id)
+            rospy.loginfo("Updated geometry of browser id %s" % browser_pool_id)
             return True
         except Exception, e:
             rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
@@ -129,7 +134,7 @@ class AdhocBrowserPool():
     def handle_ros_message(self, data):
         """
         - if message has no AdhocBrowser messages in the array,
-        close everything down.
+        shutdown all browsers
         - if the message has AdhocBrowser messages in the array:
         -- check for an existing browser with the same id.
         --- if it exists, update the url and geometry.

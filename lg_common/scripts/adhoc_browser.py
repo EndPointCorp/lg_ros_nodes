@@ -24,7 +24,7 @@ def main():
     Initialize adhoc browser pool
     """
     topic_name = '/browser_service/{}'.format(viewport_name)
-    adhocbrowser_pool = AdhocBrowserPool()
+    adhocbrowser_pool = AdhocBrowserPool(viewport_name)
     rospy.Subscriber(topic_name, AdhocBrowsers, adhocbrowser_pool.handle_ros_message)
 
     """
