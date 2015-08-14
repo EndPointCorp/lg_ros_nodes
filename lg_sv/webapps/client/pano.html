@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>three.js webgl - equirectangular panorama demo</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body {
+                background-color: #000000;
+                margin: 0px;
+                overflow: hidden;
+            }
+
+            #info {
+                position: absolute;
+                top: 0px; width: 100%;
+                color: #ffffff;
+                padding: 5px;
+                font-family:Monospace;
+                font-size:13px;
+                font-weight: bold;
+                text-align:center;
+            }
+
+            a {
+                color: #ffffff;
+            }
+        </style>
+        <script src="../lib/three.min.js"></script>
+        <script src="../lib/threex.videotexture.js"></script>
+        <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+        <script src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+        <script src="../lib/pv_client.js"></script>
+        <script src="js/pano.js"> </script>
+    </head>
+    <body>
+
+        <div id="container"></div>
+        <div id="info"></div>
+
+    </body>
+</html>
+<!-- vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+-->

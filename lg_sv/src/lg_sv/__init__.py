@@ -1,1 +1,1 @@
-from server import StreetviewServer, StreetviewUtils
+from server import PanoViewerServer, StreetviewUtils

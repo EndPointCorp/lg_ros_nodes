@@ -6,7 +6,7 @@ KMLSYNC_HOST = '127.0.0.1'
 KMLSYNC_PORT = 8765
 KML_ENDPOINT = 'http://' + KMLSYNC_HOST + ':' + str(KMLSYNC_PORT)
 
-WINDOW_SLUG = 'test_window_slug'
+WINDOW_SLUG = 'center'
 
 import sys
 import re
@@ -20,11 +20,26 @@ import xml.etree.ElementTree as ET
 from std_msgs.msg import String
 from xml.sax.saxutils import escape
 from lg_common.helpers import escape_asset_url, generate_cookie
+from lg_earth import KmlUpdateHandler
 from interactivespaces_msgs.msg import GenericMessage
+from threading import Thread
+from multiprocessing.pool import ThreadPool
 from subprocess import Popen
 QUERY_TOPIC = '/earth/query/tour'
 SCENE_TOPIC = '/director/scene'
 LPNODE = 'testing_kmlsync_node'
+timeout_for_requests = 1
+
+EMPTY_MESSAGE = """
+    {
+            "description": "bogus",
+            "duration": 0,
+            "name": "test whatever",
+            "resource_uri": "bogus",
+            "slug": "test message",
+            "windows": []
+    }
+    """
 
 DIRECTOR_MESSAGE = """
     {
@@ -69,6 +84,7 @@ class TestKMLSync(unittest.TestCase):
         rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         self.wait_for_http()
         self.query_string = ''
+        self._send_director_message(empty=True)
 
     def tearDown(self):
         self.session.close()
@@ -82,8 +98,14 @@ class TestKMLSync(unittest.TestCase):
         msg.message = DIRECTOR_MESSAGE
         return msg
 
+    def get_empty_director_msg(self):
+        msg = GenericMessage()
+        msg.type = 'json'
+        msg.message = EMPTY_MESSAGE
+        return msg
+
     def get_request(self, url):
-        r = self.session.get(url, timeout=0.1, stream=False)
+        r = self.session.get(url, timeout=timeout_for_requests, stream=False)
         return r
 
     def wait_for_pubsub(self):
@@ -121,6 +143,9 @@ class TestKMLSync(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_4_network_link_update_cookie_string_is_initially_empty(self):
+        self._test_empty_cookie_string_when_no_state_is_set()
+
+    def _test_empty_cookie_string_when_no_state_is_set(self):
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=' + WINDOW_SLUG)
         result = get_cookie_string(r.content)
         expected = ''
@@ -149,7 +174,12 @@ class TestKMLSync(unittest.TestCase):
         """
 
         self._send_director_message()
+        self._test_director_state()
 
+    def _test_director_state(self):
+        """
+        Tests for the expected state when a director message has been sent.
+        """
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
 
         rospy.loginfo("r.content => '%s'" % escape(r.content))
@@ -167,7 +197,6 @@ class TestKMLSync(unittest.TestCase):
 
     def test_6_asset_state_in_url(self):
         self._send_director_message()
-
         assets = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
         delete_slug = 'http___foo_bar_kml'
         cookie = 'asset_slug=' + generate_cookie([assets[0], delete_slug])
@@ -210,12 +239,53 @@ class TestKMLSync(unittest.TestCase):
         self.assertEqual(good1.content, expected_string)
         self.assertEqual(good2.content, expected_string)
 
-    def _send_director_message(self):
+    def test_8_send_request_before_state_change(self):
+        """
+        This test will make sure that requests sent before a statechange will
+        get the proper return when the statechange happens before the request
+        is returned
+        """
+        if timeout_for_requests <= 1:
+            return # not tesable with small timeout for requests
+        t = Thread(target=self._sleep_and_send_director)
+        t.start()
+        self._test_director_state()
+        t.join()
+
+    def test_9_multiple_requests_before_state_change(self):
+        """
+        This tests when requests are made that require no state change
+        sit on the dict while the state changes, and return with that
+        new changed state.
+        """
+        if timeout_for_requests <= 1:
+            return # not tesable with small timeout for requests
+        async_requests = []
+        for i in range(5):
+            pool = ThreadPool(processes=2)
+            async_requests.append(pool.apply_async(self._test_director_state))
+        self._send_director_message()
+        for thread in async_requests:
+            try:
+                thread.get()
+            except Exception:
+                self.fail("Invalid director message retuned from queued request")
+
+    def _send_director_message(self, empty=False):
         director_publisher = rospy.Publisher(SCENE_TOPIC, GenericMessage)
         rospy.sleep(1)
         msg = self.get_director_msg()
+        if empty:
+            msg = self.get_empty_director_msg()
         director_publisher.publish(msg)
         rospy.sleep(1)
+
+    def _sleep_and_send_director(self):
+        """
+        Used to sleep then send a director message, helpful in our threads.
+        """
+        rospy.sleep(3)
+        self._send_director_message()
 
 
 def get_cookie_string(s):
@@ -236,6 +306,7 @@ def get_deleted_elements(x):
 
 if __name__ == '__main__':
     rospy.init_node('test_director')
+    timeout_for_requests = rospy.get_param('~timeout_requests_session', 1)
     rostest.rosrun(PKG, NAME, TestKMLSync, sys.argv)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
