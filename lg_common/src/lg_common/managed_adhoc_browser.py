@@ -22,6 +22,9 @@ class ManagedAdhocBrowser(ManagedBrowser):
                 url=url,
                 kiosk=True)
 
+    def __str__(self):
+        return "Slug: %s, URL: %s, geometry: %s" % (self.slug, self.url, self.geometry)
+
     def update_geometry(self, geometry):
         """
         Updates the geometry and converges window with new settings

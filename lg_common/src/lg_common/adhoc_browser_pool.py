@@ -8,7 +8,7 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 class AdhocBrowserPool():
     """
-    Handlers to all opened browsers
+    Handles browser pool in self.browsers
     Dict(id => ManagedAdhocBrowser)
     """
     def __init__(self):
@@ -50,17 +50,17 @@ class AdhocBrowserPool():
         Returns a list of browsers that **are** on the list of incoming message.
         This means that it returns list of browsers that possibly needs URL or geometry update.
         """
-        browser_ids_to_update = self._get_current_browsers_ids() & incoming_browsers_ids
-        return list(browser_ids_to_update)
+        browser_pool_ids_to_update = self._get_current_browsers_ids() & incoming_browsers_ids
+        return list(browser_pool_ids_to_update)
 
-    def _remove_browser(self, browser_id):
+    def _remove_browser(self, browser_pool_id):
         """
         call .close() on browser object and cleanly delete the object
         """
-        self.browsers[browser_id].close()
-        del self.browsers[browser_id]
+        self.browsers[browser_pool_id].close()
+        del self.browsers[browser_pool_id]
 
-    def _create_browser(self, new_browser_id, new_browser):
+    def _create_browser(self, new_browser_pool_id, new_browser):
         """
         Create new browser instance with desired geometry.
         """
@@ -70,36 +70,61 @@ class AdhocBrowserPool():
                                   height=new_browser.geometry.height)
 
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
-                                                slug=new_browser_id,
+                                                slug=new_browser_pool_id,
                                                 url=new_browser.url)
         browser_to_create.set_state(ApplicationState.VISIBLE)
 
-        self.browsers[new_browser_id] = browser_to_create
+        self.browsers[new_browser_pool_id] = browser_to_create
         return True
 
-    def _update_browser(self, browser_id, updated_browser):
+    def _update_browser(self, browser_pool_id, updated_browser):
         """
         Update existing browser instance
         """
-        old_browser = self.browsers[browser_id]
-
-        new_geometry = WindowGeometry(x=updated_browser.geometry.x,
+        current_browser = self.browsers[browser_pool_id]
+        rospy.loginfo("Updating browser %s to it's new state: %s" % (current_browser, updated_browser))
+        future_url = updated_browser.url
+        future_geometry = WindowGeometry(x=updated_browser.geometry.x,
                                       y=updated_browser.geometry.y,
                                       width=updated_browser.geometry.width,
                                       height=updated_browser.geometry.height)
 
-        if new_geometry != old_browser.geometry:
-            """
-            TODO(wz): make url updatable
-            """
-            rospy.logdebug("Updating geometry of browser id %s" % browser_id)
-            old_browser.update_geometry(new_geometry)
+        current_geometry = current_browser.geometry
 
-        if updated_browser.url != old_browser.url:
-            rospy.logdebug("Updating URL of browser id %s from %s to %s" % (browser_id, old_browser.url, updated_browser.url))
-            old_browser.update_url(updated_browser.url)
 
-        return True
+        if current_geometry != future_geometry:
+            geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
+            if geom_success:
+                rospy.loginfo("Successfully updated browser(%s) geometry from %s to %s" %  (browser_pool_id, current_geometry, future_geometry))
+            else:
+                rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
+
+        if current_browser.url != future_url:
+            url_success = self._update_browser_url(browser_pool_id, current_browser, future_url)
+            if url_success:
+                rospy.loginfo("Successfuly updated browser(%s) url from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+            else:
+                rospy.logerr("Could not update browser(%s) url from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+
+    def _update_browser_url(self, browser_pool_id, current_browser, future_url):
+        try:
+            current_browser.update_url(future_url)
+            rospy.logdebug("Updated URL of browser id %s from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+            return True
+        except Exception, e:
+            rospy.logerr("Could not update url of browser id %s because: %s" % (browser_pool_id, e))
+            return False
+
+
+    def _update_browser_geometry(self, browser_pool_id, current_browser, future_geometry):
+        try:
+            current_browser.update_geometry(future_geometry)
+            rospy.logdebug("Updated geometry of browser id %s" % browser_pool_id)
+            return True
+        except Exception, e:
+            rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
+            return False
+
 
     def handle_ros_message(self, data):
         """
@@ -121,16 +146,19 @@ class AdhocBrowserPool():
         incoming_browsers_ids  = set(incoming_browsers.keys())
 
         #remove
-        for browser_id in self._get_browsers_ids_to_remove(incoming_browsers_ids):
-            self._remove_browser(browser_id)
+        for browser_pool_id in self._get_browsers_ids_to_remove(incoming_browsers_ids):
+            rospy.loginfo("Removing browser id %s" % browser_pool_id)
+            self._remove_browser(browser_pool_id)
 
         #create
-        for browser_id in self._get_browsers_ids_to_create(incoming_browsers_ids):
-            self._create_browser(browser_id, incoming_browsers[browser_id])
+        for browser_pool_id in self._get_browsers_ids_to_create(incoming_browsers_ids):
+            rospy.loginfo("Creating browser with id %s" % browser_pool_id)
+            self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
         #update
-        for browser_id in self._get_browsers_ids_to_update(incoming_browsers_ids):
-            self._update_browser(browser_id, incoming_browsers[browser_id])
+        for browser_pool_id in self._get_browsers_ids_to_update(incoming_browsers_ids):
+            rospy.loginfo("Updating browser with id %s" % browser_pool_id)
+            self._update_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
         return True
 
