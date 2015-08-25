@@ -10,6 +10,7 @@ import tornado.ioloop
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import write_log_to_file
 
+
 def main():
     rospy.init_node('kmlsync_server')
     port = rospy.get_param('~port', 8765)

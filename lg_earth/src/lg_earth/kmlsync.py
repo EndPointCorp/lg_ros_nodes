@@ -57,6 +57,7 @@ from tornado import gen
 from tornado.concurrent import Future
 from tornado.ioloop import IOLoop
 
+
 def get_kml_root():
     """Get headers of KML file - shared by all kml generation methods."""
     kml_root = ET.Element('kml', attrib={})
@@ -65,6 +66,7 @@ def get_kml_root():
     kml_root.attrib['xmlns:kml'] = 'http://www.opengis.net/kml/2.2'
     kml_root.attrib['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
     return kml_root
+
 
 class KmlMasterHandler(tornado.web.RequestHandler):
 
@@ -110,7 +112,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cls.finish_all_requests()
         except Exception as e:
-            rospy.loginfo("Exception getting scene changes"+str(e))
+            rospy.loginfo("Exception getting scene changes" + str(e))
             pass
 
     def non_blocking_sleep(self, duration):
@@ -120,7 +122,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
     def initialize(self):
         self.asset_service = self.application.asset_service
-    
+
     @gen.coroutine
     def get(self, second_time=False):
         """
@@ -166,7 +168,6 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         else:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
-
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
@@ -275,7 +276,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
                 link = ET.SubElement(new_asset, 'Link')
                 ET.SubElement(link, 'href').text = asset
-            return kml_create #not sure if this is needed since we're already building on the xml tree...
+            return kml_create
         return parent
 
     def _get_kml_for_delete_assets(self, assets_to_delete, parent):

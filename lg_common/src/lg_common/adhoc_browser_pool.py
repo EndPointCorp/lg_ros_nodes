@@ -91,16 +91,16 @@ class AdhocBrowserPool():
         rospy.loginfo("Updating browser %s to it's new state: %s" % (current_browser, updated_browser))
         future_url = updated_browser.url
         future_geometry = WindowGeometry(x=updated_browser.geometry.x,
-                                      y=updated_browser.geometry.y,
-                                      width=updated_browser.geometry.width,
-                                      height=updated_browser.geometry.height)
+                                         y=updated_browser.geometry.y,
+                                         width=updated_browser.geometry.width,
+                                         height=updated_browser.geometry.height)
 
         current_geometry = current_browser.geometry
 
         if current_geometry != future_geometry:
             geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
             if geom_success:
-                rospy.loginfo("Successfully updated browser(%s) geometry from %s to %s" %  (browser_pool_id, current_geometry, future_geometry))
+                rospy.loginfo("Successfully updated browser(%s) geometry from %s to %s" % (browser_pool_id, current_geometry, future_geometry))
             else:
                 rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
 
@@ -120,7 +120,6 @@ class AdhocBrowserPool():
             rospy.logerr("Could not update url of browser id %s because: %s" % (browser_pool_id, e))
             return False
 
-
     def _update_browser_geometry(self, browser_pool_id, current_browser, future_geometry):
         try:
             current_browser.update_geometry(future_geometry)
@@ -129,7 +128,6 @@ class AdhocBrowserPool():
         except Exception, e:
             rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
             return False
-
 
     def handle_ros_message(self, data):
         """
@@ -147,8 +145,8 @@ class AdhocBrowserPool():
 
         """
 
-        incoming_browsers      = self._unpack_incoming_browsers(data.browsers)
-        incoming_browsers_ids  = set(incoming_browsers.keys())
+        incoming_browsers = self._unpack_incoming_browsers(data.browsers)
+        incoming_browsers_ids = set(incoming_browsers.keys())
 
         #remove
         for browser_pool_id in self._get_browsers_ids_to_remove(incoming_browsers_ids):
