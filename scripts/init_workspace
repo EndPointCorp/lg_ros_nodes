@@ -127,9 +127,13 @@ def create_link(node):
     """
     Creates a link to node named os.path.basename(node) if nothing exists there
     """
-    if os.path.exists(os.path.basename(node)):
+    path = os.path.basename(node)
+    if os.path.exists(path):
         return
-    os.symlink(node, os.path.basename(node))
+    # a dead link doesn't "exist," but it is still a link, remove it
+    if os.path.islink(path):
+        os.unlink(path)
+    os.symlink(node, path)
 
 def catkin_init():
     """
