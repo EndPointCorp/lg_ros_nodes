@@ -4,6 +4,8 @@ from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
+from lg_common.helpers import get_app_instances_to_manage
+from lg_common.helpers import get_app_instances_ids
 
 
 class AdhocBrowserPool():
@@ -23,36 +25,6 @@ class AdhocBrowserPool():
         Return dict(id: AdhocBrowser) with all AdhocBrowsers with ids as keys
         """
         return {b.id: b for b in browsers}
-
-    def _get_current_browsers_ids(self):
-        """
-        Returns a mathematical set of ids of currently running browsers
-        """
-        return set(self.browsers.keys())
-
-    def _get_browsers_ids_to_remove(self, incoming_browsers_ids):
-        """
-        Returns a list of browsers that are not on the list of incoming message.
-        Effectively it's a list of ids of browsers that should be killed.
-        """
-        browsers_ids_to_remove = self._get_current_browsers_ids() - incoming_browsers_ids
-        return list(browsers_ids_to_remove)
-
-    def _get_browsers_ids_to_create(self, incoming_browsers_ids):
-        """
-        Returns a list of browsers that are not on the list of current browsers.
-        This means that it returns list of browsers to create.
-        """
-        browsers_ids_to_create = incoming_browsers_ids - self._get_current_browsers_ids()
-        return list(browsers_ids_to_create)
-
-    def _get_browsers_ids_to_update(self, incoming_browsers_ids):
-        """
-        Returns a list of browsers that **are** on the list of incoming message.
-        This means that it returns list of browsers that possibly needs URL or geometry update.
-        """
-        browser_pool_ids_to_update = self._get_current_browsers_ids() & incoming_browsers_ids
-        return list(browser_pool_ids_to_update)
 
     def _remove_browser(self, browser_pool_id):
         """
@@ -148,20 +120,27 @@ class AdhocBrowserPool():
         """
 
         incoming_browsers      = self._unpack_incoming_browsers(data.browsers)
-        incoming_browsers_ids  = set(incoming_browsers.keys())
+        incoming_browsers_ids  = set(incoming_browsers.keys()) #set
+        current_browsers_ids   = get_app_instances_ids(self.browsers) #set
 
         #remove
-        for browser_pool_id in self._get_browsers_ids_to_remove(incoming_browsers_ids):
+        for browser_pool_id in get_app_instances_to_manage(current_browsers_ids,
+                                                           incoming_browsers_ids,
+                                                           manage_action='remove'):
             rospy.loginfo("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
 
         #create
-        for browser_pool_id in self._get_browsers_ids_to_create(incoming_browsers_ids):
+        for browser_pool_id in get_app_instances_to_manage(current_browsers_ids,
+                                                           incoming_browsers_ids,
+                                                           manage_action='create'):
             rospy.loginfo("Creating browser with id %s" % browser_pool_id)
             self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
         #update
-        for browser_pool_id in self._get_browsers_ids_to_update(incoming_browsers_ids):
+        for browser_pool_id in get_app_instances_to_manage(current_browsers_ids,
+                                                           incoming_browsers_ids,
+                                                           manage_action='update'):
             rospy.loginfo("Updating browser with id %s" % browser_pool_id)
             self._update_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 

@@ -34,8 +34,8 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
-  scripts/client
-  scripts/client.py
+  scripts/mplayer
+  scripts/mplayer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
