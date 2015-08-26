@@ -1,4 +1,4 @@
 from mplayer_pool import MplayerPool
-from mplayer_pool import MplayerInstance
+from mplayer_pool import ManagedMplayer
 
 from director_media_bridge import DirectorMediaBridge

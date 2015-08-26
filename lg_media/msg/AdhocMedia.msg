@@ -1,4 +1,4 @@
 string id
 string url
-media_type string
+string media_type
 lg_common/WindowGeometry geometry

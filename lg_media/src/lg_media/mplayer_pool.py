@@ -24,12 +24,11 @@ class ManagedMplayer(ManagedApplication):
         self.window = window
         self.fifo_path = fifo_path
         self.url = url
-        self.cmd = self._build_cmd().append(url)
         self.slug = slug
 
         super(ManagedMplayer, self).__init__(
                 window=window,
-                cmd=cmd
+                cmd=self._build_cmd()
         )
 
     def __str__(self):
@@ -43,7 +42,15 @@ class ManagedMplayer(ManagedApplication):
     def _build_cmd(self):
         cmd = []
         cmd.extend([rospy.get_param("~application_path", DEFAULT_APP)])
-        cmd.extend([rospy.get_param("~application_flags").split()])
+        cmd.extend(rospy.get_param("~application_flags").split())
+
+        cmd.extend(['-geometry', '{0}x{1}+{2}+{3}'.format(self.window.geometry.width,
+                                                           self.window.geometry.height,
+                                                           self.window.geometry.x,
+                                                           self.window.geometry.y)])
+        cmd.extend(["-input", "file=%s" % self.fifo_path])
+        cmd.extend([self.url])
+        rospy.loginfo("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
     def close(self):
@@ -148,21 +155,13 @@ class MplayerPool(object):
 
         fifo_path = self._create_fifo(mplayer_id)
 
-        cmd = self._build_cmd()
-        cmd.extend(['-geometry', '{0}x{1}+{2}+{3}]'.format(incoming_mplayer.geometry.width,
-                                                           incoming_mplayer.geometry.height,
-                                                           incoming_mplayer.geometry.x,
-                                                           incoming_mplayer.geometry.y)])
-        cmd.extend(["-input", "file=%s" % fifo_path])
-        cmd.extend([incoming_mplayer.url])
-
-        mplayer = ManagedMplayer(fifo=fifo_path,
+        mplayer = ManagedMplayer(fifo_path=fifo_path,
                                  url=incoming_mplayer.url,
                                  slug=mplayer_id,
                                  window=mplayer_window)
 
         mplayer.set_state(ApplicationState.VISIBLE)
-        rospy.loginfo("Mplayer POOL: started new mplayer %s wih id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
+        rospy.loginfo("Mplayer POOL: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
         self.mplayers[mplayer_id] = incoming_mplayer
 
         return True

@@ -1,3 +1,5 @@
+import rospy
+
 from lg_common import ManagedWindow
 from lg_media.msg import AdhocMedia
 from lg_media.msg import AdhocMedias
@@ -19,17 +21,16 @@ class DirectorMediaBridge():
         provide separation and service granularity
         """
         self.viewport_name = viewport_name
-        self.adhoc_media_pool_publisher
+        self.adhoc_media_pool_publisher = adhoc_media_pool_publisher
 
     def translate_director(self, data):
         """
         Translates director messages to AdhocMedias message
         """
-        adhoc_media_list = self._extract_adhoc_media(data)
-
-        adhoc_media_instances = AdhocMedias()
-        adhoc_medias.medias = adhoc_media_list
+        adhoc_medias = self._extract_adhoc_media(data)
         rospy.logdebug("Publishing AdhocMedias: %s" % adhoc_medias)
+
+        self.adhoc_media_pool_publisher.publish(adhoc_medias)
 
     def _extract_adhoc_media(self, data):
         """
@@ -44,10 +45,10 @@ class DirectorMediaBridge():
         mplayer_adhoc_medias = self._build_adhoc_medias(mplayer_medias, 'video')
         browser_adhoc_medias = self._build_adhoc_medias(mplayer_medias, 'browser_video')
 
-        adhoc_medias.append(mplayer_adhoc_medias)
-        adhoc_medias.append(browser_adhoc_medias)
+        adhoc_medias.extend(mplayer_adhoc_medias)
+        adhoc_medias.extend(browser_adhoc_medias)
 
-        self.adhoc_media_pool_publisher.publish(adhoc_medias)
+        return AdhocMedias(medias=adhoc_medias)
 
     def _build_adhoc_medias(self, media_list, media_type):
         """
@@ -55,15 +56,15 @@ class DirectorMediaBridge():
         """
         adhoc_medias = []
         media_id = 0
-        for adhoc_media in media_list:
-            adhoc_media_name = 'adhoc_media_' + media_type + '_' + self.viewport_name + '_' + str(media_id)
+        for media in media_list:
+            media_name = 'adhoc_media_' + media_type + '_' + self.viewport_name + '_' + str(media_id)
             adhoc_media = AdhocMedia()
-            adhoc_media.id = adhoc_media_name
-            adhoc_media.url = adhoc_media['path']
-            adhoc_media.geometry.x = adhoc_media['x_coord'] + self._get_viewport_offset()['x']
-            adhoc_media.geometry.y = adhoc_media['y_coord'] + self._get_viewport_offset()['x']
-            adhoc_media.width = adhoc_media['width']
-            adhoc_media.height = adhoc_media['height']
+            adhoc_media.id = media_name
+            adhoc_media.url = media['path']
+            adhoc_media.geometry.x = media['x_coord'] + self._get_viewport_offset()['x']
+            adhoc_media.geometry.y = media['y_coord'] + self._get_viewport_offset()['y']
+            adhoc_media.geometry.width = media['width']
+            adhoc_media.geometry.height = media['height']
             adhoc_media.media_type = media_type
 
             adhoc_medias.append(adhoc_media)

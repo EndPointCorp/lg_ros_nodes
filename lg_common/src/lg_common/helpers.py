@@ -68,10 +68,10 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
         instances_ids_to_remove = current_instances - incoming_instances
         return list(instances_ids_to_remove)
     elif manage_action == 'update':
-        instances_ids_to_update = current_instances & incoming_instances_ids
+        instances_ids_to_update = current_instances & incoming_instances
         return list(instances_ids_to_update)
     elif manage_action == 'create':
-        instances_ids_to_create = incoming_browsers_ids - self._get_current_browsers_ids()
+        instances_ids_to_create = incoming_instances - current_instances
         return list(instances_ids_to_create)
     else:
         rospy.logerr("No action provided for get_app_instances_to_manage")
