@@ -39,8 +39,11 @@ class DirectorMediaBridge():
         """
         adhoc_medias = []
 
+        # first get assets
         mplayer_medias = extract_first_asset_from_director_message(data, 'video', self.viewport_name)
         browser_medias = extract_first_asset_from_director_message(data, 'browser_video', self.viewport_name)
+
+        # and wrap them inside AdhocMedia
 
         mplayer_adhoc_medias = self._build_adhoc_medias(mplayer_medias, 'video')
         browser_adhoc_medias = self._build_adhoc_medias(mplayer_medias, 'browser_video')
@@ -48,6 +51,7 @@ class DirectorMediaBridge():
         adhoc_medias.extend(mplayer_adhoc_medias)
         adhoc_medias.extend(browser_adhoc_medias)
 
+        # finally return list of AdhocMedia in AdhocMedias message
         return AdhocMedias(medias=adhoc_medias)
 
     def _build_adhoc_medias(self, media_list, media_type):

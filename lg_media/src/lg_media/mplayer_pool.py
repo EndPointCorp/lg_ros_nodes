@@ -32,11 +32,11 @@ class ManagedMplayer(ManagedApplication):
         )
 
     def __str__(self):
-        r = "state='%s' FIFO='%s' URL='%s'" % (self.app.state, self.fifo_path, self.url)
+        r = "state='%s' FIFO='%s' URL='%s'" % (self.state, self.fifo_path, self.url)
         return r
 
     def __str__(self):
-        r = "state='%s' FIFO='%s' URL='%s'" % (self.app.state, self.fifo_path, self.url)
+        r = "state='%s' FIFO='%s' URL='%s'" % (self.state, self.fifo_path, self.url)
         return r
 
     def _build_cmd(self):
@@ -49,7 +49,9 @@ class ManagedMplayer(ManagedApplication):
                                                            self.window.geometry.x,
                                                            self.window.geometry.y)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
+        cmd.extend(["-idle"])
         cmd.extend([self.url])
+        cmd.extend(["&"])
         rospy.loginfo("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
@@ -110,7 +112,7 @@ class MplayerPool(object):
                                                            incoming_mplayers_ids,
                                                            manage_action='remove'):
             rospy.loginfo("Removing mplayer id %s" % mplayer_pool_id)
-            self._remove_mplayer_instance(mplayer_pool_id)
+            self._remove_mplayer(mplayer_pool_id)
 
         # mplayers to create
         for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
@@ -162,7 +164,7 @@ class MplayerPool(object):
 
         mplayer.set_state(ApplicationState.VISIBLE)
         rospy.loginfo("Mplayer POOL: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
-        self.mplayers[mplayer_id] = incoming_mplayer
+        self.mplayers[mplayer_id] = mplayer
 
         return True
 
@@ -178,15 +180,15 @@ class MplayerPool(object):
         Well well well :)
         TODO (wzin): make the real update happen rather then destroy + create
         """
-        self._remove_mplayer_instance(self, mplayer_pool_id)
-        self._create_mplayer_instance(self, mplayer_pool_id)
+        self._remove_mplayer(self, mplayer_pool_id)
+        self._create_mplayer(self, mplayer_pool_id)
         return True
 
     def _remove_mplayer(self, mplayer_pool_id):
         mplayer_instance = self.mplayers[mplayer_pool_id]
         rospy.loginfo("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
         mplayer_instance.close()
-        del self.mplayers[app_id]
+        del self.mplayers[mplayer_pool_id]
 
     #####################
 
