@@ -27,9 +27,6 @@ import rosgraph.masterapi
 
 from lg_media.msg import AdhocMedia
 from lg_media.msg import AdhocMedias
-from lg_media.srv import MediaAppsInfo
-from lg_media.srv import MediaAppsInfoResponse
-from lg_media import SRV_QUERY
 from lg_media import AppInstance
 
 

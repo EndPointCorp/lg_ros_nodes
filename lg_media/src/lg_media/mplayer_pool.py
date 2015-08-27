@@ -18,6 +18,7 @@ from lg_common.helpers import get_app_instances_to_manage
 
 
 DEFAULT_APP = "mplayer"
+DEFAULT_ARGS = "-idle -slave -cache 256 -quiet -osdlevel 0 -nomouseinput -nograbpointer"
 
 class ManagedMplayer(ManagedApplication):
     def __init__(self, fifo_path, url, slug, window):
@@ -32,52 +33,68 @@ class ManagedMplayer(ManagedApplication):
         )
 
     def __str__(self):
+        """
+        String representation
+        """
         r = "state='%s' FIFO='%s' URL='%s'" % (self.state, self.fifo_path, self.url)
         return r
 
-    def __str__(self):
+    def __repr__(self):
+        """
+        Direct call representation
+        """
         r = "state='%s' FIFO='%s' URL='%s'" % (self.state, self.fifo_path, self.url)
         return r
 
     def _build_cmd(self):
+        """
+        Mplayer needs to have geometry supplied thru command arguments - window manager rules won't affect it
+        It also needs manual fifo specification.
+        """
         cmd = []
         cmd.extend([rospy.get_param("~application_path", DEFAULT_APP)])
-        cmd.extend(rospy.get_param("~application_flags").split())
+        cmd.extend(rospy.get_param("~application_flags", DEFAULT_ARGS).split())
 
         cmd.extend(['-geometry', '{0}x{1}+{2}+{3}'.format(self.window.geometry.width,
                                                            self.window.geometry.height,
                                                            self.window.geometry.x,
                                                            self.window.geometry.y)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
-        cmd.extend(["-idle"])
         cmd.extend([self.url])
         cmd.extend(["&"])
         rospy.loginfo("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
     def close(self):
+        """
+        Shut down mplayer and make sure it didnt lave anything behind
+        """
         self.set_state(ApplicationState.STOPPED)
         os.unlink(self.fifo_path)
         return True
 
     def execute_command(self, command):
         """
-        http://www.mplayerhq.hu/DOCS/tech/slave.txt and `mplayer -input cmdlist`
+        Execute any command that can set mplayer's internal variable on the fly:
+            http://www.mplayerhq.hu/DOCS/tech/slave.txt and `mplayer -input cmdlist`
+        Remember that not all parameters are settable
         """
         with open(self.fifo_path, 'w') as fifo:
-            fifo.write(command)
+            fifo.write(command + "\n")
             return True
 
-    def change_media(self, url):
-        #write to fifo
-        # loadfile <url>
-        pass
+    def change_url(self, url):
+        """
+        Load another movie using the same instance of mplayer
+        """
+        with open(self.fifo_path, 'w') as fifo:
+            rospy.loginfo("Changing Mplayer %s url to %s" % (self.slug, url))
+            fifo.write('loadfile %s\n' % url)
 
-    def update_width_height(self, width, height):
-        #write to fifo:
-        # width <width>
-        # height <height>
-        #
+    def update_geometry(self, geometry):
+        """
+        Unfortunately updating geometry cannot be done from mplayer's instance
+        """
         pass
 
 class MplayerPool(object):
@@ -146,16 +163,17 @@ class MplayerPool(object):
         drive the mplayer application and resource URL.
 
         """
+        fifo_path = self._create_fifo(mplayer_id)
         geometry = WindowGeometry(x=incoming_mplayer.geometry.x,
                                   y=incoming_mplayer.geometry.y,
                                   width=incoming_mplayer.geometry.width,
                                   height=incoming_mplayer.geometry.height)
 
         mplayer_window = ManagedWindow(geometry=geometry,
-                                       w_instance="mplayer {}".format(mplayer_id))
+                                       w_instance="Mplayer \\({}\\)".format(mplayer_id),
+                                       w_class="Mplayer \\({}\\)".format(mplayer_id)
+                                       )
 
-
-        fifo_path = self._create_fifo(mplayer_id)
 
         mplayer = ManagedMplayer(fifo_path=fifo_path,
                                  url=incoming_mplayer.url,
@@ -163,6 +181,7 @@ class MplayerPool(object):
                                  window=mplayer_window)
 
         mplayer.set_state(ApplicationState.VISIBLE)
+
         rospy.loginfo("Mplayer POOL: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
         self.mplayers[mplayer_id] = mplayer
 
@@ -172,21 +191,44 @@ class MplayerPool(object):
         name = "lg_%s_%s.fifo" % (mplayer_id, time.time())
         path = os.path.join("/tmp", name)
         os.mkfifo(path)
-        rospy.loginfo("Created FIFO file '%s'" % path)
+        rospy.logdebug("Created FIFO file '%s'" % path)
         return path
 
-    def _update_mplayer(self, mplayer_pool_id):
+    def _update_mplayer(self, mplayer_pool_id, updated_mplayer):
         """
-        Well well well :)
-        TODO (wzin): make the real update happen rather then destroy + create
+        Mplayer will re-use the existing instance if geometry of new mplayer is identical but only the url is different.
+        In this case it will just load the url via fifo.
+
+        If geometry is different then new mplayer will be started and the old one will get killed.
         """
-        self._remove_mplayer(self, mplayer_pool_id)
-        self._create_mplayer(self, mplayer_pool_id)
-        return True
+
+        current_mplayer = self.mplayers[mplayer_pool_id]
+        rospy.logdebug("POOL %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
+        future_url = updated_mplayer.url
+        current_mplayer.change_url(future_url)
+
+        future_geometry = WindowGeometry(x=updated_mplayer.geometry.x,
+                                         y=updated_mplayer.geometry.y,
+                                         width=updated_mplayer.geometry.width,
+                                         height=updated_mplayer.geometry.height)
+
+        current_geometry = current_mplayer.window.geometry
+
+        if (current_geometry.x != future_geometry.x) or \
+            (current_geometry.y != future_geometry.y) or \
+            (current_geometry.width != future_geometry.width) or\
+            (current_geometry.height != future_geometry.height):
+
+            rospy.logdebug("Mplayer POOLD: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
+            self._remove_mplayer(mplayer_pool_id)
+            self._create_mplayer(mplayer_pool_id, updated_mplayer)
 
     def _remove_mplayer(self, mplayer_pool_id):
+        """
+        Wipe out mplayer instance - both from the screen and memory
+        """
         mplayer_instance = self.mplayers[mplayer_pool_id]
-        rospy.loginfo("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
+        rospy.logdebug("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
         mplayer_instance.close()
         del self.mplayers[mplayer_pool_id]
 

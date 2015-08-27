@@ -28,6 +28,7 @@ class DirectorMediaBridge():
         Translates director messages to AdhocMedias message
         """
         adhoc_medias = self._extract_adhoc_media(data)
+
         rospy.logdebug("Publishing AdhocMedias: %s" % adhoc_medias)
 
         self.adhoc_media_pool_publisher.publish(adhoc_medias)
@@ -43,13 +44,21 @@ class DirectorMediaBridge():
         mplayer_medias = extract_first_asset_from_director_message(data, 'video', self.viewport_name)
         browser_medias = extract_first_asset_from_director_message(data, 'browser_video', self.viewport_name)
 
+        rospy.logdebug("Got assets for mplayer based media player %s" % mplayer_medias)
+        rospy.logdebug("Got assets for browsers based media player %s" % browser_medias)
+
         # and wrap them inside AdhocMedia
 
         mplayer_adhoc_medias = self._build_adhoc_medias(mplayer_medias, 'video')
-        browser_adhoc_medias = self._build_adhoc_medias(mplayer_medias, 'browser_video')
+        browser_adhoc_medias = self._build_adhoc_medias(browser_medias, 'browser_video')
+
+        rospy.logdebug("Built assets for mplayer based media player %s" % mplayer_adhoc_medias)
+        rospy.logdebug("Built assets for browsers based media player %s" % browser_adhoc_medias)
 
         adhoc_medias.extend(mplayer_adhoc_medias)
         adhoc_medias.extend(browser_adhoc_medias)
+
+        rospy.logdebug("I'm going to publish following adhoc_medias: %s" % adhoc_medias)
 
         # finally return list of AdhocMedia in AdhocMedias message
         return AdhocMedias(medias=adhoc_medias)

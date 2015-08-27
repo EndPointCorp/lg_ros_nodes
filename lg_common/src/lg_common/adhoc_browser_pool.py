@@ -47,6 +47,7 @@ class AdhocBrowserPool():
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
                                                 slug=new_browser_pool_id,
                                                 url=new_browser.url)
+
         browser_to_create.set_state(ApplicationState.VISIBLE)
 
         rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))

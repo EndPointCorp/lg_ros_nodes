@@ -10,7 +10,7 @@ from interactivespaces_msgs.msg import GenericMessage
 DEFAULT_VIEWPORT='center'
 
 def main():
-    rospy.init_node('lg_media_service_mplayer', anonymous=True, log_level=rospy.DEBUG)
+    rospy.init_node('lg_media_service_mplayer', anonymous=True)
     viewport_name = rospy.get_param("~viewport", DEFAULT_VIEWPORT)
 
     if not viewport_name:
