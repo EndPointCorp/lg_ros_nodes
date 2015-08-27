@@ -6,8 +6,7 @@
     <node name="lg_media" pkg="lg_media" type="mplayer">
         <param name="application" value="mplayer"/>
         <param name="application_path" value="/usr/bin/mplayer"/>
-        <!-- <param name="application_flags" value="-cache 8192 -quiet -osdlevel 0 -nomouseinput -nograbpointer -slave"/> -->
-        <param name="application_flags" value="-slave -cache 256 -idle"/>
+        <param name="application_flags" value="-cache 256 -quiet -osdlevel 0 -nomouseinput -nograbpointer -slave"/>
         <param name="viewport" value="left_one" />
     </node>
 
@@ -19,5 +18,5 @@
         <arg name="port" value="9875" />
     </include>
 
-    <test test-name="test_lg_media_basic" pkg="lg_media" type="test_lg_media_basic.py"/>
+    <test test-name="test_mplayer_director_bridge" pkg="lg_media" type="test_mplayer_director_bridge.py"/>
 </launch>
