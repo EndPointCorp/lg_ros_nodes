@@ -78,11 +78,8 @@ class AdhocBrowserPool():
                 rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
 
         if current_browser.url != future_url:
-            url_success = self._update_browser_url(browser_pool_id, current_browser, future_url)
-            if url_success:
-                rospy.loginfo("Successfuly updated browser(%s) url from %s to %s" % (browser_pool_id, current_browser.url, future_url))
-            else:
-                rospy.logerr("Could not update browser(%s) url from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+            self._remove_browser(browser_pool_id)
+            self._create_browser(browser_pool_id, updated_browser)
 
     def _update_browser_url(self, browser_pool_id, current_browser, future_url):
         try:
