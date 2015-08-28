@@ -3,6 +3,9 @@ import rospy
 import urllib
 import urlparse
 
+class WrongActivityDefinition(Exception):
+    pass
+
 def escape_asset_url(asset_url):
     """
     Replace all non-alnum characters with underscore
@@ -140,3 +143,15 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     rospy.logdebug("Returning assets: %s" % assets)
     return assets
 
+def unpack_activity_sources(sources):
+    """
+    unpacks ActivityTracker 'sources' param from '/spacenav/twist:geometry_msgs/Twist:delta' to:
+    {/spacenav/twist': {'msg_type': 'geometry_msgs/Twist',
+                        'strategy': 'delta'}}
+    """
+    try:
+        {source.split(':')[0] : { 'msg_type': source.split(':')[1], 'strategy': source.split(':')[2]} for source in sources.split(',')}
+    except Exception, e:
+        exception_msg = "Could not unpack activity sources string because: %s" % e
+        rospy.logerr(exception_msg)
+        raise WrongActivityDefinition(exception_msg)
