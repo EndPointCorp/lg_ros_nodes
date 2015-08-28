@@ -70,19 +70,23 @@ class AdhocBrowserPool():
 
         current_geometry = current_browser.geometry
 
-        if current_geometry != future_geometry:
-            geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
-            if geom_success:
-                rospy.loginfo("Successfully updated browser(%s) geometry from %s to %s" %  (browser_pool_id, current_geometry, future_geometry))
-            else:
-                rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
-
         if current_browser.url != future_url:
             url_success = self._update_browser_url(browser_pool_id, current_browser, future_url)
             if url_success:
                 rospy.loginfo("Successfuly updated browser(%s) url from %s to %s" % (browser_pool_id, current_browser.url, future_url))
             else:
                 rospy.logerr("Could not update browser(%s) url from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+
+        if (current_geometry.x != future_geometry.x) or \
+            (current_geometry.y != future_geometry.y) or\
+            (current_geometry.width != future_geometry.width) or\
+            (current_geometry.height != current_geometry.height):
+
+            geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
+            if geom_success:
+                rospy.loginfo("Successfully updated browser(%s) geometry from %s to %s" %  (browser_pool_id, current_geometry, future_geometry))
+            else:
+                rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
 
     def _update_browser_url(self, browser_pool_id, current_browser, future_url):
         try:
