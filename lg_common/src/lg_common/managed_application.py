@@ -75,8 +75,8 @@ class ManagedApplication(object):
                 state_changed = True
             self.state = state
 
-            if not state_changed:
-                return
+            #if not state_changed:
+            #    return
 
             if state == ApplicationState.STOPPED:
                 rospy.loginfo("STOPPED")
@@ -121,10 +121,10 @@ class ManagedApplication(object):
 
     # TODO(mv): hook this up to ProcController
     def _handle_respawn(self):
-        if self.window is not None and self.state != ApplicationState.STOPPED:
+        if (self.window is not None) and (self.state != ApplicationState.STOPPED):
             rospy.loginfo("Handling unwanted respawn of %s by converging the window" % self)
             self.window.converge()
-        if (self.window is None) and (ApplicationState.STOPPED):
+        if (self.window is None) and (self.state == ApplicationState.STOPPED):
             rospy.loginfo("Handling unwanted respawn of %s by killing the process" % self)
             self.proc.stop()
 
