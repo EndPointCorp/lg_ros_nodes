@@ -57,6 +57,29 @@ def generate_cookie(assets):
     rospy.logdebug("Generated cookie = %s after new state was set" % cookie)
     return cookie
 
+def get_app_instances_ids(instances):
+    """
+    Accepts a dictionary of id: AppInstance and returns a set of keys
+    """
+    return set(instances.keys())
+
+def get_app_instances_to_manage(current_instances, incoming_instances, manage_action=None):
+    """
+    Accepts two sets of app ids (current and new) and returns a list of instances
+    that should be created, removed or updated on the basis of `manage_action` parameter
+    """
+    if manage_action == 'remove':
+        instances_ids_to_remove = current_instances - incoming_instances
+        return list(instances_ids_to_remove)
+    elif manage_action == 'update':
+        instances_ids_to_update = current_instances & incoming_instances
+        return list(instances_ids_to_update)
+    elif manage_action == 'create':
+        instances_ids_to_create = incoming_instances - current_instances
+        return list(instances_ids_to_create)
+    else:
+        rospy.logerr("No action provided for get_app_instances_to_manage")
+        return False
 
 def extract_first_asset_from_director_message(message, activity_type, viewport):
     """

@@ -85,6 +85,7 @@ class ManagedBrowser(ManagedApplication):
             if url is not None:
                 cmd.append(url)
 
+        cmd.append('&')
         w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 

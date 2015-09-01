@@ -5,7 +5,6 @@ import commands
 
 from lg_common import ManagedBrowser
 from lg_common.msg import WindowGeometry
-from lg_common import ManagedWindow
 from lg_common.msg import ApplicationState
 from lg_common.msg import ApplicationState
 from lg_common.msg import AdhocBrowser, AdhocBrowsers

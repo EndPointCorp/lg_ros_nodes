@@ -34,13 +34,13 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
-  scripts/client
-  scripts/client.py
+  scripts/mplayer
+  scripts/mplayer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  #add_rostest(test/test_lg_media_basic.test), the same defined directly by the dev launch file:
-  add_rostest(launch/dev.launch)
+  catkin_add_nosetests(test/offline/test_mplayer_adhoc_media.py)
+  add_rostest(test/online/test_mplayer_director_bridge.test)
 endif()
