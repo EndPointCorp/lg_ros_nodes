@@ -7,7 +7,8 @@ from lg_media.srv import MediaAppsInfo
 from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 
-DEFAULT_VIEWPORT='center'
+DEFAULT_VIEWPORT = 'center'
+
 
 def main():
     rospy.init_node('lg_media_service_mplayer', anonymous=True)
@@ -30,8 +31,8 @@ def main():
     """
 
     adhoc_media_mplayer_pool_publisher = rospy.Publisher(
-            topic_name, AdhocMedias, queue_size=3
-        )
+        topic_name, AdhocMedias, queue_size=3
+    )
 
     adhoc_media_mplayer_director_bridge = DirectorMediaBridge(adhoc_media_mplayer_pool_publisher, viewport_name)
 
