@@ -29,7 +29,6 @@ class ManagedApplication(object):
         representation = "<ManagedApplication: state: %s, window: %s, cmd: %s, proc: %s" % (self.state, self.window, self.cmd, self.proc)
         return representation
 
-
     def _cleanup(self):
         # explicit SIGCONT needed to prevent undeath
         self._signal_proc(signal.SIGCONT, retry=False)

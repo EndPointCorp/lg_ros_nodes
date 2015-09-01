@@ -183,6 +183,7 @@ DIRECTOR_MESSAGE_CENTER_3 = """
     }
     """
 
+
 class MockMplayerPoolPublisher:
     def __init__(self):
         self.published_messages = []
@@ -191,6 +192,7 @@ class MockMplayerPoolPublisher:
         rospy.logdebug("Publishing adhoc mplayers: %s" % adhoc_mplayers)
         self.published_messages.append(adhoc_mplayers)
         rospy.logdebug("After publishing, self.published_messages = %s" % self.published_messages)
+
 
 class TestAdhocMediaDirectorBridge(unittest.TestCase):
     def setUp(self):
@@ -245,12 +247,12 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
         self.assertEqual(1, len(self.mock_publisher_right.published_messages))
 
         center_mplayer = AdhocMedia(id='adhoc_media_video_center_0',
-                                      geometry=WindowGeometry(x=10,
-                                                              y=10,
-                                                              width=600,
-                                                              height=800),
-                                      url='http://lg-head/lg/assets/videos/bunny.mp4',
-                                      media_type='video')
+                                    geometry=WindowGeometry(x=10,
+                                                            y=10,
+                                                            width=600,
+                                                            height=800),
+                                    url='http://lg-head/lg/assets/videos/bunny.mp4',
+                                    media_type='video')
 
         rospy.loginfo("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer]))
@@ -296,12 +298,12 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                       url='http://lg-head/lg/assets/videos/bunny.mp4')
 
         right_mplayer_4 = AdhocMedia(id='adhoc_media_video_right_0',
-                                      geometry=WindowGeometry(x=100,
-                                                              y=100,
-                                                              width=100,
-                                                              height=100),
-                                      media_type='video',
-                                      url='http://lg-head/lg/assets/videos/bunny.mp4')
+                                     geometry=WindowGeometry(x=100,
+                                                             y=100,
+                                                             width=100,
+                                                             height=100),
+                                     media_type='video',
+                                     url='http://lg-head/lg/assets/videos/bunny.mp4')
 
         rospy.loginfo("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer_1, center_mplayer_2, center_mplayer_3]))

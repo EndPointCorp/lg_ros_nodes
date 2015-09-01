@@ -18,10 +18,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
         self.geometry = geometry
 
         super(ManagedAdhocBrowser, self).__init__(
-                geometry=geometry,
-                slug=slug,
-                url=url,
-                kiosk=True)
+            geometry=geometry, slug=slug, url=url, kiosk=True)
 
     def __str__(self):
         return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,

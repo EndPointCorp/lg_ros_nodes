@@ -2,12 +2,13 @@ from geometry_msgs.msg import Twist
 from evdev import AbsInfo, UInput, InputEvent, ecodes as e
 import time
 
+
 class DeviceWriter:
     def __init__(self, scale):
         self.scale = scale
         # most values were taken from running
         # InputDevice('/dev/input/event$N').capabilities()
-        vendor=1133
+        vendor = 1133
         product = 0
         version = 273
         bustype = 3
@@ -27,8 +28,7 @@ class DeviceWriter:
                  (e.ABS_MT_POSITION_X, common_abs),
                  (e.ABS_MT_POSITION_Y, common_abs),
                  (e.ABS_MT_TRACKING_ID, tracking_abs),
-                 (e.ABS_MT_SLOT, slot_abs)
-                ],
+                 (e.ABS_MT_SLOT, slot_abs)],
             4L: [4L],
             17L: [8L]
         }
@@ -59,4 +59,4 @@ class DeviceWriter:
         self.ui.syn()
 
     def translate(self, n):
-        return int(n * self.scale) # TODO find the translation...
+        return int(n * self.scale)  # TODO find the translation...

@@ -32,8 +32,7 @@ def main():
     """
 
     adhocbrowser_director_bridge_publisher = rospy.Publisher(
-                topic_name, AdhocBrowsers, queue_size=3
-            )
+        topic_name, AdhocBrowsers, queue_size=3)
 
     adhocbrowser_director_bridge = AdhocBrowserDirectorBridge(adhocbrowser_director_bridge_publisher, viewport_name)
 

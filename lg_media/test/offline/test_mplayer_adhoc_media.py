@@ -10,6 +10,7 @@ from lg_media import ManagedMplayer
 from lg_common.msg import WindowGeometry, ApplicationState
 from lg_common import ManagedWindow
 
+
 class TestManagedAdhocBrowser(unittest.TestCase):
     def setUp(self):
         """
@@ -42,8 +43,8 @@ class TestManagedAdhocBrowser(unittest.TestCase):
                                   url=self.url)
 
         super(ManagedMplayer, self.mam).__init__(
-                cmd=self.cmd,
-                window=self.window)
+            cmd=self.cmd,
+            window=self.window)
         rospy.logdebug("This is mam: %s" % self.mam.__dict__)
 
     def test_1_run_basic_asserts(self):

@@ -4,6 +4,7 @@ import rospy
 from geometry_msgs.msg import Twist
 from lg_nav_to_device import DeviceWriter
 
+
 def main():
     rospy.init_node('lg_nav_to_device')
 

@@ -3,6 +3,7 @@ import rospy
 import urllib
 import urlparse
 
+
 def escape_asset_url(asset_url):
     """
     Replace all non-alnum characters with underscore
@@ -19,10 +20,11 @@ def escape_asset_url(asset_url):
         rospy.logerr("Got invalid type when trying to escape assets url %s" % asset_url)
         return ss
 
+
 def add_url_params(url, **params):
     """
     Add GET params to the url
-    url: string of the URL 
+    url: string of the URL
     params: dict containing the keyword arguments
 
     return string, updated url with the params
@@ -36,6 +38,7 @@ def add_url_params(url, **params):
 
     return urlparse.urlunparse(url_parts)
 
+
 def write_log_to_file(message):
     """
     Write a log line to a file - don't use it in production!
@@ -44,20 +47,23 @@ def write_log_to_file(message):
         rostest_file.write(message)
         rostest_file.write('\n')
 
+
 def generate_cookie(assets):
     """ Accept a list of URLs, turn them to nice slugs and return a string e.g.
             'blah.kml,zomg__kml,whatever.kml'
         rtype: str
     """
-    cookie = (',').join([ escape_asset_url(asset) for asset in assets ])
+    cookie = (',').join([escape_asset_url(asset) for asset in assets])
     rospy.logdebug("Generated cookie = %s after new state was set" % cookie)
     return cookie
+
 
 def get_app_instances_ids(instances):
     """
     Accepts a dictionary of id: AppInstance and returns a set of keys
     """
     return set(instances.keys())
+
 
 def get_app_instances_to_manage(current_instances, incoming_instances, manage_action=None):
     """
@@ -76,6 +82,7 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
     else:
         rospy.logerr("No action provided for get_app_instances_to_manage")
         return False
+
 
 def extract_first_asset_from_director_message(message, activity_type, viewport):
     """
@@ -139,4 +146,3 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
 
     rospy.logdebug("Returning assets: %s" % assets)
     return assets
-

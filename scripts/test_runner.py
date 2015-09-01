@@ -18,6 +18,7 @@ import sys
 
 FAIL = 1
 
+
 def set_root_dir():
     """
     make sure we run this from the project root directory
@@ -29,7 +30,7 @@ def set_root_dir():
         root_dir = os.getcwd()
     if not os.path.isdir('.git'):
         raise Exception('Must run this script from the lg_ros_nodes project root'
-                ' directory or inside the scripts dir')
+                        ' directory or inside the scripts dir')
 
 
 def get_cmakes():
@@ -40,7 +41,7 @@ def get_cmakes():
     ret = []
     full_path = os.getcwd() + '/catkin/src'
     ls = os.listdir(full_path)
-    dirs = [full_path + '/' + d for d in ls if os.path.isdir(full_path + '/' + d)] 
+    dirs = [full_path + '/' + d for d in ls if os.path.isdir(full_path + '/' + d)]
     ret = [d for d in dirs if os.path.exists(d + "/CMakeLists.txt")]
     return ret
 
@@ -70,6 +71,7 @@ def get_tests():
         nose_tests += [cmake + '/' + test for test in nose]
         ros_tests += [cmake + '/' + test for test in ros]
     return nose_tests, ros_tests
+
 
 def run_tests():
     nose_tests, ros_tests = get_tests()
