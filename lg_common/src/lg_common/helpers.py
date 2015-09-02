@@ -77,6 +77,19 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
         rospy.logerr("No action provided for get_app_instances_to_manage")
         return False
 
+def load_director_message(message):
+    """
+    json.loads the director message, or warns and returns an empty dict
+    """
+    ret = {}
+    try:
+        ret = json.loads(message.message)
+    except (ValueError, SyntaxErorr) as e:
+        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
+        rospy.logdebug("Message: %s" % message)
+
+    return ret
+
 def extract_first_asset_from_director_message(message, activity_type, viewport):
     """
     Extracts **single** (first) asset and geometry for given activity and viewport e.g. all assets for browser or all KMLs for GE.
@@ -116,17 +129,14 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             }
               """
 
-    try:
-        message = json.loads(message.message)
-    except (ValueError, SyntaxErorr) as e:
-        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
-        rospy.logdebug("Message: %s" % message)
+    message = load_director_message(message)
+    if not message:
         return []
 
     rospy.logdebug("Message: %s, activity_type: %s, viewport: %s" % (message, activity_type, viewport))
     assets = []
-    for window in message['windows']:
-        if (window['activity'] == activity_type) and (window['presentation_viewport'] == viewport):
+    for window in message.get('windows', []):
+        if (window.get('activity') == activity_type) and (window.get('presentation_viewport') == viewport):
             asset_object = {}
             asset_object['path'] = window['assets'][0]
             asset_object['x_coord'] = window['x_coord']
@@ -135,8 +145,31 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             asset_object['width'] = window['width']
             assets.append(asset_object)
         else:
-            rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window['activity'], window['presentation_viewport']))
+            rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))
 
     rospy.logdebug("Returning assets: %s" % assets)
     return assets
 
+def find_window_with_activity(message, activity):
+    """
+    Returns the window who's activity == $activity, or {}
+    """
+    message = load_director_message(message)
+    if not message:
+        return {}
+
+    for window in message.get('windows', []):
+        if window.get('activity') == activity:
+            return window
+
+    return {}
+
+def get_first_asset_from_activity(message, activity):
+    """
+    Returns just one asset from the first matching activity, or None
+
+    This is useful for streetview / pano activity types
+    """
+    window = find_window_with_activity(message, activity)
+
+    return window.get('assets', [None])[0]
