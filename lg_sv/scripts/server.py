@@ -2,6 +2,8 @@
 
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
+from lg_common.helpers import get_first_asset_from_activity
+from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String
 from math import atan2, cos, sin, pi
@@ -28,6 +30,7 @@ DEFAULT_NAV_INTERVAL = 0.02
 
 def main():
     rospy.init_node('pano_viewer_server', anonymous=True)
+    global server_type
     server_type = rospy.get_param('~server_type', 'streetview')
     location_pub = rospy.Publisher('/%s/location' % server_type,
                                    Pose2D, queue_size=1)
@@ -56,6 +59,16 @@ def main():
                      server.handle_spacenav_msg)
     rospy.Subscriber('/%s/state' % server_type, ApplicationState,
                      server.handle_state_msg)
+
+    # This will translate director messages into /<server_type>/panoid messages
+    def handle_director_message(msg):
+        asset = get_first_asset_from_activity(msg, server_type)
+        if not asset:
+            return
+        panoid_pub.publish(String(asset))
+
+    rospy.Subscriber('/director/scene', GenericMessage, handle_spacenav_msg)
+
     rospy.spin()
 
 if __name__ == '__main__':
