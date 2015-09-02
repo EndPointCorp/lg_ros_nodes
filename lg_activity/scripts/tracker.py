@@ -3,8 +3,10 @@
 import rospy
 
 from std_msgs.msg import Bool
-from lg_activity import *
+from lg_activity import ActivitySource
+from lg_activity import ActivityTracker
 from lg_activity.srv import ActivityStates
+from lg_activity import ActivitySourceDetector
 
 
 def main():
@@ -19,11 +21,14 @@ def main():
     activity_sources = ActivitySourceDetector(sources_string).get_sources()
 
     activity_tracker = ActivityTracker(publisher=activity_publisher,
-                                       activity_timeout=activity_timeout,
+                                       timeout=activity_timeout,
                                        sources=activity_sources)
 
     activity_state_service = rospy.Service(activity_topic, ActivityStates, activity_tracker._get_state)
 
     rospy.spin()
+
+if __name__ == "__main__":
+    main()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

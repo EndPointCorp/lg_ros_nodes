@@ -1,3 +1,3 @@
-from lg_activity import ActivitySource
-from lg_activity import ActivityTracker
-from lg_activity import ActivitySourceDetector
+from activity import ActivitySource
+from activity import ActivityTracker
+from activity import ActivitySourceDetector
