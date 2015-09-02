@@ -21,10 +21,34 @@ ACTIVITY_TRACKER_PARAM = '/spacenav/twist:geometry_msgs/Twist:delta'
 
 
 class SpaceNavMockSource:
-    source = { "/spacenav/twist": {
-                    "msg_type": "geometry_msgs/Twist",
-                    "strategy": "delta"
-                    }}
+    source = { "topic": "/spacenav/twist",
+               "msg_type": "geometry_msgs/Twist",
+               "strategy": "delta",
+               "slot": None,
+               "value": None,
+               "value_min": None,
+               "value_max": None
+             }
+
+class TouchscreenMockSource:
+    source = { "topic": "/touchscreen/touch",
+               "msg_type": "interactivespaces_msgs/String",
+               "strategy": "activity",
+               "slot": None,
+               "value": None,
+               "value_min": None,
+               "value_max": None
+             }
+
+class ProximitySensorMockSource:
+    source = { "topic": "/proximity_sensor/distance",
+               "msg_type": "std_msgs/Float32",
+               "strategy": "value",
+               "slot": None,
+               "value": None,
+               "value_min": 10,
+               "value_max": 20
+             }
 
 class TestActivityTracker(unittest.TestCase):
     def setUp(self):

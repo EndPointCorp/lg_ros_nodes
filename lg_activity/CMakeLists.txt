@@ -3,6 +3,7 @@ project(lg_activity)
 
 find_package(catkin REQUIRED COMPONENTS
     std_msgs
+    lg_common
     rospy
     )
 
@@ -16,6 +17,7 @@ add_service_files(
 
 generate_messages(
   DEPENDENCIES
+  lg_common
   std_msgs  # Or other packages containing msgs
 )
 
