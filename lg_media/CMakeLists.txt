@@ -41,6 +41,6 @@ catkin_install_python(PROGRAMS
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  catkin_add_nosetests(test/offline/test_mplayer_adhoc_media.py)
+  add_rostest(test/online/test_mplayer_adhoc_media.test)
   add_rostest(test/online/test_mplayer_director_bridge.test)
 endif()
