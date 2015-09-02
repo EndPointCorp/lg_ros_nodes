@@ -21,6 +21,15 @@ class ManagedApplication(object):
 
         rospy.on_shutdown(self._cleanup)
 
+    def __str__(self):
+        string_representation = "<ManagedApplication: state: %s, window: %s, cmd: %s, proc: %s" % (self.state, self.window, self.cmd, self.proc)
+        return string_representation
+
+    def __repr__(self):
+        representation = "<ManagedApplication: state: %s, window: %s, cmd: %s, proc: %s" % (self.state, self.window, self.cmd, self.proc)
+        return representation
+
+
     def _cleanup(self):
         # explicit SIGCONT needed to prevent undeath
         self._signal_proc(signal.SIGCONT, retry=False)
@@ -66,8 +75,8 @@ class ManagedApplication(object):
                 state_changed = True
             self.state = state
 
-            if not state_changed:
-                return
+            #if not state_changed:
+            #    return
 
             if state == ApplicationState.STOPPED:
                 rospy.loginfo("STOPPED")
@@ -112,7 +121,11 @@ class ManagedApplication(object):
 
     # TODO(mv): hook this up to ProcController
     def _handle_respawn(self):
-        if self.window is not None and self.state != ApplicationState.STOPPED:
+        if (self.window is not None) and (self.state != ApplicationState.STOPPED):
+            rospy.loginfo("Handling unwanted respawn of %s by converging the window" % self)
             self.window.converge()
+        if (self.window is None) and (self.state == ApplicationState.STOPPED):
+            rospy.loginfo("Handling unwanted respawn of %s by killing the process" % self)
+            self.proc.stop()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
