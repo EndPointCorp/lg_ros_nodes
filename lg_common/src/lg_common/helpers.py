@@ -84,7 +84,7 @@ def load_director_message(message):
     ret = {}
     try:
         ret = json.loads(message.message)
-    except (ValueError, SyntaxErorr) as e:
+    except (ValueError, SyntaxError) as e:
         rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
         rospy.logdebug("Message: %s" % message)
 
