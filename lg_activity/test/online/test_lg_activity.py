@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-PKG = 'lg_media'
+PKG = 'lg_activity'
 NAME = 'test_lg_activity'
 
 import rospy
@@ -25,7 +25,6 @@ class SpaceNavMockSource:
                "msg_type": "geometry_msgs/Twist",
                "strategy": "delta",
                "slot": None,
-               "value": None,
                "value_min": None,
                "value_max": None
              }
@@ -67,7 +66,7 @@ class TestActivityTracker(unittest.TestCase):
         self.sources = self.detector.get_sources()
         self.topic = '/spacenav/twist'
         self.message_type = 'geometry_msgs/Twist'
-        self.callback = None
+        self.callback = foo_cb
         self.strategy = 'delta'
         self.activity_source_spacenav_delta = ActivitySource(topic=self.topic,
                                                              message_type=self.message_type,
@@ -78,9 +77,15 @@ class TestActivityTracker(unittest.TestCase):
         """
         Checks whether detector got instantiated with proper sources
         """
-        self.AssertEqual(type(self.detector), ActivitySourceDetector)
-        self.AssertEqual(type(self.detector.sources), dict)
-        self.AssertEqual(self.detector.get_source('/spacenav/twist'), SpaceNavMockSource.source)
+        self.assertEqual(self.detector.__class__.__name__, ActivitySourceDetector.__name__)
+        self.assertDictEqual(self.detector.get_source('/spacenav/twist'), SpaceNavMockSource.source)
+        self.assertEqual(type(self.detector.sources), list)
+        self.assertEqual(type(self.detector.sources[0]), dict)
+
+
+def foo_cb(msg):
+    """Do nothing callback"""
+    pass
 
 if __name__ == '__main__':
     import rostest
