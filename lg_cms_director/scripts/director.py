@@ -298,10 +298,6 @@ class Director(Application):
         # Hold the Handle on the Scene Timer.
         self.scene_timer = None
 
-        # Proof-of-concept initilization, next two lines. TO BE removed.
-        self._http.get('http://30.camp.lgiscms.endpoint.com:9030/director_api/presentation/dog-breeds/?format=json', post_request=self.new_presentation)
-        self._http.get('http://30.camp.lgiscms.endpoint.com:9030/director_api/scene/afghan-hound/?format=json', post_request=self.new_scene)
-
     def worker_stopping(self, worker, exc=None):
         # Cleanly shutdown rospy node.  Probably not necessary.
         rospy.signal_shutdown("bye from %s" % worker.name)
