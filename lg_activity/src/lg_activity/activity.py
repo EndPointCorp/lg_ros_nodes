@@ -15,11 +15,14 @@ from std_msgs.msg import Bool
 class ActivitySourceNotFound(Exception):
     pass
 
+
 class ActivitySourceException(Exception):
     pass
 
+
 class ActivityTrackerException(Exception):
     pass
+
 
 class ActivitySource:
     """
@@ -40,17 +43,13 @@ class ActivitySource:
      - erase aggregated messages upon "is_active" call
     """
     def __init__(self, memory_limit=1024000,
-                       topic=None,
-                       message_type=None,
-                       strategy=None,
-                       slot=None,
-                       value=None,
-                       value_min=None,
-                       value_max=None,
-                       callback=None):
+                 topic=None, message_type=None,
+                 strategy=None, slot=None,
+                 value=None, value_min=None,
+                 value_max=None, callback=None):
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
-                    (topic, message_type, strategy, callback)
+                (topic, message_type, strategy, callback)
 
             rospy.logerr(msg)
             raise ActivitySourceException(msg)
@@ -79,11 +78,11 @@ class ActivitySource:
             For 'value' strategy we need to provide a lot of data
             """
             if self.value and self.value_min and self.value_max and self.slot:
-                rospy.loginfo("Registering activity source with value=%s, min=%s, max=%s and msg attribute=%s" %\
-                                (self.value, self.value_min, self.value_max, self.slot))
+                rospy.loginfo("Registering activity source with value=%s, min=%s, max=%s and msg attribute=%s" %
+                              (self.value, self.value_min, self.value_max, self.slot))
             else:
                 msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (value=%s, min=%s, max=%s and msg attribute=%s)" % \
-                        (self.value, self.value_min, self.value_max, self.slot)
+                    (self.value, self.value_min, self.value_max, self.slot)
                 rospy.logerr(msg)
                 raise ActivitySourceException(msg)
 
@@ -95,12 +94,12 @@ class ActivitySource:
 
     def __str__(self):
         string_representation = "<ActivitySource: slot: %s, value:%s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
-                                    (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
+            (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
 
     def __repr__(self):
         string_representation = "<ActivitySource: slot: %s, value:%s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
-                                    (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
+            (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
 
     def _initialize_subscriber(self):
@@ -219,11 +218,11 @@ class ActivitySource:
                 if list_of_dicts_is_homogenous(self.messages):
                     self.messages = []
                     self.callback(self.topic, state=False)
-                    return False #if list if homogenous than there was no activity
+                    return False  # if list if homogenous than there was no activity
                 else:
                     self.messages = []
                     self.callback(self.topic, state=True)
-                    return True #if list is not homogenous than there was activity
+                    return True  # if list is not homogenous than there was activity
             else:
                 rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
 
@@ -232,13 +231,12 @@ class ActivitySource:
                 if self._messages_met_value_constraints():
                     self.messages = []
                     self.callback(self.topic, state=False)
-                    return False #messages met the constraints
+                    return False  # messages met the constraints
                 else:
                     self.callback(self.topic, state=True)
-                    return True #messages didnt meet the constraints
+                    return True  # messages didnt meet the constraints
             else:
                 rospy.loginfo("Not enough messages (minimum of 1) for 'value' strategy")
-
 
         elif self.strategy == 'activity':
             if len(self.messages) > 0:
@@ -251,6 +249,7 @@ class ActivitySource:
                 return False
         else:
             rospy.logerr("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
+
 
 class ActivitySourceDetector:
     """
@@ -285,12 +284,13 @@ class ActivitySourceDetector:
         Returns single source by topic name
         """
         try:
-            source = [ source for source in self.sources if source['topic'] == topic ]
+            source = [source for source in self.sources if source['topic'] == topic]
             return source[0]
         except KeyError, e:
-            msg = "Could not find source %s" %s
+            msg = "Could not find source %s" % s
             rospy.logerr(msg)
             raise ActivitySourceNotFound(msg)
+
 
 class ActivityTracker:
     """
@@ -311,7 +311,7 @@ class ActivityTracker:
     def __init__(self, publisher=None, timeout=10, sources=None):
         if (not publisher) or (not timeout) or (not sources):
             msg = "Activity tracker initialized without one of the params: pub=%s, timeout=%s, sources=%s" % \
-                    (publisher, timeout, sources)
+                (publisher, timeout, sources)
             rospy.logerr(msg)
             raise ActivityTrackerException
 
@@ -332,12 +332,12 @@ class ActivityTracker:
 
     def __str__(self):
         string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, publisher: %s" % \
-                                    (self.sources, self.initialized_sources, self.timeout, self.publisher)
+            (self.sources, self.initialized_sources, self.timeout, self.publisher)
         return string_representation
 
     def __repr__(self):
         string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, publisher: %s" % \
-                                    (self.sources, self.initialized_sources, self.timeout, self.publisher)
+            (self.sources, self.initialized_sources, self.timeout, self.publisher)
         return string_representation
 
     def tick(self, topic_name, state):
@@ -362,10 +362,10 @@ class ActivityTracker:
                     if self.activity_states[topic_name]['state'] == state:
                         rospy.logdebug("State of %s didnt change" % topic_name)
                     else:
-                        self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() }
+                        self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
                         rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
                 except KeyError:
-                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() }
+                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
 
                 self._check_states()
                 return True
@@ -380,7 +380,7 @@ class ActivityTracker:
         {"state": True, "time": <unix timestamp> }
         """
         now = rospy.get_time()
-        if ((now - source['time']) >= self.timeout) and source['state'] == False:
+        if ((now - source['time']) >= self.timeout) and source['state'] is False:
             return True
         else:
             return False
@@ -398,7 +398,7 @@ class ActivityTracker:
         """
         with self.lock:
             for state_name, state in self.activity_states.iteritems():
-                if state['state'] == True and self.active == False:
+                if state['state'] is True and self.active is False:
                     self.publisher.publish(Bool(data=True))
                     self.active = True
                     rospy.loginfo("State turned from False to True because of state: %s" % state)
@@ -406,17 +406,16 @@ class ActivityTracker:
                     # because of first encounter of source in True state (active)
                     # this is basically a wakeup on any activity
                     return
-                elif self._source_has_been_inactive(state) and self.active == True:
+                elif self._source_has_been_inactive(state) and self.active is True:
                     # Immediately exit the loop if any of the sources
                     # was not inactive for more then self.timeout
                     rospy.loginfo("State turned from True to False because of state: %s" % state)
                     self.publisher.publish(Bool(data=False))
                     self.active = False
                     return
-                elif state['state'] == False and self.active == False:
+                elif state['state'] is False and self.active is False:
                     self.publisher.publish(Bool(data=False))
                     return
-
 
     def _init_activity_sources(self):
         """
@@ -426,13 +425,11 @@ class ActivityTracker:
 
         """
         for source in self.sources:
-            act = ActivitySource(topic=source['topic'],
-                           message_type=source['msg_type'],
-                           strategy=source['strategy'],
-                           slot=source['slot'],
-                           value_min=source['value_min'],
-                           value_max=source['value_max'],
-                           callback=self.activity_callback)
+            act = ActivitySource(
+                topic=source['topic'], message_type=source['msg_type'],
+                strategy=source['strategy'], slot=source['slot'],
+                value_min=source['value_min'], value_max=source['value_max'],
+                callback=self.activity_callback)
             self.initialized_sources.append(act)
         return True
 
