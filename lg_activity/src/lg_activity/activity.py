@@ -225,7 +225,7 @@ class ActivitySource:
                     self.callback(self.topic, state=True)
                     return True #if list is not homogenous than there was activity
             else:
-                rospy.logdebug("Not enough messages (minimum of ) for 'delta' strategy")
+                rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
 
         elif self.strategy == 'value':
             if len(self.messages) >= 1:
