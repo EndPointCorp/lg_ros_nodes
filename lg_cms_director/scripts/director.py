@@ -18,12 +18,12 @@ from pulsar.apps.http import HttpClient
 from pulsar import command, task, coroutine_return
 
 from interactivespaces_msgs.msg import GenericMessage
- 
 
 api_url = rospy.get_param(
     '~director_api_url',
     os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')
 )
+
 DIRECTOR_API_URL = api_url
 
 rospy.loginfo("Using DIRECTOR_API_URL = %s" % api_url)

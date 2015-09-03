@@ -233,3 +233,49 @@ def unpack_activity_sources(sources_string):
         exception_msg = "Could not unpack activity sources string because: %s" % e
         rospy.logerr(exception_msg)
         raise WrongActivityDefinition(exception_msg)
+
+def check_registration(e):
+    """\
+    Shuts down this ROS node if it is not registered on the master.
+    This will effectively kill the director each time the ROS master is
+    restarted, preventing silent and subtle publishing failure.
+
+    This should cause a shutdown *only* if the master can be contacted and the
+    node is not registered.
+    """
+    import rosnode
+    try:
+        nodes = rosnode.get_node_names()
+    except rosnode.ROSNodeIOException:
+        rospy.logdebug("Could not contact master for registration check")
+        return
+    if rospy.get_name() not in nodes:
+        rospy.logwarn("Node no longer registered, shutting down")
+        rospy.signal_shutdown("Node no longer registered")
+        os.kill(os.getpid(), signal.SIGTERM)
+
+
+def begin_checking_registration(interval=1):
+    """
+    Periodically check the health of this node on the master.
+    """
+    rospy.Timer(rospy.Duration(interval), _check_registration)
+
+def next_scene_uri(presentation, scene):
+    """
+    Read two JSON-encoded strings: a Presentation and a Scene.
+    Decode, find the Scene within the Presentation's script,
+    then return the URI for the next Scene in the script.
+    """
+    try:
+        resource_uri = json.loads(scene)['resource_uri']
+        scenes = json.loads(presentation)['scenes']
+        script = map(lambda x: x['resource_uri'], scenes)
+    except KeyError:
+        return None
+
+    try:
+        return script[script.index(resource_uri) + 1]
+    except IndexError:
+        rospy.loginfo("Already at last Scene in this Presentation.")
+        return None

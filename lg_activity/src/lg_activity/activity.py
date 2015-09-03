@@ -110,15 +110,14 @@ class ActivitySource:
         """
         try:
             module = self.message_type.split('/')[0]
-
             # e.g. interactivespaces_msgs
             message = self.message_type.split('/')[1]
             # e.g. GenericMessage
             module_obj = __import__('%s.msg' % module)
+
             globals()[module] = module_obj
             # now interactivespaces_msg is accessible from object space
             # we can call getattr() on it to retrieve the desired msg
-
             # let's get the module directly
             message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
         except Exception, e:
@@ -216,7 +215,7 @@ class ActivitySource:
         This method can be called from 'self' as well as from the outside of self
         """
         if self.strategy == 'delta':
-            if len(self.messages) >= 2:
+            if len(self.messages) >= 5:
                 if list_of_dicts_is_homogenous(self.messages):
                     self.messages = []
                     self.callback(self.topic, state=False)
@@ -226,7 +225,7 @@ class ActivitySource:
                     self.callback(self.topic, state=True)
                     return True #if list is not homogenous than there was activity
             else:
-                rospy.loginfo("Not enough messages (minimum of 2) for 'delta' strategy")
+                rospy.logdebug("Not enough messages (minimum of ) for 'delta' strategy")
 
         elif self.strategy == 'value':
             if len(self.messages) >= 1:
@@ -361,7 +360,7 @@ class ActivityTracker:
             with self.lock:
                 try:
                     if self.activity_states[topic_name]['state'] == state:
-                        rospy.loginfo("State of %s didnt change" % topic_name)
+                        rospy.logdebug("State of %s didnt change" % topic_name)
                     else:
                         self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() }
                         rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
@@ -402,13 +401,20 @@ class ActivityTracker:
                 if state['state'] == True and self.active == False:
                     self.publisher.publish(Bool(data=True))
                     self.active = True
+                    rospy.loginfo("State turned from False to True because of state: %s" % state)
                     # state turns from False (inactive) to True (active)
                     # because of first encounter of source in True state (active)
                     # this is basically a wakeup on any activity
                     return
-                if self._source_has_been_inactive(state) and self.active == True:
+                elif self._source_has_been_inactive(state) and self.active == True:
                     # Immediately exit the loop if any of the sources
                     # was not inactive for more then self.timeout
+                    rospy.loginfo("State turned from True to False because of state: %s" % state)
+                    self.publisher.publish(Bool(data=False))
+                    self.active = False
+                    return
+                elif state['state'] == False and self.active == False:
+                    self.publisher.publish(Bool(data=False))
                     return
 
 
