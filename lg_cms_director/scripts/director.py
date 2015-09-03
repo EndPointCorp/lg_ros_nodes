@@ -280,8 +280,6 @@ class Director(Application):
             GenericMessage, queue_size=10, latch=True),
             'group': rospy.Publisher('/director/group',
             GenericMessage, queue_size=10, latch=True),
-            'touchscreen': rospy.Publisher('/director/touchscreen',
-            GenericMessage, queue_size=10, latch=True),
         }
 
         # Connect to our internal Redis-like state store.
@@ -303,31 +301,6 @@ class Director(Application):
         # Proof-of-concept initilization, next two lines. TO BE removed.
         self._http.get('http://30.camp.lgiscms.endpoint.com:9030/director_api/presentation/dog-breeds/?format=json', post_request=self.new_presentation)
         self._http.get('http://30.camp.lgiscms.endpoint.com:9030/director_api/scene/afghan-hound/?format=json', post_request=self.new_scene)
-
-        # Navigate the touchscreen browser activity.
-        touchscreen_init_message = """
-{
-        "description": "bogus",
-        "duration": 0,
-        "name": "ts browser",
-        "resource_uri": "bogus",
-        "slug": "touchscreen-browser",
-        "windows": [
-        {
-            "activity": "browser",
-            "assets": [
-            "http://lg-head:8060"
-            ],
-            "height": 1080,
-            "presentation_viewport": "touchscreen",
-            "width": 1920,
-            "x_coord": 0,
-            "y_coord": 0
-        }
-        ]
-}
-"""
-        self.publish_ros('touchscreen', touchscreen_init_message)
 
     def worker_stopping(self, worker, exc=None):
         # Cleanly shutdown rospy node.  Probably not necessary.
