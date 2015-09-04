@@ -169,6 +169,8 @@ class PanoViewerServer:
         """
         Publishes a new panoid after setting the instance variable
         """
+        self.panoid = panoid
+        self.nearby_panos.set_panoid(self.panoid)
         self.panoid_pub.publish(panoid)
 
     def handle_panoid_msg(self, panoid):
@@ -289,6 +291,8 @@ class NearbyPanos:
             pass
 
     def set_panoid(self, panoid):
+        if self.panoid != panoid:
+            self.metadata = None
         self.panoid = panoid
 
     def find_closest(self, panoid, pov_z):
