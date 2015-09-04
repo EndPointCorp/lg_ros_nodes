@@ -30,7 +30,6 @@ DEFAULT_NAV_INTERVAL = 0.02
 
 def main():
     rospy.init_node('pano_viewer_server', anonymous=True)
-    global server_type
     server_type = rospy.get_param('~server_type', 'streetview')
     location_pub = rospy.Publisher('/%s/location' % server_type,
                                    Pose2D, queue_size=1)
