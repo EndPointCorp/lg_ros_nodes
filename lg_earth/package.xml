@@ -5,6 +5,7 @@
   <description>ROS software for running and interfacing with the Google Earth desktop client.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+  <author email="wojtek@endpoint.com">Wojciech Ziniewicz</author>
 
   <license>TODO</license>
 
