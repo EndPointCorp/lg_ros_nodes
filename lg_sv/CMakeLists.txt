@@ -23,3 +23,8 @@ install(
   DIRECTORY webapps/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
 )
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest(test/sv_server.test)
+endif()

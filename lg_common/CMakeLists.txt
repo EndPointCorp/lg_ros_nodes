@@ -7,6 +7,11 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_python_setup()
 
+add_service_files(
+  FILES
+  DirectorPoolQuery.srv
+)
+
 add_message_files(
   FILES
   ApplicationState.msg
