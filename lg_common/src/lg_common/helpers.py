@@ -1,3 +1,4 @@
+import sys
 import json
 import rospy
 import urllib
@@ -156,6 +157,17 @@ def list_of_dicts_is_homogenous(dicts_list):
             previous_item = item
     return True
 
+
+def rewrite_message_to_dict(message):
+    """
+    Converts any object with __slots__ to a dictionary
+    """
+    deserialized_message = {}
+    slots = message.__slots__
+    for slot in slots:
+        deserialized_message[slot] = getattr(message, slot)
+    return deserialized_message
+
 def unpack_activity_sources(sources_string):
     """
     Unpacks ActivityTracker 'sources' param
@@ -279,3 +291,16 @@ def next_scene_uri(presentation, scene):
     except IndexError:
         rospy.loginfo("Already at last Scene in this Presentation.")
         return None
+
+def get_message_type_from_string(string):
+    """
+    Return msg_type module (e.g. GenericMessage) from string like 'interactivespaces_msgs/GenericMessage'
+    """
+    module = string.split('/')[0]
+    # e.g. 'interactivespaces_msgs'
+    message = string.split('/')[1]
+    # e.g. GenericMessage
+    module_obj = __import__('%s.msg' % module)
+    globals()[module] = module_obj
+    message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
+    return message_type_final

@@ -1,68 +1,63 @@
-from geometry_msgs.msg import Twist
-from evdev import AbsInfo, UInput, InputEvent, ecodes as e
-import time
 
-class DeviceReader:
+import os
+import rospy
+
+from geometry_msgs.msg import Twist
+from evdev import InputDevice, list_devices, ecodes, categorize
+from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import rewrite_message_to_dict
+
+
+class LgActivityException(Exception):
     pass
+
 
 class DeviceReplay:
-    pass
+    """
+    Initialized with device name
+    Needs a publisher to publish messages
+    """
+    def __init__(self, publisher, device_name, event_ecode='EV_KEY'):
+        self.event_ecode = event_ecode
+        self.publisher = publisher
+        self.device_name = device_name
+        # TODO (wz): fix permissions using udev rules
+        os.system("sudo chmod 0666 /dev/input/*")
+        devices = [InputDevice(fn) for fn in list_devices()]
+        self.device = [device for device in devices if device.name == self.device_name ][0]
+        rospy.loginfo("Initialize device reader for %s" % self.device)
 
-class DeviceWriter:
-    def __init__(self, scale):
-        self.scale = scale
-        # most values were taken from running
-        # InputDevice('/dev/input/event$N').capabilities()
-        vendor=1133
-        product = 0
-        version = 273
-        bustype = 3
-        common_abs = AbsInfo(value=0, min=0, max=32767, fuzz=0, flat=0,
-                             resolution=0)
-        tracking_abs = AbsInfo(value=0, min=0, max=65535, fuzz=0, flat=0,
-                               resolution=0)
-        slot_abs = AbsInfo(value=0, min=0, max=9, fuzz=0, flat=0, resolution=0)
-        spacenav_events = {
-            1L: [256L, 257L],
-            2L: [0L, 1L, 2L, 3L, 4L, 5L],
-            # the abs values were stolen from the previous hardcoding in
-            # evdev_teleport, for some reason device.capabilities() did not
-            # show any abs values...
-            3L: [(e.ABS_X, common_abs),
-                 (e.ABS_Y, common_abs),
-                 (e.ABS_MT_POSITION_X, common_abs),
-                 (e.ABS_MT_POSITION_Y, common_abs),
-                 (e.ABS_MT_TRACKING_ID, tracking_abs),
-                 (e.ABS_MT_SLOT, slot_abs)
-                ],
-            4L: [4L],
-            17L: [8L]
-        }
-        device_name = 'Virtual SpaceNav'
-        self.ui = UInput(spacenav_events, vendor=vendor, product=product,
-                         version=version, bustype=bustype, name=device_name)
+    def run(self):
+        for event in self.device.read_loop():
+            rospy.loginfo("Catched event: %s" % event)
+            if self.event_ecode:
+                if event.type == getattr(ecodes, self.event_ecode):
+                    event = categorize(event)
+                    publishable_event = rewrite_message_to_dict(event)
+                    self.publisher.publish_event(publishable_event)
+            else:
+                event = categorize(event)
+                publishable_event = rewrite_message_to_dict(event)
+                self.publisher.publish_event(publishable_event)
 
-    def make_event(self, data):
-        # write some event to self.ui based off of the twist data
-        _time = time.time()
-        stime = int(_time)
-        utime = int((float(_time) - stime) * 10 ** 6)
-        # linear and angular might need to be switched here...
-        x = InputEvent(stime, utime, e.EV_REL, e.REL_X, -self.translate(data.linear.y))
-        y = InputEvent(stime, utime, e.EV_REL, e.REL_Y, -self.translate(data.linear.x))
-        z = InputEvent(stime, utime, e.EV_REL, e.REL_Z, -self.translate(data.linear.z))
-        ax = InputEvent(stime, utime, e.EV_REL, e.REL_RX, -self.translate(data.angular.y))
-        ay = InputEvent(stime, utime, e.EV_REL, e.REL_RY, -self.translate(data.angular.x))
-        az = InputEvent(stime, utime, e.EV_REL, e.REL_RZ, -self.translate(data.angular.z))
-        # write all events
-        self.ui.write_event(x)
-        self.ui.write_event(y)
-        self.ui.write_event(z)
-        self.ui.write_event(ax)
-        self.ui.write_event(ay)
-        self.ui.write_event(az)
-        # syn to alert input subsystem
-        self.ui.syn()
 
-    def translate(self, n):
-        return int(n * self.scale) # TODO find the translation...
+class DevicePublisher:
+    """
+    Initialized with topic name and message type
+    """
+    def __init__(self, topic_name):
+        self.topic_name = topic_name
+        try:
+            self.publisher = rospy.Publisher(self.topic_name, GenericMessage, queue_size=10)
+        except:
+            msg = "Couldnt add publisher for topic_name %s" % (self.topic_name)
+            rospy.logerr(msg)
+            raise DevicePublisherException(msg)
+        rospy.loginfo("Initialize device publisher for %s" % topic_name)
+
+    def publish_event(self, event):
+        rospy.loginfo("Publishing event %s" % event)
+        msg = GenericMessage()
+        msg.type = 'json'
+        msg.message = str(event)
+        self.publisher.publish(msg)

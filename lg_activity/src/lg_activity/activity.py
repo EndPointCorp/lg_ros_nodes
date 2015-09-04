@@ -7,6 +7,8 @@ import threading
 
 from lg_common.helpers import unpack_activity_sources
 from lg_common.helpers import list_of_dicts_is_homogenous
+from lg_common.helpers import rewrite_message_to_dict
+from lg_common.helpers import get_message_type_from_string
 from lg_activity.msg import ActivityState
 from lg_activity.srv import ActivityStates
 from std_msgs.msg import Bool
@@ -108,17 +110,7 @@ class ActivitySource:
         message type provided with a string in '<module>/<msg>' format
         """
         try:
-            module = self.message_type.split('/')[0]
-            # e.g. interactivespaces_msgs
-            message = self.message_type.split('/')[1]
-            # e.g. GenericMessage
-            module_obj = __import__('%s.msg' % module)
-
-            globals()[module] = module_obj
-            # now interactivespaces_msg is accessible from object space
-            # we can call getattr() on it to retrieve the desired msg
-            # let's get the module directly
-            message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
+            message_type_final = get_message_type_from_string(self.message_type)
         except Exception, e:
             msg = "Could not import module because: %s" % (e)
             rospy.logerr(msg)
@@ -184,16 +176,9 @@ class ActivitySource:
         if self.slot:
             deserialized_msg = self._get_slot_value_from_message(message)
         else:
-            deserialized_msg = self._rewrite_message_to_dict(message)
+            deserialized_msg = rewrite_message_to_dict(message)
 
         self.messages.append(deserialized_msg)
-
-    def _rewrite_message_to_dict(self, message):
-        deserialized_message = {}
-        slots = message.__slots__
-        for slot in slots:
-            deserialized_message[slot] = getattr(message, slot)
-        return deserialized_message
 
     def _messages_met_value_constraints():
         for message in self.messages:

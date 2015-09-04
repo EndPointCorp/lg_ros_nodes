@@ -1,17 +1,24 @@
 #!/usr/bin/env python
 
 import rospy
-from geometry_msgs.msg import Twist
-from lg_nav_to_device import DeviceWriter
+from lg_replay import DevicePublisher, DeviceReplay, LgActivityException
+
 
 def main():
-    rospy.init_node('lg_nav_to_device')
+    rospy.init_node('lg_replay', anonymous=True)
 
-    scale = rospy.get_param('~scale', 512.0)
+    topic_name = rospy.get_param('~topic_name', None)
+    device_name = rospy.get_param('~device_name', None)
+    event_ecode = rospy.get_param('~event_ecode', 'EV_KEY')
 
-    device_writer = DeviceWriter(scale)
-    sub = rospy.Subscriber('/spacenav/twist', Twist, device_writer.make_event)
+    if not topic_name or not device_name:
+        msg = "You must provide lg_activity topic name and device name"
+        rospy.logerr(msg)
+        raise ROSNodeIOException(msg)
 
+    publisher = DevicePublisher(topic_name)
+    device_replay = DeviceReplay(publisher, device_name, event_ecode)
+    device_replay.run()
     rospy.spin()
 
 if __name__ == '__main__':
