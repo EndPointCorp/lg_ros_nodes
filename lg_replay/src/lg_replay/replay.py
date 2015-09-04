@@ -2,6 +2,12 @@ from geometry_msgs.msg import Twist
 from evdev import AbsInfo, UInput, InputEvent, ecodes as e
 import time
 
+class DeviceReader:
+    pass
+
+class DeviceReplay:
+    pass
+
 class DeviceWriter:
     def __init__(self, scale):
         self.scale = scale
