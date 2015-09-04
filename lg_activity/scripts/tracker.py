@@ -17,7 +17,7 @@ def main():
     sources_string = rospy.get_param('~activity_sources', '')
     memory_limit = rospy.get_param('~memory_limit', 102400)
 
-    activity_publisher = rospy.Publisher(activity_topic, Bool, queue_size=1)
+    activity_publisher = rospy.Publisher(activity_topic, Bool, queue_size=1, latch=True)
     activity_sources = ActivitySourceDetector(sources_string).get_sources()
 
     activity_tracker = ActivityTracker(publisher=activity_publisher,
