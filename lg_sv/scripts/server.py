@@ -66,7 +66,7 @@ def main():
             return
         panoid_pub.publish(String(asset))
 
-    rospy.Subscriber('/director/scene', GenericMessage, handle_spacenav_msg)
+    rospy.Subscriber('/director/scene', GenericMessage, handle_director_message)
 
     rospy.spin()
 
