@@ -214,26 +214,6 @@ class Director(Application):
             # Select the ROS topic for this channel and publish.
             self.pubs[channel].publish(msg)
 
-    @task
-    def fetch_next_scene(self):
-        """\
-        Begin an HTTP Request for the current Presentation's next Scene.
-        """
-
-        current_presentation = yield self.client.get('presentation')
-        current_scene = yield self.client.get('scene')
-
-        resource_uri = next_scene_uri(
-            presentation=current_presentation,
-            scene=current_scene
-        )
-
-        if resource_uri:
-            url = DIRECTOR_API_URL + resource_uri
-            self.logger.info("fetching " + url)
-            # Begin HTTP Request, add callback for when it completes.
-            self._http.get(url, post_request=self.new_scene)
-
     def new_scene(self, response, exc=None):
         """\
         Process an HTTP Response containing a new Scene.
@@ -309,147 +289,30 @@ class Director(Application):
         self.pubsub.add_client(Resetter(worker, self.reset_scene_timer))
 
         #subscribe to activity topic to enable attract loop support
-        rospy.Subscriber(self.activity_topic, Bool, self._process_activity_state_change)
 
         rospy.loginfo("Director subscribed to activity topic for attract loop: %s" % self.activity_topic)
 
         # Hold the Handle on the Scene Timer.
         self.scene_timer = None
 
-    def _process_activity_state_change(self, message):
+    def fetch_next_scene(self):
+        """\
+        Begin an HTTP Request for the current Presentation's next Scene.
         """
-        Method responsible for starting (or continuing) of playback for attract loop.
-        """
-        if message.data == True:
-            rospy.loginfo("Director: Attract loop becoming inactive")
-            self._stop_attract_loop()
-        elif message.data == False:
-            rospy.loginfo("Director: Attract loop becoming active")
-            if len(self.attract_loop_queue) > 0:
-                rospy.loginfo("Continuing attract loop")
-                self._play_attract_loop(cont=True)
-            else:
-                rospy.loginfo("Starting attract loop")
-                self._play_attract_loop()
-        else:
-            rospy.logerr("Activity message contained unknown state")
 
-    def _stop_attract_loop(self):
-        rospy.loginfo("Stopping scene timer")
-        #self.scene_timer.cancel()
-        return
+        current_presentation = yield self.client.get('presentation')
+        current_scene = yield self.client.get('scene')
 
-    def _play_attract_loop(self, cont=False):
-        """
-        Check if there are scenes to continue the attract loop or fetch them and play them back
-        """
-        if not cont:
-            rospy.loginfo("Fetching scenes from presentations marked as attract loop")
-            #/try:
-            self.attract_loop_queue = self._fetch_attract_loop_content()['scenes']
-            rospy.loginfo("Populated attract_loop_queue with %s" % self.attract_loop_queue)
-            self._play_attract_loop_content()
-            #except Exception, e:
-            #    rospy.logerr("Failed to populate attract loop queue with content because %s" % e)
-        else:
-            self._play_attract_loop_content()
+        resource_uri = next_scene_uri(
+            presentation=current_presentation,
+            scene=current_scene
+        )
 
-    def _play_attract_loop_content(self):
-        rospy.loginfo("Executing _play_attract_loop_content")
-        opts = '?format=json'
-        #while self.attract_loop_queue:
-        scene_presentation = self.attract_loop_queue.pop(0)
-        scene = scene_presentation['scene'] # bare object with resource_uri
-        scene_url = "%s%s%s" % (DIRECTOR_API_URL, scene['resource_uri'], opts)
-        presentation = scene_presentation['presentation'] # bare object with resource_uri
-        presentation_url = "%s%s%s" % (DIRECTOR_API_URL, presentation['resource_uri'], opts)
-        full_scene = json.dumps(json.loads(requests.get(scene_url).content)) # ROS nodes understandable full scene
-        rospy.loginfo("Playing attract loop URIs. Presentation: %s, scene: %s" % (presentation_url, scene_url))
-
-        presentation_response = yield self._http.get(presentation_url, post_request=self.new_presentation)
-        scene_response = yield self._http.get(scene_url, post_request=self.new_scene)
-
-        self.new_scene(scene_response)
-        self.new_presentation(presentation_response)
-
-    def _fetch_attract_loop_content(self):
-        """
-        Fetch presentation groups, presentations and scenes for attract loop.
-        Return a dict with the content wherE:
-        - presentationgroups is a list of presentationgroups
-        - presentations is a list of presentations
-        - scenes is alist of dictionaries containing one scene and presentation that it belongs to
-            {'scene': <scene>, 'presentation': <presentation>}
-        """
-        client = requests
-        presentationgroups = self._fetch_attract_loop_presentationgroups(client)
-        if presentationgroups:
-            presentations = self._fetch_presentationgroup_presentations(client, presentationgroups)
-            scenes = self._fetch_scenes_from_presentations(client, presentations)
-            content =  {'presentationgroups': presentationgroups,
-                        'presentations': presentations,
-                        'scenes': scenes }
-            #rospy.loginfo("Returning content for attract loop: %s" % content)
-            return content
-        else:
-            rospy.loginfo("No presentation groups found in attract loop")
-            return
-
-    def _fetch_scenes_from_presentations(self, client, presentations):
-        """
-        Get all scenes from presentations and fetch the object directly
-        so the list is ready to be publised on /director/scene
-
-        Returned list should contain dictionaries like {'scene': <scene>, 'presentation': <presentation>}
-        """
-        fetched_scenes = []
-        for presentation in presentations:
-            try:
-                presentation_resource_uri = presentation['resource_uri']
-                presentation_request = client.get("%s%s" % (DIRECTOR_API_URL, presentation_resource_uri)).content
-                presentation_scenes = json.loads(presentation_request)['scenes']
-            except Exception, e:
-                rospy.logerr("Could not fetch presentation scenes from presentations (%s) because %s" % (presentations, e))
-                return []
-
-            for scene in presentation_scenes:
-                try:
-                    #scene_resource_uri = scene['resource_uri']
-                    #scene_request = client.get("%s%s" % (DIRECTOR_API_URL, scene_resource_uri)).content
-                    #scene = json.loads(scene_request)
-                    pass
-                except Exception, e:
-                    rospy.logerr("Could not fetch scene (%s) from presentation scenes (%s) because %s" % (scene, presentation_scenes, e))
-                    return []
-                fetched_scenes.extend([{'presentation': presentation, 'scene': scene}])
-
-        #rospy.loginfo("Fetched scenes: %s" % fetched_scenes)
-        return fetched_scenes
-
-    def _fetch_presentationgroup_presentations(self, client, presentationgroups):
-        """
-        """
-        attract_loop_presentations = []
-        try:
-            for presentation in presentationgroups:
-                presentation_resource_uri = presentation['resource_uri']
-                presentations_request = client.get("%s%s" % (DIRECTOR_API_URL, presentation_resource_uri)).content
-                presentations = json.loads(presentations_request)['presentations']
-                attract_loop_presentations.extend(presentations)
-            return attract_loop_presentations
-        except Exception, e:
-            rospy.logerr("Could not fetch presentations from presentationgroups (%s) because %s" % (presentationgroups, e))
-            return []
-
-    def _fetch_attract_loop_presentationgroups(self, client):
-        try:
-            presentationgroup_request = client.get("%s/director_api/presentationgroup/?attract_loop=True" % DIRECTOR_API_URL).content
-            presentationgroups = json.loads(presentationgroup_request)['objects']
-            assert(type(presentationgroups) == list), "Presentationgroups type is not list"
-            return presentationgroups
-        except Exception, e:
-            rospy.logerr("Could not get presentationgroups because: %s" % e)
-            return []
+        if resource_uri:
+            url = DIRECTOR_API_URL + resource_uri
+            self.logger.info("fetching " + url)
+            # Begin HTTP Request, add callback for when it completes.
+            self._http.get(url, post_request=self.new_scene)
 
     def worker_stopping(self, worker, exc=None):
         # Cleanly shutdown rospy node.  Probably not necessary.

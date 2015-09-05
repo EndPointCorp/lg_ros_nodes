@@ -2,8 +2,6 @@
 
 import rospy
 import sys
-import threading
-
 
 from lg_common.helpers import unpack_activity_sources
 from lg_common.helpers import list_of_dicts_is_homogenous
@@ -202,11 +200,11 @@ class ActivitySource:
             if len(self.messages) >= 5:
                 if list_of_dicts_is_homogenous(self.messages):
                     self.messages = []
-                    self.callback(self.topic, state=False)
+                    self.callback(self.topic, state=False, strategy='delta')
                     return False  # if list if homogenous than there was no activity
                 else:
                     self.messages = []
-                    self.callback(self.topic, state=True)
+                    self.callback(self.topic, state=True, strategy='delta')
                     return True  # if list is not homogenous than there was activity
             else:
                 rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
@@ -215,10 +213,10 @@ class ActivitySource:
             if len(self.messages) >= 1:
                 if self._messages_met_value_constraints():
                     self.messages = []
-                    self.callback(self.topic, state=False)
+                    self.callback(self.topic, state=False, strategy='value')
                     return False  # messages met the constraints
                 else:
-                    self.callback(self.topic, state=True)
+                    self.callback(self.topic, state=True, strategy='value')
                     return True  # messages didnt meet the constraints
             else:
                 rospy.loginfo("Not enough messages (minimum of 1) for 'value' strategy")
@@ -226,11 +224,11 @@ class ActivitySource:
         elif self.strategy == 'activity':
             if len(self.messages) > 0:
                 self.messages = []
-                self.callback(self.topic, state=True)
+                self.callback(self.topic, state=True, strategy='activity')
                 return True
             else:
                 self.messages = []
-                self.callback(self.topic, state=False)
+                self.callback(self.topic, state=False, strategy='activity')
                 return False
         else:
             rospy.logerr("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
@@ -301,7 +299,6 @@ class ActivityTracker:
             raise ActivityTrackerException
 
         self.active = True
-        self.lock = threading.RLock()
         self.initialized_sources = []
         self.activity_states = {}
         self.timeout = timeout
@@ -332,7 +329,8 @@ class ActivityTracker:
         """
         pass
 
-    def activity_callback(self, topic_name=None, state=True):
+
+    def activity_callback(self, topic_name=None, state=True, strategy=None):
         """
         ActivitySource uses this callback to set it's state in ActivityTracker
 
@@ -343,18 +341,18 @@ class ActivityTracker:
         If all states turned True (active) then proper message is emitted
         """
         try:
-            with self.lock:
-                try:
-                    if self.activity_states[topic_name]['state'] == state:
-                        rospy.logdebug("State of %s didnt change" % topic_name)
-                    else:
-                        self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-                        rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
-                except KeyError:
+            try:
+                if self.activity_states[topic_name]['state'] == state and strategy != 'activity':
+                    rospy.logdebug("State of %s didnt change" % topic_name)
+                else:
                     self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+                    rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
+            except KeyError:
+                rospy.loginfo("Initializing topic name state: %s" % topic_name)
+                self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
 
-                self._check_states()
-                return True
+            self._check_states()
+            return True
         except Exception, e:
             rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
             return False
@@ -366,7 +364,19 @@ class ActivityTracker:
         {"state": True, "time": <unix timestamp> }
         """
         now = rospy.get_time()
-        if ((now - source['time']) >= self.timeout) and source['state'] is False:
+        if ((now - source['time']) >= self.timeout):
+            return True
+        else:
+            return False
+
+    def _source_become_active(self, source):
+        """
+        Checks whether source become active less then self.timeout
+        Accepts source state dict eg.:
+        {"state": True, "time": <unix timestamp> }
+        """
+        now = rospy.get_time()
+        if ((now - source['time']) <= self.timeout):
             return True
         else:
             return False
@@ -382,25 +392,22 @@ class ActivityTracker:
 
 
         """
-        with self.lock:
-            for state_name, state in self.activity_states.iteritems():
-                if state['state'] is True and self.active is False:
-                    self.publisher.publish(Bool(data=True))
-                    self.active = True
-                    rospy.loginfo("State turned from False to True because of state: %s" % state)
-                    # state turns from False (inactive) to True (active)
-                    # because of first encounter of source in True state (active)
-                    # this is basically a wakeup on any activity
-                    return
-                elif self._source_has_been_inactive(state) and self.active is True:
-                    # Immediately exit the loop if any of the sources
-                    # was not inactive for more then self.timeout
-                    rospy.loginfo("State turned from True to False because of state: %s" % state)
-                    self.publisher.publish(Bool(data=False))
-                    self.active = False
-                    return
-                elif state['state'] is False and self.active is False:
-                    return
+        now = rospy.get_time()
+        self.sources_active_within_timeout = {state_name:state for state_name, state in self.activity_states.iteritems() if (now - self.timeout) < state['time']}
+
+        if self.sources_active_within_timeout and (not self.active):
+            self.active = True
+            self.publisher.publish(Bool(data=True))
+            rospy.loginfo("State turned from False to True because of state: %s" % self.sources_active_within_timeout)
+            rospy.loginfo("States: %s" % self.activity_states)
+        elif (not self.sources_active_within_timeout) and self.active:
+            self.active = False
+            self.publisher.publish(Bool(data=False))
+            rospy.loginfo("State turned from True to False because of state: %s" % self.sources_active_within_timeout)
+            rospy.loginfo("States: %s" % self.activity_states)
+        else:
+            rospy.logdebug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
+
 
     def _init_activity_sources(self):
         """
@@ -442,6 +449,5 @@ class ActivityTracker:
         return activity_states_list
 
     def _sleep_between_checks(self):
-        rospy.logdebug("Sleeping for %s seconds before writing stats" % self.timeout)
-        rospy.sleep(self.timeout)
+        #rospy.sleep(self.timeout)
         pass
