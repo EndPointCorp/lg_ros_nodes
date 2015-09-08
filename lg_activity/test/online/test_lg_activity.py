@@ -88,6 +88,9 @@ class TestActivityTracker(unittest.TestCase):
         self.assertEqual(type(self.detector.sources), list)
         self.assertEqual(type(self.detector.sources[0]), dict)
 
+    def test_tracker(self):
+        self.assertEqual(1, 1)
+
 
 def foo_cb(msg):
     """Do nothing callback"""
