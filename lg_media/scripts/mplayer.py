@@ -8,6 +8,7 @@ from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 
 DEFAULT_VIEWPORT='center'
+MEDIA_TYPE = 'video'  # mplayer used video rather than browser_video type
 
 def main():
     rospy.init_node('lg_media_service_mplayer', anonymous=True)
@@ -33,7 +34,7 @@ def main():
             topic_name, AdhocMedias, queue_size=3
         )
 
-    adhoc_media_mplayer_director_bridge = DirectorMediaBridge(adhoc_media_mplayer_pool_publisher, viewport_name)
+    adhoc_media_mplayer_director_bridge = DirectorMediaBridge(adhoc_media_mplayer_pool_publisher, viewport_name, MEDIA_TYPE)
 
     rospy.Subscriber('/director/scene', GenericMessage, adhoc_media_mplayer_director_bridge.translate_director)
 
