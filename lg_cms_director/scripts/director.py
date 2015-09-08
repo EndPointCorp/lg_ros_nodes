@@ -271,8 +271,6 @@ class Director(Application):
             GenericMessage, queue_size=10, latch=True),
             'group': rospy.Publisher('/director/group',
             GenericMessage, queue_size=10, latch=True),
-            'touchscreen': rospy.Publisher('/director/touchscreen',
-            GenericMessage, queue_size=10, latch=True),
         }
 
         # Connect to our internal Redis-like state store.
