@@ -1,11 +1,10 @@
-
 import os
 import rospy
 
 from geometry_msgs.msg import Twist
 from evdev import InputDevice, list_devices, ecodes, categorize
-from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import rewrite_message_to_dict
+from interactivespaces_msgs.msg import GenericMessage
 
 
 class LgActivityException(Exception):
@@ -17,15 +16,27 @@ class DeviceReplay:
     Initialized with device name
     Needs a publisher to publish messages
     """
-    def __init__(self, publisher, device_name, event_ecode='EV_KEY'):
+    def __init__(self, publisher, device_name, event_ecode='EV_KEY', device=None):
+        """
+        Needs to be initialized with publisher and device name which is an identifier that DeviceReplay
+        will attach to. Optional parameter is a device_path mainly for testing purposes.
+        """
         self.event_ecode = event_ecode
         self.publisher = publisher
         self.device_name = device_name
-        # TODO (wz): fix permissions using udev rules
-        os.system("sudo chmod 0666 /dev/input/*")
-        devices = [InputDevice(fn) for fn in list_devices()]
-        self.device = [device for device in devices if device.name == self.device_name ][0]
-        rospy.loginfo("Initialize device reader for %s" % self.device)
+        self.device = device
+        # TODO (wz): set device permissions using udev rules because otherwise this node needs sudo
+        if self.device:
+            self.device = device
+            rospy.loginfo("Initializing device replay with devic: %s" % self.device)
+        else:
+            try:
+                os.system("sudo chmod 0666 /dev/input/*")
+                devices = [InputDevice(fn) for fn in list_devices()]
+                self.device = [device for device in devices if device.name == self.device_name ][0]
+                rospy.loginfo("Initialize device reader for %s" % self.device)
+            except IndexError, e:
+                rospy.logerr("No device with name: '%s'" % self.device_name)
 
     def run(self):
         for event in self.device.read_loop():
@@ -45,15 +56,9 @@ class DevicePublisher:
     """
     Initialized with topic name and message type
     """
-    def __init__(self, topic_name):
-        self.topic_name = topic_name
-        try:
-            self.publisher = rospy.Publisher(self.topic_name, GenericMessage, queue_size=10)
-        except:
-            msg = "Couldnt add publisher for topic_name %s" % (self.topic_name)
-            rospy.logerr(msg)
-            raise DevicePublisherException(msg)
-        rospy.loginfo("Initialize device publisher for %s" % topic_name)
+    def __init__(self, publisher):
+        self.publisher = publisher
+        rospy.loginfo("Initialized device publisher for %s" % self.publisher)
 
     def publish_event(self, event):
         rospy.loginfo("Publishing event %s" % event)

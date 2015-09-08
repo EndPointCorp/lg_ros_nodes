@@ -3,6 +3,7 @@ project(lg_replay)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  lg_common
 )
 
 catkin_python_setup()
@@ -17,3 +18,8 @@ catkin_install_python(PROGRAMS
   scripts/replay.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  catkin_add_nosetests(test/offline/test_lg_replay.py)
+endif()
