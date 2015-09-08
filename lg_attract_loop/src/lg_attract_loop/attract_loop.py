@@ -7,20 +7,17 @@ import requests
 
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
+from rosapi import params
 
 
 class AttractLoop:
-    def __init__(self, director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation=None):
+    def __init__(self, api_url, director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation=None):
         """
         Class responsible for playing back presentations/scenes that are marked as "attract_loop"
         in Liquid Galaxy content management system.
 
         """
-        self.api_url = rospy.get_param(
-            '~director_api_url',
-            os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')
-        )
-
+        self.api_url = api_url
         self.earth_query_publisher = earth_query_publisher
         self.stop_action = stop_action
         self.default_presentation = default_presentation
@@ -38,6 +35,7 @@ class AttractLoop:
         Method responsible for starting (or continuing) of playback for attract loop
         on state change.
         """
+        self.scene_timer = 0
         if message.data == True:
             rospy.loginfo("Director: Attract loop becoming inactive")
             self.play_loop = False
@@ -58,18 +56,54 @@ class AttractLoop:
         rospy.loginfo("Stopping scene timer")
 
         if self.stop_action == 'stop_playtour':
-            stop_tour_msg = String(data='')
-            rospy.loginfo("Executing 'stop_playtour' action")
-            self.earth_query_publisher.publish(stop_tour_msg)
+            self._stop_playtour()
         elif self.stop_action == 'go_blank':
-            pass
+            self._stop_playtour()
+            self._publish_blank_scene()
         elif self.stop_action == 'load_presentation':
+            self._stop_playtour()
             if self.default_presentation:
                 pass
             else:
                 rospy.logerr("No default presentation defined")
         else:
             pass
+
+    def _stop_playtour(self):
+        stop_tour_msg = String(data='')
+        rospy.loginfo("Executing 'stop_playtour' action")
+        self.earth_query_publisher.publish(stop_tour_msg)
+
+    def _publish_blank_scene(self):
+        rospy.loginfo("Playing blank scene")
+
+        viewports = [viewport.split('/')[2] for viewport in params.get_param_names() if '/viewport/' in viewport]
+
+        scene = {
+                    "description":"rofl",
+                    "duration":666,
+                    "name":"Vader is watching",
+                    "resource_uri":"no uri",
+                    "slug":"vader_watching",
+                    "windows":[]
+                 }
+
+        for viewport_name in viewports:
+            window = {
+                      "assets": [],
+                      "y_coord": 666,
+                      "x_coord": 666,
+                      "height": 666,
+                      "width": 666,
+                      "activity": "no_activity",
+                      "presentation_viewport": viewport_name
+                     }
+            scene['windows'].append(window)
+
+
+        scene_msg = GenericMessage(type='json', message=json.dumps(scene))
+        self.director_scene_publisher.publish(scene_msg)
+
 
     def _play_attract_loop(self, event):
         """

@@ -17,7 +17,7 @@ def main():
     director_scene_topic_name = rospy.get_param('~director_scene_topic_name', '/director/scene')
     director_presentation_topic_name = rospy.get_param('~director_presentation_topic_name', '/director/presentation')
 
-    stop_action = rospy.get_param('~stop_action', 'stop_playtour')
+    stop_action = rospy.get_param('~stop_action', 'go_blank')
     default_presentation = rospy.get_param('~default_presentation', None)
 
     # initialize Director publisher
@@ -26,8 +26,15 @@ def main():
     director_scene_publisher = rospy.Publisher(director_scene_topic_name, GenericMessage, queue_size=1)
     director_presentation_publisher = rospy.Publisher(director_presentation_topic_name, GenericMessage, queue_size=1)
 
+    # get params
+
+    api_url = rospy.get_param(
+            '~director_api_url',
+            os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')
+        )
+
     # initialize main logic class
-    attract_loop = AttractLoop(director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation)
+    attract_loop = AttractLoop(api_url, director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation)
 
     # subscribe to state changes
     rospy.Subscriber(activity_topic, Bool, attract_loop._process_activity_state_change)

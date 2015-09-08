@@ -122,7 +122,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
 
     try:
         message = json.loads(message.message)
-    except (ValueError, SyntaxErorr) as e:
+    except (ValueError, SyntaxError) as e:
         rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
         rospy.logdebug("Message: %s" % message)
         return []
