@@ -120,7 +120,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
     def initialize(self):
         self.asset_service = self.application.asset_service
-    
+
     @gen.coroutine
     def get(self, second_time=False):
         """
