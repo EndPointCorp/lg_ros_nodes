@@ -2,8 +2,8 @@
 Changelog for package lg_replay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.9 (2015-09-09)
+------------------
 * Initial package with test coverage for lg_replay
 * Documentation
 * Contributors: Wojciech Ziniewicz

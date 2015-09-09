@@ -2,8 +2,8 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.9 (2015-09-09)
+------------------
 * Documentation
 * lg_activity: small pep8 fixes
 * lg_activity: pep8 fixes
