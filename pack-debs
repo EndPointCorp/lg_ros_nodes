@@ -28,10 +28,11 @@ sudo dpkg --force-overwrite -i ros-indigo-interactivespaces-msgs_*.deb
 $BUILD $SRCDIR/lg_cms_director
 $BUILD $SRCDIR/lg_common
 sudo dpkg -i ros-indigo-lg-common_*.deb
+$BUILD $SRCDIR/lg_activity
 $BUILD $SRCDIR/lg_builder
 $BUILD $SRCDIR/lg_earth
 $BUILD $SRCDIR/lg_media
 $BUILD $SRCDIR/lg_nav_to_device
+$BUILD $SRCDIR/lg_replay
 $BUILD $SRCDIR/lg_sv
 $BUILD $SRCDIR/liquidgalaxy
-

@@ -52,7 +52,7 @@ class ManagedBrowser(ManagedApplication):
             rospy.loginfo("Purging ManagedBrowser directory: %s" % tmp_dir)
             shutil.rmtree(tmp_dir)
         except OSError, e:
-            pass
+            rospy.logerr("Could not purge the %s directory because %s" % (tmp_dir, e))
 
         cmd.append('--user-data-dir={}'.format(tmp_dir))
         cmd.append('--disk-cache-dir={}'.format(tmp_dir))

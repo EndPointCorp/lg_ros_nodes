@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-"""
-TODO: Browser is not changing url yet.
-"""
 
 import rospy
 from lg_common import AdhocBrowserPool

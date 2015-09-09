@@ -596,6 +596,13 @@ class MultiApp(Configurator):
                 if name == self.name:
                     params = kwargs.copy()
                     params['version'] = self.version
+                    #try:
+                    #    del params['name']
+                    #    del params['script']
+                    #    del params['cfg']
+                    #    del params['parse_console']
+                    #except KeyError:
+                    #    pass
                 else:
                     params = kwargs
                 self._apps.append(App(**params))

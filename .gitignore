@@ -1,3 +1,6 @@
+# osx
+.DS_Store
+
 build/
 bin/
 msg_gen/
