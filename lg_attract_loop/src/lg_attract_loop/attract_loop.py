@@ -40,6 +40,7 @@ class AttractLoop:
         self.director_scene_publisher = director_scene_publisher
         self.director_presentation_publisher = director_presentation_publisher
         self.attract_loop_queue = []
+        self.play_loop = False
         self.scene_timer = 0
         self.initialize_timer()
 
@@ -52,11 +53,13 @@ class AttractLoop:
         on state change.
         """
         self.scene_timer = 0
-        if message.data == True:
+
+        if message.data == True and self.play_loop == True:
             rospy.loginfo("Director: Attract loop becoming inactive")
             self.play_loop = False
             self._stop_attract_loop()
-        elif message.data == False:
+        elif message.data == False and self.play_loop == False:
+            rospy.loginfo("Director: Attract loop becoming active")
             self.play_loop = True
         else:
             rospy.logerr("Activity message contained unknown state")
