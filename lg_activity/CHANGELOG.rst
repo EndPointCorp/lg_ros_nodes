@@ -1,12 +1,19 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package lg_replay
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package lg_activity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
-* Initial package with test coverage for lg_replay
 * Documentation
-* Contributors: Wojciech Ziniewicz
+* lg_activity: small pep8 fixes
+* lg_activity: pep8 fixes
+* lg_activity: small typo fixed
+* lg_activity: test fixes
+*: Restructurized lg_activity files
+* lg_activity - some renaming and fixing + testing
+* Added initial version of not-working lg_activity
+* Added initial lg_activity ros_node with some TDD stuff
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
 
 1.0.5 (2015-08-03)
 ------------------

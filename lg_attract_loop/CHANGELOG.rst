@@ -1,11 +1,16 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package lg_replay
+Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
-* Initial package with test coverage for lg_replay
+* Complete test coverage for lg_attract_loop
 * Documentation
+* lg_activity, lg_cms_director, lg_attract_loop
+  - removed attract loop attempts from director and factored out to a
+  separate node
+  - created lg_attract_loop node for playback of attract loop on LG
+  - fixed lg_activity bug
 * Contributors: Wojciech Ziniewicz
 
 1.0.5 (2015-08-03)
