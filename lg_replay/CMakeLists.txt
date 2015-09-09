@@ -3,7 +3,6 @@ project(lg_replay)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  lg_common
 )
 
 catkin_python_setup()
