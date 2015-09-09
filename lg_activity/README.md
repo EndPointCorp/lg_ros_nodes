@@ -19,7 +19,7 @@ needs to know the message type that it should use to subscribe to the
 topic as well as what should be extracted from user input device message
 as a value (e.g. which attribute to compare).
 
-![lg_activity diagram](https://raw.githubusercontent.com/EndPointCorp/lg_ros_nodes/master/lg_activity/lg_activity.svg "lg activity diagram")
+![lg_activity diagram](https://raw.githubusercontent.com/EndPointCorp/lg_ros_nodes/development/lg_activity/lg_activity.svg?token=AAVmmALc_2Ao5lH753i40GzJ7BW9rPvDks5V-Wc-wA%3D%3D "lg activity diagram")
 
 Direct link to the diagram:
 https://docs.google.com/drawings/d/1u2oJ-MyN6IwjE_-Oc1J7HWOvNe0uzMV816XNRqOh7sI/edit?usp=sharing
