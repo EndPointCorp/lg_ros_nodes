@@ -3,6 +3,9 @@ var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 0);
 var shouldTilt = getParameterByName('tilt', stringToBoolean, false);
+var scaleX = getParameterByName('scaleX', Number, 1.66);
+var scaleY = getParameterByName('scaleY', Number, 1.66);
+var scaleZ = getParameterByName('scaleZ', Number, 1);
 
 function initialize() {
   console.log('initializing Street View');
@@ -26,9 +29,9 @@ function initialize() {
     disableDefaultUI: true,
     linksControl: showLinks
   };
-  var canvas = document.getElementById('map-canvas');
-  var map = new google.maps.Map(canvas, mapOptions);
-  var sv = new google.maps.StreetViewPanorama(canvas, svOptions);
+  var canvas = $('#map-canvas');
+  var map = new google.maps.Map(canvas[0], mapOptions);
+  var sv = new google.maps.StreetViewPanorama(canvas[0], svOptions);
 
   map.setStreetView(sv);
 
@@ -41,11 +44,12 @@ function initialize() {
     sv.setZoom(3);
   });
 
-  var wrapper = document.getElementById('wrapper');
-  var canvasRatio = parseMatrix(
-                    window.getComputedStyle(wrapper, null)
-                          .getPropertyValue('transform'))[0];
-
+  var canvasRatio = 1;
+  var wrapper = $('#wrapper');
+  if (shouldTilt) {
+    wrapper.css('transform', getScaleString());
+    canvasRatio = parseMatrix(wrapper.css('transform'))[0];
+  }
 
   svClient.on('pov_changed', function(povQuaternion) {
     // TODO(mv): move quaternion parsing into StreetviewClient library
@@ -60,7 +64,7 @@ function initialize() {
     };
     sv.setPov(pov);
     if (shouldTilt) {
-      canvas.setAttribute('style', 'transform: rotateZ(' + roll + 'deg);');
+      canvas.css('transform', 'rotateZ(' + roll + 'deg);');
     }
   });
 }
@@ -78,6 +82,12 @@ function getParameterByName(name, type, def) {
 function stringToBoolean(s) {
   var truePattern = /^1$|^true$/i;
   return s.search(truePattern) === 0;
+}
+
+function getScaleString() {
+  var ret = 'scale3d({x}, {y}, {z})';
+
+  return ret.replace('{x}', scaleX).replace('{y}', scaleY).replace('{z}', scaleZ);
 }
 
 // # vim: tabstop=8 expandtab shiftwidth=2 softtabstop=2
