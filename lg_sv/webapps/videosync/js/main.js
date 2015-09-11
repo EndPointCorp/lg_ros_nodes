@@ -28,9 +28,9 @@ var src = opts['src'];
 /*
  * Rosbridge URL
  */
-var rosbridge_url = 'wss://42-b:9090';
+var rosbridge_url = 'ws://42-b:9090';
 if ('rosbridge_host' in opts && 'rosbridge_port' in opts) {
-  rosbridge_url = 'wss://' + opts['rosbridge_host'] + ':' + opts['rosbridge_port'];
+  rosbridge_url = 'ws://' + opts['rosbridge_host'] + ':' + opts['rosbridge_port'];
 }
 console.assert(src, 'Need a "src" in query string');
 
