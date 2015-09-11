@@ -18,7 +18,7 @@ import unittest
 from lg_sv import StreetviewUtils, PanoViewerServer
 from geometry_msgs.msg import Quaternion, Pose2D
 from std_msgs.msg import String
-from lg_common.helpers import get_first_asset_from_activity
+from lg_common.helpers import get_first_asset_from_activity, load_director_message
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -205,10 +205,12 @@ class TestSVServer(unittest.TestCase):
         """ % panoid
 
         # get existing asset
-        asset = get_first_asset_from_activity(director_msg, "streetview")
+        asset = get_first_asset_from_activity(
+            load_director_message(director_msg), "streetview")
         self.assertEqual(asset, panoid, 'Invalid asset returned')
         # get non existing asset
-        asset = get_first_asset_from_activity(director_msg, "panoview")
+        asset = get_first_asset_from_activity(
+                load_director_message(director_msg), "panoview")
         self.assertEqual(asset, None, 'No asset should have been returned')
 
 if __name__ == '__main__':
