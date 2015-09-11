@@ -79,7 +79,7 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
 
 def load_director_message(message):
     """
-    json.loads the director message, or warns and returns an empty dict
+    json.loads the director message, or warns and throws an exception
     """
     ret = {}
     try:
@@ -87,6 +87,7 @@ def load_director_message(message):
     except (ValueError, SyntaxError) as e:
         rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
         rospy.logdebug("Message: %s" % message)
+        raise e
 
     return ret
 
