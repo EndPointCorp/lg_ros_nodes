@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_media</name>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <description>Ad hoc media services</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -20,4 +20,5 @@
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>lg_common</run_depend>
+  <test_depend>rostest</test_depend>
 </package>

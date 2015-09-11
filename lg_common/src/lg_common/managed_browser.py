@@ -27,7 +27,7 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 **kwargs):
+                 shell=True, **kwargs):
 
         cmd = [binary]
 
@@ -52,7 +52,7 @@ class ManagedBrowser(ManagedApplication):
             rospy.loginfo("Purging ManagedBrowser directory: %s" % tmp_dir)
             shutil.rmtree(tmp_dir)
         except OSError, e:
-            pass
+            rospy.logerr("Could not purge the %s directory because %s" % (tmp_dir, e))
 
         cmd.append('--user-data-dir={}'.format(tmp_dir))
         cmd.append('--disk-cache-dir={}'.format(tmp_dir))
