@@ -2,6 +2,7 @@ var showLinks = getParameterByName('showLinks', stringToBoolean, false);
 var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 0);
+var shouldTilt = getParameterByName('tilt', stringToBoolean, false);
 
 function initialize() {
   console.log('initializing Street View');
@@ -58,7 +59,9 @@ function initialize() {
       pitch: transformedHTR[1]
     };
     sv.setPov(pov);
-    canvas.setAttribute('style', 'transform: rotateZ(' + roll + 'deg);');
+    if (shouldTilt) {
+      canvas.setAttribute('style', 'transform: rotateZ(' + roll + 'deg);');
+    }
   });
 }
 
