@@ -73,6 +73,12 @@ def get_tests():
     return nose_tests, ros_tests
 
 
+def pep8_test():
+    ret = os.system('pep8')
+    ret += os.system('(cd lg_cms_director; pep8)')
+    return ret
+
+
 def run_tests():
     nose_tests, ros_tests = get_tests()
     fail_flags = {}
@@ -82,6 +88,7 @@ def run_tests():
     for ros_test in ros_tests:
         ret = os.system('rostest %s' % ros_test)
         fail_flags[ros_test] = ret
+    fail_flags['pep8'] = pep8_test()
     for test, flag in fail_flags.items():
         print "RAN TEST: %s\nGot exit code %d" % (test, flag)
     # check for non-zero exit status, and fail if found
