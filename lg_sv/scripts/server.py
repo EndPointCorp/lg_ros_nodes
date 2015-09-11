@@ -60,8 +60,8 @@ def main():
                      server.handle_state_msg)
 
     # This will translate director messages into /<server_type>/panoid messages
-    def handle_director_message(msg):
-        asset = get_first_asset_from_activity(msg, server_type)
+    def handle_director_message(scene):
+        asset = get_first_asset_from_activity(scene, server_type)
         if not asset:
             return
         panoid_pub.publish(String(asset))

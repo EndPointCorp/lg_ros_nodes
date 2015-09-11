@@ -153,27 +153,23 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     rospy.logdebug("Returning assets: %s" % assets)
     return assets
 
-def find_window_with_activity(message, activity):
+def find_window_with_activity(scene, activity):
     """
     Returns the window who's activity == $activity, or {}
     """
-    message = load_director_message(message)
-    if not message:
-        return {}
-
-    for window in message.get('windows', []):
+    for window in scene.get('windows', []):
         if window.get('activity') == activity:
             return window
 
     return {}
 
-def get_first_asset_from_activity(message, activity):
+def get_first_asset_from_activity(scene, activity):
     """
     Returns just one asset from the first matching activity, or None
 
     This is useful for streetview / pano activity types
     """
-    window = find_window_with_activity(message, activity)
+    window = find_window_with_activity(scene, activity)
 
     return window.get('assets', [None])[0]
 
