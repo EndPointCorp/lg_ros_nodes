@@ -24,20 +24,22 @@ class ManagedAdhocBrowser(ManagedBrowser):
                 kiosk=True)
 
     def __str__(self):
-        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,
+        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s, proc: %s>" % (self.slug,
                                                                                   self.url,
                                                                                   self.geometry.width,
                                                                                   self.geometry.height,
                                                                                   self.geometry.x,
-                                                                                  self.geometry.y)
+                                                                                  self.geometry.y,
+                                                                                  self.proc)
 
     def __repr__(self):
-        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,
+        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s, proc: %s>" % (self.slug,
                                                                                   self.url,
                                                                                   self.geometry.width,
                                                                                   self.geometry.height,
                                                                                   self.geometry.x,
-                                                                                  self.geometry.y)
+                                                                                  self.geometry.y,
+                                                                                  self.proc)
 
     def update_geometry(self, geometry):
         """

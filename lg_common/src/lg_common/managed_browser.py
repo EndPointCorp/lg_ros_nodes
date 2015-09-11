@@ -27,7 +27,7 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, **kwargs):
+                 shell=False, **kwargs):
 
         cmd = [binary]
 

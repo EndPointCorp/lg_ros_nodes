@@ -1,6 +1,7 @@
 from lg_common.msg import WindowGeometry
 import subprocess
 import os
+import rospy
 
 
 class WindowIdentityError(Exception):
@@ -200,10 +201,13 @@ def get_awesome_pid():
 
 def setup_environ():
     """Attempt to copy the environment of the window manager."""
+    rospy.loginfo('looking for awesome pid')
     awesome_pid = get_awesome_pid()
     if awesome_pid is None:
         raise Exception('Could not find awesome pid')
+    rospy.loginfo('found awesome pid at {}'.format(awesome_pid))
 
+    rospy.loginfo('reading environ')
     with open('/proc/{}/environ'.format(awesome_pid), 'r') as f:
         awesome_environ_raw = f.read().strip('\0')
 

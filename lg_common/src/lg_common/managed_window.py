@@ -1,4 +1,6 @@
+import os
 import rospy
+import signal
 import subprocess
 import threading
 import re
@@ -35,7 +37,7 @@ class ManagedWindow(object):
 
         dims = map(int, m.groups())
         return WindowGeometry(width=dims[0], height=dims[1],
-                              x=dims[2], y=dims[3])
+                              x=dims[3], y=dims[3])
 
     @staticmethod
     def lookup_viewport_geometry(viewport_key):
@@ -79,7 +81,12 @@ class ManagedWindow(object):
     def _cleanup_proc(self):
         with self.lock:
             if self.proc is not None:
-                self.proc.kill()
+                rospy.loginfo('cleaning up awesome proc')
+                try:
+                    os.killpg(self.proc.pid, signal.SIGTERM)
+                except:
+                    rospy.loginfo('caught an exception cleaning up proc')
+                rospy.loginfo('all clean')
 
     def set_visibility(self, visible):
         with self.lock:
@@ -101,7 +108,7 @@ class ManagedWindow(object):
                     'failed to setup awesome environment: {}'.format(e.message)
                 )
             try:
-                self.proc = subprocess.Popen(cmd)
+                self.proc = subprocess.Popen(cmd, preexec_fn=os.setsid)
             except OSError:
                 rospy.logerr('failed to run {}'.format(XDOTOOL_BIN))
 

@@ -122,10 +122,11 @@ class ManagedApplication(object):
     # TODO(mv): hook this up to ProcController
     def _handle_respawn(self):
         if (self.window is not None) and (self.state != ApplicationState.STOPPED):
-            rospy.loginfo("Handling unwanted respawn of %s by converging the window" % self)
+            rospy.loginfo("Handling spawn of %s by converging the window" % self)
             self.window.converge()
+            rospy.loginfo("Finished converging the window")
         if (self.window is None) and (self.state == ApplicationState.STOPPED):
-            rospy.loginfo("Handling unwanted respawn of %s by killing the process" % self)
+            rospy.loginfo("Handling spawn of %s by killing the process" % self)
             self.proc.stop()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
