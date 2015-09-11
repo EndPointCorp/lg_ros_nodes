@@ -33,7 +33,7 @@ class DeviceReplay:
             try:
                 os.system("sudo chmod 0666 /dev/input/*")
                 devices = [InputDevice(fn) for fn in list_devices()]
-                self.device = [device for device in devices if device.name == self.device_name ][0]
+                self.device = [device for device in devices if device.name == self.device_name][0]
                 rospy.loginfo("Initialize device reader for %s" % self.device)
             except IndexError, e:
                 rospy.logerr("No device with name: '%s'" % self.device_name)

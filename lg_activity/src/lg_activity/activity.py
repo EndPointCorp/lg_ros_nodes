@@ -329,7 +329,6 @@ class ActivityTracker:
         """
         pass
 
-
     def activity_callback(self, topic_name=None, state=True, strategy=None):
         """
         ActivitySource uses this callback to set it's state in ActivityTracker
@@ -393,7 +392,7 @@ class ActivityTracker:
 
         """
         now = rospy.get_time()
-        self.sources_active_within_timeout = {state_name:state for state_name, state in self.activity_states.iteritems() if (now - self.timeout) < state['time']}
+        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if (now - self.timeout) < state['time']}
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True
@@ -407,7 +406,6 @@ class ActivityTracker:
             rospy.loginfo("States: %s" % self.activity_states)
         else:
             rospy.logdebug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
-
 
     def _init_activity_sources(self):
         """

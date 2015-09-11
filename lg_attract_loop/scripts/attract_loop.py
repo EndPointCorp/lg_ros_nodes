@@ -31,9 +31,9 @@ def main():
     # get params
 
     api_url = rospy.get_param(
-            '~director_api_url',
-            os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')
-        )
+        '~director_api_url',
+        os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')
+    )
 
     # director API
     director_api_proxy = DirectorAPIProxy(api_url)
@@ -43,7 +43,6 @@ def main():
 
     # subscribe to state changes
     rospy.Subscriber(activity_topic, Bool, attract_loop._process_activity_state_change)
-
 
     rospy.spin()
 

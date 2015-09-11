@@ -54,11 +54,11 @@ class AttractLoop:
         """
         self.scene_timer = 0
 
-        if message.data == True and self.play_loop == True:
+        if message.data is True and self.play_loop is True:
             rospy.loginfo("Director: Attract loop becoming inactive")
             self.play_loop = False
             self._stop_attract_loop()
-        elif message.data == False and self.play_loop == False:
+        elif message.data is False and self.play_loop is False:
             rospy.loginfo("Director: Attract loop becoming active")
             self.play_loop = True
         else:
@@ -99,30 +99,28 @@ class AttractLoop:
         viewports = [viewport.split('/')[2] for viewport in params.get_param_names() if '/viewport/' in viewport]
 
         scene = {
-                    "description":"rofl",
-                    "duration":666,
-                    "name":"Vader is watching",
-                    "resource_uri":"no uri",
-                    "slug":"vader_watching",
-                    "windows":[]
-                 }
+            "description": "rofl",
+            "duration": 666,
+            "name": "Vader is watching",
+            "resource_uri": "no uri",
+            "slug": "vader_watching",
+            "windows": []
+        }
 
         for viewport_name in viewports:
             window = {
-                      "assets": [],
-                      "y_coord": 666,
-                      "x_coord": 666,
-                      "height": 666,
-                      "width": 666,
-                      "activity": "no_activity",
-                      "presentation_viewport": viewport_name
-                     }
+                "assets": [],
+                "y_coord": 666,
+                "x_coord": 666,
+                "height": 666,
+                "width": 666,
+                "activity": "no_activity",
+                "presentation_viewport": viewport_name
+            }
             scene['windows'].append(window)
-
 
         scene_msg = GenericMessage(type='json', message=json.dumps(scene))
         self.director_scene_publisher.publish(scene_msg)
-
 
     def _play_attract_loop(self, event):
         """
@@ -159,12 +157,12 @@ class AttractLoop:
 
         if self.play_loop and self.scene_timer <= 0:
             scene_presentation = self.attract_loop_queue.pop(0)
-            scene = scene_presentation['scene'] # bare object with resource_uri
+            scene = scene_presentation['scene']  # bare object with resource_uri
             scene_url = "%s%s" % (scene['resource_uri'], opts)
-            presentation = scene_presentation['presentation'] # bare object with resource_uri
+            presentation = scene_presentation['presentation']  # bare object with resource_uri
             presentation_url = "%s%s" % (presentation['resource_uri'], opts)
 
-            full_scene = json.loads(self.api_proxy.get(scene_url)) # ROS nodes understandable full scene
+            full_scene = json.loads(self.api_proxy.get(scene_url))  # ROS nodes understandable full scene
             scene_duration = full_scene['duration']
             full_serialized_scene = json.dumps(full_scene)
             serialized_presentation = json.dumps(presentation)
@@ -186,9 +184,9 @@ class AttractLoop:
         if presentationgroups:
             presentations = self._fetch_presentationgroup_presentations(presentationgroups)
             scenes = self._fetch_scenes_from_presentations(presentations)
-            content =  {'presentationgroups': presentationgroups,
-                        'presentations': presentations,
-                        'scenes': scenes }
+            content = {'presentationgroups': presentationgroups,
+                       'presentations': presentations,
+                       'scenes': scenes}
             #rospy.loginfo("Returning content for attract loop: %s" % content)
             return content
         else:
@@ -247,4 +245,3 @@ class AttractLoop:
         except Exception, e:
             rospy.logerr("Could not get presentationgroups because: %s" % e)
             return []
-

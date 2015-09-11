@@ -4,8 +4,10 @@ import rospy
 import urllib
 import urlparse
 
+
 class WrongActivityDefinition(Exception):
     pass
+
 
 def escape_asset_url(asset_url):
     """
@@ -150,6 +152,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     rospy.logdebug("Returning assets: %s" % assets)
     return assets
 
+
 def list_of_dicts_is_homogenous(dicts_list):
     """
     Returns True if dictionary values are all the same
@@ -173,6 +176,7 @@ def rewrite_message_to_dict(message):
     for slot in slots:
         deserialized_message[slot] = getattr(message, slot)
     return deserialized_message
+
 
 def unpack_activity_sources(sources_string):
     """
@@ -230,7 +234,7 @@ def unpack_activity_sources(sources_string):
             msg_type = source_fields[1].split('-')[0]
             try:
                 slot = source_fields[1].split('-')[1]
-            except IndexError,e:
+            except IndexError, e:
                 slot = None
 
             strategy = source_fields[2].split('-')[0]
@@ -251,6 +255,7 @@ def unpack_activity_sources(sources_string):
         exception_msg = "Could not unpack activity sources string because: %s" % e
         rospy.logerr(exception_msg)
         raise WrongActivityDefinition(exception_msg)
+
 
 def check_registration(e):
     """\
@@ -279,6 +284,7 @@ def begin_checking_registration(interval=1):
     """
     rospy.Timer(rospy.Duration(interval), _check_registration)
 
+
 def next_scene_uri(presentation, scene):
     """
     Read two JSON-encoded strings: a Presentation and a Scene.
@@ -297,6 +303,7 @@ def next_scene_uri(presentation, scene):
     except IndexError:
         rospy.loginfo("Already at last Scene in this Presentation.")
         return None
+
 
 def get_message_type_from_string(string):
     """
