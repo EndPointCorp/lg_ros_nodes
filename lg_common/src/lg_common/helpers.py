@@ -3,6 +3,8 @@ import rospy
 import urllib
 import urlparse
 
+from interactivespaces_msgs.msg import GenericMessage
+
 def escape_asset_url(asset_url):
     """
     Replace all non-alnum characters with underscore
@@ -174,3 +176,21 @@ def get_first_asset_from_activity(message, activity):
     window = find_window_with_activity(message, activity)
 
     return window.get('assets', [None])[0]
+
+def on_new_scene(cb):
+    """
+    Sets up a subscriber for director messages, unwraps and loads
+    the message before calling the cb
+    """
+    dh = DirectorHandler(cb)
+    return rospy.Subscriber('/director/scene', GenericMessage,
+                            dh.handle_message)
+
+
+class DirectorHandler:
+    def __init__(self, callback):
+        self.callback = callback
+
+    def handle_message(msg):
+        d = load_director_message(msg)
+        self.callback(d)
