@@ -45,7 +45,7 @@ class DirectorMediaBridge():
         # first get assets
         medias = extract_first_asset_from_director_message(data, self.media_type, self.viewport_name)
 
-        rospy.logdebug("Got assets for %s based media player %s" % (self.media_type, mplayer_medias))
+        rospy.logdebug("Got assets for %s based media player %s" % (self.media_type, medias))
 
         # and wrap them inside AdhocMedia
 
