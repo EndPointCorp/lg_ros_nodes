@@ -210,7 +210,7 @@ class TestSVServer(unittest.TestCase):
         self.assertEqual(asset, panoid, 'Invalid asset returned')
         # get non existing asset
         asset = get_first_asset_from_activity(
-                load_director_message(director_msg), "panoview")
+            load_director_message(director_msg), "panoview")
         self.assertEqual(asset, None, 'No asset should have been returned')
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ import urlparse
 
 from interactivespaces_msgs.msg import GenericMessage
 
+
 class WrongActivityDefinition(Exception):
     pass
 
@@ -165,6 +166,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     rospy.logdebug("Returning assets: %s" % assets)
     return assets
 
+
 def find_window_with_activity(scene, activity):
     """
     Returns the window who's activity == $activity, or {}
@@ -175,6 +177,7 @@ def find_window_with_activity(scene, activity):
 
     return {}
 
+
 def get_first_asset_from_activity(scene, activity):
     """
     Returns just one asset from the first matching activity, or None
@@ -184,6 +187,7 @@ def get_first_asset_from_activity(scene, activity):
     window = find_window_with_activity(scene, activity)
 
     return window.get('assets', [None])[0]
+
 
 def on_new_scene(cb):
     """
