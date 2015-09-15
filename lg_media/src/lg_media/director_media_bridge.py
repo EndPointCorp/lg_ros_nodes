@@ -7,6 +7,7 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import WindowGeometry
 from lg_common.helpers import extract_first_asset_from_director_message
 
+
 class DirectorMediaBridge():
     """
     Bridge between director and MplayerPool or BrowserPlayerPool on specified viewport_name

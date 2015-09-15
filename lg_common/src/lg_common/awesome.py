@@ -25,6 +25,7 @@ def regex_escape(raw):
     escaped = escaped.replace("\0", "%z")
     return escaped
 
+
 def get_rule_types(window):
     """Get a dict of rule types and values for the window.
 
@@ -48,6 +49,7 @@ def get_rule_types(window):
         raise WindowIdentityError('Could not determine window identity')
     return rules
 
+
 def get_rule_pattern(window):
     """Get a rule to match the given window.
 
@@ -61,6 +63,7 @@ def get_rule_pattern(window):
         return "%s = '%s'" % r
     patternized = map(pattern, get_rule_types(window).iteritems())
     return ', '.join(patternized)
+
 
 def get_properties(window):
     """Get a properties string to converge the window to its state.
@@ -90,6 +93,7 @@ def get_properties(window):
         ])
     return ', '.join(prop_list)
 
+
 def get_callback(window):
     """Get an awesome callback to move the window to its proper spot.
 
@@ -107,6 +111,7 @@ def get_callback(window):
     else:
         return ""
 
+
 def get_entry(window):
     """Get the full awesome (awful) rule that will converge the window.
 
@@ -121,6 +126,7 @@ def get_entry(window):
     callback = get_callback(window)
     return "{ rule = { %s }, properties = { %s }, callback = %s }" % (rule, properties, callback)
 
+
 def get_subtractive_script(window):
     """Get a script that will remove existing awesome (awful) rules for the
     window.
@@ -132,12 +138,14 @@ def get_subtractive_script(window):
         str: Lua code to remove existing rules for the window.
     """
     rules = get_rule_types(window)
+
     def rule(r):
         return "rule['rule']['%s'] == '%s'" % r
     checks = ' and '.join(map(rule, rules.iteritems()))
     return "for key,rule in pairs(awful.rules.rules) do if {checks} then table.remove(awful.rules.rules, key) end end".format(
         checks=checks
     )
+
 
 def get_additive_script(window):
     """Get a script that will add an awesome (awful) rule for the window.
@@ -151,6 +159,7 @@ def get_additive_script(window):
     entry = get_entry(window)
     return "table.insert(awful.rules.rules, 1, {entry})".format(entry=entry)
 
+
 def get_apply_script(window):
     """Get a script that will apply rules to all awesome window clients that
     match the window's identity.
@@ -163,6 +172,7 @@ def get_apply_script(window):
     """
     pattern = get_rule_pattern(window)
     return "for k,c in pairs(client.get()) do if awful.rules.match(c, {%s}) then awful.rules.apply(c) end end" % pattern
+
 
 def get_script(window):
     """Combine scripts to form a mega-script that fixes everything.
@@ -179,6 +189,7 @@ def get_script(window):
         get_additive_script(window),
         get_apply_script(window)
     ])
+
 
 def get_awesome_pid():
     awesome_pid = None
@@ -198,6 +209,7 @@ def get_awesome_pid():
 
     return awesome_pid
 
+
 def setup_environ():
     """Attempt to copy the environment of the window manager."""
     awesome_pid = get_awesome_pid()
@@ -213,6 +225,7 @@ def setup_environ():
     pairs = map(split_environ, awesome_environ_raw.split('\0'))
     awesome_environ = dict((p[0], p[1]) for p in pairs)
     # TODO(mv): return environment for Popen instead of messing with parent environment
+
     def copy_environ(k):
         os.environ[k] = awesome_environ[k]
     copy_environ('DISPLAY')

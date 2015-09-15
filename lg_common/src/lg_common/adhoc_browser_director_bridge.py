@@ -60,12 +60,12 @@ class AdhocBrowserDirectorBridge():
         for browser in browsers:
             browser_name = 'adhoc_browser_' + self.viewport_name + '_' + str(browser_id)
             adhoc_browser = AdhocBrowser()
-            adhoc_browser.id=browser_name
-            adhoc_browser.url=browser['path']
-            adhoc_browser.geometry.x=browser['x_coord'] + self._get_viewport_offset()['x']
-            adhoc_browser.geometry.y=browser['y_coord'] + self._get_viewport_offset()['y']
-            adhoc_browser.geometry.height=browser['height']
-            adhoc_browser.geometry.width=browser['width']
+            adhoc_browser.id = browser_name
+            adhoc_browser.url = browser['path']
+            adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']
+            adhoc_browser.geometry.y = browser['y_coord'] + self._get_viewport_offset()['y']
+            adhoc_browser.geometry.height = browser['height']
+            adhoc_browser.geometry.width = browser['width']
 
             adhoc_browsers.append(adhoc_browser)
             browser_id += 1
