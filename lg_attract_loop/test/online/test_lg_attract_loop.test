@@ -1,0 +1,6 @@
+<launch>
+    <param name="/viewport/mock1" value="640x480+0+0" />
+    <param name="/viewport/mock2" value="640x480+640+0" />
+    <param name="/viewport/mock3" value="640x480+1280+0" />
+    <test test-name="test_lg_attract_loop" pkg="lg_attract_loop" type="test_lg_attract_loop.py"/>
+</launch>

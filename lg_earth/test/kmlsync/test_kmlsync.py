@@ -112,13 +112,13 @@ class TestKMLSync(unittest.TestCase):
         # wait at most 5 seconds for listenerpublisher to be registered
         timeout_t = time.time() + 5.0
         while not rostest.is_subscriber(
-            rospy.resolve_name(PUBTOPIC),
-            rospy.resolve_name(LPNODE)) and time.time() < timeout_t:
+                rospy.resolve_name(PUBTOPIC),
+                rospy.resolve_name(LPNODE)) and time.time() < timeout_t:
             time.sleep(0.1)
 
         self.assert_(rostest.is_subscriber(
             rospy.resolve_name(PUBTOPIC),
-            rospy.resolve_name(LPNODE)), "%s is not up"%LPNODE)
+            rospy.resolve_name(LPNODE)), "%s is not up" % LPNODE)
 
     def wait_for_http(self):
         # TODO: implement this
@@ -187,7 +187,7 @@ class TestKMLSync(unittest.TestCase):
         asset_urls = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
 
         expected_cookie = 'asset_slug=' + generate_cookie(asset_urls)
-        expected_list_of_created_slugs = map( escape_asset_url, asset_urls)
+        expected_list_of_created_slugs = map(escape_asset_url, asset_urls)
         expected_list_of_deleted_slugs = []
 
         # start testing...
@@ -213,9 +213,9 @@ class TestKMLSync(unittest.TestCase):
         make a legit get request to get 'OK' and status_code 200 and assert for the message that was sent
         """
         expected_status = 400
-        bad1 = self.get_request(KML_ENDPOINT+"/query.html")
-        bad2 = self.get_request(KML_ENDPOINT+"/query.html?query")
-        bad3 = self.get_request(KML_ENDPOINT+"/query.html?query=")
+        bad1 = self.get_request(KML_ENDPOINT + "/query.html")
+        bad2 = self.get_request(KML_ENDPOINT + "/query.html?query")
+        bad3 = self.get_request(KML_ENDPOINT + "/query.html?query=")
         self.assertEqual(bad1.status_code, expected_status)
         self.assertEqual(bad2.status_code, expected_status)
         self.assertEqual(bad3.status_code, expected_status)
@@ -224,12 +224,12 @@ class TestKMLSync(unittest.TestCase):
         expected_string = "OK"
 
         #self.wait_for_pubsub()
-        good1 = self.get_request(KML_ENDPOINT+"/query.html?query=tour=myworldtour")
+        good1 = self.get_request(KML_ENDPOINT + "/query.html?query=tour=myworldtour")
         rospy.sleep(1)
         good1_expected_string = "myworldtour"
         self.assertEqual(self.query_string, good1_expected_string)
 
-        good2 = self.get_request(KML_ENDPOINT+"/query.html?query=tour=My World Tour")
+        good2 = self.get_request(KML_ENDPOINT + "/query.html?query=tour=My World Tour")
         rospy.sleep(1)
         good2_expected_string = "My World Tour"
         self.assertEqual(self.query_string, good2_expected_string)
@@ -246,7 +246,7 @@ class TestKMLSync(unittest.TestCase):
         is returned
         """
         if timeout_for_requests <= 1:
-            return # not tesable with small timeout for requests
+            return  # not tesable with small timeout for requests
         t = Thread(target=self._sleep_and_send_director)
         t.start()
         self._test_director_state()
@@ -259,7 +259,7 @@ class TestKMLSync(unittest.TestCase):
         new changed state.
         """
         if timeout_for_requests <= 1:
-            return # not tesable with small timeout for requests
+            return  # not tesable with small timeout for requests
         async_requests = []
         for i in range(5):
             pool = ThreadPool(processes=2)
@@ -291,12 +291,14 @@ class TestKMLSync(unittest.TestCase):
 def get_cookie_string(s):
     return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
 
+
 def get_created_elements(x):
     try:
         tmp = ET.fromstring(x).find('.//{http://www.opengis.net/kml/2.2}Create').findall('.//{http://www.opengis.net/kml/2.2}name')
         return [elem.text for elem in tmp]
     except AttributeError:
         return []
+
 
 def get_deleted_elements(x):
     try:

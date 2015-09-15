@@ -4,6 +4,7 @@ from lg_earth import KmlSyncState
 from interactivespaces_msgs.msg import GenericMessage
 from lg_earth.srv import KmlState, PlaytourQuery
 
+
 def main():
     rospy.init_node('kml_service', anonymous=True)
 

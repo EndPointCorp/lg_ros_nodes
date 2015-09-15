@@ -9,6 +9,7 @@ import sys
 import json
 import rospy
 import signal
+import requests
 
 
 from pulsar.apps import wsgi, ws, Application, MultiApp
@@ -16,14 +17,16 @@ from pulsar.apps.data import create_store
 from pulsar.apps.ds import pulsards_url
 from pulsar.apps.http import HttpClient
 from pulsar import command, task, coroutine_return
+from std_msgs.msg import Bool
 
 from interactivespaces_msgs.msg import GenericMessage
- 
+
 
 api_url = rospy.get_param(
     '~director_api_url',
     os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')
 )
+
 DIRECTOR_API_URL = api_url
 
 rospy.loginfo("Using DIRECTOR_API_URL = %s" % api_url)
@@ -90,7 +93,7 @@ class Resetter():
     def __call__(self, channel, message):
         # Make sure this is actually a new Scene, not a Presentation.
         if channel != 'scene':
-            return # nevermind
+            return  # nevermind
 
         # Parse the new Scene for a duration.
         try:
@@ -129,7 +132,7 @@ class DirectorWS(ws.WS):
             # When a message arrives on a WebSocket, publish to the store.
             self.publish_set(self.channel, message)
 
-    def on_open(self, websocket): # When a new connection is established
+    def on_open(self, websocket):  # When a new connection is established
         # Add a client that writes new pub/sub messages back to the websocket.
         self.pubsub.add_client(ws.PubSubClient(websocket, self.channel))
         # Fetch the most recent message and send it to the client.
@@ -157,7 +160,7 @@ class ProxyRouter(wsgi.Router):
         request.response.status_code = response.status_code
         request.response.headers['Access-Control-Allow-Origin'] = '*'
         # Return the updated WsgiResponse using magic.
-        coroutine_return(request.response) # asynchronous voodoo for "yield"
+        coroutine_return(request.response)  # asynchronous voodoo for "yield"
 
 
 class Site(wsgi.LazyWsgi):
@@ -171,13 +174,13 @@ class Site(wsgi.LazyWsgi):
         self.store = create_store(cfg.data_store, loop=loop)
 
         # Create Handlers for three WebSockets and their data_store channels.
-        return wsgi.WsgiHandler([ # route order is significant!
+        return wsgi.WsgiHandler([  # route order is significant!
             ws.WebSocket('/scene', DirectorWS(self.store, 'scene')),
             ws.WebSocket(
                 '/presentation', DirectorWS(self.store, 'presentation')),
             ws.WebSocket('/group', DirectorWS(self.store, 'group')),
             ProxyRouter('/director_api/<path:path>', DIRECTOR_API_URL),
-            wsgi.MediaRouter('/', ASSET_DIR), # static files
+            wsgi.MediaRouter('/', ASSET_DIR),  # static files
         ])
 
 
@@ -190,7 +193,7 @@ class Director(Application):
         # We should only need one Worker.
         self.cfg.set('workers', 1)
 
-    def publish_ros(self, channel, message):
+    def publish_ros(self, channel, message, msg_type=None):
         """\
         Publish the new state as a message on a ROS topic.
         """
@@ -198,34 +201,18 @@ class Director(Application):
         # http://pythonhosted.org/pulsar/apps/data/clients.html#pulsar.apps.data.store.PubSub.add_client
 
         # Use Interactive Spaces' own ROS message type.
-        msg = GenericMessage()
-        msg.type = 'json'
-        msg.message = message # verbatim
+        if msg_type == 'Bool':
+            msg = Bool()
+            msg.data = message
+        else:
+            msg = GenericMessage()
+            msg.type = 'json'
+            msg.message = message  # verbatim
 
         if not rospy.is_shutdown():
-            rospy.loginfo(msg) # debug
+            rospy.loginfo(msg)  # debug
             # Select the ROS topic for this channel and publish.
             self.pubs[channel].publish(msg)
-
-    @task
-    def fetch_next_scene(self):
-        """\
-        Begin an HTTP Request for the current Presentation's next Scene.
-        """
-
-        current_presentation = yield self.client.get('presentation')
-        current_scene = yield self.client.get('scene')
-
-        resource_uri = next_scene_uri(
-            presentation=current_presentation,
-            scene=current_scene
-        )
-
-        if resource_uri:
-            url = DIRECTOR_API_URL + resource_uri
-            self.logger.info("fetching " + url)
-            # Begin HTTP Request, add callback for when it completes.
-            self._http.get(url, post_request=self.new_scene)
 
     def new_scene(self, response, exc=None):
         """\
@@ -258,8 +245,12 @@ class Director(Application):
         Called when the single Worker process begins.
         Setup connections to both the state datastore and ROS topics.
         """
+        self.activity_topic = rospy.get_param("~activity_topic", "/activity/active")
         # Pulsar's Asynchronous HTTP Client
         self._http = HttpClient()
+
+        # Initialize attract loop queue. Attract loop contains dicts with {'scene': scene, 'presentation': presentation}
+        self.attract_loop_queue = []
 
         # Provide access to this worker's logger.
         self.logger = worker.logger
@@ -274,12 +265,12 @@ class Director(Application):
         # Instantiate three ROS topic Publishers, one for each store channel.
         # http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers#Complete_example
         self.pubs = {
-            'scene': rospy.Publisher('/director/scene',
-            GenericMessage, queue_size=10, latch=True),
-            'presentation': rospy.Publisher('/director/presentation',
-            GenericMessage, queue_size=10, latch=True),
-            'group': rospy.Publisher('/director/group',
-            GenericMessage, queue_size=10, latch=True),
+            'scene': rospy.Publisher(
+                '/director/scene', GenericMessage, queue_size=10, latch=True),
+            'presentation': rospy.Publisher(
+                '/director/presentation', GenericMessage, queue_size=10, latch=True),
+            'group': rospy.Publisher(
+                '/director/group', GenericMessage, queue_size=10, latch=True),
         }
 
         # Connect to our internal Redis-like state store.
@@ -295,8 +286,31 @@ class Director(Application):
         self.pubsub.add_client(self.publish_ros)
         self.pubsub.add_client(Resetter(worker, self.reset_scene_timer))
 
+        #subscribe to activity topic to enable attract loop support
+
+        rospy.loginfo("Director subscribed to activity topic for attract loop: %s" % self.activity_topic)
+
         # Hold the Handle on the Scene Timer.
         self.scene_timer = None
+
+    def fetch_next_scene(self):
+        """\
+        Begin an HTTP Request for the current Presentation's next Scene.
+        """
+
+        current_presentation = yield self.client.get('presentation')
+        current_scene = yield self.client.get('scene')
+
+        resource_uri = next_scene_uri(
+            presentation=current_presentation,
+            scene=current_scene
+        )
+
+        if resource_uri:
+            url = DIRECTOR_API_URL + resource_uri
+            self.logger.info("fetching " + url)
+            # Begin HTTP Request, add callback for when it completes.
+            self._http.get(url, post_request=self.new_scene)
 
     def worker_stopping(self, worker, exc=None):
         # Cleanly shutdown rospy node.  Probably not necessary.
@@ -327,5 +341,5 @@ class Server(MultiApp):
 if __name__ == '__main__':
     try:
         Server('director').start()
-    except rospy.ROSInterruptException: # may not be needed
+    except rospy.ROSInterruptException:  # may not be needed
         pass

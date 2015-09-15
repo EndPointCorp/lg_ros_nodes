@@ -16,7 +16,7 @@ class ManagedApplication(object):
         self.state = ApplicationState.STOPPED
 
         self.lock = threading.RLock()
-        self.proc = ProcController(cmd, spawn_hooks=[self._handle_respawn])
+        self.proc = ProcController(cmd, spawn_hooks=[self._handle_respawn], shell=False)
         self.sig_retry_timer = None
 
         rospy.on_shutdown(self._cleanup)
@@ -28,7 +28,6 @@ class ManagedApplication(object):
     def __repr__(self):
         representation = "<ManagedApplication: state: %s, window: %s, cmd: %s, proc: %s" % (self.state, self.window, self.cmd, self.proc)
         return representation
-
 
     def _cleanup(self):
         # explicit SIGCONT needed to prevent undeath

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_activity</name>
+  <version>1.0.9</version>
+  <description>ROS software for detecting and publishing activity messages from user inputs</description>
+
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+
+  <author email="wojtek@endpoint.com">Wojciech Ziniewicz</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>lg_common</build_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>interactivespaces_msgs</run_depend>
+  <run_depend>lg_common</run_depend>
+  <test_depend>rostest</test_depend>
+</package>
