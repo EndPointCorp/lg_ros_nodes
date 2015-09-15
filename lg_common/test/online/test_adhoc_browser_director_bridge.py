@@ -182,6 +182,7 @@ DIRECTOR_MESSAGE_CENTER_3 = """
     }
     """
 
+
 class MockBrowserPoolPublisher:
     def __init__(self):
         self.published_messages = []
@@ -190,6 +191,7 @@ class MockBrowserPoolPublisher:
         rospy.logdebug("Publishing adhoc browsers: %s" % adhoc_browsers)
         self.published_messages.append(adhoc_browsers)
         rospy.logdebug("After publishing, self.published_messages = %s" % self.published_messages)
+
 
 class TestAdhocBrowserDirectorBridge(unittest.TestCase):
     def setUp(self):
@@ -270,32 +272,32 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         self.assertEqual(1, len(self.mock_publisher_center.published_messages))
         self.assertEqual(1, len(self.mock_publisher_right.published_messages))
         center_browser_1 = AdhocBrowser(id='adhoc_browser_center_0',
-                                      geometry=WindowGeometry(x=10,
-                                                              y=10,
-                                                              width=600,
-                                                              height=800),
-                                      url='http://www.lol.zomg')
+                                        geometry=WindowGeometry(x=10,
+                                                                y=10,
+                                                                width=600,
+                                                                height=800),
+                                        url='http://www.lol.zomg')
 
         center_browser_2 = AdhocBrowser(id='adhoc_browser_center_1',
-                                      geometry=WindowGeometry(x=400,
-                                                              y=200,
-                                                              width=300,
-                                                              height=200),
-                                      url='http://www.lol2.zomg')
+                                        geometry=WindowGeometry(x=400,
+                                                                y=200,
+                                                                width=300,
+                                                                height=200),
+                                        url='http://www.lol2.zomg')
 
         center_browser_3 = AdhocBrowser(id='adhoc_browser_center_2',
-                                      geometry=WindowGeometry(x=10,
-                                                              y=10,
-                                                              width=888,
-                                                              height=11),
-                                      url='http://www.lol3.zomg')
+                                        geometry=WindowGeometry(x=10,
+                                                                y=10,
+                                                                width=888,
+                                                                height=11),
+                                        url='http://www.lol3.zomg')
 
         right_browser_4 = AdhocBrowser(id='adhoc_browser_right_0',
-                                      geometry=WindowGeometry(x=100,
-                                                              y=100,
-                                                              width=100,
-                                                              height=100),
-                                      url='http://www.lol4.zomg')
+                                       geometry=WindowGeometry(x=100,
+                                                               y=100,
+                                                               width=100,
+                                                               height=100),
+                                       url='http://www.lol4.zomg')
 
         rospy.loginfo("published adhoc browser => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc browser => %s" % AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3]))

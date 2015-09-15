@@ -4,8 +4,10 @@ import rospy
 import urllib
 import urlparse
 
+
 class WrongActivityDefinition(Exception):
     pass
+
 
 def escape_asset_url(asset_url):
     """
@@ -23,10 +25,11 @@ def escape_asset_url(asset_url):
         rospy.logerr("Got invalid type when trying to escape assets url %s" % asset_url)
         return ss
 
+
 def add_url_params(url, **params):
     """
     Add GET params to the url
-    url: string of the URL 
+    url: string of the URL
     params: dict containing the keyword arguments
 
     return string, updated url with the params
@@ -40,6 +43,7 @@ def add_url_params(url, **params):
 
     return urlparse.urlunparse(url_parts)
 
+
 def write_log_to_file(message):
     """
     Write a log line to a file - don't use it in production!
@@ -48,20 +52,23 @@ def write_log_to_file(message):
         rostest_file.write(message)
         rostest_file.write('\n')
 
+
 def generate_cookie(assets):
     """ Accept a list of URLs, turn them to nice slugs and return a string e.g.
             'blah.kml,zomg__kml,whatever.kml'
         rtype: str
     """
-    cookie = (',').join([ escape_asset_url(asset) for asset in assets ])
+    cookie = (',').join([escape_asset_url(asset) for asset in assets])
     rospy.logdebug("Generated cookie = %s after new state was set" % cookie)
     return cookie
+
 
 def get_app_instances_ids(instances):
     """
     Accepts a dictionary of id: AppInstance and returns a set of keys
     """
     return set(instances.keys())
+
 
 def get_app_instances_to_manage(current_instances, incoming_instances, manage_action=None):
     """
@@ -80,6 +87,7 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
     else:
         rospy.logerr("No action provided for get_app_instances_to_manage")
         return False
+
 
 def extract_first_asset_from_director_message(message, activity_type, viewport):
     """
@@ -144,6 +152,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     rospy.logdebug("Returning assets: %s" % assets)
     return assets
 
+
 def list_of_dicts_is_homogenous(dicts_list):
     """
     Returns True if dictionary values are all the same
@@ -167,6 +176,7 @@ def rewrite_message_to_dict(message):
     for slot in slots:
         deserialized_message[slot] = getattr(message, slot)
     return deserialized_message
+
 
 def unpack_activity_sources(sources_string):
     """
@@ -224,7 +234,7 @@ def unpack_activity_sources(sources_string):
             msg_type = source_fields[1].split('-')[0]
             try:
                 slot = source_fields[1].split('-')[1]
-            except IndexError,e:
+            except IndexError, e:
                 slot = None
 
             strategy = source_fields[2].split('-')[0]
@@ -245,6 +255,7 @@ def unpack_activity_sources(sources_string):
         exception_msg = "Could not unpack activity sources string because: %s" % e
         rospy.logerr(exception_msg)
         raise WrongActivityDefinition(exception_msg)
+
 
 def check_registration(e):
     """\
@@ -273,6 +284,7 @@ def begin_checking_registration(interval=1):
     """
     rospy.Timer(rospy.Duration(interval), _check_registration)
 
+
 def next_scene_uri(presentation, scene):
     """
     Read two JSON-encoded strings: a Presentation and a Scene.
@@ -291,6 +303,7 @@ def next_scene_uri(presentation, scene):
     except IndexError:
         rospy.loginfo("Already at last Scene in this Presentation.")
         return None
+
 
 def get_message_type_from_string(string):
     """

@@ -6,7 +6,6 @@ import time
 import rospy
 
 from std_msgs.msg import String
-
 from lg_common.msg import WindowGeometry
 from appctl_support import ProcController
 from lg_common.msg import ApplicationState
@@ -20,6 +19,7 @@ from lg_common.helpers import get_app_instances_to_manage
 DEFAULT_APP = "mplayer"
 DEFAULT_ARGS = "-idle -slave -cache 256 -quiet -osdlevel 0 -nomouseinput -nograbpointer"
 
+
 class ManagedMplayer(ManagedApplication):
     def __init__(self, fifo_path, url, slug, window):
         self.window = window
@@ -28,8 +28,8 @@ class ManagedMplayer(ManagedApplication):
         self.slug = slug
 
         super(ManagedMplayer, self).__init__(
-                window=window,
-                cmd=self._build_cmd()
+            window=window,
+            cmd=self._build_cmd()
         )
 
     def __str__(self):
@@ -56,9 +56,9 @@ class ManagedMplayer(ManagedApplication):
         cmd.extend(rospy.get_param("~application_flags", DEFAULT_ARGS).split())
 
         cmd.extend(['-geometry', '{0}x{1}+{2}+{3}'.format(self.window.geometry.width,
-                                                           self.window.geometry.height,
-                                                           self.window.geometry.x,
-                                                           self.window.geometry.y)])
+                                                          self.window.geometry.height,
+                                                          self.window.geometry.x,
+                                                          self.window.geometry.y)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
         cmd.extend([self.url])
         cmd.extend(["&"])
@@ -97,6 +97,7 @@ class ManagedMplayer(ManagedApplication):
         """
         pass
 
+
 class MplayerPool(object):
     """
     Manages pool of MplayerInstances in self.mplayers
@@ -119,10 +120,10 @@ class MplayerPool(object):
         Handles AdhocMedias messages and manages MplayerInstances in MplayerPool
         """
 
-        incoming_mplayers      = self._unpack_incoming_mplayers(data.medias)
-        incoming_mplayers_ids  = set(incoming_mplayers.keys())
+        incoming_mplayers = self._unpack_incoming_mplayers(data.medias)
+        incoming_mplayers_ids = set(incoming_mplayers.keys())
 
-        current_mplayers_ids   = get_app_instances_ids(self.mplayers)
+        current_mplayers_ids = get_app_instances_ids(self.mplayers)
 
         # mplayers to remove
         for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
@@ -174,7 +175,6 @@ class MplayerPool(object):
                                        w_class="Mplayer \\({}\\)".format(mplayer_id)
                                        )
 
-
         mplayer = ManagedMplayer(fifo_path=fifo_path,
                                  url=incoming_mplayer.url,
                                  slug=mplayer_id,
@@ -215,9 +215,9 @@ class MplayerPool(object):
         current_geometry = current_mplayer.window.geometry
 
         if (current_geometry.x != future_geometry.x) or \
-            (current_geometry.y != future_geometry.y) or \
-            (current_geometry.width != future_geometry.width) or\
-            (current_geometry.height != future_geometry.height):
+                (current_geometry.y != future_geometry.y) or \
+                (current_geometry.width != future_geometry.width) or\
+                (current_geometry.height != future_geometry.height):
 
             rospy.logdebug("Mplayer POOLD: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
             self._remove_mplayer(mplayer_pool_id)
