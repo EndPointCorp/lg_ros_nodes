@@ -26,7 +26,6 @@ class BasicBrowserData:
         self.min_playbackrate = min_playbackrate
         self.max_playbackrate = max_playbackrate
 
-
     def launch_browser(self, data):
         """
         data: AdhocMedias, which is a list of AdhocMedia objects

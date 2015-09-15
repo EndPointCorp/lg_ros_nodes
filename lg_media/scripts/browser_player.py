@@ -5,7 +5,7 @@ from lg_media.msg import AdhocMedias
 from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 
-DEFAULT_VIEWPORT='center'
+DEFAULT_VIEWPORT = 'center'
 MEDIA_TYPE = 'browser_video'
 VIDEOSYNC_URL = 'http://lg-head/lg_sv/webapps/videosync'
 
