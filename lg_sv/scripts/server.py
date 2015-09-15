@@ -2,7 +2,7 @@
 
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
-from lg_common.helpers import get_first_asset_from_activity
+from lg_common.helpers import get_first_asset_from_activity, on_new_scene
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String
@@ -46,6 +46,8 @@ def main():
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                               nav_sensitivity, space_nav_interval)
 
+    visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState)
+
     rospy.Subscriber('/%s/location' % server_type, Pose2D,
                      server.handle_location_msg)
     rospy.Subscriber('/%s/metadata' % server_type, String,
@@ -62,11 +64,15 @@ def main():
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
         asset = get_first_asset_from_activity(scene, server_type)
+        rospy.loginfo('handling director message, got asset: %s' % asset)
         if not asset:
+            rospy.loginfo('there was no asset...')
+            visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
+        visibility_publisher.publish(ApplicationState(state='VISIBLE'))
         panoid_pub.publish(String(asset))
 
-    rospy.Subscriber('/director/scene', GenericMessage, handle_director_message)
+    on_new_scene(handle_director_message)
 
     rospy.spin()
 

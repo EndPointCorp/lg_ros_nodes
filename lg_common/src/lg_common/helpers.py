@@ -182,6 +182,8 @@ def get_first_asset_from_activity(scene, activity):
     """
     Returns just one asset from the first matching activity, or None
 
+    scene is a json loaded GenericMessage
+
     This is useful for streetview / pano activity types
     """
     window = find_window_with_activity(scene, activity)
@@ -203,7 +205,7 @@ class DirectorHandler:
     def __init__(self, callback):
         self.callback = callback
 
-    def handle_message(msg):
+    def handle_message(self, msg):
         d = load_director_message(msg)
         self.callback(d)
 
