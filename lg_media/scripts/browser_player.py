@@ -14,7 +14,7 @@ def main():
     rospy.init_node('lg_media_service_browser_player', anonymous=True)
     viewport_name = rospy.get_param('~viewport', DEFAULT_VIEWPORT)
 
-    topic_name = '/media_service/%s' % viewport_name
+    topic_name = '/media_service/browser/%s' % viewport_name
 
     adhoc_media_publisher = rospy.Publisher(topic_name, AdhocMedias,
                                             queue_size=3)

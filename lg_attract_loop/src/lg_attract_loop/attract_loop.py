@@ -243,5 +243,6 @@ class AttractLoop:
             assert(type(presentationgroups) == list), "Presentationgroups type is not list"
             return presentationgroups
         except Exception, e:
-            rospy.logerr("Could not get presentationgroups because: %s" % e)
+            rospy.logerr("Could not get presentationgroups because: %s - sleeping for 10 seconds" % e)
+            rospy.sleep(10)
             return []

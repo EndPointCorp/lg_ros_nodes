@@ -329,7 +329,7 @@ function SyncedVideo(vidElem, src, isLeader, rosbridge_url, opts) {
     frameAnimation: true
   });
   vid.preload('auto');
-  vid.loop(true);
+  vid.loop(opts['autoplay'] || false);
   vid.sync({
     isLeader: isLeader
   });
@@ -340,8 +340,8 @@ function SyncedVideo(vidElem, src, isLeader, rosbridge_url, opts) {
   } else {
     vid.unmute();
     vid.volume(1.0);
-    vid.controls(false);
-    vid.autoplay(true);
+    vid.controls(opts['show_controls'] || false);
+    vid.autoplay(opts['autoplay'] || false);
   }
 
   return vid;
