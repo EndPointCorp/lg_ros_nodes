@@ -18,6 +18,8 @@ import unittest
 from lg_sv import StreetviewUtils, PanoViewerServer
 from geometry_msgs.msg import Quaternion, Pose2D
 from std_msgs.msg import String
+from lg_common.helpers import get_first_asset_from_activity, load_director_message
+from interactivespaces_msgs.msg import GenericMessage
 
 
 class MockPublisher:
@@ -177,6 +179,39 @@ class TestSVServer(unittest.TestCase):
         self.assertEqual(self.server.get_metadata(), None,
                          'metadata should be none since the new metadata has not been published yet')
 
+    def test_7_director_translation(self):
+        panoid = "1234asdf4321fdsa"
+        director_msg = GenericMessage()
+        director_msg.type = 'json'
+        director_msg.message = """
+                {
+                      "description":"",
+                      "duration":30,
+                      "name":"Browser service test",
+                      "resource_uri":"/director_api/scene/browser-service-test/",
+                      "slug":"browser-service-test",
+                      "windows":[
+                        {
+                        "activity":"streetview",
+                        "assets":["%s", "foo", "bar"],
+                        "height":600,
+                        "presentation_viewport":"center",
+                        "width":800,
+                        "x_coord":100,
+                        "y_coord":100
+                        }
+                        ]
+                    }
+        """ % panoid
+
+        # get existing asset
+        asset = get_first_asset_from_activity(
+            load_director_message(director_msg), "streetview")
+        self.assertEqual(asset, panoid, 'Invalid asset returned')
+        # get non existing asset
+        asset = get_first_asset_from_activity(
+            load_director_message(director_msg), "panoview")
+        self.assertEqual(asset, None, 'No asset should have been returned')
 
 if __name__ == '__main__':
     rostest.rosrun(PKG, NAME, TestSVServer, sys.argv)
