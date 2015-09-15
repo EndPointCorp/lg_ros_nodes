@@ -314,8 +314,9 @@ function clamp(n, min, max) {
  * @param {String} src The url of the video to play.
  * @param {Boolean} isLeader The leader has the authoritative time/transport.
  */
-function SyncedVideo(vidElem, src, isLeader, rosbridge_url) {
+function SyncedVideo(vidElem, src, isLeader, rosbridge_url, opts) {
   console.log('init with src:', src, 'leader:', isLeader);
+  overwriteConstants(opts);
   var srcElem = document.createElement('source');
   srcElem.src = src;
   vidElem.appendChild(srcElem);
@@ -344,4 +345,19 @@ function SyncedVideo(vidElem, src, isLeader, rosbridge_url) {
   }
 
   return vid;
+}
+
+function overwriteConstants(opts) {
+  if ('syncRate' in opts)
+    SYNC_RATE = opts['syncRate'];
+  if ('frameLatency' in opts)
+    FRAME_LATENCY = opts['frameLatency'] * 1.0;
+  if ('pingInterval' in opts)
+    PING_INTERVAL = opts['pingInterval'] * 1.0;
+  if ('hardSyncDiff' in opts)
+    HARD_SYNC_DIFF = opts['hardSyncDiff'] * 1.0;
+  if ('minPlaybackRate' in opts)
+    MIN_PLAYBACKRATE = opts['minPlaybackRate']* 1.0;
+  if ('maxPlaybackRate' in opts)
+    MAX_PLAYBACKRATE = opts['maxPlaybackRate'] * 1.0;
 }

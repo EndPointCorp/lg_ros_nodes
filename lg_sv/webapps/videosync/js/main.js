@@ -28,15 +28,18 @@ var src = opts['src'];
 /*
  * Rosbridge URL
  */
-var rosbridge_url = 'ws://42-b:9090';
+var rosbridge_url = 'ws://localhost:9090';
 if ('rosbridge_host' in opts && 'rosbridge_port' in opts) {
   rosbridge_url = 'ws://' + opts['rosbridge_host'] + ':' + opts['rosbridge_port'];
 }
 console.assert(src, 'Need a "src" in query string');
 
+
 var syncedVideo = new SyncedVideo(
   document.getElementById('vid'),
   src,
   isLeader,
-  rosbridge_url
+  rosbridge_url,
+  /* send opts to overwrite any hard coded values in syncvideo.js */
+  opts
 );
