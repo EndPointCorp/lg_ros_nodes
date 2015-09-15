@@ -7,7 +7,7 @@ from lg_media.msg import AdhocMedias
 from lg_common.helpers import add_url_params
 
 DEFAULT_VIEWPORT = 'center'
-VIDEOSYNC_URL = 'http://lg-head/lg_sv/webapps/videosync'
+VIDEOSYNC_URL = 'http://lg-head/lg_sv/webapps/videosync/index.html'
 
 
 class BasicBrowserData:
