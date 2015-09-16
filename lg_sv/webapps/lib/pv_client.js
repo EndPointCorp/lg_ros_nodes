@@ -14,7 +14,7 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
 
   this.ROLL_AXIS = new THREE.Vector3(0,0,1);
 
-  this.pano_url = '../media/Avicii.mp4';
+  this.pano_url = '../lib/pv_client.js';
 
   this.leaderPosition = null;
 
@@ -52,7 +52,7 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
 
   this.panoListener.subscribe(function(msg) {
     console.log("Received new pano: " + msg.data);
-    pano_url = msg.data;
+    this.pano_url = msg.data;
   }.bind(this));
 
   this.stateTopic = new ROSLIB.Topic({
@@ -114,7 +114,8 @@ PanoClient.prototype.update = function (nowMsec) {
 
 PanoClient.prototype.handleState = function(msg) {
   // ApplicationState.VISIBLE == "visible", or 3... hopefully that lasts
-  this.state = (msg.state == "visible" || msg.state == 3);
+  this.state = (msg.state == "VISIBLE" || msg.state == 3);
+  console.log("got state: " + msg.state);
   if (this.state) {
     this.playVideo();
   } else {
@@ -188,7 +189,7 @@ PanoClient.prototype.getMaterial = function() {
   if (this.isMovie())
     material = this.handleMovie();
   else
-    material = handleImage();
+    material = this.handleImage();
 
   return material;
 };
@@ -202,10 +203,13 @@ PanoClient.prototype.handleMovie = function() {
   this.videoTexture = new THREEx.VideoTexture(this.pano_url);
   material = this.videoTexture.texture;
   this.videoTexture.video.loop = false;
+  this.videoTexture.video.setAttribute('crossorigin', 'anonymous');
   if (!this.isLeader)
     this.videoTexture.video.muted = true;
-  if (!this.state)
-    this.pauseVideo();
+  if (this.state)
+    this.playVideo();
+  else
+    this.pauseVideo()
 
   return material;
 }

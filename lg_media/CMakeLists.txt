@@ -36,6 +36,10 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/mplayer
   scripts/mplayer.py
+  scripts/browser_launcher
+  scripts/browser_launcher.py
+  scripts/browser_player
+  scripts/browser_player.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
