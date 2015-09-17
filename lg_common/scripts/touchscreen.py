@@ -28,7 +28,6 @@ if __name__ == '__main__':
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     ts_name = rospy.get_param('~ts_name', 'default')
 
-
     url = url_base + ts_name + "/"
 
     url = add_url_params(url,
