@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2015-09-17)
+------------------
 * Fixed the path for the TS
 * Added touchscreen launcher
 * lg\_{common,sv}: used the new director listener abstraction

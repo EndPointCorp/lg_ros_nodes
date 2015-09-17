@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2015-09-17)
+------------------
 * lg_media: finishing touches on the browser based player
 * Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 

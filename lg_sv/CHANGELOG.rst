@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2015-09-17)
+------------------
 * lg_media: parameterized the videosync hardcoded values
 * lg_media: browser adhoc player
   Launches videosync on any browser_media type messages from the director.
