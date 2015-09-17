@@ -2,6 +2,23 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_media: parameterized the videosync hardcoded values
+* lg_media: browser adhoc player
+  Launches videosync on any browser_media type messages from the director.
+* lg\_{common,sv}: used the new director listener abstraction
+* lg_sv: only set transform when shouldTilt is selected
+  Plus jquery!
+* lg_sv: parameterize tilt, default to false
+* webapp: added videosync to webapps directory
+  A slight change was made to parameterize the rosbridge url, and to use
+  libraries from CDNs.
+* lg_sv: use correct callback for director messages
+* lg\_{sv,pv}: director message translation
+* refactored panoviewer to unclog the global namespace
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
 1.0.9 (2015-09-09)
 ------------------
 

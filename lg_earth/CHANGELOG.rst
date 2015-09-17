@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix 1.0.9 changelogs
+* Contributors: Jacob Minshall, Matt Vollrath
+
 1.0.9 (2015-09-09)
 ------------------
 

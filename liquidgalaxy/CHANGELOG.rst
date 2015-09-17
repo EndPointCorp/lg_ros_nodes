@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix 1.0.9 changelogs
+* Contributors: Matt Vollrath
+
 1.0.9 (2015-09-09)
 ------------------
 
