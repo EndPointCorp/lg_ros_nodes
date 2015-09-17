@@ -2,6 +2,10 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2015-09-17)
+------------------
+* Contributors: Jacob Minshall, Matt Vollrath
+
 1.0.9 (2015-09-09)
 ------------------
 

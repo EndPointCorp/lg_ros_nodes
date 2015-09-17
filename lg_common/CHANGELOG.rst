@@ -2,6 +2,17 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2015-09-17)
+------------------
+* Fixed the path for the TS
+* Added touchscreen launcher
+* lg\_{common,sv}: used the new director listener abstraction
+* lg_common: abstract director message subscribing
+* lg_common: throw exception when loading a director message fails
+* Added shell to managed browser to prevent pid leakage
+* lg_common: added more director helpers inside
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
 1.0.9 (2015-09-09)
 ------------------
 

@@ -31,6 +31,11 @@ catkin_install_python(PROGRAMS
   scripts/static_browser.py
   scripts/adhoc_browser.py
   scripts/state_setter.py
+  scripts/touchscreen.py
+  scripts/dev_webserver
+  scripts/static_browser
+  scripts/adhoc_browser
+  scripts/touchscreen
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
