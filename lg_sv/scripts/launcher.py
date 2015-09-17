@@ -21,13 +21,15 @@ def main():
     show_links = str(rospy.get_param('~show_links', False)).lower()
     yaw_offset = float(rospy.get_param('~yaw_offset', 0))
     leader = str(rospy.get_param('~leader', 'false'))
+    tilt = str(rospy.get_param('~tilt', 'false'))
     # put parameters into one big url
     url = add_url_params(url,
                          fov=field_of_view,
                          pitchOffset=pitch_offset,
                          showLinks=show_links,
                          leader=leader,
-                         yawOffset=yaw_offset)
+                         yawOffset=yaw_offset,
+                         tilt=tilt)
     # create the managed browser
     managed_browser = ManagedBrowser(url=url, geometry=geometry)
 
