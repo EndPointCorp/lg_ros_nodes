@@ -19,6 +19,7 @@ add_message_files(
   WindowGeometry.msg
   AdhocBrowser.msg
   AdhocBrowsers.msg
+  StringArray.msg
 )
 generate_messages()
 
