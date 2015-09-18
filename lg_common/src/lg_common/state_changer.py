@@ -49,11 +49,15 @@ class StateChanger:
 
         topics: [String]
         """
+        new = False
         new_pubbers = {}
         for topic in topics:
             if topic in self.pubbers:
                 new_pubbers[topic] = self.pubbers[topic]
             else:
+                new = True
                 new_pubbers[topic] = rospy.Publisher(topic, self.message_type,
                                                      queue_size=10)
         self.pubbers = new_pubbers
+        if new:
+            rospy.sleep(1)
