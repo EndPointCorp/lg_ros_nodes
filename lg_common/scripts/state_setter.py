@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-import rostopic
-from threading import Lock
-from std_msgs.msg import String
 from lg_common import StateChanger
 from lg_common.msg import StringArray
-from lg_common.msg import ApplicationState
 
 
 def main():

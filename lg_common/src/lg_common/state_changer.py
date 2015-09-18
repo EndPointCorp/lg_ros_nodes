@@ -1,5 +1,7 @@
 from lg_common.msg import ApplicationState
 from threading import Lock
+import rostopic
+import rospy
 
 
 class StateChanger:
@@ -26,7 +28,7 @@ class StateChanger:
             self.handle_state_change(msg)
 
     def handle_state_change(self, msg):
-        activities = [s.data for s in msg.strings]
+        activities = msg.strings
         # returns a list of topics w/ the state specified
         topics = rostopic.find_by_type(self.message_type_s)
         self.set_pubbers(topics)
