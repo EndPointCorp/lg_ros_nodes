@@ -2,6 +2,9 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.1 (2015-09-18)
+------------------
+
 1.1.0 (2015-09-17)
 ------------------
 * lg_media: finishing touches on the browser based player
