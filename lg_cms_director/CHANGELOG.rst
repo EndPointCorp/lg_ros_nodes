@@ -2,6 +2,11 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert to previous packaging of director's dependencies thx to @mvollrath
+* Contributors: Wojciech Ziniewicz
+
 1.1.0 (2015-09-17)
 ------------------
 * Contributors: Jacob Minshall, Matt Vollrath

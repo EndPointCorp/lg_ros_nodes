@@ -2,6 +2,9 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.0 (2015-09-17)
 ------------------
 * lg_media: parameterized the videosync hardcoded values

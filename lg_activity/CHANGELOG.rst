@@ -2,6 +2,9 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.0 (2015-09-17)
 ------------------
 * Added diagram in PNG format
