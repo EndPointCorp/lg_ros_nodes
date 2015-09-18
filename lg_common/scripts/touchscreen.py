@@ -40,6 +40,8 @@ if __name__ == '__main__':
 
     url = url2pathname(url)
 
+    rospy.loginfo("got url: %s" % url)
+
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', 10000)
     user_agent = rospy.get_param(
