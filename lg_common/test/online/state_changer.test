@@ -1,0 +1,4 @@
+<launch>
+  <node name="test_state_changer_node" pkg="lg_common" type="state_setter.py" />
+  <test test-name="test_state_changer" pkg="lg_common" type="state_changer_test.py" />
+</launch>
