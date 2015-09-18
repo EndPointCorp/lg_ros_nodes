@@ -4,15 +4,17 @@ import rospy
 import rostopic
 from threading import Lock
 from std_msgs.msg import String
+from lg_common.msg import StringArray
 from lg_common.msg import ApplicationState
 
 
 class StateChanger:
     """
     A class to handle state changes. It listens on it's own topic which receives
-    a string (topic name to make active), then will grab all grab all topics with
-    ApplicationState as their message type, assure that the desired active topic
-    exists, and then make that topic VISIBLE while making all other topics HIDDEN
+    an array of strings (topic names to make active), then will grab all grab all
+    topics with ApplicationState as their message type, assure that the desired
+    active topics exists, and then make those topics VISIBLE while making all
+    other topics HIDDEN
     """
     def __init__(self):
         self.pubbers = {}
@@ -24,21 +26,21 @@ class StateChanger:
         """
         Locks the handle_state_change function
 
-        msg: std_msgs/String
+        msg: lg_common/StringArray
         """
         with self.lock:
             self.handle_state_change(msg)
 
     def handle_state_change(self, msg):
-        active = msg.data
+        activities = [s.data for s in msg.strings]
         # returns a list of topics w/ the state specified
         topics = rostopic.find_by_type(self.message_type_s)
         self.set_pubbers(topics)
-        if active not in self.pubbers:
-            rospy.logerr('Could not find the desired topic to set the state of')
-            return
+        for active in activities:
+            if active not in self.pubbers:
+                rospy.logerr('Could not find the desired topic (%s) to set the state of' % active)
         for topic, pub in self.pubbers.iteritems():
-            if topic == active:
+            if topic in activities:
                 pub.publish(ApplicationState.VISIBLE)
             else:
                 pub.publish(ApplicationState.HIDDEN)
@@ -65,7 +67,7 @@ def main():
     rospy.init_node('state_handler')
 
     state_changer = StateChanger()
-    rospy.Subscriber('/state_handler/activate', String, state_changer.locked_state_handler)
+    rospy.Subscriber('/state_handler/activate', StringArray, state_changer.locked_state_handler)
 
     rospy.spin()
 
