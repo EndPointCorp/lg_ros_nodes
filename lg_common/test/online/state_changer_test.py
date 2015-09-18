@@ -11,8 +11,6 @@ from lg_common.msg import StringArray
 from lg_common.msg import ApplicationState
 from lg_common import StateChanger
 
-from lg_common.helpers import write_log_to_file
-
 LPNODE = NAME
 SUB = 0
 MOCK = 1
