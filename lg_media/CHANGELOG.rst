@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.3 (2015-09-22)
+------------------
 * Added mplayer todo
 * Contributors: Wojciech Ziniewicz
 
