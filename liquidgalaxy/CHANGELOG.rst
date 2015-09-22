@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added missing packages to metapackage
+* Contributors: Wojciech Ziniewicz
+
 1.1.1 (2015-09-18)
 ------------------
 
