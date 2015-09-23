@@ -16,8 +16,11 @@ from lg_activity import ActivityTracker
 from lg_activity import ActivitySourceDetector
 from lg_common.helpers import unpack_activity_sources, build_source_string
 
+from lg_common.helpers import write_log_to_file
+
 
 ACTIVITY_TRACKER_PARAM = '/spacenav/twist:geometry_msgs/Twist:delta'
+
 
 class MockPublisher:
     def __init__(self):
@@ -91,7 +94,7 @@ class TestActivityTracker(unittest.TestCase):
         self.sources = self.detector.get_sources()
         self.topic = '/spacenav/twist'
         self.message_type = 'geometry_msgs/Twist'
-        self.callback = foo_cb
+        self.callback = self.foo_cb
         self.strategy = 'delta'
         self.activity_source_spacenav_delta = ActivitySource(topic=self.topic,
                                                              message_type=self.message_type,
@@ -132,12 +135,11 @@ class TestActivityTracker(unittest.TestCase):
         s = spacenav.source
         activity_source = ActivitySource(
             topic=s['topic'], message_type=s['message_type'], strategy=s['strategy'],
-            slot=s['slot'], value_min = s['value_min'], value_max=s['value_max'], callback=foo_cb)
+            slot=s['slot'], value_min=s['value_min'], value_max=s['value_max'], callback=self.foo_cb)
 
-
-def foo_cb(msg):
-    """Do nothing callback"""
-    pass
+    def foo_cb(self, msg):
+        """Do nothing callback"""
+        write_log_to_file(msg)
 
 if __name__ == '__main__':
     import rostest

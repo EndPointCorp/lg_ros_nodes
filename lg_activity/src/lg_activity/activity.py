@@ -45,7 +45,7 @@ class ActivitySource:
     def __init__(self, memory_limit=1024000,
                  topic=None, message_type=None,
                  strategy=None, slot=None,
-                 value=None, value_min=None,
+                 value_min=None,
                  value_max=None, callback=None):
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
@@ -68,7 +68,6 @@ class ActivitySource:
         self.message_type = message_type
         self.callback = callback
         self.slot = slot
-        self.value = value
         self.strategy = strategy
         self.value_min = value_min
         self.value_max = value_max
@@ -77,12 +76,12 @@ class ActivitySource:
             """
             For 'value' strategy we need to provide a lot of data
             """
-            if self.value and self.value_min and self.value_max and self.slot:
-                rospy.loginfo("Registering activity source with value=%s, min=%s, max=%s and msg attribute=%s" %
-                              (self.value, self.value_min, self.value_max, self.slot))
+            if self.value_min and self.value_max and self.slot:
+                rospy.loginfo("Registering activity source with min=%s, max=%s and msg attribute=%s" %
+                              (self.value_min, self.value_max, self.slot))
             else:
-                msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (value=%s, min=%s, max=%s and msg attribute=%s)" % \
-                    (self.value, self.value_min, self.value_max, self.slot)
+                msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (min=%s, max=%s and msg attribute=%s)" % \
+                    (self.value_min, self.value_max, self.slot)
                 rospy.logerr(msg)
                 raise ActivitySourceException(msg)
 
@@ -93,13 +92,13 @@ class ActivitySource:
         rospy.loginfo("Initialized ActivitySource: %s" % self)
 
     def __str__(self):
-        string_representation = "<ActivitySource: slot: %s, value:%s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
-            (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
+        string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
+            (self.slot, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
 
     def __repr__(self):
-        string_representation = "<ActivitySource: slot: %s, value:%s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
-            (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
+        string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
+            (self.slot, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
 
     def _initialize_subscriber(self):

@@ -317,7 +317,7 @@ def unpack_activity_sources(sources_string):
         raise WrongActivityDefinition(exception_msg)
 
 
-def build_source_string(topic, message_type, strategy, slot=None, sub_slot=None, sub_sub_slot=None, value_min=None, value_max=None):
+def build_source_string(topic, message_type, strategy, slot=None, value_min=None, value_max=None):
     """
     Builds source strings with some wizardry
     """
@@ -326,10 +326,6 @@ def build_source_string(topic, message_type, strategy, slot=None, sub_slot=None,
     # only add sub slots if parent slots exist
     if slot:
         ret += '-' + slot
-        if sub_slot:
-            ret += '.' + sub_slot
-            if sub_sub_slot:
-                ret += '.' + sub_sub_slot
     # required
     ret += ':' + strategy
     # only do min & max if both are there
