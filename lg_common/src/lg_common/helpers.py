@@ -255,7 +255,7 @@ def unpack_activity_sources(sources_string):
     source string: '/touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
 
     result: source = { "topic": "/touchscreen/touch",
-               "msg_type": "interactivespaces_msgs/GenericMessage",
+               "message_type": "interactivespaces_msgs/GenericMessage",
                "strategy": "activity",
                "slot": None,
                "value_min": None,
@@ -265,7 +265,7 @@ def unpack_activity_sources(sources_string):
     source string:'/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5':
 
     result: source = { "topic": "/touchscreen/touch",
-               "msg_type": "interactivespaces_msgs/GenericMessage",
+               "message_type": "interactivespaces_msgs/GenericMessage",
                "strategy": "activity",
                "slot": None,
                "value_min": 0,
@@ -289,7 +289,7 @@ def unpack_activity_sources(sources_string):
             source_fields = source_string.split(':')
 
             topic = source_fields[0]
-            msg_type = source_fields[1].split('-')[0]
+            message_type = source_fields[1].split('-')[0]
             try:
                 slot = source_fields[1].split('-')[1]
             except IndexError, e:
@@ -304,7 +304,7 @@ def unpack_activity_sources(sources_string):
                 value_min = None
                 value_max = None
             single_source['topic'] = topic
-            single_source['msg_type'] = msg_type
+            single_source['message_type'] = message_type
             single_source['strategy'] = strategy
             single_source['slot'] = slot
             single_source['value_min'] = value_min

@@ -129,10 +129,10 @@ class TestActivityTracker(unittest.TestCase):
 
     def test_spacenav_in_range(self):
         spacenav = SpaceNavMockSource()
-        s = spacenav.sources
+        s = spacenav.source
         activity_source = ActivitySource(
-            topic=s['topic'], message_type=s['message_type'], strategy=s['stragety'],
-            slot=s['slot'], value_min = s['value_min'], value_max=s['value_max'])
+            topic=s['topic'], message_type=s['message_type'], strategy=s['strategy'],
+            slot=s['slot'], value_min = s['value_min'], value_max=s['value_max'], callback=foo_cb)
 
 
 def foo_cb(msg):

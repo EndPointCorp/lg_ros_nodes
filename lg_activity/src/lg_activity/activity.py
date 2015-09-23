@@ -240,7 +240,7 @@ class ActivitySourceDetector:
     example source:
 
     source = { "topic": "/touchscreen/touch",
-               "msg_type": "interactivespaces_msgs/String",
+               "message_type": "interactivespaces_msgs/String",
                "strategy": "activity",
                "slot": None,
                "value_min": None,
@@ -416,7 +416,7 @@ class ActivityTracker:
         """
         for source in self.sources:
             act = ActivitySource(
-                topic=source['topic'], message_type=source['msg_type'],
+                topic=source['topic'], message_type=source['message_type'],
                 strategy=source['strategy'], slot=source['slot'],
                 value_min=source['value_min'], value_max=source['value_max'],
                 callback=self.activity_callback)
