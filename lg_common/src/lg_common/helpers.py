@@ -267,7 +267,7 @@ def unpack_activity_sources(sources_string):
     result: source = { "topic": "/touchscreen/touch",
                "message_type": "interactivespaces_msgs/GenericMessage",
                "strategy": "activity",
-               "slot": None,
+               "slot": range,
                "value_min": 0,
                "value_max": 2.5
              }

@@ -146,19 +146,9 @@ class ActivitySource:
 
         slot_tree = self.slot.split('.')
 
-        if len(slot_tree) == 1:
-            return {self.slot: getattr(message, self.slot)}
-
-        elif len(slot_tree) > 1:
-            for slot_number in xrange(0, len(slot_tree)):
-                if slot_number == 0:
-                    deserialized_msg = getattr(message, slot_tree[slot_number])
-                else:
-                    deserialized_msg = getattr(deserialized_msg, slot_tree[slot_number])
-        else:
-            msg = "Wrong slot_tree provided: %s" % self.slot
-            rospy.logerr(msg)
-            raise ActivitySourceException(msg)
+        deserialized_msg = message
+        for slot_number in xrange(len(slot_tree)):
+            deserialized_msg = getattr(deserialized_msg, slot_tree[slot_number])
 
         return {self.slot: deserialized_msg}
 
@@ -198,7 +188,7 @@ class ActivitySource:
         if self.strategy == 'delta':
             if len(self.messages) >= 5:
                 if list_of_dicts_is_homogenous(self.messages):
-                    self.messages = []
+                    self.messages = self.messages[-1:]
                     self.callback(self.topic, state=False, strategy='delta')
                     return False  # if list if homogenous than there was no activity
                 else:

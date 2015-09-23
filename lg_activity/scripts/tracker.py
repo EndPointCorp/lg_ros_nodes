@@ -26,7 +26,9 @@ def main():
 
     activity_state_service = rospy.Service(activity_topic, ActivityStates, activity_tracker._get_state)
 
-    rospy.spin()
+    while not rospy.is_shutdown():
+        activity_tracker.poll_activities()
+        rospy.sleep(1)
 
 if __name__ == "__main__":
     main()
