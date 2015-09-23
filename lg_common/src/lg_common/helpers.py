@@ -276,7 +276,8 @@ def unpack_activity_sources(sources_string):
 
     To define multiple sources use semicolon e.g.:
 
-    '/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5;/touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
+    '/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5
+    /touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
 
     """
 
@@ -297,6 +298,8 @@ def unpack_activity_sources(sources_string):
             strategy = source_fields[2].split('-')[0]
             try:
                 values = source_fields[2].split('-')[1]
+                value_min = values.split(',')[0]
+                value_max = values.split(',')[1]
             except IndexError, e:
                 value_min = None
                 value_max = None
@@ -312,6 +315,28 @@ def unpack_activity_sources(sources_string):
         exception_msg = "Could not unpack activity sources string because: %s" % e
         rospy.logerr(exception_msg)
         raise WrongActivityDefinition(exception_msg)
+
+
+def build_source_string(topic, message_type, strategy, slot=None, sub_slot=None, sub_sub_slot=None, value_min=None, value_max=None):
+    """
+    Builds source strings with some wizardry
+    """
+    # both are required
+    ret = topic + ':' + message_type
+    # only add sub slots if parent slots exist
+    if slot:
+        ret += '-' + slot
+        if sub_slot:
+            ret += '.' + sub_slot
+            if sub_sub_slot:
+                ret += '.' + sub_sub_slot
+    # required
+    ret += ':' + strategy
+    # only do min & max if both are there
+    if value_min and value_max:
+        ret += '-' + str(value_min) + ',' + str(value_max)
+
+    return ret
 
 
 def check_registration(e):

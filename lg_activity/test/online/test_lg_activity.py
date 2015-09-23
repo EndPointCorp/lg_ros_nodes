@@ -14,45 +14,64 @@ import unittest
 from lg_activity import ActivitySource
 from lg_activity import ActivityTracker
 from lg_activity import ActivitySourceDetector
-from lg_common.helpers import unpack_activity_sources
+from lg_common.helpers import unpack_activity_sources, build_source_string
 
 
 ACTIVITY_TRACKER_PARAM = '/spacenav/twist:geometry_msgs/Twist:delta'
+
+class MockPublisher:
+    def __init__(self):
+        self.data = []
+
+    def publish(self, msg):
+        self.data.append(msg)
 
 
 class SpaceNavMockSource:
     source = {
         "topic": "/spacenav/twist",
-        "msg_type": "geometry_msgs/Twist",
+        "message_type": "geometry_msgs/Twist",
         "strategy": "delta",
         "slot": None,
         "value_min": None,
         "value_max": None
     }
+    source_string = build_source_string(
+        topic=source['topic'], message_type=source['message_type'],
+        strategy=source['strategy'], slot=source['slot'],
+        value_min=source['value_min'], value_max=source['value_max'])
 
 
 class TouchscreenMockSource:
     source = {
         "topic": "/touchscreen/touch",
-        "msg_type": "interactivespaces_msgs/String",
+        "message_type": "interactivespaces_msgs/String",
         "strategy": "activity",
         "slot": None,
         "value": None,
         "value_min": None,
         "value_max": None
     }
+    source_string = build_source_string(
+        topic=source['topic'], message_type=source['message_type'],
+        strategy=source['strategy'], slot=source['slot'],
+        value_min=source['value_min'], value_max=source['value_max'])
 
 
 class ProximitySensorMockSource:
     source = {
         "topic": "/proximity_sensor/distance",
-        "msg_type": "std_msgs/Float32",
+        "message_type": "std_msgs/Float32",
         "strategy": "value",
         "slot": None,
         "value": None,
         "value_min": 10,
         "value_max": 20
     }
+    source_string = build_source_string(
+        topic=source['topic'], message_type=source['message_type'],
+        strategy=source['strategy'], slot=source['slot'],
+        value_min=source['value_min'], value_max=source['value_max'])
 
 
 class TestActivityTracker(unittest.TestCase):
@@ -90,6 +109,30 @@ class TestActivityTracker(unittest.TestCase):
 
     def test_tracker(self):
         self.assertEqual(1, 1)
+
+    def test_source_builder(self):
+        test_source = '/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5'
+        topic = '/proximity_sensor/distance'
+        message_type = 'sensor_msgs/Range'
+        slot = 'range'
+        strategy = 'value'
+        value_min = '0'
+        value_max = '2.5'
+        built_source = build_source_string(topic, message_type, strategy, slot=slot, value_min=value_min, value_max=value_max)
+        self.assertEqual(built_source, test_source)
+
+    def test_spacenav_source_matches_activity(self):
+        spacenav = SpaceNavMockSource()
+        activity_source = ActivitySourceDetector(spacenav.source_string)
+
+        self.assertDictEqual(spacenav.source, activity_source.get_sources()[0])
+
+    def test_spacenav_in_range(self):
+        spacenav = SpaceNavMockSource()
+        s = spacenav.sources
+        activity_source = ActivitySource(
+            topic=s['topic'], message_type=s['message_type'], strategy=s['stragety'],
+            slot=s['slot'], value_min = s['value_min'], value_max=s['value_max'])
 
 
 def foo_cb(msg):

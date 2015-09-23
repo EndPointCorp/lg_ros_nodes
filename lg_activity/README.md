@@ -39,7 +39,7 @@ seconds
 * `~sources_string` [string] - string containing configuration for
 activity sources in following format:
 
-`<topic_name>/<message_type>[-<slot.sub_slot.sub_sub_slot>]/<strategy>[-<value_min><value_max>]`
+`<topic_name>:<message_type>[-<slot.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>]`
 
 - `topic_name` - name of the ROS topic that activity source (e.g. user
   input) publishes to e.g. `/spacenav/twist`
