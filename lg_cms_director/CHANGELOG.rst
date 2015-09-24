@@ -2,6 +2,11 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert director.py to where it was at 8222d7b6b38f170b7c6a7f379909182fe297b56d
+* Contributors: Adam Vollrath
+
 1.1.5 (2015-09-23)
 ------------------
 
