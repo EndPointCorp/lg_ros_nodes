@@ -85,11 +85,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     timeout = 10
     deferred_requests = {}
     counter_lock = threading.Lock()
-    dict_lock = threading.Lock()
+    defer_lock = threading.Lock()
 
     @classmethod
     def add_deferred_request(cls, reference, unique_id):
-        with cls.dict_lock:
+        with cls.defer_lock:
             cls.deferred_requests[unique_id] = reference
 
     @classmethod
@@ -101,10 +101,10 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
     @classmethod
     def finish_all_requests(cls):
-        with cls.dict_lock:
+        with cls.defer_lock:
             for req in cls.deferred_requests.itervalues():
                 req.get(no_defer=True)
-            cls.deferred_requests = {}
+            cls.deferred_requests.clear()
 
     @classmethod
     def get_scene_msg(cls, msg):
@@ -168,13 +168,24 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         KmlUpdateHandler.add_deferred_request(self, self.unique_id)
         yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
 
-        with KmlUpdateHandler.dict_lock:
+        try:
+            assets = self._get_assets(window_slug)
+        except Exception as e:
+            rospy.logerr('Failed to get assets for {}: {}'.format(
+                window_slug,
+                e.message
+            ))
+            # Always return a valid KML or Earth will stop requesting updates
+            self.finish(get_kml_root())
+            return
+
+        with KmlUpdateHandler.defer_lock:
             if self.unique_id not in KmlUpdateHandler.deferred_requests:
                 return
             del KmlUpdateHandler.deferred_requests[self.unique_id]
 
-        assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
-        self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
+            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
