@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.7 (2015-09-24)
+------------------
 * PEP8
 * Contributors: Adam Vollrath
 

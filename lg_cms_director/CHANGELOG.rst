@@ -2,8 +2,8 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.7 (2015-09-24)
+------------------
 * PEP8'ed director
 * Contributors: Adam Vollrath
 
