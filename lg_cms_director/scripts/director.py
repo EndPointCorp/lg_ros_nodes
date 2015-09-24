@@ -18,7 +18,6 @@ from pulsar.apps.http import HttpClient
 from pulsar import command, task, coroutine_return
 
 from interactivespaces_msgs.msg import GenericMessage
- 
 
 api_url = rospy.get_param(
     '~director_api_url',
@@ -90,8 +89,7 @@ class Resetter():
     def __call__(self, channel, message):
         # Make sure this is actually a new Scene, not a Presentation.
         if channel != 'scene':
-            return # nevermind
-
+            return
         # Parse the new Scene for a duration.
         try:
             duration = json.loads(message)['duration']
@@ -129,8 +127,7 @@ class DirectorWS(ws.WS):
             # When a message arrives on a WebSocket, publish to the store.
             self.publish_set(self.channel, message)
 
-    def on_open(self, websocket): # When a new connection is established
-        # Add a client that writes new pub/sub messages back to the websocket.
+    def on_open(self, websocket):
         self.pubsub.add_client(ws.PubSubClient(websocket, self.channel))
         # Fetch the most recent message and send it to the client.
         last_message = yield self.client.get(self.channel)
@@ -157,7 +154,7 @@ class ProxyRouter(wsgi.Router):
         request.response.status_code = response.status_code
         request.response.headers['Access-Control-Allow-Origin'] = '*'
         # Return the updated WsgiResponse using magic.
-        coroutine_return(request.response) # asynchronous voodoo for "yield"
+        coroutine_return(request.response)
 
 
 class Site(wsgi.LazyWsgi):
@@ -171,13 +168,13 @@ class Site(wsgi.LazyWsgi):
         self.store = create_store(cfg.data_store, loop=loop)
 
         # Create Handlers for three WebSockets and their data_store channels.
-        return wsgi.WsgiHandler([ # route order is significant!
+        return wsgi.WsgiHandler([
             ws.WebSocket('/scene', DirectorWS(self.store, 'scene')),
             ws.WebSocket(
                 '/presentation', DirectorWS(self.store, 'presentation')),
             ws.WebSocket('/group', DirectorWS(self.store, 'group')),
             ProxyRouter('/director_api/<path:path>', DIRECTOR_API_URL),
-            wsgi.MediaRouter('/', ASSET_DIR), # static files
+            wsgi.MediaRouter('/', ASSET_DIR),
         ])
 
 
@@ -200,10 +197,10 @@ class Director(Application):
         # Use Interactive Spaces' own ROS message type.
         msg = GenericMessage()
         msg.type = 'json'
-        msg.message = message # verbatim
+        msg.message = message
 
         if not rospy.is_shutdown():
-            rospy.loginfo(msg) # debug
+            rospy.loginfo(msg)
             # Select the ROS topic for this channel and publish.
             self.pubs[channel].publish(msg)
 
@@ -274,12 +271,18 @@ class Director(Application):
         # Instantiate three ROS topic Publishers, one for each store channel.
         # http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers#Complete_example
         self.pubs = {
-            'scene': rospy.Publisher('/director/scene',
-            GenericMessage, queue_size=10, latch=True),
-            'presentation': rospy.Publisher('/director/presentation',
-            GenericMessage, queue_size=10, latch=True),
-            'group': rospy.Publisher('/director/group',
-            GenericMessage, queue_size=10, latch=True),
+            'scene': rospy.Publisher(
+                '/director/scene',
+                GenericMessage, queue_size=10, latch=True
+            ),
+            'presentation': rospy.Publisher(
+                '/director/presentation',
+                GenericMessage, queue_size=10, latch=True
+            ),
+            'group': rospy.Publisher(
+                '/director/group',
+                GenericMessage, queue_size=10, latch=True
+            ),
         }
 
         # Connect to our internal Redis-like state store.
@@ -327,5 +330,5 @@ class Server(MultiApp):
 if __name__ == '__main__':
     try:
         Server('director').start()
-    except rospy.ROSInterruptException: # may not be needed
+    except rospy.ROSInterruptException:
         pass
