@@ -18,10 +18,10 @@ MOCK = 1
 
 class MockSub:
     def __init__(self):
-        self.state = None
+        self.state = []
 
     def cb(self, msg):
-        self.state = msg.state
+        self.state.append(msg.state)
 
 
 class TestStateChanger(unittest.TestCase):
@@ -64,10 +64,16 @@ class TestStateChanger(unittest.TestCase):
         """
         This asserts that the state at index matches the state passed
         """
-        self.assertEqual(self.subs[index][MOCK].state, state)
+        self.assertEqual(self.subs[index][MOCK].state[-1], state)
+
+    def check_state_length(self, length):
+        length += 1  # add one to length because setUp method publishes to state once
+        for sub in self.subs:
+            self.assertEqual(len(sub[MOCK].state), length)
 
     def test_one_active_starting_hidden(self):
         self.set_first_and_check()
+        self.check_state_length(1)
 
     def set_first_and_check(self):
         active = [self.get_name_for_index(0)]
@@ -79,7 +85,9 @@ class TestStateChanger(unittest.TestCase):
 
     def test_one_active_starting_visible(self):
         self.test_setting_all_as_visible()
+        self.check_state_length(1)
         self.set_first_and_check()
+        self.check_state_length(2)
 
     def test_setting_all_as_visible(self):
         active = [self.get_name_for_index(i) for i in range(len(self.subs))]
@@ -90,6 +98,7 @@ class TestStateChanger(unittest.TestCase):
     def test_two_active(self):
         active = [self.get_name_for_index(i) for i in range(2)]
         self.publish_active(active)
+        self.check_state_length(1)
         for i in range(2):
             self.check_state(i, ApplicationState.VISIBLE)
         for i in range(2, len(self.subs)):
