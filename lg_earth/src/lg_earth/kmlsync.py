@@ -82,7 +82,7 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
     counter = 0
-    timeout = 10
+    timeout = 0
     deferred_requests = {}
     counter_lock = threading.Lock()
     defer_lock = threading.Lock()
