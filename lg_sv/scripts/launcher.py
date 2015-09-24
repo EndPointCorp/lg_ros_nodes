@@ -31,7 +31,7 @@ def main():
                          yawOffset=yaw_offset,
                          tilt=tilt)
     # create the managed browser
-    slug = server_type + str(field_of_view) +  str(yaw_offset) + str(pitch_offset)
+    slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
     managed_browser.update_url(url)
 
