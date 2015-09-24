@@ -153,8 +153,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             self.finish(get_kml_root())
             return
 
-        assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
-        assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+        assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
 
         if (assets_to_delete or assets_to_create) or second_time:
             self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
@@ -170,8 +169,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             if self.unique_id in KmlUpdateHandler.deferred_requests:
                 with KmlUpdateHandler.dict_lock:
                     del KmlUpdateHandler.deferred_requests[self.unique_id]
-                assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
-                assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+                assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
                 self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
@@ -191,6 +189,24 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         kml_content = kml_reparsed.toprettyxml(indent='\t')
         return unescape(kml_content)
 
+    def _get_assets(self, window_slug):
+        return self.asset_service(window_slug).assets
+
+    def _get_asset_changes(self, incoming_cookie_string, assets):
+        """
+        Shortcut to get all asset changes.
+        param incoming_cookie_string: str
+            e.g. 'blah_kml,zomg_kml'
+        param assets: list
+            list of assets for the request window_slug
+        rtype: tuple
+            combined assets to create, delete
+        """
+        return (
+            self._get_assets_to_create(incoming_cookie_string, assets),
+            self._get_assets_to_delete(incoming_cookie_string, assets),
+        )
+
     def _get_assets_to_delete(self, incoming_cookie_string, assets):
         """
         Calculate the difference between assets loaded on GE client and those expected to be loaded by server.
@@ -207,9 +223,6 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         ret = list(set(client_slugs_list) - set(server_slugs_list))
         rospy.logdebug("Got the assets to delete as: %s" % ret)
         return ret
-
-    def _get_assets(self, window_slug):
-        return self.asset_service(window_slug).assets
 
     def _get_assets_to_create(self, incoming_cookie_string, assets):
         """
