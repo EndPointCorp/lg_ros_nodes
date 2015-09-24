@@ -42,6 +42,7 @@ class ActivitySource:
      triggered the activity by applying the provided strategy type
      - erase aggregated messages upon "is_active" call
     """
+    DELTA_MSG_COUNT = 5
     def __init__(self, memory_limit=1024000,
                  topic=None, message_type=None,
                  strategy=None, slot=None,
@@ -89,6 +90,7 @@ class ActivitySource:
         self.memory_limit = memory_limit
         self.messages = []
         self._initialize_subscriber()
+        self.delta_msg_count = self.__class__.DELTA_MSG_COUNT
         rospy.loginfo("Initialized ActivitySource: %s" % self)
 
     def __str__(self):
@@ -186,13 +188,13 @@ class ActivitySource:
         This method can be called from 'self' as well as from the outside of self
         """
         if self.strategy == 'delta':
-            if len(self.messages) >= 5:
+            if len(self.messages) >= self.delta_msg_count:
                 if list_of_dicts_is_homogenous(self.messages):
-                    self.messages = self.messages[-1:]
+                    self.messages = self.messages[-self.delta_msg_count + 1:]
                     self.callback(self.topic, state=False, strategy='delta')
                     return False  # if list if homogenous than there was no activity
                 else:
-                    self.messages = []
+                    self.messages = self.messages[-self.delta_msg_count + 1:]
                     self.callback(self.topic, state=True, strategy='delta')
                     return True  # if list is not homogenous than there was activity
             else:
@@ -435,6 +437,6 @@ class ActivityTracker:
 
         return activity_states_list
 
-    def _sleep_between_checks(self):
-        #rospy.sleep(self.timeout)
-        pass
+    def poll_activities(self):
+        for source in self.initialized_sources:
+            source.is_active()
