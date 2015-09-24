@@ -175,8 +175,19 @@ class TestActivityTracker(unittest.TestCase):
         min_active = Float32(s['value_min'])
         max_active = Float32(s['value_max'])
         mid_active = Float32((s['value_min'] + s['value_max']) / 2)
+        activity_source = self.new_activity_source(s)
 
+        activity_source._aggregate_message(min_active)
+        self.true_state()
+        activity_source._aggregate_message(below)
         self.false_state()
+        activity_source._aggregate_message(max_active)
+        self.true_state()
+        activity_source._aggregate_message(above)
+        self.false_state()
+        activity_source._aggregate_message(mid_active)
+        self.true_state()
+
 
     def false_state(self):
         self.assertFalse(self.cb.state)
