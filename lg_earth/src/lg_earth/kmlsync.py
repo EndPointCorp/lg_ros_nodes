@@ -321,18 +321,22 @@ class KmlQueryHandler(tornado.web.RequestHandler):
         """
         query_string = self.get_query_argument('query', default='')
 
-        try:
-            while not rospy.is_shutdown():
-                tour_string = query_string.split('=')[1]
-                tour_string = urllib2.unquote(tour_string)
-                self.playtour.tourname = str(tour_string)
-                self.playtour_service(tour_string)
-                self.finish("OK")
+        if rospy.is_shutdown():
             self.set_status(503, "Server shutting down")
             self.finish("Server shutting down")
+            return
+
+        try:
+            tour_string = query_string.split('=')[1]
         except IndexError as e:
             rospy.logerr("Got the wrong query string %s" % e)
             self.set_status(400, "Got the wrong query string")
             self.finish("Bad Request: Got a bad query string")
+            return
+
+        tour_string = urllib2.unquote(tour_string)
+        self.playtour.tourname = str(tour_string)
+        self.playtour_service(tour_string)
+        self.finish("OK")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
