@@ -135,8 +135,6 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
         window_slug = self.get_query_argument('window_slug', default=None)
-        incoming_cookie_string = ''
-
         incoming_cookie_string = self.get_query_argument('asset_slug', default='')
 
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
