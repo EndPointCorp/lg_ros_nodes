@@ -46,7 +46,7 @@ def main():
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                               nav_sensitivity, space_nav_interval)
 
-    visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState)
+    visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
 
     rospy.Subscriber('/%s/location' % server_type, Pose2D,
                      server.handle_location_msg)
