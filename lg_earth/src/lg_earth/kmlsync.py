@@ -288,26 +288,29 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         """
         Generate a networklinkupdate xml 'Create' section with assets_to_create (if any)
         """
-        if assets_to_create:
-            kml_create = ET.SubElement(parent, 'Create')
-            kml_document = ET.SubElement(kml_create, 'Document', {'targetId': 'master'})
-            for asset in assets_to_create:
-                new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
-                ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
-                link = ET.SubElement(new_asset, 'Link')
-                ET.SubElement(link, 'href').text = asset
-            return kml_create
-        return parent
+        if not assets_to_create:
+            return
+
+        kml_create = ET.SubElement(parent, 'Create')
+        kml_document = ET.SubElement(kml_create, 'Document', {'targetId': 'master'})
+        for asset in assets_to_create:
+            new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
+            ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
+            link = ET.SubElement(new_asset, 'Link')
+            ET.SubElement(link, 'href').text = asset
+        return kml_create
 
     def _get_kml_for_delete_assets(self, assets_to_delete, parent):
         """
         Generate a networklinkupdate xml 'Delete' section with assets_to_delete (if any)
         """
-        if assets_to_delete:
-            kml_delete = ET.SubElement(parent, 'Delete')
-            for asset in assets_to_delete:
-                ET.SubElement(kml_delete, 'NetworkLink', {'targetId': escape_asset_url(asset)})
-            return kml_delete
+        if not assets_to_delete:
+            return
+
+        kml_delete = ET.SubElement(parent, 'Delete')
+        for asset in assets_to_delete:
+            ET.SubElement(kml_delete, 'NetworkLink', {'targetId': escape_asset_url(asset)})
+        return kml_delete
 
 
 class KmlQueryHandler(tornado.web.RequestHandler):
