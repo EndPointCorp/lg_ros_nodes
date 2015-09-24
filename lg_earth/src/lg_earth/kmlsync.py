@@ -138,36 +138,37 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
-        if window_slug:
-            try:
-                assets = self._get_assets(window_slug)
-            except Exception as e:
-                rospy.logerr('Failed to get assets for {}: {}'.format(
-                    window_slug,
-                    e.message
-                ))
-                # Always return a valid KML or Earth will stop requesting updates
-                self.finish(get_kml_root())
-                return
-            assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
-            assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
-            if (assets_to_delete or assets_to_create) or second_time:
-                self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
-            else:
-                self.unique_id = KmlUpdateHandler.get_unique_id()
-                rospy.loginfo("Request Counter Value {}".format(self.unique_id))
-                rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.deferred_requests))
-                KmlUpdateHandler.add_deferred_request(self, self.unique_id)
-                yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
-                if self.unique_id in KmlUpdateHandler.deferred_requests:
-                    with KmlUpdateHandler.dict_lock:
-                        del KmlUpdateHandler.deferred_requests[self.unique_id]
-                    assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
-                    assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
-                    self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
-        else:
+        if not window_slug:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
+            return
+
+        try:
+            assets = self._get_assets(window_slug)
+        except Exception as e:
+            rospy.logerr('Failed to get assets for {}: {}'.format(
+                window_slug,
+                e.message
+            ))
+            # Always return a valid KML or Earth will stop requesting updates
+            self.finish(get_kml_root())
+            return
+        assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
+        assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+        if (assets_to_delete or assets_to_create) or second_time:
+            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+        else:
+            self.unique_id = KmlUpdateHandler.get_unique_id()
+            rospy.loginfo("Request Counter Value {}".format(self.unique_id))
+            rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.deferred_requests))
+            KmlUpdateHandler.add_deferred_request(self, self.unique_id)
+            yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
+            if self.unique_id in KmlUpdateHandler.deferred_requests:
+                with KmlUpdateHandler.dict_lock:
+                    del KmlUpdateHandler.deferred_requests[self.unique_id]
+                assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
+                assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
+                self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
