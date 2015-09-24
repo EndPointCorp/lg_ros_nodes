@@ -103,7 +103,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     def finish_all_requests(cls):
         with cls.dict_lock:
             for req in cls.deferred_requests.itervalues():
-                req.get(True)
+                req.get(no_defer=True)
             cls.deferred_requests = {}
 
     @classmethod
@@ -123,12 +123,16 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         self.asset_service = self.application.asset_service
 
     @gen.coroutine
-    def get(self, second_time=False):
+    def get(self, no_defer=False):
         """
         Return XML with latest list of assets for specific window_slug
             - get window slug and calculate difference between loaded assets and the desired state
             - create the KML and return it only if cookie was different and the window slug came in the request
         """
+        # Never defer if there's no timeout
+        if KmlUpdateHandler.timeout <= 0:
+            no_defer = True
+
         rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
         window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = ''
@@ -154,7 +158,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             return
 
         assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
-        if (assets_to_delete or assets_to_create) or second_time:
+        if (assets_to_delete or assets_to_create) or no_defer:
             self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             return
 
