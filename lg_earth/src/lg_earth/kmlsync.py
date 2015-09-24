@@ -336,8 +336,8 @@ class KmlQueryHandler(tornado.web.RequestHandler):
         try:
             tour_string = query_string.split('=')[1]
         except IndexError as e:
-            rospy.logerr("Got the wrong query string %s" % e)
-            self.set_status(400, "Got the wrong query string")
+            rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
+            self.set_status(400, "Got a bad query string")
             self.finish("Bad Request: Got a bad query string")
             return
 
