@@ -159,9 +159,12 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.global_dict))
                 KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
                 yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
-                if self.unique_id in KmlUpdateHandler.global_dict:
-                    with KmlUpdateHandler.dict_lock:
-                        del KmlUpdateHandler.global_dict[self.unique_id]
+                with KmlUpdateHandler.dict_lock:
+                    if self.unique_id in KmlUpdateHandler.global_dict:
+                        try:
+                            del KmlUpdateHandler.global_dict[self.unique_id]
+                        except Exception, e:
+                            rospy.lowarn("Could not delete self.unique_id from KmlUpdateHandler.global_dict")
                     assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
                     assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
                     self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
