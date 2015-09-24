@@ -16,11 +16,17 @@ from lg_common import ManagedApplication, ManagedWindow
 from lg_common.helpers import get_app_instances_to_manage
 
 
+ROS_NODE_NAME = "lg_media"
 DEFAULT_APP = "mplayer"
 DEFAULT_ARGS = "-idle -slave -cache 256 -quiet -osdlevel 0 -nomouseinput -nograbpointer"
+SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
 
 
 class ManagedMplayer(ManagedApplication):
+    """
+    Instance corresponds to a mplayer application managed entity.
+
+    """
     def __init__(self, fifo_path, url, slug, window):
         self.window = window
         self.fifo_path = fifo_path
@@ -67,7 +73,7 @@ class ManagedMplayer(ManagedApplication):
 
     def close(self):
         """
-        Shut down mplayer and make sure it didnt lave anything behind
+        Shut down mplayer and make sure it didn't lave anything behind
         """
         self.set_state(ApplicationState.STOPPED)
         os.unlink(self.fifo_path)
@@ -182,7 +188,7 @@ class MplayerPool(object):
 
         mplayer.set_state(ApplicationState.VISIBLE)
 
-        rospy.loginfo("Mplayer POOL: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
+        rospy.loginfo("MPlayer Pool: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
         self.mplayers[mplayer_id] = mplayer
 
         return True
@@ -203,7 +209,7 @@ class MplayerPool(object):
         """
 
         current_mplayer = self.mplayers[mplayer_pool_id]
-        rospy.logdebug("POOL %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
+        rospy.logdebug("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
         future_url = updated_mplayer.url
         current_mplayer.change_url(future_url)
 
@@ -219,7 +225,7 @@ class MplayerPool(object):
                 (current_geometry.width != future_geometry.width) or\
                 (current_geometry.height != future_geometry.height):
 
-            rospy.logdebug("Mplayer POOLD: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
+            rospy.logdebug("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
             self._remove_mplayer(mplayer_pool_id)
             self._create_mplayer(mplayer_pool_id, updated_mplayer)
 
@@ -231,7 +237,5 @@ class MplayerPool(object):
         rospy.logdebug("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
         mplayer_instance.close()
         del self.mplayers[mplayer_pool_id]
-
-    #####################
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
