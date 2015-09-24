@@ -43,6 +43,7 @@ class ActivitySource:
      - erase aggregated messages upon "is_active" call
     """
     DELTA_MSG_COUNT = 5
+
     def __init__(self, memory_limit=1024000,
                  topic=None, message_type=None,
                  strategy=None, slot=None,

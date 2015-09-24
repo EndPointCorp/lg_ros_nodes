@@ -31,6 +31,7 @@ class MockPublisher:
     def publish(self, msg):
         self.data.append(msg)
 
+
 class MockCallbackHandler:
     def __init__(self):
         self.state = False
@@ -187,7 +188,6 @@ class TestActivityTracker(unittest.TestCase):
         self.false_state()
         activity_source._aggregate_message(mid_active)
         self.true_state()
-
 
     def false_state(self):
         self.assertFalse(self.cb.state)
