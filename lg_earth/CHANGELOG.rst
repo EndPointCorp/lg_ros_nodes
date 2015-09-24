@@ -2,6 +2,18 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.6 (2015-09-24)
+------------------
+* Mark kmlsync timeout experimental, default off
+* Refactor KmlUpdateHandler asset change list funcs
+* Contributors: Matt Vollrath
+
+1.1.5 (2015-09-23)
+------------------
+
+1.1.3 (2015-09-22)
+------------------
+
 1.1.2 (2015-09-22)
 ------------------
 

@@ -2,6 +2,18 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.6 (2015-09-24)
+------------------
+* Hide SV at startup
+* Add queue_size to sv server state Publisher
+* Contributors: Adam Vollrath, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.5 (2015-09-23)
+------------------
+
+1.1.3 (2015-09-22)
+------------------
+
 1.1.2 (2015-09-22)
 ------------------
 

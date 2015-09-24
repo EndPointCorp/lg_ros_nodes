@@ -20,7 +20,7 @@ topic as well as what should be extracted from user input device message
 as a value (e.g. which attribute to compare).
 
 ![lg_activity
-diagram](https://raw.githubusercontent.com/EndPointCorp/lg_ros_nodes/master/lg_activity/lg_activity.png?token=AAVmmJ96oBPhBz3dU-6eVQExS-wQSXagks5V-WfgwA%3D%3D "lg activity diagram")
+diagram](lg_activity.png "lg activity diagram")
 
 Direct link to the diagram:
 https://docs.google.com/drawings/d/1u2oJ-MyN6IwjE_-Oc1J7HWOvNe0uzMV816XNRqOh7sI/edit?usp=sharing

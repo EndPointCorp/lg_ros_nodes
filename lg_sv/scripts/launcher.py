@@ -2,7 +2,7 @@
 
 import rospy
 
-from lg_common import ManagedWindow, ManagedBrowser
+from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
 
@@ -31,10 +31,12 @@ def main():
                          yawOffset=yaw_offset,
                          tilt=tilt)
     # create the managed browser
-    managed_browser = ManagedBrowser(url=url, geometry=geometry)
+    slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)
+    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
+    managed_browser.update_url(url)
 
     # set to visible
-    state = ApplicationState.VISIBLE
+    state = ApplicationState.HIDDEN
     managed_browser.set_state(state)
 
     # listen to state messages
