@@ -84,14 +84,14 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 class KmlUpdateHandler(tornado.web.RequestHandler):
     counter = 0
     timeout = 10
-    global_dict = {}
+    deferred_requests = {}
     counter_lock = threading.Lock()
     dict_lock = threading.Lock()
 
     @classmethod
-    def add_to_global_dict(cls, reference, unique_id):
+    def add_deferred_request(cls, reference, unique_id):
         with cls.dict_lock:
-            cls.global_dict[unique_id] = reference
+            cls.deferred_requests[unique_id] = reference
 
     @classmethod
     def get_unique_id(cls):
@@ -103,9 +103,9 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     @classmethod
     def finish_all_requests(cls):
         with cls.dict_lock:
-            for req in cls.global_dict.itervalues():
+            for req in cls.deferred_requests.itervalues():
                 req.get(True)
-            cls.global_dict = {}
+            cls.deferred_requests = {}
 
     @classmethod
     def get_scene_msg(cls, msg):
@@ -156,15 +156,12 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             else:
                 self.unique_id = KmlUpdateHandler.get_unique_id()
                 rospy.loginfo("Request Counter Value {}".format(self.unique_id))
-                rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.global_dict))
-                KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
+                rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.deferred_requests))
+                KmlUpdateHandler.add_deferred_request(self, self.unique_id)
                 yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
-                with KmlUpdateHandler.dict_lock:
-                    if self.unique_id in KmlUpdateHandler.global_dict:
-                        try:
-                            del KmlUpdateHandler.global_dict[self.unique_id]
-                        except Exception, e:
-                            rospy.lowarn("Could not delete self.unique_id from KmlUpdateHandler.global_dict")
+                if self.unique_id in KmlUpdateHandler.deferred_requests:
+                    with KmlUpdateHandler.dict_lock:
+                        del KmlUpdateHandler.deferred_requests[self.unique_id]
                     assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
                     assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
                     self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
