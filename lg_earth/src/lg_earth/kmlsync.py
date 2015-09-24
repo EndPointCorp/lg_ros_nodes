@@ -154,25 +154,25 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             return
 
         assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
-
         if (assets_to_delete or assets_to_create) or second_time:
             self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
-        else:
-            self.unique_id = KmlUpdateHandler.get_unique_id()
+            return
 
-            rospy.loginfo("Request Counter: {}".format(self.unique_id))
-            rospy.loginfo("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
+        self.unique_id = KmlUpdateHandler.get_unique_id()
 
-            KmlUpdateHandler.add_deferred_request(self, self.unique_id)
-            yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
+        rospy.loginfo("Request Counter: {}".format(self.unique_id))
+        rospy.loginfo("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
 
-            with KmlUpdateHandler.dict_lock:
-                if self.unique_id not in KmlUpdateHandler.deferred_requests:
-                    return
-                del KmlUpdateHandler.deferred_requests[self.unique_id]
+        KmlUpdateHandler.add_deferred_request(self, self.unique_id)
+        yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
 
-            assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+        with KmlUpdateHandler.dict_lock:
+            if self.unique_id not in KmlUpdateHandler.deferred_requests:
+                return
+            del KmlUpdateHandler.deferred_requests[self.unique_id]
+
+        assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
+        self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
