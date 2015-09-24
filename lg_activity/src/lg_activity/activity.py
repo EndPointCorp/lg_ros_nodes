@@ -169,9 +169,10 @@ class ActivitySource:
 
         self.messages.append(deserialized_msg)
 
-    def _messages_met_value_constraints():
+    def _messages_met_value_constraints(self):
         for message in self.messages:
-            if not (message.values()[0] >= value_min) or not (message.values()[0]) <= value_max:
+            value = message.values()[0]
+            if value >= self.value_min and value <= self.value_max:
                 return False
         return True
 
@@ -207,6 +208,7 @@ class ActivitySource:
                     self.callback(self.topic, state=False, strategy='value')
                     return False  # messages met the constraints
                 else:
+                    self.messages = []
                     self.callback(self.topic, state=True, strategy='value')
                     return True  # messages didnt meet the constraints
             else:
