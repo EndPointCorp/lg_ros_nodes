@@ -56,6 +56,9 @@ function initialize() {
     var viewportFOV = fieldOfView / canvasRatio;
     var radianOffset = toRadians(viewportFOV * yawOffset);
     var htr = [povQuaternion.z, povQuaternion.x, 0];
+    if (! shouldTilt) {
+      htr[1] = 0;
+    }
     var transformedHTR = transformHTR(htr, radianOffset);
     var roll = -transformedHTR[2];
     var pov = {
