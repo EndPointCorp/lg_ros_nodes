@@ -2,6 +2,9 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.6 (2015-09-24)
 ------------------
 * readme: use relative path for image

@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* PEP8
+* Contributors: Adam Vollrath
+
 1.1.6 (2015-09-24)
 ------------------
 * Hide SV at startup
