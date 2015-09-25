@@ -13,8 +13,8 @@ def main():
     event_ecode = rospy.get_param('~event_ecode', 'EV_KEY')
     device_path = rospy.get_param('~device_path', None)
 
-    if not topic_name or not device_name:
-        msg = "You must provide lg_activity topic name and device name"
+    if not topic_name or not (device_name or device_path):
+        msg = "You must provide lg_activity topic name and (device name or device path)"
         rospy.logerr(msg)
         raise ROSNodeIOException(msg)
 
@@ -24,6 +24,8 @@ def main():
 
     if device_path:
         dev = InputDevice(device_path)
+        if not device_name:
+            device_name = dev.name
         device_replay = DeviceReplay(device_publisher, device_name, event_ecode, device=device)
     else:
         device_replay = DeviceReplay(device_publisher, device_name, event_ecode)
