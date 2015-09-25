@@ -5,6 +5,10 @@ import rospy
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
+from lg_common.helpers import depend_on_service
+from lg_common.helpers import discover_port_from_url
+from lg_common.helpers import discover_host_from_url
+from lg_common.helpers import DependencyException
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
 #FOV for zoom level 3
@@ -13,6 +17,8 @@ DEFAULT_FOV = 28.125
 
 def main():
     rospy.init_node('panoviewer_browser', anonymous=True)
+
+
     geometry = ManagedWindow.get_viewport_geometry()
     server_type = rospy.get_param('~server_type', 'streetview')
     url = str(rospy.get_param('~url', DEFAULT_URL))
@@ -30,10 +36,22 @@ def main():
                          leader=leader,
                          yawOffset=yaw_offset,
                          tilt=tilt)
+
+    # check if server is already there
+    host = discover_host_from_url(url)
+    port = discover_port_from_url(url)
+    timeout = rospy.get_param('/global_dependency_timeout', 15)
+
+    if not depend_on_service(host, port, 'streetview_server', timeout):
+        msg = "Streetview server (%s:%s) did not appear within specified timeout of %s seconds" % (host, port, timeout)
+        rospy.logerr(msg)
+        raise DependencyException
+    else:
+        rospy.loginfo("Streetview server accessible - launching client browser")
+
     # create the managed browser
     slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
-    managed_browser.update_url(url)
 
     # set to visible
     state = ApplicationState.HIDDEN

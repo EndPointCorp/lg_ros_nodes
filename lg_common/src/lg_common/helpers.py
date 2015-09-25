@@ -10,6 +10,9 @@ from interactivespaces_msgs.msg import GenericMessage
 class WrongActivityDefinition(Exception):
     pass
 
+class DependencyException(Exception):
+    pass
+
 
 def escape_asset_url(asset_url):
     """
@@ -374,3 +377,51 @@ def get_message_type_from_string(string):
     globals()[module] = module_obj
     message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
     return message_type_final
+
+def depend_on_service(server, port, name, timeout=None):
+    """
+    Wait for network service to appear. Provide addres, port and name.
+    If timeout is set to none then wait forever.
+    """
+    import socket
+    import errno
+
+    s = socket.socket()
+    if timeout:
+        from time import time as now
+        end = now() + timeout
+
+    while True:
+        try:
+            if timeout:
+                next_timeout = end - now()
+                if next_timeout < 0:
+                    return False
+                else:
+                    s.settimeout(next_timeout)
+
+            s.connect((server, port))
+
+        except socket.timeout, err:
+            # this exception occurs only if timeout is set
+            if timeout:
+                return False
+
+        except socket.error, err:
+            # catch timeout exception from underlying network library
+            # this one is different from socket.timeout
+            if type(err.args) != tuple or err[0] != errno.ETIMEDOUT:
+                raise
+        else:
+            s.close()
+            return True
+
+def discover_host_from_url(url):
+    from urlparse import urlparse
+    data = urlparse(url)
+    return data.hostname
+
+def discover_port_from_url(url):
+    from urlparse import urlparse
+    data = urlparse(url)
+    return data.port
