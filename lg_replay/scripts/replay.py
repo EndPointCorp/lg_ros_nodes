@@ -3,6 +3,7 @@
 import rospy
 from interactivespaces_msgs.msg import GenericMessage
 from lg_replay import DevicePublisher, DeviceReplay, LgActivityException
+from evdev import InputDevice
 
 
 def main():
@@ -23,9 +24,9 @@ def main():
     device_publisher = DevicePublisher(publisher)
 
     if device_path:
-        dev = InputDevice(device_path)
+        device = InputDevice(device_path)
         if not device_name:
-            device_name = dev.name
+            device_name = device.name
         device_replay = DeviceReplay(device_publisher, device_name, event_ecode, device=device)
     else:
         device_replay = DeviceReplay(device_publisher, device_name, event_ecode)
