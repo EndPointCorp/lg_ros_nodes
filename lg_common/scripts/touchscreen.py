@@ -28,6 +28,24 @@ if __name__ == '__main__':
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     ts_name = rospy.get_param('~ts_name', 'default')
 
+    depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
+    depend_on_director = rospy.get_param('~depend_on_director', False)
+    global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
+
+    if not dependency_available(rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout) and depend_on_rosbridge:
+        msg = "Service: %s hasn't become accessible within %s seconds" % ('rosbridge', global_dependency_timeout)
+        rospy.logfatal(msg)
+        raise DependencyException(msg)
+    else:
+        rospy.loginfo("Not waiting for rosbridge - initializing touchscreen browser")
+
+    if not dependency_available(director_host, director_port, 'director', global_dependency_timeout) and depend_on_director:
+        msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
+        rospy.logfatal(msg)
+        raise DependencyException(msg)
+    else:
+        rospy.loginfo("Not waiting for director - initializing touchscreen browser")
+
     url = url_base + ts_name + "/"
 
     url = add_url_params(url,
