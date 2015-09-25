@@ -11,8 +11,8 @@ Changelog for package liquidgalaxy
 1.1.5 (2015-09-23)
 ------------------
 
-Forthcoming
------------
+1.1.8 (2015-09-25)
+------------------
 * Contributors: Adam Vollrath
 
 1.1.3 (2015-09-22)
