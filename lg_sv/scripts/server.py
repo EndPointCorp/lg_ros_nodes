@@ -26,6 +26,7 @@ DEFAULT_TILT_MIN = -80
 DEFAULT_TILT_MAX = 80
 DEFAULT_NAV_SENSITIVITY = 1.0
 DEFAULT_NAV_INTERVAL = 0.02
+X_THRESHOLD = 0.50
 
 
 def main():
@@ -41,10 +42,11 @@ def main():
     tilt_min = rospy.get_param('~tilt_min', DEFAULT_TILT_MIN)
     tilt_max = rospy.get_param('~tilt_max', DEFAULT_TILT_MAX)
     nav_sensitivity = rospy.get_param('~nav_sensitivity', DEFAULT_NAV_SENSITIVITY)
+    x_threshold = rospy.get_param('~x_threshold', X_THRESHOLD)
     space_nav_interval = rospy.get_param('~space_nav_interval', DEFAULT_NAV_INTERVAL)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                              nav_sensitivity, space_nav_interval)
+                              nav_sensitivity, space_nav_interval, x_threshold)
 
     visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
 
