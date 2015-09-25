@@ -4,6 +4,9 @@ import rospy
 
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
+from lg_common.helpers import dependency_available
+from lg_common.helpers import discover_host_from_url, discover_port_from_url
+
 from std_msgs.msg import String
 
 
@@ -20,6 +23,19 @@ if __name__ == '__main__':
         'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
     )
     state = rospy.get_param('~state', ApplicationState.VISIBLE)
+
+    global_dependency_timeout = rospy.get("/global_dependency_timeout", 15)
+    depend_on_url = rospy.get("~depend_on_url", False)
+
+    www_host = discover_port_from_url(url)
+    www_port = discover_port_from_url(port)
+
+    if not dependency_available(www_host, www_port, 'static browser URL', global_dependency_timeout) and depend_on_url:
+        msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
+        rospy.logfatal(msg)
+        raise DependencyException(msg)
+    else:
+        rospy.loginfo("Not waiting for URL to become available - initializing static browser")
 
     browser = ManagedBrowser(
         geometry=geometry,

@@ -235,8 +235,8 @@ def rewrite_message_to_dict(message):
     """
     deserialized_message = {}
     slots = message.__slots__
-    if slots.__class__ != tuple:
-        slots = (slots,)
+    if slots.__class__ == str:
+        slots = [slots]
     for slot in slots:
         deserialized_message[slot] = getattr(message, slot)
     return deserialized_message
@@ -383,7 +383,7 @@ def get_message_type_from_string(string):
     return message_type_final
 
 
-def depend_on_service(server, port, name, timeout=None):
+def dependency_available(server, port, name, timeout=None):
     """
     Wait for network service to appear. Provide addres, port and name.
     If timeout is set to none then wait forever.
@@ -426,7 +426,6 @@ def discover_host_from_url(url):
     from urlparse import urlparse
     data = urlparse(url)
     return data.hostname
-
 
 def discover_port_from_url(url):
     from urlparse import urlparse
