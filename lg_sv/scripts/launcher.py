@@ -42,7 +42,7 @@ def main():
     port = discover_port_from_url(url)
     timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    if not depependecy_available(host, port, 'streetview_server', timeout) and depend_on_webserver:
+    if not dependency_available(host, port, 'streetview_server', timeout) and depend_on_webserver:
         msg = "Streetview server (%s:%s) did not appear within specified timeout of %s seconds" % (host, port, timeout)
         rospy.logerr(msg)
         raise DependencyException
