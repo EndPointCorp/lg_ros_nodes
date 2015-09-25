@@ -234,6 +234,8 @@ def rewrite_message_to_dict(message):
     """
     deserialized_message = {}
     slots = message.__slots__
+    if slots.__class__ != tuple:
+        slots = (slots,)
     for slot in slots:
         deserialized_message[slot] = getattr(message, slot)
     return deserialized_message
