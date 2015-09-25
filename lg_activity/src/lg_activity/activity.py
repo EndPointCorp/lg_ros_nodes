@@ -10,6 +10,7 @@ from lg_common.helpers import get_message_type_from_string
 from lg_activity.msg import ActivityState
 from lg_activity.srv import ActivityStates
 from std_msgs.msg import Bool
+from lg_common.helpers import write_log_to_file
 
 
 class ActivitySourceNotFound(Exception):
@@ -47,7 +48,7 @@ class ActivitySource:
     def __init__(self, memory_limit=1024000,
                  topic=None, message_type=None,
                  strategy=None, slot=None,
-                 value_min=None,
+                 value_min=None, debug=None,
                  value_max=None, callback=None):
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
@@ -73,6 +74,7 @@ class ActivitySource:
         self.strategy = strategy
         self.value_min = value_min
         self.value_max = value_max
+        self.debug = debug
 
         if self.strategy == 'value':
             """
@@ -194,10 +196,14 @@ class ActivitySource:
                 if list_of_dicts_is_homogenous(self.messages):
                     self.messages = self.messages[-self.delta_msg_count + 1:]
                     self.callback(self.topic, state=False, strategy='delta')
+                    if self.debug:
+                        write_log_to_file('false delta')
                     return False  # if list if homogenous than there was no activity
                 else:
                     self.messages = self.messages[-self.delta_msg_count + 1:]
                     self.callback(self.topic, state=True, strategy='delta')
+                    if self.debug:
+                        write_log_to_file('true delta')
                     return True  # if list is not homogenous than there was activity
             else:
                 rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
@@ -285,7 +291,7 @@ class ActivityTracker:
 
     """
 
-    def __init__(self, publisher=None, timeout=10, sources=None):
+    def __init__(self, publisher=None, timeout=10, sources=None, debug=None):
         if (not publisher) or (not timeout) or (not sources):
             msg = "Activity tracker initialized without one of the params: pub=%s, timeout=%s, sources=%s" % \
                 (publisher, timeout, sources)
@@ -295,6 +301,7 @@ class ActivityTracker:
         self.active = True
         self.initialized_sources = []
         self.activity_states = {}
+        self.debug = debug
         self.timeout = timeout
         if not self.timeout:
             msg = "You must specify inactivity timeout"
@@ -333,20 +340,29 @@ class ActivityTracker:
 
         If all states turned True (active) then proper message is emitted
         """
+        if topic_name not in self.activity_states:
+            self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+
         try:
             try:
+                write_log_to_file('activity_callback')
                 if self.activity_states[topic_name]['state'] == state and strategy != 'activity':
+                    write_log_to_file('state didnt change')
                     rospy.logdebug("State of %s didnt change" % topic_name)
                 else:
                     self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+                    write_log_to_file('state changed to %s at %s' % (self.activity_states[topic_name]["state"], self.activity_states[topic_name]["time"]))
                     rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
             except KeyError:
+                write_log_to_file('key error...')
+                write_log_to_file('activity states is %s' % str(self.activity_states))
                 rospy.loginfo("Initializing topic name state: %s" % topic_name)
                 self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
 
             self._check_states()
             return True
         except Exception, e:
+            write_log_to_file('outer error... %s' % e)
             rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
             return False
 
@@ -387,6 +403,7 @@ class ActivityTracker:
         """
         now = rospy.get_time()
         self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if (now - self.timeout) < state['time']}
+        write_log_to_file('active within timeout %s difference is %f current active %s' % (str(self.sources_active_within_timeout), now - self.timeout, str(self.active)))
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True
@@ -413,7 +430,7 @@ class ActivityTracker:
                 topic=source['topic'], message_type=source['message_type'],
                 strategy=source['strategy'], slot=source['slot'],
                 value_min=source['value_min'], value_max=source['value_max'],
-                callback=self.activity_callback)
+                callback=self.activity_callback, debug=self.debug)
             self.initialized_sources.append(act)
         return True
 
@@ -443,3 +460,4 @@ class ActivityTracker:
     def poll_activities(self):
         for source in self.initialized_sources:
             source.is_active()
+        self._check_states()

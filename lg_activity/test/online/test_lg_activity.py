@@ -29,7 +29,7 @@ class MockPublisher:
         self.data = []
 
     def publish(self, msg):
-        self.data.append(msg)
+        self.data.append(msg.data)
 
 
 class MockCallbackHandler:
@@ -104,13 +104,16 @@ class TestActivityTracker(unittest.TestCase):
         self.sources = self.detector.get_sources()
         self.topic = '/spacenav/twist'
         self.message_type = 'geometry_msgs/Twist'
-        self.callback = self.foo_cb
-        self.strategy = 'delta'
         self.cb = MockCallbackHandler()
+        self.cb_2 = MockCallbackHandler()
+        self.callback = self.cb_2.cb
+        self.strategy = 'delta'
+        """
         self.activity_source_spacenav_delta = ActivitySource(topic=self.topic,
                                                              message_type=self.message_type,
                                                              callback=self.callback,
                                                              strategy=self.strategy)
+        """
 
     def test_detector_instantiated(self):
         """
@@ -162,6 +165,7 @@ class TestActivityTracker(unittest.TestCase):
         self.true_state()
         activity_source._aggregate_message(msg_b)
         self.false_state()
+        del activity_source
 
     def test_range_active_to_inactive(self):
         """
@@ -189,6 +193,50 @@ class TestActivityTracker(unittest.TestCase):
         activity_source._aggregate_message(mid_active)
         self.true_state()
 
+    def test_activity_tracker(self):
+        write_log_to_file('starting activity tracker test!!!!')
+        debug_sub = rospy.Subscriber('/spacenav/twist', Twist, self.foo_cb)
+        spacenav = SpaceNavMockSource()
+        sources = ActivitySourceDetector(spacenav.source_string).get_sources()
+        pub = MockPublisher()
+        timeout = 2
+        tracker = ActivityTracker(publisher=pub, timeout=timeout, sources=sources, debug=True)
+        self.assertTrue(tracker.active)
+        self.assertTrue(pub.data[-1])
+        self.assertEqual(len(pub.data), 1)
+
+        # set as inactive by publishing delta_msg_count spacenav messages with homogenous data
+        msg_a = make_twist_messages(1)
+        msg_b = make_twist_messages(0)
+
+        p = rospy.Publisher(spacenav.source['topic'], Twist, queue_size=10)
+        rospy.sleep(1)
+        for i in range(ActivitySource.DELTA_MSG_COUNT):
+            self.assertTrue(tracker.active)
+            self.assertTrue(pub.data[-1])
+            self.assertEqual(len(pub.data), 1)
+            write_log_to_file('publishing message a...')
+            p.publish(msg_a)
+        # sleep for longer than timeout
+        rospy.sleep(timeout + 3)
+        tracker.poll_activities()
+        # should be inactive
+        self.assertFalse(tracker.active)
+        self.assertFalse(pub.data[-1])
+        self.assertEqual(len(pub.data), 2)
+
+        rospy.sleep(timeout + 3)
+        write_log_to_file('about to set to true, hopefully')
+
+        # publish different message once to set to active
+        p.publish(msg_b)
+        write_log_to_file('just set to true')
+        tracker.poll_activities()
+        self.assertTrue(tracker.active)
+        self.assertTrue(pub.data[-1])
+        self.assertEqual(len(pub.data), 3)
+        write_log_to_file('ending activity tracker test!!!!')
+
     def false_state(self):
         self.assertFalse(self.cb.state)
 
@@ -204,7 +252,18 @@ class TestActivityTracker(unittest.TestCase):
 
     def foo_cb(self, msg):
         """Do nothing callback"""
-        write_log_to_file(msg)
+        return
+        write_log_to_file('got spacenav...')
+        write_log_to_file('linear %f %f %f, angular %f %f %f' % (msg.linear.x,msg.linear.y,msg.linear.z,msg.angular.x,msg.angular.y,msg.angular.z,))
+
+    def test_aaa_spacenav_thing(self):
+        write_log_to_file('starting aaaa test')
+        debug_pub = rospy.Publisher('/spacenav/twist', Twist, queue_size=10)
+        debug_sub = rospy.Subscriber('/spacenav/twist', Twist, self.foo_cb)
+        rospy.sleep(1)
+        write_log_to_file('publishing')
+        debug_pub.publish(make_twist_messages(0))
+
 
 
 def make_twist_messages(value):
@@ -219,4 +278,5 @@ def make_twist_messages(value):
 
 if __name__ == '__main__':
     import rostest
+    rospy.init_node("%s_%s" % (PKG, NAME))
     rostest.rosrun(PKG, NAME, TestActivityTracker)
