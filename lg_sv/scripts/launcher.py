@@ -5,9 +5,8 @@ import rospy
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
-from lg_common.helpers import depend_on_service
-from lg_common.helpers import discover_port_from_url
-from lg_common.helpers import discover_host_from_url
+from lg_common.helpers import dependency_available
+from lg_common.helpers import discover_port_from_url, discover_host_from_url
 from lg_common.helpers import DependencyException
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
@@ -27,6 +26,8 @@ def main():
     yaw_offset = float(rospy.get_param('~yaw_offset', 0))
     leader = str(rospy.get_param('~leader', 'false'))
     tilt = str(rospy.get_param('~tilt', 'false'))
+    depend_on_webserver = rospy.get_param('~depend_on_webserver', False)
+
     # put parameters into one big url
     url = add_url_params(url,
                          fov=field_of_view,
@@ -41,12 +42,12 @@ def main():
     port = discover_port_from_url(url)
     timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    if not depend_on_service(host, port, 'streetview_server', timeout):
+    if not depependecy_available(host, port, 'streetview_server', timeout) and depend_on_webserver:
         msg = "Streetview server (%s:%s) did not appear within specified timeout of %s seconds" % (host, port, timeout)
         rospy.logerr(msg)
         raise DependencyException
     else:
-        rospy.loginfo("Streetview server accessible - launching client browser")
+        rospy.loginfo("Launching client browser without waiting for webserver")
 
     # create the managed browser
     slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)
