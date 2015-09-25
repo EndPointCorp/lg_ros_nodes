@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 """
-Ad hoc media application manager tests.
+Full-fledged mplayer testing scenarios.
 
-run tests on an individual package:
-    rostest lg_media/launch/dev.launch
+starting roslaunch for development:
+    roslaunch --screen  lg_media/test/online/test_mplayer_scenarios_real.test
 
-run entire lg_ros_notes test suite:
-    catkin_make run_tests
-    catkin_test_results build/test_results --all --verbose
+running tests manually:
+    rostest lg_media/test/online/test_mplayer_scenarios_real.test
+        (as long as it contains <test> tag, it's the same as launch file)
 
 """
 
@@ -29,21 +29,10 @@ from lg_media.msg import AdhocMedia
 from lg_media.msg import AdhocMedias
 from lg_media.srv import MediaAppsInfo
 from lg_media.srv import MediaAppsInfoResponse
-from lg_media import SRV_QUERY
-from lg_media import AppInstance
+from lg_media.mplayer_pool import SRV_QUERY, ROS_NODE_NAME
 
 
-class MockProc(object):
-    def __init__(self, cmd, state):
-        self.cmd = cmd
-        self.state = state
-
-
-class TestAppInstance(object):
-    def test_basic(self):
-        proc = MockProc("/command/path", "my_state")
-        ai = AppInstance(proc, "/some/path", "/some/url")
-        assert str(ai).find("FIFO='/some/path'") > 1
+TOPIC_NAME = "/%s/left_one" % ROS_NODE_NAME
 
 
 #class TestMediaService(unittest.TestCase):
@@ -72,15 +61,47 @@ class TestMediaService(object):
     def teardown_method(self, _):
         pass
 
+    def lg_media_service_call(self):
+        """
+        Perform rosservice call /lg_media/query
+        and return data in dict.
+
+        """
+        rospy.wait_for_service(SRV_QUERY)
+        proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo)
+        r = proxy()
+        assert isinstance(r, MediaAppsInfoResponse)
+        data = json.loads(r.json)
+        return data
+
+    def get_media_msg(self, msg_id="1"):
+        """
+        Returns 2 kinds of media messages, according to the
+        desired msg id which, after starting the application gets translated
+        into tracking app id.
+
+        """
+        # TODO
+        # make these local small files
+        if msg_id == "1":
+            media = AdhocMedia(id="1", url="https://zdenek.endpoint.com/kaiser_labus-7_statecnych.flv")
+        if msg_id == "2":
+            media = AdhocMedia(id="2", url="https://zdenek.endpoint.com/a_conference_call_in_real_life.mp4")
+        media.geometry.x = 10
+        media.geometry.y = 20
+        media.geometry.width = 600
+        media.geometry.height = 800
+        media.media_type = "video"
+        return media
+
     def shutdown_check_clean_up(self):
         """
         Send an empty media message which shuts everything running down.
         Check the tracked applications are gone and the previously
         existing FIFO files are cleaned up.
-
         """
         prev_data = self.lg_media_service_call()
-        pub = rospy.Publisher("/media_service/left_one", AdhocMedias, queue_size=10)
+        pub = rospy.Publisher(TOPIC_NAME, AdhocMedias, queue_size=10)
         rospy.init_node("talker", anonymous=True)
         pub.publish(AdhocMedias(medias=[]))
         count = 0
@@ -98,26 +119,26 @@ class TestMediaService(object):
             fifo.replace("'", '')  # the trailing '
             assert not os.path.exists(fifo)
 
-    def lg_media_service_call(self):
+    def perform_test(self, wait_iterations=10, time_sleep=2, len_data=1, media_msg=None):
         """
-        Perform rosservice call /lg_media/query
-        and return data in dict.
-
+        Perform a test on a message and application start oriented test case.
         """
-        rospy.wait_for_service(SRV_QUERY)
-        proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo)
-        r = proxy()
-        assert isinstance(r, MediaAppsInfoResponse)
-        data = json.loads(r.json)
-        return data
-
-    def test_lg_media_service_call(self):
-        """
-        Assert on presence of service, call the service.
-
-        """
-        data = self.lg_media_service_call()
-        assert data == {}
+        count = 0
+        while count < wait_iterations:
+            time.sleep(time_sleep)
+            data = self.lg_media_service_call()
+            try:
+                assert len(data) == len_data
+                assert media_msg.id in data.keys()
+                # difficult to check URL in the command if URL changes on-the-fly
+                #assert data[media_msg.id].find(media_msg.url) > 1
+                break
+            except AssertionError:
+                pass
+            count += 1
+        else:
+            pytest.fail("mplayer doesn't seem to start on "
+                        "media: %s, app status: %s" % (media_msg, data))
 
     def test_lg_media_topic_presence(self):
         """
@@ -127,56 +148,24 @@ class TestMediaService(object):
         #master = rosgraph.masterapi.Master("caller")
         #topics = master.getTopicTypes()
         #assert ["/media_service/left_one", "lg_media/AdhocMedias"] in topics
-        topic = "/media_service/left_one"
-        topic_type, real_topic, msg_eval = rostopic.get_topic_type(topic, blocking=False)
-        assert topic_type is not None, "Topic not found: {}".format(topic)
-        assert topic_type == "lg_media/AdhocMedias"
+        topic_type, real_topic, msg_eval = rostopic.get_topic_type(TOPIC_NAME, blocking=False)
+        assert topic_type is not None, "Topic not found: {}".format(TOPIC_NAME)
+        assert topic_type == "%s/AdhocMedias" % ROS_NODE_NAME
 
-    def get_media_msg(self, msg_id="1"):
+    def test_lg_media_service_call(self):
         """
-        Returns 2 kinds of media messages, according to the
-        desired msg id which, after starting the application gets translated
-        into tracking app id.
+        Assert on presence of service, call the service.
 
         """
-        if msg_id == "1":
-            media = AdhocMedia(id="1", url="https://zdenek.endpoint.com/kaiser_labus-7_statecnych.flv")
-        if msg_id == "2":
-            media = AdhocMedia(id="2", url="https://zdenek.endpoint.com/a_conference_call_in_real_life.mp4")
-        media.geometry.x = 640
-        media.geometry.y = 480
-        media.geometry.width = 0
-        media.geometry.height = 0
-        return media
-
-    def perform_test(self, wait_iterations=10, time_sleep=2, len_data=1, media_msg=None):
-        """
-        Perform a test on a message and application start oriented test case.
-
-        """
-        count = 0
-        while count < wait_iterations:
-            time.sleep(time_sleep)
-            data = self.lg_media_service_call()
-            try:
-                assert len(data) == len_data
-                assert media_msg.id in data.keys()
-                assert data[media_msg.id].find(media_msg.url) > 1
-                break
-            except AssertionError:
-                pass
-            count += 1
-        else:
-            pytest.fail("mplayer doesn't seem to start on "
-                        "media: %s, app status: %s" % (media_msg, data))
+        data = self.lg_media_service_call()
+        assert data == {}
 
     def test_lg_media_start_app_request(self):
         """
         Emit onto a topic mplayer app start request and check
         internal state of the MediaService.
-
         """
-        pub = rospy.Publisher("/media_service/left_one", AdhocMedias, queue_size=10)
+        pub = rospy.Publisher(TOPIC_NAME, AdhocMedias, queue_size=10)
         rospy.init_node("talker", anonymous=True)
         media = self.get_media_msg(msg_id="1")
         pub.publish(AdhocMedias(medias=[media]))
@@ -189,7 +178,7 @@ class TestMediaService(object):
         source URL and check the media manager internal status.
 
         """
-        pub = rospy.Publisher("/media_service/left_one", AdhocMedias, queue_size=10)
+        pub = rospy.Publisher(TOPIC_NAME, AdhocMedias, queue_size=10)
         rospy.init_node("talker", anonymous=True)
         media = self.get_media_msg(msg_id="1")
         pub.publish(AdhocMedias(medias=[media]))
@@ -209,7 +198,7 @@ class TestMediaService(object):
         The running one should be shutdown and the new one started.
 
         """
-        pub = rospy.Publisher("/media_service/left_one", AdhocMedias, queue_size=10)
+        pub = rospy.Publisher(TOPIC_NAME, AdhocMedias, queue_size=10)
         rospy.init_node("talker", anonymous=True)
         media1 = self.get_media_msg(msg_id="1")
         pub.publish(AdhocMedias(medias=[media1]))
@@ -228,7 +217,7 @@ class TestMediaService(object):
         Start two mplayer applications at once.
 
         """
-        pub = rospy.Publisher("/media_service/left_one", AdhocMedias, queue_size=10)
+        pub = rospy.Publisher(TOPIC_NAME, AdhocMedias, queue_size=10)
         rospy.init_node("talker", anonymous=True)
         media1 = self.get_media_msg(msg_id="1")
         media2 = self.get_media_msg(msg_id="2")
@@ -241,8 +230,6 @@ class TestMediaService(object):
                 assert len(data) == 2
                 assert media1.id in data.keys()
                 assert media2.id in data.keys()
-                assert data[media1.id].find(media1.url) > 1
-                assert data[media2.id].find(media2.url) > 1
                 break
             except AssertionError:
                 pass
@@ -250,11 +237,11 @@ class TestMediaService(object):
         else:
             pytest.fail("mplayer doesn't seem to start on "
                         "media1: %s, media2: %s, app status: %s" % (media1, media2, data))
-
         self.shutdown_check_clean_up()
 
 
 if __name__ == "__main__":
+    # this is for testing via unittest rather than via py.test
     # unittest test
     # test class must inherit from unittest.TestCase, not from object
     #rostest.rosrun("lg_media", "test_lg_media_basic", TestMediaService)
@@ -264,10 +251,11 @@ if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
     # otherwise: FAILURE: test [test_lg_media_basic] did not generate test results
 
-    test_pkg = "lg_media"
-    test_name = "test_lg_media_basic"
+    test_pkg = ROS_NODE_NAME
+    test_name = "test_mplayer_scenarios_real"
     test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
     pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
-    test_path = os.path.abspath(os.path.dirname(__file__))
+    # run only itself
+    test_path = os.path.abspath(os.path.abspath(__file__))
     # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
     pytest.main("%s -s -v --junit-xml=%s" % (test_path, pytest_result_path))

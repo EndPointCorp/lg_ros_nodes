@@ -2,6 +2,34 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.7 (2015-09-24)
+------------------
+* PEP8'ed director
+* Contributors: Adam Vollrath
+
+1.1.6 (2015-09-24)
+------------------
+* Revert director.py to where it was at 8222d7b6b38f170b7c6a7f379909182fe297b56d
+* Contributors: Adam Vollrath
+
+1.1.5 (2015-09-23)
+------------------
+
+1.1.8 (2015-09-25)
+------------------
+* Contributors: Adam Vollrath, Matt Vollrath
+
+1.1.3 (2015-09-22)
+------------------
+
+1.1.2 (2015-09-22)
+------------------
+
+1.1.1 (2015-09-18)
+------------------
+* Revert to previous packaging of director's dependencies thx to @mvollrath
+* Contributors: Wojciech Ziniewicz
+
 1.1.0 (2015-09-17)
 ------------------
 * Contributors: Jacob Minshall, Matt Vollrath

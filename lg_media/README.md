@@ -67,3 +67,8 @@ This node listens on `/director/scene` and passes any media messages to
 * `/director/scene` [`interactivespaces\_msgs/GenericMessage`] - Director
   messages on this topic will be translated into `AdhocMedias` thanks to the
   `DirectorMediaBridge`
+
+# TODO
+
+- make mplayer director pool eval the URL to prevent it from opening URLs with spaces:
+  e.g. this won't work: "http://lg-head/cms/1-5 Shokasonjuku Academy.avi'

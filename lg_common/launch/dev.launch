@@ -26,22 +26,30 @@
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
     <param name="yaw_offset" value="65" />
     <param name="viewport" value="left_one" />
+    <param name="kml_sync_base" value="http://localhost:8765"/>
+    <param name="kml_sync_slug" value="left_one"/>
   </node>
   <node name="earth_center" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_send" value="true" />
     <param name="spacenav_device" value="$(arg spnav_path)" />
     <param name="show_compass" value="true" />
     <param name="viewport" value="center" />
+    <param name="kml_sync_base" value="http://localhost:8765"/>
+    <param name="kml_sync_slug" value="center"/>
   </node>
+<!--
   <node name="touchscreen_browser" pkg="lg_common" type="static_browser.py" clear_params="true">
     <param name="url" value="http://i.imgur.com/0MPdu31.gif" />
     <param name="viewport" value="touchscreen" />
   </node>
+-->
   <node name="earth_right_one" pkg="lg_earth" type="client" clear_params="true">
     <param name="viewsync_recv" value="true" />
     <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
     <param name="yaw_offset" value="-65" />
     <param name="viewport" value="right_one" />
+    <param name="kml_sync_base" value="http://localhost:8765"/>
+    <param name="kml_sync_slug" value="right_one"/>
   </node>
   <!-- Google Earth viewsync relay. -->
   <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay" clear_params="true">

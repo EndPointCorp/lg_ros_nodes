@@ -2,6 +2,31 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.7 (2015-09-24)
+------------------
+
+1.1.6 (2015-09-24)
+------------------
+
+1.1.5 (2015-09-23)
+------------------
+
+1.1.8 (2015-09-25)
+------------------
+* added real mplayer test scenarios, still needs debugging
+* Contributors: Adam Vollrath, Jacob Minshall, Zdenek Maxa
+
+1.1.3 (2015-09-22)
+------------------
+* Added mplayer todo
+* Contributors: Wojciech Ziniewicz
+
+1.1.2 (2015-09-22)
+------------------
+
+1.1.1 (2015-09-18)
+------------------
+
 1.1.0 (2015-09-17)
 ------------------
 * lg_media: parameterized the videosync hardcoded values
