@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import rospy
@@ -430,3 +431,30 @@ def discover_port_from_url(url):
     from urlparse import urlparse
     data = urlparse(url)
     return data.port
+
+
+def find_device(name):
+    import os
+    for device in os.listdir('/dev/input/'):
+        device = '/dev/input/' + device
+        if 'event' not in device:
+            continue
+        if check_device(device, name):
+            return device
+    # did not find an event device with the name provided
+    return None
+
+
+def check_device(device, name):
+    import os
+    from stat import ST_MODE
+    from evdev import InputDevice
+    if os.access(device, os.W_OK | os.R_OK):
+        return (InputDevice(device).name == name)
+
+    original_mode = os.stat(device)
+    os.system('sudo chmod 0666 %s' % device)
+    flag = (InputDevice(device).name == name)
+    if not flag:
+        os.chmod(device, original_mode)
+    return flag

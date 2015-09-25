@@ -3,7 +3,7 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from evdev import InputDevice, list_devices, ecodes, categorize
-from lg_common.helpers import rewrite_message_to_dict
+from lg_common.helpers import rewrite_message_to_dict, find_device
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -31,9 +31,8 @@ class DeviceReplay:
             rospy.loginfo("Initializing device replay with devic: %s" % self.device)
         else:
             try:
-                os.system("sudo chmod 0666 /dev/input/*")
-                devices = [InputDevice(fn) for fn in list_devices()]
-                self.device = [device for device in devices if device.name == self.device_name][0]
+                device_path = find_device(self.device_name)
+                self.device = InputDevice(device_path)
                 rospy.loginfo("Initialize device reader for %s" % self.device)
             except IndexError, e:
                 rospy.logerr("No device with name: '%s'" % self.device_name)
