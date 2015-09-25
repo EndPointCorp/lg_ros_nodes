@@ -4,6 +4,7 @@ import rospy
 from interactivespaces_msgs.msg import GenericMessage
 from lg_replay import DevicePublisher, DeviceReplay, LgActivityException
 from evdev import InputDevice
+import os
 
 
 def main():
@@ -24,6 +25,10 @@ def main():
     device_publisher = DevicePublisher(publisher)
 
     if device_path:
+        err, msg = check_device_path(device_path)
+        if err:
+            rospy.logerr('Invalid device path supplied: %s' % msg)
+            return
         device = InputDevice(device_path)
         if not device_name:
             device_name = device.name
@@ -35,6 +40,15 @@ def main():
         device_replay.run()
     except IOError:
         rospy.logwarn('Device unplugged most likely')
+
+
+def check_device_path(path):
+    if not os.path.exists(path):
+        return True, 'Device does not exist'
+    err = not os.access(path, os.R_OK | os.W_OK)
+    if err:
+        return err, 'Insufficient permissions'
+    return False, 'No problems here'
 
 if __name__ == '__main__':
     main()
