@@ -10,6 +10,7 @@ from interactivespaces_msgs.msg import GenericMessage
 class WrongActivityDefinition(Exception):
     pass
 
+
 class DependencyException(Exception):
     pass
 
@@ -378,6 +379,7 @@ def get_message_type_from_string(string):
     message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
     return message_type_final
 
+
 def depend_on_service(server, port, name, timeout=None):
     """
     Wait for network service to appear. Provide addres, port and name.
@@ -416,10 +418,12 @@ def depend_on_service(server, port, name, timeout=None):
             s.close()
             return True
 
+
 def discover_host_from_url(url):
     from urlparse import urlparse
     data = urlparse(url)
     return data.hostname
+
 
 def discover_port_from_url(url):
     from urlparse import urlparse

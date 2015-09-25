@@ -18,7 +18,6 @@ DEFAULT_FOV = 28.125
 def main():
     rospy.init_node('panoviewer_browser', anonymous=True)
 
-
     geometry = ManagedWindow.get_viewport_geometry()
     server_type = rospy.get_param('~server_type', 'streetview')
     url = str(rospy.get_param('~url', DEFAULT_URL))
