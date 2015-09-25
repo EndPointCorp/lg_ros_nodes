@@ -31,8 +31,10 @@ def main():
     else:
         device_replay = DeviceReplay(device_publisher, device_name, event_ecode)
 
-    device_replay.run()
-    rospy.spin()
+    try:
+        device_replay.run()
+    except IOError:
+        rospy.logwarn('Device unplugged most likely')
 
 if __name__ == '__main__':
     main()
