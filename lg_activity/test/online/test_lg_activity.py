@@ -231,6 +231,7 @@ class TestActivityTracker(unittest.TestCase):
         # publish different message once to set to active
         p.publish(msg_b)
         write_log_to_file('just set to true')
+        rospy.sleep(0.5)
         tracker.poll_activities()
         self.assertTrue(tracker.active)
         self.assertTrue(pub.data[-1])
