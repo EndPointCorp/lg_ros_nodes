@@ -14,6 +14,11 @@ Changelog for package lg_earth
 1.1.5 (2015-09-23)
 ------------------
 
+Forthcoming
+-----------
+* Added ext dependency mechanism and added it to GE and SV/PV
+* Contributors: Adam Vollrath, Matt Vollrath, Wojciech Ziniewicz
+
 1.1.3 (2015-09-22)
 ------------------
 
