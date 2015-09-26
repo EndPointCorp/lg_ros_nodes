@@ -19,8 +19,8 @@ Changelog for package lg_cms_director
 ------------------
 * Contributors: Adam Vollrath, Matt Vollrath
 
-Forthcoming
------------
+1.1.9 (2015-09-25)
+------------------
 * 1.1.8
 * catkin_generate_changelog
 * 1.1.7

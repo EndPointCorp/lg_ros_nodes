@@ -16,8 +16,8 @@ Changelog for package lg_media
 * added real mplayer test scenarios, still needs debugging
 * Contributors: Adam Vollrath, Jacob Minshall, Zdenek Maxa
 
-Forthcoming
------------
+1.1.9 (2015-09-25)
+------------------
 * 1.1.8
 * catkin_generate_changelog
 * pep8 fixes

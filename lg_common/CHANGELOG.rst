@@ -15,8 +15,8 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.9 (2015-09-25)
+------------------
 * Dont start application if X is not available
 * Better logging for dependencies
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
