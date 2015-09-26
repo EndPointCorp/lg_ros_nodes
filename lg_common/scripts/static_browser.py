@@ -30,12 +30,13 @@ if __name__ == '__main__':
     www_host = discover_port_from_url(url)
     www_port = discover_port_from_url(port)
 
-    if not dependency_available(www_host, www_port, 'static browser URL', global_dependency_timeout) and depend_on_url:
-        msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
-        rospy.logfatal(msg)
-        raise DependencyException(msg)
-    else:
-        rospy.loginfo("Not waiting for URL to become available - initializing static browser")
+    if depend_on_url:
+        if not dependency_available(www_host, www_port, 'static browser URL', global_dependency_timeout):
+            msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
+            rospy.logfatal(msg)
+            raise DependencyException(msg)
+        else:
+            rospy.loginfo("URL available - continuing initialization")
 
     browser = ManagedBrowser(
         geometry=geometry,

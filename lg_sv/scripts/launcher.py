@@ -42,12 +42,14 @@ def main():
     port = discover_port_from_url(url)
     timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    if not dependency_available(host, port, 'streetview_server', timeout) and depend_on_webserver:
-        msg = "Streetview server (%s:%s) did not appear within specified timeout of %s seconds" % (host, port, timeout)
-        rospy.logerr(msg)
-        raise DependencyException
-    else:
-        rospy.loginfo("Launching client browser without waiting for webserver")
+    if depend_on_webserver:
+        rospy.loginfo("Waiting for webserver to become available")
+        if not dependency_available(host, port, 'streetview_server', timeout):
+            msg = "Streetview server (%s:%s) did not appear within specified timeout of %s seconds" % (host, port, timeout)
+            rospy.logerr(msg)
+            raise DependencyException
+        else:
+            rospy.loginfo("Webserver available - continuing initialization")
 
     # create the managed browser
     slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)

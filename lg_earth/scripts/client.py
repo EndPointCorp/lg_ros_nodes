@@ -15,12 +15,14 @@ def main():
     kmlsync_timeout = rospy.get_param('/global_dependency_timeout', 15)
     depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
 
-    if not dependency_available(kmlsync_host, kmlsync_port, 'kmlsync', kmlsync_timeout) and depend_on_kmlsync:
-        msg = "Service: %s hasn't become accessible within %s seconds" % ('kmlsync', kmlsync_timeout)
-        rospy.logfatal(msg)
-        raise DependencyException(msg)
-    else:
-        rospy.loginfo("Not waiting for KMLSync - initializing Earth")
+    if depend_on_kmlsync:
+        rospy.loginfo("Waiting for KMLSync to become available")
+        if not dependency_available(kmlsync_host, kmlsync_port, 'kmlsync', kmlsync_timeout):
+            msg = "Service: %s hasn't become accessible within %s seconds" % ('kmlsync', kmlsync_timeout)
+            rospy.logfatal(msg)
+            raise DependencyException(msg)
+        else:
+            rospy.loginfo("KMLSync available - continuing initialization")
 
     client = Client()
 
