@@ -4,7 +4,7 @@ import rospy
 from lg_earth import Client
 from lg_common.msg import ApplicationState
 from lg_common.helpers import DependencyException
-from lg_common.helpers import dependency_available
+from lg_common.helpers import dependency_available, x_available
 
 
 def main():

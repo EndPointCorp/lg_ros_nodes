@@ -6,7 +6,7 @@ from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
 from lg_common.helpers import dependency_available
-from lg_common.helpers import discover_port_from_url, discover_host_from_url
+from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available
 from lg_common.helpers import DependencyException
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
@@ -50,6 +50,15 @@ def main():
             raise DependencyException
         else:
             rospy.loginfo("Webserver available - continuing initialization")
+
+    # wait for X to become available
+    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    if x_available(x_timeout):
+        rospy.loginfo("X available")
+    else:
+        msg = "X server is not available"
+        rospy.logfatal(msg)
+        raise DependencyException(msg)
 
     # create the managed browser
     slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)

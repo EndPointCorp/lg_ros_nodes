@@ -8,8 +8,9 @@ from std_msgs.msg import String
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
-from lg_common.helpers import dependency_available
+from lg_common.helpers import dependency_available, x_available
 from lg_common.helpers import DependencyException
+from lg_common.helpers import x_available
 
 
 if __name__ == '__main__':
@@ -51,6 +52,14 @@ if __name__ == '__main__':
             raise DependencyException(msg)
         else:
             rospy.loginfo("Director is online")
+
+    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    if x_available(x_timeout):
+        rospy.loginfo("X available")
+    else:
+        msg = "X server is not available"
+        rospy.logfatal(msg)
+        raise DependencyException(msg)
 
     url = url_base + ts_name + "/"
 

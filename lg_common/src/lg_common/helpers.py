@@ -382,6 +382,19 @@ def get_message_type_from_string(string):
     message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
     return message_type_final
 
+def x_available(timeout=None):
+    if not timeout:
+        return
+    import commands
+
+    while timeout >= 0:
+        x_check = commands.getstatusoutput("DISPLAY=:0 xset q")
+        if x_check[0] == 0:
+            return True
+        else:
+            rospy.loginfo("X not available - sleeping for %s more seconds" % timeout)
+            timeout -= 1
+            rospy.sleep(1)
 
 def dependency_available(server, port, name, timeout=None):
     """
