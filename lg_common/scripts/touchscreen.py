@@ -34,19 +34,23 @@ if __name__ == '__main__':
     depend_on_director = rospy.get_param('~depend_on_director', False)
     global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    if not dependency_available(rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout) and depend_on_rosbridge:
-        msg = "Service: %s hasn't become accessible within %s seconds" % ('rosbridge', global_dependency_timeout)
-        rospy.logfatal(msg)
-        raise DependencyException(msg)
-    else:
-        rospy.loginfo("Not waiting for rosbridge - initializing touchscreen browser")
+    if depend_on_rosbridge:
+        rospy.loginfo("Waiting for rosbridge to become available")
+        if not dependency_available(rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout):
+            msg = "Service: %s hasn't become accessible within %s seconds" % ('rosbridge', global_dependency_timeout)
+            rospy.logfatal(msg)
+            raise DependencyException(msg)
+        else:
+            rospy.loginfo("Rosbridge is online")
 
-    if not dependency_available(director_host, director_port, 'director', global_dependency_timeout) and depend_on_director:
-        msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
-        rospy.logfatal(msg)
-        raise DependencyException(msg)
-    else:
-        rospy.loginfo("Not waiting for director - initializing touchscreen browser")
+    if depend_on_director:
+        rospy.loginfo("Waiting for director to become available")
+        if not dependency_available(director_host, director_port, 'director', global_dependency_timeout):
+            msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
+            rospy.logfatal(msg)
+            raise DependencyException(msg)
+        else:
+            rospy.loginfo("Director is online")
 
     url = url_base + ts_name + "/"
 

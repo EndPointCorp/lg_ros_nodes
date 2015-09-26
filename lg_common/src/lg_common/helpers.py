@@ -409,12 +409,14 @@ def dependency_available(server, port, name, timeout=None):
 
         except socket.timeout, err:
             # this exception occurs only if timeout is set
+            rospy.loginfo("%s not yet available - waiting %s" % (name, timeout))
             if timeout:
                 return False
 
         except socket.error, err:
             # catch timeout exception from underlying network library
             # this one is different from socket.timeout
+            rospy.loginfo("%s not yet available - waiting %s" % (name, timeout))
             if type(err.args) != tuple or err[0] != errno.ETIMEDOUT:
                 raise
         else:
