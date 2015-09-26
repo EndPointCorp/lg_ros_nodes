@@ -8,6 +8,8 @@ from std_msgs.msg import String
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
+from lg_common.helpers import dependency_available
+from lg_common.helpers import DependencyException
 
 
 if __name__ == '__main__':
