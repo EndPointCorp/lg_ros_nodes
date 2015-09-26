@@ -24,6 +24,14 @@ def main():
         else:
             rospy.loginfo("KMLSync available - continuing initialization")
 
+    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    if x_available(x_timeout):
+        rospy.loginfo("X available")
+    else:
+        msg = "X server is not available"
+        rospy.logfatal(msg)
+        raise DependencyException(msg)
+
     client = Client()
 
     rospy.Subscriber('/earth/state', ApplicationState,
