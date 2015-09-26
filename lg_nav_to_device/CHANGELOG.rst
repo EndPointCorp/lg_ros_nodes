@@ -15,8 +15,8 @@ Changelog for package lg_nav_to_device
 ------------------
 * Contributors: Adam Vollrath
 
-Forthcoming
------------
+1.1.9 (2015-09-25)
+------------------
 * 1.1.8
 * catkin_generate_changelog
 * 1.1.7

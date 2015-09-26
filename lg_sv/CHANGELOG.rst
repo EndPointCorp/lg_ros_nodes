@@ -21,8 +21,8 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.9 (2015-09-25)
+------------------
 * Dont start application if X is not available
 * Better logging for dependencies
 * Fixed 'depepency' typo

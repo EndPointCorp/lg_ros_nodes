@@ -15,8 +15,8 @@ Changelog for package lg_replay
 ------------------
 * Contributors: Adam Vollrath
 
-Forthcoming
------------
+1.1.9 (2015-09-25)
+------------------
 * lg_replay: retain permissions on other event devices
 * lg_replay: exception handling
 * lg_replay: quietly handle unplugged device

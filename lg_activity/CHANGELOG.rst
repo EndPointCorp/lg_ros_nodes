@@ -17,8 +17,8 @@ Changelog for package lg_activity
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall
 
-Forthcoming
------------
+1.1.9 (2015-09-25)
+------------------
 * 1.1.8
 * catkin_generate_changelog
 * 1.1.7
