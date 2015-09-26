@@ -382,6 +382,7 @@ def get_message_type_from_string(string):
     message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
     return message_type_final
 
+
 def x_available(timeout=None):
     if not timeout:
         return
@@ -395,6 +396,7 @@ def x_available(timeout=None):
             rospy.loginfo("X not available - sleeping for %s more seconds" % timeout)
             timeout -= 1
             rospy.sleep(1)
+
 
 def dependency_available(server, port, name, timeout=None):
     """
@@ -441,6 +443,7 @@ def discover_host_from_url(url):
     from urlparse import urlparse
     data = urlparse(url)
     return data.hostname
+
 
 def discover_port_from_url(url):
     from urlparse import urlparse
