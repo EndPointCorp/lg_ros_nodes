@@ -15,6 +15,24 @@ Changelog for package lg_replay
 ------------------
 * Contributors: Adam Vollrath
 
+Forthcoming
+-----------
+* lg_replay: retain permissions on other event devices
+* lg_replay: exception handling
+* lg_replay: quietly handle unplugged device
+* lg_replay: add import and name input device device
+* lg_replay: allow path to be supplied in place of name
+* 1.1.8
+* catkin_generate_changelog
+* 1.1.7
+* Small changes
+* 1.1.6
+* Updated changelogs
+* 1.1.5
+* Bumped changelgs
+* 1.1.4
+* Contributors: Adam Vollrath, Jacob Minshall
+
 1.1.3 (2015-09-22)
 ------------------
 

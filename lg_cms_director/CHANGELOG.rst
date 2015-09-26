@@ -19,6 +19,23 @@ Changelog for package lg_cms_director
 ------------------
 * Contributors: Adam Vollrath, Matt Vollrath
 
+Forthcoming
+-----------
+* 1.1.8
+* catkin_generate_changelog
+* 1.1.7
+* Small changes
+* PEP8'ed director
+* 1.1.6
+* Updated changelogs
+* Revert director.py to where it was at 8222d7b6b38f170b7c6a7f379909182fe297b56d
+* 1.1.5
+* Bumped changelgs
+* 1.1.4
+* lg_cms_director: fix pulsar/trollius setup
+  find_packages was doing something weird and didn't want to use the cruft-generating setuptools version.
+* Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath
+
 1.1.3 (2015-09-22)
 ------------------
 
