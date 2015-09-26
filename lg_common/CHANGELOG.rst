@@ -15,6 +15,35 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* Dont start application if X is not available
+* Better logging for dependencies
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Added missing imports
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* ADded dependency checking and fixed slots deserialization
+* lg_replay: retain permissions on other event devices
+* lg_replay: lg_common: make sure we iterate over tuple
+  If __slots_\_ only has one value, it returns a string. Now we turn that
+  string into a tuple instead of trying to iterate over each character in
+  the string.
+* Make kmlsync work better by default, kill Futurama
+* 1.1.8
+* catkin_generate_changelog
+* pep8 fixes
+* Added ext dependency mechanism and added it to GE and SV/PV
+* 1.1.7
+* Small changes
+* 1.1.6
+* Updated changelogs
+* 1.1.5
+* Bumped changelgs
+* 1.1.4
+* Some debug for TS
+* Contributors: Adam Vollrath, Jacob Minshall, Joshua Tolley, Wojciech Ziniewicz
+
 1.1.3 (2015-09-22)
 ------------------
 
