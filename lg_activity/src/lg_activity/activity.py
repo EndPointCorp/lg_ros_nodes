@@ -50,24 +50,8 @@ class ActivitySource:
                  strategy=None, slot=None,
                  value_min=None, debug=None,
                  value_max=None, callback=None):
-        if (not topic) or (not message_type) or (not strategy) or (not callback):
-            msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
-                (topic, message_type, strategy, callback)
-
-            rospy.logerr(msg)
-            raise ActivitySourceException(msg)
-
-        if (type(topic) != str) or (type(message_type) != str):
-            msg = "Topic and message type should be strings"
-
-            rospy.logerr(msg)
-            raise ActivitySourceException(msg)
-
-        if (value_min and value_max) and (not slot):
-            msg = "You must provide slot when providing value_min and value_max"
-            rospy.logerr(msg)
-            raise ActivitySourceException(msg)
-
+        self._check_init_args(topic, message_type, strategy, callback,
+                              value_min, value_max, slot)
         self.message_type = message_type
         self.callback = callback
         self.slot = slot
@@ -75,26 +59,40 @@ class ActivitySource:
         self.value_min = value_min
         self.value_max = value_max
         self.debug = debug
-
-        if self.strategy == 'value':
-            """
-            For 'value' strategy we need to provide a lot of data
-            """
-            if self.value_min and self.value_max and self.slot:
-                rospy.loginfo("Registering activity source with min=%s, max=%s and msg attribute=%s" %
-                              (self.value_min, self.value_max, self.slot))
-            else:
-                msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (min=%s, max=%s and msg attribute=%s)" % \
-                    (self.value_min, self.value_max, self.slot)
-                rospy.logerr(msg)
-                raise ActivitySourceException(msg)
-
         self.topic = topic
         self.memory_limit = memory_limit
         self.messages = []
         self._initialize_subscriber()
         self.delta_msg_count = self.__class__.DELTA_MSG_COUNT
         rospy.loginfo("Initialized ActivitySource: %s" % self)
+
+
+    def _check_init_args(self, topic, message_type, strategy, callback, value_min, value_max, slot):
+        if (not topic) or (not message_type) or (not strategy) or (not callback):
+            msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
+                (topic, message_type, strategy, callback)
+            rospy.logerr(msg)
+            raise ActivitySourceException(msg)
+
+        if (type(topic) != str) or (type(message_type) != str):
+            msg = "Topic and message type should be strings"
+            rospy.logerr(msg)
+            raise ActivitySourceException(msg)
+
+        if strategy == 'value':
+            """
+            For 'value' strategy we need to provide a lot of data
+            """
+            if value_min and value_max and slot:
+                rospy.loginfo("Registering activity source with min=%s, max=%s and msg attribute=%s" %
+                              (value_min, value_max, slot))
+            else:
+                msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (min=%s, max=%s and msg attribute=%s)" % \
+                    (value_min, value_max, slot)
+                rospy.logerr(msg)
+                raise ActivitySourceException(msg)
+
+
 
     def __str__(self):
         string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
