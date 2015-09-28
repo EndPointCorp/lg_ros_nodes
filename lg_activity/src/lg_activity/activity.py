@@ -192,46 +192,54 @@ class ActivitySource:
         This method can be called from 'self' as well as from the outside of self
         """
         if self.strategy == 'delta':
-            if len(self.messages) >= self.delta_msg_count:
-                if list_of_dicts_is_homogenous(self.messages):
-                    self.messages = self.messages[-self.delta_msg_count + 1:]
-                    self.callback(self.topic, state=False, strategy='delta')
-                    if self.debug:
-                        write_log_to_file('false delta')
-                    return False  # if list if homogenous than there was no activity
-                else:
-                    self.messages = self.messages[-self.delta_msg_count + 1:]
-                    self.callback(self.topic, state=True, strategy='delta')
-                    if self.debug:
-                        write_log_to_file('true delta')
-                    return True  # if list is not homogenous than there was activity
-            else:
-                rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
-
+            self._is_delta_active()
         elif self.strategy == 'value':
-            if len(self.messages) >= 1:
-                if self._messages_met_value_constraints():
-                    self.messages = []
-                    self.callback(self.topic, state=False, strategy='value')
-                    return False  # messages met the constraints
-                else:
-                    self.messages = []
-                    self.callback(self.topic, state=True, strategy='value')
-                    return True  # messages didnt meet the constraints
-            else:
-                rospy.loginfo("Not enough messages (minimum of 1) for 'value' strategy")
-
+            self._is_value_active()
         elif self.strategy == 'activity':
-            if len(self.messages) > 0:
-                self.messages = []
-                self.callback(self.topic, state=True, strategy='activity')
-                return True
-            else:
-                self.messages = []
-                self.callback(self.topic, state=False, strategy='activity')
-                return False
+            self._is_activity_active()
         else:
             rospy.logerr("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
+
+    def _is_delta_active(self):
+        if len(self.messages) < self.delta_msg_count:
+            rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
+            return
+
+        if list_of_dicts_is_homogenous(self.messages):
+            self.messages = self.messages[-self.delta_msg_count + 1:]
+            self.callback(self.topic, state=False, strategy='delta')
+            if self.debug:
+                write_log_to_file('false delta')
+            return False  # if list if homogenous than there was no activity
+        else:
+            self.messages = self.messages[-self.delta_msg_count + 1:]
+            self.callback(self.topic, state=True, strategy='delta')
+            if self.debug:
+                write_log_to_file('true delta')
+            return True  # if list is not homogenous than there was activity
+
+    def _is_value_active(self):
+        if len(self.messages) < 1:
+            rospy.loginfo("Not enough messages (minimum of 1) for 'value' strategy")
+            return
+
+        if self._messages_met_value_constraints():
+            self.messages = []
+            self.callback(self.topic, state=False, strategy='value')
+            return False  # messages met the constraints
+        else:
+            self.messages = []
+            self.callback(self.topic, state=True, strategy='value')
+            return True  # messages didnt meet the constraints
+
+    def _is_activity_active(self):
+        if len(self.messages) > 0:
+            self.messages = []
+            self.callback(self.topic, state=True, strategy='activity')
+            return True
+        else:
+            self.callback(self.topic, state=False, strategy='activity')
+            return False
 
 
 class ActivitySourceDetector:
