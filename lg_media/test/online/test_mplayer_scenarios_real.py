@@ -81,12 +81,13 @@ class TestMediaService(object):
         into tracking app id.
 
         """
-        # TODO
-        # make these local small files
+        video_files_path = os.path.abspath(os.path.dirname(__file__))
         if msg_id == "1":
-            media = AdhocMedia(id="1", url="https://zdenek.endpoint.com/kaiser_labus-7_statecnych.flv")
+            file_url = os.path.join(video_files_path, "data", "drop.avi")
+            media = AdhocMedia(id="1", url=file_url)
         if msg_id == "2":
-            media = AdhocMedia(id="2", url="https://zdenek.endpoint.com/a_conference_call_in_real_life.mp4")
+            file_url = os.path.join(video_files_path, "data", "flame.avi")
+            media = AdhocMedia(id="2", url=file_url)
         media.geometry.x = 10
         media.geometry.y = 20
         media.geometry.width = 600
@@ -119,9 +120,14 @@ class TestMediaService(object):
             fifo.replace("'", '')  # the trailing '
             assert not os.path.exists(fifo)
 
-    def perform_test(self, wait_iterations=10, time_sleep=2, len_data=1, media_msg=None):
+    def perform_test(self, wait_iterations=40, time_sleep=2, len_data=1, media_msg=None):
         """
         Perform a test on a message and application start oriented test case.
+
+        Increased the time. *Sometimes* the message would not be processed within this
+        time and the test would fail. Looks like things get stuck from time to time
+        inside ROS. This helped, needs more observation.
+
         """
         count = 0
         while count < wait_iterations:
