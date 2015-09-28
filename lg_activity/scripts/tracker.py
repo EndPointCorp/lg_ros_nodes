@@ -14,8 +14,12 @@ def main():
 
     activity_timeout = rospy.get_param('~activity_timeout', 120)
     activity_topic = rospy.get_param('~activity_publisher_topic', '/activity/active')
-    sources_string = rospy.get_param('~activity_sources', '')
+    sources_string = rospy.get_param('~activity_sources', None)
     memory_limit = rospy.get_param('~memory_limit', 102400)
+
+    if not sources_string:
+        rospy.logerr('No or blank source string supplied, exiting...')
+        return
 
     activity_publisher = rospy.Publisher(activity_topic, Bool, queue_size=1, latch=True)
     activity_sources = ActivitySourceDetector(sources_string).get_sources()
