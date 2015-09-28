@@ -121,10 +121,12 @@ class ActivitySource:
         """
         Check for memory limits, deserialize message to python dict, append message.
         """
-        if sys.getsizeof(self.messages) >= self.memory_limit:
-            rospy.logwarn("%s activity source memory limit reached (%s) - discarding 2 oldest messages" % (self.topic, self.memory_limit))
-            del self.messages[-1]
-            del self.messages[-1]
+        while sys.getsizeof(self.messages) >= self.memory_limit:
+            rospy.logwarn("%s activity source memory limit reached (%s) - discarding oldest message" % (self.topic, self.memory_limit))
+            if len(self.messages) <= 1:
+                rospy.logwarn("Too small of a memory limit set... Ignoring")
+                break
+            del self.messages[0]
 
         self._deserialize_and_append(message)
         self.is_active()
