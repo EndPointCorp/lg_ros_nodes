@@ -14,6 +14,7 @@ import unittest
 from lg_activity import ActivitySource
 from lg_activity import ActivityTracker
 from lg_activity import ActivitySourceDetector
+from lg_activity.activity import ActivitySourceException
 from lg_common.helpers import unpack_activity_sources, build_source_string
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
@@ -265,6 +266,28 @@ class TestActivityTracker(unittest.TestCase):
         write_log_to_file('publishing')
         debug_pub.publish(make_twist_messages(0))
 
+    def test_invalid_activity_source_arguments(self):
+        prox = ProximitySensorMockSource()
+        # assert Not raises...
+        working_source = prox.source.copy()
+        self.new_activity_source(working_source)
+
+        with self.assertRaises(ActivitySourceException):
+            broken_source = working_source
+            broken_source['topic'] = None
+            self.new_activity_source(broken_source)
+        with self.assertRaises(ActivitySourceException):
+            broken_source = working_source
+            broken_source['topic'] = {}
+            self.new_activity_source(broken_source)
+        with self.assertRaises(ActivitySourceException):
+            broken_source = working_source
+            broken_source['value_min'] = None
+            self.new_activity_source(broken_source)
+        with self.assertRaises(ActivitySourceException):
+            broken_source = working_source
+            broken_source['slot'] = None
+            self.new_activity_source(broken_source)
 
 
 def make_twist_messages(value):
