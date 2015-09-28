@@ -256,7 +256,7 @@ class TestActivityTracker(unittest.TestCase):
         """Do nothing callback"""
         return
         write_log_to_file('got spacenav...')
-        write_log_to_file('linear %f %f %f, angular %f %f %f' % (msg.linear.x,msg.linear.y,msg.linear.z,msg.angular.x,msg.angular.y,msg.angular.z,))
+        write_log_to_file('linear %f %f %f, angular %f %f %f' % (msg.linear.x, msg.linear.y, msg.linear.z, msg.angular.x, msg.angular.y, msg.angular.z,))
 
     def test_aaa_spacenav_thing(self):
         write_log_to_file('starting aaaa test')

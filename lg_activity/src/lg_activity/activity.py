@@ -66,7 +66,6 @@ class ActivitySource:
         self.delta_msg_count = self.__class__.DELTA_MSG_COUNT
         rospy.loginfo("Initialized ActivitySource: %s" % self)
 
-
     def _check_init_args(self, topic, message_type, strategy, callback, value_min, value_max, slot):
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
@@ -91,8 +90,6 @@ class ActivitySource:
                     (value_min, value_max, slot)
                 rospy.logerr(msg)
                 raise ActivitySourceException(msg)
-
-
 
     def __str__(self):
         string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
