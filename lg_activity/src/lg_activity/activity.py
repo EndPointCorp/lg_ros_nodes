@@ -62,8 +62,9 @@ class ActivitySource:
         self.topic = topic
         self.memory_limit = memory_limit
         self.messages = []
-        self._initialize_subscriber()
         self.delta_msg_count = self.__class__.DELTA_MSG_COUNT
+
+        self._initialize_subscriber()
         rospy.loginfo("Initialized ActivitySource: %s" % self)
 
     def _check_init_args(self, topic, message_type, strategy, callback, value_min, value_max, slot):
