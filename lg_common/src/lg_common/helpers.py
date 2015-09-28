@@ -219,8 +219,6 @@ def list_of_dicts_is_homogenous(dicts_list):
     for item in dicts_list:
         if previous_item != item:
             return False
-        else:
-            previous_item = item
     return True
 
 
