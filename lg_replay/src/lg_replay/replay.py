@@ -25,6 +25,7 @@ class DeviceReplay:
         self.publisher = publisher
         self.device_name = device_name
         self.device = device
+        self.event_code_num = getattr(ecodes, self.event_ecode)
         # TODO (wz): set device permissions using udev rules because otherwise this node needs sudo
         if self.device:
             self.device = device
@@ -39,14 +40,7 @@ class DeviceReplay:
 
     def run(self):
         for event in self.device.read_loop():
-            rospy.loginfo("Catched event: %s" % event)
-            if self.event_ecode:
-                if event.type == getattr(ecodes, self.event_ecode):
-                    event = categorize(event)
-                    publishable_event = rewrite_message_to_dict(event)
-                    self.publisher.publish_event(publishable_event)
-            else:
-                event = categorize(event)
+            if event.type == self.event_code_num:
                 publishable_event = rewrite_message_to_dict(event)
                 self.publisher.publish_event(publishable_event)
 
@@ -60,7 +54,6 @@ class DevicePublisher:
         rospy.loginfo("Initialized device publisher for %s" % self.publisher)
 
     def publish_event(self, event):
-        rospy.loginfo("Publishing event %s" % event)
         msg = GenericMessage()
         msg.type = 'json'
         msg.message = str(event)
