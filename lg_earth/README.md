@@ -3,6 +3,15 @@ lg\_earth
 
 ROS software for running and interfacing with the Google Earth desktop client.
 
+## Hardware requirements
+
+* accelerated graphics supported by GE (every decent nvidia card)
+
+## Software requirements
+
+* Google Earth (see below)
+* awesome window manager
+
 ### System setup
 
 Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, installed, and your `rosdep` updated.

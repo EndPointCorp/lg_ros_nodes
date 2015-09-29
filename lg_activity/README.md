@@ -5,6 +5,10 @@ ROS software for tracing activity and inactivity of Liquid Galaxy.
 Trackign may be useful for statistics as well as for state-greedy
 applications like screensaver (lg_attract_loop) or others.
 
+## Hardware Requirements
+
+None.
+
 ## Nodes
 
 There's one node that's responsible for initialization, activity

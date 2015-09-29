@@ -3,6 +3,15 @@ lg\_sv
 
 ROS software for running a streetview/panoview client/server.
 
+## Hardware requirements
+
+* accelerated graphics cards
+* decent CPU
+
+## Software requirements
+
+* google chrome available in PATH
+
 ## Nodes
 
 ### server
