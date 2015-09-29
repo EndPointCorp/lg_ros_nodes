@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+from rosnode import ROSNodeIOException
 from interactivespaces_msgs.msg import GenericMessage
 from lg_replay import DevicePublisher, DeviceReplay, LgActivityException
 from evdev import InputDevice
