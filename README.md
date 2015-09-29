@@ -1,6 +1,8 @@
 Liquid Galaxy ROS Nodes
 =======================
 
+![liquidgalaxy](liquidgalaxy.png "lg image")
+
 A ROS software stack for running Liquid Galaxy applications.
 
 First, clone the repos (you can replace ~/src if you want).
