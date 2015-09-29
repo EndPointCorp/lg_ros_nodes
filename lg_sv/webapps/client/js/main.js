@@ -27,7 +27,8 @@ function initialize() {
   var svOptions = {
     visible: true,
     disableDefaultUI: true,
-    linksControl: showLinks
+    linksControl: showLinks,
+    mode: 'html5'
   };
   var canvas = $('#map-canvas');
   var map = new google.maps.Map(canvas[0], mapOptions);
@@ -54,6 +55,8 @@ function initialize() {
   svClient.on('pov_changed', function(povQuaternion) {
     // TODO(mv): move quaternion parsing into StreetviewClient library
     var viewportFOV = fieldOfView / canvasRatio;
+    viewportFOV = get_fov2(get_zoom(povQuaternion.y)) / canvasRatio;
+    console.log(viewportFOV);
     var radianOffset = toRadians(viewportFOV * yawOffset);
     var htr = [povQuaternion.z, povQuaternion.x, 0];
     if (! shouldTilt) {
@@ -63,13 +66,51 @@ function initialize() {
     var roll = -transformedHTR[2];
     var pov = {
       heading: transformedHTR[0],
-      pitch: transformedHTR[1]
+      pitch: transformedHTR[1],
+      zoom: get_zoom(povQuaternion.y)
     };
     sv.setPov(pov);
     if (shouldTilt) {
       canvas.css('transform', 'rotateZ(' + roll + 'deg);');
     }
   });
+}
+
+function get_fov(z) {
+  var fov = 180 / Math.pow(2, z);
+  return fov;
+}
+
+function get_fov2(z) {
+  console.log('z incoming: ' + z);
+  var fovs = [127, 90, 53, 28, 14];
+  var floor = Math.floor(z);
+
+  if (floor < 0)
+    return fovs[0];
+  if (floor >= fovs.length - 1)
+    return fovs[fovs.length - 1];
+
+  var fov = fovs[floor];
+  var diff = fovs[floor] - fovs[floor + 1];
+  var extra = z - Math.floor(z);
+  return fov - diff * extra;
+}
+
+function get_zoom(z) {
+  var default_zoom = 3;
+  var default_factor = 250;
+  var min_zoom = 0;
+  var max_zoom = 4;
+  var ret = default_zoom - z / default_factor;
+
+  if (ret < min_zoom)
+    ret = min_zoom;
+
+  if (ret > max_zoom)
+    ret = max_zoom;
+
+  return ret;
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

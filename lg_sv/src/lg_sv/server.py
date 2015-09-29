@@ -209,6 +209,7 @@ class PanoViewerServer:
         heading = pov_msg.z - coefficient * twist.angular.z * self.nav_sensitivity
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
         pov_msg.z = wrap(heading, 0, 360)
+        pov_msg.y = clamp(pov_msg.y + twist.linear.z, -250, 250)
         self.pub_pov(pov_msg)
         # check to see if the pano should be moved
         self.handle_possible_pano_change(twist)
