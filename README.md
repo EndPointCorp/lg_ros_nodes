@@ -1,7 +1,7 @@
 Liquid Galaxy ROS Nodes
 =======================
 
-![liquidgalaxy](liquidgalaxy.png "lg image")
+![liquidgalaxy](liquidgalaxy.jpg "lg image")
 
 A ROS software stack for running Liquid Galaxy applications.
 
