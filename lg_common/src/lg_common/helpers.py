@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import rospy
@@ -8,6 +9,10 @@ from interactivespaces_msgs.msg import GenericMessage
 
 
 class WrongActivityDefinition(Exception):
+    pass
+
+
+class DependencyException(Exception):
     pass
 
 
@@ -230,6 +235,8 @@ def rewrite_message_to_dict(message):
     """
     deserialized_message = {}
     slots = message.__slots__
+    if slots.__class__ == str:
+        slots = [slots]
     for slot in slots:
         deserialized_message[slot] = getattr(message, slot)
     return deserialized_message
@@ -374,3 +381,98 @@ def get_message_type_from_string(string):
     globals()[module] = module_obj
     message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
     return message_type_final
+
+
+def x_available(timeout=None):
+    if not timeout:
+        return
+    import commands
+
+    while timeout >= 0:
+        x_check = commands.getstatusoutput("DISPLAY=:0 xset q")
+        if x_check[0] == 0:
+            return True
+        else:
+            rospy.loginfo("X not available - sleeping for %s more seconds" % timeout)
+            timeout -= 1
+            rospy.sleep(1)
+
+
+def dependency_available(server, port, name, timeout=None):
+    """
+    Wait for network service to appear. Provide addres, port and name.
+    If timeout is set to none then wait forever.
+    """
+    import socket
+    import errno
+
+    s = socket.socket()
+    if timeout:
+        from time import time as now
+        end = now() + timeout
+
+    while True:
+        try:
+            if timeout:
+                next_timeout = end - now()
+                if next_timeout < 0:
+                    return False
+                else:
+                    s.settimeout(next_timeout)
+
+            s.connect((server, port))
+
+        except socket.timeout, err:
+            # this exception occurs only if timeout is set
+            rospy.loginfo("%s not yet available - waiting %s" % (name, timeout))
+            if timeout:
+                return False
+
+        except socket.error, err:
+            # catch timeout exception from underlying network library
+            # this one is different from socket.timeout
+            rospy.loginfo("%s not yet available - waiting %s" % (name, timeout))
+            if type(err.args) != tuple or err[0] != errno.ETIMEDOUT:
+                raise
+        else:
+            s.close()
+            return True
+
+
+def discover_host_from_url(url):
+    from urlparse import urlparse
+    data = urlparse(url)
+    return data.hostname
+
+
+def discover_port_from_url(url):
+    from urlparse import urlparse
+    data = urlparse(url)
+    return data.port
+
+
+def find_device(name):
+    import os
+    for device in os.listdir('/dev/input/'):
+        device = '/dev/input/' + device
+        if 'event' not in device:
+            continue
+        if check_device(device, name):
+            return device
+    # did not find an event device with the name provided
+    return None
+
+
+def check_device(device, name):
+    import os
+    from stat import ST_MODE
+    from evdev import InputDevice
+    if os.access(device, os.W_OK | os.R_OK):
+        return (InputDevice(device).name == name)
+
+    original_mode = os.stat(device)
+    os.system('sudo chmod 0666 %s' % device)
+    flag = (InputDevice(device).name == name)
+    if not flag:
+        os.chmod(device, original_mode)
+    return flag

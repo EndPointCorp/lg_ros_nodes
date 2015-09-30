@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.7 (2015-09-24)
+------------------
+* PEP8
+* Contributors: Adam Vollrath
+
 1.1.6 (2015-09-24)
 ------------------
 * Hide SV at startup
@@ -10,6 +15,37 @@ Changelog for package lg_sv
 
 1.1.5 (2015-09-23)
 ------------------
+
+1.1.8 (2015-09-25)
+------------------
+* lg_sv: parameterize x_threshold
+* Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.9 (2015-09-25)
+------------------
+* Dont start application if X is not available
+* Better logging for dependencies
+* Fixed 'depepency' typo
+* ADded dependency checking and fixed slots deserialization
+* panoviewer: replay videos that are republished
+* 1.1.8
+* catkin_generate_changelog
+* pep8 fixes
+* lg_sv: parameterize x_threshold
+* Added ext dependency mechanism and added it to GE and SV/PV
+* 1.1.7
+* Small changes
+* PEP8
+* 1.1.6
+* Updated changelogs
+* Hide SV at startup
+* A try on SV
+* Add queue_size to sv server state Publisher
+* 1.1.5
+* Bumped changelgs
+* 1.1.4
+* lg_sv: parameterize tilt
+* Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
 1.1.3 (2015-09-22)
 ------------------

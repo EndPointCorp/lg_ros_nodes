@@ -8,6 +8,9 @@ from std_msgs.msg import String
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
+from lg_common.helpers import dependency_available, x_available
+from lg_common.helpers import DependencyException
+from lg_common.helpers import x_available
 
 
 if __name__ == '__main__':
@@ -28,6 +31,36 @@ if __name__ == '__main__':
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     ts_name = rospy.get_param('~ts_name', 'default')
 
+    depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
+    depend_on_director = rospy.get_param('~depend_on_director', False)
+    global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
+
+    if depend_on_rosbridge:
+        rospy.loginfo("Waiting for rosbridge to become available")
+        if not dependency_available(rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout):
+            msg = "Service: %s hasn't become accessible within %s seconds" % ('rosbridge', global_dependency_timeout)
+            rospy.logfatal(msg)
+            raise DependencyException(msg)
+        else:
+            rospy.loginfo("Rosbridge is online")
+
+    if depend_on_director:
+        rospy.loginfo("Waiting for director to become available")
+        if not dependency_available(director_host, director_port, 'director', global_dependency_timeout):
+            msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
+            rospy.logfatal(msg)
+            raise DependencyException(msg)
+        else:
+            rospy.loginfo("Director is online")
+
+    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    if x_available(x_timeout):
+        rospy.loginfo("X available")
+    else:
+        msg = "X server is not available"
+        rospy.logfatal(msg)
+        raise DependencyException(msg)
+
     url = url_base + ts_name + "/"
 
     url = add_url_params(url,
@@ -39,6 +72,8 @@ if __name__ == '__main__':
                          rosbridge_port=rosbridge_port)
 
     url = url2pathname(url)
+
+    rospy.loginfo("got url: %s" % url)
 
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', 10000)

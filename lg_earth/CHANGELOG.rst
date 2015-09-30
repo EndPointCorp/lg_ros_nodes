@@ -2,6 +2,9 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.7 (2015-09-24)
+------------------
+
 1.1.6 (2015-09-24)
 ------------------
 * Mark kmlsync timeout experimental, default off
@@ -10,6 +13,46 @@ Changelog for package lg_earth
 
 1.1.5 (2015-09-23)
 ------------------
+
+1.1.8 (2015-09-25)
+------------------
+* Added ext dependency mechanism and added it to GE and SV/PV
+* Contributors: Adam Vollrath, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.9 (2015-09-25)
+------------------
+* Added X dependency to Earth
+* Dont start application if X is not available
+* Better logging for dependencies
+* ADded dependency checking and fixed slots deserialization
+* 1.1.8
+* catkin_generate_changelog
+* Added ext dependency mechanism and added it to GE and SV/PV
+* 1.1.7
+* Small changes
+* 1.1.6
+* Updated changelogs
+* Mark kmlsync timeout experimental, default off
+* Revisit KmlUpdateHandler.get()
+* Remove crufty assignment from KmlUpdateHandler
+* Improve KmlQueryHandler error messages
+* No timeout for non-polling kmlsync test
+* Improve KmlUpdateHandler deferral
+* Improve kml create/delete logic and indentation
+* Fix up KmlQueryHandler logic
+* Further flatten KmlUpdateHandler.get()
+* Refine KmlUpdateHandler timeout logic
+  Lock all dict access, nothing else.
+* Refactor KmlUpdateHandler asset change list funcs
+* Whitespace, logging changes in KmlUpdateHandler
+* Un-nest KmlUpdateHandler missing slug logic
+* Rename KmlUpdateHandler global_dict
+  Not a good identifier.
+* 1.1.5
+* Bumped changelgs
+* 1.1.4
+* Prevent race condition from happening in kmlsync
+* Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
 1.1.3 (2015-09-22)
 ------------------

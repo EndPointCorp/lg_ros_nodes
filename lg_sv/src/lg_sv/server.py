@@ -102,7 +102,7 @@ class StreetviewUtils:
 
 class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                 nav_sensitivity, space_nav_interval):
+                 nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub

@@ -5,6 +5,7 @@ from lg_media import MplayerPool
 from lg_media.msg import AdhocMedias
 from lg_media.srv import MediaAppsInfo
 from lg_media import DirectorMediaBridge
+from lg_media import SRV_QUERY, ROS_NODE_NAME
 from interactivespaces_msgs.msg import GenericMessage
 
 DEFAULT_VIEWPORT = 'center'
@@ -19,26 +20,28 @@ def main():
         rospy.logerr("Viewport is not set - exiting")
         exit(1)
 
-    topic_name = "/media_service/{}".format(viewport_name)
+    topic_name = "/{0}/{1}".format(ROS_NODE_NAME, viewport_name)
     mplayer_pool = MplayerPool(viewport_name)
 
-    """
-    Initialize mplayer pool on specified viewport
-    """
+    # Initialize mplayer pool on specified viewport
     rospy.Subscriber(topic_name, AdhocMedias, mplayer_pool.handle_ros_message)
 
-    """
-    Initialize director => mplayer pool bridge
-    """
+    # Initialize director => mplayer pool bridge
+    adhoc_media_mplayer_pool_publisher = rospy.Publisher(topic_name,
+                                                         AdhocMedias,
+                                                         queue_size=3)
+    adhoc_media_mplayer_director_bridge = \
+        DirectorMediaBridge(adhoc_media_mplayer_pool_publisher,
+                            viewport_name,
+                            MEDIA_TYPE)
+    rospy.Subscriber('/director/scene',
+                     GenericMessage,
+                     adhoc_media_mplayer_director_bridge.translate_director)
 
-    adhoc_media_mplayer_pool_publisher = rospy.Publisher(
-        topic_name, AdhocMedias, queue_size=3
-    )
-
-    adhoc_media_mplayer_director_bridge = DirectorMediaBridge(adhoc_media_mplayer_pool_publisher, viewport_name, MEDIA_TYPE)
-
-    rospy.Subscriber('/director/scene', GenericMessage, adhoc_media_mplayer_director_bridge.translate_director)
-
+    # Create service service about the mplayer pool service
+    rospy.Service(SRV_QUERY,
+                  MediaAppsInfo,
+                  mplayer_pool.get_media_apps_info)
     rospy.spin()
 
 

@@ -2,11 +2,31 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.7 (2015-09-24)
+------------------
+
 1.1.6 (2015-09-24)
 ------------------
 
 1.1.5 (2015-09-23)
 ------------------
+
+1.1.8 (2015-09-25)
+------------------
+* Contributors: Adam Vollrath
+
+1.1.9 (2015-09-25)
+------------------
+* 1.1.8
+* catkin_generate_changelog
+* 1.1.7
+* Small changes
+* 1.1.6
+* Updated changelogs
+* 1.1.5
+* Bumped changelgs
+* 1.1.4
+* Contributors: Adam Vollrath, Jacob Minshall
 
 1.1.3 (2015-09-22)
 ------------------
