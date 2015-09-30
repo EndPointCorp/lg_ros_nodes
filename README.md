@@ -5,9 +5,8 @@ A ROS software stack for running Liquid Galaxy applications.
 
 ### Packages
 
-#### lg\_earth
-
-Earth client and support nodes.
+Each package should have it's own README, so check them out if you need more
+information.
 
 Quick Start
 -----------
@@ -39,16 +38,18 @@ Then run the init script.
     $ cd ~/src/lg_ros_nodes/
     $ ./scripts/init_workspace
 
-It will warn you that appctl,  interactivespaces_msgs & lg_cms_director aren't there, and since the ros nodes depend on those, you should include them
+It will warn you that appctl isn't there, and since the ros nodes depend on that, you should include it
+
+Note: as of 2015-09-29 we are currently in the process of open sourcing appctl,
+so this clone command may not work right away.
 
     $ cd ~/src
-    $ git clone git@github.com:EndPointCorp/portal-ros.git
-    $ git clone git@github.com:EndPointCorp/ros_cms.git
+    $ git clone git://github.com/EndPointCorp/appctl.git
 
 Then re-run the init script with arguments to direct the script to those new repos
 
     $ cd ~/src/lg_ros_nodes
-    $ ./scripts/init_workspace --appctl ~/src/portal-ros/catkin/src/appctl --interactive ~/src/ros_cms/director/src/interactivespaces_msgs --director ~/src/ros_cms/director/src/lg_cms_director
+    $ ./scripts/init_workspace --appctl ~/src/portal-ros/catkin/src/appctl
 
 Install system dependencies with `rosdep`.
 
@@ -98,5 +99,11 @@ create `CHANGELOG.rst` for a new package.
 ```shell
 $ catkin_prepare_release
 ```
+
+- building the release:
+
+The [Pack Debs](./pack-debs) script will build debian packages in the
+`catkin/debs` directory. A metapackage is built as `ros-indigo-liquidgalaxy`
+which lists all other packages as its dependencies.
 
 Documentation for these tools: <http://wiki.ros.org/bloom/Tutorials/ReleaseCatkinPackage> (we are not using bloom yet, only steps 1 and 2).
