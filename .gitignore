@@ -1,6 +1,9 @@
 # osx
 .DS_Store
 
+# appctl is a separate repository
+appctl
+
 build/
 bin/
 msg_gen/
