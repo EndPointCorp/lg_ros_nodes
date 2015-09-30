@@ -1,6 +1,15 @@
 lg_attract_loop
 ---------------
 
+# Hardware requirements
+
+None
+
+# Software requirements
+
+Attract loop needs to get the content for "screensaver-like" mode from
+non-opensourced CMS developed by [End Point](http://endpoint.com)
+
 # Nodes
 
 ## attract_loop.py
@@ -20,6 +29,11 @@ play them back.
   scene messages should be publishe
 * `~director_presentation_topic_name` [string] - ROS topic name where
   director presentation messages should be published
+* `~stop_action` [string] - action that should be taken by LG after
+  changing state from inactive to active:
+  - go_blank - unload all the assets
+  - load_presentation (experimental - supported only with director + cms)
+  - stop_playtour - stop any tours that may have been being played back
 
 ### Subscribed topics
 

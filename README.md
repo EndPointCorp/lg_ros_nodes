@@ -1,80 +1,81 @@
-Liquid Galaxy ROS Nodes
-=======================
+# Liquid Galaxy
 
-A ROS software stack for running Liquid Galaxy applications.
+![liquidgalaxy](liquidgalaxy.jpg "lg image")
 
-### Packages
+This repo contains ROS software for running Liquid Galaxy applications.
 
-Each package should have it's own README, so check them out if you need more
-information.
+It allows for displaying engaging content in an immersive environment.
+Currently it supports:
+- [Google Earth](https://earth.google.com/) with KML support
+- [Streetview](https://www.google.com/maps/streetview/)
+- [mplayer](https://www.mplayerhq.hu/)
+- [Chrome](https://www.google.com/chrome)
+and...
+- every asset that is supported by above apps
 
-Quick Start
------------
+# General requirements
 
-Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, installed, and your `rosdep` updated.
+NOTE: all requirements specific to ros_nodes are in their respective
+README.md files
 
-* <https://dl.google.com/earth/client/current/google-earth-stable_current_i386.deb>
-* <http://wiki.ros.org/indigo/Installation/Ubuntu>
+- [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/)
+- [ros-indigo](http://wiki.ros.org/indigo)
+- [awesome window manager](http://awesome.naquadah.org/) on the top of
+  [Xorg](https://wiki.archlinux.org/index.php/Xorg) for automatic window positioning
+- only Nvidia hardware was tested but it should be running with whatever
+  decent accelerated graphics card
+- possibility to modify [udev
+  configuration](https://en.wikipedia.org/wiki/Udev)
+- [spacenavigator](http://www.3dconnexion.com/products/spacemouse/spacenavigator.html)
+- industry standard touchscreen like [elo
+  touch 2201L](http://www.elotouch.com/products/lcds/2201L/) is also a good input device
+- it's also good to manage your stack with [chef](https://www.chef.io/chef/)
 
-Also, you'll need to patch Earth for the homedir fix as described in the lg\_earth README, otherwise its configuration will be unmanaged.
+## Making it running
 
-Additionally, you'll need to set up permissions for the special `/dev/uinput` file for the SpaceNav emulator to work. To make it persistent, write this udev rule to `/etc/udev/rules.d/42-uinput.rules`:
+First, clone the repos (you can replace ~/src if you want).
 
-    SUBSYSTEM=="misc", KERNEL=="uinput", GROUP="plugdev", MODE:="0660"
-
-This will fix uinput permissions at boot. You can also manually set permissions for the current session.
-
-    $ sudo chown root:plugdev /dev/uinput ; sudo chmod 0660 /dev/uinput
-
-Now then.
-
-First, clone the repo (you can replace ~/src if you want).
-
-    $ cd ~/src
-    $ git clone git@github.com:EndPointCorp/lg_ros_nodes.git
+```bash
+$ cd ~/src
+$ git clone git@github.com:EndPointCorp/lg_ros_nodes.git
+$ git clone git@github.com:EndPointCorp/appctl.git
+```
 
 Then run the init script.
 
-    $ cd ~/src/lg_ros_nodes/
-    $ ./scripts/init_workspace
-
-It will warn you that appctl isn't there, and since the ros nodes depend on that, you should include it
-
-Note: as of 2015-09-29 we are currently in the process of open sourcing appctl,
-so this clone command may not work right away.
-
-    $ cd ~/src
-    $ git clone git://github.com/EndPointCorp/appctl.git
+```bash
+$ cd ~/src/lg_ros_nodes/
+$ ./scripts/init_workspace
+```
 
 Then re-run the init script with arguments to direct the script to those new repos
 
-    $ cd ~/src/lg_ros_nodes
-    $ ./scripts/init_workspace --appctl ~/src/portal-ros/catkin/src/appctl
+```bash
+$ cd ~/src/lg_ros_nodes
+$ ./scripts/init_workspace --appctl ~/src/appctl
+```
 
 Install system dependencies with `rosdep`.
 
-    $ cd ~/src/lg_ros_nodes/catkin
-    $ rosdep install --from-paths src --ignore-src --rosdistro indigo -y
+```bash
+$ cd ~/src/lg_ros_nodes/catkin
+$ rosdep install --from-paths src --ignore-src --rosdistro indigo -y
+```
 
 Build the project.
 
-    $ cd ~/src/lg_ros_nodes/catkin
-    $ catkin_make
+```
+$ cd ~/src/lg_ros_nodes/catkin
+$ catkin_make
+```
 
-As new ros nodes are added to this git repo, re-run `./scripts/init_workspace` and the `rosdep install` command.
+Run Google Earth, Streetview and Panoviewer sample .launch file:
 
-Run the development roslaunch. You'll need to specify your local broadcast address, which can be found with `ifconfig`. Replace `1.2.3.255` with that address.
+```bash
+roslaunch --screen lg_common/launch/dev.launch
+```
 
-    $ source ~/src/lg_ros_nodes/catkin/devel/setup.bash
-    $ roslaunch lg_common dev.launch broadcast_addr:=1.2.3.255
-
-It may take a few seconds for Earth to start up. Use Ctrl+C to shut down.
-
-If Earth isn't syncing, make sure that your firewall isn't blocking broadcast datagrams. If you're using ufw:
-
-    $ sudo ufw allow to 1.2.3.255
-
-Where 1.2.3.255 is your broadcast address.
+NOTE: As new ros nodes are added to this git repo, re-run `./scripts/init_workspace` and the `rosdep install` command.
 
 ## Development
 
@@ -99,11 +100,3 @@ create `CHANGELOG.rst` for a new package.
 ```shell
 $ catkin_prepare_release
 ```
-
-- building the release:
-
-The [Pack Debs](./pack-debs) script will build debian packages in the
-`catkin/debs` directory. A metapackage is built as `ros-indigo-liquidgalaxy`
-which lists all other packages as its dependencies.
-
-Documentation for these tools: <http://wiki.ros.org/bloom/Tutorials/ReleaseCatkinPackage> (we are not using bloom yet, only steps 1 and 2).

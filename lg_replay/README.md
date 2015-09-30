@@ -3,6 +3,13 @@ lg_replay
 
 ROS node used for replaying device events on a ROS topic
 
+## Hardware requirements
+
+* any input device like touchscreen or spacenavigator
+
+## Software requirements
+
+None
 
 ## Nodes
 

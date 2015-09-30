@@ -1,7 +1,19 @@
 lg\_common
 ----------
 
-Common software for Liquid Galaxy ROS nodes.
+Common software for Liquid Galaxy ROS nodes. Basic browser ros scripts
+that provide adhoc or static browser activity + some helpers shared by
+all LG ros nodes.
+
+## Hardware requirements
+
+* it's good to have decent CPU and accelarated graphics for Google
+  Chrome to work smoothly
+
+## Software requirements
+
+* google-chrome available in PATH `~browser_binary`
+* awesome window manager
 
 ## Scripts
 
