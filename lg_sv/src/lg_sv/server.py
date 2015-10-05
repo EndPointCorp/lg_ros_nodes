@@ -122,6 +122,7 @@ class PanoViewerServer:
         self.nearby_panos = NearbyPanos()
         self.last_nav_msg_t = 0
         self.time_since_last_nav_msg = 0
+        self.x_threshold = x_threshold
 
     def pub_location(self, pose2d):
         """
@@ -218,14 +219,14 @@ class PanoViewerServer:
         Only moves if the linear x is > or < the x_threshold and that it has
         been that way for atleast {backward,forward}_threshold publications
         """
-        if twist.linear.x > X_THRESHOLD:
+        if twist.linear.x > self.x_threshold:
             if (self.move_forward == 0 or
                     self.time_since_last_nav_msg +
                     self.move_forward < FORWARD_THRESHOLD):
                 self.move_forward += self.time_since_last_nav_msg
             if self.time_since_last_nav_msg + self.move_forward > FORWARD_THRESHOLD:
                 self._move_forward()
-        elif twist.linear.x < -X_THRESHOLD:
+        elif twist.linear.x < -self.x_threshold:
             if (self.move_backward == 0 or
                     self.time_since_last_nav_msg +
                     self.move_backward < BACKWARDS_THRESHOLD):
