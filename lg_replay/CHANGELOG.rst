@@ -15,8 +15,8 @@ Changelog for package lg_replay
 ------------------
 * Contributors: Adam Vollrath
 
-Forthcoming
------------
+1.1.10 (2015-10-05)
+-------------------
 * lg_replay: update to test for non categorized event publishing
 * lg_replay: optimize message publishing
   - removed `if self.event_code` since there's a default event code

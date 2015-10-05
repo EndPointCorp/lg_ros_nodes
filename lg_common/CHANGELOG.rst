@@ -15,8 +15,8 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.10 (2015-10-05)
+-------------------
 * Added lots of docs
 * Fixed pep8
 
