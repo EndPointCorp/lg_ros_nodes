@@ -15,6 +15,11 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* Added lots of docs
+* Fixed pep8
+
 1.1.9 (2015-09-25)
 ------------------
 * Dont start application if X is not available

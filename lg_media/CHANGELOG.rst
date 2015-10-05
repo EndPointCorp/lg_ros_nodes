@@ -16,6 +16,12 @@ Changelog for package lg_media
 * added real mplayer test scenarios, still needs debugging
 * Contributors: Adam Vollrath, Jacob Minshall, Zdenek Maxa
 
+Forthcoming
+-----------
+* Merging
+* Added lots of docs
+* mplayer occassional issues investigated and understood, should be fine now, touch:`#31 <https://github.com/endpointcorp/lg_ros_nodes/issues/31>`_
+
 1.1.9 (2015-09-25)
 ------------------
 * 1.1.8

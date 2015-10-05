@@ -15,6 +15,19 @@ Changelog for package lg_replay
 ------------------
 * Contributors: Adam Vollrath
 
+Forthcoming
+-----------
+* lg_replay: update to test for non categorized event publishing
+* lg_replay: optimize message publishing
+  - removed `if self.event_code` since there's a default event code
+  supplied by the __init_\_ method
+  - changed the constant getattr(ecodes, event_code) to a instance
+  variable
+  - removed the categorize(event) since a pretty message isn't needed
+  There is now no longer a large queue build up, at least on my machine...
+* lg_replay: add missing import
+* Added lots of docs
+
 1.1.9 (2015-09-25)
 ------------------
 * lg_replay: retain permissions on other event devices
