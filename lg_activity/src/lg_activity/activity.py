@@ -447,5 +447,5 @@ class ActivityTracker:
         return activity_states_list
 
     def _sleep_between_checks(self):
-        #rospy.sleep(self.timeout)
+        # rospy.sleep(self.timeout)
         pass
