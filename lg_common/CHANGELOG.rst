@@ -15,6 +15,11 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* Fixed touchscreen typo
+* Contributors: Wojciech Ziniewicz
+
 1.1.10 (2015-10-05)
 -------------------
 * Added lots of docs
