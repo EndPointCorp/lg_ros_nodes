@@ -15,7 +15,7 @@ import json
 import rospy
 import rostest
 import unittest
-from lg_sv import StreetviewUtils, PanoViewerServer
+from lg_sv import StreetviewUtils, PanoViewerServer, NearbyStreetviewPanos
 from geometry_msgs.msg import Quaternion, Pose2D
 from std_msgs.msg import String
 from lg_common.helpers import get_first_asset_from_activity, load_director_message
@@ -37,7 +37,8 @@ class TestSVServer(unittest.TestCase):
         self.pov_pub = MockPublisher()
         self.server = PanoViewerServer(
             self.location_pub, self.pano_pub, self.pov_pub, TILT_MAX,
-            TILT_MIN, NAV_SENSITIVITY, NAV_INTERVAL)
+            TILT_MIN, NAV_SENSITIVITY, NAV_INTERVAL,
+            nearby_panos=NearbyStreetviewPanos())
 
     def tearDown(self):
         pass

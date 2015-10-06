@@ -7,7 +7,7 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String
 from math import atan2, cos, sin, pi
-from lg_sv import PanoViewerServer
+from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
 
 
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
@@ -44,9 +44,11 @@ def main():
     nav_sensitivity = rospy.get_param('~nav_sensitivity', DEFAULT_NAV_SENSITIVITY)
     x_threshold = rospy.get_param('~x_threshold', X_THRESHOLD)
     space_nav_interval = rospy.get_param('~space_nav_interval', DEFAULT_NAV_INTERVAL)
+    nearby_class = rospy.get_param('~nearby_class', 'NearbyStreetviewPanos')
+    nearby = get_nearby(nearby_class)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                              nav_sensitivity, space_nav_interval, x_threshold)
+                              nav_sensitivity, space_nav_interval, x_threshold, nearby)
 
     visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
 
@@ -77,6 +79,15 @@ def main():
     on_new_scene(handle_director_message)
 
     rospy.spin()
+
+
+def get_nearby(n):
+    if n == 'NearbyStreetviewPanos':
+        return NearbyStreetviewPanos()
+    if n == 'NearbyPanos':
+        return NearbyPanos()
+    return NearbyPanos()
+
 
 if __name__ == '__main__':
     main()

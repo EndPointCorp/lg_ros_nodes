@@ -27,6 +27,11 @@ Creates rostopics to communicate/interact with the sv clients. Handles the space
 * `~nav_sensitivity` [float] - Value to adjust space nav angular changes by. Default: `1.0`
 * `~space_nav_interval` [float] - Messages from the space nav are adjusted in relation to their frequency when updating the POV. An increase in frequency will reduce the impact of each message on the POV.  Default: `0.1`
 * `~server_type` [string] - The type of server, `streetview` or `panoviewer`. Default: `streetview`
+* `~x_threshold` [float] - The value that sets off a pano change when pushing
+  forward or backward. Default: `0.5`
+* `~nearby_class` [string] - The class desired for finding nearby panos, so far
+  `NearbyPanos` and `NearbyStreetviewPanos` are the only supported types.
+  Default: `NearbyStreetviewPanos`
 
 ##### Published Topics
 

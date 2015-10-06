@@ -2,6 +2,7 @@ import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from lg_common.msg import ApplicationState
 from math import atan2, cos, sin, pi
+from lg_sv import NearbyPanos
 import requests
 import json
 
@@ -102,7 +103,8 @@ class StreetviewUtils:
 
 class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                 nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD):
+                 nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
+                 nearby_panos=NearbyPanos()):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
@@ -119,7 +121,7 @@ class PanoViewerServer:
         self.space_nav_interval = space_nav_interval
         self.move_forward = 0
         self.move_backward = 0
-        self.nearby_panos = NearbyPanos()
+        self.nearby_panos = nearby_panos
         self.last_nav_msg_t = 0
         self.time_since_last_nav_msg = 0
         self.x_threshold = x_threshold
@@ -273,70 +275,3 @@ class PanoViewerServer:
         coefficient = self.time_since_last_nav_msg / self.space_nav_interval
         coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
         return coefficient
-
-
-class NearbyPanos:
-    def __init__(self):
-        self.panoid = None
-        self.metadata = None
-
-    def handle_metadata_msg(self, metadata):
-        tmp = None
-        try:
-            tmp = json.loads(metadata.data)
-            if tmp['location']['pano'] == self.panoid or self.panoid is None:
-                self.metadata = tmp
-        except ValueError:
-            pass
-        except KeyError:
-            pass
-
-    def set_panoid(self, panoid):
-        if self.panoid != panoid:
-            self.metadata = None
-        self.panoid = panoid
-
-    def find_closest(self, panoid, pov_z):
-        """
-        Returns the pano that is closest to the direction pressed on the
-        spacenav (either forwards or backwards) based on the nearby panos
-        bearing to the current pano
-        """
-        if not self.get_metadata():
-            return None
-        if 'links' not in self.metadata or not isinstance(self.metadata['links'], list):
-            return None
-        self.panoid = panoid
-        my_lat = self.metadata['location']['latLng']['lat']
-        my_lng = self.metadata['location']['latLng']['lng']
-        # set closest to the farthest possible result
-        closest = 90
-        closest_pano = None
-        for data in self.metadata['links']:
-            tmp = self.headingDifference(pov_z, float(data['heading']))
-            if tmp <= closest:
-                closest = tmp
-                closest_pano = data['pano']
-        return closest_pano
-
-    def headingDifference(self, source, target):
-        """
-        Finds the difference between two headings, takes into account that
-        the value 359 degrees is closer to 0 degrees than 10 degrees is
-        """
-        diff = abs(target - source) % 360
-        return diff if diff < 180 else diff - (diff - 180)
-
-    def get_metadata(self):
-        """
-        Only return the metadata if it matches the current panoid
-        """
-        if not self.panoid:
-            return None
-        if not self.metadata:
-            return None
-        if 'location' not in self.metadata or 'pano' not in self.metadata['location']:
-            return None
-        if self.metadata['location']['pano'] != self.panoid:
-            return None
-        return self.metadata
