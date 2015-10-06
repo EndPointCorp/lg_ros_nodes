@@ -37,8 +37,8 @@ First, clone the repos (you can replace ~/src if you want).
 
 ```bash
 $ cd ~/src
-$ git clone git@github.com:EndPointCorp/lg_ros_nodes.git
-$ git clone git@github.com:EndPointCorp/appctl.git
+$ git clone git://github.com/EndPointCorp/lg_ros_nodes.git
+$ git clone git://github.com/EndPointCorp/appctl.git
 ```
 
 Then run the init script.
@@ -52,7 +52,7 @@ Then re-run the init script with arguments to direct the script to those new rep
 
 ```bash
 $ cd ~/src/lg_ros_nodes
-$ ./scripts/init_workspace --appctl ~/src/appctl
+$ ./scripts/init_workspace --appctl ~/src/appctl/appctl
 ```
 
 Install system dependencies with `rosdep`.
