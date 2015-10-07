@@ -19,6 +19,7 @@ add_message_files(
   WindowGeometry.msg
   AdhocBrowser.msg
   AdhocBrowsers.msg
+  StringArray.msg
 )
 generate_messages()
 
@@ -30,10 +31,12 @@ catkin_install_python(PROGRAMS
   scripts/dev_webserver.py
   scripts/static_browser.py
   scripts/adhoc_browser.py
+  scripts/state_setter.py
   scripts/touchscreen.py
   scripts/dev_webserver
   scripts/static_browser
   scripts/adhoc_browser
+  scripts/state_setter
   scripts/touchscreen
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -52,5 +55,6 @@ if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/offline/test_managed_application.py)
   add_rostest(test/online/test_managed_adhoc_browser_director_bridge.test)
+  add_rostest(test/online/state_changer.test)
   catkin_add_nosetests(test/offline/test_managed_adhoc_browser.py)
 endif()
