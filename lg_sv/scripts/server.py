@@ -74,6 +74,8 @@ def main():
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+        # split in case the panoid comes at the end of a url
+        asset = asset.split('/')[-1]
         panoid_pub.publish(String(asset))
 
     on_new_scene(handle_director_message)
