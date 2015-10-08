@@ -10,7 +10,7 @@ from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_
 from lg_common.helpers import DependencyException
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
-#FOV for zoom level 3
+# FOV for zoom level 3
 DEFAULT_FOV = 28.125
 
 

@@ -102,9 +102,6 @@ class AdhocBrowserPool():
                 rospy.loginfo("Successfully updated browser(%s) geometry from %s to %s" % (browser_pool_id, current_geometry, future_geometry))
             else:
                 rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
-        #else:
-        #    rospy.loginfo("POOL %s: not updating geometry of browser %s (old geom=%s, new geom=%s)" % \
-        #                    (self.viewport_name, current_browser, current_geometry, future_geometry))
 
     def _update_browser_url(self, browser_pool_id, current_browser, future_url):
         try:
@@ -144,7 +141,7 @@ class AdhocBrowserPool():
         incoming_browsers_ids = set(incoming_browsers.keys())  # set
         current_browsers_ids = get_app_instances_ids(self.browsers)  # set
 
-        #remove
+        # remove
         browsers_to_remove = get_app_instances_to_manage(current_browsers_ids,
                                                          incoming_browsers_ids,
                                                          manage_action='remove')
@@ -154,7 +151,7 @@ class AdhocBrowserPool():
             rospy.loginfo("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
 
-        #create
+        # create
         browsers_to_create = get_app_instances_to_manage(current_browsers_ids,
                                                          incoming_browsers_ids,
                                                          manage_action='create')
@@ -164,7 +161,7 @@ class AdhocBrowserPool():
             rospy.loginfo("Creating browser with id %s" % browser_pool_id)
             self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
-        #update
+        # update
         browsers_to_update = get_app_instances_to_manage(current_browsers_ids,
                                                          incoming_browsers_ids,
                                                          manage_action='update')

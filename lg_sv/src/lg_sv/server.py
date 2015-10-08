@@ -114,7 +114,7 @@ class PanoViewerServer:
         self.pov = Quaternion()
         self.panoid = str()
         self.state = True
-        ### parameterize
+        # TODO (WZ) parametrize this
         self.nav_sensitivity = nav_sensitivity
         self.tilt_max = tilt_max
         self.tilt_min = tilt_min

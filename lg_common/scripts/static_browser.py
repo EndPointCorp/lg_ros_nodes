@@ -24,8 +24,8 @@ if __name__ == '__main__':
     )
     state = rospy.get_param('~state', ApplicationState.VISIBLE)
 
-    global_dependency_timeout = rospy.get("/global_dependency_timeout", 15)
-    depend_on_url = rospy.get("~depend_on_url", False)
+    global_dependency_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    depend_on_url = rospy.get_param("~depend_on_url", False)
 
     www_host = discover_port_from_url(url)
     www_port = discover_port_from_url(port)

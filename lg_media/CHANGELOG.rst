@@ -16,6 +16,9 @@ Changelog for package lg_media
 * added real mplayer test scenarios, still needs debugging
 * Contributors: Adam Vollrath, Jacob Minshall, Zdenek Maxa
 
+1.1.11 (2015-10-06)
+-------------------
+
 1.1.10 (2015-10-05)
 -------------------
 * Merging

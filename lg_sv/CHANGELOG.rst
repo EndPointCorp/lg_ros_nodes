@@ -21,6 +21,9 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
+1.1.11 (2015-10-06)
+-------------------
+
 1.1.10 (2015-10-05)
 -------------------
 * lg_sv: actually use the supplied x_threshold

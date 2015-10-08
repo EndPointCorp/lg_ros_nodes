@@ -35,7 +35,7 @@ from lg_media.mplayer_pool import SRV_QUERY, ROS_NODE_NAME
 TOPIC_NAME = "/%s/left_one" % ROS_NODE_NAME
 
 
-#class TestMediaService(unittest.TestCase):
+# class TestMediaService(unittest.TestCase):
 class TestMediaService(object):
 
     @classmethod
@@ -49,7 +49,7 @@ class TestMediaService(object):
         # assert ros services are not run anymore
         # it doesn't seem to be necessary if tests are run by means of the
         # entire package launch file
-        #rospy.signal_shutdown('test complete')
+        # rospy.signal_shutdown('test complete')
         pass
 
     def setup_method(self, method):

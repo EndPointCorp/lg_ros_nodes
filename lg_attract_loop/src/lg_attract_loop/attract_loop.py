@@ -187,7 +187,7 @@ class AttractLoop:
             content = {'presentationgroups': presentationgroups,
                        'presentations': presentations,
                        'scenes': scenes}
-            #rospy.loginfo("Returning content for attract loop: %s" % content)
+            # rospy.loginfo("Returning content for attract loop: %s" % content)
             return content
         else:
             rospy.loginfo("No presentation groups found in attract loop")
@@ -218,7 +218,7 @@ class AttractLoop:
                     return []
                 fetched_scenes.extend([{'presentation': presentation, 'scene': scene}])
 
-        #rospy.loginfo("Fetched scenes: %s" % fetched_scenes)
+        # rospy.loginfo("Fetched scenes: %s" % fetched_scenes)
         return fetched_scenes
 
     def _fetch_presentationgroup_presentations(self, presentationgroups):
