@@ -15,6 +15,34 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* state_changer: test: sleep before publishing
+  The array based mock state uncovered an issue, the very first time these
+  publishers were created, they didn't actually publish anything, even
+  with the wait_for_pub in there.
+* state_changer: test: use array of states to check for extra messages
+* state_changer: add rostest to cmake
+* pep8: ignore E265, block comments requiring space after #
+* state_changer: test
+* state_changer: sleep for a second when creating new publishers
+  Creating a publisher and then publishing on it right after seems to not
+  work very well in rospy. This mitigates that problem.
+* state_changer: StringArray is an array of actual strings, not Strings
+  There is no string.data, msg.strings is an actual array of strings,
+  which python can handle just fine.
+* state_changer: moved class to it's own file for testing
+* state_changer: use an array of strings
+  Multiple activities can be passed to the state changer, and only those
+  ones will be set to VISIBLE.
+* lg_common: added the StringArray type
+* link to state_changer.py
+* Merge remote-tracking branch 'origin/development' into ft-state-changer
+* lg_common: added a state handler/changer
+  This will publish HIDDEN to all other state listening topics, except for
+  the one specified in the string passed to /state_handler/activate
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
 1.1.11 (2015-10-06)
 -------------------
 * Fixed touchscreen typo

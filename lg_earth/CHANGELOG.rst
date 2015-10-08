@@ -19,6 +19,12 @@ Changelog for package lg_earth
 * Added ext dependency mechanism and added it to GE and SV/PV
 * Contributors: Adam Vollrath, Matt Vollrath, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* kmlsync: escape this asset because it's unescaped later
+  Ampersands will no longer cause this script to choke.
+* Contributors: Jacob Minshall
+
 1.1.11 (2015-10-06)
 -------------------
 

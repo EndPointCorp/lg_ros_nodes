@@ -19,6 +19,11 @@ Changelog for package lg_cms_director
 ------------------
 * Contributors: Adam Vollrath, Matt Vollrath
 
+Forthcoming
+-----------
+* pep8: ignore E265, block comments requiring space after #
+* Contributors: Jacob Minshall
+
 1.1.11 (2015-10-06)
 -------------------
 
