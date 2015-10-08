@@ -405,6 +405,7 @@ def dependency_available(server, port, name, timeout=None):
     """
     import socket
     import errno
+    from socket import error as socket_error
 
     s = socket.socket()
     if timeout:
@@ -422,20 +423,25 @@ def dependency_available(server, port, name, timeout=None):
 
             s.connect((server, port))
 
-        except socket.timeout, err:
+        except socket_error as serr:
             # this exception occurs only if timeout is set
-            rospy.loginfo("%s not yet available - waiting %s" % (name, timeout))
-            if timeout:
-                return False
+            if serr.errno == errno.ECONNREFUSED:
+                rospy.logwarn("%s not yet available - waiting %s seconds more" % (name, next_timeout))
+                rospy.sleep(1)
+            else:
+                rospy.logwarn("%s not available because: %s" % (name, serr))
+                rospy.sleep(1)
 
         except socket.error, err:
             # catch timeout exception from underlying network library
             # this one is different from socket.timeout
-            rospy.loginfo("%s not yet available - waiting %s" % (name, timeout))
+            rospy.loginfo("%s not yet available - waiting %s secs more" % (name, next_timeout))
+            rospy.sleep(1)
             if type(err.args) != tuple or err[0] != errno.ETIMEDOUT:
                 raise
         else:
             s.close()
+            rospy.loginfo("%s is available" % name)
             return True
 
 
