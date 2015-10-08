@@ -15,8 +15,8 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.12 (2015-10-07)
+-------------------
 * state_changer: test: sleep before publishing
   The array based mock state uncovered an issue, the very first time these
   publishers were created, they didn't actually publish anything, even

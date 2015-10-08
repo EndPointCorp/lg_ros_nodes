@@ -21,8 +21,8 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.12 (2015-10-07)
+-------------------
 * lg_sv: parametrize the nearby pano class
 * Contributors: Jacob Minshall, Wojciech Ziniewicz
 

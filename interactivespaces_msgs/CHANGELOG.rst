@@ -15,8 +15,8 @@ Changelog for package interactivespaces_msgs
 ------------------
 * Contributors: Adam Vollrath
 
-Forthcoming
------------
+1.1.12 (2015-10-07)
+-------------------
 
 1.1.11 (2015-10-06)
 -------------------
