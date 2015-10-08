@@ -310,7 +310,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
             ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
             link = ET.SubElement(new_asset, 'Link')
-            ET.SubElement(link, 'href').text = asset
+            ET.SubElement(link, 'href').text = escape(asset)
         return kml_create
 
     def _get_kml_for_delete_assets(self, assets_to_delete, parent):
