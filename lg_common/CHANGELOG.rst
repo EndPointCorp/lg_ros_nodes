@@ -15,6 +15,11 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* Better handling of timeouts
+* Contributors: Adam Vollrath
+
 1.1.12 (2015-10-07)
 -------------------
 * state_changer: test: sleep before publishing
