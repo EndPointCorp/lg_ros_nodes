@@ -95,7 +95,6 @@ def main():
 
     browser_pool = AdhocBrowserPool(viewport_name)
 
-
     rospy.Subscriber('/media_service/browser/%s' % viewport_name, AdhocMedias,
                      basic_browser_data.launch_browser)
 
