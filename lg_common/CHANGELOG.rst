@@ -15,6 +15,9 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+
 1.1.13 (2015-10-08)
 -------------------
 * Better handling of timeouts
