@@ -15,6 +15,9 @@ Changelog for package lg_nav_to_device
 ------------------
 * Contributors: Adam Vollrath
 
+1.1.13 (2015-10-08)
+-------------------
+
 1.1.12 (2015-10-07)
 -------------------
 

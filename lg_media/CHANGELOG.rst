@@ -16,6 +16,11 @@ Changelog for package lg_media
 * added real mplayer test scenarios, still needs debugging
 * Contributors: Adam Vollrath, Jacob Minshall, Zdenek Maxa
 
+1.1.13 (2015-10-08)
+-------------------
+* Generate nice viewport slug
+* Contributors: Adam Vollrath
+
 1.1.12 (2015-10-07)
 -------------------
 * Contributors: Wojciech Ziniewicz
