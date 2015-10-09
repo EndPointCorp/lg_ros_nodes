@@ -118,7 +118,30 @@ Intercepts Earth viewsync datagrams, publishes the `Pose`, and re-transmits the 
 
 ##### Published Topics
 
-* `/earth/pose` [`geometry\_msgs/Pose`] - The current Earth view in degrees and meters ASL.
+* `/earth/pose` [`geometry\_msgs/PoseStamped`] - The current Earth view in degrees and meters ASL.
+
+Breakdown of a `PoseStamped`:
+
+```
+header:
+  seq: [int] # sequence number? helpful for out of order packets maybe
+  stamp:
+    secs: int # seconds since epoch?
+    nsecs: int # nanoseconds since seconds since epoch
+  frame_id: string # no idea
+
+# Now for the usefull stuff
+pose:
+  position:
+    x: float # latitude
+    y: float # longitude
+    z: float # altitude
+  orientation:
+    x: float # tilt
+    y: float # roll
+    z: float # heading
+    w: 0 # always 0
+```
 
 #### query
 
