@@ -17,8 +17,8 @@ Changelog for package lg_activity
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall
 
-Forthcoming
------------
+1.1.15 (2015-10-10)
+-------------------
 
 1.1.14 (2015-10-08)
 -------------------

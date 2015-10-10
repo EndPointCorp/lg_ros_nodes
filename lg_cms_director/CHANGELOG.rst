@@ -19,8 +19,8 @@ Changelog for package lg_cms_director
 ------------------
 * Contributors: Adam Vollrath, Matt Vollrath
 
-Forthcoming
------------
+1.1.15 (2015-10-10)
+-------------------
 * pulsar: fixes to pulsar
 * Contributors: Jacob Minshall
 
