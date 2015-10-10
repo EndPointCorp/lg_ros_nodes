@@ -15,6 +15,9 @@ Changelog for package lg_replay
 ------------------
 * Contributors: Adam Vollrath
 
+Forthcoming
+-----------
+
 1.1.14 (2015-10-08)
 -------------------
 
