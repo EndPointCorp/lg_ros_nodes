@@ -27,6 +27,9 @@ def main():
     leader = str(rospy.get_param('~leader', 'false'))
     tilt = str(rospy.get_param('~tilt', 'false'))
     depend_on_webserver = rospy.get_param('~depend_on_webserver', False)
+    depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
+    rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
+    rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
 
     # put parameters into one big url
     url = add_url_params(url,
@@ -50,6 +53,15 @@ def main():
             raise DependencyException
         else:
             rospy.loginfo("Webserver available - continuing initialization")
+
+    if depend_on_rosbridge:
+        if not dependency_available(rosbridge_host, rosbridge_port, 'rosbridge', timeout):
+            msg = "Rosbridge (%s:%s) did not appear within specified timeout of %s seconds" % (rosbridge_host, rosbridge_port, timeout)
+            rospy.logerr(msg)
+            raise DependencyException
+        else:
+            rospy.loginfo("ROSbridge available - continuing initialization")
+
 
     # wait for X to become available
     x_timeout = rospy.get_param("/global_dependency_timeout", 15)
