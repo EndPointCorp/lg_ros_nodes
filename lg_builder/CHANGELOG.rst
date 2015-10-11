@@ -15,6 +15,9 @@ Changelog for package lg_builder
 ------------------
 * Contributors: Adam Vollrath
 
+Forthcoming
+-----------
+
 1.1.15 (2015-10-10)
 -------------------
 

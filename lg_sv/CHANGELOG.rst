@@ -21,6 +21,11 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* Added streetview client ROSbridge dependency
+* Contributors: Wojciech
+
 1.1.15 (2015-10-10)
 -------------------
 
