@@ -15,8 +15,8 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.16 (2015-10-11)
+-------------------
 
 1.1.15 (2015-10-10)
 -------------------
