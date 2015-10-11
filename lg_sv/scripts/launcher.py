@@ -62,7 +62,6 @@ def main():
         else:
             rospy.loginfo("ROSbridge available - continuing initialization")
 
-
     # wait for X to become available
     x_timeout = rospy.get_param("/global_dependency_timeout", 15)
     if x_available(x_timeout):
