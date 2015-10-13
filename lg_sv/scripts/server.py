@@ -67,7 +67,7 @@ def main():
                      server.handle_spacenav_msg)
     rospy.Subscriber('/%s/state' % server_type, ApplicationState,
                      server.handle_state_msg)
-    rospy.Subscriber('/%s/raw_metadata', String,
+    rospy.Subscriber('/%s/raw_metadata' % server_type, String,
                      server.handle_raw_metadata_msg)
 
     # This will translate director messages into /<server_type>/panoid messages
