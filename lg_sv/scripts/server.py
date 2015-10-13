@@ -74,10 +74,22 @@ def main():
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-        if server_type == 'streetview':
-            # split in case the panoid comes at the end of a url
-            asset = asset.split('/')[-1]
-        panoid_pub.publish(String(asset))
+        if asset.__class__ == dict:
+            assert 'panoid' in asset
+            panoid = asset['panoid']
+            pov = server.pov
+            if 'tilt' in asset:
+                pov.x = float(asset['tilt'])
+            if 'heading' in asset:
+                pov.z = float(asset['heading'])
+            server.pub_pov(pov)
+        else:
+            panoid = asset
+            if server_type == 'streetview':
+                # split in case the panoid comes at the end of a url
+                panoid = panoid.split('/')[-1]
+
+        server.pub_panoid(String(panoid))
 
     on_new_scene(handle_director_message)
 
