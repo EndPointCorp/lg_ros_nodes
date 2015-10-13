@@ -83,7 +83,7 @@ class StreetviewUtils:
             for link in metadata['Links']:
                 links.append(
                     {
-                        'heading': link['yawDeg'],
+                        'heading': float(link['yawDeg']),
                         'pano': link['panoId']
                     }
                 )
@@ -91,8 +91,8 @@ class StreetviewUtils:
                 'links': links,
                 'location': {
                     'latLng': {
-                        'lat': metadata['Location']['lat'],
-                        'lng': metadata['Location']['lng']
+                        'lat': float(metadata['Location']['lat']),
+                        'lng': float(metadata['Location']['lng'])
                     },
                     'pano': metadata['Location']['panoId']
                 }
