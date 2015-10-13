@@ -1,5 +1,6 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
+from std_msgs.msg import String
 from lg_common.msg import ApplicationState
 from math import atan2, cos, sin, pi
 from lg_sv import NearbyPanos
@@ -154,7 +155,7 @@ class PanoViewerServer:
         metadata = json.loads(msg.data)
         metadata = StreetviewUtils.translate_server_metadata_to_client_form(metadata)
         if self.metadata_pub:
-            self.metadata_pub.publish(metadata)
+            self.metadata_pub.publish(String(metadata))
 
     def get_metadata(self):
         """
