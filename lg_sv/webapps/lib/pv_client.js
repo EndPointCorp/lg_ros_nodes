@@ -14,7 +14,7 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
 
   this.ROLL_AXIS = new THREE.Vector3(0,0,1);
 
-  this.pano_url = '../lib/pv_client.js';
+  this.pano_url = '../media/foo.jpg';
 
   this.leaderPosition = null;
 

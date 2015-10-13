@@ -38,6 +38,8 @@ def main():
                                  String, queue_size=1)
     pov_pub = rospy.Publisher('/%s/pov' % server_type,
                               Quaternion, queue_size=2)
+    metadata_pub = rospy.Publisher('/%s/metadata' % server_type,
+                                   String, queue_size=10)
 
     tilt_min = rospy.get_param('~tilt_min', DEFAULT_TILT_MIN)
     tilt_max = rospy.get_param('~tilt_max', DEFAULT_TILT_MAX)
@@ -48,7 +50,8 @@ def main():
     nearby = get_nearby(nearby_class)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                              nav_sensitivity, space_nav_interval, x_threshold, nearby)
+                              nav_sensitivity, space_nav_interval, x_threshold,
+                              nearby, metadata_pub)
 
     visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
 
@@ -64,6 +67,8 @@ def main():
                      server.handle_spacenav_msg)
     rospy.Subscriber('/%s/state' % server_type, ApplicationState,
                      server.handle_state_msg)
+    rospy.Subscriber('/%s/raw_metadata', String,
+                     server.handle_raw_metadata_msg)
 
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):

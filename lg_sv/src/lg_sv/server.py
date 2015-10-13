@@ -104,7 +104,7 @@ class StreetviewUtils:
 class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                  nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
-                 nearby_panos=NearbyPanos()):
+                 nearby_panos=NearbyPanos(), metadata_pub=None):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
@@ -125,6 +125,7 @@ class PanoViewerServer:
         self.last_nav_msg_t = 0
         self.time_since_last_nav_msg = 0
         self.x_threshold = x_threshold
+        self.metadata_pub = metadata_pub
 
     def pub_location(self, pose2d):
         """
@@ -148,6 +149,12 @@ class PanoViewerServer:
         Grabs the new metadata from a publisher
         """
         self.nearby_panos.handle_metadata_msg(metadata)
+
+    def handle_raw_metadata_msg(self, msg):
+        metadata = json.loads(msg.data)
+        metadata = StreetviewUtils.translate_server_metadata_to_client_form(metadata)
+        if self.metadata_pub:
+            self.metadata_pub.publish(String(metadata))
 
     def get_metadata(self):
         """
