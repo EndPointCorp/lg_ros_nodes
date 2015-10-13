@@ -154,7 +154,7 @@ class PanoViewerServer:
         metadata = json.loads(msg.data)
         metadata = StreetviewUtils.translate_server_metadata_to_client_form(metadata)
         if self.metadata_pub:
-            self.metadata_pub.publish(String(metadata))
+            self.metadata_pub.publish(metadata)
 
     def get_metadata(self):
         """
