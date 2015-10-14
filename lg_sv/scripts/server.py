@@ -83,9 +83,9 @@ def main():
             assert 'panoid' in asset
             panoid = asset['panoid']
             pov = server.pov
-            if 'tilt' in asset:
+            if 'tilt' in asset and asset['tilt']:
                 pov.x = float(asset['tilt'])
-            if 'heading' in asset:
+            if 'heading' in asset and asset['heading']:
                 pov.z = float(asset['heading'])
             server.pub_pov(pov)
         else:
