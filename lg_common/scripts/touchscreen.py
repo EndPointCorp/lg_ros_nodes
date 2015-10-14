@@ -82,7 +82,6 @@ if __name__ == '__main__':
         'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
         'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
     )
-    state = rospy.get_param('~state', ApplicationState.VISIBLE)
 
     browser = ManagedBrowser(
         geometry=geometry,
@@ -92,10 +91,7 @@ if __name__ == '__main__':
         user_agent=user_agent
     )
 
-    browser.set_state(state)
-
-    rospy.Subscriber('{}/state'.format(rospy.get_name()), ApplicationState,
-                     browser.handle_state_msg)
+    browser.set_state(ApplicationState.VISIBLE)
 
     def handle_debug_sock_msg(msg):
         browser.send_debug_sock_msg(msg.data)
