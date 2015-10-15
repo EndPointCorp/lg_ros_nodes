@@ -24,8 +24,9 @@ BACKWARDS_THRESHOLD = .3
 # TODO figure out some good values here
 COEFFICIENT_LOW = 0.1
 COEFFICIENT_HIGH = 3
-ZOOM_MIN = 0
-ZOOM_MAX = 180
+ZOOM_MIN = 20
+ZOOM_MAX = 120
+INITIAL_ZOOM = 50
 
 
 def clamp(val, low, high):
@@ -116,7 +117,7 @@ class PanoViewerServer:
         self.last_metadata = dict()
         self.location = Pose2D()
         self.pov = Quaternion()
-        self.pov.w = 28  # TODO is this alright?
+        self.pov.w = INITIAL_ZOOM  # TODO is this alright?
         self.panoid = str()
         self.state = True
         # TODO (WZ) parametrize this
