@@ -24,6 +24,9 @@ BACKWARDS_THRESHOLD = .3
 # TODO figure out some good values here
 COEFFICIENT_LOW = 0.1
 COEFFICIENT_HIGH = 3
+ZOOM_MIN = 20
+ZOOM_MAX = 120
+INITIAL_ZOOM = 50
 
 
 def clamp(val, low, high):
@@ -105,7 +108,8 @@ class StreetviewUtils:
 class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                  nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
-                 nearby_panos=NearbyPanos(), metadata_pub=None):
+                 nearby_panos=NearbyPanos(), metadata_pub=None,
+                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
@@ -113,6 +117,7 @@ class PanoViewerServer:
         self.last_metadata = dict()
         self.location = Pose2D()
         self.pov = Quaternion()
+        self.pov.w = INITIAL_ZOOM  # TODO is this alright?
         self.panoid = str()
         self.state = True
         # TODO (WZ) parametrize this
@@ -127,6 +132,8 @@ class PanoViewerServer:
         self.time_since_last_nav_msg = 0
         self.x_threshold = x_threshold
         self.metadata_pub = metadata_pub
+        self.zoom_max = zoom_max
+        self.zoom_min = zoom_min
 
     def pub_location(self, pose2d):
         """
@@ -218,8 +225,10 @@ class PanoViewerServer:
         pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
         tilt = pov_msg.x - coefficient * twist.angular.y * self.nav_sensitivity
         heading = pov_msg.z - coefficient * twist.angular.z * self.nav_sensitivity
+        zoom = pov_msg.w + coefficient * twist.linear.z * self.nav_sensitivity
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
         pov_msg.z = wrap(heading, 0, 360)
+        pov_msg.w = clamp(zoom, self.zoom_min, self.zoom_max)
         self.pub_pov(pov_msg)
         # check to see if the pano should be moved
         self.handle_possible_pano_change(twist)

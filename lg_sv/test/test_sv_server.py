@@ -76,7 +76,12 @@ class TestSVServer(unittest.TestCase):
         # test initial state
         self.assertEqual(len(self.pov_pub.data), 0,
                          'pov_pub data should not have anything in it')
-        self.assertEqual(self.server.pov, Quaternion(),
+        q = Quaternion()
+        # w starts as a non-zero value for zoom supported clients, it's
+        # not worth it to hard code that value in here, so just grab it
+        # from the current pov
+        q.w = self.server.pov.w
+        self.assertEqual(self.server.pov, q,
                          'pov should not be set yet')
         new_pov = Quaternion(x=1.0, y=1.0, z=1.0, w=1.0)
         self.server.pub_pov(new_pov)
