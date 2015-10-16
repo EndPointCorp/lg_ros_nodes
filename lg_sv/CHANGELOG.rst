@@ -21,6 +21,18 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* lg_sv: invert the zoom value
+* lg_sv: update zoom defaults
+* lg_sv: zoom publishing
+* lg_sv: handle null headers and tilt
+* lg_sv: translate numbers to floats instead of strings
+* lg_sv: raw metadata translation
+* lg_sv: handles heading + tilt parameters in streetview asset
+* Removed UBL
+* Contributors: Jacob Minshall, Wojciech
+
 1.1.16 (2015-10-11)
 -------------------
 * Added streetview client ROSbridge dependency

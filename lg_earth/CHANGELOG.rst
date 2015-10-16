@@ -19,6 +19,11 @@ Changelog for package lg_earth
 * Added ext dependency mechanism and added it to GE and SV/PV
 * Contributors: Adam Vollrath, Matt Vollrath, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* lg_earth: viewsync: update readme
+* Contributors: Jacob Minshall
+
 1.1.16 (2015-10-11)
 -------------------
 
