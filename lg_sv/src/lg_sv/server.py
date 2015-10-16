@@ -225,7 +225,7 @@ class PanoViewerServer:
         pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
         tilt = pov_msg.x - coefficient * twist.angular.y * self.nav_sensitivity
         heading = pov_msg.z - coefficient * twist.angular.z * self.nav_sensitivity
-        zoom = pov_msg.w - coefficient * twist.linear.z * self.nav_sensitivity
+        zoom = pov_msg.w + coefficient * twist.linear.z * self.nav_sensitivity
         pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
         pov_msg.z = wrap(heading, 0, 360)
         pov_msg.w = clamp(zoom, self.zoom_min, self.zoom_max)
