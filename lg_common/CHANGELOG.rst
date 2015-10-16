@@ -15,8 +15,8 @@ Changelog for package lg_common
 ------------------
 * Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.17 (2015-10-16)
+-------------------
 * touchscreen: removed state from touchscreen
   There didn't seem to be a reason to hide the touchscreen, and this
   makes the state changer a pain to interact with. Changes will come

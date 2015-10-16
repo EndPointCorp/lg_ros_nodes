@@ -15,8 +15,8 @@ Changelog for package lg_nav_to_device
 ------------------
 * Contributors: Adam Vollrath
 
-Forthcoming
------------
+1.1.17 (2015-10-16)
+-------------------
 * lg_nav: disables spacenav input when not visible
 * Contributors: Jacob Minshall
 

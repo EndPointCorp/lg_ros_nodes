@@ -21,8 +21,8 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.17 (2015-10-16)
+-------------------
 * lg_sv: invert the zoom value
 * lg_sv: update zoom defaults
 * lg_sv: zoom publishing
