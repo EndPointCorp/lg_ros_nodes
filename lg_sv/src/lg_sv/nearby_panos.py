@@ -72,7 +72,7 @@ class NearbyStreetviewPanos(NearbyPanos):
         the value 359 degrees is closer to 0 degrees than 10 degrees is
         """
         diff = abs(target - source) % 360
-        return diff if diff < 180 else diff - (diff - 180)
+        return diff if diff < 180 else 180 - (diff % 180)
 
     def get_metadata(self):
         """
