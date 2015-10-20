@@ -15,6 +15,9 @@ Changelog for package lg_attract_loop
 ------------------
 * Contributors: Adam Vollrath
 
+Forthcoming
+-----------
+
 1.1.17 (2015-10-16)
 -------------------
 
