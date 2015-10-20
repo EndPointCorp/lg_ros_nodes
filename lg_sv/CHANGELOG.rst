@@ -21,8 +21,8 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
-Forthcoming
------------
+1.1.18 (2015-10-20)
+-------------------
 * lg_sv: server: fix nearby pano chooser
   This was returning an invalid difference for certain inputs.
 * Contributors: Jacob Minshall
