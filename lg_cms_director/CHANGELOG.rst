@@ -19,6 +19,9 @@ Changelog for package lg_cms_director
 ------------------
 * Contributors: Adam Vollrath, Matt Vollrath
 
+Forthcoming
+-----------
+
 1.1.18 (2015-10-20)
 -------------------
 

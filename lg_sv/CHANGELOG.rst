@@ -21,6 +21,12 @@ Changelog for package lg_sv
 * lg_sv: parameterize x_threshold
 * Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
 
+Forthcoming
+-----------
+* lg_sv: allow for an inverted nearby pano finder
+* lg_sv: changed default zoom\_{min,max}
+* Contributors: Jacob Minshall
+
 1.1.18 (2015-10-20)
 -------------------
 * lg_sv: server: fix nearby pano chooser
