@@ -86,7 +86,12 @@ class ManagedBrowser(ManagedApplication):
                 cmd.append(url)
 
         cmd.append('&')
-        w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
+        # In Chrome 46 the instance changes from
+        #   Google-chrome (...) to
+        #   google-chrome (...)
+        # Since all regex is escaped further down,
+        # just don't match the 'g' for now.
+        w_instance = 'oogle-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         rospy.loginfo("Command {}".format(cmd))
