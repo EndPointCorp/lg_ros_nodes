@@ -8,6 +8,7 @@ class NearbyPanos:
     def __init__(self):
         self.panoid = None
         self.metadata = None
+        self.inverted = False
 
     def handle_metadata_msg(self, metadata):
         pass
@@ -20,6 +21,9 @@ class NearbyPanos:
 
     def find_closest(self, panoid, pov_z):
         return None
+
+    def invert(self, inverted):
+        self.inverted = inverted
 
 
 class NearbyStreetviewPanos(NearbyPanos):
@@ -53,6 +57,8 @@ class NearbyStreetviewPanos(NearbyPanos):
             return None
         if 'links' not in self.metadata or not isinstance(self.metadata['links'], list):
             return None
+        if self.inverted:
+            pov_z = (pov_z + 180) % 360
         self.panoid = panoid
         my_lat = self.metadata['location']['latLng']['lat']
         my_lng = self.metadata['location']['latLng']['lng']

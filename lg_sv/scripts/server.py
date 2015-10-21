@@ -52,6 +52,8 @@ def main():
     space_nav_interval = rospy.get_param('~space_nav_interval', DEFAULT_NAV_INTERVAL)
     nearby_class = rospy.get_param('~nearby_class', 'NearbyStreetviewPanos')
     nearby = get_nearby(nearby_class)
+    inverted = str(rospy.get_param('~inverted', "false")).lower() == "true"
+    nearby.invert(inverted)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                               nav_sensitivity, space_nav_interval, x_threshold,
