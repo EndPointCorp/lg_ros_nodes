@@ -28,8 +28,7 @@ class NearbyPanos:
 
 class NearbyStreetviewPanos(NearbyPanos):
     def __init__(self):
-        self.panoid = None
-        self.metadata = None
+        NearbyPanos.__init__(self)
 
     def handle_metadata_msg(self, metadata):
         tmp = None
