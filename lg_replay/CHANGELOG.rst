@@ -5,8 +5,8 @@ Changelog for package lg_replay
 1.1.20 (2015-10-21)
 -------------------
 
-Forthcoming
------------
+1.1.21 (2015-10-22)
+-------------------
 * 1.1.20
 * Changelogs for 1.1.20
 * Contributors: Matt Vollrath

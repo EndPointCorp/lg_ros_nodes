@@ -7,8 +7,8 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
-Forthcoming
------------
+1.1.21 (2015-10-22)
+-------------------
 * lg_sv: invert the heading given by the director
 * 1.1.20
 * Changelogs for 1.1.20
