@@ -7,6 +7,14 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* lg_sv: invert the heading given by the director
+* 1.1.20
+* Changelogs for 1.1.20
+* init nearbypano parent class
+* Contributors: Jacob Minshall, Matt Vollrath
+
 1.1.19 (2015-10-20)
 -------------------
 * lg_sv: allow for an inverted nearby pano finder
