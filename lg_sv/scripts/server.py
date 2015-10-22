@@ -93,6 +93,8 @@ def main():
                 pov.x = float(asset['tilt'])
             if 'heading' in asset and asset['heading']:
                 pov.z = float(asset['heading'])
+                if inverted:
+                    pov.z = (pov.z + 180) % 360
             server.pub_pov(pov)
         else:
             panoid = asset
