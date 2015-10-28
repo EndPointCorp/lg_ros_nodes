@@ -68,7 +68,8 @@ function initialize() {
     var roll = -transformedHTR[2];
     var pov = {
       heading: transformedHTR[0],
-      pitch: transformedHTR[1]
+      pitch: transformedHTR[1],
+      zoom: get_zoom(povQuaternion.w)
     };
     sv.setPov(pov);
     if (shouldTilt) {
@@ -76,6 +77,26 @@ function initialize() {
     }
   });
 }
+
+function get_zoom(z) {
+  if (!shouldZoom) {
+    return initialZoom;
+  }
+
+  var default_factor = 10;
+  var min_zoom = 0;
+  var max_zoom = 4;
+  var ret = max_zoom - z / default_factor;
+
+    if (ret < min_zoom)
+      ret = min_zoom;
+
+    if (ret > max_zoom)
+      ret = max_zoom;
+
+    return ret;
+}
+
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
