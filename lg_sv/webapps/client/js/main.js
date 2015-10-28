@@ -7,13 +7,16 @@ var scaleX = getParameterByName('scaleX', Number, 1.66);
 var scaleY = getParameterByName('scaleY', Number, 1.66);
 var scaleZ = getParameterByName('scaleZ', Number, 1);
 var initialPano = getParameterByName('panoid', String, '');
+var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
+var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
+var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
 
 function initialize() {
   console.log('initializing Street View');
 
+  var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
   var ros = new ROSLIB.Ros({
-    // TODO (wz) parametrize this
-    url: 'ws://localhost:9090'
+    url: url
   });
   ros.on('connection', function() {
     console.log('ROSLIB connected');
@@ -113,11 +116,6 @@ function getParameterByName(name, type, def) {
                          results = regex.exec(location.search);
   return (results === null ? def : type(
           decodeURIComponent(results[1].replace(/\+/g, ' '))));
-}
-
-function stringToBoolean(s) {
-  var truePattern = /^1$|^true$/i;
-  return s.search(truePattern) === 0;
 }
 
 function getScaleString() {
