@@ -31,9 +31,13 @@ def main():
     rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     rosbridge_secure = rospy.get_param('~rosbridge_secure', 'false')
+    zoom = rospy.get_param('~zoom', 'false')
+    initial_zoom = rospy.get_param('~initial_zoom', 3)
 
     # put parameters into one big url
     url = add_url_params(url,
+                         zoom=zoom,
+                         initialZoom=initial_zoom,
                          fov=field_of_view,
                          pitchOffset=pitch_offset,
                          showLinks=show_links,
