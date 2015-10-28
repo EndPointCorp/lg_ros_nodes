@@ -3,6 +3,8 @@ var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 0);
 var shouldTilt = getParameterByName('tilt', stringToBoolean, false);
+var shouldZoom = getParameterByName('zoom', stringToBoolean, false);
+var initialZoom = getParameterByName('initialZoom', Number, 3);
 var scaleX = getParameterByName('scaleX', Number, 1.66);
 var scaleY = getParameterByName('scaleY', Number, 1.66);
 var scaleZ = getParameterByName('scaleZ', Number, 1);
@@ -44,7 +46,7 @@ function initialize() {
     console.log('Changing pano to', panoId);
     sv.setPano(panoId);
     // TODO(wjp): create zoom function
-    sv.setZoom(3);
+    sv.setZoom(initialZoom);
   });
 
   var canvasRatio = 1;
