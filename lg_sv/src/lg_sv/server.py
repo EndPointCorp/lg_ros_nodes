@@ -272,7 +272,6 @@ class PanoViewerServer:
         self.button_down = True
         self._move_forward()
 
-
     def _move_forward(self):
         """
         Wrapper around move function, resets counter
