@@ -1,6 +1,11 @@
 #!/bin/bash
 # Script used to syncronize catkin workspace between headnode and dispnodes
 
+# move back a directory in case this was run from ./scripts directly
+if [ ! -d .git ]; then
+  cd ..
+fi
+
 if [ -d .git ]; then
   echo "I'm going to sync catkin/src to dispnodes:catkin_ws/src/ and run catkin_make"
   echo "press enter to go"
