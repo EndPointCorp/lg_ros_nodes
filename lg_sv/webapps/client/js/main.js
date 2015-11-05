@@ -12,7 +12,7 @@ var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
 
-function initialize() {
+var initialize = function() {
   console.log('initializing Street View');
 
   var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
@@ -21,8 +21,14 @@ function initialize() {
   });
   ros.on('connection', function() {
     console.log('ROSLIB connected');
+    initializeRes(ros);
   });
+  ros.on('error', function() {
+    setTimeout(initialize, 2000);
+  });
+};
 
+var initializeRes = function(ros) {
   var mapOptions = {
     disableDefaultUI: true,
     center: new google.maps.LatLng(45, 45),
@@ -76,7 +82,7 @@ function initialize() {
       canvas.css('transform', 'rotateZ(' + roll + 'deg);');
     }
   });
-}
+};
 
 function get_zoom(z) {
   if (!shouldZoom) {
