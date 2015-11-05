@@ -16,7 +16,7 @@ function getConfig(key, def) {
 function init() {
   var container, vertFov, aspectRatio;
   var yawRads, pitchRads, rollRads, isLeader;
-  var ros = new ROSLIB.Ros({ url: 'ws://localhost:9090' });
+  var ros = new ROSLIB.Ros({ url: 'wss://42-b:9090' });
 
   container = document.getElementById( 'container' );
 

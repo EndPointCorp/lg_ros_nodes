@@ -13,7 +13,7 @@ var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
 
-function initialize() {
+var initialize = function() {
   console.log('initializing Street View');
 
   var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
@@ -22,8 +22,14 @@ function initialize() {
   });
   ros.on('connection', function() {
     console.log('ROSLIB connected');
+    initializeRes(ros);
   });
+  ros.on('error', function() {
+    setTimeout(initialize, 2000);
+  });
+};
 
+var initializeRes = function(ros) {
   var panoTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview/panoid',
@@ -50,7 +56,6 @@ function initialize() {
 
   metadataTopic.subscribe(handleMetadataMsg);
   panoTopic.subscribe(handlePanoIdMsg);
-
 
 
   var mapOptions = {
@@ -109,7 +114,7 @@ function initialize() {
   if (initialPano !== '') {
     svClient.emit('pano_changed', initialPano);
   }
-}
+};
 
 function get_zoom(z) {
   if (!shouldZoom) {
