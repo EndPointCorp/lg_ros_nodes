@@ -7,6 +7,12 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* Add titlecard to the lg_sv sv viewer
+* panoviewer: allow images from the headnode
+* Contributors: Jacob Minshall, Szymon Lipiński
+
 1.1.21 (2015-10-22)
 -------------------
 * lg_sv: invert the heading given by the director
