@@ -12,6 +12,7 @@ var initialPano = getParameterByName('panoid', String, '');
 var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
+var lastPov = null;
 
 var initialize = function() {
   console.log('initializing Street View');
@@ -82,6 +83,10 @@ var initializeRes = function(ros) {
     sv.setPano(panoId);
     // TODO(wjp): create zoom function
     sv.setZoom(initialZoom);
+    if (lastPov) {
+      lastPov.w = 70;
+      svClient.pubPov(lastPov);
+    }
   });
 
   var canvasRatio = 1;
@@ -91,7 +96,8 @@ var initializeRes = function(ros) {
     canvasRatio = parseMatrix(wrapper.css('transform'))[0];
   }
 
-  svClient.on('pov_changed', function(povQuaternion) {
+  var handleQuaternion = function(povQuaternion) {
+    lastPov = povQuaternion;
     // TODO(mv): move quaternion parsing into StreetviewClient library
     var viewportFOV = fieldOfView / canvasRatio;
     var radianOffset = toRadians(viewportFOV * yawOffset);
@@ -110,7 +116,9 @@ var initializeRes = function(ros) {
     if (shouldTilt) {
       canvas.css('transform', 'rotateZ(' + roll + 'deg);');
     }
-  });
+  };
+  svClient.on('pov_changed', handleQuaternion);
+
   if (initialPano !== '') {
     svClient.emit('pano_changed', initialPano);
   }
