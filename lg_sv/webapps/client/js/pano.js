@@ -1,6 +1,7 @@
 var panoClient;
 
 function panoRunner() {
+  THREE.ImageUtils.crossOrigin = '';
   init();
   animate(0);
 }
