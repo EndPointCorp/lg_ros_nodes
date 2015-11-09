@@ -21,3 +21,10 @@ function stringToBoolean(s) {
   return s.search(truePattern) === 0;
 }
 
+function getParameterByName(name, type, def) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+                         results = regex.exec(location.search);
+  return (results === null ? def : type(
+          decodeURIComponent(results[1].replace(/\+/g, ' '))));
+}

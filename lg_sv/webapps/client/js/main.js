@@ -146,14 +146,6 @@ function get_zoom(z) {
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
-function getParameterByName(name, type, def) {
-  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
-                         results = regex.exec(location.search);
-  return (results === null ? def : type(
-          decodeURIComponent(results[1].replace(/\+/g, ' '))));
-}
-
 function getScaleString() {
   var ret = 'scale3d({x}, {y}, {z})';
 
