@@ -15,7 +15,12 @@ function getConfig(key, def) {
 function init() {
   var container, vertFov, aspectRatio;
   var yawRads, pitchRads, rollRads, isLeader;
-  var ros = new ROSLIB.Ros({ url: 'wss://42-b:9090' });
+  var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
+  var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
+  var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
+  var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
+
+  var ros = new ROSLIB.Ros({ url: url });
 
   container = document.getElementById( 'container' );
 
