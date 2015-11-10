@@ -91,10 +91,15 @@ def main():
             pov = server.pov
             if 'tilt' in asset and asset['tilt']:
                 pov.x = float(asset['tilt'])
+            else:
+                pov.x = 0
             if 'heading' in asset and asset['heading']:
                 pov.z = float(asset['heading'])
                 if inverted:
                     pov.z = (pov.z + 180) % 360
+            else:
+                pov.z = 0
+            pov.w = zoom_max
             server.pub_pov(pov)
         else:
             panoid = asset
