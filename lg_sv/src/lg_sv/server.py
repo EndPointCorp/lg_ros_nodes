@@ -270,7 +270,10 @@ class PanoViewerServer:
             # button is still down
             return
         self.button_down = True
-        self._move_forward()
+        if joy.buttons[-1] == 1:
+            self._move_forward()
+        else:
+            self._move_backward()
 
     def _move_forward(self):
         """
