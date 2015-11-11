@@ -11,7 +11,7 @@ class NearbyPanos:
         self.inverted = False
 
     def handle_metadata_msg(self, metadata):
-        pass
+        return None
 
     def get_metadata(self):
         return None
@@ -36,25 +36,30 @@ class NearbyStreetviewPanos(NearbyPanos):
             tmp = json.loads(metadata.data)
             if tmp['location']['pano'] == self.panoid or self.panoid is None:
                 self.metadata = tmp
+                return True
+            else:
+                return False
         except ValueError:
-            pass
+            return None
         except KeyError:
-            pass
+            return None
 
     def set_panoid(self, panoid):
         if self.panoid != panoid:
             self.metadata = None
         self.panoid = panoid
 
-    def find_closest(self, panoid, pov_z):
+    def find_closest(self, panoid, pov_z, heading=False):
         """
         Returns the pano that is closest to the direction pressed on the
         spacenav (either forwards or backwards) based on the nearby panos
         bearing to the current pano
         """
         if not self.get_metadata():
+            rospy.logerr('no metadata actually there...')
             return None
         if 'links' not in self.metadata or not isinstance(self.metadata['links'], list):
+            rospy.logerr('no links actually there...')
             return None
         if self.inverted:
             pov_z = (pov_z + 180) % 360
@@ -69,6 +74,8 @@ class NearbyStreetviewPanos(NearbyPanos):
             if tmp <= closest:
                 closest = tmp
                 closest_pano = data['pano']
+        if heading:
+            return closest
         return closest_pano
 
     def headingDifference(self, source, target):

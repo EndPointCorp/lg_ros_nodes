@@ -157,7 +157,12 @@ class PanoViewerServer:
         """
         Grabs the new metadata from a publisher
         """
-        self.nearby_panos.handle_metadata_msg(metadata)
+        if not self.nearby_panos.handle_metadata_msg(metadata):
+            return
+        new_pov = self.pov
+        new_pov.z = self.nearby_panos.find_closest(self.panoid, self.pov.z, heading=True)
+        rospy.logerr('publishing new pov, z is %s' % new_pov.z)
+        self.pub_pov(new_pov)
 
     def handle_raw_metadata_msg(self, msg):
         metadata = json.loads(msg.data)
