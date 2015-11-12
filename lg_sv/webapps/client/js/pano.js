@@ -26,9 +26,10 @@ function init() {
   pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0);
   rollRads = toRad(getConfig('rollOffset', 0) * 1.0);
   isLeader = getConfig('leader', 'false').toLowerCase() == "true";
+  initialPano = getConfig('panoid', 0);
 
   panoClient = new PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads,
-      rollRads, isLeader);
+      rollRads, isLeader, initialPano);
 
   container.appendChild(panoClient.getDomElement());
 

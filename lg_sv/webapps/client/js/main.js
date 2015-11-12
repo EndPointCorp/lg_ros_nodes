@@ -6,6 +6,7 @@ var shouldTilt = getParameterByName('tilt', stringToBoolean, false);
 var scaleX = getParameterByName('scaleX', Number, 1.66);
 var scaleY = getParameterByName('scaleY', Number, 1.66);
 var scaleZ = getParameterByName('scaleZ', Number, 1);
+var initialPano = getParameterByName('panoid', String, '');
 
 function initialize() {
   console.log('initializing Street View');
@@ -99,6 +100,9 @@ function initialize() {
       canvas.css('transform', 'rotateZ(' + roll + 'deg);');
     }
   });
+  if (initialPano !== '') {
+    svClient.emit('pano_changed', initialPano);
+  }
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
