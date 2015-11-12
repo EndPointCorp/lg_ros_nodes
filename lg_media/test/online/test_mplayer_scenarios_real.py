@@ -120,7 +120,7 @@ class TestMediaService(object):
             fifo.replace("'", '')  # the trailing '
             assert not os.path.exists(fifo)
 
-    def perform_test(self, wait_iterations=40, time_sleep=2, len_data=1, media_msg=None):
+    def perform_test(self, wait_iterations=80, time_sleep=2, len_data=1, media_msg=None):
         """
         Perform a test on a message and application start oriented test case.
 
