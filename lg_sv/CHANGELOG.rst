@@ -7,6 +7,26 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* 1.1.23
+* Generated changelogs
+* Changed title for pano viewers
+* lg_sv: remove 42-b hard coding in favor of parameterized ros url
+* lg_sv: resets zoom after changing panos
+* lg_sv: some changes for specific lgs
+* lg_sv: optional zoom for streetview
+  This really only works well if you're only using one screen. Kind of
+  counter productive to the heart of a liquid galaxy, but hey, at least
+  it's kind of in there now.
+* lg_sv: parameterized zoom level
+* lg_sv: parameterization for rosbridge url
+* lg_sv: set initial pano via url
+  Using panoid=foobar will set the initial pano to point to foobar.
+* lg_sv: reset tilt/heading if none are specified
+  Zoom also always reverts to the default max zoom out
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
 1.1.23 (2015-11-13)
 -------------------
 * Changed title for pano viewers

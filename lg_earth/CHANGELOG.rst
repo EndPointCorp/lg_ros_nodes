@@ -5,6 +5,12 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* 1.1.23
+* Generated changelogs
+* Contributors: Wojciech Ziniewicz
+
 1.1.23 (2015-11-13)
 -------------------
 
