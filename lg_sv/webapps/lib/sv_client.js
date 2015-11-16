@@ -98,4 +98,11 @@ StreetviewClient.prototype.sendMetadata = function() {
   this.metadataTopic.publish(msg);
 };
 
+/**
+ * Publish a new pov, useful when trying to zoom out during pano change
+ */
+StreetviewClient.prototype.pubPov = function(pov) {
+  this.povTopic.publish(pov);
+};
+
 // # vim: tabstop=8 expandtab shiftwidth=2 softtabstop=2

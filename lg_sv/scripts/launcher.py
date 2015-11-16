@@ -30,15 +30,23 @@ def main():
     depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
     rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
+    rosbridge_secure = rospy.get_param('~rosbridge_secure', 'false')
+    zoom = str(rospy.get_param('~zoom', 'false')).lower()
+    initial_zoom = rospy.get_param('~initial_zoom', 3)
 
     # put parameters into one big url
     url = add_url_params(url,
+                         zoom=zoom,
+                         initialZoom=initial_zoom,
                          fov=field_of_view,
                          pitchOffset=pitch_offset,
                          showLinks=show_links,
                          leader=leader,
                          yawOffset=yaw_offset,
-                         tilt=tilt)
+                         tilt=tilt,
+                         rosbridgeHost=rosbridge_host,
+                         rosbridgePort=rosbridge_port,
+                         rosbridgeSecure=rosbridge_secure)
 
     # check if server is already there
     host = discover_host_from_url(url)

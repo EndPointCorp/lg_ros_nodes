@@ -1,5 +1,5 @@
 function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
-    isLeader) {
+    isLeader, initialPano) {
   this.lastTimeMsec = null;
 
   this.MIN_PLAYBACKRATE = 0.5;
@@ -15,6 +15,9 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
   this.ROLL_AXIS = new THREE.Vector3(0,0,1);
 
   this.pano_url = '../media/foo.jpg';
+  if (initialPano !== 0) {
+    this.pano_url = initialPano;
+  }
 
   this.leaderPosition = null;
 

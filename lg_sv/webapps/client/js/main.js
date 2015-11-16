@@ -3,21 +3,34 @@ var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 0);
 var shouldTilt = getParameterByName('tilt', stringToBoolean, false);
+var shouldZoom = getParameterByName('zoom', stringToBoolean, false);
+var initialZoom = getParameterByName('initialZoom', Number, 3);
 var scaleX = getParameterByName('scaleX', Number, 1.66);
 var scaleY = getParameterByName('scaleY', Number, 1.66);
 var scaleZ = getParameterByName('scaleZ', Number, 1);
+var initialPano = getParameterByName('panoid', String, '');
+var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
+var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
+var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
+var lastPov = null;
 
-function initialize() {
+var initialize = function() {
   console.log('initializing Street View');
 
+  var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
   var ros = new ROSLIB.Ros({
-    // TODO (wz) parametrize this
-    url: 'ws://localhost:9090'
+    url: url
   });
   ros.on('connection', function() {
     console.log('ROSLIB connected');
+    initializeRes(ros);
   });
+  ros.on('error', function() {
+    setTimeout(initialize, 2000);
+  });
+};
 
+var initializeRes = function(ros) {
   var panoTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview/panoid',
@@ -46,7 +59,6 @@ function initialize() {
   panoTopic.subscribe(handlePanoIdMsg);
 
 
-
   var mapOptions = {
     disableDefaultUI: true,
     center: new google.maps.LatLng(45, 45),
@@ -70,7 +82,11 @@ function initialize() {
     console.log('Changing pano to', panoId);
     sv.setPano(panoId);
     // TODO(wjp): create zoom function
-    sv.setZoom(3);
+    sv.setZoom(initialZoom);
+    if (lastPov) {
+      lastPov.w = 70;
+      svClient.pubPov(lastPov);
+    }
   });
 
   var canvasRatio = 1;
@@ -80,7 +96,8 @@ function initialize() {
     canvasRatio = parseMatrix(wrapper.css('transform'))[0];
   }
 
-  svClient.on('pov_changed', function(povQuaternion) {
+  var handleQuaternion = function(povQuaternion) {
+    lastPov = povQuaternion;
     // TODO(mv): move quaternion parsing into StreetviewClient library
     var viewportFOV = fieldOfView / canvasRatio;
     var radianOffset = toRadians(viewportFOV * yawOffset);
@@ -92,29 +109,42 @@ function initialize() {
     var roll = -transformedHTR[2];
     var pov = {
       heading: transformedHTR[0],
-      pitch: transformedHTR[1]
+      pitch: transformedHTR[1],
+      zoom: get_zoom(povQuaternion.w)
     };
     sv.setPov(pov);
     if (shouldTilt) {
       canvas.css('transform', 'rotateZ(' + roll + 'deg);');
     }
-  });
+  };
+  svClient.on('pov_changed', handleQuaternion);
+
+  if (initialPano !== '') {
+    svClient.emit('pano_changed', initialPano);
+  }
+};
+
+function get_zoom(z) {
+  if (!shouldZoom) {
+    return initialZoom;
+  }
+
+  var default_factor = 10;
+  var min_zoom = 0;
+  var max_zoom = 4;
+  var ret = max_zoom - z / default_factor;
+
+    if (ret < min_zoom)
+      ret = min_zoom;
+
+    if (ret > max_zoom)
+      ret = max_zoom;
+
+    return ret;
 }
+
 
 google.maps.event.addDomListener(window, 'load', initialize);
-
-function getParameterByName(name, type, def) {
-  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
-                         results = regex.exec(location.search);
-  return (results === null ? def : type(
-          decodeURIComponent(results[1].replace(/\+/g, ' '))));
-}
-
-function stringToBoolean(s) {
-  var truePattern = /^1$|^true$/i;
-  return s.search(truePattern) === 0;
-}
 
 function getScaleString() {
   var ret = 'scale3d({x}, {y}, {z})';
