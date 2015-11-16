@@ -5,8 +5,8 @@ Changelog for package liquidgalaxy
 1.1.20 (2015-10-21)
 -------------------
 
-Forthcoming
------------
+1.1.24 (2015-11-16)
+-------------------
 * 1.1.23
 * Generated changelogs
 * Contributors: Wojciech Ziniewicz

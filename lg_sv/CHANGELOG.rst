@@ -7,8 +7,8 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
-Forthcoming
------------
+1.1.24 (2015-11-16)
+-------------------
 * 1.1.23
 * Generated changelogs
 * Changed title for pano viewers
