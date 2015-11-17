@@ -7,8 +7,8 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+1.1.25 (2015-11-17)
+-------------------
 
 1.1.24 (2015-11-16)
 -------------------
