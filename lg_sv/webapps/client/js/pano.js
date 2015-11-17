@@ -39,6 +39,26 @@ function init() {
   container.appendChild(panoClient.getDomElement());
 
   window.addEventListener('resize', onWindowResize, false);
+
+  var metadataTopic = new ROSLIB.Topic({
+    ros: ros,
+    name: '/streetview/metadata',
+    messageType: 'std_msgs/String',                                                                       
+    throttle_rate: 16,
+    queue_length: 1
+  });
+  
+  var handleMetadataMsg = function(msg) {
+    $("#titlecard").show();
+    $("#titlecard").text(JSON.parse(msg.data).location.description);
+  };  
+  
+  var handlePanoIdMsg = function(msg) {                                                                   
+    $("#titlecard").hide();
+  };
+
+  metadataTopic.subscribe(handleMetadataMsg);
+
 }
 
 function onWindowResize() {
