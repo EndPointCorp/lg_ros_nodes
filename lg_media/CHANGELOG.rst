@@ -5,6 +5,9 @@ Changelog for package lg_media
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+
 1.1.24 (2015-11-16)
 -------------------
 * Merge pull request `#116 <https://github.com/EndPointCorp/lg_ros_nodes/issues/116>`_ from EndPointCorp/topic/roll_ocean_changes_in2

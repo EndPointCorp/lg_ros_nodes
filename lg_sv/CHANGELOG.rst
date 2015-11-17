@@ -7,6 +7,11 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
+* Contributors: Szymon Lipiński
+
 1.1.24 (2015-11-16)
 -------------------
 * 1.1.23
