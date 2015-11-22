@@ -6,6 +6,7 @@ from lg_common.helpers import get_first_asset_from_activity, on_new_scene
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String
+from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
 from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
 
@@ -75,6 +76,7 @@ def main():
                      server.handle_state_msg)
     rospy.Subscriber('/%s/raw_metadata' % server_type, String,
                      server.handle_raw_metadata_msg)
+    rospy.Subscriber('/spacenav/joy', Joy, server.handle_joy)
 
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
