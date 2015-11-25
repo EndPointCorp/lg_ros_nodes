@@ -8,6 +8,12 @@ Changelog for package lg_media
 1.1.25 (2015-11-17)
 -------------------
 
+Forthcoming
+-----------
+* 1.1.25
+* Generated new changelog
+* Contributors: Szymon Lipiński
+
 1.1.24 (2015-11-16)
 -------------------
 * Merge pull request `#116 <https://github.com/EndPointCorp/lg_ros_nodes/issues/116>`_ from EndPointCorp/topic/roll_ocean_changes_in2

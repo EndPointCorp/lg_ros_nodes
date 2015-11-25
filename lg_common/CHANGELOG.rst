@@ -10,6 +10,12 @@ Changelog for package lg_common
 1.1.25 (2015-11-17)
 -------------------
 
+Forthcoming
+-----------
+* 1.1.25
+* Generated new changelog
+* Contributors: Szymon Lipiński
+
 1.1.24 (2015-11-16)
 -------------------
 * 1.1.23

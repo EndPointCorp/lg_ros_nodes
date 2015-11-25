@@ -12,6 +12,22 @@ Changelog for package lg_sv
 * Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
 * Contributors: Szymon Lipiński
 
+Forthcoming
+-----------
+* Merge pull request `#112 <https://github.com/EndPointCorp/lg_ros_nodes/issues/112>`_ from EndPointCorp/ft-change_panos_via_button
+  lg_sv: move forward if a button has been clicked
+* Revert "WIP on changing panos pointing to the closest link"
+  This reverts commit a38e0e036faeb6192c412b6bb075eaf5e53766c0.
+  More work needs to be put into this commit before merging it.
+* 1.1.25
+* Generated new changelog
+* Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
+* WIP on changing panos pointing to the closest link
+* lg_sv: different buttons do different things
+* pep8 fix
+* lg_sv: move forward if a button has been clicked
+* Contributors: Adam Vollrath, Jacob Minshall, Szymon Lipiński
+
 1.1.24 (2015-11-16)
 -------------------
 * 1.1.23
