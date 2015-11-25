@@ -5,6 +5,12 @@ Changelog for package lg_nav_to_device
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* 1.1.26
+* Changelogs
+* Contributors: Wojciech Ziniewicz
+
 1.1.25 (2015-11-17)
 -------------------
 

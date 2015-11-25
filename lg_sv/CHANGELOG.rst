@@ -7,6 +7,24 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* lg_sv: add description and attribution_name to metadata
+  Raw metadata from the client is trimmed down to ignore fields we don't
+  use, but we are now using both of those fields.
+* 1.1.26
+* Changelogs
+* Merge pull request `#112 <https://github.com/endpointcorp/lg_ros_nodes/issues/112>`_ from EndPointCorp/ft-change_panos_via_button
+  lg_sv: move forward if a button has been clicked
+* Revert "WIP on changing panos pointing to the closest link"
+  This reverts commit a38e0e036faeb6192c412b6bb075eaf5e53766c0.
+  More work needs to be put into this commit before merging it.
+* WIP on changing panos pointing to the closest link
+* lg_sv: different buttons do different things
+* pep8 fix
+* lg_sv: move forward if a button has been clicked
+* Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
+
 1.1.25 (2015-11-17)
 -------------------
 * Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
