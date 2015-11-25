@@ -134,6 +134,7 @@ class PanoViewerServer:
         self.metadata_pub = metadata_pub
         self.zoom_max = zoom_max
         self.zoom_min = zoom_min
+        self.button_down = False
 
     def pub_location(self, pose2d):
         """
@@ -256,6 +257,23 @@ class PanoViewerServer:
             # reset counters
             self.move_forward = 0
             self.move_backward = 0
+
+    def handle_joy(self, joy):
+        """
+        Move forward if the button is down, and wasn't previously down
+        """
+        if 1 not in joy.buttons:
+            self.button_down = False
+            return
+
+        if self.button_down:
+            # button is still down
+            return
+        self.button_down = True
+        if joy.buttons[-1] == 1:
+            self._move_forward()
+        else:
+            self._move_backward()
 
     def _move_forward(self):
         """
