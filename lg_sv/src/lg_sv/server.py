@@ -86,20 +86,20 @@ class StreetviewUtils:
             for link in metadata['Links']:
                 links.append(
                     {
-                        'heading': float(link['yawDeg']),
-                        'pano': link['panoId']
+                        'heading': float(link.get('yawDeg', 0)),
+                        'pano': link.get('panoId', '')
                     }
                 )
             ret = {
                 'links': links,
                 'location': {
                     'latLng': {
-                        'lat': float(metadata['Location']['lat']),
-                        'lng': float(metadata['Location']['lng'])
+                        'lat': float(metadata.get('Location', {}).get('lat', 0)),
+                        'lng': float(metadata.get('Location', {}).get('lng', 0))
                     },
-                    'description': metadata['Location']['description'],
-                    'attribution_name': metadata['Data']['attribution_name'],
-                    'pano': metadata['Location']['panoId']
+                    'description': metadata.get('Location', {}).get('description', ''),
+                    'attribution_name': metadata.get('Data', {}).get('attribution_name', ''),
+                    'pano': metadata.get('Location', {}).get('panoId', '')
                 }
             }
         except KeyError:
