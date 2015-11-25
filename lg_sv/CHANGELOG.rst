@@ -7,8 +7,8 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
-Forthcoming
------------
+1.1.27 (2015-11-25)
+-------------------
 * lg_sv: add description and attribution_name to metadata
   Raw metadata from the client is trimmed down to ignore fields we don't
   use, but we are now using both of those fields.

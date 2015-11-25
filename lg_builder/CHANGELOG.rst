@@ -5,8 +5,8 @@ Changelog for package lg_builder
 1.1.20 (2015-10-21)
 -------------------
 
-Forthcoming
------------
+1.1.27 (2015-11-25)
+-------------------
 * 1.1.26
 * Changelogs
 * Contributors: Wojciech Ziniewicz
