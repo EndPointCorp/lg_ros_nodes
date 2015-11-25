@@ -8,8 +8,8 @@ Changelog for package lg_builder
 1.1.25 (2015-11-17)
 -------------------
 
-Forthcoming
------------
+1.1.26 (2015-11-25)
+-------------------
 * 1.1.25
 * Generated new changelog
 * Contributors: Szymon Lipiński
