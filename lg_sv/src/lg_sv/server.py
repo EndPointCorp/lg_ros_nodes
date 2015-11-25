@@ -97,6 +97,8 @@ class StreetviewUtils:
                         'lat': float(metadata['Location']['lat']),
                         'lng': float(metadata['Location']['lng'])
                     },
+                    'description': metadata['Location']['description'],
+                    'attribution_name': metadata['Data']['attribution_name'],
                     'pano': metadata['Location']['panoId']
                 }
             }
