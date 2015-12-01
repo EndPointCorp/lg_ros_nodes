@@ -238,11 +238,11 @@ class ClientConfig:
 
         layers_config = {}
 
-        show_state_borders = rospy.get_param('~show_state_borders', False)
-        show_country_borders = rospy.get_param('~show_country_borders', False)
-        show_state_labels = rospy.get_param('~show_state_labels', False)
-        show_country_labels = rospy.get_param('~show_country_labels', False)
-        show_city_labels = rospy.get_param('~show_city_labels', False)
+        show_state_borders = rospy.get_param('~show_state_borders', True)
+        show_country_borders = rospy.get_param('~show_country_borders', True)
+        show_state_labels = rospy.get_param('~show_state_labels', True)
+        show_country_labels = rospy.get_param('~show_country_labels', True)
+        show_city_labels = rospy.get_param('~show_city_labels', True)
         show_water_labels = rospy.get_param('~show_water_labels', False)
         show_gray_buildings = rospy.get_param('~show_gray_buildings', False)
         show_buildings = rospy.get_param('~show_buildings', True)
