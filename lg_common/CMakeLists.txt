@@ -38,6 +38,8 @@ catkin_install_python(PROGRAMS
   scripts/adhoc_browser
   scripts/state_setter
   scripts/touchscreen
+  scripts/command_handler.py
+  scripts/command_handler
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
