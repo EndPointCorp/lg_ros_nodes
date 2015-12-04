@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+import os, ConfigParser, argparse, statsd, sys
+
+from time import strftime, gmtime, time
+from subprocess import Popen
+
+#statsd
+stat = statsd.StatsClient(prefix='keywatch')
+
+
+# globals
+buffer_size = 20
+codes = {}
+conf_loc = 'keywatch.conf'
+
+# use environment definition of conf file as first choice
+if "KEYWATCH_CONF" in os.environ:
+    conf_loc  = os.environ['KEYWATCH_CONF']
+parser = argparse.ArgumentParser(description="numeric keypad watcher")
+parser.add_argument('-c', '--config', dest='conf', default=conf_loc,
+        help="configuration file location, overrides env[KEYWATCH_CONF]")
+parser.add_argument('command', help="password of command to run")
+conf_loc = parser.parse_args().conf
+if not os.path.exists(conf_loc):
+    raise Exception('cannot find keywatch conf %s' % conf_loc)
+config = ConfigParser.RawConfigParser()
+config.read(conf_loc)
+
+
+# parse all codes from the configuration file
+for section in config.sections():
+    # ignore the general section only
+    if section == 'general':
+        continue
+    code = config.get(section, 'code')
+    # when duplicates are found, the last one found takes precedence
+    if code in codes:
+        print "Duplicate code! Using last one."
+    codes[code] = {"command": config.get(section, 'command'), "name": section}
+    # set buffer size to longest code length
+    if len(code) > buffer_size:
+        buffer_size = len(code)
+
+# look for any completed key codes and run defined command
+for code in sorted(codes.keys(), key=len, reverse=True):
+    try:
+        i = len(code)
+        if parser.parse_args().command[-i:] == code:
+            now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+            print "=========== START: %s ===========" % now
+            print "Executing:", codes[code]['command']
+            stat.timing(codes[code]['name'], time())
+            # as long as this is set, lg-relaunch won't create
+            # an extra event because of the relaunch
+            os.environ['NO_EVENT_PLEASE'] = "please"
+            Popen(codes[code]['command'], shell=True)
+            now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+            print "=========== END: %s ===========" % now
+            sys.exit(0)
+    except IndexError: pass
+
+# exit with 1 because no matching command was found
+sys.exit(1)
