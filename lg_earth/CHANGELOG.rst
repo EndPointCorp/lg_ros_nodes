@@ -5,6 +5,11 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* Turned ON {city,state}_{borders_labels} for default
+* Contributors: Bryan Berry
+
 1.1.27 (2015-11-25)
 -------------------
 * 1.1.26

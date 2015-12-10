@@ -7,6 +7,11 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* lg_sv: use .get to access dicts to avoid key errors
+* Contributors: Jacob Minshall
+
 1.1.27 (2015-11-25)
 -------------------
 * lg_sv: add description and attribution_name to metadata
