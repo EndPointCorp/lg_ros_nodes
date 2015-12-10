@@ -7,8 +7,8 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+1.1.28 (2015-12-10)
+-------------------
 * command_handler: added code to command and listener node
 * Contributors: Jacob Minshall
 
