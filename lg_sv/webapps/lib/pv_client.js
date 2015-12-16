@@ -120,7 +120,7 @@ PanoClient.prototype.update = function (nowMsec) {
 PanoClient.prototype.handleState = function(msg) {
   // ApplicationState.VISIBLE == "visible", or 3... hopefully that lasts
   this.state = (msg.state == "VISIBLE" || msg.state == 3);
-  console.log("got state: " + msg.state);
+  //console.log("got state: " + msg.state);
   if (this.state) {
     this.playVideo();
   } else {
