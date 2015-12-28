@@ -29,8 +29,8 @@ def set_root_dir():
         os.chdir('..')
         root_dir = os.getcwd()
     if not os.path.isdir('.git'):
-        raise Exception('Must run this script from the lg_ros_nodes project root'
-                        ' directory or inside the scripts dir')
+        raise Exception('Must run this script from the project root directory'
+                        ' or inside the scripts dir')
 
 
 def get_cmakes():
@@ -75,7 +75,6 @@ def get_tests():
 
 def pep8_test():
     ret = os.system('pep8')
-    ret += os.system('(cd lg_cms_director; pep8)')
     return ret
 
 
