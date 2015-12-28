@@ -2,8 +2,8 @@ lg\_activity
 ---------------
 
 ROS software for tracing activity and inactivity of Liquid Galaxy.
-Trackign may be useful for statistics as well as for state-greedy
-applications like screensaver (lg_attract_loop) or others.
+Tracking may be useful for statistics as well as for state-greedy
+applications like screensaver (lg\_attract\_loop) or others.
 
 ## Hardware Requirements
 
@@ -17,7 +17,7 @@ tracking and activity messages emitting.
 ### tracker.py
 
 Tracker is a configurable ROS node that initializes activity tracking
-mechanisms. In general it parses the `sources_string` parameter that
+mechanisms. In general it parses the `activity_sources` parameter that
 tells it which ROS topics are emitting user input devices messages. It
 needs to know the message type that it should use to subscribe to the
 topic as well as what should be extracted from user input device message
@@ -34,16 +34,19 @@ https://docs.google.com/drawings/d/1u2oJ-MyN6IwjE_-Oc1J7HWOvNe0uzMV816XNRqOh7sI/
 
 * `~activity_timeout` [int] - amount of seconds needed for lg_activity
   to emit inactive message. This happens when all activity sources have
-been inactive for more (or exactly) this amount of time
+been inactive for more (or exactly) this amount of time. Default: `120`
 * `~activity_topic` [string] - activity topic on which the True/False
   Bool messages are published. lg_activity will publish `True` when
 there was activity on input devices (or `ActivitySources`) and `False`
 if all activity sources were inactive for `activity_timeout` number of
-seconds
-* `~sources_string` [string] - string containing configuration for
-activity sources in following format:
+seconds. Default: `/activity/active`
+* `~memory_limit` [int] - maximum amount of bytes that single ActivitySource
+  can keep in it's state for queued messages from activity source. Default:
+  `102400`
+* `~activity_sources` [string] - Default: `''`. string containing configuration
+  for activity sources in following format:
 
-`<topic_name>/<message_type>[-<slot.sub_slot.sub_sub_slot>]/<strategy>[-<value_min><value_max>]`
+`<topic_name>:<message_type>[-<slot.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>]`
 
 - `topic_name` - name of the ROS topic that activity source (e.g. user
   input) publishes to e.g. `/spacenav/twist`
@@ -84,12 +87,9 @@ because of `activity` strategy.
 
 More information about strategies can be found in details of this ROS node.
 
-* `~memory_limit` [int] - maximum amount of bytes that single ActivitySource can keep in it's state for queued messages
-from activity source.
-
 #### Published Topics
 
-* `/activity/active` [`std_msgs/Bool`] - The current Earth view in degrees and meters ASL.
+* `activity_topic` or `/activity/active` [`std_msgs/Bool`] - The current Earth view in degrees and meters ASL.
 
 #### Subscribed Topics
 

@@ -34,6 +34,8 @@ play them back.
   - go_blank - unload all the assets
   - load_presentation (experimental - supported only with director + cms)
   - stop_playtour - stop any tours that may have been being played back
+* `~director_api_url` [string] - The url that the director should be found at.
+  Default `os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')`
 
 ### Subscribed topics
 
@@ -44,3 +46,4 @@ play them back.
 
 * director scene topic - most likely `/director/scene`
 * director presentation topic - most likely `/director/presentation`
+* `/earth/query/tour` - Topic to publish earth queries.
