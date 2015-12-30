@@ -27,7 +27,7 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, **kwargs):
+                 shell=True, command_line_args='', **kwargs):
 
         cmd = [binary]
 
@@ -59,6 +59,8 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--crash-dumps-dir={}/crashes'.format(tmp_dir))
 
         cmd.extend(DEFAULT_ARGS)
+        if command_line_args != '':
+            cmd.extend(command_line_args)
 
         # All remaining kwargs are mapped to command line args.
         # _ is replaced with -.
