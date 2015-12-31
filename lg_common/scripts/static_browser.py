@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
     geometry = ManagedWindow.get_viewport_geometry()
     url = rospy.get_param('~url', None)
+    command_line_args = rospy.get_param('~command_line_args', '')
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', 10000)
     user_agent = rospy.get_param(
@@ -41,6 +42,7 @@ if __name__ == '__main__':
     browser = ManagedBrowser(
         geometry=geometry,
         url=url,
+        command_line_args=command_line_args,
         force_device_scale_factor=scale_factor,
         debug_port=debug_port,
         user_agent=user_agent
