@@ -1,4 +1,5 @@
-DIR=$(dirname $(realpath ${0}))
+cd $(dirname $0)
+DIR=`pwd -P`
 DOCKER_NAME=
 
 function setup_files() {
