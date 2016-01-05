@@ -5,6 +5,18 @@ Changelog for package lg_cms_director
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* pep8: used proper ignoring of lg_cms_director/src directory
+  Pep8 can now be run from the root directory w/o needing to run again in
+  the lg_cms_director directory. The pep8 config in lg_cms_director has
+  been removed and the test runner has been changed plus generalized (the
+  removal of the project name lg_ros_nodes).
+  Lastly we are now ignoring the pep8 E402. This fails in later versions
+  of pep8, and only deals with the position of imports in the file. When
+  we want to deal with this, we can remove it from the ignores.
+* Contributors: Jacob Minshall
+
 1.1.28 (2015-12-10)
 -------------------
 

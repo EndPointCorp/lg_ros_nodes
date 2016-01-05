@@ -7,6 +7,12 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* readme: updates to reflect params / topics
+* Stop piling up messages in Chrome's debug log.
+* Contributors: Adam Vollrath, Jacob Minshall
+
 1.1.28 (2015-12-10)
 -------------------
 * lg_sv: use .get to access dicts to avoid key errors

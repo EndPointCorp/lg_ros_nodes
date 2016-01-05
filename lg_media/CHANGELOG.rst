@@ -5,6 +5,11 @@ Changelog for package lg_media
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* lg_media: specify python-pytest dependency
+* Contributors: Jacob Minshall
+
 1.1.28 (2015-12-10)
 -------------------
 

@@ -7,6 +7,13 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* pdfviewer to use with AdhocBrowser or ManagedBrowser
+* managed_browser: ros paramaterized command flags
+  Now node defs can specify extra command line flags to use.
+* Contributors: Jacob Minshall
+
 1.1.28 (2015-12-10)
 -------------------
 * command_handler: added code to command and listener node

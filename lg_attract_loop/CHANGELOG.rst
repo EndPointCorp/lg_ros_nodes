@@ -5,6 +5,11 @@ Changelog for package lg_attract_loop
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* readme: updates to reflect params / topics
+* Contributors: Jacob Minshall
+
 1.1.28 (2015-12-10)
 -------------------
 
