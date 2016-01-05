@@ -5,8 +5,8 @@ Changelog for package lg_cms_director
 1.1.20 (2015-10-21)
 -------------------
 
-Forthcoming
------------
+1.1.29 (2016-01-04)
+-------------------
 * pep8: used proper ignoring of lg_cms_director/src directory
   Pep8 can now be run from the root directory w/o needing to run again in
   the lg_cms_director directory. The pep8 config in lg_cms_director has
