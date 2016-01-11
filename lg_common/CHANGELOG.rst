@@ -7,6 +7,13 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* pdfviewer: stretches to either height and width of screen
+  This ends up only stretching to the width, which is fine because of the
+  ratio. Now some good geometry will be needed to make things look pretty.
+* Contributors: Jacob Minshall
+
 1.1.29 (2016-01-04)
 -------------------
 * pdfviewer to use with AdhocBrowser or ManagedBrowser

@@ -5,6 +5,9 @@ Changelog for package lg_cms_director
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+
 1.1.29 (2016-01-04)
 -------------------
 * pep8: used proper ignoring of lg_cms_director/src directory
