@@ -15,7 +15,7 @@ TOOLBAR_HEIGHT = 22
 
 class Client:
     """Google Earth client launcher."""
-    def __init__(self):
+    def __init__(self, initial_state=None):
         args, geplus_config, layers_config, kml_content, view_content = \
             self._get_config()
 
@@ -38,7 +38,8 @@ class Client:
         cmd = ['/opt/google/earth/free/googleearth-bin']
 
         cmd.extend(args)
-        self.earth_proc = ManagedApplication(cmd, window=earth_window)
+        self.earth_proc = ManagedApplication(cmd, window=earth_window,
+                                             initial_state=initial_state)
 
         self._make_tempdir()
 

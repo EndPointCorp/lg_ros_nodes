@@ -5,19 +5,25 @@ import threading
 import rospy
 from appctl_support import ProcController
 from lg_common.msg import ApplicationState
+from lg_common.helpers import is_valid_state
 
 SIG_RETRY_DELAY = 0.05
 
 
 class ManagedApplication(object):
-    def __init__(self, cmd, window=None):
+    def __init__(self, cmd, window=None, initial_state=None):
         self.cmd = cmd
         self.window = window
-        self.state = ApplicationState.STOPPED
-
         self.lock = threading.RLock()
         self.proc = ProcController(cmd, spawn_hooks=[self._handle_respawn], shell=False)
         self.sig_retry_timer = None
+
+        if initial_state and is_valid_state(initial_state):
+            rospy.loginfo('setting intial state to %s' % initial_state)
+            self.state = initial_state
+            self.set_state(self.state)
+        else:
+            self.state = ApplicationState.STOPPED
 
         rospy.on_shutdown(self._cleanup)
 

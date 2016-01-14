@@ -14,6 +14,7 @@ def main():
     kmlsync_port = rospy.get_param('/kmlsync_server/port', 8765)
     kmlsync_timeout = rospy.get_param('/global_dependency_timeout', 15)
     depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
+    initial_state = rospy.get_param('~initial_state', 'VISIBLE')
 
     if depend_on_kmlsync:
         rospy.loginfo("Waiting for KMLSync to become available")
@@ -32,11 +33,10 @@ def main():
         rospy.logfatal(msg)
         raise DependencyException(msg)
 
-    client = Client()
+    client = Client(initial_state=initial_state)
 
     rospy.Subscriber('/earth/state', ApplicationState,
                      client.earth_proc.handle_state_msg)
-    client.earth_proc.set_state(ApplicationState.VISIBLE)
 
     rospy.spin()
 
