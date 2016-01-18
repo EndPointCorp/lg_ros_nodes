@@ -10,13 +10,14 @@ SIG_RETRY_DELAY = 0.05
 
 
 class ManagedApplication(object):
-    def __init__(self, cmd, window=None):
+    def __init__(self, cmd, window=None, watcher=None):
         self.cmd = cmd
         self.window = window
         self.state = ApplicationState.STOPPED
 
         self.lock = threading.RLock()
         self.proc = ProcController(cmd, spawn_hooks=[self._handle_respawn], shell=False)
+        self.watcher = watcher
         self.sig_retry_timer = None
 
         rospy.on_shutdown(self._cleanup)
