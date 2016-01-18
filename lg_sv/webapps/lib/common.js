@@ -4,7 +4,7 @@
 function getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure) {
   var url = '';
 
-  if (rosbridgeSecure) {
+  if (rosbridgeSecure == true) {
     url += 'wss://';
   } else {
     url += 'ws://';
