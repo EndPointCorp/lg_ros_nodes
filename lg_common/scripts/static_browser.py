@@ -4,7 +4,7 @@ import rospy
 
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
-from lg_common.helpers import dependency_available
+from lg_common.helpers import dependency_available, DependencyException
 from lg_common.helpers import discover_host_from_url, discover_port_from_url
 
 from std_msgs.msg import String
@@ -28,8 +28,8 @@ if __name__ == '__main__':
     global_dependency_timeout = rospy.get_param("/global_dependency_timeout", 15)
     depend_on_url = rospy.get_param("~depend_on_url", False)
 
-    www_host = discover_port_from_url(url)
-    www_port = discover_port_from_url(port)
+    www_host = discover_host_from_url(url)
+    www_port = discover_port_from_url(url)
 
     if depend_on_url:
         if not dependency_available(www_host, www_port, 'static browser URL', global_dependency_timeout):
