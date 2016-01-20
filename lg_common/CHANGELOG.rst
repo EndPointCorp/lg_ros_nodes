@@ -7,8 +7,8 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+1.1.31 (2016-01-20)
+-------------------
 * static_browser: fix issues with undefined variables
 * Contributors: Jacob Minshall
 
