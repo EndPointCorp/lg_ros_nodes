@@ -69,6 +69,7 @@ tags
 
 # whatever dude
 *pycache*
+.cache
 
 # pulsnowflake
 pulsar.log
