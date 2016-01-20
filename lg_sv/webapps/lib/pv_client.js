@@ -109,7 +109,7 @@ PanoClient.prototype.update = function (nowMsec) {
   var deltaMsec = Math.min(200, nowMsec - this.lastTimeMsec)
   this.lastTimeMsec  = nowMsec
 
-  this.scene.children[0] = this.getMesh();
+  this.scene.add(this.getMesh());
   if (this.videoTexture != null) {
     this.setPlaybackRate();
     this.videoTexture.update(deltaMsec / 1000, nowMsec / 1000);
@@ -227,6 +227,8 @@ PanoClient.prototype.handleImage = function() {
 PanoClient.prototype.getMesh = function() {
   if (!this.needsNewMesh())
     return this.mesh;
+  if (this.mesh != null)
+    this.scene.remove(this.mesh);
 
   this.last_pano_url = this.pano_url;
   this.destroyVideoTexture();
