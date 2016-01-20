@@ -7,6 +7,13 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* panoviewer: unload meshes to reduce memory use
+* lg_sv: default to boolean not string
+  Plus explicit checking for the boolean true.
+* Contributors: Jacob Minshall
+
 1.1.30 (2016-01-11)
 -------------------
 

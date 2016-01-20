@@ -7,6 +7,11 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* static_browser: fix issues with undefined variables
+* Contributors: Jacob Minshall
+
 1.1.30 (2016-01-11)
 -------------------
 * pdfviewer: stretches to either height and width of screen
