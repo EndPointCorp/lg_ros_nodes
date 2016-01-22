@@ -1,15 +1,11 @@
 <launch>
-    <param name="someparam" value="somevalue" />
-
-    <!-- Development static file server. -->
-    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+    <node name="lg_stats" pkg="lg_stats" type="stats.py">
+    </node>
 
     <!-- Local rosbridge and rosapi. -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
         <arg name="port" value="9875" />
     </include>
-
-    <!-- should define own ros nodes here -->
 
     <test test-name="test_lg_stats" pkg="lg_stats" type="test_lg_stats.py"/>
 </launch>

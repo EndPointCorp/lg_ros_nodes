@@ -5,6 +5,8 @@ lg stats testing scenarios.
 
 starting roslaunch for development:
     roslaunch --screen lg_stats/test/online/test_lg_stats.test
+    could do:
+    py.test -s -v lg_stats/test/online/test_lg_stats.py
 
 running tests manually:
     rostest lg_stats/test/online/test_lg_stats.test
@@ -15,8 +17,7 @@ running tests manually:
 
 import os
 import unittest
-import time
-import json
+from multiprocessing import Process, Array
 
 import pytest
 import rostest
@@ -24,11 +25,14 @@ import rospy
 import rospkg
 import rostopic
 
+from interactivespaces_msgs.msg import GenericMessage
+from lg_stats.msg import Stats
+
 from lg_stats import ROS_NODE_NAME
-from lg_stats import get_data
+from lg_stats import LG_STATS_DEBUG_TOPIC
 
 
-TOPIC_NAME = "/%s/SOMETHING" % ROS_NODE_NAME
+RESULT = Array('c', "UNDEFINED")
 
 
 class TestLGStats(object):
@@ -48,26 +52,30 @@ class TestLGStats(object):
         pass
 
     def setup_method(self, method):
-        pass
+        RESULT.value = "UNDEFINED"
 
     def teardown_method(self, _):
         pass
 
-    def test_lg_stats(self):
-        """
-        Check lg_media topic is there.
+    @staticmethod
+    def callback(msg):
+        rospy.loginfo("callback received type: '%s'" % type(msg))
+        rospy.loginfo(msg)
+        RESULT.value = msg.value
 
-        """
-        a = get_data()
-        print a
-        assert a == "taktak"
-        assert True
-        #master = rosgraph.masterapi.Master("caller")
-        #topics = master.getTopicTypes()
-        #assert ["/media_service/left_one", "lg_media/AdhocMedias"] in topics
-        # topic_type, real_topic, msg_eval = rostopic.get_topic_type(TOPIC_NAME, blocking=False)
-        # assert topic_type is not None, "Topic not found: {}".format(TOPIC_NAME)
-        # assert topic_type == "%s/AdhocMedias" % ROS_NODE_NAME
+    def test_send_director_scene(self):
+        rospy.Subscriber(LG_STATS_DEBUG_TOPIC, Stats, self.callback)
+        # send a scene message which shall result in a reaction on lg_stats/debug topic
+        scene_msg = GenericMessage(type="json", message="something")
+        pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=1)
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)
+        pub.publish(scene_msg)
+        # wait a bit
+        for _ in range(10):
+            if RESULT.value != "UNDEFINED":
+                break
+            rospy.sleep(1)
+        assert RESULT.value == "something"
 
 
 if __name__ == "__main__":

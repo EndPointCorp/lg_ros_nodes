@@ -1,3 +1,4 @@
-string id
-string data1
-string data2
+string lg_system_name
+string src_topic
+string field_name
+string value
