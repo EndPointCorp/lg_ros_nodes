@@ -21,9 +21,8 @@ class Processor(object):
         self.debug_pub = debug_pub
 
     def process(self, msg):
-        # m = "received: '%s'" % msg
-        # print m
-        # print type(m)
+        m = "processor received: '%s'" % msg
+        rospy.loginfo(m)
 
         # TODO
         # later the time resolution will come into play

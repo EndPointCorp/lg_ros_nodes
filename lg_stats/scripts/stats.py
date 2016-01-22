@@ -14,7 +14,7 @@ from lg_stats.msg import Stats
 
 def main():
     rospy.init_node(ROS_NODE_NAME, anonymous=True)
-    debug_topic_pub = rospy.Publisher(LG_STATS_DEBUG_TOPIC, Stats, queue_size=1)
+    debug_topic_pub = rospy.Publisher(LG_STATS_DEBUG_TOPIC, Stats, queue_size=3)
 
     # TODO
     # would like to roslaunch parametrize topic name, msg_type and watched field name
@@ -37,7 +37,7 @@ def main():
                       watched_field_name=watched_field_name,
                       debug_pub=debug_topic_pub)
         rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (topic_name, msg_type))
-        rospy.Subscriber(topic_name, msg_type, p.process)
+        rospy.Subscriber(topic_name, msg_type, p.process, queue_size=3)
         processors.append(p)
 
     rospy.loginfo("%s spinning ..." % ROS_NODE_NAME)

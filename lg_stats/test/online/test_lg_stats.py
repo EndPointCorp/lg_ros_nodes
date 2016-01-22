@@ -65,16 +65,18 @@ class TestLGStats(object):
 
     def test_send_director_scene(self):
         rospy.Subscriber(LG_STATS_DEBUG_TOPIC, Stats, self.callback)
+        rospy.sleep(3)
         # send a scene message which shall result in a reaction on lg_stats/debug topic
         scene_msg = GenericMessage(type="json", message="something")
-        pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=1)
+        pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         pub.publish(scene_msg)
-        # wait a bit
-        for _ in range(10):
+        # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
+        for count in range(10):
             if RESULT.value != "UNDEFINED":
                 break
             rospy.sleep(1)
+        rospy.loginfo("counter is %s" % count)
         assert RESULT.value == "something"
 
 
