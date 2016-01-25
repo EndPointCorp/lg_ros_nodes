@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_stats)
 
 find_package(catkin REQUIRED COMPONENTS
+  appctl
   lg_common
   message_generation
   rospy
@@ -12,15 +13,17 @@ catkin_python_setup()
 add_message_files(
   FILES
   Stats.msg
+  Session.msg
 )
 
 generate_messages(
   DEPENDENCIES
+  appctl
   lg_common
 )
 
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_common message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_common appctl message_runtime
 )
 
 include_directories(

@@ -1,8 +1,7 @@
 <launch>
     <node name="lg_stats" pkg="lg_stats" type="stats.py">
         <param name="time_resolution" value="10"/>
-        <!-- <param name="activity_sources" value="/director/scene:GenericMessage:message;/appctl/mode:MESSAGETYPE:fieldofinterest"/> -->
-        <param name="activity_sources" value="/director/scene:interactivespaces_msgs/GenericMessage:message"/>
+        <param name="activity_sources" value="/director/scene:interactivespaces_msgs/GenericMessage:message;/appctl/mode:appctl/Mode:mode;/statistics/session:lg_stats/Session:application"/>
     </node>
 
     <!-- Local rosbridge and rosapi. -->
