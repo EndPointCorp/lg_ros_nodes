@@ -5,32 +5,35 @@ import os
 import rospy
 from std_msgs.msg import String
 
-from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import unpack_activity_sources
+from lg_common.helpers import write_log_to_file
+from lg_common.helpers import get_message_type_from_string
 from lg_stats import ROS_NODE_NAME
-from lg_stats import LG_STATS_DEBUG_TOPIC
+from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 from lg_stats import Processor
 from lg_stats.msg import Stats
 
 
 def main():
     rospy.init_node(ROS_NODE_NAME, anonymous=True)
-    debug_topic_pub = rospy.Publisher(LG_STATS_DEBUG_TOPIC, Stats, queue_size=3)
+    debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_STATS_DEBUG_TOPIC_DEFAULT)
+    debug_topic_pub = rospy.Publisher(debug_topic, Stats, queue_size=3)
+
+    # source activities - returns list of dictionaries
+    stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
 
     # TODO
-    # would like to roslaunch parametrize topic name, msg_type and watched field name
-    # but roslaunch XML format 1) doesn't support lists as parameter type and doesn't
-    # ...
-    watched_topics = [dict(topic_name="/director/scene",
-                           msg_type=GenericMessage,
-                           watched_field_name="message")]
+    # should do checkes whether such a topic exists ...
+
     processors = []
-    for wt in watched_topics:
-        topic_name, msg_type, watched_field_name = wt["topic_name"], wt["msg_type"], wt["watched_field_name"]
-        p = Processor(watched_topic=topic_name,
-                      watched_field_name=watched_field_name,
+    for ss in stats_sources:
+        # dynamic import based on package/message_class string representation
+        msg_type_module = get_message_type_from_string(ss["msg_type"])
+        p = Processor(watched_topic=ss["topic"],
+                      watched_field_name=ss["strategy"],
                       debug_pub=debug_topic_pub)
-        rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (topic_name, msg_type))
-        rospy.Subscriber(topic_name, msg_type, p.process, queue_size=3)
+        rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (ss["topic"], msg_type_module))
+        rospy.Subscriber(ss["topic"], msg_type_module, p.process, queue_size=3)
         processors.append(p)
 
     rospy.loginfo("%s spinning ..." % ROS_NODE_NAME)

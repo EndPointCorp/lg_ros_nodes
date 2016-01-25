@@ -9,7 +9,7 @@ from lg_stats.msg import Stats
 
 
 ROS_NODE_NAME = "lg_stats"
-LG_STATS_DEBUG_TOPIC = "%s/debug" % ROS_NODE_NAME
+LG_STATS_DEBUG_TOPIC_DEFAULT = "debug"
 LG_SYSTEM_NAME = os.uname()[1]
 
 

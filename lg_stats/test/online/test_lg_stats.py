@@ -30,7 +30,7 @@ from lg_common.helpers import write_log_to_file
 from interactivespaces_msgs.msg import GenericMessage
 from lg_stats.msg import Stats
 from lg_stats import ROS_NODE_NAME
-from lg_stats import LG_STATS_DEBUG_TOPIC
+from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 
 
 RESULT = Array('c', "UNDEFINED")
@@ -48,10 +48,16 @@ class TestLGStats(object):
         RESULT.value = msg.value
 
     def test_send_director_scene(self):
-        rospy.Subscriber(LG_STATS_DEBUG_TOPIC, Stats, self.callback)
+        # TODO
+        # some stuff will be moved into setup_method / setup_class methods
         # send a scene message which shall result in a reaction on lg_stats/debug topic
         scene_msg = GenericMessage(type="json", message="something")
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
+        # WARNING: issues retvieving get_param value from the test file, still
+        #   getting the default value (regardless of calling it before or after init_node)
+        debug_topic = "%s/%s" % (ROS_NODE_NAME,
+                                 rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
+        rospy.Subscriber(debug_topic, Stats, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
