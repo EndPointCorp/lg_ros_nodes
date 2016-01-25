@@ -3,6 +3,8 @@
 import os
 
 import rospy
+
+from lg_common.helpers import write_log_to_file
 from lg_stats.msg import Stats
 
 

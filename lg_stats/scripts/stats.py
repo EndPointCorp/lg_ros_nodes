@@ -19,14 +19,7 @@ def main():
     # TODO
     # would like to roslaunch parametrize topic name, msg_type and watched field name
     # but roslaunch XML format 1) doesn't support lists as parameter type and doesn't
-    # seem to go too well beyond simple name-value pairs
-    # would have to do hacks like
-    #   topic-1 - value
-    #   msg_type-1 - value
-    #   watched_field_name-1 - value
-    # and iterate over until rospy.get_param would faile - to consider later
-    #
-    # then loop processing of topics is prepared below ...
+    # ...
     watched_topics = [dict(topic_name="/director/scene",
                            msg_type=GenericMessage,
                            watched_field_name="message")]
