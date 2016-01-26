@@ -12,6 +12,10 @@ running tests manually:
     rostest lg_stats/test/online/test_lg_stats.test
         (as long as it contains <test> tag, it's the same as launch file)
 
+
+Test cases implementation offer natural refactoring and code-reusing ...
+
+
 """
 
 
@@ -27,6 +31,7 @@ import rospkg
 import rostopic
 
 from lg_common.helpers import write_log_to_file
+from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
 from appctl.msg import Mode
 from lg_stats.msg import Session
@@ -50,11 +55,10 @@ class TestLGStats(object):
         RESULT.value = msg.value
 
     def test_send_director_scene(self):
-        return
         # TODO
         # some stuff will be moved into setup_method / setup_class methods
         # send a scene message which shall result in a reaction on lg_stats/debug topic
-        scene_msg = GenericMessage(type="json", message="something")
+        msg = GenericMessage(type="json", message="something")
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
         # WARNING: issues retvieving get_param value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)
@@ -65,7 +69,7 @@ class TestLGStats(object):
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
         rospy.sleep(3)
-        pub.publish(scene_msg)
+        pub.publish(msg)
         # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
         for count in range(5):
             if RESULT.value != "UNDEFINED":
@@ -77,7 +81,7 @@ class TestLGStats(object):
         # TODO
         # some stuff will be moved into setup_method / setup_class methods
         # send a scene message which shall result in a reaction on lg_stats/debug topic
-        mode_msg = Mode(mode="a good mode")
+        msg = Mode(mode="a good mode")
         pub = rospy.Publisher("/appctl/mode", Mode, queue_size=3)
         # WARNING: issues retvieving get_param value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)
@@ -88,7 +92,7 @@ class TestLGStats(object):
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
         rospy.sleep(3)
-        pub.publish(mode_msg)
+        pub.publish(msg)
         # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
         for count in range(5):
             if RESULT.value != "UNDEFINED":
@@ -100,7 +104,7 @@ class TestLGStats(object):
         # TODO
         # some stuff will be moved into setup_method / setup_class methods
         # send a scene message which shall result in a reaction on lg_stats/debug topic
-        session_msg = Session(application="a good application")
+        msg = Session(application="a good application")
         pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
         # WARNING: issues retvieving get_param value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)
@@ -111,13 +115,36 @@ class TestLGStats(object):
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
         rospy.sleep(3)
-        pub.publish(session_msg)
+        pub.publish(msg)
         # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
         for count in range(5):
             if RESULT.value != "UNDEFINED":
                 break
             rospy.sleep(1)
         assert RESULT.value == "a good application"
+
+    def test_send_activity_active(self):
+        # TODO
+        # some stuff will be moved into setup_method / setup_class methods
+        # send a scene message which shall result in a reaction on lg_stats/debug topic
+        msg = Bool(data=True)
+        pub = rospy.Publisher("/activity/active", Bool, queue_size=3)
+        # WARNING: issues retrieving get_param value from the test file, still
+        #   getting the default value (regardless of calling it before or after init_node)
+        debug_topic = "%s/%s" % (ROS_NODE_NAME,
+                                 rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
+        rospy.Subscriber(debug_topic, Stats, self.callback)
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)
+        # after this call the ros infrastructure starts up, sending a message right
+        # after this results in a lost message sometimes ... wait
+        rospy.sleep(3)
+        pub.publish(msg)
+        # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
+        for count in range(5):
+            if RESULT.value != "UNDEFINED":
+                break
+            rospy.sleep(1)
+        assert RESULT.value == "True"
 
 
 if __name__ == "__main__":

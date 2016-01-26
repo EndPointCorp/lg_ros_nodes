@@ -49,7 +49,9 @@ class Processor(object):
         stats_msg = Stats(lg_system_name=LG_SYSTEM_NAME,
                           src_topic=self.watched_topic,
                           field_name=self.watched_field_name,
-                          value=getattr(msg, self.watched_field_name))
+                          # value is always string, if source value is e.g.
+                          # boolean, it's converted to a string here
+                          value=str(getattr(msg, self.watched_field_name)))
         self.debug_pub.publish(stats_msg)
 
         # TODO
@@ -64,9 +66,6 @@ def main():
 
     # source activities - returns list of dictionaries
     stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
-
-    # TODO
-    # should do checkes whether such a topic exists ... (and log)
 
     processors = []
     for ss in stats_sources:
