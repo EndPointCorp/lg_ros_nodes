@@ -12,9 +12,9 @@ running tests manually:
     rostest lg_stats/test/online/test_lg_stats.test
         (as long as it contains <test> tag, it's the same as launch file)
 
-
-Test cases implementation offer natural refactoring and code-reusing ...
-ID
+TODO:
+    - refactor, code reusing in test cases
+    - implement simple unit test cases for the Process class
 
 """
 
@@ -68,10 +68,14 @@ class TestLGStats(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
-        rospy.sleep(3)
+        rospy.sleep(2)
         pub.publish(msg)
-        # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
-        for count in range(5):
+        # need to wait since message will only be sent out if the state
+        # has not changed for time greater than resolution
+        rospy.sleep(1.1)
+        pub.publish(msg)
+        # wait a bit
+        for count in range(3):
             if RESULT.value != "UNDEFINED":
                 break
             rospy.sleep(1)
@@ -91,10 +95,14 @@ class TestLGStats(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
-        rospy.sleep(3)
+        rospy.sleep(2)
         pub.publish(msg)
-        # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
-        for count in range(5):
+        # need to wait since message will only be sent out if the state
+        # has not changed for time greater than resolution
+        rospy.sleep(1.1)
+        pub.publish(msg)
+        # wait a bit
+        for count in range(3):
             if RESULT.value != "UNDEFINED":
                 break
             rospy.sleep(1)
@@ -114,10 +122,14 @@ class TestLGStats(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
-        rospy.sleep(3)
+        rospy.sleep(2)
         pub.publish(msg)
-        # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
-        for count in range(5):
+        # need to wait since message will only be sent out if the state
+        # has not changed for time greater than resolution
+        rospy.sleep(1.1)
+        pub.publish(msg)
+        # wait a bit
+        for count in range(3):
             if RESULT.value != "UNDEFINED":
                 break
             rospy.sleep(1)
@@ -137,10 +149,14 @@ class TestLGStats(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
-        rospy.sleep(3)
+        rospy.sleep(2)
         pub.publish(msg)
-        # wait a bit (if it doesn't arrive within 5 seconds, it'll never arrive)
-        for count in range(5):
+        # need to wait since message will only be sent out if the state
+        # has not changed for time greater than resolution
+        rospy.sleep(1.1)
+        pub.publish(msg)
+        # wait a bit
+        for count in range(3):
             if RESULT.value != "UNDEFINED":
                 break
             rospy.sleep(1)
