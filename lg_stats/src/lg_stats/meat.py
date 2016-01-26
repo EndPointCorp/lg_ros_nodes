@@ -6,6 +6,18 @@ NOTES:
     borrowed from statistics/msg/Session.msg
     it's possible to introduce this dependency (or leave it as is)
 
+- check statistics/StatsD.msg
+
+Stats.msg
+    type - event type or time series type
+    value - value associated with event OR rate associated with series type
+    identification: system_name + application (+ src_topic)
+
+Will need to define association between source topics and type of
+    result statistical data (whether it's event based or time-series based).
+    This will need to be either configured (not sure if "output-type" will
+    be easy to blend with activity_sources processing. Or hard-coded
+    internal relational matrix (output msg fields: type, application).
 
 """
 
@@ -23,7 +35,7 @@ from lg_stats.msg import Stats
 
 ROS_NODE_NAME = "lg_stats"
 LG_STATS_DEBUG_TOPIC_DEFAULT = "debug"
-LG_SYSTEM_NAME = os.uname()[1]
+SYSTEM_NAME = os.uname()[1]
 
 
 class Processor(object):
@@ -46,7 +58,7 @@ class Processor(object):
         # changing the message after a certain time interval
         # need to think up message change detection
 
-        stats_msg = Stats(lg_system_name=LG_SYSTEM_NAME,
+        stats_msg = Stats(system_name=SYSTEM_NAME,
                           src_topic=self.watched_topic,
                           field_name=self.watched_field_name,
                           # value is always string, if source value is e.g.
