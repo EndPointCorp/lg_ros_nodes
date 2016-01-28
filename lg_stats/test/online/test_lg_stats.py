@@ -48,120 +48,89 @@ class TestLGStatsRealMessageChain(object):
 
     def setup_method(self, method):
         RESULT.value = "UNDEFINED"
+        # subscribed to the /lg_stats/debug topic
+        # WARNING: issues retrieving rospy.get_param value from the test file, still
+        #   getting the default value (regardless of calling it before or after init_node)
+        debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_STATS_DEBUG_TOPIC_DEFAULT)
+        rospy.Subscriber(debug_topic, Event, self.callback)
 
     @staticmethod
     def callback(msg):
+        """
+        Handler of incoming messages on /lg_stats/debug topic.
+        Set the shared mem value based on the received message.
+
+        """
         rospy.loginfo("callback received type: '%s'" % type(msg))
         rospy.loginfo(msg)
         RESULT.value = msg.value
 
+    def checker(self, publisher, msg_to_send, expected_value):
+        """
+        This method is called after init_node
+        Wait a bit until the ros infrastructure starts up, sending a message right
+        init_node results in a lost message sometimes ...
+
+        Second sent messages triggers processing of the first one.
+        Second messages must be send after 'resolution' time period.
+
+        """
+        rospy.sleep(2)
+        publisher.publish(msg_to_send)
+        # need to wait since message will only be sent out if the state
+        # has not changed for time greater than resolution
+        rospy.sleep(1.1)
+        publisher.publish(msg_to_send)
+        # wait a bit, call back shall set the share mem value accordingly
+        for count in range(3):
+            if RESULT.value != "UNDEFINED":
+                break
+            rospy.sleep(1)
+        assert RESULT.value == expected_value
+
     def test_send_director_scene(self):
-        # TODO
-        # some stuff will be moved into setup_method / setup_class methods
-        # send a scene message which shall result in a reaction on lg_stats/debug topic
+        """
+        Check stats handling of /director/scene messages.
+        By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
+        """
         msg = GenericMessage(type="json", message="something")
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
-        # WARNING: issues retvieving get_param value from the test file, still
-        #   getting the default value (regardless of calling it before or after init_node)
-        debug_topic = "%s/%s" % (ROS_NODE_NAME,
-                                 rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        # after this call the ros infrastructure starts up, sending a message right
-        # after this results in a lost message sometimes ... wait
-        rospy.sleep(2)
-        pub.publish(msg)
-        # need to wait since message will only be sent out if the state
-        # has not changed for time greater than resolution
-        rospy.sleep(1.1)
-        pub.publish(msg)
-        # wait a bit
-        for count in range(3):
-            if RESULT.value != "UNDEFINED":
-                break
-            rospy.sleep(1)
-        assert RESULT.value == "something"
+        self.checker(pub, msg, "something")
 
     def test_send_appctl_mode(self):
-        # TODO
-        # some stuff will be moved into setup_method / setup_class methods
-        # send a scene message which shall result in a reaction on lg_stats/debug topic
+        """
+        Check stats handling of /appctl/mode messages.
+        By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
+        """
         msg = Mode(mode="a good mode")
         pub = rospy.Publisher("/appctl/mode", Mode, queue_size=3)
-        # WARNING: issues retvieving get_param value from the test file, still
-        #   getting the default value (regardless of calling it before or after init_node)
-        debug_topic = "%s/%s" % (ROS_NODE_NAME,
-                                 rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        # after this call the ros infrastructure starts up, sending a message right
-        # after this results in a lost message sometimes ... wait
-        rospy.sleep(2)
-        pub.publish(msg)
-        # need to wait since message will only be sent out if the state
-        # has not changed for time greater than resolution
-        rospy.sleep(1.1)
-        pub.publish(msg)
-        # wait a bit
-        for count in range(3):
-            if RESULT.value != "UNDEFINED":
-                break
-            rospy.sleep(1)
-        assert RESULT.value == "a good mode"
+        self.checker(pub, msg, "a good mode")
 
     def test_send_statistics_session(self):
-        # TODO
-        # some stuff will be moved into setup_method / setup_class methods
-        # send a scene message which shall result in a reaction on lg_stats/debug topic
+        """
+        Check stats handling of /statistics/session messages.
+        By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
+        """
         msg = Session(application="a good application")
         pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
-        # WARNING: issues retvieving get_param value from the test file, still
-        #   getting the default value (regardless of calling it before or after init_node)
-        debug_topic = "%s/%s" % (ROS_NODE_NAME,
-                                 rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        # after this call the ros infrastructure starts up, sending a message right
-        # after this results in a lost message sometimes ... wait
-        rospy.sleep(2)
-        pub.publish(msg)
-        # need to wait since message will only be sent out if the state
-        # has not changed for time greater than resolution
-        rospy.sleep(1.1)
-        pub.publish(msg)
-        # wait a bit
-        for count in range(3):
-            if RESULT.value != "UNDEFINED":
-                break
-            rospy.sleep(1)
-        assert RESULT.value == "a good application"
+        self.checker(pub, msg, "a good application")
 
     def test_send_activity_active(self):
-        # TODO
-        # some stuff will be moved into setup_method / setup_class methods
-        # send a scene message which shall result in a reaction on lg_stats/debug topic
+        """
+        Check stats handling of /activity/active messages.
+        By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
+        """
         msg = Bool(data=True)
         pub = rospy.Publisher("/activity/active", Bool, queue_size=3)
-        # WARNING: issues retrieving get_param value from the test file, still
-        #   getting the default value (regardless of calling it before or after init_node)
-        debug_topic = "%s/%s" % (ROS_NODE_NAME,
-                                 rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        # after this call the ros infrastructure starts up, sending a message right
-        # after this results in a lost message sometimes ... wait
-        rospy.sleep(2)
-        pub.publish(msg)
-        # need to wait since message will only be sent out if the state
-        # has not changed for time greater than resolution
-        rospy.sleep(1.1)
-        pub.publish(msg)
-        # wait a bit
-        for count in range(3):
-            if RESULT.value != "UNDEFINED":
-                break
-            rospy.sleep(1)
-        assert RESULT.value == "True"
+        self.checker(pub, msg, "True")
 
 
 if __name__ == "__main__":
