@@ -34,9 +34,80 @@ from lg_stats.msg import Session
 from lg_stats.msg import Event
 from lg_stats import ROS_NODE_NAME
 from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
+from lg_stats import Processor
 
 
 RESULT = Array('c', 100)  # size
+
+
+class MockTopicPublisher(object):
+    def __init__(self):
+        self.messages = []
+
+    def publish(self, msg):
+        self.messages.append(msg)
+
+
+class TestLGStatsProcessor(object):
+    """
+    Test Processor class.
+
+    """
+
+    def test_basic(self):
+        p = Processor(resolution=200)
+        assert p.resolution == 200
+
+    def test_publish(self):
+        pub = MockTopicPublisher()
+        p = Processor(watched_topic=None,
+                      watched_field_name="application",
+                      debug_pub=pub,
+                      resolution=200)
+        msg1 = Session(application="someapplication1")
+        p.publish(msg1)
+        assert isinstance(pub.messages[0], Event)
+        assert pub.messages[0].field_name == "application"
+        assert pub.messages[0].value == "someapplication1"
+
+    def test_message_comparison(self):
+        p = Processor(watched_field_name="application")
+        msg1 = Session(application="someapplication1")
+        msg2 = Session(application="someapplication2")
+        assert p.compare_messages(msg1, msg1)
+        assert not p.compare_messages(msg1, msg2)
+
+    def test_process(self):
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)  # needed by ROS time
+        p = Processor()
+        msg1 = Session(application="someapplication1")
+        assert p.last_msg is None
+        p.process(msg1)
+        assert p.last_msg == msg1
+
+    def test_process_with_resolution_check(self):
+        """
+        This tests whole Processor chain.
+
+        """
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)  # needed by ROS time
+        pub = MockTopicPublisher()
+        p = Processor(watched_field_name="application",
+                      debug_pub=pub,
+                      resolution=1)
+        msg1 = Session(application="someapplication1")
+        assert p.last_msg is None
+        p.process(msg1)
+        assert p.last_msg == msg1
+        msg2 = Session(application="someapplication1")
+        p.process(msg2)
+        assert p.last_msg == msg2
+        assert pub.messages == []
+        rospy.sleep(1.1)
+        msg3 = Session(application="someapplication1")
+        p.process(msg2)
+        assert p.last_msg == msg3
+        assert pub.messages[0].value == "someapplication1"
 
 
 class TestLGStatsRealMessageChain(object):
