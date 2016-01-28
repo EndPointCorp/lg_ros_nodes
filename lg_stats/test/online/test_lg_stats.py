@@ -132,6 +132,30 @@ class TestLGStatsRealMessageChain(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "True")
 
+    def test_resolution_period(self):
+        """
+        All above tests send a message twice and the second one is sent
+        after the resolution period (configured value). The first message is
+        only processed if the relevant field is the same in the second message
+        and AFTER resolution time.
+        Test that sending second message EARLIER than the resolution
+        period will result in NO stats reaction.
+
+        """
+        msg = Session(application="a good application22")
+        pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)
+        RESULT.value = "won't change"
+        rospy.sleep(2)
+        pub.publish(msg)
+        # wait shorter time than resolution period:
+        #   <param name="resolution" value="1"/>
+        rospy.sleep(0.1)
+        pub.publish(msg)
+        # give ROS some time to process
+        rospy.sleep(2)
+        assert RESULT.value == "won't change"
+
 
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
