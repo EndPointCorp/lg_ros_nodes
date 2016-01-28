@@ -8,12 +8,6 @@ NOTES:
 
 - check statistics/StatsD.msg
 
-Stats.msg
-    type - event type or time series type
-    value - value associated with event OR rate associated with series type
-    identification: system_name + application (+ src_topic)
-
-
 Will need to define association between source topics and type of
     result statistical data (whether it's event based or time-series based).
     This will need to be either configured (not sure if "output-type" will
@@ -21,8 +15,6 @@ Will need to define association between source topics and type of
     internal relational matrix (output msg fields: type, application).
 
 TODO:
-    - implement basic unittests for methods of Processor
-
     - upon node shutdown - submit the buffered message? Or lose it? Loss is
         not a big deal here.
 
@@ -37,7 +29,7 @@ from std_msgs.msg import String
 from lg_common.helpers import unpack_activity_sources
 from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_message_type_from_string
-from lg_stats.msg import Stats
+from lg_stats.msg import Event
 
 
 ROS_NODE_NAME = "lg_stats"
@@ -73,13 +65,13 @@ class Processor(object):
             stats submission (via telegraf submission influxdb agent) here
 
         """
-        stats_msg = Stats(system_name=SYSTEM_NAME,
-                          src_topic=self.watched_topic,
-                          field_name=self.watched_field_name,
-                          # value is always string, if source value is e.g.
-                          # boolean, it's converted to a string here
-                          value=str(getattr(msg, self.watched_field_name)))
-        self.debug_pub.publish(stats_msg)
+        out_msg = Event(system_name=SYSTEM_NAME,
+                        src_topic=self.watched_topic,
+                        field_name=self.watched_field_name,
+                        # value is always string, if source value is e.g.
+                        # boolean, it's converted to a string here
+                        value=str(getattr(msg, self.watched_field_name)))
+        self.debug_pub.publish(out_msg)
 
     def compare_messages(self, msg_1, msg_2):
         """
@@ -121,7 +113,7 @@ class Processor(object):
 def main():
     rospy.init_node(ROS_NODE_NAME, anonymous=True)
     debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_STATS_DEBUG_TOPIC_DEFAULT)
-    debug_topic_pub = rospy.Publisher(debug_topic, Stats, queue_size=3)
+    debug_topic_pub = rospy.Publisher(debug_topic, Event, queue_size=3)
     # resolution implementation is global across all watched topics which
     # may, may not be desirable ; in other words to have time resolution
     # configurable per specified source topic processor instance

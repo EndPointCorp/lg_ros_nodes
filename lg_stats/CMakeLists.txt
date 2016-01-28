@@ -12,7 +12,7 @@ catkin_python_setup()
 
 add_message_files(
   FILES
-  Stats.msg
+  Event.msg
   Session.msg
 )
 

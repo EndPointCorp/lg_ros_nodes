@@ -12,10 +12,6 @@ running tests manually:
     rostest lg_stats/test/online/test_lg_stats.test
         (as long as it contains <test> tag, it's the same as launch file)
 
-TODO:
-    - refactor, code reusing in test cases
-    - implement simple unit test cases for the Process class
-
 """
 
 
@@ -35,7 +31,7 @@ from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
 from appctl.msg import Mode
 from lg_stats.msg import Session
-from lg_stats.msg import Stats
+from lg_stats.msg import Event
 from lg_stats import ROS_NODE_NAME
 from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 
@@ -43,7 +39,12 @@ from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 RESULT = Array('c', 100)  # size
 
 
-class TestLGStats(object):
+class TestLGStatsRealMessageChain(object):
+    """
+    Test each of the watched topics.
+    Configured via roslanch.xml file.
+
+    """
 
     def setup_method(self, method):
         RESULT.value = "UNDEFINED"
@@ -64,7 +65,7 @@ class TestLGStats(object):
         #   getting the default value (regardless of calling it before or after init_node)
         debug_topic = "%s/%s" % (ROS_NODE_NAME,
                                  rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Stats, self.callback)
+        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
@@ -91,7 +92,7 @@ class TestLGStats(object):
         #   getting the default value (regardless of calling it before or after init_node)
         debug_topic = "%s/%s" % (ROS_NODE_NAME,
                                  rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Stats, self.callback)
+        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
@@ -118,7 +119,7 @@ class TestLGStats(object):
         #   getting the default value (regardless of calling it before or after init_node)
         debug_topic = "%s/%s" % (ROS_NODE_NAME,
                                  rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Stats, self.callback)
+        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
@@ -145,7 +146,7 @@ class TestLGStats(object):
         #   getting the default value (regardless of calling it before or after init_node)
         debug_topic = "%s/%s" % (ROS_NODE_NAME,
                                  rospy.get_param("~debug_topic", LG_STATS_DEBUG_TOPIC_DEFAULT))
-        rospy.Subscriber(debug_topic, Stats, self.callback)
+        rospy.Subscriber(debug_topic, Event, self.callback)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         # after this call the ros infrastructure starts up, sending a message right
         # after this results in a lost message sometimes ... wait
