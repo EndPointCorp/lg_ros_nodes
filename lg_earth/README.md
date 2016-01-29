@@ -42,6 +42,9 @@ If Earth isn't syncing, make sure that your firewall isn't blocking broadcast da
 
 Where 1.2.3.255 is your broadcast address.
 
+### Language Support
+
+To set the language locale for Google Earth set the `LG_LANG` enviromental variable.
 
 ### Nodes
 
