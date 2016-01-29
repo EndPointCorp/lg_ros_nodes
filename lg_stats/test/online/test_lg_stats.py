@@ -48,6 +48,14 @@ class MockTopicPublisher(object):
         self.messages.append(msg)
 
 
+class MockInfluxDBClient(object):
+    def __init__(self):
+        self.messages = []
+
+    def write_points(self, influx_dict):
+        self.messages.append(influx_dict)
+
+
 class TestLGStatsProcessor(object):
     """
     Test Processor class.
@@ -65,10 +73,13 @@ class TestLGStatsProcessor(object):
                       debug_pub=pub,
                       resolution=200)
         msg1 = Session(application="someapplication1")
-        p.publish(msg1)
+        out, influx = p.get_outbound_message_and_influx_dict(msg1)
+        p.publish(out)
         assert isinstance(pub.messages[0], Event)
         assert pub.messages[0].field_name == "application"
         assert pub.messages[0].value == "someapplication1"
+        # could there be an issue in order of items?
+        assert out.influx == str(influx)
 
     def test_message_comparison(self):
         p = Processor(watched_field_name="application")
@@ -92,9 +103,11 @@ class TestLGStatsProcessor(object):
         """
         rospy.init_node(ROS_NODE_NAME, anonymous=True)  # needed by ROS time
         pub = MockTopicPublisher()
+        influx = MockInfluxDBClient()
         p = Processor(watched_field_name="application",
                       debug_pub=pub,
-                      resolution=1)
+                      resolution=1,
+                      influxdb_client=influx)
         msg1 = Session(application="someapplication1")
         assert p.last_msg is None
         p.process(msg1)

@@ -23,6 +23,7 @@ TODO:
 
 import os
 
+from influxdb import InfluxDBClient
 import rospy
 from std_msgs.msg import String
 
@@ -34,7 +35,6 @@ from lg_stats.msg import Event
 
 ROS_NODE_NAME = "lg_stats"
 LG_STATS_DEBUG_TOPIC_DEFAULT = "debug"
-SYSTEM_NAME = os.uname()[1]
 
 
 class Processor(object):
@@ -49,28 +49,21 @@ class Processor(object):
                  watched_topic=None,
                  watched_field_name=None,
                  debug_pub=None,
-                 resolution=20):
+                 resolution=20,
+                 influxdb_client=None):
         self.watched_topic = watched_topic
         self.watched_field_name = watched_field_name
         self.debug_pub = debug_pub
         self.resolution = resolution  # seconds
         self.time_of_last_msg = None
-        self.last_msg = None
+        self.last_msg = None  # message from the source topic
+        self.influxdb_client = influxdb_client
 
-    def publish(self, msg):
+    def publish(self, out_msg):
         """
         Publish the stats message on the ROS topic.
 
-        TODO:
-            stats submission (via telegraf submission influxdb agent) here
-
         """
-        out_msg = Event(system_name=SYSTEM_NAME,
-                        src_topic=self.watched_topic,
-                        field_name=self.watched_field_name,
-                        # value is always string, if source value is e.g.
-                        # boolean, it's converted to a string here
-                        value=str(getattr(msg, self.watched_field_name)))
         self.debug_pub.publish(out_msg)
 
     def compare_messages(self, msg_1, msg_2):
@@ -81,6 +74,44 @@ class Processor(object):
         """
         w = self.watched_field_name
         return True if getattr(msg_1, w) == getattr(msg_2, w) else False
+
+    def get_outbound_message_and_influx_dict(self, src_msg):
+        """
+        Returns out-bound message for the /lg_stats/debug topic
+        based on the data from the source topic message (src_msg).
+        And Python dictionary for later InfluxDB submission.
+
+        """
+        application = getattr(src_msg, "application", None)  # if it exists
+        out_msg = Event(src_topic=self.watched_topic,
+                        field_name=self.watched_field_name,
+                        type="event",
+                        application=application,
+                        # value is always string, if source value is e.g.
+                        # boolean, it's converted to a string here
+                        value=str(getattr(src_msg, self.watched_field_name)))
+        # python representation of the InfluxDB default line_protocol
+        influx_dict = dict(measurement=out_msg.src_topic,
+                           tags=dict(application=out_msg.application,
+                                     field_name=out_msg.field_name,
+                                     type=out_msg.type,
+                                     value=out_msg.value),
+                           # timestamp may be added here or will be added by the server
+                           #"time": "2015-11-10T23:00:00Z",
+                           # fields must be of type float
+                           fields=dict(value=0.0))
+        out_msg.influx = str(influx_dict)
+        return out_msg, influx_dict
+
+    def write_to_influx(self, influx_dict):
+        """
+        Submit data to influx (via locally running telegraf agent).
+        The Python Influx library converts the Python dictionary to
+        the default *line_protocol* before submitting to Influx.
+
+        """
+        if self.influxdb_client:
+            self.influxdb_client.write_points([influx_dict])
 
     def process_previous(self, curr_msg):
         """
@@ -94,7 +125,9 @@ class Processor(object):
         """
         elapsed = rospy.Time.now() - self.time_of_last_msg
         if elapsed.to_sec() > self.resolution and self.compare_messages(self.last_msg, curr_msg):
-            self.publish(self.last_msg)
+            out_msg, influx_dict = self.get_outbound_message_and_influx_dict(self.last_msg)
+            self.publish(out_msg)
+            self.write_to_influx(influx_dict)
 
     def process(self, msg):
         """
@@ -110,6 +143,19 @@ class Processor(object):
         self.last_msg, self.time_of_last_msg = msg, rospy.Time.now()
 
 
+def get_influxdb_client():
+    telegraf_host = rospy.get_param("~telegraf_host", None)
+    telegraf_port = rospy.get_param("~telegraf_port", None)
+    influxdb_database = rospy.get_param("~influxdb_database", None)
+    if telegraf_host and telegraf_port and influxdb_database:
+        influxdb_client = InfluxDBClient(host=telegraf_host,
+                                         port=telegraf_port,
+                                         database=influxdb_database)
+    else:
+        influxdb_client = None
+    return influxdb_client
+
+
 def main():
     rospy.init_node(ROS_NODE_NAME, anonymous=True)
     debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_STATS_DEBUG_TOPIC_DEFAULT)
@@ -120,6 +166,7 @@ def main():
     resolution = rospy.get_param("~resolution", 2)
     # source activities - returns list of dictionaries
     stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
+    influxdb_client = get_influxdb_client()
     processors = []
     for ss in stats_sources:
         # dynamic import based on package/message_class string representation
@@ -127,7 +174,8 @@ def main():
         p = Processor(watched_topic=ss["topic"],
                       watched_field_name=ss["strategy"],
                       debug_pub=debug_topic_pub,
-                      resolution=resolution)
+                      resolution=resolution,
+                      influxdb_client=influxdb_client)
         rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (ss["topic"], msg_type_module))
         rospy.Subscriber(ss["topic"], msg_type_module, p.process, queue_size=3)
         processors.append(p)
