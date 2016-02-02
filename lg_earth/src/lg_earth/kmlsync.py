@@ -71,7 +71,7 @@ def get_kml_root():
 class KmlMasterHandler(tornado.web.RequestHandler):
     def get(self):
         """Serve the master.kml which is updated by NLC."""
-        rospy.loginfo("Got master.kml GET request")
+        rospy.logdebug("Got master.kml GET request")
         kml_root = get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
@@ -111,7 +111,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cls.finish_all_requests()
         except Exception as e:
-            rospy.loginfo("Exception getting scene changes" + str(e))
+            rospy.logerr("Exception getting scene changes" + str(e))
             pass
 
     def non_blocking_sleep(self, duration):
@@ -133,11 +133,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         if KmlUpdateHandler.timeout <= 0:
             no_defer = True
 
-        rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
+        rospy.logdebug("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
         window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = self.get_query_argument('asset_slug', default='')
 
-        rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
+        rospy.logdebug("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
         if not window_slug:
             self.set_status(400, "No window slug provided")
@@ -162,8 +162,8 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         self.unique_id = KmlUpdateHandler.get_unique_id()
 
-        rospy.loginfo("Request Counter: {}".format(self.unique_id))
-        rospy.loginfo("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
+        rospy.logdebug("Request Counter: {}".format(self.unique_id))
+        rospy.logdebug("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
 
         KmlUpdateHandler.add_deferred_request(self, self.unique_id)
         yield self.non_blocking_sleep(KmlUpdateHandler.timeout)

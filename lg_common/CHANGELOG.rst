@@ -7,6 +7,20 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
+1.1.30 (2016-01-11)
+-------------------
+* pdfviewer: stretches to either height and width of screen
+  This ends up only stretching to the width, which is fine because of the
+  ratio. Now some good geometry will be needed to make things look pretty.
+* Contributors: Jacob Minshall
+
+1.1.29 (2016-01-04)
+-------------------
+* pdfviewer to use with AdhocBrowser or ManagedBrowser
+* managed_browser: ros paramaterized command flags
+  Now node defs can specify extra command line flags to use.
+* Contributors: Jacob Minshall
+
 1.1.28 (2015-12-10)
 -------------------
 * command_handler: added code to command and listener node

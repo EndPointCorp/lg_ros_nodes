@@ -18,7 +18,7 @@ function init() {
   var yawRads, pitchRads, rollRads, isLeader;
   var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
   var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
-  var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
+  var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, false);
   var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
 
   var ros = new ROSLIB.Ros({ url: url });

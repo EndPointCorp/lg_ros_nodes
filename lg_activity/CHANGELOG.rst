@@ -5,6 +5,14 @@ Changelog for package lg_activity
 1.1.20 (2015-10-21)
 -------------------
 
+1.1.30 (2016-01-11)
+-------------------
+
+1.1.29 (2016-01-04)
+-------------------
+* readme: updates to reflect params / topics
+* Contributors: Jacob Minshall
+
 1.1.28 (2015-12-10)
 -------------------
 

@@ -19,6 +19,7 @@ if __name__ == '__main__':
     geometry = ManagedWindow.get_viewport_geometry()
 
     url_base = rospy.get_param('~url_base', 'http://lg-head/ros_touchscreens/ts/')
+    command_line_args = rospy.get_param('~command_line_args', '')
     # TODO (wz) director_host and director_port should be global
 
     director_host = rospy.get_param('~director_host', '42-a')
@@ -86,6 +87,7 @@ if __name__ == '__main__':
     browser = ManagedBrowser(
         geometry=geometry,
         url=url,
+        command_line_args=command_line_args,
         force_device_scale_factor=scale_factor,
         debug_port=debug_port,
         user_agent=user_agent
