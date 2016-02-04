@@ -5,8 +5,8 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
-Forthcoming
------------
+1.1.33 (2016-02-04)
+-------------------
 * lg_earth: copy local localdbrootproto
   This file needs contents to be useful, so grab it from the local filesystem.
 * Set LANG from within lg_earth node
