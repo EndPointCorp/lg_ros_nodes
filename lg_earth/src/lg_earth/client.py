@@ -46,12 +46,14 @@ class Client:
         os.mkdir(self._get_tempdir() + '/.googleearth')
         os.mkdir(self._get_tempdir() + '/.googleearth/Cache')
 
-        if rospy.get_param('~show_google_logo', True):
-            pass
-        else:
-            self._touch_file(
-                (self._get_tempdir() + '/.googleearth/' + 'localdbrootproto')
-            )
+        if not rospy.get_param('~show_google_logo', True):
+            source = '/home/lg/etc/localdbrootproto'
+            dest = '/home/lg/.googleearth/Cache/localdbrootproto'
+            self._touch_file('/home/lg/localdbrootproto')
+            with open(source, 'r') as src:
+                with open(dest, 'w') as dst:
+                    for line in src.readlines():
+                        dst.write(line)
 
         os.mkdir(self._get_tempdir() + '/.config')
         os.mkdir(self._get_tempdir() + '/.config/Google')
