@@ -5,6 +5,14 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
+1.1.32 (2016-01-28)
+-------------------
+* Amended logging for `#137 <https://github.com/EndPointCorp/lg_ros_nodes/issues/137>`_
+* Contributors: Wojciech Ziniewicz
+
+1.1.31 (2016-01-20)
+-------------------
+
 1.1.30 (2016-01-11)
 -------------------
 
