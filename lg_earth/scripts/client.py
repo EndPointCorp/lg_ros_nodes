@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import os
 from lg_earth import Client
 from lg_common.msg import ApplicationState
 from lg_common.helpers import DependencyException
@@ -14,6 +15,9 @@ def main():
     kmlsync_port = rospy.get_param('/kmlsync_server/port', 8765)
     kmlsync_timeout = rospy.get_param('/global_dependency_timeout', 15)
     depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
+
+    if os.environ.get("LG_LANG"):
+        os.environ["LANG"] = os.environ["LG_LANG"]
 
     if depend_on_kmlsync:
         rospy.loginfo("Waiting for KMLSync to become available")
