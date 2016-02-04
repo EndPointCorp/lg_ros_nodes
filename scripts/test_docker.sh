@@ -25,7 +25,7 @@ function build_docker() {
 # runs tests and returns the return value
 function run_tests() {
   echo running ${DOCKER_NAME}
-	docker run ${DOCKER_NAME}
+	docker run -it -v $(pwd)/docker_nodes:/docker_nodes:ro ${DOCKER_NAME}
 }
 
 initialize
