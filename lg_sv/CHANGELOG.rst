@@ -7,6 +7,9 @@ Changelog for package lg_sv
 * init nearbypano parent class
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+
 1.1.32 (2016-01-28)
 -------------------
 

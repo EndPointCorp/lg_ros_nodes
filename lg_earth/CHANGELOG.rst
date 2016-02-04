@@ -5,6 +5,14 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* lg_earth: copy local localdbrootproto
+  This file needs contents to be useful, so grab it from the local filesystem.
+* Set LANG from within lg_earth node
+* Support custom earth configs in lg_earth node
+* Contributors: Galaxy Admin, Jacob Minshall, Will Plaut
+
 1.1.32 (2016-01-28)
 -------------------
 * Amended logging for `#137 <https://github.com/EndPointCorp/lg_ros_nodes/issues/137>`_
