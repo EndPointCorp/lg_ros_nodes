@@ -53,7 +53,7 @@ class Client:
                 os.mkdir(os.path.dirname(os.path.dirname(dest)))
             if not os.path.exists(os.path.dirname(dest)):
                 os.mkdir(os.path.dirname(dest))
-            self._touch_file('/home/lg/localdbrootproto')
+            self._touch_file(source)
             with open(source, 'r') as src:
                 with open(dest, 'w') as dst:
                     for line in src.readlines():
