@@ -5,8 +5,8 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
-Forthcoming
------------
+1.1.35 (2016-02-05)
+-------------------
 * lg_earth: curl custom config
 * Contributors: Jacob Minshall
 
