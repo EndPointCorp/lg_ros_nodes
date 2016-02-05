@@ -49,6 +49,10 @@ class Client:
         if not rospy.get_param('~show_google_logo', True):
             source = '/home/lg/etc/localdbrootproto'
             dest = '/home/lg/.googleearth/Cache/localdbrootproto'
+            if not os.path.exists(os.path.dirname(os.path.dirname(dest))):
+                os.mkdir(os.path.dirname(os.path.dirname(dest)))
+            if not os.path.exists(os.path.dirname(dest)):
+                os.mkdir(os.path.dirname(dest))
             self._touch_file('/home/lg/localdbrootproto')
             with open(source, 'r') as src:
                 with open(dest, 'w') as dst:
