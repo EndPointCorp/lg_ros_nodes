@@ -5,6 +5,11 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* lg_earth: make directory for localdbrootproto
+* Contributors: Jacob Minshall
+
 1.1.33 (2016-02-04)
 -------------------
 * lg_earth: copy local localdbrootproto
