@@ -79,23 +79,50 @@ NOTE: As new ros nodes are added to this git repo, re-run `./scripts/init_worksp
 
 ## Development
 
-LINT is configured, run `pep8` in the root of this repo to check Python
-and use `catkin_lint` to check for errors in `package.xml` and
-`CMakeLists.txt`.
+If you have Liquid Galaxy hardware (headnode + displaynodes), you may
+want to do the development on it. There's a sync script that will
+automatically build and transfer your artifact to display nodes and run
+it afterwards.
+
+To use it:
+- make sure that you catkin/src/ has all nodes that are configured to
+  run on your dispnodes - if there are any nodes lacking, they will be
+ran from /opt/ros directory instead of /home/lg/catkin_ws/ directory
+where your development sources are going to be copied to
+- run sync script (do it everytime you want to test your development):
+``bash
+./scripts/sync_to_disp_nodes.sh
+```
+
+It will build ROS nodes from your current sources, transfer it to
+dispnodes and run it, thanks to the fact that `roslaunch` service on
+dispnodes is configured in such way that it attempts to run any
+development artifact (in /home/lg/catkin_ws) that it finds before
+launching production ROS nodes that are located under /opt/ros.
 
 ## Making new release
 
-- To make new release you need to:
+To make new release you need to:
 
+- lint it:
+```bash
+catkin_link
+```
+
+- generate changelog:
 ```shell
 $ catkin_generate_changelog
 ```
-
-- Then edit all your `.rst` changelogs - remove unwanted or bogus messages
+- edit all your `.rst` changelogs - remove unwanted or bogus messages
 and make them look pretty. Use `catkin_generate_changelog --all` to
 create `CHANGELOG.rst` for a new package.
 
-- Once that's done, prepare release:
+- commit it to prepare for creating new release artifact:
+```
+git commit -am "updated changelogs for new release"
+```
+
+- Once that's done, prepare release and send it to the build farm:
 
 ```shell
 $ catkin_prepare_release
