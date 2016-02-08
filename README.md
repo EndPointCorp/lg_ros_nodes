@@ -85,20 +85,22 @@ automatically build and transfer your artifact to display nodes and run
 it afterwards.
 
 To use it:
-- make sure that you catkin/src/ has all nodes that are configured to
-  run on your dispnodes - if there are any nodes lacking, they will be
-ran from /opt/ros directory instead of /home/lg/catkin_ws/ directory
-where your development sources are going to be copied to
-- run sync script (do it everytime you want to test your development):
+- make sure that your local `catkin/src/` has all nodes that are configured to
+  run on your dispnodes (in their respective roslaunch xml files) - if there
+are any nodes lacking, they will be ran from /opt/ros directory instead of
+`/home/lg/catkin_ws/` directory where your development build  is going to be copied to
+
+- run sync script (do it everytime you want to test sth):
+
 ```bash
 ./scripts/sync_to_disp_nodes.sh
 ```
 
-It will build ROS nodes from your current sources, transfer it to
-dispnodes and run it, thanks to the fact that `roslaunch` service on
-dispnodes is configured in such way that it attempts to run any
-development artifact (in /home/lg/catkin_ws) that it finds before
-launching production ROS nodes that are located under /opt/ros.
+This script will build ROS nodes from your locally checked out branch,
+transfer it to dispnodes and run it by restarting `roslaunch` service,
+thanks to the fact that `roslaunch` service on dispnodes is configured
+in such way that it attempts to run any development artifact (in /home/lg/catkin_ws)
+that it finds before launching production ROS nodes that are located under /opt/ros.
 
 ## Making new release
 
