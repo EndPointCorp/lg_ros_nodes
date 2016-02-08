@@ -90,7 +90,7 @@ To use it:
 ran from /opt/ros directory instead of /home/lg/catkin_ws/ directory
 where your development sources are going to be copied to
 - run sync script (do it everytime you want to test your development):
-``bash
+```bash
 ./scripts/sync_to_disp_nodes.sh
 ```
 
