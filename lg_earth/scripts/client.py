@@ -15,6 +15,8 @@ def main():
     kmlsync_port = rospy.get_param('/kmlsync_server/port', 8765)
     kmlsync_timeout = rospy.get_param('/global_dependency_timeout', 15)
     depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
+    initial_state = rospy.get_param('~initial_state', 'VISIBLE')
+    state_topic = rospy.get_param('~state_topic', '/earth/state')
 
     if os.environ.get("LG_LANG"):
         os.environ["LANG"] = os.environ["LG_LANG"]
@@ -36,11 +38,10 @@ def main():
         rospy.logfatal(msg)
         raise DependencyException(msg)
 
-    client = Client()
+    client = Client(initial_state=initial_state)
 
-    rospy.Subscriber('/earth/state', ApplicationState,
+    rospy.Subscriber(state_topic, ApplicationState,
                      client.earth_proc.handle_state_msg)
-    client.earth_proc.set_state(ApplicationState.VISIBLE)
 
     rospy.spin()
 
