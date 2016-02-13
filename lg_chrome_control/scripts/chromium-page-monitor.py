@@ -2,6 +2,7 @@
 
 from lg_chrome_control import PageMonitor
 from appctl_support import ModeHandler
+from lg_common import TimerController
 import rospy
 import os
 
@@ -42,26 +43,6 @@ def main():
     mh = ModeHandler(modes, tc)
     mh.begin_handling_modes()
     rospy.spin()
-
-from appctl_support.controller import BaseController
-from threading import Lock
-class TimerController(BaseController):
-    def __init__(self, callback, second_duration=10):
-        self.callback = callback
-        self.duration = rospy.Duration(second_duration)
-        self.lock = Lock()
-        self.timer = None
-
-    def start(self, *args, **kwargs):
-        with self.lock:
-            if self.timer is None or not self.timer.isAlive():
-                self.timer = rospy.Timer(self.duration, self.callback)
-
-    def stop(self, *args, **kwargs):
-        with self.lock:
-            if self.timer:
-                self.timer.shutdown()
-                self.timer = None
 
 if __name__ == '__main__':
     main()

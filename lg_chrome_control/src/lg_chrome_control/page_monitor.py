@@ -27,10 +27,11 @@ class PageMonitor(object):
         except Exception:
             return
         text = active_pages.read()
-        page_checker = PageChecker(text)
+        page_checker = PageChecker(text, debug=True)
         for page in self.allowed_pages:
             # if we find a match, just return
             ret = page_checker.check_pages(page)
+            rospy.loginfo('got ret (%s) for page (%s)' % (ret, page))
             if ret == 0:
                 return
 
