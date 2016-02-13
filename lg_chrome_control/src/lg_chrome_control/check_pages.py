@@ -2,6 +2,7 @@
 # vim:set ai sts=4 ts=4 sw=4 expandtab filetype=python:
 
 from optparse import OptionParser
+import rospy
 import sys,json
 
 
@@ -18,16 +19,16 @@ class PageChecker(object):
             self.pages = json.loads(pages)
         except ValueError:
             self.pages = []
-            print 'bad pages...'
+            rospy.logerr('bad pages...')
             return
 
         self.page_name = page_name
         self.debug = debug
 
     def debug_print(self, msg):
-        print(msg)
+        rospy.loginfo(msg)
         if self.debug:
-            print(msg)
+            rospy.logdebug(msg)
 
     def check_pages(self, page_name=None):
         if page_name is None:

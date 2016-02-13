@@ -2,6 +2,7 @@ from lg_chrome_control import PageChecker
 from subprocess import Popen
 from urllib2 import urlopen
 from time import time
+import rospy
 
 class PageMonitor(object):
     
@@ -22,25 +23,30 @@ class PageMonitor(object):
             return True
         i = 0
         try:
-            active_pages = urlopen('http://localhost:%s' % self.port, timeout=1)
+            active_pages = urlopen('http://localhost:%s/json' % self.port, timeout=1)
         except Exception:
             return
-        page_checker = PageChecker(active_pages.read())
-        print 'monitoring %s ...' % i; i += 1
+        text = active_pages.read()
+        page_checker = PageChecker(text)
         for page in self.allowed_pages:
             # if we find a match, just return
-            if page_checker.check_pages(page) == 0:
+            rospy.loginfo('checking if pages match (%s)' % page)
+            ret = page_checker.check_pages(page)
+            rospy.loginfo('got (%s)' % ret)
+            if ret == 0:
                 return
+
+        # if we are here, the page hasn't been found...
+        self.last_relaunch = time()
         for page in self.bad_pages:
             if page_checker.check_pages(page) == 0:
-                print 'relaunching...'
+                rospy.loginfo('relaunching...')
                 self.relaunch()
-                self.last_relaunch = time()
-                print 'relaunched...'
+                rospy.loginfo('relaunched...')
                 return
-        print 'killing chrome...'
+        rospy.loginfo('killing chrome...')
         self.pkill_chrome()
-        print 'killed chrome...'
+        rospy.loginfo('killed chrome...')
 
     def relaunch(self):
         p = Popen(['lg-relaunch'])
