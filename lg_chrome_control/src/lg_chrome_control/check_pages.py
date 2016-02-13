@@ -26,7 +26,6 @@ class PageChecker(object):
         self.debug = debug
 
     def debug_print(self, msg):
-        rospy.loginfo(msg)
         if self.debug:
             rospy.logdebug(msg)
 

@@ -53,14 +53,11 @@ class TimerController(BaseController):
         self.timer = None
 
     def start(self, *args, **kwargs):
-        rospy.loginfo('calling start...')
         with self.lock:
             if self.timer is None or not self.timer.isAlive():
-                rospy.loginfo('making a timer...')
                 self.timer = rospy.Timer(self.duration, self.callback)
 
     def stop(self, *args, **kwargs):
-        rospy.loginfo('calling stop...')
         with self.lock:
             if self.timer:
                 self.timer.shutdown()

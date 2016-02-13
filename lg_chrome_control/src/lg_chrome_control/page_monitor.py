@@ -30,9 +30,7 @@ class PageMonitor(object):
         page_checker = PageChecker(text)
         for page in self.allowed_pages:
             # if we find a match, just return
-            rospy.loginfo('checking if pages match (%s)' % page)
             ret = page_checker.check_pages(page)
-            rospy.loginfo('got (%s)' % ret)
             if ret == 0:
                 return
 
@@ -42,11 +40,9 @@ class PageMonitor(object):
             if page_checker.check_pages(page) == 0:
                 rospy.loginfo('relaunching...')
                 self.relaunch()
-                rospy.loginfo('relaunched...')
                 return
         rospy.loginfo('killing chrome...')
         self.pkill_chrome()
-        rospy.loginfo('killed chrome...')
 
     def relaunch(self):
         p = Popen(['lg-relaunch'])
