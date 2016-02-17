@@ -5,6 +5,13 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
+Forthcoming
+-----------
+* lg_earth: parameterize state topic
+* lg\_{common,earth}: set initial state
+  This will allow us to start up a hidden window initially.
+* Contributors: Jacob Minshall
+
 1.1.35 (2016-02-05)
 -------------------
 * lg_earth: curl custom config

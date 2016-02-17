@@ -7,6 +7,12 @@ Changelog for package lg_common
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* lg\_{common,earth}: set initial state
+  This will allow us to start up a hidden window initially.
+* Contributors: Jacob Minshall
+
 1.1.35 (2016-02-05)
 -------------------
 
