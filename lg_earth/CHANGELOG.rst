@@ -5,8 +5,8 @@ Changelog for package lg_earth
 1.1.20 (2015-10-21)
 -------------------
 
-Forthcoming
------------
+1.1.36 (2016-02-17)
+-------------------
 * lg_earth: parameterize state topic
 * lg\_{common,earth}: set initial state
   This will allow us to start up a hidden window initially.
