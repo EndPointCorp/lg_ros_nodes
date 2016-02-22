@@ -43,7 +43,7 @@ function init() {
 
   var metadataTopic = new ROSLIB.Topic({
     ros: ros,
-    name: '/streetview/metadata',
+    name: '/panoviewer/metadata',
     messageType: 'std_msgs/String',                                                                       
     throttle_rate: 16,
     queue_length: 1
