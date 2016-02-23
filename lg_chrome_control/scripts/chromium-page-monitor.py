@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 from lg_chrome_control import PageMonitor
-from appctl_support import ModeHandler
-from lg_common import TimerController
+from appctl_support import ModeHandler, TimerController
 import rospy
 import os
 
