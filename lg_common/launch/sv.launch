@@ -1,0 +1,19 @@
+<launch>
+    <!-- StreetView -->
+    <node name="sv_server" pkg="lg_sv" type="server.py" clear_params="true" >
+      <param name="server_type" value="streetview" />
+    </node>
+    <node name="sv_launcher_left_one" pkg="lg_sv" type="launcher.py" clear_params="true">
+      <param name="viewport" value="pv_left_one" />
+      <param name="yaw_offset" value="-1" />
+    </node>
+    <node name="sv_launcher_center" pkg="lg_sv" type="launcher.py" clear_params="true">
+      <param name="viewport" value="pv_center" />
+      <param name="show_links" value="true" />
+    </node>
+    <node name="sv_launcher_right_one" pkg="lg_sv" type="launcher.py" clear_params="true">
+      <param name="viewport" value="pv_right_one" />
+      <param name="yaw_offset" value="1" />
+    </node>
+
+</launch>
