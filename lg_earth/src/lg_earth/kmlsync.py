@@ -330,6 +330,9 @@ class KmlQueryHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.playtour = self.application.playtour
         self.playtour_service = self.application.playtour_service
+        self.string = self.application.string
+        #self.planet = self.application.planet
+        #self.planet_service = self.application.planet_service
 
     def get(self):
         """
@@ -343,16 +346,22 @@ class KmlQueryHandler(tornado.web.RequestHandler):
             return
 
         try:
-            tour_string = query_string.split('=')[1]
+            command, value = query_string.split('=')
         except IndexError as e:
             rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
             self.set_status(400, "Got a bad query string")
             self.finish("Bad Request: Got a bad query string")
             return
 
-        tour_string = urllib2.unquote(tour_string)
-        self.playtour.tourname = str(tour_string)
-        self.playtour_service(tour_string)
+        value = urllib2.unquote(value)
+        if command == 'playtour':
+            self.playtour.tourname = str(value)
+            self.playtour_service(value)
+        elif command == 'planet':
+            value = "Planet %s %s" % (str(value), self.string)
+            #self.planet.planetname = value
+            #self.playtour.tourname = value
+            self.playtour_service(value)
         self.finish("OK")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

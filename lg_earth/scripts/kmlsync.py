@@ -3,7 +3,7 @@
 import rospy
 
 from lg_earth import KmlMasterHandler, KmlUpdateHandler, KmlQueryHandler
-from lg_earth.srv import KmlState, PlaytourQuery
+from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
 from lg_common.webapp import ros_tornado_spin
 import tornado.web
 import tornado.ioloop
@@ -30,6 +30,7 @@ def main():
 
     rospy.wait_for_service('/kmlsync/state')
     rospy.wait_for_service('/kmlsync/playtour_query')
+    rospy.wait_for_service('/kmlsync/planet_query')
 
     director_scene_topic = rospy.get_param('~director_topic', '/director/scene')
     rospy.Subscriber(director_scene_topic, GenericMessage, KmlUpdateHandler.get_scene_msg)
@@ -37,6 +38,9 @@ def main():
     kmlsync_server.playtour = PlaytourQuery()
     kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)
     kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=True)
+    kmlsync_server.string = "This is a string"
+    kmlsync_server.planet = PlanetQuery()
+    kmlsync_server.planet_service = rospy.ServiceProxy('/kmlsync/planet_query', kmlsync_server.planet, persistent=True)
     kmlsync_server.listen(port)
     ros_tornado_spin()
 
