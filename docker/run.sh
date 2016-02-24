@@ -29,4 +29,5 @@ sudo docker run \
 	-e DISPLAY=$DISPLAY \
 	-e XAUTHORITY=$XAUTH \
 	--net=host \
+	-v /tmp:/tmp/host_tmp \
 	$args

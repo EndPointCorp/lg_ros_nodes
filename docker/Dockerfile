@@ -67,7 +67,9 @@ RUN	    mkdir /home/galadmin && mkdir /home/galadmin/src ;\
 
 WORKDIR /home/galadmin/src
 RUN	    git clone git://github.com/EndPointCorp/lg_ros_nodes.git ;\
-	      git clone git://github.com/EndPointCorp/appctl.git
+	    git clone git://github.com/EndPointCorp/appctl.git ;\
+        cd /home/galadmin/src/lg_ros_nodes && \
+        git checkout features/docker-image
 
 RUN     apt-get install -y ros-indigo-rosbridge-server
 
