@@ -332,10 +332,22 @@ class KmlQueryHandler(tornado.web.RequestHandler):
         self.playtour_service = self.application.playtour_service
         self.planet = self.application.planet
         self.planet_service = self.application.planet_service
+        self.get_planet = self.application.get_planet
+
+    def _wait_for_planet(self, planet):
+        sleeptime = 0.1  # How long to sleep between iterations
+        intervals = 50   # How many iterations to try before giving up
+        intervalCount = 0
+        done = False
+
+        while self.get_planet() != planet and intervalCount < intervals:
+            intervalCount += 1
+            rospy.sleep(sleeptime)
 
     def get(self):
         """
-        Publish play tour message on the topic /earth/query/tour
+        Publish messages for the lg_earth/query service, in response to GET
+        requests
         """
         query_string = self.get_query_argument('query', default='')
 
@@ -345,20 +357,25 @@ class KmlQueryHandler(tornado.web.RequestHandler):
             return
 
         try:
-            command, value = query_string.split('=')
+            for op in query_string.split(','):
+                command, value = op.split('=')
+                value = urllib2.unquote(value)
+
+                if command == 'playtour':
+                    self.playtour.tourname = str(value)
+                    self.playtour_service(value)
+
+                elif command == 'planet':
+                    self.planet.planetname = value
+                    self.planet_service(value)
+                    self._wait_for_planet(value)
+
+                self.finish("OK")
+
         except IndexError as e:
             rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
             self.set_status(400, "Got a bad query string")
             self.finish("Bad Request: Got a bad query string")
             return
-
-        value = urllib2.unquote(value)
-        if command == 'playtour':
-            self.playtour.tourname = str(value)
-            self.playtour_service(value)
-        elif command == 'planet':
-            self.planet.planetname = value
-            self.planet_service(value)
-        self.finish("OK")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
