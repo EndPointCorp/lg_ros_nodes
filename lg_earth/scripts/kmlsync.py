@@ -38,7 +38,6 @@ def main():
     kmlsync_server.playtour = PlaytourQuery()
     kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)
     kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=True)
-    kmlsync_server.string = "This is a string"
     kmlsync_server.planet = PlanetQuery()
     kmlsync_server.planet_service = rospy.ServiceProxy('/kmlsync/planet_query', kmlsync_server.planet, persistent=True)
     kmlsync_server.listen(port)

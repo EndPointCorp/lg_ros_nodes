@@ -330,9 +330,8 @@ class KmlQueryHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.playtour = self.application.playtour
         self.playtour_service = self.application.playtour_service
-        self.string = self.application.string
-        #self.planet = self.application.planet
-        #self.planet_service = self.application.planet_service
+        self.planet = self.application.planet
+        self.planet_service = self.application.planet_service
 
     def get(self):
         """
@@ -358,10 +357,8 @@ class KmlQueryHandler(tornado.web.RequestHandler):
             self.playtour.tourname = str(value)
             self.playtour_service(value)
         elif command == 'planet':
-            value = "Planet %s %s" % (str(value), self.string)
-            #self.planet.planetname = value
-            #self.playtour.tourname = value
-            self.playtour_service(value)
+            self.planet.planetname = value
+            self.planet_service(value)
         self.finish("OK")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

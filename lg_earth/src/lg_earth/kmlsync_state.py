@@ -10,6 +10,7 @@ class KmlSyncState:
     def __init__(self):
         self.state = None
         self.playtour_pub = rospy.Publisher('/earth/query/tour', String, queue_size=10)
+        self.planet_pub = rospy.Publisher('/earth/query/planet', String, queue_size=10)
 
     def _save_state(self, msg):
         try:
@@ -40,3 +41,7 @@ class KmlSyncState:
     def _send_playtour_query(self, req):
         self.playtour_pub.publish(String(req.tourname))
         return {'response': True}
+
+    def _send_planet_query(self, req):
+	self.planet_pub.publish(String(req.planetname))
+	return {'response': True}
