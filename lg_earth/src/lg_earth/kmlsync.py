@@ -337,11 +337,11 @@ class KmlQueryHandler(tornado.web.RequestHandler):
     def _wait_for_planet(self, planet):
         sleeptime = 0.1  # How long to sleep between iterations
         intervals = 50   # How many iterations to try before giving up
-        intervalCount = 0
+        interval_count = 0
         done = False
 
-        while self.get_planet() != planet and intervalCount < intervals:
-            intervalCount += 1
+        while self.get_planet() != planet and interval_count < intervals:
+            interval_count += 1
             rospy.sleep(sleeptime)
 
     def get(self):

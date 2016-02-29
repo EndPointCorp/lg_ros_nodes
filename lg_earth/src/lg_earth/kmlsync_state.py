@@ -43,5 +43,5 @@ class KmlSyncState:
         return {'response': True}
 
     def _send_planet_query(self, req):
-	self.planet_pub.publish(String(req.planetname))
-	return {'response': True}
+        self.planet_pub.publish(String(req.planetname))
+        return {'response': True}

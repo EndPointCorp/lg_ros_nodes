@@ -11,6 +11,7 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import write_log_to_file
 from std_msgs.msg import String
 
+
 class PlanetWatcher:
     def __init__(self, topic):
         rospy.Subscriber(topic, String, self.record_planet)
