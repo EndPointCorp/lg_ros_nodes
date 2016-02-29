@@ -1,4 +1,5 @@
 var showLinks = getParameterByName('showLinks', stringToBoolean, false);
+var showAttribution = getParameterByName('showAttribution', stringToBoolean, false);
 var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 0);
@@ -47,6 +48,9 @@ var initializeRes = function(ros) {
   });
   
   var handleMetadataMsg = function(msg) {
+    if (! showAttribution)
+      return;
+
     $("#titlecard").show();
     $("#titlecard").text(JSON.parse(msg.data).location.description);
   };  
