@@ -372,7 +372,7 @@ class KmlQueryHandler(tornado.web.RequestHandler):
 
                 self.finish("OK")
 
-        except IndexError as e:
+        except (IndexError, ValueError) as e:
             rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
             self.set_status(400, "Got a bad query string")
             self.finish("Bad Request: Got a bad query string")
