@@ -118,5 +118,5 @@ RUN     source /opt/ros/indigo/setup.bash ;\
         source /home/lg/src/lg_ros_nodes/catkin/devel/setup.bash ;\
         catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install
 
-# Start the application as configured.
+# roslaunch --screen lg_common/launch/dev.launch broadcast_addr:=224.0.0.1
 ENTRYPOINT tmux
