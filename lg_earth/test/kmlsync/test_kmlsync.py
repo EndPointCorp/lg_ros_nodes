@@ -224,12 +224,12 @@ class TestKMLSync(unittest.TestCase):
         expected_string = "OK"
 
         #self.wait_for_pubsub()
-        good1 = self.get_request(KML_ENDPOINT + "/query.html?query=tour=myworldtour")
+        good1 = self.get_request(KML_ENDPOINT + "/query.html?query=playtour=myworldtour")
         rospy.sleep(1)
         good1_expected_string = "myworldtour"
         self.assertEqual(self.query_string, good1_expected_string)
 
-        good2 = self.get_request(KML_ENDPOINT + "/query.html?query=tour=My World Tour")
+        good2 = self.get_request(KML_ENDPOINT + "/query.html?query=playtour=My World Tour")
         rospy.sleep(1)
         good2_expected_string = "My World Tour"
         self.assertEqual(self.query_string, good2_expected_string)
