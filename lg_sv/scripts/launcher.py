@@ -33,6 +33,7 @@ def main():
     rosbridge_secure = rospy.get_param('~rosbridge_secure', 'false')
     zoom = str(rospy.get_param('~zoom', 'false')).lower()
     initial_zoom = rospy.get_param('~initial_zoom', 3)
+    kiosk_mode = rospy.get_param('~kiosk_mode', True)
 
     # put parameters into one big url
     url = add_url_params(url,
@@ -81,7 +82,7 @@ def main():
 
     # create the managed browser
     slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)
-    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
+    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk = kiosk_mode)
 
     # set to visible
     state = ApplicationState.HIDDEN

@@ -1,3 +1,5 @@
 #!/bin/bash
 
-sudo docker build -t lgros /opt/ep/lg_ros_nodes/docker
+DOCKER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+sudo docker build -t lgros ${DOCKER_DIR}
