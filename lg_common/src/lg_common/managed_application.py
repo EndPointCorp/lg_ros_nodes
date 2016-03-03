@@ -17,8 +17,10 @@ class ManagedApplication(object):
 
         self.lock = threading.RLock()
         self.proc = ProcController(cmd, spawn_hooks=[self._handle_respawn], shell=False)
-        self.watcher = watcher
         self.sig_retry_timer = None
+        self.watcher = watcher
+        if self.watcher:
+            self.watcher.watch(self.proc)
 
         rospy.on_shutdown(self._cleanup)
 
@@ -74,6 +76,8 @@ class ManagedApplication(object):
             if state != self.state:
                 state_changed = True
             self.state = state
+            if self.watcher:
+                self.watcher.set_state(state)
 
             #if not state_changed:
             #    return
@@ -127,5 +131,13 @@ class ManagedApplication(object):
         if (self.window is None) and (self.state == ApplicationState.STOPPED):
             rospy.loginfo("Handling unwanted respawn of %s by killing the process" % self)
             self.proc.stop()
+
+    def get_pid(self):
+        """
+        Return process id, or 0 to signify error
+        """
+        if self.proc:
+            return self.proc.get_pid()
+        return None
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
