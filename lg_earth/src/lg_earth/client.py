@@ -8,6 +8,7 @@ from tempfile import gettempdir as systmp
 import rospy
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
+from lg_common.proc_watcher import ProcWatcher
 from client_config import ClientConfig
 
 TOOLBAR_HEIGHT = 22
@@ -38,7 +39,12 @@ class Client:
         cmd = ['/opt/google/earth/free/googleearth-bin']
 
         cmd.extend(args)
-        self.earth_proc = ManagedApplication(cmd, window=earth_window)
+
+        watcher = ProcWatcher(
+            cpu_time=100, cpu_usage=50, memory_usage=1000, diskspace_usage=1000000,
+            diskspace_dirs=[self._get_tempdir(), '/home/lg/.googleearth'])
+
+        self.earth_proc = ManagedApplication(cmd, window=earth_window, watcher=watcher)
 
         self._make_tempdir()
 
