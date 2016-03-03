@@ -362,15 +362,28 @@ class KmlQueryHandler(tornado.web.RequestHandler):
                 value = urllib2.unquote(value)
 
                 if command == 'playtour':
+                    rospy.loginfo("Playing tour %s" % value)
                     self.playtour.tourname = str(value)
                     self.playtour_service(value)
 
                 elif command == 'planet':
+                    rospy.loginfo("Switching to planet %s" % value)
                     self.planet.planetname = value
                     self.planet_service(value)
                     self._wait_for_planet(value)
 
-                self.finish("OK")
+                elif command == 'wait':
+                    try:
+                        rospy.sleep(float(value))
+                    except ValueError as e:
+                        rospy.logerr(
+                            "Failed to convert %s to a float, while trying to sleep" %
+                            value)
+
+                else:
+                    rospy.logerr("unknown query command: %s" % command)
+
+            self.finish("OK")
 
         except (IndexError, ValueError) as e:
             rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))

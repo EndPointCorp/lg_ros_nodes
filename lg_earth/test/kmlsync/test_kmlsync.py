@@ -272,7 +272,7 @@ class TestKMLSync(unittest.TestCase):
 
         good3 = self.get_request(KML_ENDPOINT + "/query.html?query=planet=%s,playtour=%s" %
                 (self.test_planet, self.test_tour))
-        rospy.sleep(10)
+        rospy.sleep(1)
 
         self.assertEqual(good1.status_code, expected_status)
         self.assertEqual(good2.status_code, expected_status)
