@@ -78,9 +78,42 @@ DIRECTOR_MESSAGE = """
     """
 
 
+class QueryTestSubscriber:
+    def __init__(self, planet, tour):
+        self.planet_pub = rospy.Publisher('/earth/planet', String, queue_size=1)
+        self.planet_sub = rospy.Subscriber('/earth/query/planet', String, self.process_planet)
+        self.playtour_sub = rospy.Subscriber('/earth/query/tour', String, self.process_tour)
+        self.expected_planet = planet
+        self.expected_tour = tour
+        self.reset()
+
+    def process_planet(self, data):
+        #        if data.data == self.expected_planet:
+        self.got_planet = True
+        self.planet_pub.publish(self.expected_planet)
+        sys.exit()
+
+    def process_tour(self, data):
+        if data.data == self.expected_tour and self.got_planet:
+            self.got_planet = True
+
+    def planet_received(self):
+        return self.got_planet
+
+    def tour_received(self):
+        return self.got_tour
+
+    def reset(self):
+        self.got_planet = False
+        self.got_tour = False
+
+
 class TestKMLSync(unittest.TestCase):
     def setUp(self):
         self.session = requests.Session()
+        self.test_planet = 'neptune'
+        self.test_tour = 'lostinspace'
+        self.query_test_subscriber = QueryTestSubscriber(self.test_planet, self.test_tour)
         rospy.Subscriber(QUERY_TOPIC, String, self._listen_query_string)
         self.wait_for_http()
         self.query_string = ''
@@ -211,7 +244,9 @@ class TestKMLSync(unittest.TestCase):
         """
         make a bad get request to get html and assert for 400
         make a legit get request to get 'OK' and status_code 200 and assert for the message that was sent
+        make a request for two commands, and see that it works
         """
+        self.query_test_subscriber.reset()
         expected_status = 400
         bad1 = self.get_request(KML_ENDPOINT + "/query.html")
         bad2 = self.get_request(KML_ENDPOINT + "/query.html?query")
@@ -224,15 +259,21 @@ class TestKMLSync(unittest.TestCase):
         expected_string = "OK"
 
         #self.wait_for_pubsub()
-        good1 = self.get_request(KML_ENDPOINT + "/query.html?query=tour=myworldtour")
+        good1 = self.get_request(KML_ENDPOINT + "/query.html?query=playtour=myworldtour")
         rospy.sleep(1)
         good1_expected_string = "myworldtour"
         self.assertEqual(self.query_string, good1_expected_string)
 
-        good2 = self.get_request(KML_ENDPOINT + "/query.html?query=tour=My World Tour")
+        # NB! Google Earth won't play tours with spaces in the name, so don't
+        # what this does here
+        good2 = self.get_request(KML_ENDPOINT + "/query.html?query=playtour=My World Tour")
         rospy.sleep(1)
         good2_expected_string = "My World Tour"
         self.assertEqual(self.query_string, good2_expected_string)
+
+        good3 = self.get_request(KML_ENDPOINT + "/query.html?query=planet=%s,playtour=%s" %
+                                 (self.test_planet, self.test_tour))
+        rospy.sleep(1)
 
         self.assertEqual(good1.status_code, expected_status)
         self.assertEqual(good2.status_code, expected_status)

@@ -5,7 +5,7 @@ from geometry_msgs.msg import PoseStamped
 
 
 class ViewsyncRelay:
-    def __init__(self, listen_addr, repeat_addr, pose_pub):
+    def __init__(self, listen_addr, repeat_addr, pose_pub, planet_pub):
         """ViewSync sniffer and repeater.
 
         Publishes Earth's position as as Pose.
@@ -18,6 +18,7 @@ class ViewsyncRelay:
         self.listen_addr = listen_addr
         self.repeat_addr = repeat_addr
         self.pose_pub = pose_pub
+        self.planet_pub = planet_pub
 
         self.listen_sock = socket(AF_INET, SOCK_DGRAM)
         self.listen_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -46,7 +47,7 @@ class ViewsyncRelay:
         msg.pose.orientation.x = float(fields[5])
         msg.pose.orientation.y = float(fields[6])
         msg.pose.orientation.w = 0
-        return msg
+        return [msg, str(fields[9])]
 
     def _repeat(self, data):
         """Sends data to the repeat address.
@@ -56,13 +57,14 @@ class ViewsyncRelay:
         """
         self.repeat_sock.sendto(data, self.repeat_addr)
 
-    def _publish_pose_msg(self, pose_msg):
+    def _publish_pose_msg(self, pose_msg, planet):
         """Publish a Pose.
 
         Args:
             pose_msgs (PoseStamped): Pose to be published.
         """
         self.pose_pub.publish(pose_msg)
+        self.planet_pub.publish(planet)
 
     def run(self):
         """Run the relay.
@@ -80,8 +82,8 @@ class ViewsyncRelay:
 
             self._repeat(data)
 
-            pose_msg = ViewsyncRelay.parse_pose(data)
-            self._publish_pose_msg(pose_msg)
+            pose_msg, planet = ViewsyncRelay.parse_pose(data)
+            self._publish_pose_msg(pose_msg, planet)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
