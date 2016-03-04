@@ -1,0 +1,3 @@
+#!/bin/bash
+
+roslaunch --screen /home/lg/src/lg_ros_nodes/lg_common/launch/pv.launch broadcast_addr:=224.0.0.1
