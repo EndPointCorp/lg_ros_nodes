@@ -77,6 +77,7 @@ DIRECTOR_MESSAGE = """
     }
     """
 
+
 class QueryTestSubscriber:
     def __init__(self, planet, tour):
         self.planet_pub = rospy.Publisher('/earth/planet', String, queue_size=1)
@@ -271,7 +272,7 @@ class TestKMLSync(unittest.TestCase):
         self.assertEqual(self.query_string, good2_expected_string)
 
         good3 = self.get_request(KML_ENDPOINT + "/query.html?query=planet=%s,playtour=%s" %
-                (self.test_planet, self.test_tour))
+                                 (self.test_planet, self.test_tour))
         rospy.sleep(1)
 
         self.assertEqual(good1.status_code, expected_status)

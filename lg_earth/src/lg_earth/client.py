@@ -12,7 +12,8 @@ from client_config import ClientConfig
 
 TOOLBAR_HEIGHT = 22
 
-CUSTOM_CONFIG_DIR='/lg'
+CUSTOM_CONFIG_DIR = '/lg'
+
 
 class Client:
     """Google Earth client launcher."""
@@ -189,12 +190,13 @@ class Client:
         Args:
             standard_conf_path (str): Path of the standard config
         """
-        ret_val=False
+
+        ret_val = False
         conf_filename = os.path.basename(standard_conf_path)
         custom_conf_expected_path = CUSTOM_CONFIG_DIR + '/' + conf_filename
 
         if os.path.isfile(custom_conf_expected_path):
-            ret_val=True
+            ret_val = True
 
         return ret_val
 
