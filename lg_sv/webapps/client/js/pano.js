@@ -19,6 +19,7 @@ function init() {
   var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
   var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
   var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, false);
+  var showAttribution = getParameterByName('showAttribution', stringToBoolean, false);
   var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
 
   var ros = new ROSLIB.Ros({ url: url });
@@ -42,13 +43,16 @@ function init() {
 
   var metadataTopic = new ROSLIB.Topic({
     ros: ros,
-    name: '/streetview/metadata',
+    name: '/panoviewer/metadata',
     messageType: 'std_msgs/String',                                                                       
     throttle_rate: 16,
     queue_length: 1
   });
   
   var handleMetadataMsg = function(msg) {
+    if (! showAttribution)
+      return;
+
     $("#titlecard").show();
     $("#titlecard").text(JSON.parse(msg.data).location.description);
   };  

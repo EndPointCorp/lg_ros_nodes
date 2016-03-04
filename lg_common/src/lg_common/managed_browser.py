@@ -27,7 +27,7 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, command_line_args='', **kwargs):
+                 shell=True, command_line_args='', extensions=[], **kwargs):
 
         cmd = [binary]
 
@@ -57,6 +57,9 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--user-data-dir={}'.format(tmp_dir))
         cmd.append('--disk-cache-dir={}'.format(tmp_dir))
         cmd.append('--crash-dumps-dir={}/crashes'.format(tmp_dir))
+
+        if extensions:
+            cmd.append('--load-extension={}'.format(','.join(extensions)))
 
         cmd.extend(DEFAULT_ARGS)
         if command_line_args != '':

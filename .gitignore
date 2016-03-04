@@ -74,3 +74,6 @@ tags
 pulsar.log
 # personal launch file
 tmp.launch
+
+# docker copy of nodes
+docker_nodes/

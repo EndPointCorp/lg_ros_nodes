@@ -24,6 +24,7 @@ if __name__ == '__main__':
         'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
     )
     state = rospy.get_param('~state', ApplicationState.VISIBLE)
+    extensions = rospy.get_param('~extensions', [])
 
     global_dependency_timeout = rospy.get_param("/global_dependency_timeout", 15)
     depend_on_url = rospy.get_param("~depend_on_url", False)
@@ -45,7 +46,8 @@ if __name__ == '__main__':
         command_line_args=command_line_args,
         force_device_scale_factor=scale_factor,
         debug_port=debug_port,
-        user_agent=user_agent
+        user_agent=user_agent,
+        extensions=extensions
     )
 
     browser.set_state(state)

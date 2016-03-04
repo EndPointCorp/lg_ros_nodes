@@ -12,6 +12,7 @@ add_service_files(
   FILES
   KmlState.srv
   PlaytourQuery.srv
+  PlanetQuery.srv
 )
 
 generate_messages()
@@ -35,6 +36,8 @@ catkin_install_python(PROGRAMS
   scripts/kmlsync.py
   scripts/kmlsync_state
   scripts/kmlsync_state.py
+  scripts/planet_changer
+  scripts/planet_changer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

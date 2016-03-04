@@ -4,6 +4,7 @@ import rospy
 
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import String
 
 
 if __name__ == '__main__':
@@ -17,11 +18,15 @@ if __name__ == '__main__':
     pose_pub = rospy.Publisher(
         '/earth/pose', PoseStamped, queue_size=3
     )
+    planet_pub = rospy.Publisher(
+        '/earth/planet', String, queue_size=3
+    )
 
     relay = ViewsyncRelay(
         listen_addr=(listen_host, listen_port),
         repeat_addr=(repeat_host, repeat_port),
-        pose_pub=pose_pub
+        pose_pub=pose_pub,
+        planet_pub=planet_pub
     )
 
     relay.run()
