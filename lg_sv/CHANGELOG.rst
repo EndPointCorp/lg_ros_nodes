@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.37 (2016-03-04)
+-------------------
 * ignore buttons when state is false
 * listen in on the proper metadata topic
 * attribution card showing / hiding

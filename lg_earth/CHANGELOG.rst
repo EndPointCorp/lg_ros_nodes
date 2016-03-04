@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.37 (2016-03-04)
+-------------------
 * Changed perms for test_kmlsync.py
 * PEP8'ed the code
 * Add wait command, and fix looping through query commands
