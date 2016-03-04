@@ -2,14 +2,16 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.20 (2015-10-21)
--------------------
-* init nearbypano parent class
+Forthcoming
+-----------
+* ignore buttons when state is false
+* listen in on the proper metadata topic
+* attribution card showing / hiding
 * Contributors: Jacob Minshall
 
 1.1.36 (2016-02-17)
 -------------------
-* lg_sv: add missing dependency
+* add missing dependency
 * Contributors: Jacob Minshall
 
 1.1.35 (2016-02-05)
@@ -50,23 +52,6 @@ Changelog for package lg_sv
 * lg_sv: add description and attribution_name to metadata
   Raw metadata from the client is trimmed down to ignore fields we don't
   use, but we are now using both of those fields.
-* 1.1.26
-* Changelogs
-* Merge pull request `#112 <https://github.com/endpointcorp/lg_ros_nodes/issues/112>`_ from EndPointCorp/ft-change_panos_via_button
-  lg_sv: move forward if a button has been clicked
-* Revert "WIP on changing panos pointing to the closest link"
-  This reverts commit a38e0e036faeb6192c412b6bb075eaf5e53766c0.
-  More work needs to be put into this commit before merging it.
-* WIP on changing panos pointing to the closest link
-* lg_sv: different buttons do different things
-* pep8 fix
-* lg_sv: move forward if a button has been clicked
-* Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
-
-1.1.25 (2015-11-17)
--------------------
-* Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
-* Contributors: Szymon Lipiński
 
 1.1.26 (2015-11-25)
 -------------------
@@ -75,20 +60,19 @@ Changelog for package lg_sv
 * Revert "WIP on changing panos pointing to the closest link"
   This reverts commit a38e0e036faeb6192c412b6bb075eaf5e53766c0.
   More work needs to be put into this commit before merging it.
-* 1.1.25
-* Generated new changelog
-* Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
 * WIP on changing panos pointing to the closest link
 * lg_sv: different buttons do different things
 * pep8 fix
 * lg_sv: move forward if a button has been clicked
-* Contributors: Adam Vollrath, Jacob Minshall, Szymon Lipiński
+* Contributors: Adam Vollrath, Jacob Minshall
+
+1.1.25 (2015-11-17)
+-------------------
+* Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
+* Contributors: Szymon Lipiński
 
 1.1.24 (2015-11-16)
 -------------------
-* 1.1.23
-* Generated changelogs
-* Changed title for pano viewers
 * lg_sv: remove 42-b hard coding in favor of parameterized ros url
 * lg_sv: resets zoom after changing panos
 * lg_sv: some changes for specific lgs
@@ -118,10 +102,12 @@ Changelog for package lg_sv
 1.1.21 (2015-10-22)
 -------------------
 * lg_sv: invert the heading given by the director
-* 1.1.20
-* Changelogs for 1.1.20
+* Contributors: Matt Vollrath
+
+1.1.20 (2015-10-21)
+-------------------
 * init nearbypano parent class
-* Contributors: Jacob Minshall, Matt Vollrath
+* Contributors: Jacob Minshall
 
 1.1.19 (2015-10-20)
 -------------------
@@ -150,7 +136,7 @@ Changelog for package lg_sv
 1.1.16 (2015-10-11)
 -------------------
 * Added streetview client ROSbridge dependency
-* Contributors: Wojciech
+* Contributors: Wojciech Ziniewicz
 
 1.1.15 (2015-10-10)
 -------------------
@@ -284,15 +270,3 @@ Changelog for package lg_sv
 ------------------
 * Initial lg_sv package
 * Contributors: Jacob Minshall, Kannan Ponnusamy, Matt Vollrath, Will Plaut
-
-0.0.4 (2015-07-27 15:11)
-------------------------
-
-0.0.3 (2015-07-21 18:14)
-------------------------
-
-0.0.2 (2015-07-21 17:11)
-------------------------
-
-0.0.1 (2015-07-08)
-------------------
