@@ -37,7 +37,10 @@ RUN \
     onboard \
     git \
     libexif12 \
-    libexif-dev
+    libexif-dev \
+    vim \
+    nano \
+    mc
 
 # Install more dependencies from the End Point Portal repository and upstream.
 RUN \
@@ -103,8 +106,7 @@ WORKDIR /home/lg
 RUN	    mkdir /home/lg/src && cd /home/lg/src ;\
         git clone git://github.com/EndPointCorp/lg_ros_nodes.git ;\
 	    git clone git://github.com/EndPointCorp/appctl.git ;\
-        cd /home/lg/src/lg_ros_nodes && \
-        git checkout features/docker-image
+        cd /home/lg/src/lg_ros_nodes
 
 USER    root
 WORKDIR /home/lg/src/lg_ros_nodes
@@ -118,5 +120,9 @@ RUN     source /opt/ros/indigo/setup.bash ;\
         source /home/lg/src/lg_ros_nodes/catkin/devel/setup.bash ;\
         catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install
 
-# roslaunch --screen lg_common/launch/dev.launch broadcast_addr:=224.0.0.1
-ENTRYPOINT tmux
+RUN     echo 'export PATH=$PATH:/home/lg/bin' >> /home/lg/.bashrc
+RUN     echo 'export PATH=$PATH:/home/lg/bin' >> /root/.bashrc
+ADD     image_scripts /home/lg/bin
+
+USER    lg
+ENTRYPOINT bash
