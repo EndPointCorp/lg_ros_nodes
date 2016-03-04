@@ -84,6 +84,7 @@ Uses the sv launcher to start a browser with a sv instance. Add event listeners 
 * `~fov` [string] - The field of view, how zoomed out we are from the images. Default: `28.125`
 * `~pitch_offset` [float] - Pitch offset. Default: `0`
 * `~show_links` [boolean] - Whether or not to show the chevrons that point to the direction of nearby panos. Only really useful on the center pano. Default: `False`
+* `~show_attribution` [boolean] - Whether or not to show the attribution card on the top right of each screen. Should probably only be on the far left screen. Default: `False`
 * `~yaw_offset` [float] - The number of screens over from the center screen. `left_one` would be `-1`, `right_two` would be `2`, etc. Default: `0`
 * `~leader` [boolean] - Used on one screen (panoviewer only) to determine the master for video syncing. Default: `false`
 * `~tilt` [boolean] - Whether or not (streetview only) tilt will be handled. Ignored by `lg_sv_nonfree`. Default: `false`

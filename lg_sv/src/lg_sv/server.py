@@ -264,6 +264,8 @@ class PanoViewerServer:
         """
         Move forward if the button is down, and wasn't previously down
         """
+        if not self.state:
+            return
         if 1 not in joy.buttons:
             self.button_down = False
             return

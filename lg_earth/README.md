@@ -163,3 +163,20 @@ Listens on topics for queries to write to the Earth query file.
 * `/earth/query/search` [`std_msgs/String`] - Search string.
 * `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
 * `/earth/query/planet` [`std_msgs/String`] - Change planets.
+
+#### planet\_changer
+
+Content-triggered planet switching.  Changes planets based on the name of a selected presentation.  If the selected presentation does not match the Moon or Mars groups, Earth is selected.
+
+##### Parameters
+
+* `~moon_presentations` [string] - Semicolon-separated list of presentations to run on the Moon.  Default: `Moon`
+* `~mars_presentations` [string] - Semicolon-separated list of presentations to run on the Mars.  Default: `Mars`
+
+##### Subscribed Topics
+
+* `/director/presentation` [`interactivespaces_msgs/GenericMessage`]
+
+##### Published Topics
+
+* `/earth/query/planet` [`std_msgs/String`]
