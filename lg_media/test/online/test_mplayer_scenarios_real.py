@@ -246,7 +246,7 @@ class TestMediaService(object):
         self.shutdown_check_clean_up()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__LOL_UNCOMMENT":
     # this is for testing via unittest rather than via py.test
     # unittest test
     # test class must inherit from unittest.TestCase, not from object
