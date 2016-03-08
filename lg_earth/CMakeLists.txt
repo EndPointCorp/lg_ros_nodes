@@ -12,6 +12,7 @@ add_service_files(
   FILES
   KmlState.srv
   PlaytourQuery.srv
+  PlanetQuery.srv
 )
 
 generate_messages()

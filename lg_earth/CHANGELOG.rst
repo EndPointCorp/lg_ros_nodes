@@ -2,8 +2,19 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.20 (2015-10-21)
+1.1.37 (2016-03-04)
 -------------------
+* Changed perms for test_kmlsync.py
+* PEP8'ed the code
+* Add wait command, and fix looping through query commands
+* planet_changer script for Earth
+* Expand tests for query interface
+* Make kmlsync support multiple comma-separated commands per query.html get request
+  Also watch planet changes from the viewsync_relay service, and don't return
+  from a planet command until the planet change shows up in the viewsync feed.
+* Report the planet in each viewsync query, on /earth/planet
+* Finish adding planet support to kmlsync's query interface
+* Contributors: Josh Tolley, Joshua Tolley, Matt Vollrath, Wojciech Ziniewicz
 
 1.1.36 (2016-02-17)
 -------------------
@@ -51,24 +62,15 @@ Changelog for package lg_earth
 
 1.1.27 (2015-11-25)
 -------------------
-* 1.1.26
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.1.26 (2015-11-25)
+-------------------
 
 1.1.25 (2015-11-17)
 -------------------
 
-1.1.26 (2015-11-25)
--------------------
-* 1.1.25
-* Generated new changelog
-* Contributors: Szymon Lipiński
-
 1.1.24 (2015-11-16)
 -------------------
-* 1.1.23
-* Generated changelogs
-* Contributors: Wojciech Ziniewicz
 
 1.1.23 (2015-11-13)
 -------------------
@@ -78,9 +80,9 @@ Changelog for package lg_earth
 
 1.1.21 (2015-10-22)
 -------------------
-* 1.1.20
-* Changelogs for 1.1.20
-* Contributors: Matt Vollrath
+
+1.1.20 (2015-10-21)
+-------------------
 
 1.1.19 (2015-10-20)
 -------------------
@@ -116,7 +118,6 @@ Changelog for package lg_earth
 
 1.1.10 (2015-10-05)
 -------------------
-* Added lots of docs
 * Documentation
   - moved earth docs to lg_earth
   - added lg image
@@ -178,8 +179,6 @@ Changelog for package lg_earth
 
 1.1.0 (2015-09-17)
 ------------------
-* Fix 1.0.9 changelogs
-* Contributors: Jacob Minshall, Matt Vollrath
 
 1.0.9 (2015-09-09)
 ------------------

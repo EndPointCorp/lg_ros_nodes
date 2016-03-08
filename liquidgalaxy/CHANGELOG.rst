@@ -2,7 +2,7 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.20 (2015-10-21)
+1.1.37 (2016-03-04)
 -------------------
 
 1.1.36 (2016-02-17)
@@ -34,24 +34,15 @@ Changelog for package liquidgalaxy
 
 1.1.27 (2015-11-25)
 -------------------
-* 1.1.26
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.1.26 (2015-11-25)
+-------------------
 
 1.1.25 (2015-11-17)
 -------------------
 
-1.1.26 (2015-11-25)
--------------------
-* 1.1.25
-* Generated new changelog
-* Contributors: Szymon Lipiński
-
 1.1.24 (2015-11-16)
 -------------------
-* 1.1.23
-* Generated changelogs
-* Contributors: Wojciech Ziniewicz
 
 1.1.23 (2015-11-13)
 -------------------
@@ -61,9 +52,9 @@ Changelog for package liquidgalaxy
 
 1.1.21 (2015-10-22)
 -------------------
-* 1.1.20
-* Changelogs for 1.1.20
-* Contributors: Matt Vollrath
+
+1.1.20 (2015-10-21)
+-------------------
 
 1.1.19 (2015-10-20)
 -------------------
@@ -97,11 +88,9 @@ Changelog for package liquidgalaxy
 
 1.1.9 (2015-09-25)
 ------------------
-* Contributors: Adam Vollrath, Jacob Minshall
 
 1.1.8 (2015-09-25)
 ------------------
-* Contributors: Adam Vollrath
 
 1.1.7 (2015-09-24)
 ------------------
@@ -128,8 +117,6 @@ Changelog for package liquidgalaxy
 
 1.1.0 (2015-09-17)
 ------------------
-* Fix 1.0.9 changelogs
-* Contributors: Matt Vollrath
 
 1.0.9 (2015-09-09)
 ------------------
@@ -175,12 +162,3 @@ Changelog for package liquidgalaxy
 ------------------
 * Add liquidgalaxy metapackage
 * Contributors: Matt Vollrath
-
-0.0.3 (2015-07-21 18:14)
-------------------------
-
-0.0.2 (2015-07-21 17:11)
-------------------------
-
-0.0.1 (2015-07-08)
-------------------

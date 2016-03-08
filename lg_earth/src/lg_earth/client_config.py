@@ -6,7 +6,8 @@ import urllib
 
 import rospy
 
-CUSTOM_CONFIG_DIR='/lg'
+CUSTOM_CONFIG_DIR = '/lg'
+
 
 class ClientConfig:
     """
