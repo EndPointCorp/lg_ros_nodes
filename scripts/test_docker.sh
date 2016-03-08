@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 cd $(dirname $0)
 DIR=`pwd -P`
 DOCKER_NAME=
@@ -6,7 +9,7 @@ function setup_files() {
   # make a destination for the files
 	mkdir -p docker_nodes/
 	# copy all nodes (following links) into the proper directory
-	cp -rpH catkin/src/* docker_nodes/
+	cp -faL catkin/src/* docker_nodes/ || true
 }
 
 function initialize() {
