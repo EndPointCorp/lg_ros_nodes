@@ -249,7 +249,7 @@ class TestMediaService(object):
         """
         Mockity mock
         """
-        assert True == True
+        assert 1 == 1
 
 if __name__ == "__main__":
     # this is for testing via unittest rather than via py.test
