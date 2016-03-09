@@ -2,6 +2,13 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed unittest
+* Mockity mock for mplayer tests
+* Disabled mplayer real tests as we're not using them
+* Contributors: Wojciech Ziniewicz
+
 1.1.37 (2016-03-04)
 -------------------
 

@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Queue Earth query writes
+* Contributors: Matt Vollrath
+
 1.1.37 (2016-03-04)
 -------------------
 * Changed perms for test_kmlsync.py
