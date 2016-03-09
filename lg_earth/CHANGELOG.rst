@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.38 (2016-03-09)
+-------------------
 * Queue Earth query writes
 * Contributors: Matt Vollrath
 
