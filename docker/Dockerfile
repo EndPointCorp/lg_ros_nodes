@@ -40,7 +40,8 @@ RUN \
     libexif-dev \
     vim \
     nano \
-    mc
+    mc \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install more dependencies from the End Point Portal repository and upstream.
 RUN \
