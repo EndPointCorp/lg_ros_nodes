@@ -154,6 +154,7 @@ Listens on topics for queries to write to the Earth query file.
 ##### Parameters
 
 * `~query_file` [string] - Path to the Earth query file. Default: `/tmp/ge_queryfile`
+* `~queue_length` [int] - Number of queries to queue up. Default: `10`
 
 ##### Subscribed Topics
 
