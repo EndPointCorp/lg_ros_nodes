@@ -104,11 +104,16 @@ RUN useradd -ms /bin/bash lg && \
 USER    lg
 WORKDIR /home/lg
 
+# EndPoint LG sources.
+#
+# TODO: remove "checkout features/docker-image", made for debug
 RUN	    mkdir /home/lg/src && cd /home/lg/src ;\
         git clone git://github.com/EndPointCorp/lg_ros_nodes.git ;\
 	    git clone git://github.com/EndPointCorp/appctl.git ;\
-        cd /home/lg/src/lg_ros_nodes
+        cd /home/lg/src/lg_ros_nodes ;\
+        git checkout features/docker-image
 
+# Make and install lg_ros_nodes
 USER    root
 WORKDIR /home/lg/src/lg_ros_nodes
 RUN     source /opt/ros/indigo/setup.bash ;\
@@ -121,9 +126,19 @@ RUN     source /opt/ros/indigo/setup.bash ;\
         source /home/lg/src/lg_ros_nodes/catkin/devel/setup.bash ;\
         catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install
 
+# Install RQT utilities
+RUN     apt-get update && \
+        apt-get -y --force-yes --no-install-recommends install \
+          ros-indigo-rqt \
+          ros-indigo-rqt-common-plugins \
+        && rm -rf /var/lib/apt/lists/*
+
+# Fix QT "X Error: BadAccess"
+ENV     QT_X11_NO_MITSHM=1
+
 RUN     echo 'export PATH=$PATH:/home/lg/bin' >> /home/lg/.bashrc
 RUN     echo 'export PATH=$PATH:/home/lg/bin' >> /root/.bashrc
 ADD     image_scripts /home/lg/bin
 
-USER    lg
+USER    root
 ENTRYPOINT bash
