@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(spacenav_wrapper)
 
-find_package(catkin REQUIRED
+find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
 )
@@ -25,9 +25,9 @@ install(
 
 add_library(hid src/hid.c)
 
-add_executable(spacenav-rezero src/spacenav-rezero.cpp)
+add_executable(spacenav_rezero src/spacenav-rezero.cpp)
 
-add_dependencies(spacenav-rezero hid)
+add_dependencies(spacenav_rezero hid)
 
 target_link_libraries(hid
   ${catkin_LIBRARIES}
@@ -36,13 +36,13 @@ target_link_libraries(hid
   hid
 )
 
-target_link_libraries(spacenav-rezero
+target_link_libraries(spacenav_rezero
   ${catkin_LIBRARIES}
   udev
   pthread
   hid
 )
-install(TARGETS spacenav-rezero
+install(TARGETS spacenav_rezero
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

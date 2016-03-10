@@ -25,7 +25,10 @@
 //#include "hidapi.h"
 #include <spacenav_wrapper/hidapi.h>
 
-int main( int argc, char* argv[] )
+#include "ros/ros.h"
+#include "std_msgs/String.h"
+
+void rezero(const std_msgs::String::ConstPtr& msg)
 {
   unsigned char buf[2];
   hid_device *handle;
@@ -45,7 +48,7 @@ int main( int argc, char* argv[] )
   }
 
   if ( handle == NULL ) {
-    fprintf( stderr, "%s: Could not open HID device (got sudo?)\n", argv[0] );
+    fprintf( stderr, "spacenav-rezero: Could not open HID device (got sudo?)\n");
     exit( EXIT_FAILURE );
   }
 
@@ -54,11 +57,21 @@ int main( int argc, char* argv[] )
   res = hid_send_feature_report( handle, buf, sizeof(buf) );
 
   if ( res != sizeof(buf) ) {
-    fprintf( stderr, "%s: Write failed\n", argv[0] );
+    fprintf( stderr, "spacenav-rezero: Write failed\n");
     exit( EXIT_FAILURE );
   }
 
   hid_close( handle );
+}
 
-  return EXIT_SUCCESS;
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "spacenav_rezero");
+  ros::NodeHandle n;
+
+  ros::Subscriber sub = n.subscribe("rezero", 1000, rezero);
+
+  ros::spin();
+
+  return 0;
 }
