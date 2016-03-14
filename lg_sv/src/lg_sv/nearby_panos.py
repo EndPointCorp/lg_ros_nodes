@@ -25,6 +25,10 @@ class NearbyPanos:
     def invert(self, inverted):
         self.inverted = inverted
 
+    def handle_soft_relaunch(self, *args, **kwargs):
+        self.metadata = None
+        self.panoid = None
+
 
 class NearbyStreetviewPanos(NearbyPanos):
     def __init__(self):

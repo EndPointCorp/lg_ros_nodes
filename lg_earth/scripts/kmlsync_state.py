@@ -3,6 +3,7 @@ import rospy
 from lg_earth import KmlSyncState
 from interactivespaces_msgs.msg import GenericMessage
 from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
+from lg_common.helpers import make_soft_relaunch_callback
 
 
 def main():
@@ -17,6 +18,7 @@ def main():
     rospy.Service(service_channel, KmlState, s._process_service_request)
     rospy.Service(playtour_channel, PlaytourQuery, s._send_playtour_query)
     rospy.Service(planet_channel, PlanetQuery, s._send_planet_query)
+    make_soft_relaunch_callback(s._handle_soft_relaunch, groups=["earth"])
 
     rospy.spin()
 
