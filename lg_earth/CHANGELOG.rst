@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_earth: hacky template for setting HOME_DIR in custom configs
+* Contributors: Jacob Minshall
+
 1.1.38 (2016-03-09)
 -------------------
 * Queue Earth query writes
