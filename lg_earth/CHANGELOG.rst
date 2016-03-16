@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.39 (2016-03-16)
+-------------------
 * lg_earth: hacky template for setting HOME_DIR in custom configs
 * Contributors: Jacob Minshall
 
