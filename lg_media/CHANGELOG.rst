@@ -2,7 +2,32 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.20 (2015-10-21)
+1.1.38 (2016-03-09)
+-------------------
+* Fixed unittest
+* Mockity mock for mplayer tests
+* Disabled mplayer real tests as we're not using them
+* Contributors: Wojciech Ziniewicz
+
+1.1.37 (2016-03-04)
+-------------------
+
+1.1.36 (2016-02-17)
+-------------------
+
+1.1.35 (2016-02-05)
+-------------------
+
+1.1.34 (2016-02-05)
+-------------------
+
+1.1.33 (2016-02-04)
+-------------------
+
+1.1.32 (2016-01-28)
+-------------------
+
+1.1.31 (2016-01-20)
 -------------------
 
 1.1.30 (2016-01-11)
@@ -18,25 +43,15 @@ Changelog for package lg_media
 
 1.1.27 (2015-11-25)
 -------------------
-* 1.1.26
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.1.26 (2015-11-25)
+-------------------
 
 1.1.25 (2015-11-17)
 -------------------
 
-1.1.26 (2015-11-25)
--------------------
-* 1.1.25
-* Generated new changelog
-* Contributors: Szymon Lipiński
-
 1.1.24 (2015-11-16)
 -------------------
-* Merge pull request `#116 <https://github.com/EndPointCorp/lg_ros_nodes/issues/116>`_ from EndPointCorp/topic/roll_ocean_changes_in2
-  Topic/roll ocean changes in2
-* 1.1.23
-* Generated changelogs
 * Add mplayer to lg_media run_depends
 * increased mplayer timeout
 * Contributors: Matt Vollrath, Wojciech Ziniewicz, Zdenek Maxa
@@ -49,9 +64,9 @@ Changelog for package lg_media
 
 1.1.21 (2015-10-22)
 -------------------
-* 1.1.20
-* Changelogs for 1.1.20
-* Contributors: Matt Vollrath
+
+1.1.20 (2015-10-21)
+-------------------
 
 1.1.19 (2015-10-20)
 -------------------
@@ -80,21 +95,18 @@ Changelog for package lg_media
 
 1.1.12 (2015-10-07)
 -------------------
-* Contributors: Wojciech Ziniewicz
 
 1.1.11 (2015-10-06)
 -------------------
 
 1.1.10 (2015-10-05)
 -------------------
-* Merging
 * Added lots of docs
 * mplayer occassional issues investigated and understood, should be fine now, touch:`#31 <https://github.com/endpointcorp/lg_ros_nodes/issues/31>`_
 
 1.1.9 (2015-09-25)
 ------------------
 * pep8 fixes
-* added real mplayer test scenarios, still needs debugging
 * Contributors: Adam Vollrath, Jacob Minshall, Zdenek Maxa
 
 1.1.8 (2015-09-25)
@@ -175,27 +187,3 @@ Changelog for package lg_media
 ------------------
 * Initial release
 * Contributors: Matt Vollrath, Wojciech Ziniewicz, Zdenek Maxa
-
-1.0.1 (2015-07-29 08:17)
-------------------------
-
-0.0.7 (2015-07-28 19:11)
-------------------------
-
-0.0.6 (2015-07-28 18:46)
-------------------------
-
-0.0.5 (2015-07-27 18:58)
-------------------------
-
-0.0.4 (2015-07-27 15:11)
-------------------------
-
-0.0.3 (2015-07-21 18:14)
-------------------------
-
-0.0.2 (2015-07-21 17:11)
-------------------------
-
-0.0.1 (2015-07-08)
-------------------

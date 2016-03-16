@@ -42,6 +42,9 @@ If Earth isn't syncing, make sure that your firewall isn't blocking broadcast da
 
 Where 1.2.3.255 is your broadcast address.
 
+### Language Support
+
+To set the language locale for Google Earth set the `LG_LANG` enviromental variable.
 
 ### Nodes
 
@@ -101,6 +104,7 @@ Run with sudo.
 * `show_buildings` [bool] - Show photorealistic (textured) 3D buildings. Default: `true`
 * `show_trees` [bool] - Show 3D trees. Default: `true`
 * `show_google_logo` [bool] - Show the Google Earth logo at the bottom of the window. Default: `true`
+* `custom_configs` [string] - Url and filename for config files "<url>,filename;<url2>,filename2;..."
 * `kml_sync_base` [string] - URL path to KML sync location. Default: `None`
 * `kml_sync_slug` [string] - Identifier for KML sync. Default: `default`
 * `default_view` [string] - KML AbstractView for starting location. Default: `<LookAt><longitude>-122.4661297737901</longitude><latitude>37.71903477888115</latitude><altitude>0</altitude><heading>42.60360249388481</heading><tilt>66.02791701475958</tilt><range>36611.51655091633</range><gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>`
@@ -150,6 +154,7 @@ Listens on topics for queries to write to the Earth query file.
 ##### Parameters
 
 * `~query_file` [string] - Path to the Earth query file. Default: `/tmp/ge_queryfile`
+* `~queue_length` [int] - Number of queries to queue up. Default: `10`
 
 ##### Subscribed Topics
 
@@ -159,3 +164,20 @@ Listens on topics for queries to write to the Earth query file.
 * `/earth/query/search` [`std_msgs/String`] - Search string.
 * `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
 * `/earth/query/planet` [`std_msgs/String`] - Change planets.
+
+#### planet\_changer
+
+Content-triggered planet switching.  Changes planets based on the name of a selected presentation.  If the selected presentation does not match the Moon or Mars groups, Earth is selected.
+
+##### Parameters
+
+* `~moon_presentations` [string] - Semicolon-separated list of presentations to run on the Moon.  Default: `Moon`
+* `~mars_presentations` [string] - Semicolon-separated list of presentations to run on the Mars.  Default: `Mars`
+
+##### Subscribed Topics
+
+* `/director/presentation` [`interactivespaces_msgs/GenericMessage`]
+
+##### Published Topics
+
+* `/earth/query/planet` [`std_msgs/String`]

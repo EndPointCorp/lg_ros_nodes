@@ -2,7 +2,28 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.20 (2015-10-21)
+1.1.38 (2016-03-09)
+-------------------
+
+1.1.37 (2016-03-04)
+-------------------
+
+1.1.36 (2016-02-17)
+-------------------
+
+1.1.35 (2016-02-05)
+-------------------
+
+1.1.34 (2016-02-05)
+-------------------
+
+1.1.33 (2016-02-04)
+-------------------
+
+1.1.32 (2016-01-28)
+-------------------
+
+1.1.31 (2016-01-20)
 -------------------
 
 1.1.30 (2016-01-11)
@@ -18,24 +39,15 @@ Changelog for package lg_activity
 
 1.1.27 (2015-11-25)
 -------------------
-* 1.1.26
-* Changelogs
-* Contributors: Wojciech Ziniewicz
 
 1.1.25 (2015-11-17)
 -------------------
 
 1.1.26 (2015-11-25)
 -------------------
-* 1.1.25
-* Generated new changelog
-* Contributors: Szymon Lipiński
 
 1.1.24 (2015-11-16)
 -------------------
-* 1.1.23
-* Generated changelogs
-* Contributors: Wojciech Ziniewicz
 
 1.1.23 (2015-11-13)
 -------------------
@@ -45,9 +57,9 @@ Changelog for package lg_activity
 
 1.1.21 (2015-10-22)
 -------------------
-* 1.1.20
-* Changelogs for 1.1.20
-* Contributors: Matt Vollrath
+
+1.1.20 (2015-10-21)
+-------------------
 
 1.1.19 (2015-10-20)
 -------------------
@@ -72,22 +84,18 @@ Changelog for package lg_activity
 
 1.1.12 (2015-10-07)
 -------------------
-* Contributors: Wojciech Ziniewicz
 
 1.1.11 (2015-10-06)
 -------------------
 
 1.1.10 (2015-10-05)
 -------------------
-* Added lots of docs
 
 1.1.9 (2015-09-25)
 ------------------
-* Contributors: Adam Vollrath, Jacob Minshall
 
 1.1.8 (2015-09-25)
 ------------------
-* Contributors: Adam Vollrath, Jacob Minshall
 
 1.1.7 (2015-09-24)
 ------------------
@@ -115,7 +123,7 @@ Changelog for package lg_activity
 1.1.0 (2015-09-17)
 ------------------
 * Added diagram in PNG format
-* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
 
 1.0.9 (2015-09-09)
 ------------------

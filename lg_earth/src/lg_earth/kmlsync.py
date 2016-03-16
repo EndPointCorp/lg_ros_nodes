@@ -71,7 +71,7 @@ def get_kml_root():
 class KmlMasterHandler(tornado.web.RequestHandler):
     def get(self):
         """Serve the master.kml which is updated by NLC."""
-        rospy.loginfo("Got master.kml GET request")
+        rospy.logdebug("Got master.kml GET request")
         kml_root = get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
@@ -111,7 +111,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cls.finish_all_requests()
         except Exception as e:
-            rospy.loginfo("Exception getting scene changes" + str(e))
+            rospy.logerr("Exception getting scene changes" + str(e))
             pass
 
     def non_blocking_sleep(self, duration):
@@ -133,11 +133,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         if KmlUpdateHandler.timeout <= 0:
             no_defer = True
 
-        rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
+        rospy.logdebug("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
         window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = self.get_query_argument('asset_slug', default='')
 
-        rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
+        rospy.logdebug("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
         if not window_slug:
             self.set_status(400, "No window slug provided")
@@ -162,8 +162,8 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         self.unique_id = KmlUpdateHandler.get_unique_id()
 
-        rospy.loginfo("Request Counter: {}".format(self.unique_id))
-        rospy.loginfo("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
+        rospy.logdebug("Request Counter: {}".format(self.unique_id))
+        rospy.logdebug("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
 
         KmlUpdateHandler.add_deferred_request(self, self.unique_id)
         yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
@@ -330,10 +330,24 @@ class KmlQueryHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.playtour = self.application.playtour
         self.playtour_service = self.application.playtour_service
+        self.planet = self.application.planet
+        self.planet_service = self.application.planet_service
+        self.get_planet = self.application.get_planet
+
+    def _wait_for_planet(self, planet):
+        sleeptime = 0.1  # How long to sleep between iterations
+        intervals = 50   # How many iterations to try before giving up
+        interval_count = 0
+        done = False
+
+        while self.get_planet() != planet and interval_count < intervals:
+            interval_count += 1
+            rospy.sleep(sleeptime)
 
     def get(self):
         """
-        Publish play tour message on the topic /earth/query/tour
+        Publish messages for the lg_earth/query service, in response to GET
+        requests
         """
         query_string = self.get_query_argument('query', default='')
 
@@ -343,16 +357,38 @@ class KmlQueryHandler(tornado.web.RequestHandler):
             return
 
         try:
-            tour_string = query_string.split('=')[1]
-        except IndexError as e:
+            for op in query_string.split(','):
+                command, value = op.split('=')
+                value = urllib2.unquote(value)
+
+                if command == 'playtour':
+                    rospy.loginfo("Playing tour %s" % value)
+                    self.playtour.tourname = str(value)
+                    self.playtour_service(value)
+
+                elif command == 'planet':
+                    rospy.loginfo("Switching to planet %s" % value)
+                    self.planet.planetname = value
+                    self.planet_service(value)
+                    self._wait_for_planet(value)
+
+                elif command == 'wait':
+                    try:
+                        rospy.sleep(float(value))
+                    except ValueError as e:
+                        rospy.logerr(
+                            "Failed to convert %s to a float, while trying to sleep" %
+                            value)
+
+                else:
+                    rospy.logerr("unknown query command: %s" % command)
+
+            self.finish("OK")
+
+        except (IndexError, ValueError) as e:
             rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
             self.set_status(400, "Got a bad query string")
             self.finish("Bad Request: Got a bad query string")
             return
-
-        tour_string = urllib2.unquote(tour_string)
-        self.playtour.tourname = str(tour_string)
-        self.playtour_service(tour_string)
-        self.finish("OK")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

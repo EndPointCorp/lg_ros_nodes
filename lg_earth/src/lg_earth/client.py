@@ -12,10 +12,12 @@ from client_config import ClientConfig
 
 TOOLBAR_HEIGHT = 22
 
+CUSTOM_CONFIG_DIR = '/lg'
+
 
 class Client:
     """Google Earth client launcher."""
-    def __init__(self):
+    def __init__(self, initial_state=None):
         args, geplus_config, layers_config, kml_content, view_content = \
             self._get_config()
 
@@ -38,19 +40,26 @@ class Client:
         cmd = ['/opt/google/earth/free/googleearth-bin']
 
         cmd.extend(args)
-        self.earth_proc = ManagedApplication(cmd, window=earth_window)
+        self.earth_proc = ManagedApplication(cmd, window=earth_window,
+                                             initial_state=initial_state)
 
         self._make_tempdir()
 
         os.mkdir(self._get_tempdir() + '/.googleearth')
         os.mkdir(self._get_tempdir() + '/.googleearth/Cache')
 
-        if rospy.get_param('~show_google_logo', True):
-            pass
-        else:
-            self._touch_file(
-                (self._get_tempdir() + '/.googleearth/' + 'localdbrootproto')
-            )
+        if not rospy.get_param('~show_google_logo', True):
+            source = '/home/lg/etc/localdbrootproto'
+            dest = '/home/lg/.googleearth/Cache/localdbrootproto'
+            if not os.path.exists(os.path.dirname(os.path.dirname(dest))):
+                os.mkdir(os.path.dirname(os.path.dirname(dest)))
+            if not os.path.exists(os.path.dirname(dest)):
+                os.mkdir(os.path.dirname(dest))
+            self._touch_file(source)
+            with open(source, 'r') as src:
+                with open(dest, 'w') as dst:
+                    for line in src.readlines():
+                        dst.write(line)
 
         os.mkdir(self._get_tempdir() + '/.config')
         os.mkdir(self._get_tempdir() + '/.config/Google')
@@ -63,6 +72,10 @@ class Client:
                           '.googleearth/myplaces.kml')
         self._render_file(view_content,
                           '.googleearth/cached_default_view.kml')
+
+        # Check whether a non-standard GECommonSettings file exists
+        # and replace if so
+        #self._check_for_custom_config('./config/Google/GECommonSettings.conf')
 
         # Override the HOME location. This requires a hack to the Earth
         # libraries. See the lg_earth README.
@@ -132,26 +145,36 @@ class Client:
         return config.get_config()
 
     def _render_file(self, content, path):
-        """Write content to a file.
+        """Checks if a custom file is provided, if it is use it, if not
+        write standard content to that file.
 
         Args:
             content (str)
             path (str): File path relative to the temporary directory.
         """
+        if self._check_for_custom_config(path):
+            self._use_custom_config(path)
+            return
+
         with open(self._get_tempdir() + '/' + path, 'w') as f:
             f.write(content)
 
     def _render_config(self, config, path):
         """Render a configuration file.
 
-        This takes a dictionary and writes the values as key value pairs.
-        Boolean values are written lowercase.
+        This method first checks for a custom config, if present copy it into
+        place. If not it takes a dictionary and writes the values as key value
+        pairs. Boolean values are written lowercase.
 
         Args:
             config (Dict[str, object]): Key value pairs to write to the config
                 file.
             path (str): Config file path relative to the temp directory.
         """
+        if self._check_for_custom_config(path):
+            self._use_custom_config(path)
+            return
+
         with open(self._get_tempdir() + '/' + path, 'w') as f:
             for section, settings in config.iteritems():
                 f.write('[' + section + ']\n')
@@ -160,5 +183,32 @@ class Client:
                     f.write(k + '=' + r + '\n')
                 f.write('\n')
 
+    def _check_for_custom_config(self, standard_conf_path):
+        """Checks for a custom supplied config file and if present returns
+        true.
+
+        Args:
+            standard_conf_path (str): Path of the standard config
+        """
+
+        ret_val = False
+        conf_filename = os.path.basename(standard_conf_path)
+        custom_conf_expected_path = CUSTOM_CONFIG_DIR + '/' + conf_filename
+
+        if os.path.isfile(custom_conf_expected_path):
+            ret_val = True
+
+        return ret_val
+
+    def _use_custom_config(self, standard_conf_path):
+        """Moves the custom config file to the standard config path
+
+        Args:
+            standard_conf_path (str): Path of the standard config
+        """
+        conf_filename = os.path.basename(standard_conf_path)
+        custom_conf_expected_path = CUSTOM_CONFIG_DIR + '/' + conf_filename
+        shutil.copy(custom_conf_expected_path,
+                    self._get_tempdir() + '/' + standard_conf_path)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

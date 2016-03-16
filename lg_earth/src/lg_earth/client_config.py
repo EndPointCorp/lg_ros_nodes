@@ -2,8 +2,11 @@ import os
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from tempfile import gettempdir as systmp
+import urllib
 
 import rospy
+
+CUSTOM_CONFIG_DIR = '/lg'
 
 
 class ClientConfig:
@@ -38,6 +41,7 @@ class ClientConfig:
         pitch_offset = rospy.get_param('~pitch_offset', 0)
         roll_offset = rospy.get_param('~roll_offset', 0)
         show_google_logo = rospy.get_param('~show_google_logo', True)
+        custom_configs = rospy.get_param('~custom_configs', '')
 
         args.extend([
             '-sViewSync/send={}'.format(str(viewsync_send).lower()),
@@ -577,6 +581,26 @@ class ClientConfig:
             '<dummy />', default_view))
         view_content = view_reparsed.toprettyxml(indent='\t')
 
+        for url_and_filename in custom_configs.split(';'):
+            if not url_and_filename:
+                continue
+            split = url_and_filename.split(',')
+            if len(split) < 2:
+                continue
+            url = split[0]
+            filename = split[1]
+            self.curl_config(url, filename)
+
         return args, geplus_config, layers_config, kml_content, view_content
+
+    def curl_config(self, url, filename):
+        """
+        Curls config and writes to CUSTOM_CONFIG_DIR
+        """
+        response = urllib.urlopen(url)
+        f = open(CUSTOM_CONFIG_DIR + '/' + filename, 'w')
+        f.write(response.read())
+        f.close()
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

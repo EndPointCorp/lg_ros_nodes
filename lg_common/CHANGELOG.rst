@@ -2,10 +2,36 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.1.20 (2015-10-21)
+1.1.38 (2016-03-09)
 -------------------
-* Fix Chrome 46 window management
-* Contributors: Matt Vollrath
+
+1.1.37 (2016-03-04)
+-------------------
+* managed_browser: extensions loading
+* Contributors: Jacob Minshall
+
+1.1.36 (2016-02-17)
+-------------------
+* lg\_{common,earth}: set initial state
+  This will allow us to start up a hidden window initially.
+* Contributors: Jacob Minshall
+
+1.1.35 (2016-02-05)
+-------------------
+
+1.1.34 (2016-02-05)
+-------------------
+
+1.1.33 (2016-02-04)
+-------------------
+
+1.1.32 (2016-01-28)
+-------------------
+
+1.1.31 (2016-01-20)
+-------------------
+* static_browser: fix issues with undefined variables
+* Contributors: Jacob Minshall
 
 1.1.30 (2016-01-11)
 -------------------
@@ -16,10 +42,6 @@ Changelog for package lg_common
 
 1.1.29 (2016-01-04)
 -------------------
-* pdfviewer to use with AdhocBrowser or ManagedBrowser
-* managed_browser: ros paramaterized command flags
-  Now node defs can specify extra command line flags to use.
-* Contributors: Jacob Minshall
 
 1.1.28 (2015-12-10)
 -------------------
@@ -28,24 +50,15 @@ Changelog for package lg_common
 
 1.1.27 (2015-11-25)
 -------------------
-* 1.1.26
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.1.26 (2015-11-25)
+-------------------
 
 1.1.25 (2015-11-17)
 -------------------
 
-1.1.26 (2015-11-25)
--------------------
-* 1.1.25
-* Generated new changelog
-* Contributors: Szymon Lipiński
-
 1.1.24 (2015-11-16)
 -------------------
-* 1.1.23
-* Generated changelogs
-* Contributors: Wojciech Ziniewicz
 
 1.1.23 (2015-11-13)
 -------------------
@@ -55,8 +68,9 @@ Changelog for package lg_common
 
 1.1.21 (2015-10-22)
 -------------------
-* 1.1.20
-* Changelogs for 1.1.20
+
+1.1.20 (2015-10-21)
+-------------------
 * Fix Chrome 46 window management
 * Contributors: Matt Vollrath
 
@@ -111,7 +125,6 @@ Changelog for package lg_common
   ones will be set to VISIBLE.
 * lg_common: added the StringArray type
 * link to state_changer.py
-* Merge remote-tracking branch 'origin/development' into ft-state-changer
 * lg_common: added a state handler/changer
   This will publish HIDDEN to all other state listening topics, except for
   the one specified in the string passed to /state_handler/activate
@@ -146,7 +159,6 @@ Changelog for package lg_common
 
 1.1.8 (2015-09-25)
 ------------------
-* Contributors: Adam Vollrath, Jacob Minshall, Wojciech Ziniewicz
 
 1.1.7 (2015-09-24)
 ------------------
@@ -241,7 +253,6 @@ Changelog for package lg_common
 
 1.0.1 (2015-07-29)
 ------------------
-
 * Removed ambiguous var def thanks to @zdenekmaxa
 * Contributors: Wojciech Ziniewicz
 

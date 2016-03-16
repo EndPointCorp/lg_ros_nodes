@@ -482,3 +482,11 @@ def check_device(device, name):
     if not flag:
         os.chmod(device, original_mode)
     return flag
+
+
+def is_valid_state(state):
+    from lg_common.msg import ApplicationState
+    return state == ApplicationState.HIDDEN or \
+        state == ApplicationState.STOPPED or \
+        state == ApplicationState.SUSPENDED or \
+        state == ApplicationState.VISIBLE
