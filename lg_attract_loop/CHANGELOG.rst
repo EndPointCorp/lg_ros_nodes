@@ -2,6 +2,9 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.39 (2016-03-16)
+-------------------
+
 1.1.38 (2016-03-09)
 -------------------
 * Fixed attract loop - lack of /resource_uri/ attr in presentations
