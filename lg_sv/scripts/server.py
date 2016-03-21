@@ -70,7 +70,7 @@ def main():
                      server.handle_panoid_msg)
     rospy.Subscriber('/%s/pov' % server_type, Quaternion,
                      server.handle_pov_msg)
-    rospy.Subscriber('/spacenav/twist', Twist,
+    rospy.Subscriber('/spacenav_wrapper/twist', Twist,
                      server.handle_spacenav_msg)
     rospy.Subscriber('/%s/state' % server_type, ApplicationState,
                      server.handle_state_msg)
