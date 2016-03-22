@@ -16,15 +16,18 @@ def MockFunc(*args, **kwargs):
 class SpacenavWrapper(object):
     def __init__(self, twist=MockPublisher(), joy=MockPublisher(),
                  rezero=MockFunc, gutter_val=GUTTER_VAL,
-                 translate_twist=MockFunc):
+                 translate_twist=MockFunc, full_scale=0):
         self.twist = twist
         self.joy = joy
         self.rezero = rezero
         self.gutter_val = gutter_val
         self.translate_twist = translate_twist
+        # 350 is the max on full scale (which is either 0 or 1), divide by 2 to get
+        # the mid range, and add 0.5 in case there was no full scale
+        self.mid_value = full_scale * 350 / 2 + 0.5
 
         self.msg_buffer = []
-        self.buffer_size = 20
+        self.buffer_size = 200
 
     def handle_twist(self, msg):
         """
@@ -32,7 +35,7 @@ class SpacenavWrapper(object):
         of it
         """
         if self._needs_rezero(msg):
-            write_log_to_file('rezeroing...')
+            rospy.logerr('rezeroing...')
             self.rezero()
         if self._is_in_gutter(msg):
             msg = Twist()
@@ -61,6 +64,25 @@ class SpacenavWrapper(object):
             twist1.angular.y == twist2.angular.y and \
             twist1.angular.z == twist2.angular.z
 
+    def _is_twist_near_max(self, twist):
+        """
+        Checks if the twist message has any fields above 50 percent
+        of the max value and returns true if this is true.
+
+        This is needed because it is possible to push the spacenav
+        very hard in any direction and get static values for each
+        message > self.buffer_size times in a row. This would otherwise
+        trigger a relaunch.
+        """
+        if twist.linear.x > self.mid_value or \
+                twist.linear.y > self.mid_value or \
+                twist.linear.z > self.mid_value or \
+                twist.angular.x > self.mid_value or \
+                twist.angular.y > self.mid_value or \
+                twist.angular.z > self.mid_value:
+            return True
+        return False
+
     def _needs_rezero(self, twist_msg):
         """
         Checks the last $buffer_size messages, if they're all the same,
@@ -71,6 +93,11 @@ class SpacenavWrapper(object):
         # append the msg, and save only the last $buffer_size
         self.msg_buffer.append(twist_msg)
         self.msg_buffer = self.msg_buffer[self.buffer_size * -1:]
+
+        """
+        if self._is_twist_near_max(twist_msg):
+            return False
+        """
 
         if len(self.msg_buffer) < self.buffer_size:
             return False
@@ -84,5 +111,4 @@ class SpacenavWrapper(object):
         for twist in self.msg_buffer[1:]:
             if not self._is_twist_equal(twist, self.msg_buffer[0]):
                 return False
-        write_log_to_file('rezeroing with buffer of: (%s)' % self.msg_buffer)
         return True
