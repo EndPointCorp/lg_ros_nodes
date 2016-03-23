@@ -1,9 +1,10 @@
 lg\_stats
 ---------
 
-ROS software for listening on certain configurable ROS topics and submitting
-*stats* information into influxdb via telegraf submission agent
-Details lg_ros_nodes: #126
+ROS software follows certain configurable ROS topics and submits
+*stats* information into influxdb directly or via telegraf submission agent.
+
+Spec / details lg_ros_nodes: #126
 
 Library dependency:
 https://pypi.python.org/pypi/influxdb
@@ -17,13 +18,33 @@ Add description.
 ##### Parameters
 List all parameters.
 
+- resolution - number of seconds for which a message is retained until the
+  stats submission happens
+
+- submission_type - can either be "InfluxDirect" when the lg_stats ROS node talks
+  directly to the InfluxDB or "InfluxTelegraf" when lg_stats submits to the 
+  Telegraf service (Telegraf is a InfluxDB submission agent)
+  
+- host - server to which the stats messages are submitted to (according to
+  the submission_type parameter, it's either the InfluxDB server or Telegraf server)
+   
+- port - just like with host ...
+
+- database - name of the InfluxDB database, applicable only in the case of "InfluxDirect",
+  the database is configured in Telegraf in case of "InfluxTelegraf"
+  
+- activity_sources - configuration of source topics - watched values
+  the format is: source_topic:message_type:field_of_interest; reapeat ...
+  e.g.: "/director/scene:interactivespaces_msgs/GenericMessage:message;/appctl/mode:appctl/Mode:mode;
+
+
 ##### Published Topics
 /lg_stats/debug
 
 ##### Subscribed Topics
 List of possible subscribed topics - it's configurable via roslaunch file.
 
-###### Ootput message type description
+###### Output message type description
  /lg_stats/debug Event
  
 string system_name - e.g. name of the LG system (such as lg-head-281)

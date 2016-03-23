@@ -35,6 +35,7 @@ from lg_stats.msg import Event
 from lg_stats import ROS_NODE_NAME
 from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 from lg_stats import Processor
+from lg_stats import InfluxDirect
 
 
 RESULT = Array('c', 100)  # size
@@ -48,12 +49,15 @@ class MockTopicPublisher(object):
         self.messages.append(msg)
 
 
-class MockInfluxDBClient(object):
+class MockInfluxDBSubmitter(object):
     def __init__(self):
         self.messages = []
 
-    def write_points(self, influx_dict):
-        self.messages.append(influx_dict)
+    def write_stats(self, data):
+        self.messages.append(data)
+
+    def get_data_for_influx(self, msg):
+        return {}
 
 
 class TestLGStatsProcessor(object):
@@ -73,13 +77,11 @@ class TestLGStatsProcessor(object):
                       debug_pub=pub,
                       resolution=200)
         msg1 = Session(application="someapplication1")
-        out, influx = p.get_outbound_message_and_influx_dict(msg1)
+        out = p.get_outbound_message(msg1)
         p.publish(out)
         assert isinstance(pub.messages[0], Event)
         assert pub.messages[0].field_name == "application"
         assert pub.messages[0].value == "someapplication1"
-        # could there be an issue in order of items?
-        assert out.influx == str(influx)
 
     def test_message_comparison(self):
         p = Processor(watched_field_name="application")
@@ -103,7 +105,7 @@ class TestLGStatsProcessor(object):
         """
         rospy.init_node(ROS_NODE_NAME, anonymous=True)  # needed by ROS time
         pub = MockTopicPublisher()
-        influx = MockInfluxDBClient()
+        influx = MockInfluxDBSubmitter()
         p = Processor(watched_field_name="application",
                       debug_pub=pub,
                       resolution=1,
