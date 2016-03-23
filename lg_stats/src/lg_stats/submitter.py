@@ -3,6 +3,7 @@ InfluxDB submission / communication implementations.
 
 """
 
+import socket
 
 from influxdb import InfluxDBClient
 
@@ -63,10 +64,43 @@ class InfluxDirect(Submitter):
 class InfluxTelegraf(Submitter):
     """
     Handles connection to InfluxDB via Telegraf submission agent.
+    Telegraf accepts data through its tcp_listener.
+    It accepts text message in the form of Influx line protocol via plain socket.
+
+    Debugging:
+    echo "application,application=someapplication1,type=event value=0.0" | nc localhost 8094
+        (sent right to the telegraf tcp_listener port)
+
+    Another format possibility is JSON, was not successful with
+    sending JSON, still getting parsing errors.
 
     """
-    def __init__(self):
-        pass
+    def __init__(self, host=None, port=None, database=None):
+        self.host = host
+        self.port = port
+
+    @staticmethod
+    def get_data_for_influx(msg):
+        msg = ("%s,application=%s,field_name=%s,type=%s,value=%s value=0.0" %
+               (msg.src_topic,
+                msg.application,
+                msg.field_name,
+                msg.type,
+                msg.value))
+        return msg
 
     def write_stats(self, data):
-        pass
+        """
+        Input is a text message in the form of Influx line protocol.
+
+        A socket connection connection and close is performed at each send operation.
+
+        It's impossible to tell whether all data was sent or not.
+        """
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_address = (self.host, self.port)
+            sock.connect(server_address)
+            sock.sendall(data)
+        finally:
+            sock.close()

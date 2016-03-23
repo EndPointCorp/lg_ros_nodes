@@ -128,8 +128,8 @@ def get_influxdb_client():
     host = rospy.get_param("~host", None)
     port = rospy.get_param("~port", None)
     database = rospy.get_param("~database", None)
-    if not submitter_type and not host and not port:
-        raise RuntimeError("No InfluxDB connection details provided.")
+    if not submitter_type or not host or not port:
+        raise RuntimeError("No InfluxDB connection details provided in the roslaunch configuration.")
     return getattr(submitter, submitter_type)(host=host, port=port, database=database)
 
 
