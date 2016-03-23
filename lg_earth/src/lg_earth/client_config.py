@@ -598,7 +598,8 @@ class ClientConfig:
         Curls config and writes to CUSTOM_CONFIG_DIR
         """
         response = urllib.urlopen(url)
-        with open(CUSTOM_CONFIG_DIR + '/' + filename, 'w') as f:
+        os.system('mkdir -p %s/%s' % (CUSTOM_CONFIG_DIR, self.base_path))
+        with open(CUSTOM_CONFIG_DIR + '/' + self.base_path + '/' + filename, 'w') as f:
             f.write(response.read().replace("HOME_DIR", self.base_path))
 
 
