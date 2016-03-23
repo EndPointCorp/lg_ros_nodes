@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* put custom configs in custom directories
+* Contributors: jacob
+
 1.1.39 (2016-03-16)
 -------------------
 * lg_earth: hacky template for setting HOME_DIR in custom configs
