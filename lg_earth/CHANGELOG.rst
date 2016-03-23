@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.40 (2016-03-23)
+-------------------
 * put custom configs in custom directories
 * Contributors: jacob
 
