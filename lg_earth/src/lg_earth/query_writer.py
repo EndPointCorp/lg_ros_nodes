@@ -1,17 +1,24 @@
 import rospy
 from std_msgs.msg import String
+from query_queue import QueryQueue
 
 
 class QueryWriter:
-    def __init__(self, filename):
+    def __init__(self, filename, maxlen=10):
         self.filename = filename
+        self._queue = QueryQueue(self.filename, maxlen=maxlen)
+
+    def post_query(self, query):
+        rospy.loginfo('posting query: {}'.format(query))
+        self._queue.post_query(query)
+
+    def shutdown(self):
+        self._queue.stop()
 
     def handle_flyto_kml(self, msg):
         kml = msg.data
         query = 'flytoview={}'.format(kml)
-        with open(self.filename, 'w') as f:
-            rospy.loginfo('Parameter %s has value %s', rospy.resolve_name('~query_file'), self.filename)
-            f.write(query)
+        self.post_query(query)
 
     def handle_flyto_pose_camera(self, msg):
         pose = msg
@@ -34,9 +41,7 @@ class QueryWriter:
             pose_roll)
 
         query = 'flytoview={}'.format(kml)
-        with open(self.filename, 'w') as f:
-            rospy.loginfo(query)
-            f.write(query)
+        self.post_query(query)
 
     def handle_flyto_pose_lookat(self, msg):
         pose = msg
@@ -59,23 +64,19 @@ class QueryWriter:
             pose_range)
 
         query = 'flytoview={}'.format(kml)
-        with open(self.filename, 'w') as f:
-            rospy.loginfo(query)
-            f.write(query)
+        self.post_query(query)
 
     def handle_search(self, msg):
         # call handle_tour with empty tour to stop any flyto in progress
-        self.handle_tour(String())
+        #self.handle_tour(String())
         search_query = msg.data
         query = 'search={}'.format(search_query)
-        with open(self.filename, 'w') as f:
-            f.write(query)
+        self.post_query(query)
 
     def handle_planet(self, msg):
         planet_name = msg.data
         query = 'planet={}'.format(planet_name)
-        with open(self.filename, 'w') as f:
-            f.write(query)
+        self.post_query(query)
 
     def handle_tour(self, msg):
         tour_var = msg.data
@@ -85,7 +86,6 @@ class QueryWriter:
         else:
             query = 'playtour={}'.format(tour_var)
             rospy.loginfo(tour_var)
-        with open(self.filename, 'w') as f:
-            f.write(query)
+        self.post_query(query)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
