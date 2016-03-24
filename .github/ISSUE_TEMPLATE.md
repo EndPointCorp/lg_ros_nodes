@@ -14,7 +14,3 @@ Optional - list of places to look into and general guidelines (patterns to use, 
 Optional
 
 If this task is testable - include list of commands and expected outputs.
-
-**Timesheet node**
-
-Timesheet node for this ticket
