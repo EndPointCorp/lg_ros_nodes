@@ -5,7 +5,7 @@ InfluxDB submission / communication implementations.
 
 import socket
 
-from influxdb import InfluxDBClient
+import rospy
 
 
 class Submitter(object):
@@ -30,7 +30,11 @@ class InfluxDirect(Submitter):
 
     """
     def __init__(self, host=None, port=None, database=None):
+        # keep this dependency here, it will have to be satisfied in case of direct
+        # InfluxDB submission (without telegraf) which is secondary scenario
+        from influxdb import InfluxDBClient
         self._client = InfluxDBClient(host=host, port=port, database=database)
+        rospy.loginfo("InfluxDB (direct) client initialized (%s:%s/%s)." % (host, port, database))
 
     @staticmethod
     def get_data_for_influx(msg):
@@ -78,6 +82,7 @@ class InfluxTelegraf(Submitter):
     def __init__(self, host=None, port=None, database=None):
         self.host = host
         self.port = port
+        rospy.loginfo("InfluxDB (telegraf-socket) client initialized (%s:%s)." % (host, port))
 
     @staticmethod
     def get_data_for_influx(msg):
@@ -102,5 +107,8 @@ class InfluxTelegraf(Submitter):
             server_address = (self.host, self.port)
             sock.connect(server_address)
             sock.sendall(data)
+        except Exception, ex:
+            rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
+                         (data, server_address, ex))
         finally:
             sock.close()

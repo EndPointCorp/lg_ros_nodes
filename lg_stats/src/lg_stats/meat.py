@@ -103,9 +103,11 @@ class Processor(object):
         """
         elapsed = rospy.Time.now() - self.time_of_last_msg
         if elapsed.to_sec() > self.resolution and self.compare_messages(self.last_msg, curr_msg):
+
             out_msg = self.get_outbound_message(self.last_msg)
             influx_data = self.influxdb_client.get_data_for_influx(out_msg)
             out_msg.influx = str(influx_data)
+            rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
             self.publish(out_msg)
             self.influxdb_client.write_stats(influx_data)
 
@@ -115,7 +117,7 @@ class Processor(object):
         consecutive message. The current one is merely buffered.
 
         """
-        m = "processor received: '%s'" % msg
+        m = "Processor received: '%s'" % msg
         rospy.loginfo(m)
         # check previous message
         if self.last_msg:
