@@ -86,12 +86,22 @@ class InfluxTelegraf(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        msg = ("%s,application=%s,field_name=%s,type=%s,value=%s value=0.0" %
-               (msg.src_topic,
-                msg.application,
-                msg.field_name,
-                msg.type,
-                msg.value))
+        # TODO
+        # filter() empty values, refactor!
+        # need a test
+        if msg.application:
+            msg = ("%s,application=%s,field_name=%s,type=%s,value=%s value=0.0" %
+                   (msg.src_topic,
+                    msg.application,
+                    msg.field_name,
+                    msg.type,
+                    msg.value))
+        else:
+            msg = ("%s,field_name=%s,type=%s,value=%s value=0.0" %
+                   (msg.src_topic,
+                    msg.field_name,
+                    msg.type,
+                    msg.value))
         return msg
 
     def write_stats(self, data):

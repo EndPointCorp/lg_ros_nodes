@@ -22,6 +22,7 @@ TODO:
 
 
 import os
+import json
 
 import rospy
 from std_msgs.msg import String
@@ -86,7 +87,15 @@ class Processor(object):
         application = getattr(src_msg, "application", '')  # if it exists
         if self.msg_slot:
             watched_field_name = "%s.%s" % (self.msg_slot, self.watched_field_name)
-            value = str(getattr(getattr(src_msg, self.msg_slot), self.watched_field_name))
+            #rospy.loginfo("DEBUGGING:")
+            #rospy.loginfo(self.msg_slot)
+            slot = getattr(src_msg, self.msg_slot)
+            slot_dict = json.loads(slot)
+            if slot_dict == {}:
+                raise Exception("Source message slot empty, terminating message submission.")
+            rospy.loginfo(self.watched_field_name)
+            rospy.loginfo(watched_field_name)
+            value = str(slot_dict[self.watched_field_name])
         out_msg = Event(src_topic=self.watched_topic,
                         field_name=watched_field_name,
                         type="event",
@@ -112,7 +121,12 @@ class Processor(object):
         """
         elapsed = rospy.Time.now() - self.time_of_last_msg
         if elapsed.to_sec() > self.resolution:
-            out_msg = self.get_outbound_message(self.last_msg)
+            try:
+               out_msg = self.get_outbound_message(self.last_msg)
+            except Exception, ex:
+            # TODO
+            # do a special purpose exception and log
+               return
             influx_data = self.influxdb_client.get_data_for_influx(out_msg)
             out_msg.influx = str(influx_data)
             rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
