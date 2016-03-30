@@ -47,12 +47,14 @@ class Processor(object):
     """
     def __init__(self,
                  watched_topic=None,
+                 msg_slot=None,
                  watched_field_name=None,
                  debug_pub=None,
                  resolution=20,
                  influxdb_client=None):
         self.watched_topic = watched_topic
         self.watched_field_name = watched_field_name
+        self.msg_slot = msg_slot
         self.debug_pub = debug_pub
         self.resolution = resolution  # seconds
         self.time_of_last_msg = None
@@ -81,14 +83,17 @@ class Processor(object):
         based on the data from the source topic message (src_msg).
 
         """
-        application = getattr(src_msg, "application", None)  # if it exists
+        application = getattr(src_msg, "application", '')  # if it exists
+        if msg_slot:
+            watched_field_name = "%s.%s" % (msg_slot, self.watched_field_name)
+            value = str(getattr(getattr(src_msg, msg_slot), self.watched_field_name))
         out_msg = Event(src_topic=self.watched_topic,
-                        field_name=self.watched_field_name,
+                        field_name=watched_field_name,
                         type="event",
                         application=application,
                         # value is always string, if source value is e.g.
                         # boolean, it's converted to a string here
-                        value=str(getattr(src_msg, self.watched_field_name)))
+                        value=value)
         return out_msg
 
     def process_previous(self, curr_msg):
@@ -154,6 +159,7 @@ def main():
         # dynamic import based on package/message_class string representation
         msg_type_module = get_message_type_from_string(ss["msg_type"])
         p = Processor(watched_topic=ss["topic"],
+                      msg_slot=ss["slot"],
                       watched_field_name=ss["strategy"],
                       debug_pub=debug_topic_pub,
                       resolution=resolution,
