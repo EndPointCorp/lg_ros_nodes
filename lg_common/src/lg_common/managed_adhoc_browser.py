@@ -12,13 +12,14 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 class ManagedAdhocBrowser(ManagedBrowser):
 
-    def __init__(self, geometry, slug, url):
+    def __init__(self, geometry, slug, url, kiosk=True):
         self.slug = slug
         self.url = url
         self.geometry = geometry
+        self.kiosk = kiosk
 
         super(ManagedAdhocBrowser, self).__init__(
-            geometry=geometry, slug=slug, url=url, kiosk=True)
+            geometry=geometry, slug=slug, url=url, kiosk=kiosk)
 
     def __str__(self):
         return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,

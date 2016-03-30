@@ -15,4 +15,5 @@ NV_DOCKER='sudo docker' nvidia-docker run \
   --volume="/tmp:/tmp/host_tmp" \
   --device="/dev/bus/usb:/dev/bus/usb" \
   --device="/dev/uinput:/dev/uinput" \
+  "$@" \
   --interactive --tty --privileged lgros

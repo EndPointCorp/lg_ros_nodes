@@ -107,9 +107,10 @@ WORKDIR /home/lg
 # EndPoint LG sources.
 #
 # TODO: remove "checkout features/docker-image", made for debug
-RUN	    mkdir /home/lg/src && cd /home/lg/src ;\
+RUN	echo "drop-cache" && \
+        mkdir /home/lg/src && cd /home/lg/src ;\
         git clone git://github.com/EndPointCorp/lg_ros_nodes.git ;\
-	    git clone git://github.com/EndPointCorp/appctl.git ;\
+	git clone git://github.com/EndPointCorp/appctl.git ;\
         cd /home/lg/src/lg_ros_nodes ;\
         git checkout features/docker-image
 
