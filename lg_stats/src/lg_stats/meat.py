@@ -99,11 +99,14 @@ class Processor(object):
 
         If either condition (duration is shorter or the value of the incoming
         message differs), is not met, then the previous message is discarded.
+        if elapsed.to_sec() > self.resolution and self.compare_messages(self.last_msg, curr_msg):
+         ... -> this way there won't ever be anything submitted for e.g. /director/scene
+            since the same message is never sent twice ... need to re-think this ...
+            for now, apply just the time resolution condition.
 
         """
         elapsed = rospy.Time.now() - self.time_of_last_msg
-        if elapsed.to_sec() > self.resolution and self.compare_messages(self.last_msg, curr_msg):
-
+        if elapsed.to_sec() > self.resolution:
             out_msg = self.get_outbound_message(self.last_msg)
             influx_data = self.influxdb_client.get_data_for_influx(out_msg)
             out_msg.influx = str(influx_data)
