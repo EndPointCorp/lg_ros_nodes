@@ -84,9 +84,9 @@ class Processor(object):
 
         """
         application = getattr(src_msg, "application", '')  # if it exists
-        if msg_slot:
-            watched_field_name = "%s.%s" % (msg_slot, self.watched_field_name)
-            value = str(getattr(getattr(src_msg, msg_slot), self.watched_field_name))
+        if self.msg_slot:
+            watched_field_name = "%s.%s" % (self.msg_slot, self.watched_field_name)
+            value = str(getattr(getattr(src_msg, self.msg_slot), self.watched_field_name))
         out_msg = Event(src_topic=self.watched_topic,
                         field_name=watched_field_name,
                         type="event",
