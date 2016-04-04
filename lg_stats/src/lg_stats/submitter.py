@@ -45,8 +45,7 @@ class InfluxDirect(Submitter):
 
         """
         influx_dict = dict(measurement=msg.src_topic,
-                           tags=dict(application=msg.application,
-                                     field_name=msg.field_name,
+                           tags=dict(field_name=msg.field_name,
                                      type=msg.type,
                                      value=msg.value),
                            # timestamp may be added here or will be added by the server
@@ -86,22 +85,11 @@ class InfluxTelegraf(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        # TODO
-        # filter() empty values, refactor!
-        # need a test
-        if msg.application:
-            msg = ("%s,application=%s,field_name=%s,type=%s,value=%s value=0.0" %
-                   (msg.src_topic,
-                    msg.application,
-                    msg.field_name,
-                    msg.type,
-                    msg.value))
-        else:
-            msg = ("%s,field_name=%s,type=%s,value=%s value=0.0" %
-                   (msg.src_topic,
-                    msg.field_name,
-                    msg.type,
-                    msg.value))
+        msg = ("%s,field_name=%s,type=%s,value=%s value=0.0" %
+               (msg.src_topic,
+                msg.field_name,
+                msg.type,
+                msg.value))
         return msg
 
     def write_stats(self, data):

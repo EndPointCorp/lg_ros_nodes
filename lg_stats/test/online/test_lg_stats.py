@@ -165,7 +165,7 @@ class TestLGStatsRealMessageChain(object):
         publisher.publish(msg_to_send)
         # need to wait since message will only be sent out if the state
         # has not changed for time greater than resolution
-        rospy.sleep(1.1)
+        rospy.sleep(2)
         publisher.publish(msg_to_send)
         # wait a bit, call back shall set the share mem value accordingly
         for count in range(3):
@@ -180,7 +180,7 @@ class TestLGStatsRealMessageChain(object):
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
 
         """
-        msg = GenericMessage(type="json", message="something")
+        msg = GenericMessage(type="json", message="""{"slug": "something"}""")
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "something")
@@ -218,6 +218,8 @@ class TestLGStatsRealMessageChain(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "True")
 
+    @pytest.mark.skipif(True, reason="Intervening with previous /statistics/session test. Will be chiefly "
+                        "reimplemented anyway, since the resolution behaviour will be changing (#126)")
     def test_resolution_period(self):
         """
         All above tests send a message twice and the second one is sent
@@ -228,7 +230,7 @@ class TestLGStatsRealMessageChain(object):
         period will result in NO stats reaction.
 
         """
-        msg = Session(application="a good application22")
+        msg = Session(application="a good application")
         pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         RESULT.value = "won't change"

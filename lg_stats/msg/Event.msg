@@ -1,4 +1,3 @@
-string application
 string src_topic
 string field_name
 string type

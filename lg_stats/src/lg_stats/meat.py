@@ -14,10 +14,6 @@ Will need to define association between source topics and type of
     be easy to blend with activity_sources processing. Or hard-coded in an
     internal relational matrix (output msg fields: type, application).
 
-TODO:
-    - upon node shutdown - submit the buffered message? Or lose it? Loss is
-        not a big deal here.
-
 """
 
 
@@ -36,6 +32,10 @@ import submitter
 
 ROS_NODE_NAME = "lg_stats"
 LG_STATS_DEBUG_TOPIC_DEFAULT = "debug"
+
+
+class EmptyIncomingMessage(Exception):
+    pass
 
 
 class Processor(object):
@@ -84,7 +84,6 @@ class Processor(object):
         based on the data from the source topic message (src_msg).
 
         """
-        application = getattr(src_msg, "application", '')  # if it exists
         if self.msg_slot:
             watched_field_name = "%s.%s" % (self.msg_slot, self.watched_field_name)
             #rospy.loginfo("DEBUGGING:")
@@ -92,14 +91,16 @@ class Processor(object):
             slot = getattr(src_msg, self.msg_slot)
             slot_dict = json.loads(slot)
             if slot_dict == {}:
-                raise Exception("Source message slot empty, terminating message submission.")
-            rospy.loginfo(self.watched_field_name)
-            rospy.loginfo(watched_field_name)
+                raise EmptyIncomingMessage("Source message slot empty, terminating message submission.")
+            #rospy.loginfo(self.watched_field_name)
+            #rospy.loginfo(watched_field_name)
             value = str(slot_dict[self.watched_field_name])
+        else:
+            watched_field_name = self.watched_field_name
+            value = str(getattr(src_msg, self.watched_field_name))
         out_msg = Event(src_topic=self.watched_topic,
                         field_name=watched_field_name,
                         type="event",
-                        application=application,
                         # value is always string, if source value is e.g.
                         # boolean, it's converted to a string here
                         value=value)
@@ -122,11 +123,10 @@ class Processor(object):
         elapsed = rospy.Time.now() - self.time_of_last_msg
         if elapsed.to_sec() > self.resolution:
             try:
-               out_msg = self.get_outbound_message(self.last_msg)
-            except Exception, ex:
-            # TODO
-            # do a special purpose exception and log
-               return
+                out_msg = self.get_outbound_message(self.last_msg)
+            except EmptyIncomingMessage, ex:
+                rospy.logerr(ex)
+                return
             influx_data = self.influxdb_client.get_data_for_influx(out_msg)
             out_msg.influx = str(influx_data)
             rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
