@@ -14,6 +14,11 @@ Will need to define association between source topics and type of
     be easy to blend with activity_sources processing. Or hard-coded in an
     internal relational matrix (output msg fields: type, application).
 
+Time measurement (condition):
+    elapsed = rospy.Time.now() - self.time_of_last_in_msg
+    if elapsed.to_sec() > self.resolution:
+        pass  # continue to process ...
+
 """
 
 
@@ -56,23 +61,36 @@ class Processor(object):
         self.watched_topic = watched_topic
         self.watched_field_name = watched_field_name
         self.msg_slot = msg_slot
-        self.debug_pub = debug_pub
+        self.debug_pub = debug_pub  # debug ROS publisher topic
         self.resolution = resolution  # seconds
-        self.time_of_last_msg = None
-        self.last_msg = None  # message from the source topic
+        self.time_of_last_in_msg = None  # time of the last processed incoming message
+        self.last_in_msg = None  # message from the source topic, last incoming mesage
         self.influxdb_client = influxdb_client
 
-    def publish(self, out_msg):
+    def get_slot(self, msg):
         """
-        Publish the stats message on the ROS topic.
+        Returns slot section of the message.
+        If the slot section is empty, it evaluates to False (bool({})).
+        If slot is not defined for this Processor, returns False.
 
         """
-        self.debug_pub.publish(out_msg)
+        if self.msg_slot:
+            # this may be {} (empty message) and will evaluate still to False
+            slot = json.loads(getattr(msg, self.msg_slot))
+            if slot:
+                return slot
+            else:
+                raise EmptyIncomingMessage("Empty slot section of the message.")
+        else:
+            return False
 
     def compare_messages(self, msg_1, msg_2):
         """
         Returns True if relevant field of the messages for
         this processor instance is equal.
+
+        TODO:
+        doesn't yet take into account slots
 
         """
         w = self.watched_field_name
@@ -84,17 +102,10 @@ class Processor(object):
         based on the data from the source topic message (src_msg).
 
         """
-        if self.msg_slot:
+        slot = self.get_slot(src_msg)  # this may raise EmptyIncomingMessage
+        if slot:
             watched_field_name = "%s.%s" % (self.msg_slot, self.watched_field_name)
-            #rospy.loginfo("DEBUGGING:")
-            #rospy.loginfo(self.msg_slot)
-            slot = getattr(src_msg, self.msg_slot)
-            slot_dict = json.loads(slot)
-            if slot_dict == {}:
-                raise EmptyIncomingMessage("Source message slot empty, terminating message submission.")
-            #rospy.loginfo(self.watched_field_name)
-            #rospy.loginfo(watched_field_name)
-            value = str(slot_dict[self.watched_field_name])
+            value = str(slot[self.watched_field_name])
         else:
             watched_field_name = self.watched_field_name
             value = str(getattr(src_msg, self.watched_field_name))
@@ -106,33 +117,6 @@ class Processor(object):
                         value=value)
         return out_msg
 
-    def process_previous(self, curr_msg):
-        """
-        From #126:
-            make ROS node A remember last message and submit it to stats when
-            state hasn't changed for more than stats_resolution parameter
-
-        If either condition (duration is shorter or the value of the incoming
-        message differs), is not met, then the previous message is discarded.
-        if elapsed.to_sec() > self.resolution and self.compare_messages(self.last_msg, curr_msg):
-         ... -> this way there won't ever be anything submitted for e.g. /director/scene
-            since the same message is never sent twice ... need to re-think this ...
-            for now, apply just the time resolution condition.
-
-        """
-        elapsed = rospy.Time.now() - self.time_of_last_msg
-        if elapsed.to_sec() > self.resolution:
-            try:
-                out_msg = self.get_outbound_message(self.last_msg)
-            except EmptyIncomingMessage, ex:
-                rospy.logerr(ex)
-                return
-            influx_data = self.influxdb_client.get_data_for_influx(out_msg)
-            out_msg.influx = str(influx_data)
-            rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
-            self.publish(out_msg)
-            self.influxdb_client.write_stats(influx_data)
-
     def process(self, msg):
         """
         Processing of a message is in fact triggered by reception of the
@@ -141,10 +125,17 @@ class Processor(object):
         """
         m = "Processor received: '%s'" % msg
         rospy.loginfo(m)
-        # check previous message
-        if self.last_msg:
-            self.process_previous(msg)
-        self.last_msg, self.time_of_last_msg = msg, rospy.Time.now()
+        try:
+            out_msg = self.get_outbound_message(msg)
+        except EmptyIncomingMessage, ex:
+            rospy.logwarn(ex)
+            return
+        influx_data = self.influxdb_client.get_data_for_influx(out_msg)
+        out_msg.influx = str(influx_data)
+        rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
+        self.debug_pub.publish(out_msg)
+        self.influxdb_client.write_stats(influx_data)
+        self.last_in_msg, self.time_of_last_in_msg = msg, rospy.Time.now()
 
 
 def get_influxdb_client():

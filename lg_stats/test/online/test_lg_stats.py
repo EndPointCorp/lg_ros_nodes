@@ -12,6 +12,10 @@ running tests manually:
     rostest lg_stats/test/online/test_lg_stats.test
         (as long as it contains <test> tag, it's the same as launch file)
 
+TODO:
+    -test empty message (watched field empty of relevant slot empty)
+    -need to test all branches involved in slot return
+
 """
 
 
@@ -65,7 +69,6 @@ class TestLGStatsProcessor(object):
     Test Processor class.
 
     """
-
     def test_basic(self):
         p = Processor(resolution=200)
         assert p.resolution == 200
@@ -78,12 +81,16 @@ class TestLGStatsProcessor(object):
                       resolution=200)
         msg1 = Session(application="someapplication1")
         out = p.get_outbound_message(msg1)
-        p.publish(out)
+        p.debug_pub.publish(out)
         assert isinstance(pub.messages[0], Event)
         assert pub.messages[0].field_name == "application"
         assert pub.messages[0].value == "someapplication1"
 
     def test_message_comparison(self):
+        """
+        TODO:
+            need to take slots into account when comparing
+        """
         p = Processor(watched_field_name="application")
         msg1 = Session(application="someapplication1")
         msg2 = Session(application="someapplication2")
@@ -92,12 +99,17 @@ class TestLGStatsProcessor(object):
 
     def test_process(self):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)  # needed by ROS time
-        p = Processor()
+        pub = MockTopicPublisher()
+        influx = MockInfluxDBSubmitter()
+        p = Processor(watched_field_name="application",
+                      influxdb_client=influx,
+                      debug_pub=pub)
         msg1 = Session(application="someapplication1")
-        assert p.last_msg is None
+        assert p.last_in_msg is None
         p.process(msg1)
-        assert p.last_msg == msg1
+        assert p.last_in_msg == msg1
 
+    @pytest.mark.skipif(True, reason="Resolution behaviour will be changing (#126)")
     def test_process_with_resolution_check(self):
         """
         This tests whole Processor chain.
@@ -129,7 +141,6 @@ class TestLGStatsRealMessageChain(object):
     """
     Test each of the watched topics.
     Configured via roslanch.xml file.
-
     """
 
     def setup_method(self, method):
@@ -145,7 +156,6 @@ class TestLGStatsRealMessageChain(object):
         """
         Handler of incoming messages on /lg_stats/debug topic.
         Set the shared mem value based on the received message.
-
         """
         rospy.loginfo("callback received type: '%s'" % type(msg))
         rospy.loginfo(msg)
@@ -156,16 +166,8 @@ class TestLGStatsRealMessageChain(object):
         This method is called after init_node
         Wait a bit until the ros infrastructure starts up, sending a message right
         init_node results in a lost message sometimes ...
-
-        Second sent messages triggers processing of the first one.
-        Second messages must be send after 'resolution' time period.
-
         """
-        rospy.sleep(2)
-        publisher.publish(msg_to_send)
-        # need to wait since message will only be sent out if the state
-        # has not changed for time greater than resolution
-        rospy.sleep(2)
+        rospy.sleep(1)
         publisher.publish(msg_to_send)
         # wait a bit, call back shall set the share mem value accordingly
         for count in range(3):
@@ -178,7 +180,6 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /director/scene messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
-
         """
         msg = GenericMessage(type="json", message="""{"slug": "something"}""")
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
@@ -189,7 +190,6 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /appctl/mode messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
-
         """
         msg = Mode(mode="a good mode")
         pub = rospy.Publisher("/appctl/mode", Mode, queue_size=3)
@@ -200,7 +200,6 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /statistics/session messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
-
         """
         msg = Session(application="a good application")
         pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
@@ -211,7 +210,6 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /activity/active messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
-
         """
         msg = Bool(data=True)
         pub = rospy.Publisher("/activity/active", Bool, queue_size=3)
@@ -228,7 +226,6 @@ class TestLGStatsRealMessageChain(object):
         and AFTER resolution time.
         Test that sending second message EARLIER than the resolution
         period will result in NO stats reaction.
-
         """
         msg = Session(application="a good application")
         pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
