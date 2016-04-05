@@ -21,6 +21,8 @@ DEFAULT_ARGS = [
     '--log-level=0',
     '--enable-logging',
     '--v=1',
+    '--enable-webgl',
+    '--ignore-gpu-blacklist'
 ]
 
 
