@@ -14,16 +14,12 @@ Will need to define association between source topics and type of
     be easy to blend with activity_sources processing. Or hard-coded in an
     internal relational matrix (output msg fields: type, application).
 
-Time measurement (condition):
-    elapsed = rospy.Time.now() - self.time_of_last_in_msg
-    if elapsed.to_sec() > self.resolution:
-        pass  # continue to process ...
-
 """
 
 
 import os
 import json
+import threading
 
 import rospy
 from std_msgs.msg import String
@@ -57,15 +53,54 @@ class Processor(object):
                  watched_field_name=None,
                  debug_pub=None,
                  resolution=20,
+                 inactivity_resubmission=50,
                  influxdb_client=None):
         self.watched_topic = watched_topic
         self.watched_field_name = watched_field_name
         self.msg_slot = msg_slot
         self.debug_pub = debug_pub  # debug ROS publisher topic
         self.resolution = resolution  # seconds
+        self.inactivity_resubmission = inactivity_resubmission  # seconds
         self.time_of_last_in_msg = None  # time of the last processed incoming message
         self.last_in_msg = None  # message from the source topic, last incoming mesage
+        self.last_influx_data = None  # last message submitted to InfluxDB
+        self.last_out_msg = None  # last /lg_stats/debug message
         self.influxdb_client = influxdb_client
+        self._lock = threading.Lock()
+
+    def start_resubmission_thread(self):
+        rospy.loginfo("Starting resubmission thread ...")
+        self.resubmission_thread = threading.Thread(target=self.resubmit)
+        self.resubmission_thread.start()
+
+    def resubmit(self):
+        """
+        The method runs as a background thread.
+        It checks whether there was any activity on the handled ROS
+        topic every "inactivity_resubmission" period.
+        If there was not, based on the last ROS message, a LG Stats
+        update is sent out (both /lg_stats/debug topic as well as to InfluxDB.
+
+        """
+        rate = rospy.Rate(1.0 / self.inactivity_resubmission)  # hz
+        while not rospy.is_shutdown():
+            rospy.loginfo("Resubmission thread loop ...")
+            with self._lock:
+                if self.last_in_msg and self.time_of_last_in_msg:
+                    elapsed = rospy.Time.now() - self.time_of_last_in_msg
+                    if elapsed.to_sec() > self.inactivity_resubmission:
+                        rospy.loginfo("Resubmitting last message to InfluxDB ('%s') ..." %
+                                      self.last_influx_data)
+                        self.debug_pub.publish(self.last_out_msg)
+                        self.influxdb_client.write_stats(self.last_influx_data)
+                    else:
+                        rospy.loginfo("The 'inactivity_resubmission' (%s) period has not "
+                                      "elapsed yet." % self.inactivity_resubmission)
+                else:
+                    rospy.loginfo("Nothing received on this topic so far.")
+            rospy.loginfo("Resubmission thread sleeping ...")
+            rate.sleep()
+        rospy.loginfo("Resubmission thread finished.")
 
     def get_whole_field_name(self):
         if self.msg_slot:
@@ -139,7 +174,11 @@ class Processor(object):
         rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
         self.debug_pub.publish(out_msg)
         self.influxdb_client.write_stats(influx_data)
-        self.last_in_msg, self.time_of_last_in_msg = msg, rospy.Time.now()
+        with self._lock:
+            self.last_in_msg = msg
+            self.time_of_last_in_msg = rospy.Time.now()
+            self.last_influx_data = influx_data
+            self.last_out_msg = out_msg
 
 
 def get_influxdb_client():
@@ -157,9 +196,10 @@ def main():
     debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_STATS_DEBUG_TOPIC_DEFAULT)
     debug_topic_pub = rospy.Publisher(debug_topic, Event, queue_size=3)
     # resolution implementation is global across all watched topics which
-    # may, may not be desirable ; in other words to have time resolution
-    # configurable per specified source topic processor instance
+    # may, may not be desirable ; in other words, we may want to have
+    # the time resolution configurable per specified source topic processor instance
     resolution = rospy.get_param("~resolution", 2)
+    inactivity_resubmission = rospy.get_param("~inactivity_resubmission", 20)
     # source activities - returns list of dictionaries
     stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
     influxdb_client = get_influxdb_client()
@@ -172,7 +212,9 @@ def main():
                       watched_field_name=ss["strategy"],
                       debug_pub=debug_topic_pub,
                       resolution=resolution,
+                      inactivity_resubmission=inactivity_resubmission,
                       influxdb_client=influxdb_client)
+        p.start_resubmission_thread()  # keep it separated (easier testing)
         rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (ss["topic"], msg_type_module))
         rospy.Subscriber(ss["topic"], msg_type_module, p.process, queue_size=3)
         processors.append(p)
