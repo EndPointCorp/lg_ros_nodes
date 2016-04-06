@@ -22,6 +22,7 @@ TODO:
 import os
 import unittest
 import time
+import json
 from multiprocessing import Array
 
 import pytest
@@ -39,10 +40,27 @@ from lg_stats.msg import Event
 from lg_stats import ROS_NODE_NAME
 from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 from lg_stats import Processor
-from lg_stats import InfluxDirect
+from lg_stats.submitters import Submitter
+from lg_stats.submitters import InfluxDirect
+from lg_stats.submitters import InfluxTelegraf
+from lg_stats.submitters import InfluxMock
 
 
 RESULT = Array('c', 100)  # size
+
+real_in_msg_director_scene = """
+{
+"type": "json",
+"message": {
+  "description": "scene-3-1 desc",
+  "duration": 2,
+  "name": "scene-3-1",
+  "resource_uri": "/director_api/scene/bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1/",
+  "slug": "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1",
+  "windows": []
+  }
+}
+"""
 
 
 class MockTopicPublisher(object):
@@ -53,15 +71,41 @@ class MockTopicPublisher(object):
         self.messages.append(msg)
 
 
-class MockInfluxDBSubmitter(object):
-    def __init__(self):
-        self.messages = []
+class TestSubmitters(object):
 
-    def write_stats(self, data):
-        self.messages.append(data)
+    def test_submitters_instantiation(self):
+        pytest.raises(RuntimeError, Submitter)
+        InfluxDirect()
+        InfluxTelegraf()
+        InfluxMock()
 
-    def get_data_for_influx(self, msg):
-        return {}
+    def test_get_data_for_influx(self):
+        # prepare message for testing, as if it was received (incoming message)
+        slot = json.loads(real_in_msg_director_scene)["message"]
+        in_msg = GenericMessage(type="json", message=json.dumps(slot))
+        # get outgoing message (to /lg_stats/debug) - via Processor instance
+        p = Processor(watched_topic="/director/scene",
+                      msg_slot="message",
+                      watched_field_name="slug")
+        out_msg = p.get_outbound_message(in_msg)
+        whole_field_name = "message.slug"  # depends on the particular message type above
+        # now finally test the method of submitters:
+        influx = InfluxDirect.get_data_for_influx(out_msg)
+        assert isinstance(influx, dict)
+        assert influx["measurement"] == p.watched_topic
+        assert influx["tags"]["field_name"] == whole_field_name
+        assert influx["tags"]["value"] == out_msg.value
+        influx = InfluxTelegraf.get_data_for_influx(out_msg)
+        assert isinstance(influx, str)
+        assert influx.startswith(p.watched_topic)
+        assert influx.find("field_name=%s" % whole_field_name) > -1
+        assert influx.find("value=%s" % out_msg.value) > -1
+        # this mock just calls InfluxTelegraf - do the same assertions
+        influx = InfluxMock.get_data_for_influx(out_msg)
+        assert isinstance(influx, str)
+        assert influx.startswith(p.watched_topic)
+        assert influx.find("field_name=%s" % whole_field_name) > -1
+        assert influx.find("value=%s" % out_msg.value) > -1
 
 
 class TestLGStatsProcessor(object):
@@ -100,7 +144,7 @@ class TestLGStatsProcessor(object):
     def test_process(self):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)  # needed by ROS time
         pub = MockTopicPublisher()
-        influx = MockInfluxDBSubmitter()
+        influx = InfluxMock()
         p = Processor(watched_field_name="application",
                       influxdb_client=influx,
                       debug_pub=pub)
@@ -117,7 +161,7 @@ class TestLGStatsProcessor(object):
         """
         rospy.init_node(ROS_NODE_NAME, anonymous=True)  # needed by ROS time
         pub = MockTopicPublisher()
-        influx = MockInfluxDBSubmitter()
+        influx = InfluxMock()
         p = Processor(watched_field_name="application",
                       debug_pub=pub,
                       resolution=1,

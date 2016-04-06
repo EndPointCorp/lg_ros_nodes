@@ -32,7 +32,7 @@ from lg_common.helpers import unpack_activity_sources
 from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_message_type_from_string
 from lg_stats.msg import Event
-import submitter
+import submitters
 
 
 ROS_NODE_NAME = "lg_stats"
@@ -66,6 +66,12 @@ class Processor(object):
         self.time_of_last_in_msg = None  # time of the last processed incoming message
         self.last_in_msg = None  # message from the source topic, last incoming mesage
         self.influxdb_client = influxdb_client
+
+    def get_whole_field_name(self):
+        if self.msg_slot:
+            return "%s.%s" % (self.msg_slot, self.watched_field_name)
+        else:
+            return self.watched_field_name
 
     def get_slot(self, msg):
         """
@@ -104,13 +110,11 @@ class Processor(object):
         """
         slot = self.get_slot(src_msg)  # this may raise EmptyIncomingMessage
         if slot:
-            watched_field_name = "%s.%s" % (self.msg_slot, self.watched_field_name)
             value = str(slot[self.watched_field_name])
         else:
-            watched_field_name = self.watched_field_name
             value = str(getattr(src_msg, self.watched_field_name))
         out_msg = Event(src_topic=self.watched_topic,
-                        field_name=watched_field_name,
+                        field_name=self.get_whole_field_name(),
                         type="event",
                         # value is always string, if source value is e.g.
                         # boolean, it's converted to a string here
@@ -145,7 +149,7 @@ def get_influxdb_client():
     database = rospy.get_param("~database", None)
     if not submitter_type or not host or not port:
         raise RuntimeError("No InfluxDB connection details provided in the roslaunch configuration.")
-    return getattr(submitter, submitter_type)(host=host, port=port, database=database)
+    return getattr(submitters, submitter_type)(host=host, port=port, database=database)
 
 
 def main():

@@ -85,12 +85,12 @@ class InfluxTelegraf(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        msg = ("%s,field_name=%s,type=%s,value=%s value=0.0" %
-               (msg.src_topic,
-                msg.field_name,
-                msg.type,
-                msg.value))
-        return msg
+        influx_str = ("%s,field_name=%s,type=%s,value=%s value=0.0" %
+                      (msg.src_topic,
+                       msg.field_name,
+                       msg.type,
+                       msg.value))
+        return influx_str
 
     def write_stats(self, data):
         """
@@ -119,10 +119,14 @@ class InfluxMock(Submitter):
 
     """
     def __init__(self, host=None, port=None, database=None):
+        self.messages = []
         rospy.loginfo("InfluxDB Mock client initialized ... won't do anything.")
 
-    def get_data_for_influx(self, msg):
-        rospy.loginfo("%s called, received msg: '%s'" % (self.__class__.__name__, msg))
+    @staticmethod
+    def get_data_for_influx(msg):
+        rospy.loginfo("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
+        return InfluxTelegraf.get_data_for_influx(msg)
 
     def write_stats(self, data):
         rospy.loginfo("%s called, received msg: '%s'" % (self.__class__.__name__, data))
+        self.messages.append(data)
