@@ -91,7 +91,7 @@ class TestSubmitters(object):
         assert isinstance(influx, dict)
         assert influx["measurement"] == p.watched_topic
         assert influx["tags"]["field_name"] == whole_field_name
-        assert influx["tags"]["value"] == out_msg.value
+        assert influx["tags"]["value"] == "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1"
         influx = InfluxTelegraf.get_data_for_influx(out_msg)
         assert isinstance(influx, str)
         assert influx.startswith(p.watched_topic)
@@ -172,8 +172,8 @@ class TestLGStatsProcessor(object):
                       watched_field_name="slug")
         p.process(in_msg)
         # nothing shall happen
-        assert p.last_in_msg == None
-        assert p.time_of_last_in_msg == None
+        assert p.last_in_msg is None
+        assert p.time_of_last_in_msg is None
 
     def test_get_slot(self):
         # prepare message for testing, as if it was received (incoming message)
@@ -266,6 +266,11 @@ class TestLGStatsRealMessageChain(object):
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "something")
+        # test with another (real) message
+        RESULT.value = "UNDEFINED"
+        slot = json.loads(real_in_msg_director_scene)["message"]
+        msg = GenericMessage(type="json", message=json.dumps(slot))
+        self.checker(pub, msg, "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1")
 
     def test_send_appctl_mode(self):
         """
