@@ -37,6 +37,5 @@ catkin_install_python(PROGRAMS
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  add_rostest(test/online/test_lg_stats_influx_direct.test)
-  add_rostest(test/online/test_lg_stats_influx_telegraf.test)
+  add_rostest(test/online/test_lg_stats_influx_mock.test)
 endif()

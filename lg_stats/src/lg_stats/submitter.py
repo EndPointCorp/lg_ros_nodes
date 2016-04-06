@@ -110,3 +110,19 @@ class InfluxTelegraf(Submitter):
                          (data, server_address, ex))
         finally:
             sock.close()
+
+
+class InfluxMock(Submitter):
+    """
+    Mock test class which doesn't submit anything
+    and does not report any Connection refused and stuff from the tests.
+
+    """
+    def __init__(self, host=None, port=None, database=None):
+        rospy.loginfo("InfluxDB Mock client initialized ... won't do anything.")
+
+    def get_data_for_influx(self, msg):
+        rospy.loginfo("%s called, received msg: '%s'" % (self.__class__.__name__, msg))
+
+    def write_stats(self, data):
+        rospy.loginfo("%s called, received msg: '%s'" % (self.__class__.__name__, data))
