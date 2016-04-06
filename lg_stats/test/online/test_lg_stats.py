@@ -12,10 +12,6 @@ running tests manually:
     rostest lg_stats/test/online/test_lg_stats.test
         (as long as it contains <test> tag, it's the same as launch file)
 
-TODO:
-    -test empty message (watched field empty of relevant slot empty)
-    -need to test all branches involved in slot return
-
 """
 
 
@@ -40,10 +36,11 @@ from lg_stats.msg import Event
 from lg_stats import ROS_NODE_NAME
 from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 from lg_stats import Processor
-from lg_stats.submitters import Submitter
-from lg_stats.submitters import InfluxDirect
-from lg_stats.submitters import InfluxTelegraf
-from lg_stats.submitters import InfluxMock
+from lg_stats import Submitter
+from lg_stats import InfluxDirect
+from lg_stats import InfluxTelegraf
+from lg_stats import InfluxMock
+from lg_stats import EmptyIncomingMessage
 
 
 RESULT = Array('c', 100)  # size
@@ -117,6 +114,15 @@ class TestLGStatsProcessor(object):
         p = Processor(resolution=200)
         assert p.resolution == 200
 
+    def test_whole_field_name(self):
+        p = Processor(watched_topic="/director/scene",
+                      msg_slot="message",
+                      watched_field_name="slug")
+        assert p.get_whole_field_name() == "message.slug"
+        p = Processor(watched_topic="/director/scene",
+                      watched_field_name="somethingelse")
+        assert p.get_whole_field_name() == "somethingelse"
+
     def test_publish(self):
         pub = MockTopicPublisher()
         p = Processor(watched_topic=None,
@@ -152,6 +158,37 @@ class TestLGStatsProcessor(object):
         assert p.last_in_msg is None
         p.process(msg1)
         assert p.last_in_msg == msg1
+
+    def test_empty_message_ignored(self):
+        """
+        Empty message - consider just empty slot of of the slotted incoming message.
+        Such shall be ignored.
+
+        """
+        # prepare message for testing, as if it was received (incoming message)
+        in_msg = GenericMessage(type="json", message="{}")
+        p = Processor(watched_topic="/director/scene",
+                      msg_slot="message",
+                      watched_field_name="slug")
+        p.process(in_msg)
+        # nothing shall happen
+        assert p.last_in_msg == None
+        assert p.time_of_last_in_msg == None
+
+    def test_get_slot(self):
+        # prepare message for testing, as if it was received (incoming message)
+        in_msg = GenericMessage(type="json", message="{}")
+        p = Processor(watched_topic="/director/scene",
+                      msg_slot="message",
+                      watched_field_name="slug")
+        # test the same on a lower level
+        pytest.raises(EmptyIncomingMessage, p.get_slot, in_msg)
+        slot = json.loads(real_in_msg_director_scene)["message"]
+        in_msg = GenericMessage(type="json", message=json.dumps(slot))
+        assert slot == p.get_slot(in_msg)
+        in_msg = Session(application="someapplication1")
+        p = Processor(watched_field_name="application")
+        assert not p.get_slot(in_msg)
 
     @pytest.mark.skipif(True, reason="Resolution behaviour will be changing (#126)")
     def test_process_with_resolution_check(self):
