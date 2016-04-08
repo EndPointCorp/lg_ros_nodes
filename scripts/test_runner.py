@@ -82,6 +82,7 @@ def run_tests():
     nose_tests, ros_tests = get_tests()
     fail_flags = {}
     for nose_test in nose_tests:
+        #c = "rosunit %s" % nose_test
         c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
         print "RUNNING: '%s'" % c
         ret = os.system(c)
@@ -92,7 +93,8 @@ def run_tests():
         ret = os.system(c)
         fail_flags[ros_test] = ret
     fail_flags['pep8'] = pep8_test()
-    for test, flag in fail_flags.items():
+    print "\n\nFINAL SUMMARY:\n"
+    for test, flag in sorted(fail_flags.items()):
         print "RAN TEST: %s\nGot exit code %d" % (test, flag)
     # check for non-zero exit status, and fail if found
     if filter(None, fail_flags.values()):
