@@ -19,6 +19,7 @@ Will need to define association between source topics and type of
 
 import os
 import json
+import time
 import threading
 
 import rospy
@@ -66,6 +67,7 @@ class Processor(object):
         self.last_influx_data = None  # last message submitted to InfluxDB
         self.last_out_msg = None  # last /lg_stats/debug message
         self.influxdb_client = influxdb_client
+        self.resubmission_thread = None
         self._lock = threading.Lock()
 
     def start_resubmission_thread(self):
@@ -82,25 +84,28 @@ class Processor(object):
         update is sent out (both /lg_stats/debug topic as well as to InfluxDB.
 
         """
-        rate = rospy.Rate(1.0 / self.inactivity_resubmission)  # hz
         while not rospy.is_shutdown():
             rospy.loginfo("Resubmission thread loop ...")
-            with self._lock:
-                if self.last_in_msg and self.time_of_last_in_msg:
-                    elapsed = rospy.Time.now() - self.time_of_last_in_msg
-                    if elapsed.to_sec() > self.inactivity_resubmission:
-                        rospy.loginfo("Resubmitting last message to InfluxDB ('%s') ..." %
-                                      self.last_influx_data)
-                        self.debug_pub.publish(self.last_out_msg)
-                        self.influxdb_client.write_stats(self.last_influx_data)
-                    else:
-                        rospy.loginfo("The 'inactivity_resubmission' (%s) period has not "
-                                      "elapsed yet." % self.inactivity_resubmission)
-                else:
-                    rospy.loginfo("Nothing received on this topic so far.")
+            self.resubmit_worker()
             rospy.loginfo("Resubmission thread sleeping ...")
-            rate.sleep()
+            # another possibility is rate = rospy.Rate(1) ... rate.sleep() ... or rospy.sleep(2)
+            time.sleep(2)
         rospy.loginfo("Resubmission thread finished.")
+
+    def resubmit_worker(self):
+        with self._lock:
+            if self.last_in_msg and self.time_of_last_in_msg:
+                elapsed = time.time() - self.time_of_last_in_msg
+                if int(round(elapsed)) > self.inactivity_resubmission:
+                    rospy.loginfo("Resubmitting last message to InfluxDB ('%s') ..." %
+                                  self.last_influx_data)
+                    self.debug_pub.publish(self.last_out_msg)
+                    self.influxdb_client.write_stats(self.last_influx_data)
+                else:
+                    rospy.loginfo("The 'inactivity_resubmission' (%s) period has not "
+                                  "elapsed yet." % self.inactivity_resubmission)
+            else:
+                rospy.loginfo("Nothing received on this topic so far.")
 
     def get_whole_field_name(self):
         if self.msg_slot:
@@ -176,7 +181,7 @@ class Processor(object):
         self.influxdb_client.write_stats(influx_data)
         with self._lock:
             self.last_in_msg = msg
-            self.time_of_last_in_msg = rospy.Time.now()
+            self.time_of_last_in_msg = time.time()
             self.last_influx_data = influx_data
             self.last_out_msg = out_msg
 
