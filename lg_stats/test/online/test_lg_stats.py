@@ -84,6 +84,7 @@ class TestLGStatsRealMessageChain(object):
         """
         Handler of incoming messages on /lg_stats/debug topic.
         Set the shared mem value based on the received message.
+
         """
         rospy.loginfo("callback received type: '%s'" % type(msg))
         rospy.loginfo(msg)
@@ -94,6 +95,7 @@ class TestLGStatsRealMessageChain(object):
         This method is called after init_node
         Wait a bit until the ros infrastructure starts up, sending a message right
         init_node results in a lost message sometimes ...
+
         """
         rospy.sleep(1)
         publisher.publish(msg_to_send)
@@ -108,6 +110,7 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /director/scene messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
         """
         msg = GenericMessage(type="json", message="""{"slug": "something"}""")
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
@@ -123,6 +126,7 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /appctl/mode messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
         """
         msg = Mode(mode="a good mode")
         pub = rospy.Publisher("/appctl/mode", Mode, queue_size=3)
@@ -133,6 +137,7 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /statistics/session messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
         """
         msg = Session(application="a good application")
         pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
@@ -143,12 +148,13 @@ class TestLGStatsRealMessageChain(object):
         """
         Check stats handling of /activity/active messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
         """
         msg = Bool(data=True)
         pub = rospy.Publisher("/activity/active", Bool, queue_size=3)
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "True")
-        
+
 
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
