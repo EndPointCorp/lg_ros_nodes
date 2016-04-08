@@ -90,7 +90,7 @@ class InfluxTelegraf(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        influx_str = ("%s,field_name=%s,type=%s,value=%s value=0.0 %s" %
+        influx_str = ("%s,field_name='%s',type='%s',value='%s' value=0.0 %s" %
                       (msg.src_topic,
                        msg.field_name,
                        msg.type,
