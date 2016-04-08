@@ -6,6 +6,7 @@ InfluxDB submission / communication implementations.
 import socket
 
 import rospy
+import nanotime
 
 
 class Submitter(object):
@@ -22,6 +23,10 @@ class Submitter(object):
 
     def write_stats(self, data):
         raise RuntimeError("Base class method called, not implemented.")
+
+    @staticmethod
+    def get_timestamp():
+        return nanotime.now().nanoseconds()
 
 
 class InfluxDirect(Submitter):
@@ -85,11 +90,12 @@ class InfluxTelegraf(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        influx_str = ("%s,field_name=%s,type=%s,value=%s value=0.0" %
+        influx_str = ("%s,field_name=%s,type=%s,value=%s value=0.0 %s" %
                       (msg.src_topic,
                        msg.field_name,
                        msg.type,
-                       msg.value))
+                       msg.value,
+                       InfluxTelegraf.get_timestamp()))
         return influx_str
 
     def write_stats(self, data):
