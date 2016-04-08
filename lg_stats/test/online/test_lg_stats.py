@@ -12,6 +12,11 @@ running tests manually:
     rostest lg_stats/test/online/test_lg_stats.test
         (as long as it contains <test> tag, it's the same as launch file)
 
+the time period that the resubmission thread is started:
+<param name="inactivity_resubmission" value="60"/>
+shall be high so that the spawned threads do not intervene with the
+currently executed tests.
+
 """
 
 
