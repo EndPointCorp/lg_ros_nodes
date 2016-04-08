@@ -85,14 +85,14 @@ class TestSubmitters(object):
         influx = InfluxTelegraf.get_data_for_influx(out_msg)
         assert isinstance(influx, str)
         assert influx.startswith(p.watched_topic)
-        assert influx.find("field_name=%s" % whole_field_name) > -1
-        assert influx.find("value=%s" % out_msg.value) > -1
+        assert influx.find("field_name=\"%s\"" % whole_field_name) > -1
+        assert influx.find("value=\"%s\"" % out_msg.value) > -1
         # this mock just calls InfluxTelegraf - do the same assertions
         influx = InfluxMock.get_data_for_influx(out_msg)
         assert isinstance(influx, str)
         assert influx.startswith(p.watched_topic)
-        assert influx.find("field_name=%s" % whole_field_name) > -1
-        assert influx.find("value=%s" % out_msg.value) > -1
+        assert influx.find("field_name=\"%s\"" % whole_field_name) > -1
+        assert influx.find("value=\"%s\"" % out_msg.value) > -1
 
 
 class TestLGStatsProcessor(object):
