@@ -6,6 +6,7 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 from std_msgs.msg import String
 
+
 def get_fullscale():
     params = rospy.get_param_names()
     for param in params:
@@ -14,6 +15,7 @@ def get_fullscale():
     # assuming no full_scale since there wasn't a spacenav node with
     # full_scale as a parameter
     return 0
+
 
 def main():
     rospy.init_node('spacenav_wrapper')
@@ -27,6 +29,7 @@ def main():
     joy = rospy.Publisher(topic_root + '/joy', Joy, queue_size=10)
     rezero_pub = rospy.Publisher('/rezero', String, queue_size=10)
     full_scale = get_fullscale()
+
     def rezero():
         if should_relaunch:
             rezero_pub.publish('rezero')

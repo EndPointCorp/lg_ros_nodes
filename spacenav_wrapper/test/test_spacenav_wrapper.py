@@ -12,6 +12,7 @@ from lg_common.helpers import write_log_to_file
 PKG = 'spacenav_wrapper'
 NAME = 'test_spacenav'
 
+
 class Mock(object):
     def __init__(self):
         self.publish_data = []
@@ -22,6 +23,7 @@ class Mock(object):
 
     def rezero(self, *args, **kwargs):
         self.rezero_count += 1
+
 
 class TestSpacenavWrapper(unittest.TestCase):
     def setUp(self):
@@ -35,7 +37,6 @@ class TestSpacenavWrapper(unittest.TestCase):
     def space_pub(self, msg):
         rospy.sleep(0.1)
         self._space_pub.publish(msg)
-
 
     def tearDown(self):
         pass

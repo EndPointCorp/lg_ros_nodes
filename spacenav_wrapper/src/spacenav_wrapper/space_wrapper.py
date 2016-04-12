@@ -6,12 +6,15 @@ from lg_common.helpers import write_log_to_file
 
 GUTTER_VAL = 0.01
 
+
 class MockPublisher(object):
     def publish(self, *args, **kwargs):
         pass
 
+
 def MockFunc(*args, **kwargs):
     pass
+
 
 class SpacenavWrapper(object):
     def __init__(self, twist=MockPublisher(), joy=MockPublisher(),
@@ -36,7 +39,7 @@ class SpacenavWrapper(object):
         of it
         """
         if self._needs_rezero(msg):
-            rospy.logerr('rezeroing...')
+            rospy.loginfo('needs rezero...')
             self.rezero()
         if self._is_in_gutter(msg):
             msg = Twist()
@@ -91,7 +94,7 @@ class SpacenavWrapper(object):
         Checks the last $buffer_size messages, if they're all the same,
         then returns True
         """
-        if self.rezero == None:
+        if self.rezero is None:
             return False
         # append the msg, and save only the last $buffer_size
         self.msg_buffer.append(twist_msg)
