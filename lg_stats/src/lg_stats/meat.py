@@ -188,6 +188,7 @@ class Processor(object):
             self.time_of_last_in_msg = time.time()
             self.last_influx_data = influx_data
             self.last_out_msg = out_msg
+            self.time_of_last_resubmission = None
 
 
 def get_influxdb_client():
