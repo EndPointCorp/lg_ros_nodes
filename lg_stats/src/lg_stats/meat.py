@@ -66,6 +66,7 @@ class Processor(object):
         self.last_in_msg = None  # message from the source topic, last incoming mesage
         self.last_influx_data = None  # last message submitted to InfluxDB
         self.last_out_msg = None  # last /lg_stats/debug message
+        self.time_of_last_resubmission = None
         self.influxdb_client = influxdb_client
         self.resubmission_thread = None
         self._lock = threading.Lock()
@@ -95,12 +96,15 @@ class Processor(object):
     def resubmit_worker(self):
         with self._lock:
             if self.last_in_msg and self.time_of_last_in_msg:
-                elapsed = time.time() - self.time_of_last_in_msg
+                if not self.time_of_last_resubmission:
+                    self.time_of_last_resubmission = self.time_of_last_in_msg
+                elapsed = time.time() - self.time_of_last_resubmission
                 if int(round(elapsed)) > self.inactivity_resubmission:
                     rospy.loginfo("Resubmitting last message to InfluxDB ('%s') ..." %
                                   self.last_influx_data)
                     self.debug_pub.publish(self.last_out_msg)
                     self.influxdb_client.write_stats(self.last_influx_data)
+                    self.time_of_last_resubmission = time.time()
                 else:
                     rospy.loginfo("The 'inactivity_resubmission' (%s) period has not "
                                   "elapsed yet." % self.inactivity_resubmission)
