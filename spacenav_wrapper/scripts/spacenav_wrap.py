@@ -18,6 +18,9 @@ def get_fullscale():
 def main():
     rospy.init_node('spacenav_wrapper')
     topic_root = rospy.get_param('~root_topic', '/spacenav_wrapper')
+    gutter_val = rospy.get_param('~gutter_value', 0.0)
+    buffer_size = rospy.get_param('~buffer_size', 200)
+    should_relaunch = rospy.get_param('~relaunch', False)
     if topic_root[0] != '/':
         topic_root = '/' + topic_root
     twist = rospy.Publisher(topic_root + '/twist', Twist, queue_size=10)
@@ -25,8 +28,11 @@ def main():
     rezero_pub = rospy.Publisher('/rezero', String, queue_size=10)
     full_scale = get_fullscale()
     def rezero():
-        rezero_pub.publish('rezero')
-    s = SpacenavWrapper(twist=twist, joy=joy, rezero=rezero, full_scale=full_scale)
+        if should_relaunch:
+            rezero_pub.publish('rezero')
+    s = SpacenavWrapper(twist=twist, joy=joy, rezero=rezero,
+                        full_scale=full_scale, gutter_val=gutter_val,
+                        buffer_size=buffer_size)
 
     rospy.Subscriber('/spacenav/twist', Twist, s.handle_twist)
     rospy.Subscriber('/spacenav/joy', Joy, s.handle_joy)

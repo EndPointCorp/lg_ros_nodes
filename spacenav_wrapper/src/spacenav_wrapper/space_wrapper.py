@@ -16,7 +16,8 @@ def MockFunc(*args, **kwargs):
 class SpacenavWrapper(object):
     def __init__(self, twist=MockPublisher(), joy=MockPublisher(),
                  rezero=MockFunc, gutter_val=GUTTER_VAL,
-                 translate_twist=MockFunc, full_scale=0):
+                 translate_twist=MockFunc, full_scale=0,
+                 buffer_size=200):
         self.twist = twist
         self.joy = joy
         self.rezero = rezero
@@ -27,7 +28,7 @@ class SpacenavWrapper(object):
         self.mid_value = full_scale * 350 / 2 + 0.5
 
         self.msg_buffer = []
-        self.buffer_size = 200
+        self.buffer_size = buffer_size
 
     def handle_twist(self, msg):
         """
@@ -49,6 +50,8 @@ class SpacenavWrapper(object):
         """
         Returns boolean, whether or not the message is in the gutter
         """
+        if self.gutter_val <= 0:
+            return False
         return abs(twist_msg.linear.x) < self.gutter_val and \
             abs(twist_msg.linear.y) < self.gutter_val and \
             abs(twist_msg.linear.z) < self.gutter_val and \
