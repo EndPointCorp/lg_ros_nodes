@@ -32,6 +32,13 @@ FLYTO_KML = ('<Camera><latitude>{}</latitude><longitude>{}</longitude>'
     TEST_POSE_ROLL)
 
 
+def consume_query():
+    with open(TEST_FILE, 'r') as f:
+        q = f.read()
+    os.remove(TEST_FILE)
+    return q
+
+
 class TestQueryWriter(unittest.TestCase):
     def setUp(self):
         self.writer = QueryWriter(TEST_FILE)
@@ -42,14 +49,15 @@ class TestQueryWriter(unittest.TestCase):
         except:
             pass
 
+        self.writer.shutdown()
+
     def test_handle_playtour(self):
         tour = String(TOUR_NAME)
         self.writer.handle_tour(tour)
 
         expected = 'playtour={}'.format(TOUR_NAME)
 
-        with open(TEST_FILE, 'r') as f:
-            content = f.read()
+        content = consume_query()
         self.assertEqual(content, expected)
 
     def test_handle_exittour(self):
@@ -58,8 +66,7 @@ class TestQueryWriter(unittest.TestCase):
 
         expected = 'exittour=true'
 
-        with open(TEST_FILE, 'r') as f:
-            content = f.read()
+        content = consume_query()
         self.assertEqual(content, expected)
 
     def test_handle_planet(self):
@@ -68,8 +75,7 @@ class TestQueryWriter(unittest.TestCase):
 
         expected = 'planet={}'.format(PLANET_NAME)
 
-        with open(TEST_FILE, 'r') as f:
-            content = f.read()
+        content = consume_query()
         self.assertEqual(content, expected)
 
     def test_handle_search(self):
@@ -78,8 +84,7 @@ class TestQueryWriter(unittest.TestCase):
 
         expected = 'search={}'.format(SEARCH_QUERY)
 
-        with open(TEST_FILE, 'r') as f:
-            content = f.read()
+        content = consume_query()
         self.assertEqual(content, expected)
 
     def test_flyto_kml(self):
@@ -87,8 +92,7 @@ class TestQueryWriter(unittest.TestCase):
         self.writer.handle_flyto_kml(kml)
         expected = 'flytoview={}'.format(FLYTO_KML)
 
-        with open(TEST_FILE, 'r') as f:
-            content = f.read()
+        content = consume_query()
         self.assertEqual(content, expected)
 
     def test_flyto_pose_camera(self):
@@ -102,8 +106,7 @@ class TestQueryWriter(unittest.TestCase):
 
         self.writer.handle_flyto_pose_camera(pose)
 
-        with open(TEST_FILE, 'r') as f:
-            content = f.read()
+        content = consume_query()
 
         parts = content.split('=')
         self.assertEqual(2, len(parts))
@@ -132,8 +135,7 @@ class TestQueryWriter(unittest.TestCase):
 
         self.writer.handle_flyto_pose_lookat(pose)
 
-        with open(TEST_FILE, 'r') as f:
-            content = f.read()
+        content = consume_query()
 
         parts = content.split('=')
         self.assertEqual(2, len(parts))

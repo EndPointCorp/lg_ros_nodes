@@ -1,0 +1,17 @@
+<launch>
+    <node name="lg_stats" pkg="lg_stats" type="stats.py">
+        <param name="resolution" value="1"/>
+        <param name="submission_type" value="InfluxMock"/>
+        <param name="host" value="localhost"/>
+        <param name="port" value="8086"/>
+        <param name="activity_sources" value="/director/scene:interactivespaces_msgs/GenericMessage-message:slug;/appctl/mode:appctl/Mode:mode;/statistics/session:lg_stats/Session:application;/activity/active:std_msgs/Bool:data"/>
+        <param name="inactivity_resubmission" value="60"/>
+    </node>
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_lg_stats" pkg="lg_stats" type="test_lg_stats.py"/>
+</launch>

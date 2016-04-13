@@ -2,6 +2,21 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.40 (2016-03-23)
+-------------------
+* put custom configs in custom directories
+* Contributors: jacob
+
+1.1.39 (2016-03-16)
+-------------------
+* lg_earth: hacky template for setting HOME_DIR in custom configs
+* Contributors: Jacob Minshall
+
+1.1.38 (2016-03-09)
+-------------------
+* Queue Earth query writes
+* Contributors: Matt Vollrath
+
 1.1.37 (2016-03-04)
 -------------------
 * Changed perms for test_kmlsync.py

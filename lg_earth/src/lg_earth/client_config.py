@@ -598,9 +598,9 @@ class ClientConfig:
         Curls config and writes to CUSTOM_CONFIG_DIR
         """
         response = urllib.urlopen(url)
-        f = open(CUSTOM_CONFIG_DIR + '/' + filename, 'w')
-        f.write(response.read())
-        f.close()
+        os.system('mkdir -p %s/%s' % (CUSTOM_CONFIG_DIR, self.base_path))
+        with open(CUSTOM_CONFIG_DIR + '/' + self.base_path + '/' + filename, 'w') as f:
+            f.write(response.read().replace("HOME_DIR", self.base_path))
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

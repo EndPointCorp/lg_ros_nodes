@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_earth</name>
-  <version>1.1.37</version>
+  <version>1.1.40</version>
   <description>ROS software for running and interfacing with the Google Earth desktop client.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -23,6 +23,7 @@
   <run_depend>appctl</run_depend>
   <run_depend>interactivespaces_msgs</run_depend>
   <run_depend>lg_common</run_depend>
+  <run_depend>python-pyinotify</run_depend>
   <test_depend>rostest</test_depend>
   <test_depend>python-requests</test_depend>
 </package>
