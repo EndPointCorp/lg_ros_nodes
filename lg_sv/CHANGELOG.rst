@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.41 (2016-04-13)
+-------------------
 * Generated changelogs while preparing for new release
 * Contributors: Zdenek Maxa
 
