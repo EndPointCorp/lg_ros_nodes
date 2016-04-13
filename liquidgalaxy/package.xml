@@ -20,6 +20,7 @@
   <run_depend>lg_activity</run_depend>
   <run_depend>lg_attract_loop</run_depend>
   <run_depend>lg_replay</run_depend>
+  <run_depend>spacenav_wrapper</run_depend>
   <run_depend>lg_stats</run_depend>
 
   <export>

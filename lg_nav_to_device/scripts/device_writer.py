@@ -12,7 +12,7 @@ def main():
     scale = rospy.get_param('~scale', 512.0)
 
     device_writer = DeviceWriter(scale)
-    sub = rospy.Subscriber('/spacenav/twist', Twist, device_writer.make_event)
+    sub = rospy.Subscriber('/spacenav_wrapper/twist', Twist, device_writer.make_event)
     rospy.Subscriber('/earth/state', ApplicationState, device_writer.set_state)
 
     rospy.spin()
