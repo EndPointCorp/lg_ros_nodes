@@ -106,6 +106,8 @@ that it finds before launching production ROS nodes that are located under /opt/
 
 To make new release you need to:
 
+- create `CATKIN_IGNORE` in catkin/src
+
 - lint it:
 ```bash
 catkin_link
