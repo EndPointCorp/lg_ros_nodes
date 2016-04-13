@@ -223,5 +223,6 @@ class Client:
             os.mkdir(earth_dir)
         except Exception, e:
             rospy.logerr('found error: %s' % e.message)
+        self.earth_proc.handle_soft_relaunch()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
