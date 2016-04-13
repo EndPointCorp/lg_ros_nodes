@@ -110,7 +110,7 @@ To make new release you need to:
 
 - lint it:
 ```bash
-catkin_link
+catkin_lint
 ```
 
 - generate changelog:
