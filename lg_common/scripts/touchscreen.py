@@ -11,6 +11,7 @@ from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import dependency_available, x_available
 from lg_common.helpers import DependencyException
 from lg_common.helpers import x_available
+from lg_common.helpers import make_soft_relaunch_callback
 
 
 if __name__ == '__main__':
@@ -94,6 +95,7 @@ if __name__ == '__main__':
     )
 
     browser.set_state(ApplicationState.VISIBLE)
+    make_soft_relaunch_callback(browser.handle_soft_relaunch, groups=['touchscreen'])
 
     def handle_debug_sock_msg(msg):
         browser.send_debug_sock_msg(msg.data)

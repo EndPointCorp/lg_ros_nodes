@@ -116,27 +116,31 @@ class PanoViewerServer:
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
 
-        self.last_metadata = dict()
-        self.location = Pose2D()
-        self.pov = Quaternion()
-        self.pov.w = INITIAL_ZOOM  # TODO is this alright?
-        self.panoid = str()
         self.state = True
         # TODO (WZ) parametrize this
         self.nav_sensitivity = nav_sensitivity
         self.tilt_max = tilt_max
         self.tilt_min = tilt_min
         self.space_nav_interval = space_nav_interval
-        self.move_forward = 0
-        self.move_backward = 0
         self.nearby_panos = nearby_panos
-        self.last_nav_msg_t = 0
-        self.time_since_last_nav_msg = 0
         self.x_threshold = x_threshold
         self.metadata_pub = metadata_pub
         self.zoom_max = zoom_max
         self.zoom_min = zoom_min
+
+        self._initialize_variables()
+
+    def _initialize_variables(self):
         self.button_down = False
+        self.last_nav_msg_t = 0
+        self.time_since_last_nav_msg = 0
+        self.move_forward = 0
+        self.move_backward = 0
+        self.last_metadata = dict()
+        self.location = Pose2D()
+        self.pov = Quaternion()
+        self.pov.w = INITIAL_ZOOM  # TODO is this alright?
+        self.panoid = str()
 
     def pub_location(self, pose2d):
         """
@@ -314,3 +318,11 @@ class PanoViewerServer:
         coefficient = self.time_since_last_nav_msg / self.space_nav_interval
         coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
         return coefficient
+
+    def _handle_soft_relaunch(self, *args, **kwargs):
+        """
+        Reinitialize all variables
+        """
+        rospy.logerr('handling soft relaunch for streetview')
+        self._initialize_variables()
+        self.nearby_panos.handle_soft_relaunch()

@@ -45,3 +45,9 @@ class KmlSyncState:
     def _send_planet_query(self, req):
         self.planet_pub.publish(String(req.planetname))
         return {'response': True}
+
+    def _handle_soft_relaunch(self, msg):
+        """
+        On a soft relaunch it would make sense to clear the current state
+        """
+        self.state = None

@@ -133,4 +133,8 @@ class ManagedApplication(object):
             rospy.loginfo("Handling unwanted respawn of %s by killing the process" % self)
             self.proc.stop()
 
+    def handle_soft_relaunch(self, *args, **kwargs):
+        rospy.logerr('managed application relaunch...')
+        self.proc.handle_soft_relaunch()
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

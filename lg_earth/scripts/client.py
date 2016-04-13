@@ -5,7 +5,7 @@ import os
 from lg_earth import Client
 from lg_common.msg import ApplicationState
 from lg_common.helpers import DependencyException
-from lg_common.helpers import dependency_available, x_available
+from lg_common.helpers import dependency_available, x_available, make_soft_relaunch_callback
 
 
 def main():
@@ -42,6 +42,7 @@ def main():
 
     rospy.Subscriber(state_topic, ApplicationState,
                      client.earth_proc.handle_state_msg)
+    make_soft_relaunch_callback(client._handle_soft_relaunch, groups=["earth"])
 
     rospy.spin()
 

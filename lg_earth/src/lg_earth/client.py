@@ -79,6 +79,7 @@ class Client:
 
         # Override the HOME location. This requires a hack to the Earth
         # libraries. See the lg_earth README.
+        os.environ['OLDHOME'] = os.environ['HOME']
         os.environ['HOME'] = self._get_tempdir()
 
         # Prevent external browser launch.
@@ -210,5 +211,18 @@ class Client:
         custom_conf_expected_path = CUSTOM_CONFIG_DIR + '/' + self._get_tempdir() + '/' + conf_filename
         shutil.copy(custom_conf_expected_path,
                     self._get_tempdir() + '/' + standard_conf_path)
+
+    def _handle_soft_relaunch(self, msg):
+        """
+        Clearing up logs is pretty important for soft relaunches
+        """
+        rospy.logerr('removing cache for google earth')
+        try:
+            earth_dir = '%s/.googleearth' % os.environ['OLDHOME']
+            shutil.rmtree(earth_dir)
+            os.mkdir(earth_dir)
+        except Exception, e:
+            rospy.logerr('found error: %s' % e.message)
+        self.earth_proc.handle_soft_relaunch()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
