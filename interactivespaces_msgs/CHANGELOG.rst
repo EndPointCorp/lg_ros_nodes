@@ -4,6 +4,8 @@ Changelog for package interactivespaces_msgs
 
 Forthcoming
 -----------
+* Generated changelogs while preparing for new release
+* Contributors: Zdenek Maxa
 
 1.1.40 (2016-03-23)
 -------------------
