@@ -2,6 +2,17 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.41 (2016-04-13)
+-------------------
+* Generated changelogs while preparing for new release
+* Update managed_browser.py
+  Add `--enable-webgl` `--ignore-gpu-blacklist` for managed browser
+* Contributors: Dmitry Kiselev, Zdenek Maxa
+
+* Update managed_browser.py
+  Add `--enable-webgl` `--ignore-gpu-blacklist` for managed browser
+* Contributors: Dmitry Kiselev
+
 1.1.40 (2016-03-23)
 -------------------
 
