@@ -491,6 +491,7 @@ def is_valid_state(state):
         state == ApplicationState.SUSPENDED or \
         state == ApplicationState.VISIBLE
 
+
 def make_soft_relaunch_callback(func, *args, **kwargs):
     """
     Creates a callback on the /soft_relaunch topic. The normal
@@ -511,3 +512,4 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)
+
