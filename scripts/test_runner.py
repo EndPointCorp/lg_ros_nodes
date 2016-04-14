@@ -82,8 +82,11 @@ def run_tests():
     nose_tests, ros_tests = get_tests()
     fail_flags = {}
     for nose_test in nose_tests:
-        #c = "rosunit %s" % nose_test
-        c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
+        # rosunit will urn the offline test just the same
+        # benefit is that it respects pytest stuff
+        # previous, nosetests command was this:
+        #c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
+        c = "rosunit %s" % nose_test
         print "RUNNING: '%s'" % c
         ret = os.system(c)
         fail_flags[nose_test] = ret
