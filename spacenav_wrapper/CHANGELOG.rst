@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.42 (2016-04-14)
+-------------------
 * readme for spacenav_wrapper
 * spacenav_wrapper: log and pep8 fixes
 * spacenav_wrapper: parameterize more things
