@@ -1,0 +1,21 @@
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package spacenav_wrapper
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Forthcoming
+-----------
+* readme for spacenav_wrapper
+* spacenav_wrapper: log and pep8 fixes
+* spacenav_wrapper: parameterize more things
+  Gutter value, buffer size, and whether or not we should actually
+  relaunch. This also has defaults now that leaves the spacenav_wrapper as
+  nothing more than an echo to /spacenav/twist. This is good in case
+  problems arise with the spacenav wrapper.
+* improvements to spacenav_wrapper
+* spacenav-rezero: turned into rosnode
+  NOTE: ran into issues building this in Jade, or possibly just on my
+  system, but inside the docker tester this builds properly.
+* building spacenav-rezero in ros package now
+* spacenav_wrapper: initial package
+  Supports parameterized gutter vals, and has a relaunch check.
+* Contributors: Jacob Minshall

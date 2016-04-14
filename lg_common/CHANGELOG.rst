@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use rosunit to run offline tests, touch: `#195 <https://github.com/EndPointCorp/lg_ros_nodes/issues/195>`_
+* restart browser on soft relaunch
+* restart earth process on soft relaunch
+* softrelaunch initial work
+* Contributors: Jacob Minshall, Zdenek Maxa
+
 1.1.41 (2016-04-13)
 -------------------
 * Generated changelogs while preparing for new release

@@ -2,6 +2,12 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* start listening on spacenav_wrapper/twist topic
+* softrelaunch initial work
+* Contributors: Jacob Minshall
+
 1.1.41 (2016-04-13)
 -------------------
 * Generated changelogs while preparing for new release
