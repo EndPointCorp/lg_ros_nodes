@@ -502,7 +502,7 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
     """
     from std_msgs.msg import String
     rospy.logerr('creating callback %s' % kwargs.get('groups', 'no group'))
-    
+
     def cb(msg):
         rospy.logerr('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
         if msg.data == 'all':
@@ -514,4 +514,3 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)
-
