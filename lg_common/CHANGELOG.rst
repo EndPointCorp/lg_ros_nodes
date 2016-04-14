@@ -2,6 +2,9 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.42 (2016-04-14)
 -------------------
 * updated changelogs for new release
