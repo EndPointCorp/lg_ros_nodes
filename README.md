@@ -104,9 +104,14 @@ that it finds before launching production ROS nodes that are located under /opt/
 
 ## Making new release
 
-To make new release you need to:
+- release from the `master` branch
 
-- create `CATKIN_IGNORE` in catkin/src
+- to make new release you need to:
+```shell
+cd catkin/src
+touch CATKIN_IGNORE
+cd -
+```
 
 - lint it:
 ```bash
@@ -115,8 +120,9 @@ catkin_lint
 
 - generate changelog:
 ```shell
-$ catkin_generate_changelog
+catkin_generate_changelog
 ```
+
 - edit all your `.rst` changelogs - remove unwanted or bogus messages
 and make them look pretty. Use `catkin_generate_changelog --all` to
 create `CHANGELOG.rst` for a new package.
@@ -126,9 +132,11 @@ create `CHANGELOG.rst` for a new package.
 git commit -am "updated changelogs for new release"
 ```
 
-- Once that's done, prepare release and send it to the build farm:
+- once that's done, prepare release and send it to the build farm:
 
 ```shell
 $ catkin_prepare_release
 ```
 
+- remove the `CATKIN_IGNORE` file, otherwise e.g. `catkin_make` will
+ignore packges to compile ...
