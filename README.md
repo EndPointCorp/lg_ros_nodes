@@ -104,6 +104,11 @@ that it finds before launching production ROS nodes that are located under /opt/
 
 ## Making new release
 
+- newly created ROS nodes need to be listed in the `pack-debs` script for CI
+server to build them and distribute to the `aptly` repository, after CI build
+is finished, check that the debs exist in `aptly` under an URL corresponding
+to the release tag
+
 - release from the `master` branch
 
 - to make new release you need to:
