@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix up changelogs
+* Contributors: Jacob Minshall
+
 1.1.45 (2016-04-14)
 -------------------
 
