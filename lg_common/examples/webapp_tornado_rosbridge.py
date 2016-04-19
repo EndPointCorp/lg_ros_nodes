@@ -3,6 +3,7 @@
 import rospy
 from lg_common.webapp import RosbridgeWebSocket, ros_tornado_spin
 from tornado.web import Application, RequestHandler
+from lg_common.helpers import get_params
 from std_msgs.msg import String
 
 """
@@ -58,7 +59,7 @@ class MainHandler(RequestHandler):
 def main():
     rospy.init_node('test_webapp')
 
-    port = rospy.get_param('~port', 9000)
+    port = get_params('~port', 9000)
 
     # Messages handled by MainHandler's StringHolder instance.
     rospy.Subscriber(

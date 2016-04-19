@@ -3,13 +3,14 @@
 import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Pose
+from lg_common.helpers import get_params
 from lg_earth import QueryWriter
 
 if __name__ == '__main__':
     rospy.init_node('earth_query')
 
-    query_file = rospy.get_param('~query_file', '/tmp/ge_queryfile')
-    queue_length = rospy.get_param('~queue_length', 10)
+    query_file = get_params('~query_file', '/tmp/ge_queryfile')
+    queue_length = get_params('~queue_length', 10)
     writer = QueryWriter(query_file, queue_length)
 
     rospy.Subscriber(

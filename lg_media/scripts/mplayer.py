@@ -2,6 +2,7 @@
 
 import rospy
 from lg_media import MplayerPool
+from lg_common.helpers import get_params
 from lg_media.msg import AdhocMedias
 from lg_media.srv import MediaAppsInfo
 from lg_media import DirectorMediaBridge
@@ -14,7 +15,7 @@ MEDIA_TYPE = 'video'  # mplayer used video rather than browser_video type
 
 def main():
     rospy.init_node('lg_media_service_mplayer', anonymous=True)
-    viewport_name = rospy.get_param("~viewport", DEFAULT_VIEWPORT)
+    viewport_name = get_params("~viewport", DEFAULT_VIEWPORT)
 
     if not viewport_name:
         rospy.logerr("Viewport is not set - exiting")

@@ -4,6 +4,7 @@ import threading
 import re
 
 from lg_common.msg import WindowGeometry
+from lg_common.helpers import get_params
 import awesome
 
 
@@ -50,7 +51,7 @@ class ManagedWindow(object):
             raise KeyError(
                 'Viewport parameter not set: {}'.format(param_name))
 
-        viewport_value = rospy.get_param(param_name)
+        viewport_value = get_params(param_name)
         return ManagedWindow.parse_geometry(viewport_value)
 
     @staticmethod
@@ -61,7 +62,7 @@ class ManagedWindow(object):
         Returns None if the private '~viewport' param is not set.
         """
         if rospy.has_param('~viewport'):
-            viewport = rospy.get_param('~viewport')
+            viewport = get_params('~viewport')
             geometry = ManagedWindow.lookup_viewport_geometry(viewport)
         else:
             geometry = None

@@ -6,6 +6,7 @@ import time
 import rospy
 
 from std_msgs.msg import String
+from lg_common.helpers import get_params
 from lg_common.msg import WindowGeometry
 from appctl_support import ProcController
 from lg_common.msg import ApplicationState
@@ -58,8 +59,8 @@ class ManagedMplayer(ManagedApplication):
         It also needs manual fifo specification.
         """
         cmd = []
-        cmd.extend([rospy.get_param("~application_path", DEFAULT_APP)])
-        cmd.extend(rospy.get_param("~application_flags", DEFAULT_ARGS).split())
+        cmd.extend([get_params("~application_path", DEFAULT_APP)])
+        cmd.extend(get_params("~application_flags", DEFAULT_ARGS).split())
 
         cmd.extend(['-geometry', '{0}x{1}+{2}+{3}'.format(self.window.geometry.width,
                                                           self.window.geometry.height,

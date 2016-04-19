@@ -16,10 +16,11 @@ from pulsar.apps.data import create_store
 from pulsar.apps.ds import pulsards_url
 from pulsar.apps.http import HttpClient
 from pulsar import command, task, coroutine_return
+from lg_common.helpers import get_params
 
 from interactivespaces_msgs.msg import GenericMessage
 
-api_url = rospy.get_param(
+api_url = get_params(
     '~director_api_url',
     os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')
 )

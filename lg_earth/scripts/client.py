@@ -3,6 +3,7 @@
 import rospy
 import os
 from lg_earth import Client
+from lg_common.helpers import get_params
 from lg_common.msg import ApplicationState
 from lg_common.helpers import DependencyException
 from lg_common.helpers import dependency_available, x_available, make_soft_relaunch_callback
@@ -12,11 +13,11 @@ def main():
     rospy.init_node('lg_earth')
 
     kmlsync_host = 'localhost'
-    kmlsync_port = rospy.get_param('/kmlsync_server/port', 8765)
-    kmlsync_timeout = rospy.get_param('/global_dependency_timeout', 15)
-    depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
-    initial_state = rospy.get_param('~initial_state', 'VISIBLE')
-    state_topic = rospy.get_param('~state_topic', '/earth/state')
+    kmlsync_port = get_params('/kmlsync_server/port', 8765)
+    kmlsync_timeout = get_params('/global_dependency_timeout', 15)
+    depend_on_kmlsync = get_params('~depend_on_kmlsync', False)
+    initial_state = get_params('~initial_state', 'VISIBLE')
+    state_topic = get_params('~state_topic', '/earth/state')
 
     if os.environ.get("LG_LANG"):
         os.environ["LANG"] = os.environ["LG_LANG"]
@@ -30,7 +31,7 @@ def main():
         else:
             rospy.loginfo("KMLSync available - continuing initialization")
 
-    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    x_timeout = get_params("/global_dependency_timeout", 15)
     if x_available(x_timeout):
         rospy.loginfo("X available")
     else:

@@ -5,13 +5,14 @@ from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import get_params
 
 
 def main():
     rospy.init_node('lg_adhoc_browser', anonymous=True)
 
-    viewport_name = rospy.get_param('~viewport', None)
-    browser_binary = rospy.get_param('~browser_binary', '/usr/bin/google-chrome')
+    viewport_name = get_params('~viewport', None)
+    browser_binary = get_params('~browser_binary', '/usr/bin/google-chrome')
 
     if not viewport_name:
         rospy.logerr("Viewport is not set in the roslaunch file. Exiting.")

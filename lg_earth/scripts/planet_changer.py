@@ -3,6 +3,7 @@
 import json
 import rospy
 from std_msgs.msg import String
+from lg_common.helpers import get_params
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -33,10 +34,10 @@ if __name__ == '__main__':
     rospy.init_node('earth_planet_changer')
 
     moon_presentations = str(
-        rospy.get_param('~moon_presentations', 'Moon')
+        get_params('~moon_presentations', 'Moon')
     ).split(';')
     mars_presentations = str(
-        rospy.get_param('~mars_presentations', 'Mars')
+        get_params('~mars_presentations', 'Mars')
     ).split(';')
 
     planet_pub = rospy.Publisher('/earth/query/planet', String, queue_size=10)

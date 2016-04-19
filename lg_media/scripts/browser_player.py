@@ -2,6 +2,7 @@
 
 import rospy
 from lg_media.msg import AdhocMedias
+from lg_common.helpers import get_params
 from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 
@@ -12,7 +13,7 @@ VIDEOSYNC_URL = 'http://lg-head/lg_sv/webapps/videosync'
 
 def main():
     rospy.init_node('lg_media_service_browser_player', anonymous=True)
-    viewport_name = rospy.get_param('~viewport', DEFAULT_VIEWPORT)
+    viewport_name = get_params('~viewport', DEFAULT_VIEWPORT)
 
     topic_name = '/media_service/browser/%s' % viewport_name
 

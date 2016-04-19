@@ -5,6 +5,7 @@ import rospy
 
 from urllib import url2pathname
 from std_msgs.msg import String
+from lg_common.helpers import get_params
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
@@ -19,23 +20,23 @@ if __name__ == '__main__':
 
     geometry = ManagedWindow.get_viewport_geometry()
 
-    url_base = rospy.get_param('~url_base', 'http://lg-head/ros_touchscreens/ts/')
-    command_line_args = rospy.get_param('~command_line_args', '')
+    url_base = get_params('~url_base', 'http://lg-head/ros_touchscreens/ts/')
+    command_line_args = get_params('~command_line_args', '')
     # TODO (wz) director_host and director_port should be global
 
-    director_host = rospy.get_param('~director_host', '42-a')
-    director_port = rospy.get_param('~director_port', 8060)
+    director_host = get_params('~director_host', '42-a')
+    director_port = get_params('~director_port', 8060)
 
-    rosbridge_secure = rospy.get_param('~rosbridge_secure', 0)
-    director_secure = rospy.get_param('~director_secure', 0)
+    rosbridge_secure = get_params('~rosbridge_secure', 0)
+    director_secure = get_params('~director_secure', 0)
 
-    rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
-    rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
-    ts_name = rospy.get_param('~ts_name', 'default')
+    rosbridge_host = get_params('~rosbridge_host', '127.0.0.1')
+    rosbridge_port = get_params('~rosbridge_port', 9090)
+    ts_name = get_params('~ts_name', 'default')
 
-    depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
-    depend_on_director = rospy.get_param('~depend_on_director', False)
-    global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
+    depend_on_rosbridge = get_params('~depend_on_rosbridge', False)
+    depend_on_director = get_params('~depend_on_director', False)
+    global_dependency_timeout = get_params('/global_dependency_timeout', 15)
 
     if depend_on_rosbridge:
         rospy.loginfo("Waiting for rosbridge to become available")
@@ -55,7 +56,7 @@ if __name__ == '__main__':
         else:
             rospy.loginfo("Director is online")
 
-    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    x_timeout = get_params("/global_dependency_timeout", 15)
     if x_available(x_timeout):
         rospy.loginfo("X available")
     else:
@@ -77,9 +78,9 @@ if __name__ == '__main__':
 
     rospy.loginfo("got url: %s" % url)
 
-    scale_factor = rospy.get_param('~force_device_scale_factor', 1)
-    debug_port = rospy.get_param('~debug_port', 10000)
-    user_agent = rospy.get_param(
+    scale_factor = get_params('~force_device_scale_factor', 1)
+    debug_port = get_params('~debug_port', 10000)
+    user_agent = get_params(
         '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
         'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
         'Version/4.0.4 Mobile/7B314 Safari/531.21.10'

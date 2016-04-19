@@ -2,6 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from tempfile import gettempdir as systmp
+from lg_common.helpers import get_params
 import urllib
 
 import rospy
@@ -32,16 +33,16 @@ class ClientConfig:
             '-name', self.instance_name
         ])
 
-        viewsync_send = rospy.get_param('~viewsync_send', False)
-        viewsync_recv = rospy.get_param('~viewsync_recv', False)
-        viewsync_hostname = rospy.get_param('~viewsync_hostname', '127.0.0.1')
-        viewsync_port = rospy.get_param('~viewsync_port', 42000)
-        horiz_fov = rospy.get_param('~horiz_fov', 65)
-        yaw_offset = rospy.get_param('~yaw_offset', 0)
-        pitch_offset = rospy.get_param('~pitch_offset', 0)
-        roll_offset = rospy.get_param('~roll_offset', 0)
-        show_google_logo = rospy.get_param('~show_google_logo', True)
-        custom_configs = rospy.get_param('~custom_configs', '')
+        viewsync_send = get_params('~viewsync_send', False)
+        viewsync_recv = get_params('~viewsync_recv', False)
+        viewsync_hostname = get_params('~viewsync_hostname', '127.0.0.1')
+        viewsync_port = get_params('~viewsync_port', 42000)
+        horiz_fov = get_params('~horiz_fov', 65)
+        yaw_offset = get_params('~yaw_offset', 0)
+        pitch_offset = get_params('~pitch_offset', 0)
+        roll_offset = get_params('~roll_offset', 0)
+        show_google_logo = get_params('~show_google_logo', True)
+        custom_configs = get_params('~custom_configs', '')
 
         args.extend([
             '-sViewSync/send={}'.format(str(viewsync_send).lower()),
@@ -55,31 +56,31 @@ class ClientConfig:
         ])
 
         if viewsync_send:
-            query_file = rospy.get_param('~query_file', '/tmp/ge_queryfile')
+            query_file = get_params('~query_file', '/tmp/ge_queryfile')
             args.append(
                 '-sViewSync/queryFile={}'.format(query_file),
             )
 
-        spacenav_device = rospy.get_param('~spacenav_device', None)
-        spacenav_gutter = rospy.get_param('~spacenav_gutter', 0.1)
-        spacenav_sensitivity = rospy.get_param('~spacenav_sensitivity', 1.0)
+        spacenav_device = get_params('~spacenav_device', None)
+        spacenav_gutter = get_params('~spacenav_gutter', 0.1)
+        spacenav_sensitivity = get_params('~spacenav_sensitivity', 1.0)
         spacenav_sensitivity_yaw = \
-            rospy.get_param('~spacenav_sensitivity_yaw', 0.0035) * \
+            get_params('~spacenav_sensitivity_yaw', 0.0035) * \
             spacenav_sensitivity
         spacenav_sensitivity_pitch = \
-            rospy.get_param('~spacenav_sensitivity_pitch', 0.01) * \
+            get_params('~spacenav_sensitivity_pitch', 0.01) * \
             spacenav_sensitivity
         spacenav_sensitivity_roll = \
-            rospy.get_param('~spacenav_sensitivity_roll', 0.01) * \
+            get_params('~spacenav_sensitivity_roll', 0.01) * \
             spacenav_sensitivity
         spacenav_sensitivity_x = \
-            rospy.get_param('~spacenav_sensitivity_x', 0.25) * \
+            get_params('~spacenav_sensitivity_x', 0.25) * \
             spacenav_sensitivity
         spacenav_sensitivity_y = \
-            rospy.get_param('~spacenav_sensitivity_y', 0.25) * \
+            get_params('~spacenav_sensitivity_y', 0.25) * \
             spacenav_sensitivity
         spacenav_sensitivity_z = \
-            rospy.get_param('~spacenav_sensitivity_z', 0.025) * \
+            get_params('~spacenav_sensitivity_z', 0.025) * \
             spacenav_sensitivity
 
         if spacenav_device is not None:
@@ -108,7 +109,7 @@ class ClientConfig:
                 '-sSpaceNavigator/zeroZ=0',
             ])
 
-        hide_gui = rospy.get_param('~hide_gui', False)
+        hide_gui = get_params('~hide_gui', False)
         if hide_gui:
             args.append('--hidegui')
 
@@ -116,9 +117,9 @@ class ClientConfig:
 
         cache_path = os.path.normpath(self.base_path + '/.googleearth/Cache')
         kml_path = os.path.normpath(self.base_path + '/.googleearth')
-        flyto_speed = rospy.get_param('~flyto_speed', 0.17)
-        show_compass = rospy.get_param('~show_compass', False)
-        show_visualization = rospy.get_param('~show_visualization', True)
+        flyto_speed = get_params('~flyto_speed', 0.17)
+        show_compass = get_params('~show_compass', False)
+        show_visualization = get_params('~show_visualization', True)
 
         geplus_config['General'] = {
             '3DControllerEnabled': False,
@@ -179,11 +180,11 @@ class ClientConfig:
             'wasMaximized': False,
         }
 
-        use_3d_imagery = rospy.get_param('~use_3d_imagery', True)
-        anisotropic_filtering = rospy.get_param('~anisotropic_filtering', 2)
-        high_quality_terrain = rospy.get_param('~high_quality_terrain', True)
-        texture_compression = rospy.get_param('~texture_compression', True)
-        status_bar_visible = rospy.get_param('~status_bar_visible', True)
+        use_3d_imagery = get_params('~use_3d_imagery', True)
+        anisotropic_filtering = get_params('~anisotropic_filtering', 2)
+        high_quality_terrain = get_params('~high_quality_terrain', True)
+        texture_compression = get_params('~texture_compression', True)
+        status_bar_visible = get_params('~status_bar_visible', True)
 
         geplus_config['Render'] = {
             '3DImageryEnabled': use_3d_imagery,
@@ -214,8 +215,8 @@ class ClientConfig:
             'WaterSurface': True,
         }
 
-        mem_cache_size = rospy.get_param('~mem_cache_size', 64)
-        disk_cache_size = rospy.get_param('~disk_cache_size', 256)
+        mem_cache_size = get_params('~mem_cache_size', 64)
+        disk_cache_size = get_params('~disk_cache_size', 256)
 
         geplus_config['Cache'] = {
             'MemoryCacheSize': mem_cache_size,
@@ -242,15 +243,15 @@ class ClientConfig:
 
         layers_config = {}
 
-        show_state_borders = rospy.get_param('~show_state_borders', True)
-        show_country_borders = rospy.get_param('~show_country_borders', True)
-        show_state_labels = rospy.get_param('~show_state_labels', True)
-        show_country_labels = rospy.get_param('~show_country_labels', True)
-        show_city_labels = rospy.get_param('~show_city_labels', True)
-        show_water_labels = rospy.get_param('~show_water_labels', False)
-        show_gray_buildings = rospy.get_param('~show_gray_buildings', False)
-        show_buildings = rospy.get_param('~show_buildings', True)
-        show_trees = rospy.get_param('~show_trees', True)
+        show_state_borders = get_params('~show_state_borders', True)
+        show_country_borders = get_params('~show_country_borders', True)
+        show_state_labels = get_params('~show_state_labels', True)
+        show_country_labels = get_params('~show_country_labels', True)
+        show_city_labels = get_params('~show_city_labels', True)
+        show_water_labels = get_params('~show_water_labels', False)
+        show_gray_buildings = get_params('~show_gray_buildings', False)
+        show_buildings = get_params('~show_buildings', True)
+        show_trees = get_params('~show_trees', True)
 
         layers_config['LayersVisibility'] = {
             # Earth: Alphabetical order
@@ -495,8 +496,8 @@ class ClientConfig:
             r'http%3A__khmdb.google.com%3A80__db_mars\http%3A__mw1.google.com_mw-earth-vectordb_planetary_mars1_placenames.kml\Place%20Names': False,
         }
 
-        kml_sync_base = rospy.get_param('~kml_sync_base', None)
-        kml_sync_slug = rospy.get_param('~kml_sync_slug', 'default')
+        kml_sync_base = get_params('~kml_sync_base', None)
+        kml_sync_slug = get_params('~kml_sync_slug', 'default')
 
         kml_root = ET.Element('kml', attrib={})
         kml_root.attrib['xmlns'] = 'http://www.opengis.net/kml/2.2'
@@ -540,7 +541,7 @@ class ClientConfig:
         kml_reparsed = minidom.parseString(ET.tostring(kml_root))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
 
-        default_view = rospy.get_param(
+        default_view = get_params(
             '~default_view',
 
             '<LookAt><longitude>-122.4661297737901</longitude>' +

@@ -6,6 +6,7 @@ from xml.dom import minidom
 from tempfile import gettempdir as systmp
 
 import rospy
+from lg_common.helpers import get_params
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
 from client_config import ClientConfig
@@ -48,7 +49,7 @@ class Client:
         os.mkdir(self._get_tempdir() + '/.googleearth')
         os.mkdir(self._get_tempdir() + '/.googleearth/Cache')
 
-        if not rospy.get_param('~show_google_logo', True):
+        if not get_params('~show_google_logo', True):
             source = '/home/lg/etc/localdbrootproto'
             dest = '/home/lg/.googleearth/Cache/localdbrootproto'
             if not os.path.exists(os.path.dirname(os.path.dirname(dest))):

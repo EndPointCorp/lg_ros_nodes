@@ -26,6 +26,7 @@ import rospy
 from std_msgs.msg import String
 
 from lg_common.helpers import unpack_activity_sources
+from lg_common.helpers import get_params
 from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_message_type_from_string
 from lg_stats.msg import Event
@@ -192,10 +193,10 @@ class Processor(object):
 
 
 def get_influxdb_client():
-    submitter_type = rospy.get_param("~submission_type", None)
-    host = rospy.get_param("~host", None)
-    port = rospy.get_param("~port", None)
-    database = rospy.get_param("~database", None)
+    submitter_type = get_params("~submission_type", None)
+    host = get_params("~host", None)
+    port = get_params("~port", None)
+    database = get_params("~database", None)
     if not submitter_type or not host or not port:
         raise RuntimeError("No InfluxDB connection details provided in the roslaunch configuration.")
     return getattr(submitters, submitter_type)(host=host, port=port, database=database)
@@ -208,10 +209,10 @@ def main():
     # resolution implementation is global across all watched topics which
     # may, may not be desirable ; in other words, we may want to have
     # the time resolution configurable per specified source topic processor instance
-    resolution = rospy.get_param("~resolution", 2)
-    inactivity_resubmission = rospy.get_param("~inactivity_resubmission", 20)
+    resolution = get_params("~resolution", 2)
+    inactivity_resubmission = get_params("~inactivity_resubmission", 20)
     # source activities - returns list of dictionaries
-    stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
+    stats_sources = unpack_activity_sources(get_params("~activity_sources"))
     influxdb_client = get_influxdb_client()
     processors = []
     for ss in stats_sources:

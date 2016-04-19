@@ -4,6 +4,7 @@ import rospy
 
 from lg_earth import KmlMasterHandler, KmlUpdateHandler, KmlQueryHandler
 from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
+from lg_common.helpers import get_params
 from lg_common.webapp import ros_tornado_spin
 import tornado.web
 import tornado.ioloop
@@ -28,10 +29,10 @@ class PlanetWatcher:
 
 def main():
     rospy.init_node('kmlsync_server')
-    port = rospy.get_param('~port', 8765)
+    port = get_params('~port', 8765)
     current_planet = None
 
-    KmlUpdateHandler.timeout = float(rospy.get_param('~request_timeout', 0))
+    KmlUpdateHandler.timeout = float(get_params('~request_timeout', 0))
     if KmlUpdateHandler.timeout < 0:
         rospy.logerror('Request timeout must be >= 0')
         return
@@ -48,9 +49,9 @@ def main():
     rospy.wait_for_service('/kmlsync/playtour_query')
     rospy.wait_for_service('/kmlsync/planet_query')
 
-    director_scene_topic = rospy.get_param('~director_topic', '/director/scene')
+    director_scene_topic = get_params('~director_topic', '/director/scene')
     rospy.Subscriber(director_scene_topic, GenericMessage, KmlUpdateHandler.get_scene_msg)
-    planet_announce_topic = rospy.get_param('~planet_announce_topic', '/earth/planet')
+    planet_announce_topic = get_params('~planet_announce_topic', '/earth/planet')
     pw = PlanetWatcher(planet_announce_topic)
 
     kml_state = KmlState()

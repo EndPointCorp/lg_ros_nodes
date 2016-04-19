@@ -6,6 +6,7 @@ import rospy
 import rospkg
 import tornado.web
 import tornado.ioloop
+from lg_common.helpers import get_params
 
 
 class DevStaticHandler(tornado.web.StaticFileHandler):
@@ -19,7 +20,7 @@ class DevStaticHandler(tornado.web.StaticFileHandler):
 if __name__ == '__main__':
     rospy.init_node('lg_dev_webserver')
 
-    port = rospy.get_param('~port', 8008)
+    port = get_params('~port', 8008)
 
     rospack = rospkg.RosPack()
     pkg_path = rospack.get_path('lg_common')

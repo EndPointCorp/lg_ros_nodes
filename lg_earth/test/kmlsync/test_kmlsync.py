@@ -17,6 +17,7 @@ import rostest
 import unittest
 import requests
 import xml.etree.ElementTree as ET
+from lg_common.helpers import get_params
 from std_msgs.msg import String
 from xml.sax.saxutils import escape
 from lg_common.helpers import escape_asset_url, generate_cookie
@@ -349,7 +350,7 @@ def get_deleted_elements(x):
 
 if __name__ == '__main__':
     rospy.init_node('test_director')
-    timeout_for_requests = rospy.get_param('~timeout_requests_session', 1)
+    timeout_for_requests = get_params('~timeout_requests_session', 1)
     rostest.rosrun(PKG, NAME, TestKMLSync, sys.argv)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

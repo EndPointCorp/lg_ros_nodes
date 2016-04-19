@@ -514,3 +514,17 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)
+
+def get_params(param, default=None):
+    import rospy
+    if param[0] != '~':
+        try:
+            p = rospy.search_param(param)
+            if p:
+                param = p
+        except:
+            pass
+    ret = rospy.get_param(param, default)
+    if ret is not None:
+        rospy.set_param(param, ret)
+    return ret

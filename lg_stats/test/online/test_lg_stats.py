@@ -34,6 +34,7 @@ import rospkg
 import rostopic
 
 from lg_common.helpers import write_log_to_file
+from lg_common.helpers import get_params
 from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
 from appctl.msg import Mode
@@ -79,7 +80,7 @@ class TestLGStatsRealMessageChain(object):
     def setup_method(self, method):
         RESULT.value = "UNDEFINED"
         # subscribed to the /lg_stats/debug topic
-        # WARNING: issues retrieving rospy.get_param value from the test file, still
+        # WARNING: issues retrieving get_params value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)
         debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_STATS_DEBUG_TOPIC_DEFAULT)
         rospy.Subscriber(debug_topic, Event, self.callback)

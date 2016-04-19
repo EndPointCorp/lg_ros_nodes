@@ -4,6 +4,7 @@ import rospy
 
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
+from lg_common.helpers import get_params
 from lg_common.helpers import add_url_params
 from lg_common.helpers import dependency_available
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available
@@ -18,22 +19,22 @@ def main():
     rospy.init_node('panoviewer_browser', anonymous=True)
 
     geometry = ManagedWindow.get_viewport_geometry()
-    server_type = rospy.get_param('~server_type', 'streetview')
-    url = str(rospy.get_param('~url', DEFAULT_URL))
-    field_of_view = float(rospy.get_param('~fov', DEFAULT_FOV))
-    pitch_offset = float(rospy.get_param('~pitch_offset', 0))
-    show_links = str(rospy.get_param('~show_links', False)).lower()
-    show_attribution = str(rospy.get_param('~show_attribution', False)).lower()
-    yaw_offset = float(rospy.get_param('~yaw_offset', 0))
-    leader = str(rospy.get_param('~leader', 'false'))
-    tilt = str(rospy.get_param('~tilt', 'false'))
-    depend_on_webserver = rospy.get_param('~depend_on_webserver', False)
-    depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
-    rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
-    rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
-    rosbridge_secure = rospy.get_param('~rosbridge_secure', 'false')
-    zoom = str(rospy.get_param('~zoom', 'false')).lower()
-    initial_zoom = rospy.get_param('~initial_zoom', 3)
+    server_type = get_params('~server_type', 'streetview')
+    url = str(get_params('~url', DEFAULT_URL))
+    field_of_view = float(get_params('~fov', DEFAULT_FOV))
+    pitch_offset = float(get_params('~pitch_offset', 0))
+    show_links = str(get_params('~show_links', False)).lower()
+    show_attribution = str(get_params('~show_attribution', False)).lower()
+    yaw_offset = float(get_params('~yaw_offset', 0))
+    leader = str(get_params('~leader', 'false'))
+    tilt = str(get_params('~tilt', 'false'))
+    depend_on_webserver = get_params('~depend_on_webserver', False)
+    depend_on_rosbridge = get_params('~depend_on_rosbridge', False)
+    rosbridge_host = get_params('~rosbridge_host', '127.0.0.1')
+    rosbridge_port = get_params('~rosbridge_port', 9090)
+    rosbridge_secure = get_params('~rosbridge_secure', 'false')
+    zoom = str(get_params('~zoom', 'false')).lower()
+    initial_zoom = get_params('~initial_zoom', 3)
 
     # put parameters into one big url
     url = add_url_params(url,
@@ -53,7 +54,7 @@ def main():
     # check if server is already there
     host = discover_host_from_url(url)
     port = discover_port_from_url(url)
-    timeout = rospy.get_param('/global_dependency_timeout', 15)
+    timeout = get_params('/global_dependency_timeout', 15)
 
     if depend_on_webserver:
         rospy.loginfo("Waiting for webserver to become available")
@@ -73,7 +74,7 @@ def main():
             rospy.loginfo("ROSbridge available - continuing initialization")
 
     # wait for X to become available
-    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
+    x_timeout = get_params("/global_dependency_timeout", 15)
     if x_available(x_timeout):
         rospy.loginfo("X available")
     else:

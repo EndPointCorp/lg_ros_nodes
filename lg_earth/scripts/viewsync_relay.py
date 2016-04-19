@@ -3,6 +3,7 @@
 import rospy
 
 from lg_earth import ViewsyncRelay
+from lg_common.helpers import get_params
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import String
 
@@ -10,10 +11,10 @@ from std_msgs.msg import String
 if __name__ == '__main__':
     rospy.init_node('earth_viewsync_relay')
 
-    listen_host = rospy.get_param('~listen_host', '127.0.0.1')
-    listen_port = rospy.get_param('~listen_port', 42000)
-    repeat_host = rospy.get_param('~repeat_host', '<broadcast>')
-    repeat_port = rospy.get_param('~repeat_port', 42000)
+    listen_host = get_params('~listen_host', '127.0.0.1')
+    listen_port = get_params('~listen_port', 42000)
+    repeat_host = get_params('~repeat_host', '<broadcast>')
+    repeat_port = get_params('~repeat_port', 42000)
 
     pose_pub = rospy.Publisher(
         '/earth/pose', PoseStamped, queue_size=3

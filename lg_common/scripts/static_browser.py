@@ -2,6 +2,7 @@
 
 import rospy
 
+from lg_common.helpers import get_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import dependency_available, DependencyException
@@ -14,20 +15,20 @@ if __name__ == '__main__':
     rospy.init_node('static_browser')
 
     geometry = ManagedWindow.get_viewport_geometry()
-    url = rospy.get_param('~url', None)
-    command_line_args = rospy.get_param('~command_line_args', '')
-    scale_factor = rospy.get_param('~force_device_scale_factor', 1)
-    debug_port = rospy.get_param('~debug_port', 10000)
-    user_agent = rospy.get_param(
+    url = get_params('~url', None)
+    command_line_args = get_params('~command_line_args', '')
+    scale_factor = get_params('~force_device_scale_factor', 1)
+    debug_port = get_params('~debug_port', 10000)
+    user_agent = get_params(
         '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
         'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
         'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
     )
-    state = rospy.get_param('~state', ApplicationState.VISIBLE)
-    extensions = rospy.get_param('~extensions', [])
+    state = get_params('~state', ApplicationState.VISIBLE)
+    extensions = get_params('~extensions', [])
 
-    global_dependency_timeout = rospy.get_param("/global_dependency_timeout", 15)
-    depend_on_url = rospy.get_param("~depend_on_url", False)
+    global_dependency_timeout = get_params("/global_dependency_timeout", 15)
+    depend_on_url = get_params("~depend_on_url", False)
 
     www_host = discover_host_from_url(url)
     www_port = discover_port_from_url(url)

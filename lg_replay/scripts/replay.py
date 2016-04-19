@@ -2,6 +2,7 @@
 
 import rospy
 from rosnode import ROSNodeIOException
+from lg_common.helpers import get_params
 from interactivespaces_msgs.msg import GenericMessage
 from lg_replay import DevicePublisher, DeviceReplay, LgActivityException
 from evdev import InputDevice
@@ -11,10 +12,10 @@ import os
 def main():
     rospy.init_node('lg_replay', anonymous=True)
 
-    topic_name = rospy.get_param('~topic_name', None)
-    device_name = rospy.get_param('~device_name', None)
-    event_ecode = rospy.get_param('~event_ecode', 'EV_KEY')
-    device_path = rospy.get_param('~device_path', None)
+    topic_name = get_params('~topic_name', None)
+    device_name = get_params('~device_name', None)
+    event_ecode = get_params('~event_ecode', 'EV_KEY')
+    device_path = get_params('~device_path', None)
 
     if not topic_name or not (device_name or device_path):
         msg = "You must provide lg_activity topic name and (device name or device path)"

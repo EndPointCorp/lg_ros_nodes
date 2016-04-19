@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+from lg_common.helpers import get_params
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback
 from interactivespaces_msgs.msg import GenericMessage
@@ -34,7 +35,7 @@ X_THRESHOLD = 0.50
 
 def main():
     rospy.init_node('pano_viewer_server', anonymous=True)
-    server_type = rospy.get_param('~server_type', 'streetview')
+    server_type = get_params('~server_type', 'streetview')
     location_pub = rospy.Publisher('/%s/location' % server_type,
                                    Pose2D, queue_size=1)
     panoid_pub = rospy.Publisher('/%s/panoid' % server_type,
@@ -44,16 +45,16 @@ def main():
     metadata_pub = rospy.Publisher('/%s/metadata' % server_type,
                                    String, queue_size=10)
 
-    tilt_min = rospy.get_param('~tilt_min', DEFAULT_TILT_MIN)
-    tilt_max = rospy.get_param('~tilt_max', DEFAULT_TILT_MAX)
-    zoom_min = rospy.get_param('~zoom_min', DEFAULT_ZOOM_MIN)
-    zoom_max = rospy.get_param('~zoom_max', DEFAULT_ZOOM_MAX)
-    nav_sensitivity = rospy.get_param('~nav_sensitivity', DEFAULT_NAV_SENSITIVITY)
-    x_threshold = rospy.get_param('~x_threshold', X_THRESHOLD)
-    space_nav_interval = rospy.get_param('~space_nav_interval', DEFAULT_NAV_INTERVAL)
-    nearby_class = rospy.get_param('~nearby_class', 'NearbyStreetviewPanos')
+    tilt_min = get_params('~tilt_min', DEFAULT_TILT_MIN)
+    tilt_max = get_params('~tilt_max', DEFAULT_TILT_MAX)
+    zoom_min = get_params('~zoom_min', DEFAULT_ZOOM_MIN)
+    zoom_max = get_params('~zoom_max', DEFAULT_ZOOM_MAX)
+    nav_sensitivity = get_params('~nav_sensitivity', DEFAULT_NAV_SENSITIVITY)
+    x_threshold = get_params('~x_threshold', X_THRESHOLD)
+    space_nav_interval = get_params('~space_nav_interval', DEFAULT_NAV_INTERVAL)
+    nearby_class = get_params('~nearby_class', 'NearbyStreetviewPanos')
     nearby = get_nearby(nearby_class)
-    inverted = str(rospy.get_param('~inverted', "false")).lower() == "true"
+    inverted = str(get_params('~inverted', "false")).lower() == "true"
     nearby.invert(inverted)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,

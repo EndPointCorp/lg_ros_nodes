@@ -2,6 +2,7 @@
 
 import rospy
 from lg_common.msg import AdhocBrowsers, AdhocBrowser
+from lg_common.helpers import get_params
 from lg_common import AdhocBrowserPool
 from lg_media.msg import AdhocMedias
 from lg_common.helpers import add_url_params
@@ -65,7 +66,7 @@ class BasicBrowserData:
 def main():
     rospy.init_node('browser_launcher')
 
-    viewport_name = rospy.get_param('~viewport', None)
+    viewport_name = get_params('~viewport', None)
     if not viewport_name:
         msg = "Viewport not configured for lg_media browser_launcher - exiting"
         rospy.logerr(msg)
@@ -73,18 +74,18 @@ def main():
 
     browser_pool_publisher = rospy.Publisher('/media_service/launch_browser/%s' % viewport_name,
                                              AdhocBrowsers, queue_size=10)
-    is_leader = str(rospy.get_param('~leader', False)).lower()
-    ros_port = str(rospy.get_param('~ros_port', '9090'))
-    ros_host = str(rospy.get_param('~ros_host', 'localhost'))
-    url = str(rospy.get_param('~videosync_url', VIDEOSYNC_URL))
-    sync_rate = str(rospy.get_param('~sync_rate', 60))
-    frame_latency = str(rospy.get_param('~frame_latency', 3 / 25))
-    ping_interval = str(rospy.get_param('~ping_interval', 1000))
-    hard_sync_diff = str(rospy.get_param('~hard_sync_diff', 1.0))
-    min_playbackrate = str(rospy.get_param('~min_playbackrate', 0.5))
-    max_playbackrate = str(rospy.get_param('~max_playbackrate', 1.5))
-    autoplay = str(rospy.get_param('~autoplay', False)).lower()
-    show_controls = str(rospy.get_param('~show_controls', False)).lower()
+    is_leader = str(get_params('~leader', False)).lower()
+    ros_port = str(get_params('~ros_port', '9090'))
+    ros_host = str(get_params('~ros_host', 'localhost'))
+    url = str(get_params('~videosync_url', VIDEOSYNC_URL))
+    sync_rate = str(get_params('~sync_rate', 60))
+    frame_latency = str(get_params('~frame_latency', 3 / 25))
+    ping_interval = str(get_params('~ping_interval', 1000))
+    hard_sync_diff = str(get_params('~hard_sync_diff', 1.0))
+    min_playbackrate = str(get_params('~min_playbackrate', 0.5))
+    max_playbackrate = str(get_params('~max_playbackrate', 1.5))
+    autoplay = str(get_params('~autoplay', False)).lower()
+    show_controls = str(get_params('~show_controls', False)).lower()
 
     basic_browser_data = BasicBrowserData(browser_pool_publisher, is_leader,
                                           ros_port, ros_host, url, sync_rate,
