@@ -6,8 +6,11 @@ ROS software follows certain configurable ROS topics and submits
 
 Spec / details lg_ros_nodes: #126
 
-Library dependency:
-https://pypi.python.org/pypi/influxdb
+## Software requirements
+
+* InfluxDB Python client library: https://pypi.python.org/pypi/influxdb
+* Nanotime Python library: https://pypi.python.org/pypi/nanotime
+
 
 ### Nodes
 
