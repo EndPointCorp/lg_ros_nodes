@@ -7,6 +7,7 @@ import socket
 
 import rospy
 import nanotime
+from influxdb import InfluxDBClient
 
 
 class Submitter(object):
@@ -35,9 +36,6 @@ class InfluxDirect(Submitter):
 
     """
     def __init__(self, host=None, port=None, database=None):
-        # keep this dependency here, it will have to be satisfied in case of direct
-        # InfluxDB submission (without telegraf) which is secondary scenario
-        from influxdb import InfluxDBClient
         self._client = InfluxDBClient(host=host, port=port, database=database)
         rospy.loginfo("InfluxDB (direct) client initialized (%s:%s/%s)." % (host, port, database))
 
