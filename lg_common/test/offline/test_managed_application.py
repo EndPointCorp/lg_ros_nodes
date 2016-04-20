@@ -90,7 +90,8 @@ class TestManagedApplication(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import rostest
-    rostest.rosrun(PKG, NAME, TestManagedApplication)
+    import rosunit
+    rosunit.unitrun(PKG, NAME, TestManagedApplication,
+                    coverage_packages=['lg_common.managed_application'])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
