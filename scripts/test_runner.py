@@ -86,7 +86,7 @@ def run_tests():
         # benefit is that it respects pytest stuff
         # previous, nosetests command was this:
         #c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
-        c = "rosunit %s" % nose_test
+        c = "rosunit %s -- --cov" % nose_test
         print "RUNNING: '%s'" % c
         ret = os.system(c)
         fail_flags[nose_test] = ret
