@@ -78,3 +78,7 @@ tmp.launch
 
 # docker copy of nodes
 docker_nodes/
+
+# PyCoverage
+.coverage
+.coverage-modules
