@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.48 (2016-04-20)
+-------------------
 * influxdb dependency, touch: `#126 <https://github.com/EndPointCorp/lg_ros_nodes/issues/126>`_
 * Contributors: Zdenek Maxa
 
