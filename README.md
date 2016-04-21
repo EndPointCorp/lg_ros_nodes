@@ -112,13 +112,14 @@ to the release tag
 - release from the `master` branch
 
 - to make new release you need to:
+
 ```shell
 cd catkin/src
 touch CATKIN_IGNORE
 cd -
 ```
 
-- lint it:
+- lint it (this step is optional):
 ```bash
 catkin_lint
 ```

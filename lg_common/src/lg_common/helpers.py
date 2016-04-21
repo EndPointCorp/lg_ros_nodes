@@ -252,7 +252,7 @@ def unpack_activity_sources(sources_string):
 
     Sources string format:
 
-    <topic_name>/<message_type>[(<slot.sub_slot.sub_sub_slot>)]/<strategy>[(<value_min><value_max>)]
+    <topic_name>:<message_type>-<slot[.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>]
 
     - topic_name: topic which ActivitySource will listen for incoming messages
     - message_type: type of message on the given topic
