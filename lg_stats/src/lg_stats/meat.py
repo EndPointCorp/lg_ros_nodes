@@ -26,7 +26,7 @@ import rospy
 from std_msgs.msg import String
 
 from lg_common.helpers import unpack_activity_sources
-from lg_common.helpers import write_log_to_file
+# from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_message_type_from_string
 from lg_stats.msg import Event
 import submitters
@@ -214,19 +214,19 @@ def main():
     stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
     influxdb_client = get_influxdb_client()
     processors = []
-    for ss in stats_sources:
+    for stats_source in stats_sources:
         # dynamic import based on package/message_class string representation
-        msg_type_module = get_message_type_from_string(ss["msg_type"])
-        p = Processor(watched_topic=ss["topic"],
-                      msg_slot=ss["slot"],
-                      watched_field_name=ss["strategy"],
+        msg_type_module = get_message_type_from_string(stats_source["msg_type"])
+        p = Processor(watched_topic=stats_source["topic"],
+                      msg_slot=stats_source["slot"],
+                      watched_field_name=stats_source["strategy"],
                       debug_pub=debug_topic_pub,
                       resolution=resolution,
                       inactivity_resubmission=inactivity_resubmission,
                       influxdb_client=influxdb_client)
         p.start_resubmission_thread()  # keep it separated (easier testing)
-        rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (ss["topic"], msg_type_module))
-        rospy.Subscriber(ss["topic"], msg_type_module, p.process, queue_size=3)
+        rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type_module))
+        rospy.Subscriber(stats_source["topic"], msg_type_module, p.process, queue_size=3)
         processors.append(p)
 
     rospy.loginfo("%s spinning ..." % ROS_NODE_NAME)

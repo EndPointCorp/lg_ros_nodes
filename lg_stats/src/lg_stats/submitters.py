@@ -52,7 +52,7 @@ class InfluxDirect(Submitter):
                                      type=msg.type,
                                      value=msg.value),
                            # timestamp may be added here or will be added by the server
-                           #"time": "2015-11-10T23:00:00Z",
+                           # "time": "2015-11-10T23:00:00Z",
                            # fields must be of type float
                            fields=dict(value=0.0))
         return influx_dict
