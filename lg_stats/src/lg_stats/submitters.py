@@ -47,7 +47,7 @@ class InfluxDirect(Submitter):
         Direct InfluxDB submitter talks JSON.
 
         """
-        influx_dict = dict(measurement='lg_stats',
+        influx_dict = dict(measurement=msg.measurement,
                            tags=dict(topic=msg.src_topic,
                                      field_name=msg.field_name,
                                      type=msg.type,
@@ -89,8 +89,9 @@ class InfluxTelegraf(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        influx_str = ("""%s field_name="%s",type="%s",value="%s" %s""" %
-                      (msg.src_topic,
+        influx_str = ("""%s topic="%s",field_name="%s",type="%s",value="%s" %s""" %
+                      (msg.measurement,
+                       msg.src_topic,
                        msg.field_name,
                        msg.type,
                        msg.value,
