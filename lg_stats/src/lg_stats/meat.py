@@ -17,17 +17,16 @@ Will need to define association between source topics and type of
 """
 
 
-import os
-import json
 import time
 import threading
 
 import rospy
-from std_msgs.msg import String
 
 from lg_common.helpers import unpack_activity_sources
 # from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_message_type_from_string
+from lg_common.helpers import get_nested_slot_value
+from lg_common.helpers import SlotUnpackingException
 from lg_stats.msg import Event
 import submitters
 
@@ -37,6 +36,10 @@ LG_STATS_DEBUG_TOPIC_DEFAULT = "debug"
 
 
 class EmptyIncomingMessage(Exception):
+    pass
+
+
+class StatsConfigurationError(Exception):
     pass
 
 
@@ -51,13 +54,22 @@ class Processor(object):
     def __init__(self,
                  watched_topic=None,
                  msg_slot=None,
-                 watched_field_name=None,
                  debug_pub=None,
                  resolution=20,
                  inactivity_resubmission=50,
+                 strategy='default',
                  influxdb_client=None):
+        if not msg_slot:
+            msg = "Message slot not passed to Processor"
+            rospy.logerr(msg)
+            raise StatsConfigurationError(msg)
+        if not watched_topic:
+            msg = "Watchef topic not passed to Processor"
+            rospy.logerr(msg)
+            raise StatsConfigurationError(msg)
+
         self.watched_topic = watched_topic
-        self.watched_field_name = watched_field_name
+        self.strategy = strategy
         self.msg_slot = msg_slot
         self.debug_pub = debug_pub  # debug ROS publisher topic
         self.resolution = resolution  # seconds
@@ -71,12 +83,23 @@ class Processor(object):
         self.resubmission_thread = None
         self._lock = threading.Lock()
 
-    def start_resubmission_thread(self):
-        rospy.loginfo("Starting resubmission thread ...")
-        self.resubmission_thread = threading.Thread(target=self.resubmit)
-        self.resubmission_thread.start()
+    def __str__(self):
+        return "Processor instance for topic %s, msg_slot %s, strategy: %s" % (self.watched_topic, self.msg_slot, self.strategy)
 
-    def resubmit(self):
+    def _start_resubmission_thread(self):
+        """
+        TODO(wz) - remove thread spawn as it's not safe to use them inside ROS script
+         instead use rospy.sleep() and rospy.Duration() or rospy.Rate()
+        """
+
+        if self.strategy == "default":
+            rospy.loginfo("Starting resubmission thread for %s" % self)
+            self.resubmission_thread = threading.Thread(target=self.resubmit)
+            self.resubmission_thread.start()
+        else:
+            rospy.loginfo("Not starting resubmission thread for strategy: %s" % self.strategy)
+
+    def _resubmit(self):
         """
         The method runs as a background thread.
         It checks whether there was any activity on the handled ROS
@@ -93,7 +116,11 @@ class Processor(object):
             time.sleep(2)
         rospy.loginfo("Resubmission thread finished.")
 
-    def resubmit_worker(self):
+    def _resubmit_worker(self):
+        """
+        Thread that re-submits data influx
+        """
+
         with self._lock:
             if self.last_in_msg and self.time_of_last_in_msg:
                 if not self.time_of_last_resubmission:
@@ -111,13 +138,7 @@ class Processor(object):
             else:
                 rospy.loginfo("Nothing received on this topic so far.")
 
-    def get_whole_field_name(self):
-        if self.msg_slot:
-            return "%s.%s" % (self.msg_slot, self.watched_field_name)
-        else:
-            return self.watched_field_name
-
-    def get_slot(self, msg):
+    def _get_slot_value(self, msg):
         """
         Returns slot section of the message.
         If the slot section is empty, it evaluates to False (bool({})).
@@ -126,69 +147,146 @@ class Processor(object):
         """
         if self.msg_slot:
             # this may be {} (empty message) and will evaluate still to False
-            slot = json.loads(getattr(msg, self.msg_slot))
-            if slot:
-                return slot
-            else:
-                raise EmptyIncomingMessage("Empty slot section of the message.")
+            try:
+                slot_value = get_nested_slot_value(self.msg_slot, msg)
+                return slot_value[self.msg_slot]
+            except SlotUnpackingException:
+                return False
         else:
-            return False
+            msg = "Message slot not defined for topic %s" % (self.watched_topic)
+            rospy.logerror(msg)
+            raise StatsConfigurationError(msg)
 
-    def compare_messages(self, msg_1, msg_2):
+    def _compare_messages(self, msg_1, msg_2):
         """
         Returns True if relevant field of the messages for
         this processor instance is equal.
 
-        TODO:
-        doesn't yet take into account slots
-
         """
-        w = self.watched_field_name
-        return True if getattr(msg_1, w) == getattr(msg_2, w) else False
+        if get_nested_slot_value(self.msg_slot, msg_1) == get_nested_slot_value(self.msg_slot, msg_2):
+            return True
+        else:
+            return False
 
-    def get_outbound_message(self, src_msg):
+    def _get_outbound_message(self, src_msg):
         """
         Returns out-bound message for the /lg_stats/debug topic
         based on the data from the source topic message (src_msg).
 
         """
-        slot = self.get_slot(src_msg)  # this may raise EmptyIncomingMessage
-        if slot:
-            value = str(slot[self.watched_field_name])
+        if self.strategy == 'default':
+            # self.resolution
+            value = self._get_slot_value(src_msg)  # this may raise EmptyIncomingMessage
+            if value:
+                out_msg = Event(src_topic=self.watched_topic,
+                                field_name=self.msg_slot,
+                                type="event",
+                                # value is always string, if source value is e.g.
+                                # boolean, it's converted to a string here
+                                value=value)
+                return out_msg
+            else:
+                self.logerr("Could not get slot value for message %s" % src_msg)
+
+        elif self.strategy == 'average':
+            """
+            calculate average - add value to list and wait for resubmission
+            return False because no outbound message should be generated
+            """
+            value = self._get_slot_value(src_msg)  # this may raise EmptyIncomingMessage
+            self.messages.append(value)
+
+            return False
+
+        elif self.strategy == 'count':
+            """
+            make each message increase a counter
+            return False because no outbound message should be generated
+            """
+            value = self._get_slot_value(src_msg)  # this may raise EmptyIncomingMessage
+            self.counter += 1
+
+            return False
+
+    def wake_up_and_flush(self, msg):
+        """
+        """
+        if self.strategy == 'default':
+            """
+            Do nothing
+            """
+            pass
+
+        elif self.strategy == 'count':
+            """
+            Submit count, clean buffer
+            """
+            out_msg = Event(src_topic=self.watched_topic,
+                            field_name=self.msg_slot,
+                            type="rate",
+                            value=self.counter)
+
+            self.submit_influxdata(out_msg)
+            self.counter = 0
+
+        elif self.strategy == 'average':
+            """
+            Calculate average, submit and clean buffer
+            """
+            self.messages = []
+            average = reduce(lambda x, y: float(x) + float(y), self.messages) / len(self.messages)
+            out_msg = Event(src_topic=self.watched_topic,
+                            field_name=self.msg_slot,
+                            type="average",
+                            value=average)
+            self.submit_influxdata(out_msg)
+
         else:
-            value = str(getattr(src_msg, self.watched_field_name))
-        out_msg = Event(src_topic=self.watched_topic,
-                        field_name=self.get_whole_field_name(),
-                        type="event",
-                        # value is always string, if source value is e.g.
-                        # boolean, it's converted to a string here
-                        value=value)
-        return out_msg
+            """
+            unknown strategy
+            """
+            self.loginfo("Unknown strategy %s" % self.strategy)
+            pass
 
-    def process(self, msg):
+    def submit_influxdata(self, out_msg):
         """
-        Processing of a message is in fact triggered by reception of the
-        consecutive message. The current one is merely buffered.
+        Accept out_msg of type Event and submit it to influxdb
+        """
 
-        """
-        m = "Processor received: '%s'" % msg
-        rospy.loginfo(m)
-        try:
-            out_msg = self.get_outbound_message(msg)
-        except EmptyIncomingMessage, ex:
-            rospy.logwarn(ex)
-            return
         influx_data = self.influxdb_client.get_data_for_influx(out_msg)
         out_msg.influx = str(influx_data)
         rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
         self.debug_pub.publish(out_msg)
         self.influxdb_client.write_stats(influx_data)
-        with self._lock:
-            self.last_in_msg = msg
-            self.time_of_last_in_msg = time.time()
-            self.last_influx_data = influx_data
-            self.last_out_msg = out_msg
-            self.time_of_last_resubmission = None
+
+        return influx_data
+
+    def process(self, msg):
+        """
+        Callback public method for messages flowing on observed topic
+
+        """
+        m = "Processor received: '%s'" % msg
+        rospy.logdebug(m)
+
+        try:
+            out_msg = self._get_outbound_message(msg)
+
+            if out_msg:
+                influx_data = self.submit_influxdata(out_msg)
+                """
+                Do resubmission only for events
+                """
+                with self._lock:
+                    self.last_in_msg = msg
+                    self.time_of_last_in_msg = time.time()
+                    self.last_influx_data = influx_data
+                    self.last_out_msg = out_msg
+                    self.time_of_last_resubmission = None
+
+        except EmptyIncomingMessage, ex:
+            rospy.logerror(ex)
+            return
 
 
 def get_influxdb_client():
@@ -214,20 +312,27 @@ def main():
     stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
     influxdb_client = get_influxdb_client()
     processors = []
+
     for stats_source in stats_sources:
+        # for single stats_source dictionary please see unpack_activity_sources() docs
         # dynamic import based on package/message_class string representation
         msg_type_module = get_message_type_from_string(stats_source["msg_type"])
         p = Processor(watched_topic=stats_source["topic"],
                       msg_slot=stats_source["slot"],
-                      watched_field_name=stats_source["strategy"],
                       debug_pub=debug_topic_pub,
                       resolution=resolution,
+                      strategy=stats_source["strategy"],
                       inactivity_resubmission=inactivity_resubmission,
                       influxdb_client=influxdb_client)
-        p.start_resubmission_thread()  # keep it separated (easier testing)
+        p._start_resubmission_thread()  # keep it separated (easier testing)
         rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type_module))
         rospy.Subscriber(stats_source["topic"], msg_type_module, p.process, queue_size=3)
         processors.append(p)
+
+    # wake all procesors that have strategy of average and count and make sure their buffers are emptied
+    for processor in processors:
+        processor.wake_up_and_flush()
+        rospy.sleep(resolution)
 
     rospy.loginfo("%s spinning ..." % ROS_NODE_NAME)
     rospy.spin()

@@ -47,8 +47,9 @@ class InfluxDirect(Submitter):
         Direct InfluxDB submitter talks JSON.
 
         """
-        influx_dict = dict(measurement=msg.src_topic,
-                           tags=dict(field_name=msg.field_name,
+        influx_dict = dict(measurement='lg_stats',
+                           tags=dict(topic=msg.src_topic,
+                                     field_name=msg.field_name,
                                      type=msg.type,
                                      value=msg.value),
                            # timestamp may be added here or will be added by the server

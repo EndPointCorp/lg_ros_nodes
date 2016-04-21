@@ -16,6 +16,10 @@ class DependencyException(Exception):
     pass
 
 
+class SlotUnpackingException(Exception):
+    pass
+
+
 def escape_asset_url(asset_url):
     """
     Replace all non-alnum characters with underscore
@@ -45,7 +49,7 @@ def add_url_params(url, **params):
     query_dict = dict(urlparse.parse_qsl(url_parts[4]))
     query_dict.update(params)
 
-    #4th index is the query params position
+    # 4th index is the query params position
     url_parts[4] = urllib.urlencode(query_dict)
 
     return urlparse.urlunparse(url_parts)
@@ -104,7 +108,7 @@ def load_director_message(message):
     try:
         ret = json.loads(message.message)
     except (ValueError, SyntaxError) as e:
-        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
+        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge")
         rospy.logdebug("Message: %s" % message)
         raise e
 
@@ -254,12 +258,20 @@ def unpack_activity_sources(sources_string):
     - message_type: type of message on the given topic
     - slot - for complex messages you may define one attribute of the message that
     will be considered during checks. For nested attributes, delimit slots by dots.
-    - strategy - delta, value or activity. For "value" strategy you may define min/max values.
+    - strategy - delta, value, activity, average and count. For "value" strategy you may define min/max values.
     It will make sense only when slot was defined.
+
+    Strategies info:
+     - delta means that activity is generated only if messages are different. Makes
+      sense with spacenav twist which emits 0,0,0 when no one's touching it
+     - value is used for value tresholding - generate activity only when value of slot met min/max constraints
+     - activity - triggers activity on **every** message
+     - average - not used to activity tracking - passes information about what should be done with values
+     - count - same as above
 
     Examples:
 
-    source string: '/touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
+    - source string: '/touchscreen/touch:interactivespaces_msgs/GenericMessage:activity'
 
     result: source = { "topic": "/touchscreen/touch",
                "msg_type": "interactivespaces_msgs/GenericMessage",
@@ -269,17 +281,27 @@ def unpack_activity_sources(sources_string):
                "value_max": None
              }
 
-    source string:'/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5':
+    - source string:'/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5':
 
-    result: source = { "topic": "/touchscreen/touch",
-               "msg_type": "interactivespaces_msgs/GenericMessage",
-               "strategy": "activity",
-               "slot": None,
+    result: source = { "topic": "/proximity_sensor/distance",
+               "msg_type": "sensor_msgs/Range",
+               "strategy": "value",
+               "slot": range,
                "value_min": 0,
                "value_max": 2.5
              }
 
     NOTE: min/max values is the range within which active == True
+
+    - source string:'/proximity_sensor/distance:sensor_msgs/Range-range:average':
+
+    result: source = { "topic": "/proximity_sensor/distance",
+               "msg_type": "sensor_msgs/Range",
+               "strategy": "average",
+               "slot": range,
+               "value_min": None,
+               "value_max": None
+             }
 
     To define multiple sources use semicolon e.g.:
 
@@ -303,8 +325,12 @@ def unpack_activity_sources(sources_string):
 
             strategy = source_fields[2].split('-')[0]
             try:
-                values = source_fields[2].split('-')[1]
-            except IndexError, e:
+                values = source_fields[2].split('-')[1].split(',')
+                value_min = values[0]
+                value_max = values[1]
+                rospy.loginfo("Detected values min: %s, max:%s for source_string: %s" % (value_min, value_max, source_string))
+            except Exception, e:
+                rospy.logerr("Could not get value_min/value_max from sources for source_string" % source_string)
                 value_min = None
                 value_max = None
             single_source['topic'] = topic
@@ -514,3 +540,51 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)
+
+
+def get_nested_slot_value(slot, message):
+    """
+    Accepts a list a string with dots that represents slot and subslots
+    needed to be traversed in order to get value of message's nested attribute
+    Slot string gets converted to list of strings used to get a slot value from msg.
+    Every subslot should be an element in the list. Example:
+
+    For sensor_msg/Range:
+
+    ---
+    header:
+      seq: 1414798
+      stamp:
+        secs: 1461247209
+        nsecs: 611480951
+      frame_id: ''
+    radiation_type: 0
+    field_of_view: 0.0
+    min_range: 0.0
+    max_range: 0.0
+    range: 0.685800015926
+
+    list of slots to get nsecs will look like:
+        ['header', 'stamp', 'nsecs']
+
+    Returns a dictionary with slots name and value e.g.:
+        {'header.stamp.nsecs': 611480951}
+
+    """
+    slot_tree = slot.split('.')
+
+    if len(slot_tree) == 1:
+        return {slot: getattr(message, slot)}
+
+    elif len(slot_tree) > 1:
+        for slot_number in xrange(0, len(slot_tree)):
+            if slot_number == 0:
+                deserialized_msg = getattr(message, slot_tree[slot_number])
+            else:
+                deserialized_msg = getattr(deserialized_msg, slot_tree[slot_number])
+        else:
+            msg = "Wrong slot_tree provided: %s" % slot
+            rospy.logerr(msg)
+            raise SlotUnpackingException(msg)
+
+    return {slot: deserialized_msg}
