@@ -54,10 +54,10 @@ def main():
     rospy.spin()
 
 def make_viewsync():
-    listen_host = rospy.get_param('~listen_host', '127.0.0.1')
-    listen_port = rospy.get_param('~listen_port', 42001)
-    repeat_host = rospy.get_param('~repeat_host', '10.42.42.255')
-    repeat_port = rospy.get_param('~repeat_port', 42000)
+    listen_host = '127.0.0.1'
+    listen_port = 42001
+    repeat_host = rospy.get_param('~viewsync_host', '10.42.42.255')
+    repeat_port = rospy.get_param('~viewsync_port', 42000)
 
     pose_pub = rospy.Publisher(
         '/earth/pose', PoseStamped, queue_size=3
