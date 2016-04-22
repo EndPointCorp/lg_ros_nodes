@@ -2,7 +2,11 @@
 
 import rospy
 import os
+from thread import start_new_thread
 from lg_earth import Client
+from std_msgs.msg import String
+from lg_earth import ViewsyncRelay
+from geometry_msgs.msg import PoseStamped
 from lg_common.msg import ApplicationState
 from lg_common.helpers import DependencyException
 from lg_common.helpers import dependency_available, x_available, make_soft_relaunch_callback
@@ -44,8 +48,32 @@ def main():
                      client.earth_proc.handle_state_msg)
     make_soft_relaunch_callback(client._handle_soft_relaunch, groups=["earth"])
 
+    if rospy.get_param('~viewsync_send', False):
+        make_viewsync()
+
     rospy.spin()
 
+def make_viewsync():
+    listen_host = rospy.get_param('~listen_host', '127.0.0.1')
+    listen_port = rospy.get_param('~listen_port', 42001)
+    repeat_host = rospy.get_param('~repeat_host', '10.42.42.255')
+    repeat_port = rospy.get_param('~repeat_port', 42000)
+
+    pose_pub = rospy.Publisher(
+        '/earth/pose', PoseStamped, queue_size=3
+    )
+    planet_pub = rospy.Publisher(
+        '/earth/planet', String, queue_size=3
+    )
+
+    relay = ViewsyncRelay(
+        listen_addr=(listen_host, listen_port),
+        repeat_addr=(repeat_host, repeat_port),
+        pose_pub=pose_pub,
+        planet_pub=planet_pub
+    )
+
+    start_new_thread(relay.run, ())
 if __name__ == '__main__':
     main()
 
