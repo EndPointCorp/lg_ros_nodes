@@ -4,6 +4,8 @@ import rospy
 import os
 from thread import start_new_thread
 from lg_earth import Client
+from lg_earth.client_config import get_config
+from tempfile import gettempdir as systmp
 from std_msgs.msg import String
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
@@ -42,20 +44,25 @@ def main():
         rospy.logfatal(msg)
         raise DependencyException(msg)
 
-    client = Client(initial_state=initial_state)
+    viewsync_port = None
+    if rospy.get_param('~viewsync_send', False):
+        viewsync = make_viewsync()
+        viewsync_port = viewsync.listen_port
+
+    instance = '_earth_instance_' + rospy.get_name().strip('/')
+    tmpdir = os.path.normpath(systmp() + '/' + instance)
+    config = get_config(tmpdir, instance, viewsync_port)
+    # extend config with tmpdir and instance
+    config = config + (tmpdir, instance)
+    client = Client(config, initial_state=initial_state)
 
     rospy.Subscriber(state_topic, ApplicationState,
                      client.earth_proc.handle_state_msg)
     make_soft_relaunch_callback(client._handle_soft_relaunch, groups=["earth"])
 
-    if rospy.get_param('~viewsync_send', False):
-        make_viewsync()
-
     rospy.spin()
 
 def make_viewsync():
-    listen_host = '127.0.0.1'
-    listen_port = 42001
     repeat_host = rospy.get_param('~viewsync_host', '10.42.42.255')
     repeat_port = rospy.get_param('~viewsync_port', 42000)
 
@@ -67,13 +74,14 @@ def make_viewsync():
     )
 
     relay = ViewsyncRelay(
-        listen_addr=(listen_host, listen_port),
         repeat_addr=(repeat_host, repeat_port),
         pose_pub=pose_pub,
         planet_pub=planet_pub
     )
 
     start_new_thread(relay.run, ())
+    return relay
+
 if __name__ == '__main__':
     main()
 

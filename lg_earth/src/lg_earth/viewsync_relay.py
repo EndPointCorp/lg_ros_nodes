@@ -5,17 +5,15 @@ from geometry_msgs.msg import PoseStamped
 
 
 class ViewsyncRelay:
-    def __init__(self, listen_addr, repeat_addr, pose_pub, planet_pub):
+    def __init__(self, repeat_addr, pose_pub, planet_pub):
         """ViewSync sniffer and repeater.
 
         Publishes Earth's position as as Pose.
 
         Args:
-            listen_addr (str)
             repeat_addr (str)
             pose_pub (rospy.Publisher)
         """
-        self.listen_addr = listen_addr
         self.repeat_addr = repeat_addr
         self.pose_pub = pose_pub
         self.planet_pub = planet_pub
@@ -26,6 +24,10 @@ class ViewsyncRelay:
         self.repeat_sock = socket(AF_INET, SOCK_DGRAM)
         self.repeat_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.repeat_sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+
+        self.listen_sock.bind(('', 0))
+        self.listen_port = self.listen_sock.getsockname()[1]
+
 
     @staticmethod
     def parse_pose(data):
@@ -71,8 +73,6 @@ class ViewsyncRelay:
 
         This is a blocking method that runs until the ROS node is shutdown.
         """
-        self.listen_sock.bind(self.listen_addr)
-
         while not rospy.is_shutdown():
             try:
                 data = self.listen_sock.recv(255)
