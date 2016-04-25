@@ -172,7 +172,7 @@ class Processor(object):
                 return False
         else:
             msg = "Message slot not defined for topic %s" % (self.watched_topic)
-            rospy.logerror(msg)
+            rospy.logerr(msg)
             raise StatsConfigurationError(msg)
 
     def _compare_messages(self, msg_1, msg_2):
@@ -314,7 +314,7 @@ class Processor(object):
                     self.time_of_last_resubmission = None
 
         except EmptyIncomingMessage, ex:
-            rospy.logerror(ex)
+            rospy.logerr(ex)
             return
 
 
