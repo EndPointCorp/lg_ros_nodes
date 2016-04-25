@@ -89,12 +89,21 @@ class InfluxTelegraf(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        influx_str = ("""%s field_name="%s",type="%s",value="%s" %s""" %
-                      (msg.src_topic,
-                       msg.field_name,
-                       msg.type,
-                       msg.value,
-                       InfluxTelegraf.get_timestamp()))
+        try:
+            influx_str = ("""lg_stats topic_name=%s field_name="%s",type="%s",value=%s %s""" %
+                          (msg.src_topic,
+                           msg.field_name,
+                           msg.type,
+                           float(msg.value),
+                           InfluxTelegraf.get_timestamp()))
+        except ValueError:
+            # value is a string - we could not turn it into float
+            influx_str = ("""lg_stats topic_name=%s field_name="%s",type="%s",value="%s" %s""" %
+                          (msg.src_topic,
+                           msg.field_name,
+                           msg.type,
+                           msg.value,
+                           InfluxTelegraf.get_timestamp()))
         return influx_str
 
     def write_stats(self, data):
