@@ -252,7 +252,7 @@ def unpack_activity_sources(sources_string):
 
     Sources string format:
 
-    <topic_name>/<message_type>[(<slot.sub_slot.sub_sub_slot>)]/<strategy>[(<value_min><value_max>)]
+    <topic_name>:<message_type>-<slot[.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>]
 
     - topic_name: topic which ActivitySource will listen for incoming messages
     - message_type: type of message on the given topic
@@ -309,42 +309,45 @@ def unpack_activity_sources(sources_string):
 
     """
 
-    try:
-        sources = []
-        bare_sources = sources_string.split(';')
-        for source_string in bare_sources:
-            single_source = {}
-            source_fields = source_string.split(':')
+    sources = []
+    bare_sources = sources_string.split(';')
+    for source_string in bare_sources:
+        single_source = {}
+        source_fields = source_string.split(':')
 
-            topic = source_fields[0]
+        topic = source_fields[0]
+        try:
             msg_type = source_fields[1].split('-')[0]
-            try:
-                slot = source_fields[1].split('-')[1]
-            except IndexError, e:
-                slot = None
+        except IndexError, e:
+            msg_type = source_fields[1]
 
+        try:
+            slot = source_fields[1].split('-')[1]
+        except IndexError, e:
+            slot = None
+
+        try:
             strategy = source_fields[2].split('-')[0]
-            try:
-                values = source_fields[2].split('-')[1].split(',')
-                value_min = values[0]
-                value_max = values[1]
-                rospy.loginfo("Detected values min: %s, max:%s for source_string: %s" % (value_min, value_max, source_string))
-            except Exception, e:
-                rospy.logerr("Could not get value_min/value_max from sources for source_string" % source_string)
-                value_min = None
-                value_max = None
-            single_source['topic'] = topic
-            single_source['msg_type'] = msg_type
-            single_source['strategy'] = strategy
-            single_source['slot'] = slot
-            single_source['value_min'] = value_min
-            single_source['value_max'] = value_max
-            sources.append(single_source)
-        return sources
-    except Exception, e:
-        exception_msg = "Could not unpack activity sources string because: %s" % e
-        rospy.logerr(exception_msg)
-        raise WrongActivityDefinition(exception_msg)
+        except IndexError, e:
+            strategy = source_fields[2]
+
+        try:
+            values = source_fields[2].split('-')[1].split(',')
+            value_min = values[0]
+            value_max = values[1]
+            rospy.loginfo("Detected values min: %s, max:%s for source_string: %s" % (value_min, value_max, source_string))
+        except Exception, e:
+            rospy.loginfo("Could not get value_min/value_max from sources for source_string: %s" % source_string)
+            value_min = None
+            value_max = None
+        single_source['topic'] = topic
+        single_source['msg_type'] = msg_type
+        single_source['strategy'] = strategy
+        single_source['slot'] = slot
+        single_source['value_min'] = value_min
+        single_source['value_max'] = value_max
+        sources.append(single_source)
+    return sources
 
 
 def check_registration(e):

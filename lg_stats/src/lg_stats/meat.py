@@ -53,6 +53,7 @@ class Processor(object):
     """
     def __init__(self,
                  watched_topic=None,
+                 measurement=None,
                  msg_slot=None,
                  debug_pub=None,
                  resolution=20,
@@ -67,8 +68,14 @@ class Processor(object):
             msg = "Watchef topic not passed to Processor"
             rospy.logerr(msg)
             raise StatsConfigurationError(msg)
+        if not measurement:
+            self.measurement = 'lg_stats'
+        else:
+            self.measurement = measurement
 
         self.watched_topic = watched_topic
+        self.counter = 0
+        self.messages = []
         self.strategy = strategy
         self.msg_slot = msg_slot
         self.debug_pub = debug_pub  # debug ROS publisher topic
@@ -82,22 +89,32 @@ class Processor(object):
         self.influxdb_client = influxdb_client
         self.resubmission_thread = None
         self._lock = threading.Lock()
+        rospy.loginfo("Initializing Processor instance: %s" % self)
+
 
     def __str__(self):
-        return "Processor instance for topic %s, msg_slot %s, strategy: %s" % (self.watched_topic, self.msg_slot, self.strategy)
+        return "<Processor instance for topic %s, msg_slot %s, strategy: %s>" % (self.watched_topic, self.msg_slot, self.strategy)
 
     def _start_resubmission_thread(self):
-        """
-        TODO(wz) - remove thread spawn as it's not safe to use them inside ROS script
-         instead use rospy.sleep() and rospy.Duration() or rospy.Rate()
-        """
-
         if self.strategy == "default":
             rospy.loginfo("Starting resubmission thread for %s" % self)
-            self.resubmission_thread = threading.Thread(target=self.resubmit)
+            self.resubmission_thread = threading.Thread(target=self._resubmit)
             self.resubmission_thread.start()
         else:
-            rospy.loginfo("Not starting resubmission thread for strategy: %s" % self.strategy)
+            rospy.loginfo("Starting background thread for %s" % self)
+            self._background_thread = threading.Thread(target=self._background)
+            self._background_thread.start()
+
+    def _background(self):
+        """
+        Flushes accumulated values
+        """
+        while not rospy.is_shutdown():
+            rospy.loginfo("Background thread loop for %s" % self.watched_topic)
+            self._wake_up_and_flush()
+            rospy.loginfo("Background thread for %s going to sleep" % self.watched_topic)
+            time.sleep(self.resolution)
+        rospy.loginfo("Background thread finished for %s has finished" % self.watched_topic)
 
     def _resubmit(self):
         """
@@ -109,12 +126,13 @@ class Processor(object):
 
         """
         while not rospy.is_shutdown():
-            rospy.loginfo("Resubmission thread loop ...")
-            self.resubmit_worker()
-            rospy.loginfo("Resubmission thread sleeping ...")
+            rospy.logdebug("Resubmission thread loop for %s" % self.watched_topic)
+            self._resubmit_worker()
+            rospy.logdebug("Resubmission thread sleeping ...")
             # another possibility is rate = rospy.Rate(1) ... rate.sleep() ... or rospy.sleep(2)
             time.sleep(2)
-        rospy.loginfo("Resubmission thread finished.")
+        rospy.loginfo("Resubmission thread finished for %s has finished" % self.watched_topic)
+
 
     def _resubmit_worker(self):
         """
@@ -178,7 +196,8 @@ class Processor(object):
             # self.resolution
             value = self._get_slot_value(src_msg)  # this may raise EmptyIncomingMessage
             if value:
-                out_msg = Event(src_topic=self.watched_topic,
+                out_msg = Event(measurement=self.measurement,
+                                src_topic=self.watched_topic,
                                 field_name=self.msg_slot,
                                 type="event",
                                 # value is always string, if source value is e.g.
@@ -208,39 +227,49 @@ class Processor(object):
 
             return False
 
-    def wake_up_and_flush(self, msg):
+    def _wake_up_and_flush(self):
         """
         """
         if self.strategy == 'default':
             """
             Do nothing
             """
-            pass
+            rospy.loginfo("Not flushing %s because of default strategy" % self)
 
         elif self.strategy == 'count':
             """
             Submit count, clean buffer
             """
-            out_msg = Event(src_topic=self.watched_topic,
+            rospy.loginfo("Flushing %s" % self)
+            out_msg = Event(measurement=self.measurement,
+                            src_topic=self.watched_topic,
                             field_name=self.msg_slot,
                             type="rate",
-                            value=self.counter)
-
-            self.submit_influxdata(out_msg)
+                            value=str(self.counter))
             self.counter = 0
+            rospy.loginfo("Flushing %s with out_msg=%s" % (self, out_msg))
+            self.submit_influxdata(out_msg)
 
         elif self.strategy == 'average':
             """
             Calculate average, submit and clean buffer
             """
+            rospy.loginfo("Flushing %s" % self)
+            try:
+                average = reduce(lambda x, y: float(x) + float(y), self.messages) / len(self.messages)
+            except TypeError:
+                """
+                No messages to count
+                """
+                return
             self.messages = []
-            average = reduce(lambda x, y: float(x) + float(y), self.messages) / len(self.messages)
-            out_msg = Event(src_topic=self.watched_topic,
+            out_msg = Event(measurement=self.measurement,
+                            src_topic=self.watched_topic,
                             field_name=self.msg_slot,
                             type="average",
-                            value=average)
+                            value=str(average))
+            rospy.loginfo("Flushing %s with out_msg=%s" % (self, out_msg))
             self.submit_influxdata(out_msg)
-
         else:
             """
             unknown strategy
@@ -330,9 +359,7 @@ def main():
         processors.append(p)
 
     # wake all procesors that have strategy of average and count and make sure their buffers are emptied
-    for processor in processors:
-        processor.wake_up_and_flush()
-        rospy.sleep(resolution)
+    rospy.loginfo("Initializing lg_stats with: %s" % processors)
 
     rospy.loginfo("%s spinning ..." % ROS_NODE_NAME)
     rospy.spin()
