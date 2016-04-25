@@ -50,6 +50,16 @@ class Processor(object):
     It's lightweight anyway.
     The last (before ROS node shutdown) message is currently lost.
 
+    - watched_topic e.g. "/spacenav/twist"
+    - measurement - name of influxdb measurment - by default 'lg_stats'
+    - msg_slot - dot-delimited list of attributes inside a message .e.g. 'header.seq' or 'angular.x'
+    - debug_pub - publisher for publishing debugging Event.msg
+    - resolution - how often we submit the data
+    - how long to wait until old values get re-submitted
+    - strategy: default, count, average (either get attrib from message and write
+     to influx, count messages or calculate average of slot values
+    - influxdb_client - instance of influx client
+
     """
     def __init__(self,
                  watched_topic=None,
@@ -65,7 +75,7 @@ class Processor(object):
             rospy.logerr(msg)
             raise StatsConfigurationError(msg)
         if not watched_topic:
-            msg = "Watchef topic not passed to Processor"
+            msg = "Watched topic not passed to Processor"
             rospy.logerr(msg)
             raise StatsConfigurationError(msg)
         if not measurement:
@@ -97,7 +107,7 @@ class Processor(object):
 
     def _start_resubmission_thread(self):
         if self.strategy == "default":
-            rospy.loginfo("Starting resubmission thread for %s" % self)
+            rospy.loginfo("Starting 'default' strategy resubmission thread for %s" % self)
             self.resubmission_thread = threading.Thread(target=self._resubmit)
             self.resubmission_thread.start()
         else:
@@ -145,14 +155,14 @@ class Processor(object):
                     self.time_of_last_resubmission = self.time_of_last_in_msg
                 elapsed = time.time() - self.time_of_last_resubmission
                 if int(round(elapsed)) > self.inactivity_resubmission:
-                    rospy.loginfo("Resubmitting last message to InfluxDB ('%s') ..." %
+                    rospy.loginfo("Re-submitting last message to InfluxDB ('%s') ..." %
                                   self.last_influx_data)
                     self.debug_pub.publish(self.last_out_msg)
                     self.influxdb_client.write_stats(self.last_influx_data)
                     self.time_of_last_resubmission = time.time()
                 else:
                     rospy.loginfo("The 'inactivity_resubmission' (%s) period has not "
-                                  "elapsed yet." % self.inactivity_resubmission)
+                                  "elapsed yet = %s" % (self.inactivity_resubmission, elapsed))
             else:
                 rospy.loginfo("Nothing received on this topic so far.")
 
@@ -172,7 +182,7 @@ class Processor(object):
                 return False
         else:
             msg = "Message slot not defined for topic %s" % (self.watched_topic)
-            rospy.logerror(msg)
+            rospy.logerr(msg)
             raise StatsConfigurationError(msg)
 
     def _compare_messages(self, msg_1, msg_2):
@@ -200,12 +210,11 @@ class Processor(object):
                                 src_topic=self.watched_topic,
                                 field_name=self.msg_slot,
                                 type="event",
-                                # value is always string, if source value is e.g.
-                                # boolean, it's converted to a string here
-                                value=value)
+                                value=str(value))
                 return out_msg
             else:
-                self.logerr("Could not get slot value for message %s" % src_msg)
+                msg = "Could not get slot value for message '%s' using slot '%s'" % (src_msg, self.msg_slot)
+                rospy.logerr(msg)
 
         elif self.strategy == 'average':
             """
@@ -314,7 +323,7 @@ class Processor(object):
                     self.time_of_last_resubmission = None
 
         except EmptyIncomingMessage, ex:
-            rospy.logerror(ex)
+            rospy.logerr(ex)
             return
 
 

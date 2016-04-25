@@ -47,8 +47,7 @@ class InfluxDirect(Submitter):
         Direct InfluxDB submitter talks JSON.
 
         """
-        influx_dict = dict(measurement=msg.measurement,
-                           tags=dict(topic=msg.src_topic,
+        influx_dict = dict(tags=dict(topic=msg.src_topic,
                                      field_name=msg.field_name,
                                      type=msg.type,
                                      value=msg.value),
@@ -90,7 +89,7 @@ class InfluxTelegraf(Submitter):
     @staticmethod
     def get_data_for_influx(msg):
         try:
-            influx_str = ("""lg_stats topic_name=%s field_name="%s",type="%s",value=%s %s""" %
+            influx_str = ("""lg_stats_metric topic_name="%s",field_name="%s",type="%s",value=%s %s""" %
                           (msg.src_topic,
                            msg.field_name,
                            msg.type,
@@ -98,12 +97,15 @@ class InfluxTelegraf(Submitter):
                            InfluxTelegraf.get_timestamp()))
         except ValueError:
             # value is a string - we could not turn it into float
-            influx_str = ("""lg_stats topic_name=%s field_name="%s",type="%s",value="%s" %s""" %
+            influx_str = ("""lg_stats_event topic_name="%s",field_name="%s",type="%s",value="%s" %s""" %
                           (msg.src_topic,
                            msg.field_name,
                            msg.type,
                            msg.value,
                            InfluxTelegraf.get_timestamp()))
+        except TypeError:
+            return ''
+
         return influx_str
 
     def write_stats(self, data):

@@ -580,14 +580,31 @@ def get_nested_slot_value(slot, message):
         return {slot: getattr(message, slot)}
 
     elif len(slot_tree) > 1:
-        for slot_number in xrange(0, len(slot_tree)):
-            if slot_number == 0:
-                deserialized_msg = getattr(message, slot_tree[slot_number])
-            else:
-                deserialized_msg = getattr(deserialized_msg, slot_tree[slot_number])
-        else:
-            msg = "Wrong slot_tree provided: %s" % slot
-            rospy.logerr(msg)
-            raise SlotUnpackingException(msg)
+        deserialized_msg = message
+        for subslot in slot_tree:
+            try:
+                deserialized_msg = getattr(deserialized_msg, subslot)
+            except AttributeError:
+                if type(deserialized_msg) == str:
+                    try:
+                        # try to convert string to dict (works only for genericmessage)
+                        deserialized_msg = json.loads(deserialized_msg)
+                        deserialized_msg = deserialized_msg[subslot]
+                    except KeyError:
+                        msg = "Sublot %s does not exist in message: %s" % (subslot, deserialized_msg)
+                        rospy.logerr(msg)
+                    except ValueError:
+                        msg = "Could not convert message '%s' to dict using subslot: '%s'" % (subslot, deserialized_msg)
+                        rospy.logerr(msg)
+                elif type(deserialized_msg) == dict:
+                    try:
+                        deserialized_msg = deserialized_msg[subslot]
+                    except KeyError:
+                        msg = "Could not get value for slot %s from message %s" % (subslot, deserialized_msg)
+                        rospy.logerr(msg)
+                else:
+                    msg = "Could not get subslot value '%s' from message '%s'" % (subslot, deserialized_msg)
+                    rospy.logerr(msg)
+
 
     return {slot: deserialized_msg}

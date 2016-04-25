@@ -138,17 +138,6 @@ class TestLGStatsRealMessageChain(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "a good mode")
 
-    def test_send_statistics_session(self):
-        """
-        Check stats handling of /statistics/session messages.
-        By sending this kind of message, trigger the stats message on /lg_stats/debug.
-
-        """
-        msg = Session(application="a good application")
-        pub = rospy.Publisher("/statistics/session", Session, queue_size=3)
-        rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        self.checker(pub, msg, "a good application")
-
     def test_send_activity_active(self):
         """
         Check stats handling of /activity/active messages.

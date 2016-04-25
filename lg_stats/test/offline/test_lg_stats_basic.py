@@ -70,27 +70,30 @@ class TestSubmitters(object):
         # prepare message for testing, as if it was received (incoming message)
         slot = json.loads(real_in_msg_director_scene)["message"]
         in_msg = GenericMessage(type="json", message=json.dumps(slot))
+
         # get outgoing message (to /lg_stats/debug) - via Processor instance
         p = Processor(watched_topic="/director/scene",
-                      msg_slot="message",
-                      watched_field_name="slug")
-        out_msg = p.get_outbound_message(in_msg)
+                      msg_slot="message.slug",
+                      strategy="default")
+
+        out_msg = p._get_outbound_message(in_msg)
         whole_field_name = "message.slug"  # depends on the particular message type above
+
         # now finally test the method of submitters:
         influx = InfluxDirect.get_data_for_influx(out_msg)
         assert isinstance(influx, dict)
-        assert influx["measurement"] == p.watched_topic
+        assert influx["tags"]["topic"] == p.watched_topic
         assert influx["tags"]["field_name"] == whole_field_name
         assert influx["tags"]["value"] == "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1"
         influx = InfluxTelegraf.get_data_for_influx(out_msg)
         assert isinstance(influx, str)
-        assert influx.startswith(p.watched_topic)
+        assert p.watched_topic in influx
         assert influx.find("field_name=\"%s\"" % whole_field_name) > -1
         assert influx.find("value=\"%s\"" % out_msg.value) > -1
         # this mock just calls InfluxTelegraf - do the same assertions
         influx = InfluxMock.get_data_for_influx(out_msg)
         assert isinstance(influx, str)
-        assert influx.startswith(p.watched_topic)
+        assert p.watched_topic in influx
         assert influx.find("field_name=\"%s\"" % whole_field_name) > -1
         assert influx.find("value=\"%s\"" % out_msg.value) > -1
 
@@ -102,26 +105,19 @@ class TestLGStatsProcessor(object):
 
     """
     def test_basic(self):
-        p = Processor(resolution=200)
+        p = Processor(watched_topic='/some/topic',
+                      resolution=200,
+                      msg_slot='test.me')
         assert p.resolution == 200
-
-    def test_whole_field_name(self):
-        p = Processor(watched_topic="/director/scene",
-                      msg_slot="message",
-                      watched_field_name="slug")
-        assert p.get_whole_field_name() == "message.slug"
-        p = Processor(watched_topic="/director/scene",
-                      watched_field_name="somethingelse")
-        assert p.get_whole_field_name() == "somethingelse"
 
     def test_publish(self):
         pub = MockTopicPublisher()
-        p = Processor(watched_topic=None,
-                      watched_field_name="application",
+        p = Processor(watched_topic="/lol/rofl",
+                      msg_slot="application",
                       debug_pub=pub,
                       resolution=200)
         msg1 = Session(application="someapplication1")
-        out = p.get_outbound_message(msg1)
+        out = p._get_outbound_message(msg1)
         p.debug_pub.publish(out)
         assert isinstance(pub.messages[0], Event)
         assert pub.messages[0].field_name == "application"
@@ -132,16 +128,18 @@ class TestLGStatsProcessor(object):
     def test_message_comparison(self):
         """
         """
-        p = Processor(watched_field_name="application")
+        p = Processor(msg_slot="application",
+                      watched_topic="/lol/rofl")
         msg1 = Session(application="someapplication1")
         msg2 = Session(application="someapplication2")
-        assert p.compare_messages(msg1, msg1)
-        assert not p.compare_messages(msg1, msg2)
+        assert p._compare_messages(msg1, msg1)
+        assert not p._compare_messages(msg1, msg2)
 
     def test_process(self):
         pub = MockTopicPublisher()
         influx = InfluxMock()
-        p = Processor(watched_field_name="application",
+        p = Processor(msg_slot="application",
+                      watched_topic="/lol/mock",
                       influxdb_client=influx,
                       debug_pub=pub)
         msg1 = Session(application="someapplication1")
@@ -156,37 +154,36 @@ class TestLGStatsProcessor(object):
 
         """
         # prepare message for testing, as if it was received (incoming message)
-        in_msg = GenericMessage(type="json", message="{}")
+        in_msg = GenericMessage(type="json", message=json.loads("{}"))
         p = Processor(watched_topic="/director/scene",
-                      msg_slot="message",
-                      watched_field_name="slug")
+                      msg_slot="message.slug")
         p.process(in_msg)
         # nothing shall happen
         assert p.last_in_msg is None
         assert p.time_of_last_in_msg is None
 
-    def test_get_slot(self):
+    def test_get_slot_value(self):
         # prepare message for testing, as if it was received (incoming message)
-        in_msg = GenericMessage(type="json", message="{}")
+        in_msg = GenericMessage(type="json", message=json.loads("{}"))
         p = Processor(watched_topic="/director/scene",
-                      msg_slot="message",
-                      watched_field_name="slug")
+                      msg_slot="message.slug")
         # test the same on a lower level
-        pytest.raises(EmptyIncomingMessage, p.get_slot, in_msg)
-        slot = json.loads(real_in_msg_director_scene)["message"]
-        in_msg = GenericMessage(type="json", message=json.dumps(slot))
-        assert slot == p.get_slot(in_msg)
+        # empty messages are fine - we just ignore them - dont make them raise exceptions
+        # pytest.raises(EmptyIncomingMessage, p._get_slot_value, in_msg)
+        subslot = json.loads(real_in_msg_director_scene)["message"]
+        in_msg = GenericMessage(type="json", message=json.dumps(subslot))
+        assert subslot['slug'] == p._get_slot_value(in_msg)
         in_msg = Session(application="someapplication1")
-        p = Processor(watched_field_name="application")
-        assert not p.get_slot(in_msg)
+        p = Processor(watched_topic="loll",
+                      msg_slot="application")
+        assert p._get_slot_value(in_msg) == "someapplication1"
 
     def test_background_submission_thread(self):
-        msg = GenericMessage(type="json", message="""{"slug": "something1234"}""")
+        msg = GenericMessage(type="json", message=json.loads("""{"slug": "something1234"}"""))
         pub = MockTopicPublisher()
         influx = InfluxMock()
         p = Processor(watched_topic="/director/scene",
-                      msg_slot="message",
-                      watched_field_name="slug",
+                      msg_slot="message.slug",
                       inactivity_resubmission=1,
                       influxdb_client=influx,
                       debug_pub=pub)
@@ -203,15 +200,15 @@ class TestLGStatsProcessor(object):
         assert len(p.influxdb_client.messages) == 1
         assert p.debug_pub.messages[0].field_name == "message.slug"
         assert p.debug_pub.messages[0].value == "something1234"
-        assert p.influxdb_client.messages[0].startswith("/director/scene")
+        assert "/director/scene" in p.influxdb_client.messages[0]
         # how run the thread worker - directly, wait before - there is a time check
         time.sleep(2)
-        p.resubmit_worker()
+        p._resubmit_worker()
         assert len(p.debug_pub.messages) == 2
         assert len(p.influxdb_client.messages) == 2
         assert p.debug_pub.messages[1].field_name == "message.slug"
         assert p.debug_pub.messages[1].value == "something1234"
-        assert p.influxdb_client.messages[1].startswith("/director/scene")
+        assert "/director/scene" in p.influxdb_client.messages[1]
 
 
 if __name__ == "__main__":
