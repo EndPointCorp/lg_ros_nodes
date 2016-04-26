@@ -2,6 +2,17 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_stats strategies and activity sources:
+  - added support for nested slots value extraction
+  - refactored lg_activity to use shared helper for the above
+  - removed cruft for strategies - replaced with proper strategies
+  - added support for count and average
+  - didnt test it yet - havent amended tests to resemble new functionality
+  yet
+* Contributors: Wojciech Ziniewicz
+
 1.1.48 (2016-04-20)
 -------------------
 

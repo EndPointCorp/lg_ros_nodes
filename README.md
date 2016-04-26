@@ -119,9 +119,10 @@ touch CATKIN_IGNORE
 cd -
 ```
 
-- lint it (this step is optional):
-```bash
-catkin_lint
+- make sure your tags are pulled - otherwise you'll generate a duplicate
+
+```shell
+git remote update
 ```
 
 - generate changelog:

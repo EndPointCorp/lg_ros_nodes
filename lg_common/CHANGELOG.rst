@@ -2,6 +2,31 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed tests:
+  - renamed files to reflect new functionality (new strategies) - tests
+  coverage is missing for non-default ones
+  - amended some code I wrongly added to meat
+  - pep8'ized code
+* Fixed tests for `#126 <https://github.com/EndPointCorp/lg_ros_nodes/issues/126>`_
+* lg_stats part 2
+  - re-thinked activity sources parsing - lg_activity tests need to be
+  written to make sure its not broken
+  - moved count and average processors to background tasks like
+  resubmitters - good idea by @zdenekmaxa
+  - added `measurement` message field and moved attribute mapping so that
+  ROS topic are independent from measurment names
+* Some docs amendments
+* lg_stats strategies and activity sources:
+  - added support for nested slots value extraction
+  - refactored lg_activity to use shared helper for the above
+  - removed cruft for strategies - replaced with proper strategies
+  - added support for count and average
+  - didnt test it yet - havent amended tests to resemble new functionality
+  yet
+* Contributors: Wojciech Ziniewicz
+
 1.1.48 (2016-04-20)
 -------------------
 
