@@ -142,7 +142,7 @@ class InfluxMock(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        rospy.debug("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
+        rospy.logdebug("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
         return InfluxTelegraf.get_data_for_influx(msg)
 
     def write_stats(self, data):
