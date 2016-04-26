@@ -66,8 +66,8 @@ class Processor(object):
                  measurement=None,
                  msg_slot=None,
                  debug_pub=None,
-                 resolution=20,
-                 inactivity_resubmission=50,
+                 resolution=5,
+                 inactivity_resubmission=5,
                  strategy='default',
                  influxdb_client=None):
         if not msg_slot:
@@ -105,27 +105,37 @@ class Processor(object):
         return "<Processor instance for topic %s, msg_slot %s, strategy: %s>" % (self.watched_topic, self.msg_slot, self.strategy)
 
     def _start_resubmission_thread(self):
+        """
+        Starts two threads:
+         - resubmission: responsible for re-submitting event data on topics which
+          have low messaging traffic - useful for events liek mode changes or
+          director messages
+         - background: responsible for timely, frequent event submission of stats liek
+          rate of touchscreen touch events or average value on a topic containing
+          prox sensor range
+        """
+
         if self.strategy == "default":
             rospy.loginfo("Starting 'default' strategy resubmission thread for %s" % self)
-            self.resubmission_thread = threading.Thread(target=self._resubmit)
+            self.resubmission_thread = threading.Thread(target=self._resubmission_thread)
             self.resubmission_thread.start()
         else:
             rospy.loginfo("Starting background thread for %s" % self)
-            self._background_thread = threading.Thread(target=self._background)
+            self._background_thread = threading.Thread(target=self._background_thread)
             self._background_thread.start()
 
-    def _background(self):
+    def _background_thread(self):
         """
         Flushes accumulated values
         """
         while not rospy.is_shutdown():
-            rospy.loginfo("Background thread loop for %s" % self.watched_topic)
+            rospy.logdebug("Background thread loop for %s" % self.watched_topic)
             self._wake_up_and_flush()
-            rospy.loginfo("Background thread for %s going to sleep" % self.watched_topic)
+            rospy.logdebug("Background thread for %s going to sleep" % self.watched_topic)
             time.sleep(self.resolution)
-        rospy.loginfo("Background thread finished for %s has finished" % self.watched_topic)
+        rospy.logdebug("Background thread finished for %s has finished" % self.watched_topic)
 
-    def _resubmit(self):
+    def _resubmission_thread(self):
         """
         The method runs as a background thread.
         It checks whether there was any activity on the handled ROS
@@ -138,8 +148,7 @@ class Processor(object):
             rospy.logdebug("Resubmission thread loop for %s" % self.watched_topic)
             self._resubmit_worker()
             rospy.logdebug("Resubmission thread sleeping ...")
-            # another possibility is rate = rospy.Rate(1) ... rate.sleep() ... or rospy.sleep(2)
-            time.sleep(2)
+            time.sleep(self.inactivity_resubmission)
         rospy.loginfo("Resubmission thread finished for %s has finished" % self.watched_topic)
 
     def _resubmit_worker(self):
@@ -153,16 +162,18 @@ class Processor(object):
                     self.time_of_last_resubmission = self.time_of_last_in_msg
                 elapsed = time.time() - self.time_of_last_resubmission
                 if int(round(elapsed)) > self.inactivity_resubmission:
-                    rospy.loginfo("Re-submitting last message to InfluxDB ('%s') ..." %
-                                  self.last_influx_data)
+                    rospy.logdebug("Re-submitting last message to InfluxDB ('%s') ..." % self.last_influx_data)
+
                     self.debug_pub.publish(self.last_out_msg)
-                    self.influxdb_client.write_stats(self.last_influx_data)
+                    # regenerate last message with new timestamp
+                    regenerated_message = self.influxdb_client.get_data_for_influx(self.last_out_msg)
+                    self.influxdb_client.write_stats(regenerated_message)
                     self.time_of_last_resubmission = time.time()
                 else:
-                    rospy.loginfo("The 'inactivity_resubmission' (%s) period has not "
+                    rospy.logdebug("The 'inactivity_resubmission' (%s) period has not "
                                   "elapsed yet = %s" % (self.inactivity_resubmission, elapsed))
             else:
-                rospy.loginfo("Nothing received on this topic so far.")
+                rospy.logdebug("Nothing received on topic %s so far." % self.watched_topic)
 
     def _get_slot_value(self, msg):
         """
@@ -241,27 +252,27 @@ class Processor(object):
             """
             Do nothing
             """
-            rospy.loginfo("Not flushing %s because of default strategy" % self)
+            rospy.logdebug("Not flushing %s because of default strategy" % self)
 
         elif self.strategy == 'count':
             """
             Submit count, clean buffer
             """
-            rospy.loginfo("Flushing %s" % self)
+            rospy.logdebug("Flushing %s" % self)
             out_msg = Event(measurement=self.measurement,
                             src_topic=self.watched_topic,
                             field_name=self.msg_slot,
                             type="rate",
                             value=str(self.counter))
             self.counter = 0
-            rospy.loginfo("Flushing %s with out_msg=%s" % (self, out_msg))
+            rospy.logdebug("Flushing %s with out_msg=%s" % (self, out_msg))
             self.submit_influxdata(out_msg)
 
         elif self.strategy == 'average':
             """
             Calculate average, submit and clean buffer
             """
-            rospy.loginfo("Flushing %s" % self)
+            rospy.logdebug("Flushing %s" % self)
             try:
                 average = reduce(lambda x, y: float(x) + float(y), self.messages) / len(self.messages)
             except TypeError:
@@ -275,13 +286,13 @@ class Processor(object):
                             field_name=self.msg_slot,
                             type="average",
                             value=str(average))
-            rospy.loginfo("Flushing %s with out_msg=%s" % (self, out_msg))
+            rospy.logdebug("Flushing %s with out_msg=%s" % (self, out_msg))
             self.submit_influxdata(out_msg)
         else:
             """
             unknown strategy
             """
-            self.loginfo("Unknown strategy %s" % self.strategy)
+            self.logdebug("Unknown strategy %s" % self.strategy)
             pass
 
     def submit_influxdata(self, out_msg):
@@ -291,7 +302,7 @@ class Processor(object):
 
         influx_data = self.influxdb_client.get_data_for_influx(out_msg)
         out_msg.influx = str(influx_data)
-        rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
+        rospy.logdebug("Submitting to InfluxDB: '%s'" % influx_data)
         self.debug_pub.publish(out_msg)
         self.influxdb_client.write_stats(influx_data)
 
@@ -343,7 +354,7 @@ def main():
     # may, may not be desirable ; in other words, we may want to have
     # the time resolution configurable per specified source topic processor instance
     resolution = rospy.get_param("~resolution", 2)
-    inactivity_resubmission = rospy.get_param("~inactivity_resubmission", 20)
+    inactivity_resubmission = rospy.get_param("~inactivity_resubmission", resolution)
     # source activities - returns list of dictionaries
     stats_sources = unpack_activity_sources(rospy.get_param("~activity_sources"))
     influxdb_client = get_influxdb_client()

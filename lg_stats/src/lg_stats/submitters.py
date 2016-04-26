@@ -116,11 +116,13 @@ class InfluxTelegraf(Submitter):
 
         It's impossible to tell whether all data was sent or not.
         """
+        rospy.logdebug("Going to write: '%s' to influx" % data)
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_address = (self.host, self.port)
             sock.connect(server_address)
             sock.sendall(data)
+            rospy.logdebug("Wrote: '%s' to influx" % data)
         except Exception, ex:
             rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
                          (data, server_address, ex))
@@ -140,9 +142,9 @@ class InfluxMock(Submitter):
 
     @staticmethod
     def get_data_for_influx(msg):
-        rospy.loginfo("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
+        rospy.debug("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
         return InfluxTelegraf.get_data_for_influx(msg)
 
     def write_stats(self, data):
-        rospy.loginfo("%s called, received msg: '%s'" % (self.__class__.__name__, data))
+        rospy.logdebug("%s called, received msg: '%s'" % (self.__class__.__name__, data))
         self.messages.append(data)
