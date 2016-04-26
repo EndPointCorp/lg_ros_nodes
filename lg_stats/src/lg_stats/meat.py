@@ -171,7 +171,7 @@ class Processor(object):
                     self.time_of_last_resubmission = time.time()
                 else:
                     rospy.logdebug("The 'inactivity_resubmission' (%s) period has not "
-                                  "elapsed yet = %s" % (self.inactivity_resubmission, elapsed))
+                                   "elapsed yet = %s" % (self.inactivity_resubmission, elapsed))
             else:
                 rospy.logdebug("Nothing received on topic %s so far." % self.watched_topic)
 
