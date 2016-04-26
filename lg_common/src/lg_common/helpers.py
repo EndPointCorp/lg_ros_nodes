@@ -606,5 +606,4 @@ def get_nested_slot_value(slot, message):
                     msg = "Could not get subslot value '%s' from message '%s'" % (subslot, deserialized_msg)
                     rospy.logerr(msg)
 
-
     return {slot: deserialized_msg}

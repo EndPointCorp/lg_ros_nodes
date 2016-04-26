@@ -91,8 +91,7 @@ class TestLGStatsRealMessageChain(object):
         Set the shared mem value based on the received message.
 
         """
-        rospy.loginfo("callback received type: '%s'" % type(msg))
-        rospy.loginfo(msg)
+        rospy.logdebug("callback received type: '%s', message: %s" % (type(msg), msg))
         RESULT.value = msg.value
 
     def checker(self, publisher, msg_to_send, expected_value):
@@ -111,15 +110,15 @@ class TestLGStatsRealMessageChain(object):
             rospy.sleep(1)
         assert RESULT.value == expected_value
 
-    def test_send_director_scene(self):
+    def send_director_scene(self):
         """
         Check stats handling of /director/scene messages.
         By sending this kind of message, trigger the stats message on /lg_stats/debug.
 
         """
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)
         msg = GenericMessage(type="json", message="""{"slug": "something"}""")
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
-        rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "something")
         # test with another (real) message
         RESULT.value = "UNDEFINED"

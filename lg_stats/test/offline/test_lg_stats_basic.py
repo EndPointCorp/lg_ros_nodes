@@ -154,7 +154,7 @@ class TestLGStatsProcessor(object):
 
         """
         # prepare message for testing, as if it was received (incoming message)
-        in_msg = GenericMessage(type="json", message=json.loads("{}"))
+        in_msg = GenericMessage(type="json", message="{}")
         p = Processor(watched_topic="/director/scene",
                       msg_slot="message.slug")
         p.process(in_msg)
@@ -164,7 +164,7 @@ class TestLGStatsProcessor(object):
 
     def test_get_slot_value(self):
         # prepare message for testing, as if it was received (incoming message)
-        in_msg = GenericMessage(type="json", message=json.loads("{}"))
+        in_msg = GenericMessage(type="json", message="{}")
         p = Processor(watched_topic="/director/scene",
                       msg_slot="message.slug")
         # test the same on a lower level
@@ -179,7 +179,7 @@ class TestLGStatsProcessor(object):
         assert p._get_slot_value(in_msg) == "someapplication1"
 
     def test_background_submission_thread(self):
-        msg = GenericMessage(type="json", message=json.loads("""{"slug": "something1234"}"""))
+        msg = GenericMessage(type="json", message="""{"slug": "something1234"}""")
         pub = MockTopicPublisher()
         influx = InfluxMock()
         p = Processor(watched_topic="/director/scene",

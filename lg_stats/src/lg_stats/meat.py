@@ -101,7 +101,6 @@ class Processor(object):
         self._lock = threading.Lock()
         rospy.loginfo("Initializing Processor instance: %s" % self)
 
-
     def __str__(self):
         return "<Processor instance for topic %s, msg_slot %s, strategy: %s>" % (self.watched_topic, self.msg_slot, self.strategy)
 
@@ -142,7 +141,6 @@ class Processor(object):
             # another possibility is rate = rospy.Rate(1) ... rate.sleep() ... or rospy.sleep(2)
             time.sleep(2)
         rospy.loginfo("Resubmission thread finished for %s has finished" % self.watched_topic)
-
 
     def _resubmit_worker(self):
         """
