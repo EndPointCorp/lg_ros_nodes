@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.49 (2016-04-26)
+-------------------
 * Fixed tests:
   - renamed files to reflect new functionality (new strategies) - tests
   coverage is missing for non-default ones

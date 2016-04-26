@@ -2,8 +2,8 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.49 (2016-04-26)
+-------------------
 * lg_stats strategies and activity sources:
   - added support for nested slots value extraction
   - refactored lg_activity to use shared helper for the above

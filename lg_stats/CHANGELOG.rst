@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.49 (2016-04-26)
+-------------------
 * PEP8
 * Fixed a typo
 * Lowered verbosity of lg_stats
