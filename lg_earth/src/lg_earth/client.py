@@ -216,7 +216,7 @@ class Client:
         """
         Clearing up logs is pretty important for soft relaunches
         """
-        rospy.loginfo('removing cache for google earth')
+        rospy.logdebug('removing cache for google earth')
         try:
             earth_dir = '%s/.googleearth' % os.environ['OLDHOME']
             shutil.rmtree(earth_dir)

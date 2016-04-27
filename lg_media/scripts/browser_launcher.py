@@ -52,7 +52,7 @@ class BasicBrowserData:
                 minPlaybackRate=self.min_playbackrate,
                 maxPlaybackRate=self.max_playbackrate)
             url = url2pathname(url)
-            rospy.loginfo('url for media: %s' % url)
+            rospy.logdebug('url for media: %s' % url)
             new_browser = AdhocBrowser()
             new_browser.id = 'adhoc_media_browser_%s' % self.viewport_name
             new_browser.geometry = media.geometry

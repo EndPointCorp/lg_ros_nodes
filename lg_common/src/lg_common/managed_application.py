@@ -134,7 +134,7 @@ class ManagedApplication(object):
             self.proc.stop()
 
     def handle_soft_relaunch(self, *args, **kwargs):
-        rospy.loginfo('managed application relaunch...')
+        rospy.logdebug('managed application relaunch...')
         self.proc.handle_soft_relaunch()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
