@@ -2,6 +2,15 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* move new loginfo logging to logdebug
+* added log watcher
+* fix up logging
+  Move some logerrs to log{warn,info} depending on the information being
+  logged. Also s/rospy.logerror/rospy.logerr/
+* Contributors: Jacob Minshall
+
 1.1.49 (2016-04-26)
 -------------------
 * Fixed tests:

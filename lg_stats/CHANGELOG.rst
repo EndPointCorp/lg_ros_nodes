@@ -2,6 +2,13 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix up logging
+  Move some logerrs to log{warn,info} depending on the information being
+  logged. Also s/rospy.logerror/rospy.logerr/
+* Contributors: Jacob Minshall
+
 1.1.49 (2016-04-26)
 -------------------
 * PEP8
