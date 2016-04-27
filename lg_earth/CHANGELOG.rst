@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.50 (2016-04-27)
+-------------------
 * move new loginfo logging to logdebug
 * fix up logging
   Move some logerrs to log{warn,info} depending on the information being

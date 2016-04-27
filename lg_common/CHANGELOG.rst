@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.50 (2016-04-27)
+-------------------
 * move new loginfo logging to logdebug
 * added log watcher
 * fix up logging

@@ -2,8 +2,8 @@
 Changelog for package lg_cms_director
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.50 (2016-04-27)
+-------------------
 * fix up logging
   Move some logerrs to log{warn,info} depending on the information being
   logged. Also s/rospy.logerror/rospy.logerr/
