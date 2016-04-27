@@ -323,6 +323,6 @@ class PanoViewerServer:
         """
         Reinitialize all variables
         """
-        rospy.logerr('handling soft relaunch for streetview')
+        rospy.loginfo('handling soft relaunch for streetview')
         self._initialize_variables()
         self.nearby_panos.handle_soft_relaunch()

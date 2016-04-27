@@ -94,7 +94,7 @@ class Resetter():
         try:
             duration = json.loads(message)['duration']
         except KeyError:
-            rospy.logerror("couldn't find a duration in this scene.")
+            rospy.logerr("couldn't find a duration in this scene.")
             return
 
         # Call the function we were created with.

@@ -19,9 +19,9 @@ class KmlSyncState:
             assert 'windows' in state
             self.state = state
         except AssertionError:
-            rospy.logerr('Invalid message - keeping previous state')
+            rospy.logwarn('Invalid message - keeping previous state')
         except ValueError:
-            rospy.logerr("Non json value published - keeping previous state")
+            rospy.logwarn("Non json value published - keeping previous state")
 
     def _process_service_request(self, req):
         if self.state is None:

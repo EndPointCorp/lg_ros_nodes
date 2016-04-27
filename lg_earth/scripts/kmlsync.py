@@ -33,7 +33,7 @@ def main():
 
     KmlUpdateHandler.timeout = float(rospy.get_param('~request_timeout', 0))
     if KmlUpdateHandler.timeout < 0:
-        rospy.logerror('Request timeout must be >= 0')
+        rospy.logerr('Request timeout must be >= 0')
         return
     elif KmlUpdateHandler.timeout > 0:
         rospy.logwarn('Request timeout (long polling) in kmlsync is experimental')
