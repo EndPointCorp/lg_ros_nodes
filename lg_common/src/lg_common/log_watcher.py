@@ -4,8 +4,10 @@ from thread import start_new_thread
 from time import sleep
 import rospy
 
+
 def MockCB(*args, **kwargs):
     pass
+
 
 class LogWatcher(object):
     def __init__(self, logfile, alert_strings, cb=MockCB):
