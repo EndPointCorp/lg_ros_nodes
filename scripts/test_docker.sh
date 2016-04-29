@@ -11,7 +11,8 @@ function initialize() {
   # change to the project root directory
   cd ${DIR}/..
   # generate a unique image/container id
-  UUID=`cat /dev/urandom | tr -dc "a-z0-9" | head -c "24"`
+  UUID=`mktemp -u XXXXXXXXXXXXXXXXXXXXXXXX`
+  UUID="${UUID,,}"
   DOCKER_NAME="$(basename $(pwd))-test-${UUID}"
   # find out if we are running in an interactive session
   if [ -z "$PS1" ]; then
