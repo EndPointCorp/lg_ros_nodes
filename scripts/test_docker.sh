@@ -1,37 +1,67 @@
 #!/bin/bash
-set -e
-
-cd $(dirname $0)
-DIR=`pwd -P`
-DOCKER_NAME=
 
 function setup_files() {
   # make a destination for the files
-	mkdir -p docker_nodes/
-	# copy all nodes (following links) into the proper directory
-	cp -faL catkin/src/* docker_nodes/ || true
+  mkdir -p docker_nodes/
+  # copy all nodes (following links) into the proper directory
+  cp -faL catkin/src/* docker_nodes/ || true
 }
 
 function initialize() {
   # change to the project root directory
-	cd ${DIR}/..
-	DOCKER_NAME="$(basename $(pwd))-test"
+  cd ${DIR}/..
+  UUID=`cat /dev/urandom | tr -dc "a-z0-9" | head -c "24"`
+  DOCKER_NAME="$(basename $(pwd))-test-${UUID}"
 }
 
 # builds the docker image, naming it <project-name>-test depending
 # on the dirname of the project, e.g. lg_ros_nodes-test
 function build_docker() {
   echo building ${DOCKER_NAME}
-	docker build -t ${DOCKER_NAME} .
+  docker build -t ${DOCKER_NAME} .
 }
 
 # runs tests and returns the return value
 function run_tests() {
   echo running ${DOCKER_NAME}
-	docker run -it -v $(pwd)/docker_nodes:/docker_nodes:ro ${DOCKER_NAME}
+  docker run --name ${DOCKER_NAME} --rm -it -v $(pwd)/docker_nodes:/docker_nodes:ro ${DOCKER_NAME}
+  RETCODE=$?
 }
+
+# cleans up all test artifacts
+function cleanup() {
+  echo cleaning up
+
+  if docker ps -a | grep ${DOCKER_NAME} >/dev/null; then
+    docker rm -f ${DOCKER_NAME}
+  fi
+
+  if docker images | grep ${DOCKER_NAME} >/dev/null; then
+    docker rmi ${DOCKER_NAME}
+  fi
+
+  sleep 0.5
+
+  dangling="$(docker images --filter "dangling=true" -q --no-trunc 2>/dev/null)"
+  if [ -n "$dangling" ]; then
+    docker rmi "$dangling"
+  fi
+
+  exit $RETCODE
+}
+
+set -e
+
+cd $(dirname $0)
+DIR=`pwd -P`
+DOCKER_NAME=
+RETCODE=1
 
 initialize
 setup_files
-build_docker
+
+set +e
+trap cleanup EXIT
+
+build_docker || exit 1
 run_tests
