@@ -14,12 +14,11 @@ function initialize() {
   UUID=`cat /dev/urandom | tr -dc "a-z0-9" | head -c "24"`
   DOCKER_NAME="$(basename $(pwd))-test-${UUID}"
   # find out if we are running in an interactive session
-  fd=0
-  if [[ -t "$fd" || -p /dev/stdin ]]; then
-    echo "interactive mode -- Ctrl+C to interrupt running tests"
+  if [ -z "$PS1" ]; then
+    echo "Interactive mode -- Ctrl+C to interrupt running tests"
     DOCKER_INTERACTIVE_ARGS="-it"
   else
-    echo "non-interactive mode -- unstoppable testing force"
+    echo "Non-interactive mode -- Unstoppable testing force"
     DOCKER_INTERACTIVE_ARGS=""
   fi
 }
