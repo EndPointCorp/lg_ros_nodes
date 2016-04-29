@@ -10,8 +10,18 @@ function setup_files() {
 function initialize() {
   # change to the project root directory
   cd ${DIR}/..
+  # generate a unique image/container id
   UUID=`cat /dev/urandom | tr -dc "a-z0-9" | head -c "24"`
   DOCKER_NAME="$(basename $(pwd))-test-${UUID}"
+  # find out if we are running in an interactive session
+  fd=0
+  if [[ -t "$fd" || -p /dev/stdin ]]; then
+    echo "interactive mode -- Ctrl+C to interrupt running tests"
+    DOCKER_INTERACTIVE_ARGS="-it"
+  else
+    echo "non-interactive mode -- unstoppable testing force"
+    DOCKER_INTERACTIVE_ARGS=""
+  fi
 }
 
 # builds the docker image, naming it <project-name>-test depending
@@ -24,7 +34,12 @@ function build_docker() {
 # runs tests and returns the return value
 function run_tests() {
   echo running ${DOCKER_NAME}
-  docker run --name ${DOCKER_NAME} --rm -it -v $(pwd)/docker_nodes:/docker_nodes:ro ${DOCKER_NAME}
+  docker run \
+    --name ${DOCKER_NAME} \
+    --rm \
+    ${DOCKER_INTERACTIVE_ARGS} \
+    --volume="$(pwd)/docker_nodes:/docker_nodes:ro" \
+    ${DOCKER_NAME}
   RETCODE=$?
 }
 
