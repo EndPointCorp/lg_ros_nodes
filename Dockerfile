@@ -10,24 +10,27 @@ RUN apt-get update && \
 
 # entrypoint
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
+RUN chmod 0755 /ros_entrypoint.sh
 
-# add galadmin user, being root isn't fun
-RUN useradd -ms /bin/bash galadmin
-RUN echo "galadmin   ALL=NOPASSWD: ALL" >> /etc/sudoers
+# add test user, being root isn't fun
+ENV TEST_USER test_docker
+ENV HOME /home/test_docker
+RUN useradd -ms /bin/bash -d ${HOME} ${TEST_USER} \
+ && echo "${TEST_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-USER galadmin
+USER $TEST_USER
 
-ENV PROJECT_ROOT /home/galadmin/catkin_ws
-RUN mkdir -p $PROJECT_ROOT/catkin/src
-RUN mkdir -p $PROJECT_ROOT/scripts
+ENV PROJECT_ROOT $HOME/catkin_ws
+RUN mkdir -p $PROJECT_ROOT/catkin/src \
+ && mkdir -p $PROJECT_ROOT/scripts
 
 # test runner script & friends
 COPY scripts/ $PROJECT_ROOT/scripts
 COPY setup.cfg $PROJECT_ROOT/
 
-CMD cd /home/galadmin/catkin_ws/catkin && \
+CMD cd ${HOME}/catkin_ws/catkin && \
     sudo cp -r /docker_nodes/* src/ && \
-    sudo chown -R galadmin:galadmin /home/galadmin/ && \
+    sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME} && \
     sudo apt-get update && \
     rosdep update && \
     sudo rosdep install --from-paths src --ignore-src --rosdistro indigo -y && \
