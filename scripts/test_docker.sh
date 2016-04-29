@@ -14,14 +14,6 @@ function initialize() {
   UUID=`mktemp -u XXXXXXXXXXXXXXXXXXXXXXXX`
   UUID="${UUID,,}"
   DOCKER_NAME="$(basename $(pwd))-test-${UUID}"
-  # find out if we are running in an interactive session
-  if [ -z "$PS1" ]; then
-    echo "Interactive mode -- Ctrl+C to interrupt running tests"
-    DOCKER_INTERACTIVE_ARGS="-it"
-  else
-    echo "Non-interactive mode -- Unstoppable testing force"
-    DOCKER_INTERACTIVE_ARGS=""
-  fi
 }
 
 # builds the docker image, naming it <project-name>-test depending
@@ -37,7 +29,6 @@ function run_tests() {
   docker run \
     --name ${DOCKER_NAME} \
     --rm \
-    ${DOCKER_INTERACTIVE_ARGS} \
     --volume="$(pwd)/docker_nodes:/docker_nodes:ro" \
     ${DOCKER_NAME}
   RETCODE=$?
