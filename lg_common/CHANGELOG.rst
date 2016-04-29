@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* pep8 fixes
+* Contributors: Jacob Minshall
+
 1.1.50 (2016-04-27)
 -------------------
 * move new loginfo logging to logdebug

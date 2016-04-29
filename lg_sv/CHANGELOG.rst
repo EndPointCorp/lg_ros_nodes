@@ -2,6 +2,12 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_sv: Camera timer
+  Passive SpaceNav message consumption.
+* Contributors: Matt Vollrath
+
 1.1.50 (2016-04-27)
 -------------------
 * move new loginfo logging to logdebug
