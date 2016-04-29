@@ -162,7 +162,6 @@ class PanoViewerServer:
         if e.last_real is None:
             return
 
-
         dt = (e.current_real - e.last_real).to_sec()
 
         npov = self.project_pov(self.last_twist_msg, dt)
