@@ -1,7 +1,9 @@
 <launch>
   <arg name="spnav_path" default="/dev/input/spacenavigator" />
   <arg name="broadcast_addr" />
+  <!--
   <node name="spacenav" pkg="spacenav_node" type="spacenav_node" clear_params="true" />
+  -->
 
   <test test-name="lg_activity" pkg="lg_activity" type="test_lg_activity.py"/>
 </launch>

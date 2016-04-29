@@ -11,13 +11,5 @@
         <param name="viewport" value="left_one" />
     </node>
 
-    <!-- Development static file server. -->
-    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
-
-    <!-- Local rosbridge and rosapi. -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
-        <arg name="port" value="9875" />
-    </include>
-
     <test test-name="test_mplayer_scenarios_real" pkg="lg_media" type="test_mplayer_scenarios_real.py"/>
 </launch>
