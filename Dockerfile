@@ -8,19 +8,19 @@ RUN apt-get update && \
       apt-get install -y g++ pep8 && \
       rm -rf /var/lib/apt/lists/*
 
+# entrypoint
+COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
+
 # add galadmin user, being root isn't fun
 RUN useradd -ms /bin/bash galadmin
 RUN echo "galadmin   ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+USER galadmin
 
 ENV PROJECT_ROOT /home/galadmin/catkin_ws
 RUN mkdir -p $PROJECT_ROOT/catkin/src
 RUN mkdir -p $PROJECT_ROOT/scripts
 
-# build the project
-USER galadmin
-
-# entrypoint
-COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
 # test runner script & friends
 COPY scripts/ $PROJECT_ROOT/scripts
 COPY setup.cfg $PROJECT_ROOT/
