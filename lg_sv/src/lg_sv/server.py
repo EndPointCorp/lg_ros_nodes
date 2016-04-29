@@ -111,7 +111,7 @@ class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                  nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
                  nearby_panos=NearbyPanos(), metadata_pub=None,
-                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN):
+                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=240):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
@@ -127,10 +127,9 @@ class PanoViewerServer:
         self.metadata_pub = metadata_pub
         self.zoom_max = zoom_max
         self.zoom_min = zoom_min
+        self.tick_rate = tick_rate
 
-        self._initialize_variables()
-
-    def _initialize_variables(self):
+        self.gutter_val = 0.004
         self.button_down = False
         self.last_nav_msg_t = 0
         self.time_since_last_nav_msg = 0
@@ -141,6 +140,42 @@ class PanoViewerServer:
         self.pov = Quaternion()
         self.pov.w = INITIAL_ZOOM  # TODO is this alright?
         self.panoid = str()
+        self.tick_period = 1.0 / float(self.tick_rate)
+        self.last_twist_msg = Twist()
+
+        self.start_timer()
+
+    def _twist_is_in_gutter(self, twist_msg):
+        return (
+            abs(twist_msg.linear.x) < self.gutter_val and
+            abs(twist_msg.linear.y) < self.gutter_val and
+            abs(twist_msg.linear.z) < self.gutter_val and
+            abs(twist_msg.angular.x) < self.gutter_val and
+            abs(twist_msg.angular.y) < self.gutter_val and
+            abs(twist_msg.angular.z) < self.gutter_val
+        )
+
+    def _tick(self, e):
+        if self._twist_is_in_gutter(self.last_twist_msg):
+            return
+
+        if e.last_real is None:
+            return
+
+
+        dt = (e.current_real - e.last_real).to_sec()
+
+        npov = self.project_pov(self.last_twist_msg, dt)
+        self.pub_pov(npov)
+
+    def start_timer(self):
+        if not hasattr(self, 'tick_timer') or self.tick_timer is None:
+            self.tick_timer = rospy.Timer(
+                rospy.Duration.from_sec(self.tick_period),
+                self._tick
+            )
+        else:
+            rospy.logwarn('Tried to start_timer() a running PanoViewerServer')
 
     def pub_location(self, pose2d):
         """
@@ -198,6 +233,20 @@ class PanoViewerServer:
         self.nearby_panos.set_panoid(self.panoid)
         self.panoid_pub.publish(panoid)
 
+    def project_pov(self, twist_msg, dt):
+        coefficient = dt / self.tick_period / (1.0 / 60.0 / self.tick_period)
+        # attempt deep copy
+        tilt = self.pov.x - coefficient * twist_msg.angular.y * self.nav_sensitivity
+        heading = self.pov.z - coefficient * twist_msg.angular.z * self.nav_sensitivity
+        zoom = self.pov.w + coefficient * twist_msg.linear.z * self.nav_sensitivity
+        pov_msg = Quaternion(
+            x=clamp(tilt, self.tilt_min, self.tilt_max),
+            y=0,
+            z=wrap(heading, 0, 360),
+            w=clamp(zoom, self.zoom_min, self.zoom_max),
+        )
+        return pov_msg
+
     def handle_panoid_msg(self, panoid):
         """
         Grabs the new panoid from a publisher
@@ -216,27 +265,15 @@ class PanoViewerServer:
         Adjust pov based on the twist message received, also handle
         a possible change of pano
         """
-        if not self.state:
-            return
-
-        # On the first ever nav msg, just set last nav time
-        if self.last_nav_msg_t == 0:
-            self.last_nav_msg_t = rospy.get_time()
-            return
-
         now = rospy.get_time()
         self.time_since_last_nav_msg = now - self.last_nav_msg_t
         self.last_nav_msg_t = now
-        coefficient = self.getCoefficient()
-        # attempt deep copy
-        pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
-        tilt = pov_msg.x - coefficient * twist.angular.y * self.nav_sensitivity
-        heading = pov_msg.z - coefficient * twist.angular.z * self.nav_sensitivity
-        zoom = pov_msg.w + coefficient * twist.linear.z * self.nav_sensitivity
-        pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
-        pov_msg.z = wrap(heading, 0, 360)
-        pov_msg.w = clamp(zoom, self.zoom_min, self.zoom_max)
-        self.pub_pov(pov_msg)
+
+        if self._twist_is_in_gutter(twist):
+            self.last_twist_msg = Twist()
+        else:
+            self.last_twist_msg = twist
+
         # check to see if the pano should be moved
         self.handle_possible_pano_change(twist)
 
