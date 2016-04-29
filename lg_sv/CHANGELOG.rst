@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.0 (2016-04-29)
+------------------
 * lg_sv: Camera timer
   Passive SpaceNav message consumption.
 * Contributors: Matt Vollrath

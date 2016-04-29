@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.0 (2016-04-29)
+------------------
 * pep8 fixes
 * Contributors: Jacob Minshall
 
