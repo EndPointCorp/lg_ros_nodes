@@ -7,6 +7,7 @@ function setup_files() {
   mkdir -p docker_nodes/
   # copy all nodes (following links) into the proper directory
   cp -faL catkin/src/* docker_nodes/ || true
+  chgrp -R docker docker_nodes || true
   umask "${ORIG_UMASK}"
 }
 
