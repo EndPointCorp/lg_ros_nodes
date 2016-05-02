@@ -1,10 +1,13 @@
 #!/bin/bash
 
 function setup_files() {
+  ORIG_UMASK=`umask`
+  umask 0022
   # make a destination for the files
   mkdir -p docker_nodes/
   # copy all nodes (following links) into the proper directory
   cp -faL catkin/src/* docker_nodes/ || true
+  umask "${ORIG_UMASK}"
 }
 
 function initialize() {
