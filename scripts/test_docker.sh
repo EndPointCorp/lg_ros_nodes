@@ -8,8 +8,6 @@ function setup_files() {
 }
 
 function initialize() {
-  # change to the project root directory
-  cd ${DIR}/..
   # generate a unique image/container id
   UUID=`mktemp -u XXXXXXXXXXXXXXXXXXXXXXXX`
   UUID="${UUID,,}"
@@ -58,8 +56,8 @@ function cleanup() {
 
 set -e
 
-cd $(dirname $0)
-DIR=`pwd -P`
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd ${DIR}/..
 DOCKER_NAME=
 RETCODE=1
 
