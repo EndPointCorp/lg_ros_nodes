@@ -5,10 +5,9 @@ function setup_files() {
   umask 0022
   # make a destination for the files
   mkdir -p docker_nodes/
+  chmod 0755 docker_nodes
   # copy all nodes (following links) into the proper directory
   cp -faL catkin/src/* docker_nodes/ || true
-  find docker_nodes -type d -exec chmod 0755 {} \;
-  find docker_nodes -type f -exec chmod 0644 {} \;
   umask "${ORIG_UMASK}"
 }
 
