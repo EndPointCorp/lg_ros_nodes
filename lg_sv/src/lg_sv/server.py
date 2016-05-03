@@ -156,9 +156,6 @@ class PanoViewerServer:
         )
 
     def _tick(self, e):
-        if self._twist_is_in_gutter(self.last_twist_msg):
-            return
-
         if e.last_real is None:
             return
 
