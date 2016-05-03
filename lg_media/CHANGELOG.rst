@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.1 (2016-05-03)
+------------------
 * Cleanup some unneeded testing nodes
 * Contributors: Matt Vollrath
 
