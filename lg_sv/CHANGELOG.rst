@@ -2,6 +2,12 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Always send most recent Street View pov
+  Prevent missing pov at webapp launch.
+* Contributors: Matt Vollrath
+
 1.2.0 (2016-04-29)
 ------------------
 * lg_sv: Camera timer
