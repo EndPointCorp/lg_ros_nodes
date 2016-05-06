@@ -4,6 +4,9 @@ Changelog for package lg_nav_to_device
 
 Forthcoming
 -----------
+* Generated changelogs
+* 1.2.2
+* Contributors: Wojciech Ziniewicz
 
 1.2.1 (2016-05-03)
 ------------------

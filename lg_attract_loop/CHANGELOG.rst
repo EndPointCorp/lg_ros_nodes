@@ -4,6 +4,9 @@ Changelog for package lg_attract_loop
 
 Forthcoming
 -----------
+* Generated changelogs
+* 1.2.2
+* Contributors: Wojciech Ziniewicz
 
 1.2.1 (2016-05-03)
 ------------------
