@@ -2,6 +2,9 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.2.1 (2016-05-03)
 ------------------
 * Disable tests for lg_stats

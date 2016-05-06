@@ -2,6 +2,9 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.2.1 (2016-05-03)
 ------------------
 * Always send most recent Street View pov

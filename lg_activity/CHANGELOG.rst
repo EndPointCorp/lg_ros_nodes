@@ -2,6 +2,9 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.2.1 (2016-05-03)
 ------------------
 * Cleanup some unneeded testing nodes
