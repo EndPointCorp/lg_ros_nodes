@@ -160,7 +160,7 @@ class AttractLoop:
             scene = scene_presentation['scene']  # bare object with resource_uri
             scene_url = "%s%s" % (scene['resource_uri'], opts)
             presentation = scene_presentation['presentation']  # bare object with resource_uri
-            presentation_url = "%s%s" % (presentation['resource_uri'], opts)
+            presentation_url = "/director_api/presentation/%s/%s" % (presentation['slug'], opts)
 
             full_scene = json.loads(self.api_proxy.get(scene_url))  # ROS nodes understandable full scene
             scene_duration = full_scene['duration']
@@ -187,7 +187,7 @@ class AttractLoop:
             content = {'presentationgroups': presentationgroups,
                        'presentations': presentations,
                        'scenes': scenes}
-            #rospy.loginfo("Returning content for attract loop: %s" % content)
+            # rospy.loginfo("Returning content for attract loop: %s" % content)
             return content
         else:
             rospy.loginfo("No presentation groups found in attract loop")
@@ -203,8 +203,9 @@ class AttractLoop:
         fetched_scenes = []
         for presentation in presentations:
             try:
-                presentation_resource_uri = presentation['resource_uri']
-                presentation_request = self.api_proxy.get("%s" % (presentation_resource_uri))
+                presentation_slug = presentation['slug']
+                presentation_request = self.api_proxy.get("/director_api/presentation/%s/" % presentation_slug)
+                rospy.loginfo("Get %s" % presentation_request)
                 presentation_scenes = json.loads(presentation_request)['scenes']
             except Exception, e:
                 rospy.logerr("Could not fetch presentation scenes from presentations (%s) because %s" % (presentations, e))
@@ -218,7 +219,7 @@ class AttractLoop:
                     return []
                 fetched_scenes.extend([{'presentation': presentation, 'scene': scene}])
 
-        #rospy.loginfo("Fetched scenes: %s" % fetched_scenes)
+        # rospy.loginfo("Fetched scenes: %s" % fetched_scenes)
         return fetched_scenes
 
     def _fetch_presentationgroup_presentations(self, presentationgroups):

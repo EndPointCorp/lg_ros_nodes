@@ -1,7 +1,9 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
+from std_msgs.msg import String
 from lg_common.msg import ApplicationState
 from math import atan2, cos, sin, pi
+from lg_sv import NearbyPanos
 import requests
 import json
 
@@ -22,6 +24,9 @@ BACKWARDS_THRESHOLD = .3
 # TODO figure out some good values here
 COEFFICIENT_LOW = 0.1
 COEFFICIENT_HIGH = 3
+ZOOM_MIN = 20
+ZOOM_MAX = 120
+INITIAL_ZOOM = 50
 
 
 def clamp(val, low, high):
@@ -81,18 +86,20 @@ class StreetviewUtils:
             for link in metadata['Links']:
                 links.append(
                     {
-                        'heading': link['yawDeg'],
-                        'pano': link['panoId']
+                        'heading': float(link.get('yawDeg', 0)),
+                        'pano': link.get('panoId', '')
                     }
                 )
             ret = {
                 'links': links,
                 'location': {
                     'latLng': {
-                        'lat': metadata['Location']['lat'],
-                        'lng': metadata['Location']['lng']
+                        'lat': float(metadata.get('Location', {}).get('lat', 0)),
+                        'lng': float(metadata.get('Location', {}).get('lng', 0))
                     },
-                    'pano': metadata['Location']['panoId']
+                    'description': metadata.get('Location', {}).get('description', ''),
+                    'attribution_name': metadata.get('Data', {}).get('attribution_name', ''),
+                    'pano': metadata.get('Location', {}).get('panoId', '')
                 }
             }
         except KeyError:
@@ -102,26 +109,72 @@ class StreetviewUtils:
 
 class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                 nav_sensitivity, space_nav_interval):
+                 nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
+                 nearby_panos=NearbyPanos(), metadata_pub=None,
+                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=240):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
 
-        self.last_metadata = dict()
-        self.location = Pose2D()
-        self.pov = Quaternion()
-        self.panoid = str()
         self.state = True
-        ### parameterize
+        # TODO (WZ) parametrize this
         self.nav_sensitivity = nav_sensitivity
         self.tilt_max = tilt_max
         self.tilt_min = tilt_min
         self.space_nav_interval = space_nav_interval
-        self.move_forward = 0
-        self.move_backward = 0
-        self.nearby_panos = NearbyPanos()
+        self.nearby_panos = nearby_panos
+        self.x_threshold = x_threshold
+        self.metadata_pub = metadata_pub
+        self.zoom_max = zoom_max
+        self.zoom_min = zoom_min
+        self.tick_rate = tick_rate
+
+        self.gutter_val = 0.004
+        self.button_down = False
         self.last_nav_msg_t = 0
         self.time_since_last_nav_msg = 0
+        self.move_forward = 0
+        self.move_backward = 0
+        self.last_metadata = dict()
+        self.location = Pose2D()
+        self.pov = Quaternion()
+        self.pov.w = INITIAL_ZOOM  # TODO is this alright?
+        self.panoid = str()
+        self.tick_period = 1.0 / float(self.tick_rate)
+        self.last_twist_msg = Twist()
+
+        self.start_timer()
+
+    def _twist_is_in_gutter(self, twist_msg):
+        return (
+            abs(twist_msg.linear.x) < self.gutter_val and
+            abs(twist_msg.linear.y) < self.gutter_val and
+            abs(twist_msg.linear.z) < self.gutter_val and
+            abs(twist_msg.angular.x) < self.gutter_val and
+            abs(twist_msg.angular.y) < self.gutter_val and
+            abs(twist_msg.angular.z) < self.gutter_val
+        )
+
+    def _tick(self, e):
+        if self._twist_is_in_gutter(self.last_twist_msg):
+            return
+
+        if e.last_real is None:
+            return
+
+        dt = (e.current_real - e.last_real).to_sec()
+
+        npov = self.project_pov(self.last_twist_msg, dt)
+        self.pub_pov(npov)
+
+    def start_timer(self):
+        if not hasattr(self, 'tick_timer') or self.tick_timer is None:
+            self.tick_timer = rospy.Timer(
+                rospy.Duration.from_sec(self.tick_period),
+                self._tick
+            )
+        else:
+            rospy.logwarn('Tried to start_timer() a running PanoViewerServer')
 
     def pub_location(self, pose2d):
         """
@@ -145,6 +198,12 @@ class PanoViewerServer:
         Grabs the new metadata from a publisher
         """
         self.nearby_panos.handle_metadata_msg(metadata)
+
+    def handle_raw_metadata_msg(self, msg):
+        metadata = json.loads(msg.data)
+        metadata = StreetviewUtils.translate_server_metadata_to_client_form(metadata)
+        if self.metadata_pub:
+            self.metadata_pub.publish(String(json.dumps(metadata)))
 
     def get_metadata(self):
         """
@@ -173,6 +232,20 @@ class PanoViewerServer:
         self.nearby_panos.set_panoid(self.panoid)
         self.panoid_pub.publish(panoid)
 
+    def project_pov(self, twist_msg, dt):
+        coefficient = dt / self.tick_period / (1.0 / 60.0 / self.tick_period)
+        # attempt deep copy
+        tilt = self.pov.x - coefficient * twist_msg.angular.y * self.nav_sensitivity
+        heading = self.pov.z - coefficient * twist_msg.angular.z * self.nav_sensitivity
+        zoom = self.pov.w + coefficient * twist_msg.linear.z * self.nav_sensitivity
+        pov_msg = Quaternion(
+            x=clamp(tilt, self.tilt_min, self.tilt_max),
+            y=0,
+            z=wrap(heading, 0, 360),
+            w=clamp(zoom, self.zoom_min, self.zoom_max),
+        )
+        return pov_msg
+
     def handle_panoid_msg(self, panoid):
         """
         Grabs the new panoid from a publisher
@@ -191,25 +264,15 @@ class PanoViewerServer:
         Adjust pov based on the twist message received, also handle
         a possible change of pano
         """
-        if not self.state:
-            return
-
-        # On the first ever nav msg, just set last nav time
-        if self.last_nav_msg_t == 0:
-            self.last_nav_msg_t = rospy.get_time()
-            return
-
         now = rospy.get_time()
         self.time_since_last_nav_msg = now - self.last_nav_msg_t
         self.last_nav_msg_t = now
-        coefficient = self.getCoefficient()
-        # attempt deep copy
-        pov_msg = Quaternion(self.pov.x, self.pov.y, self.pov.z, self.pov.w)
-        tilt = pov_msg.x - coefficient * twist.angular.y * self.nav_sensitivity
-        heading = pov_msg.z - coefficient * twist.angular.z * self.nav_sensitivity
-        pov_msg.x = clamp(tilt, self.tilt_min, self.tilt_max)
-        pov_msg.z = wrap(heading, 0, 360)
-        self.pub_pov(pov_msg)
+
+        if self._twist_is_in_gutter(twist):
+            self.last_twist_msg = Twist()
+        else:
+            self.last_twist_msg = twist
+
         # check to see if the pano should be moved
         self.handle_possible_pano_change(twist)
 
@@ -218,14 +281,14 @@ class PanoViewerServer:
         Only moves if the linear x is > or < the x_threshold and that it has
         been that way for atleast {backward,forward}_threshold publications
         """
-        if twist.linear.x > X_THRESHOLD:
+        if twist.linear.x > self.x_threshold:
             if (self.move_forward == 0 or
                     self.time_since_last_nav_msg +
                     self.move_forward < FORWARD_THRESHOLD):
                 self.move_forward += self.time_since_last_nav_msg
             if self.time_since_last_nav_msg + self.move_forward > FORWARD_THRESHOLD:
                 self._move_forward()
-        elif twist.linear.x < -X_THRESHOLD:
+        elif twist.linear.x < -self.x_threshold:
             if (self.move_backward == 0 or
                     self.time_since_last_nav_msg +
                     self.move_backward < BACKWARDS_THRESHOLD):
@@ -236,6 +299,25 @@ class PanoViewerServer:
             # reset counters
             self.move_forward = 0
             self.move_backward = 0
+
+    def handle_joy(self, joy):
+        """
+        Move forward if the button is down, and wasn't previously down
+        """
+        if not self.state:
+            return
+        if 1 not in joy.buttons:
+            self.button_down = False
+            return
+
+        if self.button_down:
+            # button is still down
+            return
+        self.button_down = True
+        if joy.buttons[-1] == 1:
+            self._move_forward()
+        else:
+            self._move_backward()
 
     def _move_forward(self):
         """
@@ -273,69 +355,10 @@ class PanoViewerServer:
         coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
         return coefficient
 
-
-class NearbyPanos:
-    def __init__(self):
-        self.panoid = None
-        self.metadata = None
-
-    def handle_metadata_msg(self, metadata):
-        tmp = None
-        try:
-            tmp = json.loads(metadata.data)
-            if tmp['location']['pano'] == self.panoid or self.panoid is None:
-                self.metadata = tmp
-        except ValueError:
-            pass
-        except KeyError:
-            pass
-
-    def set_panoid(self, panoid):
-        if self.panoid != panoid:
-            self.metadata = None
-        self.panoid = panoid
-
-    def find_closest(self, panoid, pov_z):
+    def _handle_soft_relaunch(self, *args, **kwargs):
         """
-        Returns the pano that is closest to the direction pressed on the
-        spacenav (either forwards or backwards) based on the nearby panos
-        bearing to the current pano
+        Reinitialize all variables
         """
-        if not self.get_metadata():
-            return None
-        if 'links' not in self.metadata or not isinstance(self.metadata['links'], list):
-            return None
-        self.panoid = panoid
-        my_lat = self.metadata['location']['latLng']['lat']
-        my_lng = self.metadata['location']['latLng']['lng']
-        # set closest to the farthest possible result
-        closest = 90
-        closest_pano = None
-        for data in self.metadata['links']:
-            tmp = self.headingDifference(pov_z, float(data['heading']))
-            if tmp <= closest:
-                closest = tmp
-                closest_pano = data['pano']
-        return closest_pano
-
-    def headingDifference(self, source, target):
-        """
-        Finds the difference between two headings, takes into account that
-        the value 359 degrees is closer to 0 degrees than 10 degrees is
-        """
-        diff = abs(target - source) % 360
-        return diff if diff < 180 else diff - (diff - 180)
-
-    def get_metadata(self):
-        """
-        Only return the metadata if it matches the current panoid
-        """
-        if not self.panoid:
-            return None
-        if not self.metadata:
-            return None
-        if 'location' not in self.metadata or 'pano' not in self.metadata['location']:
-            return None
-        if self.metadata['location']['pano'] != self.panoid:
-            return None
-        return self.metadata
+        rospy.logdebug('handling soft relaunch for streetview')
+        self._initialize_variables()
+        self.nearby_panos.handle_soft_relaunch()

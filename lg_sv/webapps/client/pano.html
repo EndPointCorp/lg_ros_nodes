@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>three.js webgl - equirectangular panorama demo</title>
+        <title>panoviewer</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <style>
@@ -26,14 +26,31 @@
                 color: #ffffff;
             }
         </style>
+        <script src="../lib/common.js"></script>
         <script src="../lib/three.min.js"></script>
         <script src="../lib/threex.videotexture.js"></script>
         <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
         <script src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
         <script src="../lib/pv_client.js"></script>
         <script src="js/pano.js"> </script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     </head>
     <body>
+        <div id="titlecard" style="display:none;
+               font-family: Roboto, Arial, sans-serif;
+               position: absolute;
+               font-size: 14px;
+               font-weight: bold;
+               top: 14px;
+               left: 20px;
+               z-index: 10;
+               background-color: rgba(34,34,34,.8);
+               height: 50;
+               width: 240;
+               color: white;
+               line-height: 24px;
+               padding: 20px;">
+        </div>
 
         <div id="container"></div>
         <div id="info"></div>

@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import rospy
@@ -8,6 +9,14 @@ from interactivespaces_msgs.msg import GenericMessage
 
 
 class WrongActivityDefinition(Exception):
+    pass
+
+
+class DependencyException(Exception):
+    pass
+
+
+class SlotUnpackingException(Exception):
     pass
 
 
@@ -40,7 +49,7 @@ def add_url_params(url, **params):
     query_dict = dict(urlparse.parse_qsl(url_parts[4]))
     query_dict.update(params)
 
-    #4th index is the query params position
+    # 4th index is the query params position
     url_parts[4] = urllib.urlencode(query_dict)
 
     return urlparse.urlunparse(url_parts)
@@ -99,7 +108,7 @@ def load_director_message(message):
     try:
         ret = json.loads(message.message)
     except (ValueError, SyntaxError) as e:
-        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge for viewport %s" % viewport)
+        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge")
         rospy.logdebug("Message: %s" % message)
         raise e
 
@@ -228,6 +237,8 @@ def rewrite_message_to_dict(message):
     """
     deserialized_message = {}
     slots = message.__slots__
+    if slots.__class__ == str:
+        slots = [slots]
     for slot in slots:
         deserialized_message[slot] = getattr(message, slot)
     return deserialized_message
@@ -239,18 +250,26 @@ def unpack_activity_sources(sources_string):
 
     Sources string format:
 
-    <topic_name>/<message_type>[(<slot.sub_slot.sub_sub_slot>)]/<strategy>[(<value_min><value_max>)]
+    <topic_name>:<message_type>-<slot[.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>]
 
     - topic_name: topic which ActivitySource will listen for incoming messages
     - message_type: type of message on the given topic
     - slot - for complex messages you may define one attribute of the message that
     will be considered during checks. For nested attributes, delimit slots by dots.
-    - strategy - delta, value or activity. For "value" strategy you may define min/max values.
+    - strategy - delta, value, activity, average and count. For "value" strategy you may define min/max values.
     It will make sense only when slot was defined.
+
+    Strategies info:
+     - delta means that activity is generated only if messages are different. Makes
+      sense with spacenav twist which emits 0,0,0 when no one's touching it
+     - value is used for value tresholding - generate activity only when value of slot met min/max constraints
+     - activity - triggers activity on **every** message
+     - average - not used to activity tracking - passes information about what should be done with values
+     - count - same as above
 
     Examples:
 
-    source string: '/touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
+    - source string: '/touchscreen/touch:interactivespaces_msgs/GenericMessage:activity'
 
     result: source = { "topic": "/touchscreen/touch",
                "message_type": "interactivespaces_msgs/GenericMessage",
@@ -260,7 +279,7 @@ def unpack_activity_sources(sources_string):
                "value_max": None
              }
 
-    source string:'/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5':
+    - source string:'/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5':
 
     result: source = { "topic": "/touchscreen/touch",
                "message_type": "interactivespaces_msgs/GenericMessage",
@@ -272,6 +291,16 @@ def unpack_activity_sources(sources_string):
 
     NOTE: min/max values is the range within which active == True
 
+    - source string:'/proximity_sensor/distance:sensor_msgs/Range-range:average':
+
+    result: source = { "topic": "/proximity_sensor/distance",
+               "message_type": "sensor_msgs/Range",
+               "strategy": "average",
+               "slot": range,
+               "value_min": None,
+               "value_max": None
+             }
+
     To define multiple sources use semicolon e.g.:
 
     '/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5
@@ -279,40 +308,45 @@ def unpack_activity_sources(sources_string):
 
     """
 
-    try:
-        sources = []
-        bare_sources = sources_string.split(';')
-        for source_string in bare_sources:
-            single_source = {}
-            source_fields = source_string.split(':')
+    sources = []
+    bare_sources = sources_string.split(';')
+    for source_string in bare_sources:
+        single_source = {}
+        source_fields = source_string.split(':')
 
-            topic = source_fields[0]
+        topic = source_fields[0]
+        try:
             message_type = source_fields[1].split('-')[0]
-            try:
-                slot = source_fields[1].split('-')[1]
-            except IndexError, e:
-                slot = None
+        except IndexError, e:
+            message_type = source_fields[1]
 
+        try:
+            slot = source_fields[1].split('-')[1]
+        except IndexError, e:
+            slot = None
+
+        try:
             strategy = source_fields[2].split('-')[0]
-            try:
-                values = source_fields[2].split('-')[1]
-                value_min = values.split(',')[0]
-                value_max = values.split(',')[1]
-            except IndexError, e:
-                value_min = None
-                value_max = None
-            single_source['topic'] = topic
-            single_source['message_type'] = message_type
-            single_source['strategy'] = strategy
-            single_source['slot'] = slot
-            single_source['value_min'] = value_min
-            single_source['value_max'] = value_max
-            sources.append(single_source)
-        return sources
-    except Exception, e:
-        exception_msg = "Could not unpack activity sources string because: %s" % e
-        rospy.logerr(exception_msg)
-        raise WrongActivityDefinition(exception_msg)
+        except IndexError, e:
+            strategy = source_fields[2]
+
+        try:
+            values = source_fields[2].split('-')[1].split(',')
+            value_min = values[0]
+            value_max = values[1]
+            rospy.loginfo("Detected values min: %s, max:%s for source_string: %s" % (value_min, value_max, source_string))
+        except Exception, e:
+            rospy.loginfo("Could not get value_min/value_max from sources for source_string: %s" % source_string)
+            value_min = None
+            value_max = None
+        single_source['topic'] = topic
+        single_source['message_type'] = message_type
+        single_source['strategy'] = strategy
+        single_source['slot'] = slot
+        single_source['value_min'] = value_min
+        single_source['value_max'] = value_max
+        sources.append(single_source)
+    return sources
 
 
 def build_source_string(topic, message_type, strategy, slot=None, value_min=None, value_max=None):
@@ -393,3 +427,200 @@ def get_message_type_from_string(string):
     globals()[module] = module_obj
     message_type_final = getattr(getattr(sys.modules[module], 'msg'), message)
     return message_type_final
+
+
+def x_available(timeout=None):
+    if not timeout:
+        return
+    import commands
+
+    while timeout >= 0:
+        x_check = commands.getstatusoutput("DISPLAY=:0 xset q")
+        if x_check[0] == 0:
+            return True
+        else:
+            rospy.loginfo("X not available - sleeping for %s more seconds" % timeout)
+            timeout -= 1
+            rospy.sleep(1)
+
+
+def dependency_available(server, port, name, timeout=None):
+    """
+    Wait for network service to appear. Provide addres, port and name.
+    If timeout is set to none then wait forever.
+    """
+    import socket
+    import errno
+    from socket import error as socket_error
+
+    s = socket.socket()
+    if timeout:
+        from time import time as now
+        end = now() + timeout
+
+    while True:
+        try:
+            if timeout:
+                next_timeout = end - now()
+                if next_timeout < 0:
+                    return False
+                else:
+                    s.settimeout(next_timeout)
+
+            s.connect((server, port))
+
+        except socket_error as serr:
+            # this exception occurs only if timeout is set
+            if serr.errno == errno.ECONNREFUSED:
+                rospy.logwarn("%s not yet available - waiting %s seconds more" % (name, next_timeout))
+                rospy.sleep(1)
+            else:
+                rospy.logwarn("%s not available because: %s" % (name, serr))
+                rospy.sleep(1)
+
+        except socket.error, err:
+            # catch timeout exception from underlying network library
+            # this one is different from socket.timeout
+            rospy.loginfo("%s not yet available - waiting %s secs more" % (name, next_timeout))
+            rospy.sleep(1)
+            if type(err.args) != tuple or err[0] != errno.ETIMEDOUT:
+                raise
+        else:
+            s.close()
+            rospy.loginfo("%s is available" % name)
+            return True
+
+
+def discover_host_from_url(url):
+    from urlparse import urlparse
+    data = urlparse(url)
+    return data.hostname
+
+
+def discover_port_from_url(url):
+    from urlparse import urlparse
+    data = urlparse(url)
+    return data.port
+
+
+def find_device(name):
+    import os
+    for device in os.listdir('/dev/input/'):
+        device = '/dev/input/' + device
+        if 'event' not in device:
+            continue
+        if check_device(device, name):
+            return device
+    # did not find an event device with the name provided
+    return None
+
+
+def check_device(device, name):
+    import os
+    from stat import ST_MODE
+    from evdev import InputDevice
+    if os.access(device, os.W_OK | os.R_OK):
+        return (InputDevice(device).name == name)
+
+    original_mode = os.stat(device)
+    os.system('sudo chmod 0666 %s' % device)
+    flag = (InputDevice(device).name == name)
+    if not flag:
+        os.chmod(device, original_mode)
+    return flag
+
+
+def is_valid_state(state):
+    from lg_common.msg import ApplicationState
+    return state == ApplicationState.HIDDEN or \
+        state == ApplicationState.STOPPED or \
+        state == ApplicationState.SUSPENDED or \
+        state == ApplicationState.VISIBLE
+
+
+def make_soft_relaunch_callback(func, *args, **kwargs):
+    """
+    Creates a callback on the /soft_relaunch topic. The normal
+    argument passed is an array of strings called 'groups.' Ros
+    nodes can be put into groups like "sreetview" and "earth". The
+    "all" group happens to all ros nodes.
+
+    """
+    from std_msgs.msg import String
+    rospy.logdebug('creating callback %s' % kwargs.get('groups', 'no group'))
+
+    def cb(msg):
+        rospy.logerr('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
+        if msg.data == 'all':
+            rospy.logdebug('firing function for all...')
+            func(msg)
+            return
+        if 'groups' in kwargs and msg.data in kwargs['groups']:
+            rospy.logdebug('firing function for custom msg...')
+            func(msg)
+            return
+    return rospy.Subscriber('/soft_relaunch', String, cb)
+
+
+def get_nested_slot_value(slot, message):
+    """
+    Accepts a list a string with dots that represents slot and subslots
+    needed to be traversed in order to get value of message's nested attribute
+    Slot string gets converted to list of strings used to get a slot value from msg.
+    Every subslot should be an element in the list. Example:
+
+    For sensor_msg/Range:
+
+    ---
+    header:
+      seq: 1414798
+      stamp:
+        secs: 1461247209
+        nsecs: 611480951
+      frame_id: ''
+    radiation_type: 0
+    field_of_view: 0.0
+    min_range: 0.0
+    max_range: 0.0
+    range: 0.685800015926
+
+    list of slots to get nsecs will look like:
+        ['header', 'stamp', 'nsecs']
+
+    Returns a dictionary with slots name and value e.g.:
+        {'header.stamp.nsecs': 611480951}
+
+    """
+    slot_tree = slot.split('.')
+
+    if len(slot_tree) == 1:
+        return {slot: getattr(message, slot)}
+
+    elif len(slot_tree) > 1:
+        deserialized_msg = message
+        for subslot in slot_tree:
+            try:
+                deserialized_msg = getattr(deserialized_msg, subslot)
+            except AttributeError:
+                if type(deserialized_msg) == str:
+                    try:
+                        # try to convert string to dict (works only for genericmessage)
+                        deserialized_msg = json.loads(deserialized_msg)
+                        deserialized_msg = deserialized_msg[subslot]
+                    except KeyError:
+                        msg = "Sublot %s does not exist in message: %s" % (subslot, deserialized_msg)
+                        rospy.logerr(msg)
+                    except ValueError:
+                        msg = "Could not convert message '%s' to dict using subslot: '%s'" % (subslot, deserialized_msg)
+                        rospy.logerr(msg)
+                elif type(deserialized_msg) == dict:
+                    try:
+                        deserialized_msg = deserialized_msg[subslot]
+                    except KeyError:
+                        msg = "Could not get value for slot %s from message %s" % (subslot, deserialized_msg)
+                        rospy.logerr(msg)
+                else:
+                    msg = "Could not get subslot value '%s' from message '%s'" % (subslot, deserialized_msg)
+                    rospy.logerr(msg)
+
+    return {slot: deserialized_msg}

@@ -3,6 +3,13 @@ lg_replay
 
 ROS node used for replaying device events on a ROS topic
 
+## Hardware requirements
+
+* any input device like touchscreen or spacenavigator
+
+## Software requirements
+
+None
 
 ## Nodes
 
@@ -12,7 +19,10 @@ ROS node used for replaying device events on a ROS topic
 
 * `topic_name` [string] (default: `None` - mandatory) - name of the
   topic that events flowing on the device will be replayed to
-* `device_name` [string] (default: `None` - mandatory) - name of the
+* `device_path` [string] (default: `None` - `device_name` or `device_path`
+  mandatory) - path to the device to listen on.
+* `device_name` [string] (default: `None` - `device_name` or `device_path`
+  mandatory) - name of the
   device that replay.py will attach to. You can find out the name of the
  device by executing python-evdev code like below:
 

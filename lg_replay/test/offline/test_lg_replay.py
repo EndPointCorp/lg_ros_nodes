@@ -55,9 +55,8 @@ class TestReplay(unittest.TestCase):
         self.assertEqual(type(self.mock_publisher.get_published_messages()[0]), dict)
         message = self.mock_publisher.get_published_messages()[0]
 
-        self.assertEqual(message['scancode'], 330)
-        self.assertEqual(message['keystate'], 0)
-        self.assertEqual(message['keycode'], 'BTN_TOUCH')
+        self.assertEqual(message['code'], 330)
+        self.assertEqual(message['value'], 0)
 
 if __name__ == '__main__':
     import rostest

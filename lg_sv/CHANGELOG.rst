@@ -2,6 +2,264 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2016-04-29)
+------------------
+* lg_sv: Camera timer
+  Passive SpaceNav message consumption.
+* Contributors: Matt Vollrath
+
+1.1.50 (2016-04-27)
+-------------------
+* move new loginfo logging to logdebug
+* fix up logging
+  Move some logerrs to log{warn,info} depending on the information being
+  logged. Also s/rospy.logerror/rospy.logerr/
+* Contributors: Jacob Minshall
+
+1.1.49 (2016-04-26)
+-------------------
+
+1.1.48 (2016-04-20)
+-------------------
+
+1.1.47 (2016-04-15)
+-------------------
+
+1.1.46 (2016-04-15)
+-------------------
+* fix up changelogs
+* Contributors: Jacob Minshall
+
+1.1.45 (2016-04-14)
+-------------------
+
+1.1.44 (2016-04-14)
+-------------------
+
+1.1.43 (2016-04-14)
+-------------------
+
+1.1.42 (2016-04-14)
+-------------------
+* updated changelogs for new release
+* start listening on spacenav_wrapper/twist topic
+* softrelaunch initial work
+* Contributors: Jacob Minshall, Zdenek Maxa
+
+* start listening on spacenav_wrapper/twist topic
+* softrelaunch initial work
+* Contributors: Jacob Minshall
+
+1.1.41 (2016-04-13)
+-------------------
+* Generated changelogs while preparing for new release
+* Contributors: Zdenek Maxa
+
+1.1.40 (2016-03-23)
+-------------------
+
+1.1.39 (2016-03-16)
+-------------------
+
+1.1.38 (2016-03-09)
+-------------------
+
+1.1.37 (2016-03-04)
+-------------------
+* ignore buttons when state is false
+* listen in on the proper metadata topic
+* attribution card showing / hiding
+* Contributors: Jacob Minshall
+
+1.1.36 (2016-02-17)
+-------------------
+* add missing dependency
+* Contributors: Jacob Minshall
+
+1.1.35 (2016-02-05)
+-------------------
+
+1.1.34 (2016-02-05)
+-------------------
+
+1.1.33 (2016-02-04)
+-------------------
+
+1.1.32 (2016-01-28)
+-------------------
+
+1.1.31 (2016-01-20)
+-------------------
+* panoviewer: unload meshes to reduce memory use
+* lg_sv: default to boolean not string
+  Plus explicit checking for the boolean true.
+* Contributors: Jacob Minshall
+
+1.1.30 (2016-01-11)
+-------------------
+
+1.1.29 (2016-01-04)
+-------------------
+* readme: updates to reflect params / topics
+* Stop piling up messages in Chrome's debug log.
+* Contributors: Adam Vollrath, Jacob Minshall
+
+1.1.28 (2015-12-10)
+-------------------
+* lg_sv: use .get to access dicts to avoid key errors
+* Contributors: Jacob Minshall
+
+1.1.27 (2015-11-25)
+-------------------
+* lg_sv: add description and attribution_name to metadata
+  Raw metadata from the client is trimmed down to ignore fields we don't
+  use, but we are now using both of those fields.
+
+1.1.26 (2015-11-25)
+-------------------
+* Merge pull request `#112 <https://github.com/EndPointCorp/lg_ros_nodes/issues/112>`_ from EndPointCorp/ft-change_panos_via_button
+  lg_sv: move forward if a button has been clicked
+* Revert "WIP on changing panos pointing to the closest link"
+  This reverts commit a38e0e036faeb6192c412b6bb075eaf5e53766c0.
+  More work needs to be put into this commit before merging it.
+* WIP on changing panos pointing to the closest link
+* lg_sv: different buttons do different things
+* pep8 fix
+* lg_sv: move forward if a button has been clicked
+* Contributors: Adam Vollrath, Jacob Minshall
+
+1.1.25 (2015-11-17)
+-------------------
+* Add titlecard to lg_sv panoviewer, fix fonts in lg_sv
+* Contributors: Szymon Lipiński
+
+1.1.24 (2015-11-16)
+-------------------
+* lg_sv: remove 42-b hard coding in favor of parameterized ros url
+* lg_sv: resets zoom after changing panos
+* lg_sv: some changes for specific lgs
+* lg_sv: optional zoom for streetview
+  This really only works well if you're only using one screen. Kind of
+  counter productive to the heart of a liquid galaxy, but hey, at least
+  it's kind of in there now.
+* lg_sv: parameterized zoom level
+* lg_sv: parameterization for rosbridge url
+* lg_sv: set initial pano via url
+  Using panoid=foobar will set the initial pano to point to foobar.
+* lg_sv: reset tilt/heading if none are specified
+  Zoom also always reverts to the default max zoom out
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
+1.1.23 (2015-11-13)
+-------------------
+* Changed title for pano viewers
+* Contributors: Wojciech Ziniewicz
+
+1.1.22 (2015-11-05)
+-------------------
+* Add titlecard to the lg_sv sv viewer
+* panoviewer: allow images from the headnode
+* Contributors: Jacob Minshall, Szymon Lipiński
+
+1.1.21 (2015-10-22)
+-------------------
+* lg_sv: invert the heading given by the director
+* Contributors: Matt Vollrath
+
+1.1.20 (2015-10-21)
+-------------------
+* init nearbypano parent class
+* Contributors: Jacob Minshall
+
+1.1.19 (2015-10-20)
+-------------------
+* lg_sv: allow for an inverted nearby pano finder
+* lg_sv: changed default zoom\_{min,max}
+* Contributors: Jacob Minshall
+
+1.1.18 (2015-10-20)
+-------------------
+* lg_sv: server: fix nearby pano chooser
+  This was returning an invalid difference for certain inputs.
+* Contributors: Jacob Minshall
+
+1.1.17 (2015-10-16)
+-------------------
+* lg_sv: invert the zoom value
+* lg_sv: update zoom defaults
+* lg_sv: zoom publishing
+* lg_sv: handle null headers and tilt
+* lg_sv: translate numbers to floats instead of strings
+* lg_sv: raw metadata translation
+* lg_sv: handles heading + tilt parameters in streetview asset
+* Removed UBL
+* Contributors: Jacob Minshall, Wojciech
+
+1.1.16 (2015-10-11)
+-------------------
+* Added streetview client ROSbridge dependency
+* Contributors: Wojciech Ziniewicz
+
+1.1.15 (2015-10-10)
+-------------------
+
+1.1.14 (2015-10-08)
+-------------------
+* lv_sv: only split on / for a streetview pano
+  Panoviewer panos are usually filenames
+* lg_sv: handle panoids prepended by urls
+* Contributors: Jacob Minshall
+
+1.1.13 (2015-10-08)
+-------------------
+
+1.1.12 (2015-10-07)
+-------------------
+* lg_sv: parametrize the nearby pano class
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
+1.1.11 (2015-10-06)
+-------------------
+
+1.1.10 (2015-10-05)
+-------------------
+* lg_sv: actually use the supplied x_threshold
+* Added lots of docs
+
+1.1.9 (2015-09-25)
+------------------
+* Dont start application if X is not available
+* Better logging for dependencies
+* ADded dependency checking and fixed slots deserialization
+* panoviewer: replay videos that are republished
+* lg_sv: parameterize tilt
+* Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.8 (2015-09-25)
+------------------
+* lg_sv: parameterize x_threshold
+* Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.7 (2015-09-24)
+------------------
+* PEP8
+* Contributors: Adam Vollrath
+
+1.1.6 (2015-09-24)
+------------------
+* Hide SV at startup
+* Add queue_size to sv server state Publisher
+* Contributors: Adam Vollrath, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.5 (2015-09-23)
+------------------
+
+1.1.4 (2015-09-23)
+------------------
+
+1.1.3 (2015-09-22)
+------------------
+
 1.1.2 (2015-09-22)
 ------------------
 
@@ -74,15 +332,3 @@ Changelog for package lg_sv
 ------------------
 * Initial lg_sv package
 * Contributors: Jacob Minshall, Kannan Ponnusamy, Matt Vollrath, Will Plaut
-
-0.0.4 (2015-07-27 15:11)
-------------------------
-
-0.0.3 (2015-07-21 18:14)
-------------------------
-
-0.0.2 (2015-07-21 17:11)
-------------------------
-
-0.0.1 (2015-07-08)
-------------------

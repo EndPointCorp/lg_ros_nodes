@@ -9,7 +9,7 @@ from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
 ROOT_DIR = os.path.realpath(os.curdir)
 ARGS = None
 # add more directories here as needed
-IGNORE_DIRS = ['catkin', 'scripts', '.git', 'tmp']
+IGNORE_DIRS = ['catkin', 'scripts', '.git', 'tmp', '.idea']
 NEEDED_DIRS = ['appctl']
 
 if os.path.basename(ROOT_DIR) == 'scripts':

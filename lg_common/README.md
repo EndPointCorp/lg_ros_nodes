@@ -1,7 +1,19 @@
 lg\_common
 ----------
 
-Common software for Liquid Galaxy ROS nodes.
+Common software for Liquid Galaxy ROS nodes. Basic browser ros scripts
+that provide adhoc or static browser activity + some helpers shared by
+all LG ros nodes.
+
+## Hardware requirements
+
+* it's good to have decent CPU and accelarated graphics for Google
+  Chrome to work smoothly
+
+## Software requirements
+
+* google-chrome available in PATH `~browser_binary`
+* awesome window manager
 
 ## Scripts
 
@@ -123,6 +135,7 @@ A `ManagedApplication` subclass for running a browser.
 * `geometry` [WindowGeometry] - Where to put the window. Optional.
 * `binary` [string] - Absolute path to the browser binary. Default: `/usr/bin/google-chrome`
 * `remote_debugging_port` [int] - Specify a remote debugging port. If not provided, a port will be assigned.
+* `command_line_args` [string] - A large string of command line arguments for chrome.
 
 All other keyword arguments are passed on directly to the command line.
 

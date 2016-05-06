@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>PDF Viewer</title>
+</head>
+<body>
+
+<canvas id="the-canvas" style="width:100%; height:100%;border:1px  solid black"></canvas>
+
+<script src="pdf.js"></script>
+
+<script id="script">
+  var url = '', pageNumber = 1;
+
+  function getParameterByName(name, def) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? def : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  url = getParameterByName('url', url);
+  pageNumber = getParameterByName('pageNumber', pageNumber) * 1.0;
+
+  // The workerSrc property shall be specified.
+  PDFJS.workerSrc = 'pdf.worker.js';
+
+  // Asynchronous download PDF
+  PDFJS.getDocument(url).then(function getPdfHelloWorld(pdf) {
+    // Fetch the first page
+    pdf.getPage(pageNumber).then(function getPageHelloWorld(page) {
+      var scale = 1.5;
+      var viewport = page.getViewport(scale);
+
+      // Prepare canvas using PDF page dimensions
+      var canvas = document.getElementById('the-canvas');
+      var context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      // Render PDF page into canvas context
+      var renderContext = {
+        canvasContext: context,
+        viewport: viewport
+      };
+      page.render(renderContext);
+    });
+  });
+</script>
+
+</body>
+</html>

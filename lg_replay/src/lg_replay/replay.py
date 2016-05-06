@@ -3,7 +3,7 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from evdev import InputDevice, list_devices, ecodes, categorize
-from lg_common.helpers import rewrite_message_to_dict
+from lg_common.helpers import rewrite_message_to_dict, find_device
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -25,29 +25,22 @@ class DeviceReplay:
         self.publisher = publisher
         self.device_name = device_name
         self.device = device
+        self.event_code_num = getattr(ecodes, self.event_ecode)
         # TODO (wz): set device permissions using udev rules because otherwise this node needs sudo
         if self.device:
             self.device = device
             rospy.loginfo("Initializing device replay with devic: %s" % self.device)
         else:
             try:
-                os.system("sudo chmod 0666 /dev/input/*")
-                devices = [InputDevice(fn) for fn in list_devices()]
-                self.device = [device for device in devices if device.name == self.device_name][0]
+                device_path = find_device(self.device_name)
+                self.device = InputDevice(device_path)
                 rospy.loginfo("Initialize device reader for %s" % self.device)
             except IndexError, e:
                 rospy.logerr("No device with name: '%s'" % self.device_name)
 
     def run(self):
         for event in self.device.read_loop():
-            rospy.loginfo("Catched event: %s" % event)
-            if self.event_ecode:
-                if event.type == getattr(ecodes, self.event_ecode):
-                    event = categorize(event)
-                    publishable_event = rewrite_message_to_dict(event)
-                    self.publisher.publish_event(publishable_event)
-            else:
-                event = categorize(event)
+            if event.type == self.event_code_num:
                 publishable_event = rewrite_message_to_dict(event)
                 self.publisher.publish_event(publishable_event)
 
@@ -61,7 +54,6 @@ class DevicePublisher:
         rospy.loginfo("Initialized device publisher for %s" % self.publisher)
 
     def publish_event(self, event):
-        rospy.loginfo("Publishing event %s" % event)
         msg = GenericMessage()
         msg.type = 'json'
         msg.message = str(event)

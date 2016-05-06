@@ -1,4 +1,5 @@
 from geometry_msgs.msg import Twist
+from lg_common.msg import ApplicationState
 from evdev import AbsInfo, UInput, InputEvent, ecodes as e
 import time
 
@@ -33,10 +34,13 @@ class DeviceWriter:
             17L: [8L]
         }
         device_name = 'Virtual SpaceNav'
+        self.state = True
         self.ui = UInput(spacenav_events, vendor=vendor, product=product,
                          version=version, bustype=bustype, name=device_name)
 
     def make_event(self, data):
+        if not self.state:
+            return
         # write some event to self.ui based off of the twist data
         _time = time.time()
         stime = int(_time)
@@ -60,3 +64,6 @@ class DeviceWriter:
 
     def translate(self, n):
         return int(n * self.scale)  # TODO find the translation...
+
+    def set_state(self, msg):
+        self.state = msg.state == ApplicationState.VISIBLE

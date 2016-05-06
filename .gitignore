@@ -1,6 +1,9 @@
 # osx
 .DS_Store
 
+# appctl is a separate repository
+appctl
+
 build/
 bin/
 msg_gen/
@@ -66,8 +69,12 @@ tags
 
 # whatever dude
 *pycache*
+.cache
 
 # pulsnowflake
 pulsar.log
 # personal launch file
 tmp.launch
+
+# docker copy of nodes
+docker_nodes/

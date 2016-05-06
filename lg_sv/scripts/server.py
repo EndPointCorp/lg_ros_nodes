@@ -2,12 +2,13 @@
 
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
-from lg_common.helpers import get_first_asset_from_activity, on_new_scene
+from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String
+from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
-from lg_sv import PanoViewerServer
+from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
 
 
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
@@ -24,8 +25,11 @@ from lg_sv import PanoViewerServer
 
 DEFAULT_TILT_MIN = -80
 DEFAULT_TILT_MAX = 80
+DEFAULT_ZOOM_MIN = 10
+DEFAULT_ZOOM_MAX = 30
 DEFAULT_NAV_SENSITIVITY = 1.0
 DEFAULT_NAV_INTERVAL = 0.02
+X_THRESHOLD = 0.50
 
 
 def main():
@@ -37,16 +41,26 @@ def main():
                                  String, queue_size=1)
     pov_pub = rospy.Publisher('/%s/pov' % server_type,
                               Quaternion, queue_size=2)
+    metadata_pub = rospy.Publisher('/%s/metadata' % server_type,
+                                   String, queue_size=10)
 
     tilt_min = rospy.get_param('~tilt_min', DEFAULT_TILT_MIN)
     tilt_max = rospy.get_param('~tilt_max', DEFAULT_TILT_MAX)
+    zoom_min = rospy.get_param('~zoom_min', DEFAULT_ZOOM_MIN)
+    zoom_max = rospy.get_param('~zoom_max', DEFAULT_ZOOM_MAX)
     nav_sensitivity = rospy.get_param('~nav_sensitivity', DEFAULT_NAV_SENSITIVITY)
+    x_threshold = rospy.get_param('~x_threshold', X_THRESHOLD)
     space_nav_interval = rospy.get_param('~space_nav_interval', DEFAULT_NAV_INTERVAL)
+    nearby_class = rospy.get_param('~nearby_class', 'NearbyStreetviewPanos')
+    nearby = get_nearby(nearby_class)
+    inverted = str(rospy.get_param('~inverted', "false")).lower() == "true"
+    nearby.invert(inverted)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                              nav_sensitivity, space_nav_interval)
+                              nav_sensitivity, space_nav_interval, x_threshold,
+                              nearby, metadata_pub, zoom_max, zoom_min)
 
-    visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState)
+    visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
 
     rospy.Subscriber('/%s/location' % server_type, Pose2D,
                      server.handle_location_msg)
@@ -56,10 +70,14 @@ def main():
                      server.handle_panoid_msg)
     rospy.Subscriber('/%s/pov' % server_type, Quaternion,
                      server.handle_pov_msg)
-    rospy.Subscriber('/spacenav/twist', Twist,
+    rospy.Subscriber('/spacenav_wrapper/twist', Twist,
                      server.handle_spacenav_msg)
     rospy.Subscriber('/%s/state' % server_type, ApplicationState,
                      server.handle_state_msg)
+    rospy.Subscriber('/%s/raw_metadata' % server_type, String,
+                     server.handle_raw_metadata_msg)
+    rospy.Subscriber('/spacenav/joy', Joy, server.handle_joy)
+    make_soft_relaunch_callback(server._handle_soft_relaunch, groups=['streetview'])
 
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
@@ -70,11 +88,42 @@ def main():
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-        panoid_pub.publish(String(asset))
+        if asset.__class__ == dict:
+            assert 'panoid' in asset
+            panoid = asset['panoid']
+            pov = server.pov
+            if 'tilt' in asset and asset['tilt']:
+                pov.x = float(asset['tilt'])
+            else:
+                pov.x = 0
+            if 'heading' in asset and asset['heading']:
+                pov.z = float(asset['heading'])
+                if inverted:
+                    pov.z = (pov.z + 180) % 360
+            else:
+                pov.z = 0
+            pov.w = zoom_max
+            server.pub_pov(pov)
+        else:
+            panoid = asset
+            if server_type == 'streetview':
+                # split in case the panoid comes at the end of a url
+                panoid = panoid.split('/')[-1]
+
+        server.pub_panoid(String(panoid))
 
     on_new_scene(handle_director_message)
 
     rospy.spin()
+
+
+def get_nearby(n):
+    if n == 'NearbyStreetviewPanos':
+        return NearbyStreetviewPanos()
+    if n == 'NearbyPanos':
+        return NearbyPanos()
+    return NearbyPanos()
+
 
 if __name__ == '__main__':
     main()

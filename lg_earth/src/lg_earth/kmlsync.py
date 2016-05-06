@@ -69,10 +69,9 @@ def get_kml_root():
 
 
 class KmlMasterHandler(tornado.web.RequestHandler):
-
     def get(self):
         """Serve the master.kml which is updated by NLC."""
-        rospy.loginfo("Got master.kml GET request")
+        rospy.logdebug("Got master.kml GET request")
         kml_root = get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
@@ -83,15 +82,15 @@ class KmlMasterHandler(tornado.web.RequestHandler):
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
     counter = 0
-    timeout = 10
-    global_dict = {}
+    timeout = 0
+    deferred_requests = {}
     counter_lock = threading.Lock()
-    dict_lock = threading.Lock()
+    defer_lock = threading.Lock()
 
     @classmethod
-    def add_to_global_dict(cls, reference, unique_id):
-        with cls.dict_lock:
-            cls.global_dict[unique_id] = reference
+    def add_deferred_request(cls, reference, unique_id):
+        with cls.defer_lock:
+            cls.deferred_requests[unique_id] = reference
 
     @classmethod
     def get_unique_id(cls):
@@ -102,17 +101,17 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
     @classmethod
     def finish_all_requests(cls):
-        with cls.dict_lock:
-            for req in cls.global_dict.itervalues():
-                req.get(True)
-            cls.global_dict = {}
+        with cls.defer_lock:
+            for req in cls.deferred_requests.itervalues():
+                req.get(no_defer=True)
+            cls.deferred_requests.clear()
 
     @classmethod
     def get_scene_msg(cls, msg):
         try:
             cls.finish_all_requests()
         except Exception as e:
-            rospy.loginfo("Exception getting scene changes" + str(e))
+            rospy.logerr("Exception getting scene changes" + str(e))
             pass
 
     def non_blocking_sleep(self, duration):
@@ -124,50 +123,69 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         self.asset_service = self.application.asset_service
 
     @gen.coroutine
-    def get(self, second_time=False):
+    def get(self, no_defer=False):
         """
         Return XML with latest list of assets for specific window_slug
             - get window slug and calculate difference between loaded assets and the desired state
             - create the KML and return it only if cookie was different and the window slug came in the request
         """
-        rospy.loginfo("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
-        window_slug = self.get_query_argument('window_slug', default=None)
-        incoming_cookie_string = ''
+        # Never defer if there's no timeout
+        if KmlUpdateHandler.timeout <= 0:
+            no_defer = True
 
+        rospy.logdebug("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
+        window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = self.get_query_argument('asset_slug', default='')
 
-        rospy.loginfo("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
+        rospy.logdebug("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
-        if window_slug:
-            try:
-                assets = self._get_assets(window_slug)
-            except Exception as e:
-                rospy.logerr('Failed to get assets for {}: {}'.format(
-                    window_slug,
-                    e.message
-                ))
-                # Always return a valid KML or Earth will stop requesting updates
-                self.finish(get_kml_root())
-                return
-            assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
-            assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
-            if (assets_to_delete or assets_to_create) or second_time:
-                self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
-            else:
-                self.unique_id = KmlUpdateHandler.get_unique_id()
-                rospy.loginfo("Request Counter Value {}".format(self.unique_id))
-                rospy.loginfo("Global Dictionary Value {}".format(KmlUpdateHandler.global_dict))
-                KmlUpdateHandler.add_to_global_dict(self, self.unique_id)
-                yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
-                if self.unique_id in KmlUpdateHandler.global_dict:
-                    with KmlUpdateHandler.dict_lock:
-                        del KmlUpdateHandler.global_dict[self.unique_id]
-                    assets_to_delete = self._get_assets_to_delete(incoming_cookie_string, assets)
-                    assets_to_create = self._get_assets_to_create(incoming_cookie_string, assets)
-                    self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
-        else:
+        if not window_slug:
             self.set_status(400, "No window slug provided")
             self.finish("400 Bad Request: No window slug provided")
+            return
+
+        try:
+            assets = self._get_assets(window_slug)
+        except Exception as e:
+            rospy.logerr('Failed to get assets for {}: {}'.format(
+                window_slug,
+                e.message
+            ))
+            # Always return a valid KML or Earth will stop requesting updates
+            self.finish(get_kml_root())
+            return
+
+        assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
+        if (assets_to_delete or assets_to_create) or no_defer:
+            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            return
+
+        self.unique_id = KmlUpdateHandler.get_unique_id()
+
+        rospy.logdebug("Request Counter: {}".format(self.unique_id))
+        rospy.logdebug("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
+
+        KmlUpdateHandler.add_deferred_request(self, self.unique_id)
+        yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
+
+        try:
+            assets = self._get_assets(window_slug)
+        except Exception as e:
+            rospy.logerr('Failed to get assets for {}: {}'.format(
+                window_slug,
+                e.message
+            ))
+            # Always return a valid KML or Earth will stop requesting updates
+            self.finish(get_kml_root())
+            return
+
+        with KmlUpdateHandler.defer_lock:
+            if self.unique_id not in KmlUpdateHandler.deferred_requests:
+                return
+            del KmlUpdateHandler.deferred_requests[self.unique_id]
+
+            assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
+            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
@@ -186,6 +204,24 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         kml_content = kml_reparsed.toprettyxml(indent='\t')
         return unescape(kml_content)
 
+    def _get_assets(self, window_slug):
+        return self.asset_service(window_slug).assets
+
+    def _get_asset_changes(self, incoming_cookie_string, assets):
+        """
+        Shortcut to get all asset changes.
+        param incoming_cookie_string: str
+            e.g. 'blah_kml,zomg_kml'
+        param assets: list
+            list of assets for the request window_slug
+        rtype: tuple
+            combined assets to create, delete
+        """
+        return (
+            self._get_assets_to_create(incoming_cookie_string, assets),
+            self._get_assets_to_delete(incoming_cookie_string, assets),
+        )
+
     def _get_assets_to_delete(self, incoming_cookie_string, assets):
         """
         Calculate the difference between assets loaded on GE client and those expected to be loaded by server.
@@ -202,9 +238,6 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         ret = list(set(client_slugs_list) - set(server_slugs_list))
         rospy.logdebug("Got the assets to delete as: %s" % ret)
         return ret
-
-    def _get_assets(self, window_slug):
-        return self.asset_service(window_slug).assets
 
     def _get_assets_to_create(self, incoming_cookie_string, assets):
         """
@@ -268,50 +301,94 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         """
         Generate a networklinkupdate xml 'Create' section with assets_to_create (if any)
         """
-        if assets_to_create:
-            kml_create = ET.SubElement(parent, 'Create')
-            kml_document = ET.SubElement(kml_create, 'Document', {'targetId': 'master'})
-            for asset in assets_to_create:
-                new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
-                ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
-                link = ET.SubElement(new_asset, 'Link')
-                ET.SubElement(link, 'href').text = asset
-            return kml_create
-        return parent
+        if not assets_to_create:
+            return
+
+        kml_create = ET.SubElement(parent, 'Create')
+        kml_document = ET.SubElement(kml_create, 'Document', {'targetId': 'master'})
+        for asset in assets_to_create:
+            new_asset = ET.SubElement(kml_document, 'NetworkLink', {'id': escape_asset_url(asset)})
+            ET.SubElement(new_asset, 'name').text = escape_asset_url(asset)
+            link = ET.SubElement(new_asset, 'Link')
+            ET.SubElement(link, 'href').text = escape(asset)
+        return kml_create
 
     def _get_kml_for_delete_assets(self, assets_to_delete, parent):
         """
         Generate a networklinkupdate xml 'Delete' section with assets_to_delete (if any)
         """
-        if assets_to_delete:
-            kml_delete = ET.SubElement(parent, 'Delete')
-            for asset in assets_to_delete:
-                ET.SubElement(kml_delete, 'NetworkLink', {'targetId': escape_asset_url(asset)})
-            return kml_delete
+        if not assets_to_delete:
+            return
+
+        kml_delete = ET.SubElement(parent, 'Delete')
+        for asset in assets_to_delete:
+            ET.SubElement(kml_delete, 'NetworkLink', {'targetId': escape_asset_url(asset)})
+        return kml_delete
 
 
 class KmlQueryHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.playtour = self.application.playtour
         self.playtour_service = self.application.playtour_service
+        self.planet = self.application.planet
+        self.planet_service = self.application.planet_service
+        self.get_planet = self.application.get_planet
+
+    def _wait_for_planet(self, planet):
+        sleeptime = 0.1  # How long to sleep between iterations
+        intervals = 50   # How many iterations to try before giving up
+        interval_count = 0
+        done = False
+
+        while self.get_planet() != planet and interval_count < intervals:
+            interval_count += 1
+            rospy.sleep(sleeptime)
 
     def get(self):
         """
-        Publish play tour message on the topic /earth/query/tour
+        Publish messages for the lg_earth/query service, in response to GET
+        requests
         """
         query_string = self.get_query_argument('query', default='')
-        try:
-            while not rospy.is_shutdown():
-                tour_string = query_string.split('=')[1]
-                tour_string = urllib2.unquote(tour_string)
-                self.playtour.tourname = str(tour_string)
-                self.playtour_service(tour_string)
-                self.finish("OK")
+
+        if rospy.is_shutdown():
             self.set_status(503, "Server shutting down")
             self.finish("Server shutting down")
-        except IndexError as e:
-            rospy.logerr("Got the wrong query string %s" % e)
-            self.set_status(400, "Got the wrong query string")
+            return
+
+        try:
+            for op in query_string.split(','):
+                command, value = op.split('=')
+                value = urllib2.unquote(value)
+
+                if command == 'playtour':
+                    rospy.loginfo("Playing tour %s" % value)
+                    self.playtour.tourname = str(value)
+                    self.playtour_service(value)
+
+                elif command == 'planet':
+                    rospy.loginfo("Switching to planet %s" % value)
+                    self.planet.planetname = value
+                    self.planet_service(value)
+                    self._wait_for_planet(value)
+
+                elif command == 'wait':
+                    try:
+                        rospy.sleep(float(value))
+                    except ValueError as e:
+                        rospy.logerr(
+                            "Failed to convert %s to a float, while trying to sleep" %
+                            value)
+
+                else:
+                    rospy.logerr("unknown query command: %s" % command)
+
+            self.finish("OK")
+
+        except (IndexError, ValueError) as e:
+            rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
+            self.set_status(400, "Got a bad query string")
             self.finish("Bad Request: Got a bad query string")
+            return
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

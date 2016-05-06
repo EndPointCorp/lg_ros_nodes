@@ -2,6 +2,230 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2016-04-29)
+------------------
+
+1.1.50 (2016-04-27)
+-------------------
+* move new loginfo logging to logdebug
+* fix up logging
+  Move some logerrs to log{warn,info} depending on the information being
+  logged. Also s/rospy.logerror/rospy.logerr/
+* Contributors: Jacob Minshall
+
+1.1.49 (2016-04-26)
+-------------------
+
+1.1.48 (2016-04-20)
+-------------------
+
+1.1.47 (2016-04-15)
+-------------------
+
+1.1.46 (2016-04-15)
+-------------------
+* fix up changelogs
+* Contributors: Jacob Minshall
+
+1.1.45 (2016-04-14)
+-------------------
+
+1.1.44 (2016-04-14)
+-------------------
+
+1.1.43 (2016-04-14)
+-------------------
+
+1.1.42 (2016-04-14)
+-------------------
+
+1.1.41 (2016-04-14)
+-------------------
+
+1.1.40 (2016-03-23)
+-------------------
+* put custom configs in custom directories
+* Contributors: jacob
+
+1.1.39 (2016-03-16)
+-------------------
+* lg_earth: hacky template for setting HOME_DIR in custom configs
+* Contributors: Jacob Minshall
+
+1.1.38 (2016-03-09)
+-------------------
+* Queue Earth query writes
+* Contributors: Matt Vollrath
+
+1.1.37 (2016-03-04)
+-------------------
+* Changed perms for test_kmlsync.py
+* PEP8'ed the code
+* Add wait command, and fix looping through query commands
+* planet_changer script for Earth
+* Expand tests for query interface
+* Make kmlsync support multiple comma-separated commands per query.html get request
+  Also watch planet changes from the viewsync_relay service, and don't return
+  from a planet command until the planet change shows up in the viewsync feed.
+* Report the planet in each viewsync query, on /earth/planet
+* Finish adding planet support to kmlsync's query interface
+* Contributors: Josh Tolley, Joshua Tolley, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.36 (2016-02-17)
+-------------------
+* lg_earth: parameterize state topic
+* lg\_{common,earth}: set initial state
+  This will allow us to start up a hidden window initially.
+* Contributors: Jacob Minshall
+
+1.1.35 (2016-02-05)
+-------------------
+* lg_earth: curl custom config
+* Contributors: Jacob Minshall
+
+1.1.34 (2016-02-05)
+-------------------
+* lg_earth: make directory for localdbrootproto
+* Contributors: Jacob Minshall
+
+1.1.33 (2016-02-04)
+-------------------
+* lg_earth: copy local localdbrootproto
+  This file needs contents to be useful, so grab it from the local filesystem.
+* Set LANG from within lg_earth node
+* Support custom earth configs in lg_earth node
+* Contributors: Galaxy Admin, Jacob Minshall, Will Plaut
+
+1.1.32 (2016-01-28)
+-------------------
+* Amended logging for `#137 <https://github.com/EndPointCorp/lg_ros_nodes/issues/137>`_
+* Contributors: Wojciech Ziniewicz
+
+1.1.31 (2016-01-20)
+-------------------
+
+1.1.30 (2016-01-11)
+-------------------
+
+1.1.29 (2016-01-04)
+-------------------
+
+1.1.28 (2015-12-10)
+-------------------
+* Turned ON {city,state}_{borders_labels} for default
+* Contributors: Bryan Berry
+
+1.1.27 (2015-11-25)
+-------------------
+
+1.1.26 (2015-11-25)
+-------------------
+
+1.1.25 (2015-11-17)
+-------------------
+
+1.1.24 (2015-11-16)
+-------------------
+
+1.1.23 (2015-11-13)
+-------------------
+
+1.1.22 (2015-11-05)
+-------------------
+
+1.1.21 (2015-10-22)
+-------------------
+
+1.1.20 (2015-10-21)
+-------------------
+
+1.1.19 (2015-10-20)
+-------------------
+
+1.1.18 (2015-10-20)
+-------------------
+
+1.1.17 (2015-10-16)
+-------------------
+* lg_earth: viewsync: update readme
+* Contributors: Jacob Minshall
+
+1.1.16 (2015-10-11)
+-------------------
+
+1.1.15 (2015-10-10)
+-------------------
+
+1.1.14 (2015-10-08)
+-------------------
+
+1.1.13 (2015-10-08)
+-------------------
+
+1.1.12 (2015-10-07)
+-------------------
+* kmlsync: escape this asset because it's unescaped later
+  Ampersands will no longer cause this script to choke.
+* Contributors: Jacob Minshall
+
+1.1.11 (2015-10-06)
+-------------------
+
+1.1.10 (2015-10-05)
+-------------------
+* Documentation
+  - moved earth docs to lg_earth
+  - added lg image
+
+1.1.9 (2015-09-25)
+------------------
+* Added X dependency to Earth
+* Dont start application if X is not available
+* Better logging for dependencies
+* ADded dependency checking and fixed slots deserialization
+* Added ext dependency mechanism and added it to GE and SV/PV
+* Mark kmlsync timeout experimental, default off
+* Revisit KmlUpdateHandler.get()
+* Remove crufty assignment from KmlUpdateHandler
+* Improve KmlQueryHandler error messages
+* No timeout for non-polling kmlsync test
+* Improve KmlUpdateHandler deferral
+* Improve kml create/delete logic and indentation
+* Fix up KmlQueryHandler logic
+* Further flatten KmlUpdateHandler.get()
+* Refine KmlUpdateHandler timeout logic
+  Lock all dict access, nothing else.
+* Refactor KmlUpdateHandler asset change list funcs
+* Whitespace, logging changes in KmlUpdateHandler
+* Un-nest KmlUpdateHandler missing slug logic
+* Rename KmlUpdateHandler global_dict
+  Not a good identifier.
+* Prevent race condition from happening in kmlsync
+* Contributors: Adam Vollrath, Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.8 (2015-09-25)
+------------------
+* Added ext dependency mechanism and added it to GE and SV/PV
+* Contributors: Adam Vollrath, Matt Vollrath, Wojciech Ziniewicz
+
+1.1.7 (2015-09-24)
+------------------
+
+1.1.6 (2015-09-24)
+------------------
+* Mark kmlsync timeout experimental, default off
+* Refactor KmlUpdateHandler asset change list funcs
+* Contributors: Matt Vollrath
+
+1.1.5 (2015-09-23)
+------------------
+
+1.1.4 (2015-09-23)
+------------------
+
+1.1.3 (2015-09-22)
+------------------
+
 1.1.2 (2015-09-22)
 ------------------
 
@@ -10,8 +234,6 @@ Changelog for package lg_earth
 
 1.1.0 (2015-09-17)
 ------------------
-* Fix 1.0.9 changelogs
-* Contributors: Jacob Minshall, Matt Vollrath
 
 1.0.9 (2015-09-09)
 ------------------

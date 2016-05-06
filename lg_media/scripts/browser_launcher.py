@@ -13,7 +13,8 @@ VIDEOSYNC_URL = 'http://localhost:8008/lg_sv/webapps/videosync/index.html'
 class BasicBrowserData:
     def __init__(self, publisher, leader, ros_port, ros_host, url, sync_rate,
                  frame_latency, ping_interval, hard_sync_diff,
-                 min_playbackrate, max_playbackrate, autoplay, show_controls):
+                 min_playbackrate, max_playbackrate, autoplay, show_controls,
+                 viewport_name):
         self.publisher = publisher
         self.leader = leader
         self.show_controls = show_controls
@@ -27,6 +28,7 @@ class BasicBrowserData:
         self.hard_sync_diff = hard_sync_diff
         self.min_playbackrate = min_playbackrate
         self.max_playbackrate = max_playbackrate
+        self.viewport_name = viewport_name
 
     def launch_browser(self, data):
         """
@@ -50,8 +52,9 @@ class BasicBrowserData:
                 minPlaybackRate=self.min_playbackrate,
                 maxPlaybackRate=self.max_playbackrate)
             url = url2pathname(url)
-            rospy.logerr('url for media: %s' % url)
+            rospy.logdebug('url for media: %s' % url)
             new_browser = AdhocBrowser()
+            new_browser.id = 'adhoc_media_browser_%s' % self.viewport_name
             new_browser.geometry = media.geometry
             new_browser.url = url
             msg.append(new_browser)
@@ -88,14 +91,15 @@ def main():
                                           frame_latency, ping_interval,
                                           hard_sync_diff, min_playbackrate,
                                           max_playbackrate, autoplay,
-                                          show_controls)
+                                          show_controls, viewport_name)
 
     browser_pool = AdhocBrowserPool(viewport_name)
 
-    rospy.Subscriber('/media_service/launch_browser/%s' % viewport_name, AdhocBrowsers,
-                     browser_pool.handle_ros_message)
     rospy.Subscriber('/media_service/browser/%s' % viewport_name, AdhocMedias,
                      basic_browser_data.launch_browser)
+
+    rospy.Subscriber('/media_service/launch_browser/%s' % viewport_name, AdhocBrowsers,
+                     browser_pool.handle_ros_message)
 
     rospy.spin()
 

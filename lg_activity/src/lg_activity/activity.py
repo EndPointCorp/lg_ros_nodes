@@ -7,8 +7,8 @@ from lg_common.helpers import unpack_activity_sources
 from lg_common.helpers import list_of_dicts_is_homogenous
 from lg_common.helpers import rewrite_message_to_dict
 from lg_common.helpers import get_message_type_from_string
+from lg_common.helpers import get_nested_slot_value
 from lg_activity.msg import ActivityState
-from lg_activity.srv import ActivityStates
 from std_msgs.msg import Bool
 from lg_common.helpers import write_log_to_file
 
@@ -144,16 +144,10 @@ class ActivitySource:
                 z: 0.0
 
         User can specify slot like 'linear.x' and this method is responsible for retrieving it
-        and returning as a dictionary e.g. {'linear.x'
+        and returning as a dictionary e.g. {'linear.x': 'some_value'}
         """
 
-        slot_tree = self.slot.split('.')
-
-        deserialized_msg = message
-        for slot_number in xrange(len(slot_tree)):
-            deserialized_msg = getattr(deserialized_msg, slot_tree[slot_number])
-
-        return {self.slot: deserialized_msg}
+        return get_nested_slot_value(self.slot, message)
 
     def _deserialize_and_append(self, message):
         """
@@ -467,3 +461,7 @@ class ActivityTracker:
         for source in self.initialized_sources:
             source.is_active()
         self._check_states()
+
+    def _sleep_between_checks(self):
+        # rospy.sleep(self.timeout)
+        pass

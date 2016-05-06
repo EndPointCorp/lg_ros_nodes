@@ -6,6 +6,14 @@ ROS software for managing ad hoc media service (mplayer application).
 Spec on (lg_ros_nodes/issues/31 - media player - a service that
 spins up audio/video players on demand.
 
+## Hardawre
+
+* accelarated graphics
+
+## Software
+
+* awesome window manager for window positioning
+
 ### Nodes
 
 #### browser\_launcher
@@ -67,3 +75,8 @@ This node listens on `/director/scene` and passes any media messages to
 * `/director/scene` [`interactivespaces\_msgs/GenericMessage`] - Director
   messages on this topic will be translated into `AdhocMedias` thanks to the
   `DirectorMediaBridge`
+
+# TODO
+
+- make mplayer director pool eval the URL to prevent it from opening URLs with spaces:
+  e.g. this won't work: "http://lg-head/cms/1-5 Shokasonjuku Academy.avi'

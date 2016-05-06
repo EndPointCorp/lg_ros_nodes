@@ -5,3 +5,5 @@ from managed_adhoc_browser import ManagedAdhocBrowser
 from adhoc_browser_pool import AdhocBrowserPool
 from scene_listener import SceneListener
 from adhoc_browser_director_bridge import AdhocBrowserDirectorBridge
+from state_changer import StateChanger
+from log_watcher import LogWatcher

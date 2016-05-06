@@ -1,5 +1,5 @@
 function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
-    isLeader) {
+    isLeader, initialPano) {
   this.lastTimeMsec = null;
 
   this.MIN_PLAYBACKRATE = 0.5;
@@ -14,7 +14,10 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
 
   this.ROLL_AXIS = new THREE.Vector3(0,0,1);
 
-  this.pano_url = '../lib/pv_client.js';
+  this.pano_url = '../media/foo.jpg';
+  if (initialPano !== 0) {
+    this.pano_url = initialPano;
+  }
 
   this.leaderPosition = null;
 
@@ -53,6 +56,8 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
   this.panoListener.subscribe(function(msg) {
     console.log("Received new pano: " + msg.data);
     this.pano_url = msg.data;
+    /* set last_pano to null so duplicate videos start over */
+    this.last_pano_url = null;
   }.bind(this));
 
   this.stateTopic = new ROSLIB.Topic({
@@ -104,7 +109,7 @@ PanoClient.prototype.update = function (nowMsec) {
   var deltaMsec = Math.min(200, nowMsec - this.lastTimeMsec)
   this.lastTimeMsec  = nowMsec
 
-  this.scene.children[0] = this.getMesh();
+  this.scene.add(this.getMesh());
   if (this.videoTexture != null) {
     this.setPlaybackRate();
     this.videoTexture.update(deltaMsec / 1000, nowMsec / 1000);
@@ -115,7 +120,7 @@ PanoClient.prototype.update = function (nowMsec) {
 PanoClient.prototype.handleState = function(msg) {
   // ApplicationState.VISIBLE == "visible", or 3... hopefully that lasts
   this.state = (msg.state == "VISIBLE" || msg.state == 3);
-  console.log("got state: " + msg.state);
+  //console.log("got state: " + msg.state);
   if (this.state) {
     this.playVideo();
   } else {
@@ -222,6 +227,8 @@ PanoClient.prototype.handleImage = function() {
 PanoClient.prototype.getMesh = function() {
   if (!this.needsNewMesh())
     return this.mesh;
+  if (this.mesh != null)
+    this.scene.remove(this.mesh);
 
   this.last_pano_url = this.pano_url;
   this.destroyVideoTexture();

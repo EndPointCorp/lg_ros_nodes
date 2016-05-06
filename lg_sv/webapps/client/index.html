@@ -1,4 +1,5 @@
 <html>
+<title>panoviewer</title>
 <head>
     <style>
         #map-canvas {
@@ -27,6 +28,7 @@
         }
     </style>
               
+    <script src="../lib/common.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
     <script src="http://maps.googleapis.com/maps/api/js?v=3.20&signed_in=true"></script>
@@ -37,6 +39,22 @@
     <script src="js/main.js"></script>
 </head>
 <body>
+    <div id="titlecard" style="display:none;
+           font-family: Roboto, Arial, sans-serif;
+           position: absolute;
+           font-size: 14px;
+           font-weight: bold;
+           top: 14px;
+           left: 20px;
+           z-index: 10;
+           background-color: rgba(34,34,34,.8);
+           height: 50;
+           width: 240;
+           color: white;
+           line-height: 24px;
+           padding: 20px;">
+    </div>
+
     <div></div>
     <div id="wrapper">
     <div id="map-canvas"></div>

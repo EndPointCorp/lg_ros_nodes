@@ -1,6 +1,7 @@
 var panoClient;
 
 function panoRunner() {
+  THREE.ImageUtils.crossOrigin = '';
   init();
   animate(0);
 }
@@ -15,7 +16,13 @@ function getConfig(key, def) {
 function init() {
   var container, vertFov, aspectRatio;
   var yawRads, pitchRads, rollRads, isLeader;
-  var ros = new ROSLIB.Ros({ url: 'ws://localhost:9090' });
+  var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
+  var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
+  var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, false);
+  var showAttribution = getParameterByName('showAttribution', stringToBoolean, false);
+  var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
+
+  var ros = new ROSLIB.Ros({ url: url });
 
   container = document.getElementById( 'container' );
 
@@ -25,13 +32,37 @@ function init() {
   pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0);
   rollRads = toRad(getConfig('rollOffset', 0) * 1.0);
   isLeader = getConfig('leader', 'false').toLowerCase() == "true";
+  initialPano = getConfig('panoid', 0);
 
   panoClient = new PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads,
-      rollRads, isLeader);
+      rollRads, isLeader, initialPano);
 
   container.appendChild(panoClient.getDomElement());
 
   window.addEventListener('resize', onWindowResize, false);
+
+  var metadataTopic = new ROSLIB.Topic({
+    ros: ros,
+    name: '/panoviewer/metadata',
+    messageType: 'std_msgs/String',                                                                       
+    throttle_rate: 16,
+    queue_length: 1
+  });
+  
+  var handleMetadataMsg = function(msg) {
+    if (! showAttribution)
+      return;
+
+    $("#titlecard").show();
+    $("#titlecard").text(JSON.parse(msg.data).location.description);
+  };  
+  
+  var handlePanoIdMsg = function(msg) {                                                                   
+    $("#titlecard").hide();
+  };
+
+  metadataTopic.subscribe(handleMetadataMsg);
+
 }
 
 function onWindowResize() {

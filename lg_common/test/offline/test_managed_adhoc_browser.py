@@ -52,3 +52,8 @@ class TestManagedAdhocBrowser(unittest.TestCase):
         self.assertEqual(ApplicationState.STOPPED, self.mab.state)
         self.assertTrue((self.url in self.mab.cmd))
         self.assertTrue(('--kiosk' in self.mab.cmd))
+
+
+if __name__ == '__main__':
+    import rostest
+    rostest.rosrun(PKG, NAME, TestManagedAdhocBrowser)

@@ -2,6 +2,269 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2016-04-29)
+------------------
+* pep8 fixes
+* Contributors: Jacob Minshall
+
+1.1.50 (2016-04-27)
+-------------------
+* move new loginfo logging to logdebug
+* added log watcher
+* fix up logging
+  Move some logerrs to log{warn,info} depending on the information being
+  logged. Also s/rospy.logerror/rospy.logerr/
+* Contributors: Jacob Minshall
+
+1.1.49 (2016-04-26)
+-------------------
+* Fixed tests:
+  - renamed files to reflect new functionality (new strategies) - tests
+  coverage is missing for non-default ones
+  - amended some code I wrongly added to meat
+  - pep8'ized code
+* Fixed tests for `#126 <https://github.com/EndPointCorp/lg_ros_nodes/issues/126>`_
+* lg_stats part 2
+  - re-thinked activity sources parsing - lg_activity tests need to be
+  written to make sure its not broken
+  - moved count and average processors to background tasks like
+  resubmitters - good idea by @zdenekmaxa
+  - added `measurement` message field and moved attribute mapping so that
+  ROS topic are independent from measurment names
+* Some docs amendments
+* lg_stats strategies and activity sources:
+  - added support for nested slots value extraction
+  - refactored lg_activity to use shared helper for the above
+  - removed cruft for strategies - replaced with proper strategies
+  - added support for count and average
+  - didnt test it yet - havent amended tests to resemble new functionality
+  yet
+* Contributors: Wojciech Ziniewicz
+
+1.1.48 (2016-04-20)
+-------------------
+
+1.1.47 (2016-04-15)
+-------------------
+
+1.1.46 (2016-04-15)
+-------------------
+* fix up changelogs
+* Contributors: Jacob Minshall
+
+1.1.45 (2016-04-14)
+-------------------
+
+1.1.44 (2016-04-14)
+-------------------
+
+1.1.43 (2016-04-14)
+-------------------
+
+1.1.42 (2016-04-14)
+-------------------
+* updated changelogs for new release
+* restart browser on soft relaunch
+* restart earth process on soft relaunch
+* softrelaunch initial work
+* Contributors: Jacob Minshall, Zdenek Maxa
+
+* use rosunit to run offline tests, touch: `#195 <https://github.com/EndPointCorp/lg_ros_nodes/issues/195>`_
+* restart browser on soft relaunch
+* restart earth process on soft relaunch
+* softrelaunch initial work
+* Contributors: Jacob Minshall, Zdenek Maxa
+
+1.1.41 (2016-04-13)
+-------------------
+* Generated changelogs while preparing for new release
+* Update managed_browser.py
+  Add `--enable-webgl` `--ignore-gpu-blacklist` for managed browser
+* Contributors: Dmitry Kiselev, Zdenek Maxa
+
+* Update managed_browser.py
+  Add `--enable-webgl` `--ignore-gpu-blacklist` for managed browser
+* Contributors: Dmitry Kiselev
+
+1.1.40 (2016-03-23)
+-------------------
+
+1.1.39 (2016-03-16)
+-------------------
+
+1.1.38 (2016-03-09)
+-------------------
+
+1.1.37 (2016-03-04)
+-------------------
+* managed_browser: extensions loading
+* Contributors: Jacob Minshall
+
+1.1.36 (2016-02-17)
+-------------------
+* lg\_{common,earth}: set initial state
+  This will allow us to start up a hidden window initially.
+* Contributors: Jacob Minshall
+
+1.1.35 (2016-02-05)
+-------------------
+
+1.1.34 (2016-02-05)
+-------------------
+
+1.1.33 (2016-02-04)
+-------------------
+
+1.1.32 (2016-01-28)
+-------------------
+
+1.1.31 (2016-01-20)
+-------------------
+* static_browser: fix issues with undefined variables
+* Contributors: Jacob Minshall
+
+1.1.30 (2016-01-11)
+-------------------
+* pdfviewer: stretches to either height and width of screen
+  This ends up only stretching to the width, which is fine because of the
+  ratio. Now some good geometry will be needed to make things look pretty.
+* Contributors: Jacob Minshall
+
+1.1.29 (2016-01-04)
+-------------------
+
+1.1.28 (2015-12-10)
+-------------------
+* command_handler: added code to command and listener node
+* Contributors: Jacob Minshall
+
+1.1.27 (2015-11-25)
+-------------------
+
+1.1.26 (2015-11-25)
+-------------------
+
+1.1.25 (2015-11-17)
+-------------------
+
+1.1.24 (2015-11-16)
+-------------------
+
+1.1.23 (2015-11-13)
+-------------------
+
+1.1.22 (2015-11-05)
+-------------------
+
+1.1.21 (2015-10-22)
+-------------------
+
+1.1.20 (2015-10-21)
+-------------------
+* Fix Chrome 46 window management
+* Contributors: Matt Vollrath
+
+1.1.19 (2015-10-20)
+-------------------
+
+1.1.18 (2015-10-20)
+-------------------
+
+1.1.17 (2015-10-16)
+-------------------
+* touchscreen: removed state from touchscreen
+  There didn't seem to be a reason to hide the touchscreen, and this
+  makes the state changer a pain to interact with. Changes will come
+  to the state changer in the future to allow ignoring certain REs
+  matching topics.
+* Contributors: Jacob Minshall
+
+1.1.16 (2015-10-11)
+-------------------
+
+1.1.15 (2015-10-10)
+-------------------
+
+1.1.14 (2015-10-08)
+-------------------
+
+1.1.13 (2015-10-08)
+-------------------
+* Better handling of timeouts
+* Contributors: Adam Vollrath
+
+1.1.12 (2015-10-07)
+-------------------
+* state_changer: test: sleep before publishing
+  The array based mock state uncovered an issue, the very first time these
+  publishers were created, they didn't actually publish anything, even
+  with the wait_for_pub in there.
+* state_changer: test: use array of states to check for extra messages
+* state_changer: add rostest to cmake
+* pep8: ignore E265, block comments requiring space after #
+* state_changer: test
+* state_changer: sleep for a second when creating new publishers
+  Creating a publisher and then publishing on it right after seems to not
+  work very well in rospy. This mitigates that problem.
+* state_changer: StringArray is an array of actual strings, not Strings
+  There is no string.data, msg.strings is an actual array of strings,
+  which python can handle just fine.
+* state_changer: moved class to it's own file for testing
+* state_changer: use an array of strings
+  Multiple activities can be passed to the state changer, and only those
+  ones will be set to VISIBLE.
+* lg_common: added the StringArray type
+* link to state_changer.py
+* lg_common: added a state handler/changer
+  This will publish HIDDEN to all other state listening topics, except for
+  the one specified in the string passed to /state_handler/activate
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
+1.1.11 (2015-10-06)
+-------------------
+* Fixed touchscreen typo
+* Contributors: Wojciech Ziniewicz
+
+1.1.10 (2015-10-05)
+-------------------
+* Added lots of docs
+* Fixed pep8
+
+1.1.9 (2015-09-25)
+------------------
+* Dont start application if X is not available
+* Better logging for dependencies
+* Added missing imports
+* ADded dependency checking and fixed slots deserialization
+* lg_replay: retain permissions on other event devices
+* lg_replay: lg_common: make sure we iterate over tuple
+  If __slots_\_ only has one value, it returns a string. Now we turn that
+  string into a tuple instead of trying to iterate over each character in
+  the string.
+* Make kmlsync work better by default, kill Futurama
+* pep8 fixes
+* Added ext dependency mechanism and added it to GE and SV/PV
+* Some debug for TS
+* Contributors: Adam Vollrath, Jacob Minshall, Joshua Tolley, Wojciech Ziniewicz
+
+1.1.8 (2015-09-25)
+------------------
+
+1.1.7 (2015-09-24)
+------------------
+
+1.1.6 (2015-09-24)
+------------------
+
+1.1.5 (2015-09-23)
+------------------
+
+1.1.4 (2015-09-23)
+------------------
+
+1.1.3 (2015-09-22)
+------------------
+
 1.1.2 (2015-09-22)
 ------------------
 
@@ -80,7 +343,6 @@ Changelog for package lg_common
 
 1.0.1 (2015-07-29)
 ------------------
-
 * Removed ambiguous var def thanks to @zdenekmaxa
 * Contributors: Wojciech Ziniewicz
 

@@ -21,13 +21,15 @@ DEFAULT_ARGS = [
     '--log-level=0',
     '--enable-logging',
     '--v=1',
+    '--enable-webgl',
+    '--ignore-gpu-blacklist'
 ]
 
 
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, **kwargs):
+                 shell=True, command_line_args='', extensions=[], **kwargs):
 
         cmd = [binary]
 
@@ -58,7 +60,12 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--disk-cache-dir={}'.format(tmp_dir))
         cmd.append('--crash-dumps-dir={}/crashes'.format(tmp_dir))
 
+        if extensions:
+            cmd.append('--load-extension={}'.format(','.join(extensions)))
+
         cmd.extend(DEFAULT_ARGS)
+        if command_line_args != '':
+            cmd.extend(command_line_args)
 
         # All remaining kwargs are mapped to command line args.
         # _ is replaced with -.
@@ -86,7 +93,12 @@ class ManagedBrowser(ManagedApplication):
                 cmd.append(url)
 
         cmd.append('&')
-        w_instance = 'Google-chrome \\({}\\)'.format(tmp_dir)
+        # In Chrome 46 the instance changes from
+        #   Google-chrome (...) to
+        #   google-chrome (...)
+        # Since all regex is escaped further down,
+        # just don't match the 'g' for now.
+        w_instance = 'oogle-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         rospy.loginfo("Command {}".format(cmd))
