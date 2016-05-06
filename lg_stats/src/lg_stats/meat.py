@@ -26,6 +26,7 @@ from lg_common.helpers import unpack_activity_sources
 # from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
+from lg_common.helpers import message_is_nonzero
 from lg_common.helpers import SlotUnpackingException
 from lg_stats.msg import Event
 import submitters
@@ -56,7 +57,7 @@ class Processor(object):
     - debug_pub - publisher for publishing debugging Event.msg
     - resolution - how often we submit the data
     - how long to wait until old values get re-submitted
-    - strategy: default, count, average (either get attrib from message and write
+    - strategy: default, count, count_nonzero, average (either get attrib from message and write
      to influx, count messages or calculate average of slot values
     - influxdb_client - instance of influx client
 
@@ -69,7 +70,8 @@ class Processor(object):
                  resolution=5,
                  inactivity_resubmission=5,
                  strategy='default',
-                 influxdb_client=None):
+                 influxdb_client=None
+                 ):
         if not msg_slot:
             msg = "Message slot not passed to Processor"
             rospy.logerr(msg)
@@ -240,8 +242,20 @@ class Processor(object):
             make each message increase a counter
             return False because no outbound message should be generated
             """
-            value = self._get_slot_value(src_msg)  # this may raise EmptyIncomingMessage
             self.counter += 1
+
+            return False
+
+        elif self.strategy == 'count_nonzero':
+            """
+            make each nonzero message increase a counter (where nonzero means that each
+            slot or subslot needs to be different than 0)
+            return False because no outbound message should be generated
+            """
+            is_nonzero = message_is_nonzero(src_msg)  # this may raise EmptyIncomingMessage
+
+            if is_nonzero:
+                self.counter += 1
 
             return False
 
@@ -263,6 +277,20 @@ class Processor(object):
                             src_topic=self.watched_topic,
                             field_name=self.msg_slot,
                             type="rate",
+                            value=str(self.counter))
+            self.counter = 0
+            rospy.logdebug("Flushing %s with out_msg=%s" % (self, out_msg))
+            self.submit_influxdata(out_msg)
+
+        elif self.strategy == 'count_nonzero':
+            """
+            Submit count_nonzero, clean buffer
+            """
+            rospy.logdebug("Flushing %s" % self)
+            out_msg = Event(measurement=self.measurement,
+                            src_topic=self.watched_topic,
+                            field_name=self.msg_slot,
+                            type="nonzero_rate",
                             value=str(self.counter))
             self.counter = 0
             rospy.logdebug("Flushing %s with out_msg=%s" % (self, out_msg))
@@ -363,17 +391,18 @@ def main():
     for stats_source in stats_sources:
         # for single stats_source dictionary please see unpack_activity_sources() docs
         # dynamic import based on package/message_class string representation
-        msg_type_module = get_message_type_from_string(stats_source["msg_type"])
+        msg_type = get_message_type_from_string(stats_source["msg_type"])
         p = Processor(watched_topic=stats_source["topic"],
                       msg_slot=stats_source["slot"],
                       debug_pub=debug_topic_pub,
                       resolution=resolution,
                       strategy=stats_source["strategy"],
                       inactivity_resubmission=inactivity_resubmission,
-                      influxdb_client=influxdb_client)
+                      influxdb_client=influxdb_client
+                      )
         p._start_resubmission_thread()  # keep it separated (easier testing)
-        rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type_module))
-        rospy.Subscriber(stats_source["topic"], msg_type_module, p.process, queue_size=3)
+        rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type))
+        rospy.Subscriber(stats_source["topic"], msg_type, p.process, queue_size=3)
         processors.append(p)
 
     # wake all procesors that have strategy of average and count and make sure their buffers are emptied

@@ -235,7 +235,7 @@ def list_of_dicts_is_homogenous(dicts_list):
 
 def rewrite_message_to_dict(message):
     """
-    Converts any object with __slots__ to a dictionary
+    Converts interactivespaces message (or message containing str type) to dict
     """
     deserialized_message = {}
     slots = message.__slots__
@@ -245,6 +245,23 @@ def rewrite_message_to_dict(message):
         deserialized_message[slot] = getattr(message, slot)
     return deserialized_message
 
+
+def message_is_nonzero(incoming_message):
+    """
+    returns True if all slots and subslots are nonzero
+    False otherwise
+
+    Note: tested only with geometry messages Twist()
+    """
+    slots_objects = incoming_message.__reduce__()[2]
+    for slot_object in slots_objects:
+        value_list = slot_object.__reduce__()[2]
+        print value_list
+        for value in value_list:
+            print value
+            if value != 0:
+                return True
+    return False
 
 def unpack_activity_sources(sources_string):
     """
