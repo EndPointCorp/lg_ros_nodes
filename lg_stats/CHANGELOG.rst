@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.3 (2016-05-06)
+------------------
 * Generated changelogs
 * 1.2.2
 * Added count_nonzero strategy for `#208 <https://github.com/EndPointCorp/lg_ros_nodes/issues/208>`_

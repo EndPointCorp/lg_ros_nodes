@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.3 (2016-05-06)
+------------------
 * Generated changelogs
 * 1.2.2
 * Contributors: Wojciech Ziniewicz

@@ -2,8 +2,8 @@
 Changelog for package lg_replay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.3 (2016-05-06)
+------------------
 * Generated changelogs
 * 1.2.2
 * Documented stuff and fixed parameter passing for `#208 <https://github.com/EndPointCorp/lg_ros_nodes/issues/208>`_
