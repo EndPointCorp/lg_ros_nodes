@@ -6,6 +6,7 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_replay import DevicePublisher, DeviceReplay, LgActivityException
 from evdev import InputDevice
 import os
+import commands
 
 
 def main():
@@ -15,6 +16,8 @@ def main():
     device_name = rospy.get_param('~device_name', None)
     event_ecode = rospy.get_param('~event_ecode', 'EV_KEY')
     device_path = rospy.get_param('~device_path', None)
+    user = rospy.get_param('~user', 'lg')
+    group = rospy.get_param('~group', 'lg')
 
     if not topic_name or not (device_name or device_path):
         msg = "You must provide lg_activity topic name and (device name or device path)"
@@ -26,7 +29,7 @@ def main():
     device_publisher = DevicePublisher(publisher)
 
     if device_path:
-        err, msg = check_device_path(device_path)
+        err, msg = check_device_path(device_path, user, group)
         if err:
             rospy.logerr('Invalid device path supplied: %s' % msg)
             return
@@ -43,13 +46,15 @@ def main():
         rospy.logwarn('Device unplugged most likely')
 
 
-def check_device_path(path):
+def check_device_path(path, user, group):
     if not os.path.exists(path):
         return True, 'Device does not exist'
-    err = not os.access(path, os.R_OK | os.W_OK)
+    err = not os.access(path, os.R_OK | os.O_RDWR | os.O_NONBLOCK)
     if err:
-        return err, 'Insufficient permissions'
-    return False, 'No problems here'
+        status, output = commands.getstatusoutput("sudo chown %s:%s %s" % (user, group, path))
+        if status != 0:
+            rospy.logerr("Could not attach to device: %s - insufficient permissions" % path)
+    return False, 'No problems with lg_replay device'
 
 if __name__ == '__main__':
     main()

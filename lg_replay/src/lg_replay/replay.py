@@ -29,7 +29,7 @@ class DeviceReplay:
         # TODO (wz): set device permissions using udev rules because otherwise this node needs sudo
         if self.device:
             self.device = device
-            rospy.loginfo("Initializing device replay with devic: %s" % self.device)
+            rospy.loginfo("Initializing device replay with device: %s" % self.device)
         else:
             try:
                 device_path = find_device(self.device_name)
