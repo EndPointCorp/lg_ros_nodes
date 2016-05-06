@@ -263,6 +263,7 @@ def message_is_nonzero(incoming_message):
                 return True
     return False
 
+
 def unpack_activity_sources(sources_string):
     """
     Unpacks ActivityTracker 'sources' param
