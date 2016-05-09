@@ -8,6 +8,7 @@ from std_msgs.msg import Bool
 from std_msgs.msg import String
 from lg_attract_loop import AttractLoop
 from lg_attract_loop import DirectorAPIProxy
+from lg_common.msg import ApplicationState
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -24,6 +25,10 @@ def main():
 
     # initialize Director publisher
     earth_query_publisher = rospy.Publisher('/earth/query/tour', String, queue_size=1)
+    earth_state_publisher = rospy.Publisher('/earth/state', ApplicationState, queue_size=1)
+
+    def set_earth(*args, **kwargs):
+        earth_state_publisher.publish(ApplicationState(ApplicationState.VISIBLE))
 
     director_scene_publisher = rospy.Publisher(director_scene_topic_name, GenericMessage, queue_size=1)
     director_presentation_publisher = rospy.Publisher(director_presentation_topic_name, GenericMessage, queue_size=1)
@@ -39,7 +44,7 @@ def main():
     director_api_proxy = DirectorAPIProxy(api_url)
 
     # initialize main logic class
-    attract_loop = AttractLoop(director_api_proxy, director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation)
+    attract_loop = AttractLoop(director_api_proxy, director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation, set_earth=set_earth)
 
     # subscribe to state changes
     rospy.Subscriber(activity_topic, Bool, attract_loop._process_activity_state_change)
