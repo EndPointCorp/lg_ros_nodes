@@ -2,6 +2,13 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.1 (2016-05-03)
+------------------
+* Disable tests for lg_stats
+  Missing influxdb libraries.
+  The builds must go on.
+* Contributors: Matt Vollrath
+
 1.2.0 (2016-04-29)
 ------------------
 

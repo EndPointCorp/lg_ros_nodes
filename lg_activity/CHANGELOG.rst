@@ -2,6 +2,11 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.1 (2016-05-03)
+------------------
+* Cleanup some unneeded testing nodes
+* Contributors: Matt Vollrath
+
 1.2.0 (2016-04-29)
 ------------------
 

@@ -4,10 +4,7 @@ InfluxDB submission / communication implementations.
 """
 
 import socket
-
 import rospy
-import nanotime
-from influxdb import InfluxDBClient
 
 
 class Submitter(object):
@@ -27,7 +24,7 @@ class Submitter(object):
 
     @staticmethod
     def get_timestamp():
-        return nanotime.now().nanoseconds()
+        return rospy.Time.now().to_nsec()
 
 
 class InfluxDirect(Submitter):
@@ -36,6 +33,7 @@ class InfluxDirect(Submitter):
 
     """
     def __init__(self, host=None, port=None, database=None):
+        from influxdb import InfluxDBClient
         self._client = InfluxDBClient(host=host, port=port, database=database)
         rospy.loginfo("InfluxDB (direct) client initialized (%s:%s/%s)." % (host, port, database))
 
