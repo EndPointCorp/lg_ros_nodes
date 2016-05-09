@@ -42,7 +42,7 @@ target_link_libraries(spacenav_rezero
   pthread
   hid
 )
-install(TARGETS spacenav_rezero
+install(TARGETS spacenav_rezero hid
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
