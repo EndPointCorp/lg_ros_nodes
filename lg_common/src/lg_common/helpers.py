@@ -187,6 +187,24 @@ def find_window_with_activity(scene, activity):
     return {}
 
 
+def get_first_activity_from_scene(scene):
+    windows = scene.get('windows', [])
+    if windows:
+        return windows[0].get('activity', '')
+    return None
+
+def get_all_activities_from_scene(scene):
+    windows = scene.get('windows', [])
+    activities = []
+    for window in windows:
+        activity = window.get('activity', None)
+        if activity:
+            activities.append(activity)
+    return activities
+
+def has_activity(scene, activity):
+    return activity in get_all_activities_from_scene(scene)
+
 def get_first_asset_from_activity(scene, activity):
     """
     Returns just one asset from the first matching activity, or None
