@@ -2,6 +2,13 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.3 (2016-05-06)
+------------------
+* Generated changelogs
+* 1.2.2
+* Added count_nonzero strategy for `#208 <https://github.com/EndPointCorp/lg_ros_nodes/issues/208>`_
+* Contributors: Wojciech Ziniewicz
+
 1.2.1 (2016-05-03)
 ------------------
 * Disable tests for lg_stats
