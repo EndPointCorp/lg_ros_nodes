@@ -2,6 +2,9 @@
 Changelog for package lg_replay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.2.3 (2016-05-06)
 ------------------
 * Generated changelogs
