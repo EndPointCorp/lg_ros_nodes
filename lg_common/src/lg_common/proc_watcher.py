@@ -1,18 +1,24 @@
 import os
+import rospy
 import psutil
-import threading
 import subprocess
 from time import sleep, time
+from appctl.srv import NodeQuery
 from lg_common.msg import ApplicationState
 from lg_common.helpers import write_log_to_file
+
+write_log_to_file = rospy.loginfo
 
 
 MAX_OUT_OF_BOUNDS = 7
 
 class ProcWatcher(object):
-    def __init__(self, cpu_time=None, inactive_time=30, cpu_usage=None,
-                 memory_usage=None, diskspace_usage=None, diskspace_dirs=list(),
-                 bad_exit_codes=list()):
+    def __init__(self, node_name, cpu_time=None, inactive_time=30,
+                 cpu_usage=None, memory_usage=None, diskspace_usage=None,
+                 diskspace_dirs=None):
+        if diskspace_dirs is None:
+            write_log_to_file('no diskspace dirs...')
+            diskspace_dirs = []
         # limits for usage
         self.cpu_time = cpu_time
         self.inactive_time = inactive_time
@@ -29,8 +35,6 @@ class ProcWatcher(object):
             self.diskspace_dirs = diskspace_dirs
         else:
             self.diskspace_dirs = []
-        # an array of exit codes
-        self.bad_exit_codes = bad_exit_codes
         # the proc runner
         self.proc = None
         # the pid from that proc runner
@@ -41,55 +45,53 @@ class ProcWatcher(object):
         self.app_state = None
         # time the state was changed
         self.app_state_changed = time()
-        # this all has to be done in the background
-        self.thread = threading.Thread(target=self.run)
         # if badstate is true, reset after !is_visible for inactive_timeout
         # seconds
-        self.badstate = False
-        write_log_to_file('please at least this should work...')
+        self.badstate = {}
 
-    def watch(self, proc):
-        self.proc = proc
-        write_log_to_file('or this should work...')
-        self.thread.start()
+        # communication with the process is done here
+        self.appctl_service = rospy.ServiceProxy(
+            '/appctl' + node_name + '/query', NodeQuery)
+        write_log_to_file('please at least this should work...')
 
     def set_state(self, state):
         self.app_state = state
         self.app_state_changed = time()
 
-    def run(self):
+    def get_pid(self):
+        return int(self.appctl_service('get_pid').resp)
+
+    def run(self, *args, **kwargs):
         """
-        Needs to do stuff in the background, weee threads
+        Needs to do stuff in the background
         """
-        while True:
-            sleep(1)
-            write_log_to_file('starting checks')
-            pid = self.proc.get_pid()
-            write_log_to_file('pid is ' + str(pid))
-            # if this is a new process, we should clear the state
-            if pid != self.pid:
-                write_log_to_file('proc ahs changed from %s' % self.pid)
-                self._proc_has_reset()
-                self.pid = pid
-            if self.pid == 0:
-                # 0 signifies error
-                write_log_to_file('proc id cannot be found...')
-                continue
-            try:
-                self.ps = psutil.Process(self.pid)
-                if self.cpu_time:
-                    self._check_cpu_time()
-                if self.cpu_usage:
-                    self._check_cpu_usage()
-                if self.memory_usage:
-                    self._check_memory_usage()
-                if self.diskspace_usage and self.diskspace_dirs:
-                    self._check_diskspace_usage()
-                if self.badstate:
-                    self._handle_bad_state()
-            except psutil.NoSuchProcess:
-                # the process no longer exists
-                continue
+        pid = self.get_pid()
+        # if this is a new process, we should clear the state
+        if pid != self.pid:
+            write_log_to_file('proc has changed from %s' % self.pid)
+            self._proc_has_reset()
+            self.pid = pid
+        if self.pid == 0:
+            # 0 signifies error
+            write_log_to_file('proc id cannot be found...')
+            return
+        try:
+            self.ps = psutil.Process(self.pid)
+            if self.cpu_time:
+                self._check_cpu_time()
+            if self.cpu_usage:
+                self._check_cpu_usage()
+            if self.memory_usage:
+                self._check_memory_usage()
+            if self.diskspace_usage and self.diskspace_dirs:
+                self._check_diskspace_usage()
+            if self.badstate:
+                self._handle_bad_state()
+        except psutil.NoSuchProcess:
+            # the process no longer exists
+            if self.badstate:
+                self._handle_bad_state()
+            return
 
     def is_visible(self):
         return self.app_state == ApplicationState.VISIBLE
@@ -98,6 +100,7 @@ class ProcWatcher(object):
         """
         Checks cpu time, if > self.cpu_time set badstate := True
         """
+        write_log_to_file('about to check...')
         times = self.ps.cpu_times()
         write_log_to_file('found cpu time of %s' % times.user + times.system)
         if (times.user + times.system) > self.cpu_time:
@@ -152,11 +155,12 @@ class ProcWatcher(object):
                                  stderr=subprocess.PIPE)
             out = p.communicate()
             try:
-                usage += int(out[0].split('\t'))
+                usage += int(out[0].split('\t')[0])
             except ValueError:
                 continue
 
-        if usage > self.diskspace_usage:
+        write_log_to_file('usage is: %s' % float(usage /1024.0**2))
+        if (usage / 1024.0**2) > self.diskspace_usage:
             self.badstate = True
 
     def _proc_has_reset(self):
@@ -169,6 +173,7 @@ class ProcWatcher(object):
         Needs to be in a !visible state, and have been set that way at
         least self.inactive_time seconds ago
         """
+        write_log_to_file('handling a bad state...')
         if not self.is_visible() and  \
                 (time() - self.app_state_changed) > self.inactive_time:
             self.ps.kill()

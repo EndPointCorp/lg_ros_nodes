@@ -6,3 +6,4 @@ from adhoc_browser_pool import AdhocBrowserPool
 from scene_listener import SceneListener
 from adhoc_browser_director_bridge import AdhocBrowserDirectorBridge
 from state_changer import StateChanger
+from proc_watcher import ProcWatcher
