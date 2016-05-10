@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.4 (2016-05-10)
+------------------
 * UBL - CI ping
 * Replaced nanotime with more rospy'ish nanotime getter. Moved influxdb import to constructor of InfluxDirect
 * Contributors: Wojciech Ziniewicz

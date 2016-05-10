@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.4 (2016-05-10)
+------------------
 * fix spacenav_rezeroer by installing library
 * Contributors: Jacob Minshall
 

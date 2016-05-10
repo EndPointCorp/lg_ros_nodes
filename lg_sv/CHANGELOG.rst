@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.4 (2016-05-10)
+------------------
 * lg_sv: ignore 'no_activity' scene
   Also don't just check for the first window's activity to check for the
   streetview activity type, check all activities. This will allow us to
