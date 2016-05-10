@@ -10,7 +10,6 @@ from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
 from lg_activity.msg import ActivityState
 from std_msgs.msg import Bool
-from lg_common.helpers import write_log_to_file
 
 
 class ActivitySourceNotFound(Exception):
@@ -200,14 +199,10 @@ class ActivitySource:
         if list_of_dicts_is_homogenous(self.messages):
             self.messages = self.messages[-self.delta_msg_count + 1:]
             self.callback(self.topic, state=False, strategy='delta')
-            if self.debug:
-                write_log_to_file('false delta')
             return False  # if list if homogenous than there was no activity
         else:
             self.messages = self.messages[-self.delta_msg_count + 1:]
             self.callback(self.topic, state=True, strategy='delta')
-            if self.debug:
-                write_log_to_file('true delta')
             return True  # if list is not homogenous than there was activity
 
     def _is_value_active(self):
@@ -345,24 +340,18 @@ class ActivityTracker:
 
         try:
             try:
-                write_log_to_file('activity_callback')
-                if self.activity_states[topic_name]['state'] == state and strategy != 'activity':
-                    write_log_to_file('state didnt change')
+                if self.activity_states[topic_name]['state'] == state:
                     rospy.logdebug("State of %s didnt change" % topic_name)
                 else:
                     self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-                    write_log_to_file('state changed to %s at %s' % (self.activity_states[topic_name]["state"], self.activity_states[topic_name]["time"]))
                     rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
             except KeyError:
-                write_log_to_file('key error...')
-                write_log_to_file('activity states is %s' % str(self.activity_states))
                 rospy.loginfo("Initializing topic name state: %s" % topic_name)
                 self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
 
             self._check_states()
             return True
         except Exception, e:
-            write_log_to_file('outer error... %s' % e)
             rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
             return False
 
@@ -403,7 +392,6 @@ class ActivityTracker:
         """
         now = rospy.get_time()
         self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if (now - self.timeout) < state['time']}
-        write_log_to_file('active within timeout %s difference is %f current active %s' % (str(self.sources_active_within_timeout), now - self.timeout, str(self.active)))
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True
