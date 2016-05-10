@@ -2,7 +2,7 @@
 
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
-from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback
+from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String
@@ -81,13 +81,17 @@ def main():
 
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
-        asset = get_first_asset_from_activity(scene, server_type)
-        rospy.loginfo('handling director message, got asset: %s' % asset)
-        if not asset:
-            rospy.loginfo('there was no asset...')
+        has_asset = has_activity(scene, server_type)
+        has_no_activity = has_activity(scene, 'no_activity')
+        if has_no_activity:
+            rospy.loginfo('ignoring scene due to no_activity')
+            return
+        if not has_asset:
+            rospy.loginfo('hiding self')
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+        asset = get_first_asset_from_activity(scene, server_type)
         if asset.__class__ == dict:
             assert 'panoid' in asset
             panoid = asset['panoid']

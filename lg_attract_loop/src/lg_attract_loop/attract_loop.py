@@ -26,8 +26,15 @@ class DirectorAPIProxy:
             rospy.logerr("Could not get content from URL: %s" % url)
 
 
+def MockFunc(*args, **kwargs):
+    pass
+
+
 class AttractLoop:
-    def __init__(self, api_proxy, director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation=None):
+    def __init__(self, api_proxy, director_scene_publisher,
+                 director_presentation_publisher, stop_action,
+                 earth_query_publisher, default_presentation=None,
+                 set_earth=MockFunc):
         """
         Class responsible for playing back presentations/scenes that are marked as "attract_loop"
         in Liquid Galaxy content management system.
@@ -42,6 +49,7 @@ class AttractLoop:
         self.attract_loop_queue = []
         self.play_loop = False
         self.scene_timer = 0
+        self.set_earth = set_earth
         self.initialize_timer()
 
     def initialize_timer(self):
@@ -61,6 +69,7 @@ class AttractLoop:
         elif message.data is False and self.play_loop is False:
             rospy.loginfo("Director: Attract loop becoming active")
             self.play_loop = True
+            self.set_earth()
         else:
             rospy.logerr("Activity message contained unknown state")
 
