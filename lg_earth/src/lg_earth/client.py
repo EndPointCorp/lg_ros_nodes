@@ -8,7 +8,6 @@ from tempfile import gettempdir as systmp
 import rospy
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
-from client_config import ClientConfig
 
 TOOLBAR_HEIGHT = 22
 
@@ -17,9 +16,11 @@ CUSTOM_CONFIG_DIR = '/lg'
 
 class Client:
     """Google Earth client launcher."""
-    def __init__(self, initial_state=None):
-        args, geplus_config, layers_config, kml_content, view_content = \
-            self._get_config()
+    def __init__(self, config, initial_state=None):
+        args, geplus_config, layers_config, kml_content, view_content, \
+            tmpdir, instance = config
+        self.tmpdir = tmpdir
+        self.instance = instance
 
         # Skip window management if this window is hidden.
         if '--hidegui' in args:
@@ -112,7 +113,8 @@ class Client:
             str: This node's ROS name, sanitized for use as a temp path and
                 window identifier.
         """
-        return '_earth_instance_' + rospy.get_name().strip('/')
+        #return '_earth_instance_' + rospy.get_name().strip('/')
+        return self.instance
 
     def _get_tempdir(self):
         """Get this client's unique temporary path.
@@ -120,7 +122,8 @@ class Client:
         Returns:
             str: Path to this client's temporary directory.
         """
-        return os.path.normpath(systmp() + '/' + self._get_instance())
+        #return os.path.normpath(systmp() + '/' + self._get_instance())
+        return self.tmpdir
 
     def _make_tempdir(self):
         """Create a temporary directory and register cleanup on shutdown."""
@@ -136,14 +139,6 @@ class Client:
         except OSError:
             pass
 
-    def _get_config(self):
-        """Grab configuration from the ClientConfig helper.
-
-        Returns:
-            tuple: See ClientConfig.get_config().
-        """
-        config = ClientConfig(self._get_tempdir(), self._get_instance())
-        return config.get_config()
 
     def _render_file(self, content, path):
         """Checks if a custom file is provided, if it is use it, if not
