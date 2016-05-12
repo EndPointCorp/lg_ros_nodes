@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.5 (2016-05-12)
+------------------
 * rename viewsync_port variable to avoid issues
   Many systems have a different viewsync_port between the center port and
   all others. Instead of changing all the data bags, renaming the param

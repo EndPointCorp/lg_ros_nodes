@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.5 (2016-05-12)
+------------------
 * hide stats tests for now
 * Contributors: Jacob Minshall
 

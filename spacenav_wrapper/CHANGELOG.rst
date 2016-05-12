@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.5 (2016-05-12)
+------------------
 * add libudev-dev to run dependencies as well
 * Contributors: Galaxy Admin, Jacob Minshall
 
