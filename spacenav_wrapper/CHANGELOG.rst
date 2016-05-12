@@ -2,6 +2,11 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add libudev-dev to run dependencies as well
+* Contributors: Galaxy Admin, Jacob Minshall
+
 1.2.4 (2016-05-10)
 ------------------
 * fix spacenav_rezeroer by installing library

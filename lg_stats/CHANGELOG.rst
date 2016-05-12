@@ -2,6 +2,11 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* hide stats tests for now
+* Contributors: Jacob Minshall
+
 1.2.4 (2016-05-10)
 ------------------
 * UBL - CI ping
