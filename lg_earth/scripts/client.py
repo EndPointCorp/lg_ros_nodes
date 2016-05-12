@@ -64,7 +64,7 @@ def main():
 
 def make_viewsync():
     repeat_host = rospy.get_param('~viewsync_host', '10.42.42.255')
-    repeat_port = rospy.get_param('~viewsync_port', 42000)
+    repeat_port = rospy.get_param('~viewsync_port_new', 42000)
 
     pose_pub = rospy.Publisher(
         '/earth/pose', PoseStamped, queue_size=3

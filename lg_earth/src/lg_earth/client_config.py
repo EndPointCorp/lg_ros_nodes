@@ -39,7 +39,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         viewsync_port = viewsync_port
         viewsync_hostname = '127.0.0.1'
     else:
-        viewsync_port = rospy.get_param('~viewsync_port', 42000)
+        viewsync_port = rospy.get_param('~viewsync_port_new', 42000)
         viewsync_hostname = rospy.get_param('~viewsync_host', '10.42.42.255')
     horiz_fov = rospy.get_param('~horiz_fov', 65)
     yaw_offset = rospy.get_param('~yaw_offset', 0)

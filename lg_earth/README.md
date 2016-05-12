@@ -69,7 +69,7 @@ Run with sudo.
 * `viewsync_send` [bool] - Send viewsync datagrams. Default: `false`
 * `viewsync_host` [string] - Hostname/IP for viewsync communication. Default:
   `10.42.42.255`
-* `viewsync_port` [int] - Port for viewsync communication. Default: `42000`
+* `viewsync_port_new` [int] - Port for viewsync communication. Default: `42000`
 * `query_file` [string] - Path to the query.txt file. Default: `/tmp/ge_queryfile`
 * `horiz_fov` [float] - Horizontal field of view in degrees. Default: `65`
 * `yaw_offset` [float] - Yaw view offset in degrees. Default: `0`
