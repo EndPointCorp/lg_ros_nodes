@@ -23,6 +23,7 @@ if __name__ == '__main__':
     )
 
     relay = ViewsyncRelay(
+        listen_addr=(listen_host, listen_port),
         repeat_addr=(repeat_host, repeat_port),
         pose_pub=pose_pub,
         planet_pub=planet_pub
