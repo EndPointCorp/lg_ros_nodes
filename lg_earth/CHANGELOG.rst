@@ -2,6 +2,12 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert "Revert "bring viewsync node into earth client""
+* Revert "bring viewsync node into earth client"
+* Contributors: Jacob Minshall
+
 1.2.5 (2016-05-12)
 ------------------
 * rename viewsync_port variable to avoid issues
