@@ -18,5 +18,5 @@ else
 fi
 
 lg-sync --really-sync catkin/src/ /home/lg/catkin_ws/src/
-lg-run-bg 'cd catkin_ws ; source /opt/ros/indigo/setup.bash ; catkin_make install'
+lg-run-bg 'cd catkin_ws ; source /opt/ros/indigo/setup.bash ; rosdep install --from-paths src --ignore-src --rosdistro indigo -y; catkin_make install'
 lg-sudo-bg 'stop roslaunch; start roslaunch'
