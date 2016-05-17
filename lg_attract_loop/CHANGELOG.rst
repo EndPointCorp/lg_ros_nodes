@@ -2,6 +2,17 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.6 (2016-05-16)
+------------------
+
+1.2.5 (2016-05-12)
+------------------
+
+1.2.4 (2016-05-10)
+------------------
+* lg_attract_loop: set earth to visible when starting attract loop
+* Contributors: Jacob Minshall
+
 1.2.3 (2016-05-06)
 ------------------
 * Generated changelogs

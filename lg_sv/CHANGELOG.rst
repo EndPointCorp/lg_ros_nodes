@@ -2,6 +2,20 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.6 (2016-05-16)
+------------------
+
+1.2.5 (2016-05-12)
+------------------
+
+1.2.4 (2016-05-10)
+------------------
+* lg_sv: ignore 'no_activity' scene
+  Also don't just check for the first window's activity to check for the
+  streetview activity type, check all activities. This will allow us to
+  have images overlayed on streetview without running into issues.
+* Contributors: Jacob Minshall
+
 1.2.3 (2016-05-06)
 ------------------
 * Generated changelogs

@@ -2,6 +2,21 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.6 (2016-05-16)
+------------------
+* remove unneeded run dependency
+* Contributors: Jacob Minshall
+
+1.2.5 (2016-05-12)
+------------------
+* add libudev-dev to run dependencies as well
+* Contributors: Galaxy Admin, Jacob Minshall
+
+1.2.4 (2016-05-10)
+------------------
+* fix spacenav_rezeroer by installing library
+* Contributors: Jacob Minshall
+
 1.2.3 (2016-05-06)
 ------------------
 * Generated changelogs
