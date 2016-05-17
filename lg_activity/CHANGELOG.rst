@@ -2,8 +2,8 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.7 (2016-05-17)
+------------------
 * fixes to lg_activity
 * lg_activity: require an activity source string
 * lg_activity: keep deleting messages until memory limit reached

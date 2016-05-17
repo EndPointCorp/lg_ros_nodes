@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.7 (2016-05-17)
+------------------
 * mask the influxdb lib dependency, touch: `#126 <https://github.com/endpointcorp/lg_ros_nodes/issues/126>`_
 * fixed lg_stats tests, touch: `#126 <https://github.com/endpointcorp/lg_ros_nodes/issues/126>`_
 * Contributors: Zdenek Maxa

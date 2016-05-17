@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.7 (2016-05-17)
+------------------
 * Merge branch 'wip-lg_activity_tests' of github.com:endpointcorp/lg_ros_nodes into development
 * fixing pep8
 * Merge branch 'development' of github.com:endpointcorp/lg_ros_nodes into wip-lg_activity_tests
