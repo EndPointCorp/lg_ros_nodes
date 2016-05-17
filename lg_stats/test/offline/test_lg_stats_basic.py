@@ -85,6 +85,8 @@ class TestSubmitters(object):
         assert influx["tags"]["topic"] == p.watched_topic
         assert influx["tags"]["field_name"] == whole_field_name
         assert influx["tags"]["value"] == "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1"
+        # real InfluxTelegraf.get_timestamp requires ROS init_node, this is a work-around
+        InfluxTelegraf.get_timestamp = staticmethod(InfluxMock.get_timestamp)
         influx = InfluxTelegraf.get_data_for_influx(out_msg)
         assert isinstance(influx, str)
         assert p.watched_topic in influx
@@ -102,6 +104,10 @@ class TestLGStatsProcessor(object):
     """
     Test Processor class.
     It's basically offline test, no ROS interaction.
+
+    Due to getting nanoseconds timestamp from ROS, this test class has
+    become more dependent on ROS and requires ROS init_node() call
+    prior to its running, thus it's been moved into online tests.
 
     """
     def test_basic(self):

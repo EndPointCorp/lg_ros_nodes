@@ -398,14 +398,13 @@ def main():
                       resolution=resolution,
                       strategy=stats_source["strategy"],
                       inactivity_resubmission=inactivity_resubmission,
-                      influxdb_client=influxdb_client
-                      )
+                      influxdb_client=influxdb_client)
         p._start_resubmission_thread()  # keep it separated (easier testing)
         rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type))
         rospy.Subscriber(stats_source["topic"], msg_type, p.process, queue_size=3)
         processors.append(p)
 
-    # wake all procesors that have strategy of average and count and make sure their buffers are emptied
+    # wake all processors that have strategy of average and count and make sure their buffers are emptied
     rospy.loginfo("Initializing lg_stats with: %s" % processors)
 
     rospy.loginfo("%s spinning ..." % ROS_NODE_NAME)

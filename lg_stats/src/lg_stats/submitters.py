@@ -4,6 +4,7 @@ InfluxDB submission / communication implementations.
 """
 
 import socket
+import time
 import rospy
 
 
@@ -24,7 +25,7 @@ class Submitter(object):
 
     @staticmethod
     def get_timestamp():
-        return rospy.Time.now().to_nsec()
+        raise RuntimeError("Base class method called, not implemented.")
 
 
 class InfluxDirect(Submitter):
@@ -106,6 +107,10 @@ class InfluxTelegraf(Submitter):
 
         return influx_str
 
+    @staticmethod
+    def get_timestamp():
+        return rospy.Time.now().to_nsec()
+
     def write_stats(self, data):
         """
         Input is a text message in the form of Influx line protocol.
@@ -141,8 +146,22 @@ class InfluxMock(Submitter):
     @staticmethod
     def get_data_for_influx(msg):
         rospy.logdebug("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
-        return InfluxTelegraf.get_data_for_influx(msg)
+        influx_str = ("""lg_stats_metric topic_name="%s",field_name="%s",type="%s",value="%s" %s""" %
+                      (msg.src_topic,
+                       msg.field_name,
+                       msg.type,
+                       msg.value,
+                       InfluxMock.get_timestamp()))
+        return influx_str
 
     def write_stats(self, data):
         rospy.logdebug("%s called, received msg: '%s'" % (self.__class__.__name__, data))
         self.messages.append(data)
+
+    @staticmethod
+    def get_timestamp():
+        """
+        This doesn't require ROS init_node.
+
+        """
+        return time.time() * long(1e9)
