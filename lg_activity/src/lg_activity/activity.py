@@ -42,64 +42,63 @@ class ActivitySource:
      triggered the activity by applying the provided strategy type
      - erase aggregated messages upon "is_active" call
     """
+    DELTA_MSG_COUNT = 5
+
     def __init__(self, memory_limit=1024000,
                  topic=None, message_type=None,
                  strategy=None, slot=None,
-                 value=None, value_min=None,
+                 value_min=None, debug=None,
                  value_max=None, callback=None):
+        self._check_init_args(topic, message_type, strategy, callback,
+                              value_min, value_max, slot)
+        self.message_type = message_type
+        self.callback = callback
+        self.slot = slot
+        self.strategy = strategy
+        self.value_min = value_min
+        self.value_max = value_max
+        self.debug = debug
+        self.topic = topic
+        self.memory_limit = memory_limit
+        self.messages = []
+        self.delta_msg_count = self.__class__.DELTA_MSG_COUNT
+
+        self._initialize_subscriber()
+        rospy.loginfo("Initialized ActivitySource: %s" % self)
+
+    def _check_init_args(self, topic, message_type, strategy, callback, value_min, value_max, slot):
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
                 (topic, message_type, strategy, callback)
-
             rospy.logerr(msg)
             raise ActivitySourceException(msg)
 
         if (type(topic) != str) or (type(message_type) != str):
             msg = "Topic and message type should be strings"
-
             rospy.logerr(msg)
             raise ActivitySourceException(msg)
 
-        if (value_min and value_max) and (not slot):
-            msg = "You must provide slot when providing value_min and value_max"
-            rospy.logerr(msg)
-            raise ActivitySourceException(msg)
-
-        self.message_type = message_type
-        self.callback = callback
-        self.slot = slot
-        self.value = value
-        self.strategy = strategy
-        self.value_min = value_min
-        self.value_max = value_max
-
-        if self.strategy == 'value':
+        if strategy == 'value':
             """
             For 'value' strategy we need to provide a lot of data
             """
-            if self.value and self.value_min and self.value_max and self.slot:
-                rospy.loginfo("Registering activity source with value=%s, min=%s, max=%s and msg attribute=%s" %
-                              (self.value, self.value_min, self.value_max, self.slot))
+            if value_min and value_max and slot:
+                rospy.loginfo("Registering activity source with min=%s, max=%s and msg attribute=%s" %
+                              (value_min, value_max, slot))
             else:
-                msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (value=%s, min=%s, max=%s and msg attribute=%s)" % \
-                    (self.value, self.value_min, self.value_max, self.slot)
+                msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (min=%s, max=%s and msg attribute=%s)" % \
+                    (value_min, value_max, slot)
                 rospy.logerr(msg)
                 raise ActivitySourceException(msg)
 
-        self.topic = topic
-        self.memory_limit = memory_limit
-        self.messages = []
-        self._initialize_subscriber()
-        rospy.loginfo("Initialized ActivitySource: %s" % self)
-
     def __str__(self):
-        string_representation = "<ActivitySource: slot: %s, value:%s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
-            (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
+        string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
+            (self.slot, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
 
     def __repr__(self):
-        string_representation = "<ActivitySource: slot: %s, value:%s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
-            (self.slot, self.value, self.strategy, self.value_min, self.value_max, self.topic)
+        string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
+            (self.slot, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
 
     def _initialize_subscriber(self):
@@ -121,10 +120,12 @@ class ActivitySource:
         """
         Check for memory limits, deserialize message to python dict, append message.
         """
-        if sys.getsizeof(self.messages) >= self.memory_limit:
-            rospy.logwarn("%s activity source memory limit reached (%s) - discarding 2 oldest messages" % (self.topic, self.memory_limit))
-            del self.messages[-1]
-            del self.messages[-1]
+        while sys.getsizeof(self.messages) >= self.memory_limit:
+            rospy.logwarn("%s activity source memory limit reached (%s) - discarding oldest message" % (self.topic, self.memory_limit))
+            if len(self.messages) <= 1:
+                rospy.logwarn("Too small of a memory limit set... Ignoring")
+                break
+            del self.messages[0]
 
         self._deserialize_and_append(message)
         self.is_active()
@@ -162,9 +163,10 @@ class ActivitySource:
 
         self.messages.append(deserialized_msg)
 
-    def _messages_met_value_constraints():
+    def _messages_met_value_constraints(self):
         for message in self.messages:
-            if not (message.values()[0] >= value_min) or not (message.values()[0]) <= value_max:
+            value = message.values()[0]
+            if value >= self.value_min and value <= self.value_max:
                 return False
         return True
 
@@ -181,41 +183,50 @@ class ActivitySource:
         This method can be called from 'self' as well as from the outside of self
         """
         if self.strategy == 'delta':
-            if len(self.messages) >= 5:
-                if list_of_dicts_is_homogenous(self.messages):
-                    self.messages = []
-                    self.callback(self.topic, state=False, strategy='delta')
-                    return False  # if list if homogenous than there was no activity
-                else:
-                    self.messages = []
-                    self.callback(self.topic, state=True, strategy='delta')
-                    return True  # if list is not homogenous than there was activity
-            else:
-                rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
-
+            self._is_delta_active()
         elif self.strategy == 'value':
-            if len(self.messages) >= 1:
-                if self._messages_met_value_constraints():
-                    self.messages = []
-                    self.callback(self.topic, state=False, strategy='value')
-                    return False  # messages met the constraints
-                else:
-                    self.callback(self.topic, state=True, strategy='value')
-                    return True  # messages didnt meet the constraints
-            else:
-                rospy.loginfo("Not enough messages (minimum of 1) for 'value' strategy")
-
+            self._is_value_active()
         elif self.strategy == 'activity':
-            if len(self.messages) > 0:
-                self.messages = []
-                self.callback(self.topic, state=True, strategy='activity')
-                return True
-            else:
-                self.messages = []
-                self.callback(self.topic, state=False, strategy='activity')
-                return False
+            self._is_activity_active()
         else:
             rospy.logerr("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
+
+    def _is_delta_active(self):
+        if len(self.messages) < self.delta_msg_count:
+            rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
+            return
+
+        if list_of_dicts_is_homogenous(self.messages):
+            self.messages = self.messages[-self.delta_msg_count + 1:]
+            self.callback(self.topic, state=False, strategy='delta')
+            return False  # if list if homogenous than there was no activity
+        else:
+            self.messages = self.messages[-self.delta_msg_count + 1:]
+            self.callback(self.topic, state=True, strategy='delta')
+            return True  # if list is not homogenous than there was activity
+
+    def _is_value_active(self):
+        if len(self.messages) < 1:
+            rospy.loginfo("Not enough messages (minimum of 1) for 'value' strategy")
+            return
+
+        if self._messages_met_value_constraints():
+            self.messages = []
+            self.callback(self.topic, state=False, strategy='value')
+            return False  # messages met the constraints
+        else:
+            self.messages = []
+            self.callback(self.topic, state=True, strategy='value')
+            return True  # messages didnt meet the constraints
+
+    def _is_activity_active(self):
+        if len(self.messages) > 0:
+            self.messages = []
+            self.callback(self.topic, state=True, strategy='activity')
+            return True
+        else:
+            self.callback(self.topic, state=False, strategy='activity')
+            return False
 
 
 class ActivitySourceDetector:
@@ -224,7 +235,7 @@ class ActivitySourceDetector:
     example source:
 
     source = { "topic": "/touchscreen/touch",
-               "msg_type": "interactivespaces_msgs/String",
+               "message_type": "interactivespaces_msgs/String",
                "strategy": "activity",
                "slot": None,
                "value_min": None,
@@ -275,7 +286,7 @@ class ActivityTracker:
 
     """
 
-    def __init__(self, publisher=None, timeout=10, sources=None):
+    def __init__(self, publisher=None, timeout=10, sources=None, debug=None):
         if (not publisher) or (not timeout) or (not sources):
             msg = "Activity tracker initialized without one of the params: pub=%s, timeout=%s, sources=%s" % \
                 (publisher, timeout, sources)
@@ -285,6 +296,7 @@ class ActivityTracker:
         self.active = True
         self.initialized_sources = []
         self.activity_states = {}
+        self.debug = debug
         self.timeout = timeout
         if not self.timeout:
             msg = "You must specify inactivity timeout"
@@ -323,9 +335,12 @@ class ActivityTracker:
 
         If all states turned True (active) then proper message is emitted
         """
+        if topic_name not in self.activity_states:
+            self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+
         try:
             try:
-                if self.activity_states[topic_name]['state'] == state and strategy != 'activity':
+                if self.activity_states[topic_name]['state'] == state:
                     rospy.logdebug("State of %s didnt change" % topic_name)
                 else:
                     self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
@@ -400,10 +415,10 @@ class ActivityTracker:
         """
         for source in self.sources:
             act = ActivitySource(
-                topic=source['topic'], message_type=source['msg_type'],
+                topic=source['topic'], message_type=source['message_type'],
                 strategy=source['strategy'], slot=source['slot'],
                 value_min=source['value_min'], value_max=source['value_max'],
-                callback=self.activity_callback)
+                callback=self.activity_callback, debug=self.debug)
             self.initialized_sources.append(act)
         return True
 
@@ -429,6 +444,11 @@ class ActivityTracker:
             activity_states_list.append(a)
 
         return activity_states_list
+
+    def poll_activities(self):
+        for source in self.initialized_sources:
+            source.is_active()
+        self._check_states()
 
     def _sleep_between_checks(self):
         # rospy.sleep(self.timeout)

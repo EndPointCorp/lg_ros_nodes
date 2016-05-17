@@ -249,8 +249,6 @@ def list_of_dicts_is_homogenous(dicts_list):
     for item in dicts_list:
         if previous_item != item:
             return False
-        else:
-            previous_item = item
     return True
 
 
@@ -313,7 +311,7 @@ def unpack_activity_sources(sources_string):
     - source string: '/touchscreen/touch:interactivespaces_msgs/GenericMessage:activity'
 
     result: source = { "topic": "/touchscreen/touch",
-               "msg_type": "interactivespaces_msgs/GenericMessage",
+               "message_type": "interactivespaces_msgs/GenericMessage",
                "strategy": "activity",
                "slot": None,
                "value_min": None,
@@ -322,9 +320,9 @@ def unpack_activity_sources(sources_string):
 
     - source string:'/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5':
 
-    result: source = { "topic": "/proximity_sensor/distance",
-               "msg_type": "sensor_msgs/Range",
-               "strategy": "value",
+    result: source = { "topic": "/touchscreen/touch",
+               "message_type": "interactivespaces_msgs/GenericMessage",
+               "strategy": "activity",
                "slot": range,
                "value_min": 0,
                "value_max": 2.5
@@ -335,7 +333,7 @@ def unpack_activity_sources(sources_string):
     - source string:'/proximity_sensor/distance:sensor_msgs/Range-range:average':
 
     result: source = { "topic": "/proximity_sensor/distance",
-               "msg_type": "sensor_msgs/Range",
+               "message_type": "sensor_msgs/Range",
                "strategy": "average",
                "slot": range,
                "value_min": None,
@@ -344,7 +342,8 @@ def unpack_activity_sources(sources_string):
 
     To define multiple sources use semicolon e.g.:
 
-    '/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5;/touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
+    '/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5
+    /touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
 
     """
 
@@ -356,9 +355,9 @@ def unpack_activity_sources(sources_string):
 
         topic = source_fields[0]
         try:
-            msg_type = source_fields[1].split('-')[0]
+            message_type = source_fields[1].split('-')[0]
         except IndexError, e:
-            msg_type = source_fields[1]
+            message_type = source_fields[1]
 
         try:
             slot = source_fields[1].split('-')[1]
@@ -380,13 +379,31 @@ def unpack_activity_sources(sources_string):
             value_min = None
             value_max = None
         single_source['topic'] = topic
-        single_source['msg_type'] = msg_type
+        single_source['message_type'] = message_type
         single_source['strategy'] = strategy
         single_source['slot'] = slot
         single_source['value_min'] = value_min
         single_source['value_max'] = value_max
         sources.append(single_source)
     return sources
+
+
+def build_source_string(topic, message_type, strategy, slot=None, value_min=None, value_max=None):
+    """
+    Builds source strings with some wizardry
+    """
+    # both are required
+    ret = topic + ':' + message_type
+    # only add sub slots if parent slots exist
+    if slot:
+        ret += '-' + slot
+    # required
+    ret += ':' + strategy
+    # only do min & max if both are there
+    if value_min and value_max:
+        ret += '-' + str(value_min) + ',' + str(value_max)
+
+    return ret
 
 
 def check_registration(e):
