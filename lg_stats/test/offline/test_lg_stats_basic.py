@@ -62,7 +62,10 @@ class TestSubmitters(object):
 
     def test_submitters_instantiation(self):
         pytest.raises(RuntimeError, Submitter)
-        InfluxDirect()
+        # InfluxDirect is the least used, now not necessary (due to Telegraf)
+        # submitter flavour. Don't run its instantiation, the constructor
+        # masks the InfluxDB lib dependency
+        # InfluxDirect()
         InfluxTelegraf()
         InfluxMock()
 
