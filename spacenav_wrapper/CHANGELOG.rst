@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.6 (2016-05-16)
+------------------
 * remove unneeded run dependency
 * Contributors: Jacob Minshall
 

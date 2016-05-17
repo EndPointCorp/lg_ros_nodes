@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.6 (2016-05-16)
+------------------
 * Revert "Revert "bring viewsync node into earth client""
 * Revert "bring viewsync node into earth client"
 * Contributors: Jacob Minshall
