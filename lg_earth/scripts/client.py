@@ -62,6 +62,7 @@ def main():
 
     rospy.spin()
 
+
 def make_viewsync():
     repeat_host = rospy.get_param('~viewsync_host', '10.42.42.255')
     repeat_port = rospy.get_param('~viewsync_port_new', 42000)

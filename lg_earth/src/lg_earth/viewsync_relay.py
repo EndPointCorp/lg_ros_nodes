@@ -28,7 +28,6 @@ class ViewsyncRelay:
         self.listen_sock.bind(('', 0))
         self.listen_port = self.listen_sock.getsockname()[1]
 
-
     @staticmethod
     def parse_pose(data):
         """Turn an Earth ViewSync datagram into a Pose.

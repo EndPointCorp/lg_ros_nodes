@@ -139,7 +139,6 @@ class Client:
         except OSError:
             pass
 
-
     def _render_file(self, content, path):
         """Checks if a custom file is provided, if it is use it, if not
         write standard content to that file.

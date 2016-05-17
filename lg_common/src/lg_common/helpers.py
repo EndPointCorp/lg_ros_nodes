@@ -193,6 +193,7 @@ def get_first_activity_from_scene(scene):
         return windows[0].get('activity', '')
     return None
 
+
 def get_all_activities_from_scene(scene):
     windows = scene.get('windows', [])
     activities = []
@@ -202,8 +203,10 @@ def get_all_activities_from_scene(scene):
             activities.append(activity)
     return activities
 
+
 def has_activity(scene, activity):
     return activity in get_all_activities_from_scene(scene)
+
 
 def get_first_asset_from_activity(scene, activity):
     """
