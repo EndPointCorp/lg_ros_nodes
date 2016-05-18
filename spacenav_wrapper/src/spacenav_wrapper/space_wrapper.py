@@ -62,13 +62,13 @@ class SpacenavWrapper(object):
             abs(twist_msg.angular.y) < self.gutter_val and \
             abs(twist_msg.angular.z) < self.gutter_val
 
-    def _is_twist_equal(self, twist1, twist2):
-        return twist1.linear.x == twist2.linear.x and \
-            twist1.linear.y == twist2.linear.y and \
-            twist1.linear.z == twist2.linear.z and \
-            twist1.angular.x == twist2.angular.x and \
-            twist1.angular.y == twist2.angular.y and \
-            twist1.angular.z == twist2.angular.z
+    def _is_twist_equal(self, twist1, twist2, epsilon=0.005):
+        return abs(twist1.linear.x - twist2.linear.x) < epsilon and \
+            abs(twist1.linear.y - twist2.linear.y) < epsilon and \
+            abs(twist1.linear.z - twist2.linear.z) < epsilon and \
+            abs(twist1.angular.x - twist2.angular.x) < epsilon and \
+            abs(twist1.angular.y - twist2.angular.y) < epsilon and \
+            abs(twist1.angular.z - twist2.angular.z) < epsilon
 
     def _is_twist_near_max(self, twist):
         """
@@ -80,12 +80,12 @@ class SpacenavWrapper(object):
         message > self.buffer_size times in a row. This would otherwise
         trigger a relaunch.
         """
-        if twist.linear.x > self.mid_value or \
-                twist.linear.y > self.mid_value or \
-                twist.linear.z > self.mid_value or \
-                twist.angular.x > self.mid_value or \
-                twist.angular.y > self.mid_value or \
-                twist.angular.z > self.mid_value:
+        if abs(twist.linear.x) > self.mid_value or \
+                abs(twist.linear.y) > self.mid_value or \
+                abs(twist.linear.z) > self.mid_value or \
+                abs(twist.angular.x) > self.mid_value or \
+                abs(twist.angular.y) > self.mid_value or \
+                abs(twist.angular.z) > self.mid_value:
             return True
         return False
 
@@ -100,10 +100,8 @@ class SpacenavWrapper(object):
         self.msg_buffer.append(twist_msg)
         self.msg_buffer = self.msg_buffer[self.buffer_size * -1:]
 
-        """
         if self._is_twist_near_max(twist_msg):
             return False
-        """
 
         if len(self.msg_buffer) < self.buffer_size:
             return False
