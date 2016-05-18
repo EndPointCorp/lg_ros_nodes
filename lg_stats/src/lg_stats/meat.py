@@ -391,7 +391,7 @@ def main():
     for stats_source in stats_sources:
         # for single stats_source dictionary please see unpack_activity_sources() docs
         # dynamic import based on package/message_class string representation
-        msg_type = get_message_type_from_string(stats_source["msg_type"])
+        msg_type = get_message_type_from_string(stats_source["message_type"])
         p = Processor(watched_topic=stats_source["topic"],
                       msg_slot=stats_source["slot"],
                       debug_pub=debug_topic_pub,
