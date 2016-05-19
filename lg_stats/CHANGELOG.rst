@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.8 (2016-05-19)
+------------------
 * remove write_log_to_file imports
 * change msg_type to message type
 * re-enable (again\!) lg_stats tests, touch: `#126 <https://github.com/endpointcorp/lg_ros_nodes/issues/126>`_

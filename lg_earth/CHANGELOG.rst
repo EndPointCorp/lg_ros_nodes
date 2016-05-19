@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.8 (2016-05-19)
+------------------
 * remove write_log_to_file imports
 * Contributors: Jacob Minshall
 

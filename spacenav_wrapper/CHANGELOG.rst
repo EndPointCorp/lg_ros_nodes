@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.8 (2016-05-19)
+------------------
 * remove write_log_to_file imports
 * fix tests by setting full_scale to 1
   The mid value without full scale is 0.5, so all of our messages were
