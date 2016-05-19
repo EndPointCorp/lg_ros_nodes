@@ -2,6 +2,12 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove write_log_to_file imports
+* removed mockity mock, mplayer tests exceluded from jenkins runs, touch: `#215 <https://github.com/endpointcorp/lg_ros_nodes/issues/215>`_
+* Contributors: Jacob Minshall, Zdenek Maxa
+
 1.2.7 (2016-05-17)
 ------------------
 

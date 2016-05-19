@@ -2,6 +2,16 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove write_log_to_file imports
+* fix tests by setting full_scale to 1
+  The mid value without full scale is 0.5, so all of our messages were
+  being ignored because they're > the mid value. Using full scale sets the
+  mid value at 350/2
+* add in missing abs calls to smooth out spacenav wrapper
+* Contributors: Jacob Minshall
+
 1.2.7 (2016-05-17)
 ------------------
 

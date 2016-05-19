@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove write_log_to_file imports
+* Contributors: Jacob Minshall
+
 1.2.7 (2016-05-17)
 ------------------
 * fixing pep8
