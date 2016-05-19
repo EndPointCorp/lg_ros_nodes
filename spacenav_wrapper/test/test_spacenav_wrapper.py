@@ -28,7 +28,7 @@ class Mock(object):
 class TestSpacenavWrapper(unittest.TestCase):
     def setUp(self):
         self.mock = Mock()
-        self.wrapper = SpacenavWrapper(twist=self.mock, rezero=self.mock.rezero)
+        self.wrapper = SpacenavWrapper(twist=self.mock, rezero=self.mock.rezero, full_scale=1)
         self._space_pub = rospy.Publisher(
             '/spacenav/twist', Twist, queue_size=10)
         rospy.Subscriber(
