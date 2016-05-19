@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.7 (2016-05-17)
+------------------
+* fixing pep8
+* Contributors: Zdenek Maxa
+
 1.2.6 (2016-05-16)
 ------------------
 * Revert "Revert "bring viewsync node into earth client""

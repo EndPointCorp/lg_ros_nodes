@@ -2,6 +2,24 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.7 (2016-05-17)
+------------------
+* Merge branch 'wip-lg_activity_tests' of github.com:endpointcorp/lg_ros_nodes into development
+* fixing pep8
+* Merge branch 'development' of github.com:endpointcorp/lg_ros_nodes into wip-lg_activity_tests
+  not quite fixed yet
+  Conflicts:
+  lg_activity/src/lg_activity/activity.py
+  lg_activity/test/online/test_tracker.test
+  lg_common/src/lg_common/helpers.py
+* lg_activity: remove unneeded assignment
+* WIP more work in progress
+* WIP more wip...
+* WIP change msg_type to message_type
+  I think it was called both, so now only one is used.
+* WIP squash this commit
+* Contributors: Galaxy Admin, Jacob Minshall, Wojciech Ziniewicz, Zdenek Maxa
+
 1.2.6 (2016-05-16)
 ------------------
 

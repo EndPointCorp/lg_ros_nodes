@@ -2,6 +2,25 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.7 (2016-05-17)
+------------------
+* fixes to lg_activity
+* lg_activity: require an activity source string
+* lg_activity: keep deleting messages until memory limit reached
+* lg_activity: initialize subscriber at the end of __init\_\_
+* pep8 fixes
+* lg_activity: test for invalid arguments to ActivitySource
+* lg_activity: simplified __init_\_ method
+  Moved all the argument checking into a private function for the class,
+  plus removed an unneeded (duplicate) check.
+* lg_activity: move is_active logic out to helper methods
+* lg_activity: fix test
+* lg_activity: pep8 fixes
+* lg_activity: fixed _message_met_value_constraints
+  The function had invalid parameters, and bad logic.
+* lg_activity: test: range test, uncovered bug in lg_activity
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
 1.2.6 (2016-05-16)
 ------------------
 
