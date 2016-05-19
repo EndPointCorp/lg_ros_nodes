@@ -10,7 +10,6 @@ from lg_common.msg import WindowGeometry
 from appctl_support import ProcController
 from lg_common.msg import ApplicationState
 from lg_media.srv import MediaAppsInfoResponse
-from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_app_instances_ids
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.helpers import get_app_instances_to_manage

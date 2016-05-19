@@ -23,7 +23,6 @@ import threading
 import rospy
 
 from lg_common.helpers import unpack_activity_sources
-# from lg_common.helpers import write_log_to_file
 from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
 from lg_common.helpers import message_is_nonzero

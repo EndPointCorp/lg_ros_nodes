@@ -2,7 +2,6 @@
 
 import rospy
 from geometry_msgs.msg import Twist
-from lg_common.helpers import write_log_to_file
 
 GUTTER_VAL = 0.01
 

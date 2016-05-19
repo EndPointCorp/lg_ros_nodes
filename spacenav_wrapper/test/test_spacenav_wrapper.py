@@ -7,8 +7,6 @@ import unittest
 from geometry_msgs.msg import Twist
 from spacenav_wrapper import SpacenavWrapper
 
-from lg_common.helpers import write_log_to_file
-
 PKG = 'spacenav_wrapper'
 NAME = 'test_spacenav'
 

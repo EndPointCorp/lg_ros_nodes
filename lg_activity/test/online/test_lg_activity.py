@@ -19,8 +19,6 @@ from lg_common.helpers import unpack_activity_sources, build_source_string
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
 
-from lg_common.helpers import write_log_to_file
-
 
 ACTIVITY_TRACKER_PARAM = '/spacenav/twist:geometry_msgs/Twist:delta'
 
@@ -195,7 +193,6 @@ class TestActivityTracker(unittest.TestCase):
         self.true_state()
 
     def test_activity_tracker(self):
-        write_log_to_file('starting activity tracker test!!!!')
         debug_sub = rospy.Subscriber('/spacenav/twist', Twist, self.foo_cb)
         spacenav = SpaceNavMockSource()
         sources = ActivitySourceDetector(spacenav.source_string).get_sources()
@@ -216,7 +213,6 @@ class TestActivityTracker(unittest.TestCase):
             self.assertTrue(tracker.active)
             self.assertTrue(pub.data[-1])
             self.assertEqual(len(pub.data), 1)
-            write_log_to_file('publishing message a...')
             p.publish(msg_a)
         # sleep for longer than timeout
         rospy.sleep(timeout + 3)
@@ -227,17 +223,14 @@ class TestActivityTracker(unittest.TestCase):
         self.assertEqual(len(pub.data), 2)
 
         rospy.sleep(timeout + 3)
-        write_log_to_file('about to set to true, hopefully')
 
         # publish different message once to set to active
         p.publish(msg_b)
-        write_log_to_file('just set to true')
         rospy.sleep(0.5)
         tracker.poll_activities()
         self.assertTrue(tracker.active)
         self.assertTrue(pub.data[-1])
         self.assertEqual(len(pub.data), 3)
-        write_log_to_file('ending activity tracker test!!!!')
 
     def false_state(self):
         self.assertFalse(self.cb.state)
@@ -255,15 +248,11 @@ class TestActivityTracker(unittest.TestCase):
     def foo_cb(self, msg):
         """Do nothing callback"""
         return
-        write_log_to_file('got spacenav...')
-        write_log_to_file('linear %f %f %f, angular %f %f %f' % (msg.linear.x, msg.linear.y, msg.linear.z, msg.angular.x, msg.angular.y, msg.angular.z,))
 
     def test_aaa_spacenav_thing(self):
-        write_log_to_file('starting aaaa test')
         debug_pub = rospy.Publisher('/spacenav/twist', Twist, queue_size=10)
         debug_sub = rospy.Subscriber('/spacenav/twist', Twist, self.foo_cb)
         rospy.sleep(1)
-        write_log_to_file('publishing')
         debug_pub.publish(make_twist_messages(0))
 
     def test_invalid_activity_source_arguments(self):

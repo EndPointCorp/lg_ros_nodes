@@ -8,7 +8,6 @@ from lg_common.webapp import ros_tornado_spin
 import tornado.web
 import tornado.ioloop
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.helpers import write_log_to_file
 from std_msgs.msg import String
 
 

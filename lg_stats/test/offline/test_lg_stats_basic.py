@@ -20,7 +20,6 @@ import json
 import pytest
 import rospkg
 
-from lg_common.helpers import write_log_to_file
 from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
 from appctl.msg import Mode
