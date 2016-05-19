@@ -67,7 +67,7 @@ class ManagedMplayer(ManagedApplication):
                                                           self.window.geometry.y)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
         cmd.extend([self.url])
-        cmd.extend(["&"])
+        #cmd.extend(["&"])  # unnecessary, mplayer complains File not found: '&'
         rospy.loginfo("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 

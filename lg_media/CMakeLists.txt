@@ -47,5 +47,8 @@ if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest(test/online/test_mplayer_adhoc_media.test)
   add_rostest(test/online/test_mplayer_director_bridge.test)
-  add_rostest(test/online/test_mplayer_scenarios_real.test)
+  # exclude this test. it's starting real mplayer in a ManagedWindow
+  # and it sometimes hangs, exceeds ROS allotted time for a test and fails
+  # details: https://github.com/EndPointCorp/lg_ros_nodes/issues/215
+  # add_rostest(test/online/test_mplayer_scenarios_real.test)
 endif()

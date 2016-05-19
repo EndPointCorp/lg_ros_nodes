@@ -146,7 +146,7 @@ class TestMediaService(object):
             pytest.fail("mplayer doesn't seem to start on "
                         "media: %s, app status: %s" % (media_msg, data))
 
-    def not_test_lg_media_topic_presence(self):
+    def test_lg_media_topic_presence(self):
         """
         Check lg_media topic is there.
 
@@ -158,7 +158,7 @@ class TestMediaService(object):
         assert topic_type is not None, "Topic not found: {}".format(TOPIC_NAME)
         assert topic_type == "%s/AdhocMedias" % ROS_NODE_NAME
 
-    def not_test_lg_media_service_call(self):
+    def test_lg_media_service_call(self):
         """
         Assert on presence of service, call the service.
 
@@ -166,7 +166,7 @@ class TestMediaService(object):
         data = self.lg_media_service_call()
         assert data == {}
 
-    def not_test_lg_media_start_app_request(self):
+    def test_lg_media_start_app_request(self):
         """
         Emit onto a topic mplayer app start request and check
         internal state of the MediaService.
@@ -178,7 +178,7 @@ class TestMediaService(object):
         self.perform_test(len_data=1, media_msg=media)
         self.shutdown_check_clean_up()
 
-    def not_test_lg_media_start_app_and_update_it(self):
+    def test_lg_media_start_app_and_update_it(self):
         """
         Have mplayer application started. Then under the same ID update the
         source URL and check the media manager internal status.
@@ -197,7 +197,7 @@ class TestMediaService(object):
         self.perform_test(len_data=1, media_msg=media)
         self.shutdown_check_clean_up()
 
-    def not_test_lg_media_start_app_and_start_another_one(self):
+    def test_lg_media_start_app_and_start_another_one(self):
         """
         Have mplayer application started. Then emit a message with different
         app id than the one which is already running.
@@ -218,7 +218,7 @@ class TestMediaService(object):
         self.perform_test(len_data=1, media_msg=media2)
         self.shutdown_check_clean_up()
 
-    def not_test_lg_media_start_two_apps_at_once(self):
+    def test_lg_media_start_two_apps_at_once(self):
         """
         Start two mplayer applications at once.
 
@@ -245,11 +245,6 @@ class TestMediaService(object):
                         "media1: %s, media2: %s, app status: %s" % (media1, media2, data))
         self.shutdown_check_clean_up()
 
-    def test_true(self):
-        """
-        Mockity mock
-        """
-        assert 1 == 1
 
 if __name__ == "__main__":
     # this is for testing via unittest rather than via py.test
