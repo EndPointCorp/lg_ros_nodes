@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 function setup_files() {
   ORIG_UMASK=`umask`
