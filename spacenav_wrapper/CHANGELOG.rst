@@ -2,6 +2,9 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.7 (2016-05-17)
+------------------
+
 1.2.6 (2016-05-16)
 ------------------
 * remove unneeded run dependency
