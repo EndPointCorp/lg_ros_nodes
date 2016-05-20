@@ -663,3 +663,32 @@ def get_nested_slot_value(slot, message):
                     rospy.logerr(msg)
 
     return {slot: deserialized_msg}
+
+def get_activity_config(scene, activity_name, window_viewport):
+    """
+    Returns configuration for the given activity on the given viewport in the given scene.
+
+    Args:
+        scene (interactivespaces_msgs.msg.GenericMessage)
+        activity_name (str)
+        window_viewport (str)
+
+    Returns:
+        dict: Configuration for the activity.
+        None: Activity not present on this viewport.
+    """
+    import json
+    scene = json.loads(scene.message)
+
+    def is_activity_window(window):
+        return window['activity'] == activity_name and \
+            w['presentation_viewport'] == window_viewport
+
+    try:
+        windows = [w for w in scene['windows'] if is_activity_window(w)]
+        activity_config = windows[0]['activity_config']
+    except AttributeError:
+        return None
+    except IndexError:
+        return None
+    return activity_config
