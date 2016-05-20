@@ -5,8 +5,8 @@ Changelog for package lg_common
 1.2.9 (2016-05-20)
 ------------------
 
-Forthcoming
------------
+1.2.10 (2016-05-20)
+-------------------
 * get_activity_config now in lg_common helpers
 * 1.2.9
 * Changelogs
