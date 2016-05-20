@@ -7,8 +7,8 @@ Changelog for package lg_stats
 * Fixed a typo for unknown strategies in meat.py of lg_stats (`#216 <https://github.com/EndPointCorp/lg_ros_nodes/issues/216>`_)
 * Contributors: Wojciech Ziniewicz
 
-Forthcoming
------------
+1.2.10 (2016-05-20)
+-------------------
 * 1.2.9
 * Changelogs
 * Fixed a typo for unknown strategies in meat.py of lg_stats (`#216 <https://github.com/endpointcorp/lg_ros_nodes/issues/216>`_)
