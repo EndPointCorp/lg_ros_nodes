@@ -5,6 +5,12 @@ Changelog for package lg_activity
 1.2.9 (2016-05-20)
 ------------------
 
+Forthcoming
+-----------
+* 1.2.9
+* Changelogs
+* Contributors: Wojciech Ziniewicz
+
 1.2.8 (2016-05-19)
 ------------------
 * remove write_log_to_file imports

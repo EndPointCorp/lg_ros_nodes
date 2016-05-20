@@ -5,6 +5,13 @@ Changelog for package lg_common
 1.2.9 (2016-05-20)
 ------------------
 
+Forthcoming
+-----------
+* get_activity_config now in lg_common helpers
+* 1.2.9
+* Changelogs
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
 1.2.8 (2016-05-19)
 ------------------
 
