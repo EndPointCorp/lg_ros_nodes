@@ -3,7 +3,7 @@
 import rospy
 from rosnode import ROSNodeIOException
 from interactivespaces_msgs.msg import GenericMessage
-from lg_replay import DevicePublisher, DeviceReplay, LgActivityException
+from lg_replay import DevicePublisher, DeviceReplay
 from evdev import InputDevice
 import os
 import commands
@@ -20,7 +20,7 @@ def main():
     group = rospy.get_param('~group', 'lg')
 
     if not topic_name or not (device_name or device_path):
-        msg = "You must provide lg_activity topic name and (device name or device path)"
+        msg = "You must provide lg_replay output topic name and (device name or device path)"
         rospy.logerr(msg)
         raise ROSNodeIOException(msg)
 

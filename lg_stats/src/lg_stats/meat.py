@@ -319,7 +319,7 @@ class Processor(object):
             """
             unknown strategy
             """
-            rospy.logdebug("Unknown strategy %s" % self.strategy)
+            rospy.logdebug("Unknown strategy %s for %s" % (self.strategy, self))
             pass
 
     def submit_influxdata(self, out_msg):
