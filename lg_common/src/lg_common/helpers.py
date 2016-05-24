@@ -687,6 +687,8 @@ def get_activity_config(scene, activity_name, window_viewport):
     try:
         windows = [w for w in scene['windows'] if is_activity_window(w)]
         activity_config = windows[0]['activity_config']
+    except KeyError:
+        return None
     except AttributeError:
         return None
     except IndexError:
