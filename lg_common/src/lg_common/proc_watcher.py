@@ -41,8 +41,8 @@ class ProcWatcher(object):
         self.pid = None
         # the psutil object
         self.ps = None
-        # tracking of the app state
-        self.app_state = None
+        # tracking of the app state TODO start using this
+        self.app_state = ApplicationState.VISIBLE
         # time the state was changed
         self.app_state_changed = time()
         # if badstate is true, reset after !is_visible for inactive_timeout
@@ -159,8 +159,8 @@ class ProcWatcher(object):
             except ValueError:
                 continue
 
-        write_log_to_file('usage is: %s' % float(usage /1024.0**2))
-        if (usage / 1024.0**2) > self.diskspace_usage:
+        write_log_to_file('usage is: %s' % float(usage /1024.0))
+        if (usage / 1024.0) > self.diskspace_usage:
             self.badstate = True
 
     def _proc_has_reset(self):
