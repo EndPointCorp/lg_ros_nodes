@@ -5,8 +5,8 @@ Changelog for package lg_sv
 1.2.9 (2016-05-20)
 ------------------
 
-Forthcoming
------------
+1.2.11 (2016-06-02)
+-------------------
 * ignore spacenav messages when not visible in streetview
 * Contributors: Jacob Minshall
 

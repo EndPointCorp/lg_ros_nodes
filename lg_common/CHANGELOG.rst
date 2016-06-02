@@ -5,8 +5,8 @@ Changelog for package lg_common
 1.2.9 (2016-05-20)
 ------------------
 
-Forthcoming
------------
+1.2.11 (2016-06-02)
+-------------------
 * Catch KeyError in get_activity_config
 
 1.2.10 (2016-05-20)
