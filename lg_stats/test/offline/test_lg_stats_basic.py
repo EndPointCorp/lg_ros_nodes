@@ -82,24 +82,24 @@ class TestSubmitters(object):
         whole_field_name = "message.slug"  # depends on the particular message type above
 
         # now finally test the method of submitters:
-        influx = InfluxDirect.get_data_for_influx(out_msg)
+        influx = InfluxDirect.get_data_for_influx(out_msg, 'test')
         assert isinstance(influx, dict)
         assert influx["tags"]["topic"] == p.watched_topic
         assert influx["tags"]["field_name"] == whole_field_name
-        assert influx["tags"]["value"] == "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1"
+        assert influx["tags"]["metadata"] == "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1"
         # real InfluxTelegraf.get_timestamp requires ROS init_node, this is a work-around
         InfluxTelegraf.get_timestamp = staticmethod(InfluxMock.get_timestamp)
-        influx = InfluxTelegraf.get_data_for_influx(out_msg)
+        influx = InfluxTelegraf.get_data_for_influx(out_msg, 'test')
         assert isinstance(influx, str)
         assert p.watched_topic in influx
         assert influx.find("field_name=\"%s\"" % whole_field_name) > -1
-        assert influx.find("value=\"%s\"" % out_msg.value) > -1
+        assert influx.find("metadata=\"%s\"" % out_msg.metadata) > -1
         # this mock just calls InfluxTelegraf - do the same assertions
-        influx = InfluxMock.get_data_for_influx(out_msg)
+        influx = InfluxMock.get_data_for_influx(out_msg, 'test')
         assert isinstance(influx, str)
         assert p.watched_topic in influx
         assert influx.find("field_name=\"%s\"" % whole_field_name) > -1
-        assert influx.find("value=\"%s\"" % out_msg.value) > -1
+        assert influx.find("metadata=\"%s\"" % out_msg.metadata) > -1
 
 
 class TestLGStatsProcessor(object):
@@ -129,7 +129,7 @@ class TestLGStatsProcessor(object):
         p.debug_pub.publish(out)
         assert isinstance(pub.messages[0], Event)
         assert pub.messages[0].field_name == "application"
-        assert pub.messages[0].value == "someapplication1"
+        assert pub.messages[0].metadata == "someapplication1"
 
     # TODO:
     # need to take slots into account when comparing
@@ -155,20 +155,24 @@ class TestLGStatsProcessor(object):
         p.process(msg1)
         assert p.last_in_msg == msg1
 
-    def test_empty_message_ignored(self):
+    def test_empty_message_not_ignored(self):
         """
         Empty message - consider just empty slot of of the slotted incoming message.
         Such shall be ignored.
 
         """
         # prepare message for testing, as if it was received (incoming message)
+        influx = InfluxMock()
+        pub = MockTopicPublisher()
         in_msg = GenericMessage(type="json", message="{}")
         p = Processor(watched_topic="/director/scene",
+                      influxdb_client=influx,
+                      debug_pub=pub,
                       msg_slot="message.slug")
         p.process(in_msg)
-        # nothing shall happen
-        assert p.last_in_msg is None
-        assert p.time_of_last_in_msg is None
+        # we want to submit empty messages
+        assert p.last_in_msg is not None
+        assert p.time_of_last_in_msg is not None
 
     def test_get_slot_value(self):
         # prepare message for testing, as if it was received (incoming message)
@@ -207,7 +211,7 @@ class TestLGStatsProcessor(object):
         assert len(p.debug_pub.messages) == 1
         assert len(p.influxdb_client.messages) == 1
         assert p.debug_pub.messages[0].field_name == "message.slug"
-        assert p.debug_pub.messages[0].value == "something1234"
+        assert p.debug_pub.messages[0].metadata == "something1234"
         assert "/director/scene" in p.influxdb_client.messages[0]
         # how run the thread worker - directly, wait before - there is a time check
         time.sleep(2)
@@ -215,7 +219,7 @@ class TestLGStatsProcessor(object):
         assert len(p.debug_pub.messages) == 2
         assert len(p.influxdb_client.messages) == 2
         assert p.debug_pub.messages[1].field_name == "message.slug"
-        assert p.debug_pub.messages[1].value == "something1234"
+        assert p.debug_pub.messages[1].metadata == "something1234"
         assert "/director/scene" in p.influxdb_client.messages[1]
 
 

@@ -128,6 +128,9 @@ class Processor(object):
             self._periodic_flush_thread = threading.Thread(target=self._periodic_flush_thread)
             self._periodic_flush_thread.start()
 
+    def on_shutdown(self):
+        rospy.loginfo("Received shutdown for periodic/resubmission")
+
     def _periodic_flush_thread(self):
         """
         Flushes accumulated values for non-default strategies
@@ -136,7 +139,11 @@ class Processor(object):
             rospy.logdebug("Background thread loop for %s" % self.watched_topic)
             self._flushing_worker()
             rospy.logdebug("Background thread for %s going to sleep" % self.watched_topic)
-            time.sleep(self.resolution)
+            for interval in range(0, self.resolution):
+                if rospy.is_shutdown():
+                    break
+                rospy.sleep(1)
+
         rospy.logdebug("Background thread finished for %s has finished" % self.watched_topic)
 
     def _resubmission_thread(self):
@@ -152,7 +159,10 @@ class Processor(object):
             rospy.logdebug("Resubmission thread loop for %s" % self.watched_topic)
             self._resubmit_worker()
             rospy.logdebug("Resubmission thread sleeping ...")
-            time.sleep(self.inactivity_resubmission)
+            for interval in range(0, self.resolution):
+                if rospy.is_shutdown():
+                    break
+                rospy.sleep(1)
         rospy.loginfo("Resubmission thread finished for %s has finished" % self.watched_topic)
 
     def _resubmit_worker(self):
@@ -425,6 +435,7 @@ def main():
         rospy.loginfo("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type))
         rospy.Subscriber(stats_source["topic"], msg_type, p.process, queue_size=3)
         processors.append(p)
+        rospy.on_shutdown(p.on_shutdown)
 
     # wake all processors that have strategy of average and count and make sure their buffers are emptied
     rospy.loginfo("Initializing lg_stats with: %s" % processors)
