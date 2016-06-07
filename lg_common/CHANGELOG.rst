@@ -5,8 +5,8 @@ Changelog for package lg_common
 1.2.9 (2016-05-20)
 ------------------
 
-Forthcoming
------------
+1.2.12 (2016-06-07)
+-------------------
 * Issue/226 float value lg stats (`#228 <https://github.com/EndPointCorp/lg_ros_nodes/issues/228>`_)
   * lg_stats development
   - added metadata to Event message type
