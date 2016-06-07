@@ -5,6 +5,18 @@ Changelog for package lg_common
 1.2.9 (2016-05-20)
 ------------------
 
+Forthcoming
+-----------
+* Issue/226 float value lg stats (`#228 <https://github.com/EndPointCorp/lg_ros_nodes/issues/228>`_)
+  * lg_stats development
+  - added metadata to Event message type
+  - added value to all influx measurements
+  - made resubmission thread use value of 0.5
+  * Fixing tests for lg_stats
+  * Pep8'd
+* Fix pep8 in lg_common helpers
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.2.11 (2016-06-02)
 -------------------
 * Catch KeyError in get_activity_config
