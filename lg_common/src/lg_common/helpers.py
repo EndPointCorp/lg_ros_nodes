@@ -664,6 +664,7 @@ def get_nested_slot_value(slot, message):
 
     return {slot: deserialized_msg}
 
+
 def get_activity_config(scene, activity_name, window_viewport):
     """
     Returns configuration for the given activity on the given viewport in the given scene.
