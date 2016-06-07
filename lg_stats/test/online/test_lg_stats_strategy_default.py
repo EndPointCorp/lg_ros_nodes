@@ -148,7 +148,6 @@ class TestLGStatsRealMessageChain(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "True")
 
-
     def test_send_activity_inactive(self):
         """
         Check stats handling of /activity/active messages.

@@ -96,13 +96,13 @@ class InfluxTelegraf(Submitter):
         """
         try:
             influx_str = ("""%s topic_name="%s",field_name="%s",type="%s",metadata="%s",value=%s %s""" %
-                        (measurement_name,
-                        msg.src_topic,
-                        msg.field_name,
-                        msg.type,
-                        msg.metadata,
-                        float(msg.value),
-                        InfluxTelegraf.get_timestamp()))
+                          (measurement_name,
+                           msg.src_topic,
+                           msg.field_name,
+                           msg.type,
+                           msg.metadata,
+                           float(msg.value),
+                           InfluxTelegraf.get_timestamp()))
         except TypeError:
             return ''
 

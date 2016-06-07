@@ -182,7 +182,7 @@ class Processor(object):
                     rospy.logdebug("Re-submitting last message to InfluxDB ('%s') ..." % self.last_influx_data)
 
                     # regenerate last message with new timestamp and diminished value
-                    self.last_out_msg.value="0.5"
+                    self.last_out_msg.value = "0.5"
                     self.debug_pub.publish(self.last_out_msg)
                     regenerated_message = self.influxdb_client.get_data_for_influx(self.last_out_msg, self.measurement)
                     self.influxdb_client.write_stats(regenerated_message)
