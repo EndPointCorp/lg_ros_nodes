@@ -275,9 +275,9 @@ def message_is_nonzero(incoming_message):
     slots_objects = incoming_message.__reduce__()[2]
     for slot_object in slots_objects:
         value_list = slot_object.__reduce__()[2]
-        print value_list
+        # print value_list
         for value in value_list:
-            print value
+            # print value
             if value != 0:
                 return True
     return False
