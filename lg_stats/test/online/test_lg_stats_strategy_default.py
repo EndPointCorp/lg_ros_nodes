@@ -34,6 +34,7 @@ import rospkg
 import rostopic
 
 from std_msgs.msg import Bool
+from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
 from appctl.msg import Mode
 from lg_stats.msg import Session
@@ -91,7 +92,7 @@ class TestLGStatsRealMessageChain(object):
 
         """
         rospy.logdebug("callback received type: '%s', message: %s" % (type(msg), msg))
-        RESULT.value = msg.value
+        RESULT.value = msg.metadata
 
     def checker(self, publisher, msg_to_send, expected_value):
         """
@@ -147,6 +148,25 @@ class TestLGStatsRealMessageChain(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "True")
 
+    def test_send_activity_inactive(self):
+        """
+        Check stats handling of /activity/active messages.
+        By sending this kind of message, trigger the stats message on /lg_stats/debug.
+
+        """
+        msg = Bool(data=False)
+        pub = rospy.Publisher("/activity/active", Bool, queue_size=3)
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)
+        self.checker(pub, msg, "False")
+
+    def test_send_panoid(self):
+        """
+        send panoid and expect metadata to contain it
+        """
+        msg = String(data='x-12394u8rthjekwqh')
+        pub = rospy.Publisher("/streetview/panoid", String, queue_size=3)
+        rospy.init_node(ROS_NODE_NAME, anonymous=True)
+        self.checker(pub, msg, "x-12394u8rthjekwqh")
 
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
