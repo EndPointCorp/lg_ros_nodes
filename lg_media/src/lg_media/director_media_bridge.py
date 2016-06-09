@@ -32,7 +32,7 @@ class DirectorMediaBridge():
         """
         adhoc_medias = self._extract_adhoc_media(data)
 
-        rospy.logdebug("Publishing AdhocMedias: %s" % adhoc_medias)
+        rospy.loginfo("Publishing AdhocMedias: %s" % adhoc_medias)
 
         self.adhoc_media_pool_publisher.publish(adhoc_medias)
 
@@ -46,13 +46,13 @@ class DirectorMediaBridge():
         # first get assets
         medias = extract_first_asset_from_director_message(data, self.media_type, self.viewport_name)
 
-        rospy.logdebug("Got assets for %s based media player %s" % (self.media_type, medias))
+        rospy.loginfo("Got assets for %s based media player %s" % (self.media_type, medias))
 
         # and wrap them inside AdhocMedia
 
         adhoc_medias = self._build_adhoc_medias(medias, self.media_type)
 
-        rospy.logdebug("I'm going to publish following adhoc_medias: %s" % adhoc_medias)
+        rospy.loginfo("I'm going to publish following adhoc_medias: %s" % adhoc_medias)
 
         # finally return list of AdhocMedia in AdhocMedias message
         return AdhocMedias(medias=adhoc_medias)
@@ -77,7 +77,7 @@ class DirectorMediaBridge():
             adhoc_medias.append(adhoc_media)
             media_id += 1
 
-        rospy.logdebug("Returning adhocmedias: %s for player: %s" % (adhoc_medias, media_type))
+        rospy.loginfo("Returning adhocmedias: %s for player: %s" % (adhoc_medias, media_type))
         return adhoc_medias
 
     def _get_viewport_offset(self):
