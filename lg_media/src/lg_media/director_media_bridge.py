@@ -68,6 +68,9 @@ class DirectorMediaBridge():
             adhoc_media.geometry.width = media['width']
             adhoc_media.geometry.height = media['height']
             adhoc_media.media_type = media_type
+            adhoc_media.activity_config.on_finish = 'nothing'
+            if media.get('activity_config', {}):
+                adhoc_media.activity_config = media['activity_config']
 
             adhoc_medias.append(adhoc_media)
             media_id += 1
