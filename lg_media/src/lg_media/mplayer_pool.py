@@ -66,7 +66,6 @@ class ManagedMplayer(ManagedApplication):
                                                           self.window.geometry.y)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
         cmd.extend([self.url])
-        #cmd.extend(["&"])  # unnecessary, mplayer complains File not found: '&'
         rospy.loginfo("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
@@ -196,7 +195,7 @@ class MplayerPool(object):
         name = "lg_%s_%s.fifo" % (mplayer_id, time.time())
         path = os.path.join("/tmp", name)
         os.mkfifo(path)
-        rospy.logdebug("Created FIFO file '%s'" % path)
+        rospy.loginfo("Created FIFO file '%s'" % path)
         return path
 
     def _update_mplayer(self, mplayer_pool_id, updated_mplayer):
@@ -208,7 +207,7 @@ class MplayerPool(object):
         """
 
         current_mplayer = self.mplayers[mplayer_pool_id]
-        rospy.logdebug("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
+        rospy.loginfo("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
         future_url = updated_mplayer.url
         current_mplayer.change_url(future_url)
 
@@ -224,7 +223,7 @@ class MplayerPool(object):
                 (current_geometry.width != future_geometry.width) or\
                 (current_geometry.height != future_geometry.height):
 
-            rospy.logdebug("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
+            rospy.loginfo("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
             self._remove_mplayer(mplayer_pool_id)
             self._create_mplayer(mplayer_pool_id, updated_mplayer)
 
@@ -233,7 +232,7 @@ class MplayerPool(object):
         Wipe out mplayer instance - both from the screen and memory
         """
         mplayer_instance = self.mplayers[mplayer_pool_id]
-        rospy.logdebug("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
+        rospy.loginfo("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
         mplayer_instance.close()
         del self.mplayers[mplayer_pool_id]
 
