@@ -70,7 +70,7 @@ class DirectorMediaBridge():
             adhoc_media.media_type = media_type
             adhoc_media.activity_config.onFinish = 'nothing'
             if media.get('activity_config', {}):
-                adhoc_media.activity_config = media['activity_config']
+                adhoc_media.activity_config.onFinish = media['activity_config']['onFinish']
 
             adhoc_medias.append(adhoc_media)
             media_id += 1
