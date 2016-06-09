@@ -117,7 +117,8 @@ def load_director_message(message):
 
 def extract_first_asset_from_director_message(message, activity_type, viewport):
     """
-    Extracts **single** (first) asset and geometry for given activity and viewport e.g. all assets for browser or all KMLs for GE.
+    Extracts **single** (first) asset and geometry and activity_config
+    for given activity and viewport, e.g. all assets for browser or all KMLs for GE.
     Returns list of dictionaries containing adhoc browser metadata e.g.:
         [
         { "1": { "path": "https://www.youtube.com/watch?v=un8FAjXWOBY",
@@ -152,8 +153,32 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
                 }
                 ]
             }
-              """
+    or
 
+    {"description": "S4",
+      "duration": 15,
+      "name": "S4",
+      "resource_uri": "/director_api/scene/9686ad33-720b-4088-8f79-30fab0e03b6d__s4/",
+      "slug": "9686ad33-720b-4088-8f79-30fab0e03b6d__s4",
+      "windows": [
+        {
+          "activity": "video",
+          "activity_config": {
+            "onFinish": "loop"
+          },
+          "assets": [
+            "http://lg-head:8088/roscoe_assets/flame.avi"
+          ],
+          "height": 1080,
+          "presentation_viewport": "display_wall-portal",
+          "width": 1920,
+          "x_coord": 960,
+          "y_coord": 540
+        }
+      ]
+    }
+
+    """
     message = load_director_message(message)
     if not message:
         return []
@@ -168,6 +193,8 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             asset_object['y_coord'] = window['y_coord']
             asset_object['height'] = window['height']
             asset_object['width'] = window['width']
+            if window.get('activity_config', {}):
+                asset_object['activity_config'] = window['activity_config']
             assets.append(asset_object)
         else:
             rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))

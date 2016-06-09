@@ -11,6 +11,7 @@ catkin_python_setup()
 
 add_message_files(
   FILES
+  ActivityConfig.msg
   AdhocMedia.msg
   AdhocMedias.msg
 )

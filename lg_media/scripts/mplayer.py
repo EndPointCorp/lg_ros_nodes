@@ -30,10 +30,10 @@ def main():
     adhoc_media_mplayer_pool_publisher = rospy.Publisher(topic_name,
                                                          AdhocMedias,
                                                          queue_size=3)
-    adhoc_media_mplayer_director_bridge = \
-        DirectorMediaBridge(adhoc_media_mplayer_pool_publisher,
-                            viewport_name,
-                            MEDIA_TYPE)
+    adhoc_media_mplayer_director_bridge = DirectorMediaBridge(
+        adhoc_media_mplayer_pool_publisher,
+        viewport_name,
+        MEDIA_TYPE)
     rospy.Subscriber('/director/scene',
                      GenericMessage,
                      adhoc_media_mplayer_director_bridge.translate_director)
