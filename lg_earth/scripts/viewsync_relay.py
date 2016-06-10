@@ -5,6 +5,7 @@ import rospy
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import String
+from lg_earth.srv import ViewsyncState
 
 
 if __name__ == '__main__':
@@ -21,6 +22,8 @@ if __name__ == '__main__':
     planet_pub = rospy.Publisher(
         '/earth/planet', String, queue_size=3
     )
+
+    viewsync_state_service = rospy.Service('/earth/viewsync/state', ViewsyncState, ViewsyncRelay.get_last_state)
 
     relay = ViewsyncRelay(
         repeat_addr=(repeat_host, repeat_port),

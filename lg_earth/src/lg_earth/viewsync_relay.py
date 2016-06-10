@@ -1,7 +1,9 @@
 from socket import *
 
 import rospy
+import time
 from geometry_msgs.msg import PoseStamped
+from lg_earth.srv import ViewsyncState
 
 
 class ViewsyncRelay:
@@ -17,6 +19,7 @@ class ViewsyncRelay:
         self.repeat_addr = repeat_addr
         self.pose_pub = pose_pub
         self.planet_pub = planet_pub
+        self.last_state = ViewsyncState(timestamp=str(int(time.time()))
 
         self.listen_sock = socket(AF_INET, SOCK_DGRAM)
         self.listen_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -65,7 +68,11 @@ class ViewsyncRelay:
             pose_msgs (PoseStamped): Pose to be published.
         """
         self.pose_pub.publish(pose_msg)
+        self.last_state = ViewsyncState(timestamp=str(pose_msg.header.stamp.secs))
         self.planet_pub.publish(planet)
+
+    def get_last_state(self):
+        return self.last_state
 
     def run(self):
         """Run the relay.
