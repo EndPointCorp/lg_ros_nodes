@@ -5,6 +5,9 @@ Changelog for package lg_sv
 1.2.9 (2016-05-20)
 ------------------
 
+Forthcoming
+-----------
+
 1.2.12 (2016-06-07)
 -------------------
 * Ensure street view pov reset on transition
