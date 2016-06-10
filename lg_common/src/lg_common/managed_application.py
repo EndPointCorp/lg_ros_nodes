@@ -11,11 +11,19 @@ SIG_RETRY_DELAY = 0.05
 
 
 class ManagedApplication(object):
-    def __init__(self, cmd, window=None, initial_state=None):
+    def __init__(self, cmd, window=None, initial_state=None, respawn=True):
+        """
+        respawn handles whether or not the application shall be automatically
+                respawned at all, default is True.
+
+        """
         self.cmd = cmd
         self.window = window
         self.lock = threading.RLock()
-        self.proc = ProcController(cmd, spawn_hooks=[self._handle_respawn], shell=False)
+        self.proc = ProcController(cmd,
+                                   spawn_hooks=[self._handle_respawn],
+                                   shell=False,
+                                   respawn=respawn)
         self.sig_retry_timer = None
 
         if initial_state and is_valid_state(initial_state):

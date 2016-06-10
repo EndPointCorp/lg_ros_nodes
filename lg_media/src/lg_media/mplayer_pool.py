@@ -26,16 +26,16 @@ class ManagedMplayer(ManagedApplication):
     Instance corresponds to a mplayer application managed entity.
 
     """
-    def __init__(self, fifo_path, url, slug, window):
+    def __init__(self, fifo_path, url, slug, window, respawn=True):
         self.window = window
         self.fifo_path = fifo_path
         self.url = url
         self.slug = slug
+        self.respawn = respawn
 
-        super(ManagedMplayer, self).__init__(
-            window=window,
-            cmd=self._build_cmd()
-        )
+        super(ManagedMplayer, self).__init__(window=window,
+                                             respawn=self.respawn,
+                                             cmd=self._build_cmd())
 
     def __str__(self):
         """
@@ -176,13 +176,17 @@ class MplayerPool(object):
 
         mplayer_window = ManagedWindow(geometry=geometry,
                                        w_instance="Mplayer \\({}\\)".format(mplayer_id),
-                                       w_class="Mplayer \\({}\\)".format(mplayer_id)
-                                       )
+                                       w_class="Mplayer \\({}\\)".format(mplayer_id))
 
+        if incoming_mplayer.on_finish == "nothing" or incoming_mplayer.on_finish == "close":
+            respawn = False
+        else:
+            respawn = True
         mplayer = ManagedMplayer(fifo_path=fifo_path,
                                  url=incoming_mplayer.url,
                                  slug=mplayer_id,
-                                 window=mplayer_window)
+                                 window=mplayer_window,
+                                 respawn=respawn)
 
         mplayer.set_state(ApplicationState.VISIBLE)
 
