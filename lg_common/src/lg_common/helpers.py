@@ -193,8 +193,9 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             asset_object['y_coord'] = window['y_coord']
             asset_object['height'] = window['height']
             asset_object['width'] = window['width']
+            asset_object['on_finish'] = 'nothing'
             if window.get('activity_config', {}):
-                asset_object['activity_config'] = window['activity_config']
+                asset_object['on_finish'] = window['activity_config']['onFinish']
             assets.append(asset_object)
         else:
             rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))
