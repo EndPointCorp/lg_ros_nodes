@@ -1,0 +1,53 @@
+{
+  "description": "kml with population density plus one browser with placeholder",
+  "duration": 20,
+  "name": "KML test",
+  "resource_uri": "/director_api/scene/kml-test/",
+  "slug": "kml-test",
+  "windows": [
+    {
+      "activity": "browser",
+      "assets": [
+        "http://lorempixel.com/g/400/200/"
+      ],
+      "height": 400,
+      "presentation_viewport": "left",
+      "width": 200,
+      "x_coord": 100,
+      "y_coord": 100
+    },
+    {
+      "activity": "earth",
+      "assets": [
+        "http://svs.gsfc.nasa.gov/vis/a000000/a002900/a002912/a002912.kml"
+      ],
+      "height": 1920,
+      "presentation_viewport": "left",
+      "width": 1080,
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "earth",
+      "assets": [
+        "http://svs.gsfc.nasa.gov/vis/a000000/a002900/a002912/a002912.kml"
+      ],
+      "height": 1920,
+      "presentation_viewport": "center",
+      "width": 1080,
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "earth",
+      "assets": [
+        "http://svs.gsfc.nasa.gov/vis/a000000/a002900/a002912/a002912.kml"
+      ],
+      "height": 1920,
+      "presentation_viewport": "right",
+      "width": 1080,
+      "x_coord": 0,
+      "y_coord": 0
+    }
+  ]
+}

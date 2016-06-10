@@ -1,0 +1,67 @@
+{
+  "description": "two browsers with different extensions and URLs",
+  "duration": 20,
+  "name": "Wall kiosk",
+  "resource_uri": "/director_api/scene/wall-kiosk/",
+  "slug": "wall-kiosk",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {
+        "google_chrome":{
+          "binary-path": "/usr/bin/google-chrome-stable",
+          "user-agent": "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19",
+          "custom_flags": ["--disable-out-of-process-pac", "--enable-arc"],
+          "extensions": [
+            {
+              "name": "display",
+              "path": "/opt/chrome/extensions/display/"
+            },
+            {
+              "name": "onboard",
+              "path": "/opt/chrome/extensions/onboard/"
+            },
+            {
+              "name": "statistics",
+              "path": "/opt/chrome/extensions/statistics"
+            }
+          ]
+        }
+      },
+      "assets": [
+        "https://maps.google.com"
+      ],
+      "height": 2160,
+      "presentation_viewport": "wall",
+      "width": 3840,
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "mirror",
+      "assets": [
+        "viewport://wall"
+      ],
+      "activity_config": {
+      },
+      "height": 1920,
+      "presentation_viewport": "wall",
+      "width": 3240,
+      "x_coord": 0,
+      "y_coord": 0
+    }
+    {
+      "activity": "mirror",
+      "assets": [
+        "mirror://42-a/wall"
+      ],
+      "activity_config": {
+      },
+      "height": 1080,
+      "presentation_viewport": "kiosk",
+      "width": 1980,
+      "x_coord": 0,
+      "y_coord": 0
+    }
+  ]
+}
