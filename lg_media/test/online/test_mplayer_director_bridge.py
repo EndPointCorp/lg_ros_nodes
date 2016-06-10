@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""
+on_finish='nothing' is added by default by the director bridge / translator.
+
+"""
+
 PKG = 'lg_media'
 NAME = 'test_mplayer_director_bridge'
 
@@ -252,7 +257,8 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                                             width=600,
                                                             height=800),
                                     url='http://lg-head/lg/assets/videos/bunny.mp4',
-                                    media_type='video')
+                                    media_type='video',
+                                    on_finish='nothing')
 
         rospy.loginfo("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer]))
@@ -279,7 +285,8 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                                               width=600,
                                                               height=800),
                                       media_type='video',
-                                      url='http://lg-head/lg/assets/videos/bunny.mp4')
+                                      url='http://lg-head/lg/assets/videos/bunny.mp4',
+                                      on_finish='nothing')
 
         center_mplayer_2 = AdhocMedia(id='adhoc_media_video_center_1',
                                       geometry=WindowGeometry(x=400,
@@ -287,7 +294,8 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                                               width=300,
                                                               height=200),
                                       media_type='video',
-                                      url='http://lg-head/lg/assets/videos/bunny.mp4')
+                                      url='http://lg-head/lg/assets/videos/bunny.mp4',
+                                      on_finish='nothing')
 
         center_mplayer_3 = AdhocMedia(id='adhoc_media_video_center_2',
                                       geometry=WindowGeometry(x=10,
@@ -295,7 +303,8 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                                               width=888,
                                                               height=11),
                                       media_type='video',
-                                      url='http://lg-head/lg/assets/videos/bunny.mp4')
+                                      url='http://lg-head/lg/assets/videos/bunny.mp4',
+                                      on_finish='nothing')
 
         right_mplayer_4 = AdhocMedia(id='adhoc_media_video_right_0',
                                      geometry=WindowGeometry(x=100,
@@ -303,7 +312,8 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                                              width=100,
                                                              height=100),
                                      media_type='video',
-                                     url='http://lg-head/lg/assets/videos/bunny.mp4')
+                                     url='http://lg-head/lg/assets/videos/bunny.mp4',
+                                     on_finish='nothing')
 
         rospy.loginfo("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer_1, center_mplayer_2, center_mplayer_3]))
