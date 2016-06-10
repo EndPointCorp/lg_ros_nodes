@@ -2,6 +2,31 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.9 (2016-05-20)
+------------------
+
+1.2.14 (2016-06-10)
+-------------------
+
+1.2.13 (2016-06-10)
+-------------------
+
+1.2.12 (2016-06-07)
+-------------------
+* Ensure street view pov reset on transition
+* Contributors: Matt Vollrath
+
+1.2.11 (2016-06-02)
+-------------------
+* ignore spacenav messages when not visible in streetview
+* Contributors: Jacob Minshall
+
+1.2.10 (2016-05-20)
+-------------------
+* 1.2.9
+* Changelogs
+* Contributors: Wojciech Ziniewicz
+
 1.2.8 (2016-05-19)
 ------------------
 

@@ -2,6 +2,39 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.9 (2016-05-20)
+------------------
+* Fixed a typo for unknown strategies in meat.py of lg_stats (`#216 <https://github.com/EndPointCorp/lg_ros_nodes/issues/216>`_)
+* Contributors: Wojciech Ziniewicz
+
+1.2.14 (2016-06-10)
+-------------------
+
+1.2.13 (2016-06-10)
+-------------------
+
+1.2.12 (2016-06-07)
+-------------------
+* Issue/226 float value lg stats (`#228 <https://github.com/EndPointCorp/lg_ros_nodes/issues/228>`_)
+  * lg_stats development
+  - added metadata to Event message type
+  - added value to all influx measurements
+  - made resubmission thread use value of 0.5
+  * Fixing tests for lg_stats
+  * Pep8'd
+* Contributors: Wojciech Ziniewicz
+
+1.2.11 (2016-06-02)
+-------------------
+
+1.2.10 (2016-05-20)
+-------------------
+* 1.2.9
+* Changelogs
+* Fixed a typo for unknown strategies in meat.py of lg_stats (`#216 <https://github.com/endpointcorp/lg_ros_nodes/issues/216>`_)
+* Fixed a typo for unknown strategies in meat.py of lg_stats
+* Contributors: Wojciech Ziniewicz
+
 1.2.8 (2016-05-19)
 ------------------
 * remove write_log_to_file imports

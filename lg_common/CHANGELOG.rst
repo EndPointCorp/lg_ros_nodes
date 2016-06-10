@@ -2,6 +2,40 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.9 (2016-05-20)
+------------------
+
+1.2.14 (2016-06-10)
+-------------------
+
+1.2.13 (2016-06-10)
+-------------------
+* mplayer on_finish -> respawn attribute, touch: `#193 <https://github.com/EndPointCorp/lg_ros_nodes/issues/193>`_
+* Contributors: Zdenek Maxa
+
+1.2.12 (2016-06-07)
+-------------------
+* Issue/226 float value lg stats (`#228 <https://github.com/EndPointCorp/lg_ros_nodes/issues/228>`_)
+  * lg_stats development
+  - added metadata to Event message type
+  - added value to all influx measurements
+  - made resubmission thread use value of 0.5
+  * Fixing tests for lg_stats
+  * Pep8'd
+* Fix pep8 in lg_common helpers
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
+1.2.11 (2016-06-02)
+-------------------
+* Catch KeyError in get_activity_config
+
+1.2.10 (2016-05-20)
+-------------------
+* get_activity_config now in lg_common helpers
+* 1.2.9
+* Changelogs
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
 1.2.8 (2016-05-19)
 ------------------
 

@@ -91,29 +91,30 @@ def main():
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+
         asset = get_first_asset_from_activity(scene, server_type)
-        if asset.__class__ == dict:
-            assert 'panoid' in asset
+        try:
             panoid = asset['panoid']
-            pov = server.pov
-            if 'tilt' in asset and asset['tilt']:
-                pov.x = float(asset['tilt'])
-            else:
-                pov.x = 0
-            if 'heading' in asset and asset['heading']:
-                pov.z = float(asset['heading'])
-                if inverted:
-                    pov.z = (pov.z + 180) % 360
-            else:
-                pov.z = 0
-            pov.w = zoom_max
-            server.pub_pov(pov)
-        else:
+        except:
             panoid = asset
             if server_type == 'streetview':
                 # split in case the panoid comes at the end of a url
                 panoid = panoid.split('/')[-1]
 
+        pov = server.pov
+        try:
+            pov.x = float(asset['tilt'])
+        except:
+            pov.x = 0
+        try:
+            pov.z = float(asset['heading'])
+            if inverted:
+                pov.z = (pov.z + 180) % 360
+        except:
+            pov.z = 0
+        pov.w = zoom_max
+
+        server.pub_pov(pov)
         server.pub_panoid(String(panoid))
 
     on_new_scene(handle_director_message)

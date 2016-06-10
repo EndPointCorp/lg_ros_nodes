@@ -261,6 +261,9 @@ class PanoViewerServer:
         Adjust pov based on the twist message received, also handle
         a possible change of pano
         """
+        # ignore spacenav messages when self.state != True
+        if not self.state:
+            return
         now = rospy.get_time()
         self.time_since_last_nav_msg = now - self.last_nav_msg_t
         self.last_nav_msg_t = now

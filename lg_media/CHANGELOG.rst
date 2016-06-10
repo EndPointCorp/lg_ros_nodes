@@ -2,6 +2,31 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.9 (2016-05-20)
+------------------
+
+1.2.14 (2016-06-10)
+-------------------
+* fixed tests, touch: `#193 <https://github.com/EndPointCorp/lg_ros_nodes/issues/193>`_
+* Contributors: Zdenek Maxa
+
+1.2.13 (2016-06-10)
+-------------------
+* mplayer control behaviour, looping videos, `#193 <https://github.com/EndPointCorp/lg_ros_nodes/issues/193>`_
+* Contributors: Zdenek Maxa
+
+1.2.12 (2016-06-07)
+-------------------
+
+1.2.11 (2016-06-02)
+-------------------
+
+1.2.10 (2016-05-20)
+-------------------
+* 1.2.9
+* Changelogs
+* Contributors: Wojciech Ziniewicz
+
 1.2.8 (2016-05-19)
 ------------------
 * remove write_log_to_file imports

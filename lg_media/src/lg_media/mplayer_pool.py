@@ -26,16 +26,16 @@ class ManagedMplayer(ManagedApplication):
     Instance corresponds to a mplayer application managed entity.
 
     """
-    def __init__(self, fifo_path, url, slug, window):
+    def __init__(self, fifo_path, url, slug, window, respawn=True):
         self.window = window
         self.fifo_path = fifo_path
         self.url = url
         self.slug = slug
+        self.respawn = respawn
 
-        super(ManagedMplayer, self).__init__(
-            window=window,
-            cmd=self._build_cmd()
-        )
+        super(ManagedMplayer, self).__init__(window=window,
+                                             respawn=self.respawn,
+                                             cmd=self._build_cmd())
 
     def __str__(self):
         """
@@ -66,7 +66,6 @@ class ManagedMplayer(ManagedApplication):
                                                           self.window.geometry.y)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
         cmd.extend([self.url])
-        #cmd.extend(["&"])  # unnecessary, mplayer complains File not found: '&'
         rospy.loginfo("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
@@ -177,13 +176,17 @@ class MplayerPool(object):
 
         mplayer_window = ManagedWindow(geometry=geometry,
                                        w_instance="Mplayer \\({}\\)".format(mplayer_id),
-                                       w_class="Mplayer \\({}\\)".format(mplayer_id)
-                                       )
+                                       w_class="Mplayer \\({}\\)".format(mplayer_id))
 
+        if incoming_mplayer.on_finish == "nothing" or incoming_mplayer.on_finish == "close":
+            respawn = False
+        else:
+            respawn = True
         mplayer = ManagedMplayer(fifo_path=fifo_path,
                                  url=incoming_mplayer.url,
                                  slug=mplayer_id,
-                                 window=mplayer_window)
+                                 window=mplayer_window,
+                                 respawn=respawn)
 
         mplayer.set_state(ApplicationState.VISIBLE)
 
@@ -196,7 +199,7 @@ class MplayerPool(object):
         name = "lg_%s_%s.fifo" % (mplayer_id, time.time())
         path = os.path.join("/tmp", name)
         os.mkfifo(path)
-        rospy.logdebug("Created FIFO file '%s'" % path)
+        rospy.loginfo("Created FIFO file '%s'" % path)
         return path
 
     def _update_mplayer(self, mplayer_pool_id, updated_mplayer):
@@ -208,7 +211,7 @@ class MplayerPool(object):
         """
 
         current_mplayer = self.mplayers[mplayer_pool_id]
-        rospy.logdebug("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
+        rospy.loginfo("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
         future_url = updated_mplayer.url
         current_mplayer.change_url(future_url)
 
@@ -224,7 +227,7 @@ class MplayerPool(object):
                 (current_geometry.width != future_geometry.width) or\
                 (current_geometry.height != future_geometry.height):
 
-            rospy.logdebug("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
+            rospy.loginfo("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
             self._remove_mplayer(mplayer_pool_id)
             self._create_mplayer(mplayer_pool_id, updated_mplayer)
 
@@ -233,7 +236,7 @@ class MplayerPool(object):
         Wipe out mplayer instance - both from the screen and memory
         """
         mplayer_instance = self.mplayers[mplayer_pool_id]
-        rospy.logdebug("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
+        rospy.loginfo("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
         mplayer_instance.close()
         del self.mplayers[mplayer_pool_id]
 

@@ -117,7 +117,8 @@ def load_director_message(message):
 
 def extract_first_asset_from_director_message(message, activity_type, viewport):
     """
-    Extracts **single** (first) asset and geometry for given activity and viewport e.g. all assets for browser or all KMLs for GE.
+    Extracts **single** (first) asset and geometry and activity_config
+    for given activity and viewport, e.g. all assets for browser or all KMLs for GE.
     Returns list of dictionaries containing adhoc browser metadata e.g.:
         [
         { "1": { "path": "https://www.youtube.com/watch?v=un8FAjXWOBY",
@@ -152,8 +153,32 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
                 }
                 ]
             }
-              """
+    or
 
+    {"description": "S4",
+      "duration": 15,
+      "name": "S4",
+      "resource_uri": "/director_api/scene/9686ad33-720b-4088-8f79-30fab0e03b6d__s4/",
+      "slug": "9686ad33-720b-4088-8f79-30fab0e03b6d__s4",
+      "windows": [
+        {
+          "activity": "video",
+          "activity_config": {
+            "onFinish": "loop"
+          },
+          "assets": [
+            "http://lg-head:8088/roscoe_assets/flame.avi"
+          ],
+          "height": 1080,
+          "presentation_viewport": "display_wall-portal",
+          "width": 1920,
+          "x_coord": 960,
+          "y_coord": 540
+        }
+      ]
+    }
+
+    """
     message = load_director_message(message)
     if not message:
         return []
@@ -168,6 +193,9 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             asset_object['y_coord'] = window['y_coord']
             asset_object['height'] = window['height']
             asset_object['width'] = window['width']
+            asset_object['on_finish'] = 'nothing'
+            if window.get('activity_config', {}):
+                asset_object['on_finish'] = window['activity_config']['onFinish']
             assets.append(asset_object)
         else:
             rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))
@@ -275,9 +303,9 @@ def message_is_nonzero(incoming_message):
     slots_objects = incoming_message.__reduce__()[2]
     for slot_object in slots_objects:
         value_list = slot_object.__reduce__()[2]
-        print value_list
+        # print value_list
         for value in value_list:
-            print value
+            # print value
             if value != 0:
                 return True
     return False
@@ -663,3 +691,35 @@ def get_nested_slot_value(slot, message):
                     rospy.logerr(msg)
 
     return {slot: deserialized_msg}
+
+
+def get_activity_config(scene, activity_name, window_viewport):
+    """
+    Returns configuration for the given activity on the given viewport in the given scene.
+
+    Args:
+        scene (interactivespaces_msgs.msg.GenericMessage)
+        activity_name (str)
+        window_viewport (str)
+
+    Returns:
+        dict: Configuration for the activity.
+        None: Activity not present on this viewport.
+    """
+    import json
+    scene = json.loads(scene.message)
+
+    def is_activity_window(window):
+        return window['activity'] == activity_name and \
+            w['presentation_viewport'] == window_viewport
+
+    try:
+        windows = [w for w in scene['windows'] if is_activity_window(w)]
+        activity_config = windows[0]['activity_config']
+    except KeyError:
+        return None
+    except AttributeError:
+        return None
+    except IndexError:
+        return None
+    return activity_config

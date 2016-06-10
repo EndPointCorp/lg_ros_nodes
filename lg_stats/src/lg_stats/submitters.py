@@ -17,7 +17,7 @@ class Submitter(object):
     def __init__(self):
         raise RuntimeError("Can't instantiate this base class directly.")
 
-    def get_data_for_influx(self, msg):
+    def get_data_for_influx(self, msg, measurement_name):
         raise RuntimeError("Base class method called, not implemented.")
 
     def write_stats(self, data):
@@ -39,16 +39,18 @@ class InfluxDirect(Submitter):
         rospy.loginfo("InfluxDB (direct) client initialized (%s:%s/%s)." % (host, port, database))
 
     @staticmethod
-    def get_data_for_influx(msg):
+    def get_data_for_influx(msg, measurement_name):
         """
         Prepare data for InfluxDB based on the ROS topic message that
         is sent to the debug topic, it contains all stats pertinent details.
         Direct InfluxDB submitter talks JSON.
 
         """
-        influx_dict = dict(tags=dict(topic=msg.src_topic,
+        influx_dict = dict(tags=dict(measurement=measurement_name,
+                                     topic=msg.src_topic,
                                      field_name=msg.field_name,
                                      type=msg.type,
+                                     metadata=msg.metadata,
                                      value=msg.value),
                            # timestamp may be added here or will be added by the server
                            # "time": "2015-11-10T23:00:00Z",
@@ -86,21 +88,20 @@ class InfluxTelegraf(Submitter):
         rospy.loginfo("InfluxDB (telegraf-socket) client initialized (%s:%s)." % (host, port))
 
     @staticmethod
-    def get_data_for_influx(msg):
+    def get_data_for_influx(msg, measurement_name):
+        """
+        Accept Event message as an input
+        Return a string ready for influx submission
+        Value is always a float
+        """
         try:
-            influx_str = ("""lg_stats_metric topic_name="%s",field_name="%s",type="%s",value=%s %s""" %
-                          (msg.src_topic,
+            influx_str = ("""%s topic_name="%s",field_name="%s",type="%s",metadata="%s",value=%s %s""" %
+                          (measurement_name,
+                           msg.src_topic,
                            msg.field_name,
                            msg.type,
+                           msg.metadata,
                            float(msg.value),
-                           InfluxTelegraf.get_timestamp()))
-        except ValueError:
-            # value is a string - we could not turn it into float
-            influx_str = ("""lg_stats_event topic_name="%s",field_name="%s",type="%s",value="%s" %s""" %
-                          (msg.src_topic,
-                           msg.field_name,
-                           msg.type,
-                           msg.value,
                            InfluxTelegraf.get_timestamp()))
         except TypeError:
             return ''
@@ -144,13 +145,15 @@ class InfluxMock(Submitter):
         rospy.loginfo("InfluxDB Mock client initialized ... won't do anything.")
 
     @staticmethod
-    def get_data_for_influx(msg):
+    def get_data_for_influx(msg, measurement_name):
         rospy.logdebug("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
-        influx_str = ("""lg_stats_metric topic_name="%s",field_name="%s",type="%s",value="%s" %s""" %
-                      (msg.src_topic,
+        influx_str = ("""%s topic_name="%s",field_name="%s",type="%s",metadata="%s",value=%s" %s""" %
+                      (measurement_name,
+                       msg.src_topic,
                        msg.field_name,
                        msg.type,
-                       msg.value,
+                       msg.metadata,
+                       float(msg.value),
                        InfluxMock.get_timestamp()))
         return influx_str
 
