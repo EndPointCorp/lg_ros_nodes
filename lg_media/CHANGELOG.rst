@@ -5,8 +5,8 @@ Changelog for package lg_media
 1.2.9 (2016-05-20)
 ------------------
 
-Forthcoming
------------
+1.2.13 (2016-06-10)
+-------------------
 * mplayer control behaviour, looping videos, `#193 <https://github.com/EndPointCorp/lg_ros_nodes/issues/193>`_
 * Contributors: Zdenek Maxa
 
