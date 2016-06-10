@@ -5,6 +5,9 @@ Changelog for package lg_common
 1.2.9 (2016-05-20)
 ------------------
 
+Forthcoming
+-----------
+
 1.2.13 (2016-06-10)
 -------------------
 * mplayer on_finish -> respawn attribute, touch: `#193 <https://github.com/EndPointCorp/lg_ros_nodes/issues/193>`_
