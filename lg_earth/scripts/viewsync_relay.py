@@ -23,8 +23,6 @@ if __name__ == '__main__':
         '/earth/planet', String, queue_size=3
     )
 
-    viewsync_state_service = rospy.Service('/earth/viewsync/state', ViewsyncState, ViewsyncRelay.get_last_state)
-
     relay = ViewsyncRelay(
         repeat_addr=(repeat_host, repeat_port),
         pose_pub=pose_pub,

@@ -12,6 +12,7 @@ from geometry_msgs.msg import PoseStamped
 from lg_common.msg import ApplicationState
 from lg_common.helpers import DependencyException
 from lg_common.helpers import dependency_available, x_available, make_soft_relaunch_callback
+from lg_earth.srv import ViewsyncState
 
 
 def main():
@@ -79,6 +80,8 @@ def make_viewsync():
         pose_pub=pose_pub,
         planet_pub=planet_pub
     )
+
+    viewsync_state_service = rospy.Service('/earth/viewsync/state', ViewsyncState, relay.get_last_state)
 
     start_new_thread(relay.run, ())
     return relay
