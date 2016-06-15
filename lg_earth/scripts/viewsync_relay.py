@@ -5,6 +5,7 @@ import rospy
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import String
+from lg_earth.srv import ViewsyncState
 
 
 if __name__ == '__main__':

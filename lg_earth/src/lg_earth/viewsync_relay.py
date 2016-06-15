@@ -1,11 +1,18 @@
 from socket import *
 
 import rospy
+import time
+import os
 from geometry_msgs.msg import PoseStamped
+from lg_earth.srv import ViewsyncState
 
 
 class ViewsyncRelay:
-    def __init__(self, repeat_addr, pose_pub, planet_pub):
+    def __init__(self,
+                 repeat_addr,
+                 pose_pub,
+                 planet_pub,
+                 viewsync_state_file='/tmp/.viewsync_state_file'):
         """ViewSync sniffer and repeater.
 
         Publishes Earth's position as as Pose.
@@ -17,6 +24,8 @@ class ViewsyncRelay:
         self.repeat_addr = repeat_addr
         self.pose_pub = pose_pub
         self.planet_pub = planet_pub
+        self.last_state = str(int(time.time()))
+        self.viewsync_state_file = viewsync_state_file
 
         self.listen_sock = socket(AF_INET, SOCK_DGRAM)
         self.listen_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -59,13 +68,23 @@ class ViewsyncRelay:
         self.repeat_sock.sendto(data, self.repeat_addr)
 
     def _publish_pose_msg(self, pose_msg, planet):
-        """Publish a Pose.
+        """Publish a Pose and keep the state of it for monitoring purposes
 
         Args:
             pose_msgs (PoseStamped): Pose to be published.
         """
         self.pose_pub.publish(pose_msg)
         self.planet_pub.publish(planet)
+        self.last_state = str(pose_msg.header.stamp.secs)
+        try:
+            fd = os.open(self.viewsync_state_file, os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
+            os.write(fd, self.last_state)
+            os.close(fd)
+        except Exception:
+            pass
+
+    def get_last_state(self, args):
+        return self.last_state
 
     def run(self):
         """Run the relay.
@@ -76,7 +95,7 @@ class ViewsyncRelay:
             try:
                 data = self.listen_sock.recv(255)
             except error as e:
-                rospy.loginfo('socket interrupted, breaking loop')
+                rospy.loginfo('socket interrupted - breaking loopi: %s' % error)
                 break
 
             self._repeat(data)
