@@ -116,8 +116,6 @@ class PanoViewerServer:
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
 
-        self.state = True
-        # TODO (WZ) parametrize this
         self.nav_sensitivity = nav_sensitivity
         self.tilt_max = tilt_max
         self.tilt_min = tilt_min
@@ -128,8 +126,15 @@ class PanoViewerServer:
         self.zoom_max = zoom_max
         self.zoom_min = zoom_min
         self.tick_rate = tick_rate
-
         self.gutter_val = 0.004
+        self.tick_period = 1.0 / float(self.tick_rate)
+
+        self.state = True
+
+        self.initialize_variables()
+        self.start_timer()
+
+    def initialize_variables(self):
         self.button_down = False
         self.last_nav_msg_t = 0
         self.time_since_last_nav_msg = 0
@@ -140,10 +145,7 @@ class PanoViewerServer:
         self.pov = Quaternion()
         self.pov.w = INITIAL_ZOOM  # TODO is this alright?
         self.panoid = str()
-        self.tick_period = 1.0 / float(self.tick_rate)
         self.last_twist_msg = Twist()
-
-        self.start_timer()
 
     def _twist_is_in_gutter(self, twist_msg):
         return (
@@ -231,7 +233,6 @@ class PanoViewerServer:
 
     def project_pov(self, twist_msg, dt):
         coefficient = dt / self.tick_period / (1.0 / 60.0 / self.tick_period)
-        # attempt deep copy
         tilt = self.pov.x - coefficient * twist_msg.angular.y * self.nav_sensitivity
         heading = self.pov.z - coefficient * twist_msg.angular.z * self.nav_sensitivity
         zoom = self.pov.w + coefficient * twist_msg.linear.z * self.nav_sensitivity
@@ -355,10 +356,10 @@ class PanoViewerServer:
         coefficient = clamp(coefficient, COEFFICIENT_LOW, COEFFICIENT_HIGH)
         return coefficient
 
-    def _handle_soft_relaunch(self, *args, **kwargs):
+    def handle_soft_relaunch(self, *args, **kwargs):
         """
         Reinitialize all variables
         """
         rospy.logdebug('handling soft relaunch for streetview')
-        self._initialize_variables()
+        self.initialize_variables()
         self.nearby_panos.handle_soft_relaunch()

@@ -43,6 +43,34 @@ class TestSVServer(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def check_init_state(self):
+        ss = self.server
+        self.assertFalse(ss.button_down)
+        self.assertEqual(0, ss.last_nav_msg_t)
+        self.assertEqual(0, ss.time_since_last_nav_msg)
+        self.assertEqual(0, ss.move_forward)
+        self.assertEqual(0, ss.move_backward)
+        self.assertFalse(ss.last_metadata)
+        self.assertEqual(0, ss.location.x)
+        self.assertEqual(0, ss.location.y)
+        self.assertEqual(0, ss.location.theta)
+        self.assertEqual(0, ss.pov.x)
+        self.assertEqual(0, ss.pov.y)
+        self.assertEqual(0, ss.pov.z)
+        #self.assertEqual(INITIAL_ZOOM, ss.pov.w)
+        self.assertFalse(ss.panoid)
+        self.assertEqual(0, ss.last_twist_msg.linear.x)
+        self.assertEqual(0, ss.last_twist_msg.linear.y)
+        self.assertEqual(0, ss.last_twist_msg.linear.z)
+        self.assertEqual(0, ss.last_twist_msg.angular.x)
+        self.assertEqual(0, ss.last_twist_msg.angular.y)
+        self.assertEqual(0, ss.last_twist_msg.angular.z)
+
+    def check_soft_relaunch(self):
+        ss = self.server
+        ss.handle_soft_relaunch()
+        self.check_init_state()
+
     def test_sv_utils(self):
         response = StreetviewUtils.get_panoid_from_lat_lon(LAT, LON)
         self.assertIsInstance(response, str)
@@ -55,6 +83,9 @@ class TestSVServer(unittest.TestCase):
         webapp_metadata = StreetviewUtils.translate_server_metadata_to_client_form(response)
         self.assertEqual(response['Location']['panoId'], webapp_metadata['location']['pano'],
                          'webapp metadata does not match the google version')
+
+    def test_init_state(self):
+        self.check_init_state()
 
     def test_1_pano_pub(self):
         # test initial state
@@ -71,6 +102,8 @@ class TestSVServer(unittest.TestCase):
                          'server.panoid data did not have the correct value')
         self.assertEqual(self.pano_pub.data[0], new_pano,
                          'pano_pub data did not have the correct value')
+
+        self.check_soft_relaunch()
 
     def test_2_pov_pub(self):
         # test initial state
@@ -93,6 +126,8 @@ class TestSVServer(unittest.TestCase):
         self.assertEqual(self.pov_pub.data[0], new_pov,
                          'pov_pub data did not have the correct value')
 
+        self.check_soft_relaunch()
+
     def test_3_location_pub(self):
         # test initial state
         self.assertEqual(len(self.location_pub.data), 0,
@@ -108,6 +143,8 @@ class TestSVServer(unittest.TestCase):
                          'server.location data did not have the correct value')
         self.assertEqual(self.location_pub.data[0], new_location,
                          'location_pub data did not have the correct value')
+
+        self.check_soft_relaunch()
 
     def test_4_handle_location_msg(self):
         # test initial state
@@ -127,6 +164,8 @@ class TestSVServer(unittest.TestCase):
                          'server.panoid data did not have the correct value')
         self.assertEqual(self.pano_pub.data[0], expected_panoid,
                          'pano_pub data did not have the correct value')
+
+        self.check_soft_relaunch()
 
     def test_5_handle_metadata_msg(self):
         # test initial state
@@ -153,6 +192,8 @@ class TestSVServer(unittest.TestCase):
         # now when handling metadata msg the metadata should be set
         self.server.handle_metadata_msg(msg)
         self.assertEqual(self.server.get_metadata(), metadata)
+
+        self.check_soft_relaunch()
 
     def test_6_pano_change(self):
         # set up initial state
@@ -184,6 +225,8 @@ class TestSVServer(unittest.TestCase):
                          'the new pano should match the one returned from find_closest')
         self.assertEqual(self.server.get_metadata(), None,
                          'metadata should be none since the new metadata has not been published yet')
+
+        self.check_soft_relaunch()
 
     def test_7_director_translation(self):
         panoid = "1234asdf4321fdsa"
@@ -218,6 +261,9 @@ class TestSVServer(unittest.TestCase):
         asset = get_first_asset_from_activity(
             load_director_message(director_msg), "panoview")
         self.assertEqual(asset, None, 'No asset should have been returned')
+
+        self.check_soft_relaunch()
+
 
 if __name__ == '__main__':
     rostest.rosrun(PKG, NAME, TestSVServer, sys.argv)

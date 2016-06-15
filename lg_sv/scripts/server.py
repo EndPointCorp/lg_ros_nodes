@@ -77,7 +77,7 @@ def main():
     rospy.Subscriber('/%s/raw_metadata' % server_type, String,
                      server.handle_raw_metadata_msg)
     rospy.Subscriber('/spacenav/joy', Joy, server.handle_joy)
-    make_soft_relaunch_callback(server._handle_soft_relaunch, groups=['streetview'])
+    make_soft_relaunch_callback(server.handle_soft_relaunch, groups=['streetview'])
 
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
