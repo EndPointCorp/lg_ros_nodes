@@ -57,30 +57,46 @@ RUN     mkdir -p /opt/google/earth/free ;\
 # Install ROS
 RUN     apt-get update && apt-get install -y \
             ros-indigo-ros-base \
+            ros-indigo-rosbridge-server \
             lsb-core \
             google-chrome-stable
 
-# Env
-RUN     rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN	    mkdir /home/galadmin && mkdir /home/galadmin/src ;\
-        echo "source /opt/ros/indigo/setup.bash" >> /root/.bashrc
+# add galadmin user
+RUN useradd -ms /bin/bash galadmin
+RUN echo "galadmin   ALL=NOPASSWD: ALL" >> /etc/sudoers
 
+# Use bash insted of default sh, to setup
+# ROS evironment variables for nodes building
+RUN     mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh ;\
+	    mkdir -p /home/galadmin/src ;\
+        echo "source /opt/ros/indigo/setup.bash" >> /root/.bashrc ;\
+        echo "source /opt/ros/indigo/setup.bash" >> /home/galadmin/.bashrc
+
+# Add lg_ros_nodes and appctl repositories
+# Use curent branch for lg_ros_nodes
 WORKDIR /home/galadmin/src
-RUN	    git clone git://github.com/EndPointCorp/lg_ros_nodes.git ;\
-	      git clone git://github.com/EndPointCorp/appctl.git
+RUN	    git clone git://github.com/EndPointCorp/appctl.git
+ADD     workspace_copy /home/galadmin/src/lg_ros_nodes
 
-RUN     apt-get install -y ros-indigo-rosbridge-server
+USER    galadmin
 
+# Build ROS nodes
 WORKDIR /home/galadmin/src/lg_ros_nodes
-RUN     source /opt/ros/indigo/setup.bash ;\
-        rosdep init ;\
-        rosdep update ;\
+RUN     sudo chown -R galadmin /home/galadmin;\
+        source /opt/ros/indigo/setup.bash;\
+        sudo rosdep init;\
+        sudo rosdep fix-permissions;\
+        rosdep update;\
         ./scripts/init_workspace --appctl /home/galadmin/src/appctl ;\
         cd /home/galadmin/src/lg_ros_nodes/catkin ;\
-        rosdep install --from-paths src --ignore-src --rosdistro indigo -y ;\
-        catkin_make ;\
-        source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash ;\
-        catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install
+        sudo rosdep install --from-paths /home/galadmin/src/lg_ros_nodes/catkin/src --ignore-src --rosdistro indigo -y ;\
+        catkin_make
+
+# install ROS nodes
+RUN     source /opt/ros/indigo/setup.bash ;\
+        catkin_make install ;\
+        source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash
+
 
 WORKDIR /home/galadmin/src/lg_ros_nodes
 ENV     DISPLAY :0
