@@ -1,5 +1,6 @@
 import rospy
 import threading
+import urllib
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
@@ -8,6 +9,8 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 from lg_common.helpers import get_app_instances_to_manage
 from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import DirectorPoolQuery
+
+from urlparse import urlparse, parse_qs
 
 
 class AdhocBrowserPool():
@@ -24,6 +27,7 @@ class AdhocBrowserPool():
         self.viewport_name = viewport_name
         self._init_service()
         self.browsers = {}
+        self.type_key = "adhoc"
 
     def process_service_request(self, req):
         """
@@ -63,9 +67,12 @@ class AdhocBrowserPool():
                                   width=new_browser.geometry.width,
                                   height=new_browser.geometry.height)
 
+        ros_instance_id = self._get_ros_instance_id(new_browser_pool_id)
+        new_url = self._add_ros_instace_url_param(new_browser.url, ros_instance_id)
+
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
                                                 slug=new_browser_pool_id,
-                                                url=new_browser.url)
+                                                url=new_url)
 
         with self.lock:
             browser_to_create.set_state(ApplicationState.VISIBLE)
@@ -106,6 +113,7 @@ class AdhocBrowserPool():
     def _update_browser_url(self, browser_pool_id, current_browser, future_url):
         try:
             rospy.loginfo("Updating URL of browser id %s from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+            future_url = self._add_ros_instace_url_param(future_url, self._get_ros_instance_id(browser_pool_id))
             current_browser.update_url(future_url)
             return True
         except Exception, e:
@@ -120,6 +128,24 @@ class AdhocBrowserPool():
         except Exception, e:
             rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
             return False
+
+    def _add_ros_instace_url_param(self, url, ros_instance_name):
+        url_parts = urlparse(url)
+
+        if url_parts.query is None:
+            new_q = 'ros_instance_name={}'.format(ros_instance_name)
+            url_parts = url_parts._replace(query = new_q)
+            return url_parts.geturl()
+
+        get_args = parse_qs(url_parts.query)
+        get_args['ros_instance_name'] = ros_instance_name
+
+        new_q = urllib.urlencode(get_args)
+        url_parts = url_parts._replace(query = new_q)
+        return url_parts.geturl()
+
+    def _get_ros_instance_id(self, new_browser_pool_id):
+        return "%s__%s__%s" % (self.type_key, self.viewport_name, new_browser_pool_id)
 
     def handle_ros_message(self, data):
         """
