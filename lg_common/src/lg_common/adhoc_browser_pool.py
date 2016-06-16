@@ -9,8 +9,6 @@ from lg_common.helpers import get_app_instances_to_manage
 from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import DirectorPoolQuery
 
-from urlparse import urlparse
-
 
 class AdhocBrowserPool():
     """
@@ -122,21 +120,6 @@ class AdhocBrowserPool():
         except Exception, e:
             rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
             return False
-
-    def _add_ros_instace_url_param(self, url, ros_instance_name):
-        url_parts = urlparse(url)
-
-        if url_parts.query is None
-            new_q = 'ros_instance_name={}'.format(ros_instance_name)
-            url_parts = url_parts._replace(query = new_q)
-            return url_parts.geturl()
-
-        get_args = urlparse.parse_qs(url_parts.query)
-        get_args['ros_instance_name'] = ros_instance_name
-
-        new_q = urllib.urlencode(get_args)
-        url_parts = url_parts._replace(query = new_q)
-        return url_parts.geturl()
 
     def handle_ros_message(self, data):
         """
