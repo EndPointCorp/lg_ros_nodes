@@ -65,7 +65,6 @@ class ManagedBrowser(ManagedApplication):
         if extensions:
             cmd.append('--load-extension={}'.format(','.join(extensions)))
 
-
         cmd.extend(DEFAULT_ARGS)
         if command_line_args != '':
             cmd.extend(command_line_args)

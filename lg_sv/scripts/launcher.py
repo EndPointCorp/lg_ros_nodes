@@ -83,9 +83,9 @@ def main():
 
     # create the managed browser
     slug = server_type + "__" +\
-            "_fov-" + str(field_of_view) + "__" +\
-            "_yaw-" + str(yaw_offset) + "__" + \
-            "_pitch-" + str(pitch_offset)
+           "_fov-" + str(field_of_view) + "__" +\
+           "_yaw-" + str(yaw_offset) + "__" + \
+           "_pitch-" + str(pitch_offset)
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
 
     # set to visible
