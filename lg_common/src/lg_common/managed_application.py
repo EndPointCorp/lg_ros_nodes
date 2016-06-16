@@ -27,7 +27,7 @@ class ManagedApplication(object):
         self.sig_retry_timer = None
 
         if initial_state and is_valid_state(initial_state):
-            rospy.loginfo('setting intial state to %s' % initial_state)
+            rospy.loginfo('setting initial state to %s' % initial_state)
             self.state = initial_state
             self.set_state(self.state)
         else:
