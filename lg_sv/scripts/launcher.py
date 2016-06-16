@@ -82,7 +82,7 @@ def main():
         raise DependencyException(msg)
 
     # create the managed browser
-    slug = server_type + str(field_of_view) + str(yaw_offset) + str(pitch_offset)
+    slug = server_type + "__" + "_fov-" + str(field_of_view) + "__" + "_yaw-" + str(yaw_offset) + "__" + "_pitch-" + str(pitch_offset)
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
 
     # set to visible

@@ -84,10 +84,12 @@ if __name__ == '__main__':
         'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
         'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
     )
+    log_level = rospy.get_param('/logging/level', 0)
 
     browser = ManagedBrowser(
         geometry=geometry,
         url=url,
+        log_level=log_level,
         command_line_args=command_line_args,
         force_device_scale_factor=scale_factor,
         debug_port=debug_port,
