@@ -107,37 +107,27 @@ class AdhocBrowserPool():
         incoming_browsers_ids = set(incoming_browsers.keys())  # set
         current_browsers_ids = get_app_instances_ids(self.browsers)  # set
 
-        # browsers to create and show
-        browsers_to_create = get_app_instances_to_manage(current_browsers_ids,
-                                                         incoming_browsers_ids,
-                                                         manage_action='create')
-        # browsers to hide and remove
-        browsers_to_remove = get_app_instances_to_manage(current_browsers_ids,
-                                                         incoming_browsers_ids,
-                                                         manage_action='remove')
-
         # create new browsers
-        rospy.loginfo("POOL %s: browsers to create = %s" % (self.viewport_name, browsers_to_create))
-        for browser_pool_id in browsers_to_create:
+        rospy.loginfo("POOL %s: browsers to create = %s" % (self.viewport_name, incoming_browsers_ids))
+        for browser_pool_id in incoming_browsers_ids:
             rospy.loginfo("Creating browser with id %s" % browser_pool_id)
             self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
-        rospy.sleep(5)
         # unhide new browsers
         # TODO (wz): trigger VISIBLE by extension - listen on a topic here
-        for browser_pool_id in browsers_to_create:
+        for browser_pool_id in incoming_browsers_ids:
             rospy.loginfo("Unhiding browser with id %s" % browser_pool_id)
             self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
 
 
         # hide old browsers
-        for browser_pool_id in browsers_to_remove:
+        for browser_pool_id in current_browsers_ids:
             rospy.loginfo("Hiding browser with id %s" % browser_pool_id)
             self.browsers[browser_pool_id].set_state(ApplicationState.HIDDEN)
 
         # destroy old browsers
-        rospy.loginfo("POOL %s: browsers to remove = %s" % (self.viewport_name, browsers_to_remove))
-        for browser_pool_id in browsers_to_remove:
+        rospy.loginfo("POOL %s: browsers to remove = %s" % (self.viewport_name, current_browsers_ids))
+        for browser_pool_id in current_browsers_ids:
             rospy.loginfo("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
 

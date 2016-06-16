@@ -86,11 +86,11 @@ class AdhocBrowserDirectorBridge():
         """
         rospy.logdebug("Got data on _extract_adhoc_browsers: %s" % data)
         adhoc_browsers = []
-        browser_id = uuid.uuid4().hex[:8]
         browsers = extract_first_asset_from_director_message(data, 'browser', self.viewport_name)
         rospy.logdebug("Extracted browsers _extract_adhoc_browsers: %s" % browsers)
 
         for browser in browsers:
+            browser_id = uuid.uuid4().hex[:8]
             browser_name = 'adhoc_browser_' + self.viewport_name + '_' + str(browser_id)
             adhoc_browser = AdhocBrowser()
             adhoc_browser.id = browser_name
