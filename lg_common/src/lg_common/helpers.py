@@ -143,6 +143,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
               "slug":"browser-service-test",
               "windows":[
                 {
+                "activity_config": { "some": "stuffz"},
                 "activity":"browser",
                 "assets":["https://www.youtube.com/watch?v=un8FAjXWOBY"],
                 "height":600,
@@ -194,8 +195,17 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             asset_object['height'] = window['height']
             asset_object['width'] = window['width']
             asset_object['on_finish'] = 'nothing'
-            if window.get('activity_config', {}):
-                asset_object['on_finish'] = window['activity_config']['onFinish']
+
+            activity_config = window.get('activity_config', {})
+            if activity_config:
+                on_finish = activity_config.get('onFinish', None)
+                google_chrome = activity_config.get('google_chrome', None)
+
+                if on_finish:
+                    asset_object['on_finish'] = on_finish
+                if google_chrome:
+                    asset_object['google_chrome'] = google_chrome
+
             assets.append(asset_object)
         else:
             rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))

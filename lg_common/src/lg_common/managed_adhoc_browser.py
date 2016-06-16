@@ -12,14 +12,24 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 class ManagedAdhocBrowser(ManagedBrowser):
 
-    def __init__(self, geometry=None, log_level=0, slug=None, url=None):
+    def __init__(self, geometry=None, log_level=0, command_line_args=[],
+                 extensions=[], binary='/usr/bin/google-chrome',
+                 user_agent=None, slug=None, url=None):
+
         self.slug = slug
         self.url = url
         self.geometry = geometry
-        self.log_level = log_level
 
         super(ManagedAdhocBrowser, self).__init__(
-            geometry=geometry, slug=slug, url=url, kiosk=True)
+            slug=slug,
+            url=url,
+            geometry=geometry,
+            user_agent=user_agent,
+            command_line_args=command_line_args,
+            extensions=extensions,
+            binary=binary,
+            log_level=log_level,
+            kiosk=True)
 
     def __str__(self):
         return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,

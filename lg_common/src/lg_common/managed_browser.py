@@ -29,8 +29,9 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, command_line_args='', disk_cache_size=314572800,
-                 log_level=0, extensions=[], **kwargs):
+                 shell=True,  disk_cache_size=314572800,
+                 command_line_args=[], extensions=[], user_agent=None,
+                 log_level=0, **kwargs):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -43,7 +44,9 @@ class ManagedBrowser(ManagedApplication):
 
         cmd = [binary]
 
-        # If no debug port provided, pick one.
+        if user_agent:
+            cmd.append('--user-agent={}'.format(user_agent))
+
         if remote_debugging_port is None:
             remote_debugging_port = ManagedBrowser.get_os_port()
         self.debug_port = remote_debugging_port

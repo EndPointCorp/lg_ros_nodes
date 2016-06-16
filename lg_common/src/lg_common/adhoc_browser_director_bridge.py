@@ -1,4 +1,5 @@
 import rospy
+import uuid
 
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
@@ -6,6 +7,8 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common import ManagedWindow
 from lg_common.msg import WindowGeometry
 from lg_common.helpers import extract_first_asset_from_director_message
+from lg_common.msg import BrowserCmdArg
+from lg_common.msg import BrowserExtension
 
 
 class AdhocBrowserDirectorBridge():
@@ -46,6 +49,36 @@ class AdhocBrowserDirectorBridge():
             viewport_geometry = WindowGeometry()
         return {'x': viewport_geometry.x, 'y': viewport_geometry.y}
 
+    def _unpack_browser_config(self, adhoc_browser, browser_config):
+        """
+        accepts brower_config (`activity_config` part of USCS/director message)
+        and returns adhoc_browser object with detected activity_config attributes
+        """
+        binary = browser_config.get('binary_path', None)
+        user_agent = browser_config.get('user_agent', None)
+        browser_cmd_args = browser_config.get('cmd_args', None)
+        extensions = browser_config.get('extensions', None)
+        if binary:
+            adhoc_browser.binary = binary
+        if user_agent:
+            adhoc_browser.user_agent = user_agent
+        if browser_cmd_args:
+            for cmd_arg in browser_cmd_args:
+                browser_arg = BrowserCmdArg()
+                browser_arg.name = cmd_arg.name
+                browser_arg.path = cmd_arg.path
+                browser_arg.metadata = cmd_arg.metadata
+                adhoc_browser.cmd_args.append(browser_arg)
+        if extensions:
+            for extension in extensions:
+                browser_extension = BrowserExtension()
+                browser_extension.name = extension['name']
+                browser_extension.path = extension['path']
+                browser_extension.metadata = extension['metadata']
+                adhoc_browser.extensions.append(browser_extension)
+
+        return adhoc_browser
+
     def _extract_adhoc_browsers(self, data):
         """
         Returns a list containing AdhocBrowser objects extracted from director message for viewport
@@ -53,7 +86,7 @@ class AdhocBrowserDirectorBridge():
         """
         rospy.logdebug("Got data on _extract_adhoc_browsers: %s" % data)
         adhoc_browsers = []
-        browser_id = 0
+        browser_id = uuid.uuid4().hex[:8]
         browsers = extract_first_asset_from_director_message(data, 'browser', self.viewport_name)
         rospy.logdebug("Extracted browsers _extract_adhoc_browsers: %s" % browsers)
 
@@ -67,8 +100,12 @@ class AdhocBrowserDirectorBridge():
             adhoc_browser.geometry.height = browser['height']
             adhoc_browser.geometry.width = browser['width']
 
+            browser_config = browser.get('google_chrome', None)
+
+            if browser_config:
+                adhoc_browser = self._unpack_browser_config(adhoc_browser, browser_config)
+
             adhoc_browsers.append(adhoc_browser)
-            browser_id += 1
 
         rospy.logdebug("Returning adhocbrowsers: %s" % adhoc_browsers)
         return adhoc_browsers

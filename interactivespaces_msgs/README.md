@@ -84,3 +84,7 @@ that are placed in the `assets` attribute of the single `window`.
 By design - all applications instances (e.g. streetview right,
 streetview center, streetview left) listen on assets addressed only to
 them on specific `activity` name and `presentation_viewport`.
+
+## Scripts
+
+- send_director.py accepts path to a file with a json message as an argument and emits it via ROS
