@@ -24,6 +24,7 @@ class AdhocBrowserPool():
         self.viewport_name = viewport_name
         self._init_service()
         self.browsers = {}
+        self.log_level = rospy.get_param('/logging/level', 0)
 
     def process_service_request(self, req):
         """
@@ -64,6 +65,7 @@ class AdhocBrowserPool():
                                   height=new_browser.geometry.height)
 
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
+                                                log_level=self.log_level,
                                                 slug=self.viewport_name + "_" + new_browser_pool_id,
                                                 url=new_browser.url)
 

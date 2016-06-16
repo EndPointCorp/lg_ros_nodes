@@ -2,6 +2,7 @@ import sys
 import rospy
 import socket
 import shutil
+import shlex
 
 from lg_common import ManagedApplication, ManagedWindow
 from tornado.websocket import websocket_connect
@@ -18,7 +19,6 @@ DEFAULT_ARGS = [
     '--disable-pinch',
     '--overscroll-history-navigation=0',
     '--disable-touch-editing',
-    '--log-level=0',
     '--enable-logging=stderr',
     '--v=1',
     '--enable-webgl',
@@ -30,18 +30,7 @@ class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
                  shell=True, command_line_args='', disk_cache_size=314572800,
-                 extensions=[], **kwargs):
-
-        cmd = ["{ echo '--MARK-- NEW %s INSTANCE --MARK--';" % slug]
-        cmd.append = ["2>&1"]
-        cmd.append = [binary]
-
-        # If no debug port provided, pick one.
-        if remote_debugging_port is None:
-            remote_debugging_port = ManagedBrowser.get_os_port()
-        self.debug_port = remote_debugging_port
-
-        cmd.append('--remote-debugging-port={}'.format(self.debug_port))
+                 log_level=0, extensions=[], **kwargs):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -52,12 +41,22 @@ class ManagedBrowser(ManagedApplication):
                 sys.stderr.write(' * Has your node been initialized?')
                 raise e
 
+        cmd = [binary]
+
+        # If no debug port provided, pick one.
+        if remote_debugging_port is None:
+            remote_debugging_port = ManagedBrowser.get_os_port()
+        self.debug_port = remote_debugging_port
+
+        cmd.append('--remote-debugging-port={}'.format(self.debug_port))
+        cmd.append('--log-level={}'.format(log_level))
+
         tmp_dir = '/tmp/lg_browser_{}'.format(slug)
         try:
             rospy.loginfo("Purging ManagedBrowser directory: %s" % tmp_dir)
             shutil.rmtree(tmp_dir)
         except OSError, e:
-            rospy.logerr("Could not purge the %s directory because %s" % (tmp_dir, e))
+            rospy.loginfo("Could not purge the %s directory because %s" % (tmp_dir, e))
 
         cmd.append('--user-data-dir={}'.format(tmp_dir))
         cmd.append('--disk-cache-dir={}'.format(tmp_dir))
@@ -97,8 +96,8 @@ class ManagedBrowser(ManagedApplication):
                 cmd.append(url)
 
         # finishing command line and piping output to logger
-        cmd.append(';}')
-        cmd.append('| logger -i -t %s -p local7.debug' % slug)
+        cmd.extend(shlex.split('2>&1'))
+        rospy.logerr("Starting cmd: %s" % cmd)
 
         w_instance = 'oogle-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
