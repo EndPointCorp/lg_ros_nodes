@@ -1,0 +1,8 @@
+<launch>
+    <arg name="broadcast_addr" />
+    <param name="/viewport/center" value="640x480+640+0" />
+
+    <node name="adhoc_browser_center" pkg="lg_common" type="adhoc_browser" clear_params="true">
+        <param name="viewport" value="center" />
+    </node>
+</launch>
