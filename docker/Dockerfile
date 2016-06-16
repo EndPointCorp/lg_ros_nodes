@@ -78,23 +78,22 @@ WORKDIR /home/galadmin/src
 RUN	    git clone git://github.com/EndPointCorp/appctl.git
 ADD     workspace_copy /home/galadmin/src/lg_ros_nodes
 
-USER    galadmin
+USER    root
 
-# Build ROS nodes
+# Build and install ROS nodes
 WORKDIR /home/galadmin/src/lg_ros_nodes
-RUN     sudo chown -R galadmin /home/galadmin;\
-        source /opt/ros/indigo/setup.bash;\
-        sudo rosdep init;\
-        sudo rosdep fix-permissions;\
+RUN     source /opt/ros/indigo/setup.bash;\
+        rosdep init;\
         rosdep update;\
         ./scripts/init_workspace --appctl /home/galadmin/src/appctl ;\
         cd /home/galadmin/src/lg_ros_nodes/catkin ;\
-        sudo rosdep install --from-paths /home/galadmin/src/lg_ros_nodes/catkin/src --ignore-src --rosdistro indigo -y ;\
-        catkin_make
-
-# install ROS nodes
-RUN     source /opt/ros/indigo/setup.bash ;\
-        catkin_make install ;\
+        sudo rosdep install \
+            --from-paths /home/galadmin/src/lg_ros_nodes/catkin/src \
+            --ignore-src \
+            --rosdistro indigo \
+            -y ;\
+        catkin_make ;\
+        catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install;\
         source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash
 
 
@@ -102,6 +101,7 @@ WORKDIR /home/galadmin/src/lg_ros_nodes
 ENV     DISPLAY :0
 
 ADD     image_scripts/shell.sh /home/galadmin/shell.sh
-RUN     chmod +x /home/galadmin/shell.sh
+ADD     image_scripts/tmux.conf /etc/tmux.conf
+RUN     sudo chmod +x /home/galadmin/shell.sh
 
 CMD     /bin/bash -c /home/galadmin/shell.sh
