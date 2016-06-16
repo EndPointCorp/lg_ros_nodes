@@ -64,15 +64,14 @@ class AdhocBrowserPool():
                                   height=new_browser.geometry.height)
 
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
-                                                slug=new_browser_pool_id,
+                                                slug=self.viewport_name + "_" + new_browser_pool_id,
                                                 url=new_browser.url)
 
-        with self.lock:
-            browser_to_create.set_state(ApplicationState.VISIBLE)
-            rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
-            self.browsers[new_browser_pool_id] = browser_to_create
-            rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
-            return True
+        browser_to_create.set_state(ApplicationState.VISIBLE)
+        rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
+        self.browsers[new_browser_pool_id] = browser_to_create
+        rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
+        return True
 
     def _update_browser(self, browser_pool_id, updated_browser):
         """

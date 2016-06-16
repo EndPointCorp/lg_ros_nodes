@@ -19,7 +19,7 @@ DEFAULT_ARGS = [
     '--overscroll-history-navigation=0',
     '--disable-touch-editing',
     '--log-level=0',
-    '--enable-logging',
+    '--enable-logging=stderr',
     '--v=1',
     '--enable-webgl',
     '--ignore-gpu-blacklist'
@@ -29,9 +29,12 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, command_line_args='', extensions=[], **kwargs):
+                 shell=True, command_line_args='', disk_cache_size=314572800,
+                 extensions=[], **kwargs):
 
-        cmd = [binary]
+        cmd = ["{ echo '--MARK-- NEW %s INSTANCE --MARK--';" % slug]
+        cmd.append = ["2>&1"]
+        cmd.append = [binary]
 
         # If no debug port provided, pick one.
         if remote_debugging_port is None:
@@ -49,7 +52,7 @@ class ManagedBrowser(ManagedApplication):
                 sys.stderr.write(' * Has your node been initialized?')
                 raise e
 
-        tmp_dir = '/tmp/lg_browser-{}'.format(slug)
+        tmp_dir = '/tmp/lg_browser_{}'.format(slug)
         try:
             rospy.loginfo("Purging ManagedBrowser directory: %s" % tmp_dir)
             shutil.rmtree(tmp_dir)
@@ -62,6 +65,7 @@ class ManagedBrowser(ManagedApplication):
 
         if extensions:
             cmd.append('--load-extension={}'.format(','.join(extensions)))
+
 
         cmd.extend(DEFAULT_ARGS)
         if command_line_args != '':
@@ -92,12 +96,10 @@ class ManagedBrowser(ManagedApplication):
             if url is not None:
                 cmd.append(url)
 
-        cmd.append('&')
-        # In Chrome 46 the instance changes from
-        #   Google-chrome (...) to
-        #   google-chrome (...)
-        # Since all regex is escaped further down,
-        # just don't match the 'g' for now.
+        # finishing command line and piping output to logger
+        cmd.append(';}')
+        cmd.append('| logger -i -t %s -p local7.debug' % slug)
+
         w_instance = 'oogle-chrome \\({}\\)'.format(tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
