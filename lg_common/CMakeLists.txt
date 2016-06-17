@@ -21,6 +21,8 @@ add_message_files(
   AdhocBrowsers.msg
   BrowserExtension.msg
   BrowserCmdArg.msg
+  StringArray.msg
+  Ready.msg
 )
 generate_messages()
 
@@ -41,6 +43,8 @@ catkin_install_python(PROGRAMS
   scripts/touchscreen
   scripts/command_handler_node.py
   scripts/command_handler_node
+  scripts/readiness.py
+  scripts/readiness
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

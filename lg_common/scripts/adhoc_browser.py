@@ -21,6 +21,8 @@ def main():
     Initialize adhoc browser pool
     """
     topic_name = '/browser_service/{}'.format(viewport_name)
+    common_topic_name = '/browser_service/browsers'
+
     adhocbrowser_pool = AdhocBrowserPool(viewport_name)
     rospy.Subscriber(topic_name, AdhocBrowsers, adhocbrowser_pool.handle_ros_message)
 
@@ -28,10 +30,16 @@ def main():
     Initialize director => browser pool bridge that translates director GenericMessage to AdhocBrowsers.msg
     """
 
-    adhocbrowser_director_bridge_publisher = rospy.Publisher(
+    adhocbrowser_viewport_publisher = rospy.Publisher(
         topic_name, AdhocBrowsers, queue_size=3)
 
-    adhocbrowser_director_bridge = AdhocBrowserDirectorBridge(adhocbrowser_director_bridge_publisher, viewport_name)
+    adhocbrowser_aggregate_topic_publisher = rospy.Publisher(
+        common_topic_name, AdhocBrowsers, queue_size=3)
+
+    adhocbrowser_director_bridge = AdhocBrowserDirectorBridge(
+        adhocbrowser_aggregate_topic_publisher,
+        adhocbrowser_viewport_publisher,
+        viewport_name)
 
     rospy.Subscriber('/director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
 

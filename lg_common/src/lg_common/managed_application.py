@@ -119,6 +119,14 @@ class ManagedApplication(object):
                         'without a ManagedWindow'
                     )
 
+            elif state == ApplicationState.STARTED:
+                rospy.loginfo("STARTED")
+                self.proc.start()
+                self._signal_proc(signal.SIGCONT)
+                if self.window is not None:
+                    self.window.set_visibility(False)
+                    self.window.converge()
+
             elif state == ApplicationState.VISIBLE:
                 rospy.loginfo("VISIBLE")
                 self.proc.start()

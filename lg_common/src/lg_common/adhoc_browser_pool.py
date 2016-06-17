@@ -81,11 +81,27 @@ class AdhocBrowserPool():
                                                 binary=binary,
                                                 url=new_browser.url)
 
-        browser_to_create.set_state(ApplicationState.STARTED)
         rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
+        browser_to_create.set_state(ApplicationState.STARTED)
         self.browsers[new_browser_pool_id] = browser_to_create
         rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
         return True
+
+    def unhide_browsers(self, data):
+        """
+        Listen on a topic that carries following Ready type:
+         -----
+         scene_slug: 659f6d8d-7c40-4f2c-911b-49390ac13e5f__tvn24
+         activity_type: browser
+         instances: ['50220834']
+         -----
+
+         Activate browser instances mentioned in 'instances' that belong to 'scene_slug'
+        """
+        if data.scene_slug == self.last_scene_slug:
+            for browser_pool_id in data.instances:
+                rospy.loginfo("Unhiding browser with id %s" % instance_name)
+                self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
 
     def handle_ros_message(self, data):
         """
@@ -112,13 +128,6 @@ class AdhocBrowserPool():
         for browser_pool_id in incoming_browsers_ids:
             rospy.loginfo("Creating browser with id %s" % browser_pool_id)
             self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
-
-        # unhide new browsers
-        # TODO (wz): trigger VISIBLE by extension - listen on a topic here
-        for browser_pool_id in incoming_browsers_ids:
-            rospy.loginfo("Unhiding browser with id %s" % browser_pool_id)
-            self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
-
 
         # hide old browsers
         for browser_pool_id in current_browsers_ids:

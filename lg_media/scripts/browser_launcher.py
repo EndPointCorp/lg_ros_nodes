@@ -36,7 +36,7 @@ class BasicBrowserData:
 
         Turns these medias into AdhocBrowsers and then publishes them
         """
-        msg = []
+        msg = AdhocBrowsers()
         for media in data.medias:
             url = add_url_params(
                 self.url, src=media.url,
@@ -57,7 +57,7 @@ class BasicBrowserData:
             new_browser.id = 'adhoc_media_browser_%s' % self.viewport_name
             new_browser.geometry = media.geometry
             new_browser.url = url
-            msg.append(new_browser)
+            msg.browsers.append(new_browser)
 
         self.publisher.publish(msg)
 
