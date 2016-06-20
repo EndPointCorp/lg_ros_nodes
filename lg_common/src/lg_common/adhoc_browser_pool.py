@@ -135,14 +135,14 @@ class AdhocBrowserPool():
 
         if url_parts.query is None:
             new_q = 'ros_instance_name={}'.format(ros_instance_name)
-            url_parts = url_parts._replace(query = new_q)
+            url_parts = url_parts._replace(query=new_q)
             return url_parts.geturl()
 
         get_args = parse_qs(url_parts.query)
         get_args['ros_instance_name'] = ros_instance_name
 
         new_q = urllib.urlencode(get_args)
-        url_parts = url_parts._replace(query = new_q)
+        url_parts = url_parts._replace(query=new_q)
         return url_parts.geturl()
 
     def _get_ros_instance_id(self, new_browser_pool_id):
