@@ -145,7 +145,8 @@ class AttractLoop:
                 rospy.loginfo("Populated attract_loop_queue with %s" % self.attract_loop_queue)
                 self._play_attract_loop_item()
         except Exception, e:
-            rospy.logerr("Failed to populate attract loop queue with content because %s" % e)
+            rospy.logwarn("Failed to populate attract loop queue with content because %s" % e)
+            rospy.sleep(30)
 
     def _play_scene(self, scene, presentation, duration):
 
