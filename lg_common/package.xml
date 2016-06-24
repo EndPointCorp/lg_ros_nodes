@@ -21,5 +21,6 @@
   <run_depend>interactivespaces_msgs</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>rosbridge_suite</run_depend>
+  <run_depend>socat</run_depend>
   <test_depend>rostest</test_depend>
 </package>
