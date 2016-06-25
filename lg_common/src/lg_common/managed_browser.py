@@ -5,6 +5,8 @@ import shutil
 import shlex
 
 from lg_common import ManagedApplication, ManagedWindow
+from lg_common.tcp_relay import TCPRelay
+from lg_common.msg import ApplicationState
 from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'
@@ -46,7 +48,9 @@ class ManagedBrowser(ManagedApplication):
         # If no debug port provided, pick one.
         if remote_debugging_port is None:
             remote_debugging_port = ManagedBrowser.get_os_port()
-        self.debug_port = remote_debugging_port
+        self.debug_port = ManagedBrowser.get_os_port()
+
+        self.relay = TCPRelay(self.debug_port, remote_debugging_port)
 
         cmd.append('--remote-debugging-port={}'.format(self.debug_port))
         cmd.append('--log-level={}'.format(log_level))
@@ -127,5 +131,20 @@ class ManagedBrowser(ManagedApplication):
         conn = yield websocket_connect(ws_url, connect_timeout=1)
         conn.write_message(msg)
         conn.close()
+
+    def set_state(self, state):
+        super(ManagedBrowser, self).set_state(state)
+
+        if state == ApplicationState.STOPPED:
+            self.relay.stop()
+
+        elif state == ApplicationState.SUSPENDED:
+            self.relay.start()
+
+        elif state == ApplicationState.HIDDEN:
+            self.relay.start()
+
+        elif state == ApplicationState.VISIBLE:
+            self.relay.start()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
