@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.0 (2016-06-25)
+------------------
 * Issue/158 last ack timestamp (`#229 <https://github.com/EndPointCorp/lg_ros_nodes/issues/229>`_)
   * Added service with last state for viewsync `#158 <https://github.com/EndPointCorp/lg_ros_nodes/issues/158>`_
   * Added viewsync state service for monitoring of GE viewsync health `#158 <https://github.com/EndPointCorp/lg_ros_nodes/issues/158>`_

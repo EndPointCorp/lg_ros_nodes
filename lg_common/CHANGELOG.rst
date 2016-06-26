@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.0 (2016-06-25)
+------------------
 * Fix remote debugging port in scripts
 * Track pytest dep in lg_common
 * Enable GPU rasterization in Chrome by default

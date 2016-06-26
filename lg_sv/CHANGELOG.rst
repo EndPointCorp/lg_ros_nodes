@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.0 (2016-06-25)
+------------------
 * Introduce tilt snappiness
   * Use time series for smooth ephemeral tilt.
   * Keep old tilt behavior, settable at runtime with the tilt_snappy topic.

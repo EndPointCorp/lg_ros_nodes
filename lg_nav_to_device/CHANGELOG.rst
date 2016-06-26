@@ -2,8 +2,8 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.0 (2016-06-25)
+------------------
 * Reduce virtual spacenav drift
   Instead of writing zeroes (which are ignored), write a small value inside the gutter.
   This will probably behave poorly for any application besides Earth.
