@@ -17,7 +17,7 @@ if __name__ == '__main__':
     url = rospy.get_param('~url', None)
     command_line_args = rospy.get_param('~command_line_args', '')
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
-    debug_port = rospy.get_param('~debug_port', 10000)
+    debug_port = rospy.get_param('~debug_port', None)
     user_agent = rospy.get_param(
         '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
         'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         url=url,
         command_line_args=command_line_args,
         force_device_scale_factor=scale_factor,
-        debug_port=debug_port,
+        remote_debugging_port=debug_port,
         user_agent=user_agent,
         extensions=extensions
     )
