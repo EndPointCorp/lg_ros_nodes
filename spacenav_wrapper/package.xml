@@ -17,5 +17,6 @@
   <build_depend>libudev-dev</build_depend>
   <run_depend>rospy</run_depend>
   <run_depend>geometry_msgs</run_depend>
+  <test_depend>rostest</test_depend>
 
 </package>
