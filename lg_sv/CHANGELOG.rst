@@ -2,8 +2,18 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.9 (2016-05-20)
-------------------
+Forthcoming
+-----------
+* Introduce tilt snappiness
+  * Use time series for smooth ephemeral tilt.
+  * Keep old tilt behavior, settable at runtime with the tilt_snappy topic.
+  * Slow down movement repeat.
+  * Set constant zoom.
+* Reduce street view nav gutter value
+  Helps tilt snappiness work.
+* Reduce Street View tick rate
+* Fix `#230 <https://github.com/EndPointCorp/lg_ros_nodes/issues/230>`_ and add tests
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
 
 1.2.14 (2016-06-10)
 -------------------
@@ -23,9 +33,9 @@ Changelog for package lg_sv
 
 1.2.10 (2016-05-20)
 -------------------
-* 1.2.9
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.2.9 (2016-05-20)
+------------------
 
 1.2.8 (2016-05-19)
 ------------------

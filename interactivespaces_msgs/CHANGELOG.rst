@@ -2,8 +2,10 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.9 (2016-05-20)
-------------------
+Forthcoming
+-----------
+* Added example messages for merge development
+* Contributors: Wojciech Ziniewicz
 
 1.2.14 (2016-06-10)
 -------------------
@@ -19,9 +21,9 @@ Changelog for package interactivespaces_msgs
 
 1.2.10 (2016-05-20)
 -------------------
-* 1.2.9
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.2.9 (2016-05-20)
+------------------
 
 1.2.8 (2016-05-19)
 ------------------
