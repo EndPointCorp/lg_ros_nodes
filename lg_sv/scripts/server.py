@@ -5,7 +5,7 @@ from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
 from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
@@ -77,6 +77,7 @@ def main():
     rospy.Subscriber('/%s/raw_metadata' % server_type, String,
                      server.handle_raw_metadata_msg)
     rospy.Subscriber('/spacenav/joy', Joy, server.handle_joy)
+    rospy.Subscriber('/%s/tilt_snappy' % server_type, Bool, server.handle_tilt_snappy)
     make_soft_relaunch_callback(server.handle_soft_relaunch, groups=['streetview'])
 
     # This will translate director messages into /<server_type>/panoid messages

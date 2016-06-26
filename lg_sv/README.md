@@ -70,6 +70,7 @@ Creates rostopics to communicate/interact with the sv clients. Handles the space
 * `/<server_type>/raw_metadata` [String] - Listens for raw metadata that needs
   to be converted and republished on `/<server_type>/metadata`.
 * `/spacenav/joy` [Joy] - Used to listen for button presses.
+* `/<server_type>/tilt_snappy` [Bool] - Sets tilt behavior. `true` means the tilt snaps back to zero (the default). `false` means the tilt is persistent and navigable.
 
 ### launcher (wrapper to clients)
 
