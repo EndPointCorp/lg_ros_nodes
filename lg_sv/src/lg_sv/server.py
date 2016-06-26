@@ -2,10 +2,11 @@ import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from std_msgs.msg import String
 from lg_common.msg import ApplicationState
-from math import atan2, cos, sin, pi
+from math import atan2, cos, sin, pi, pow
 from lg_sv import NearbyPanos
 import requests
 import json
+from collections import deque
 
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
@@ -19,14 +20,19 @@ import json
 # 1. update self.metadata
 
 X_THRESHOLD = 0.50
-FORWARD_THRESHOLD = .3
-BACKWARDS_THRESHOLD = .3
+FORWARD_THRESHOLD = 0.2
+BACKWARDS_THRESHOLD = 0.2
+MOVEMENT_REPEAT_DELAY = 0.6
 # TODO figure out some good values here
 COEFFICIENT_LOW = 0.1
 COEFFICIENT_HIGH = 3
-ZOOM_MIN = 20
-ZOOM_MAX = 120
-INITIAL_ZOOM = 50
+ZOOM_MIN = 40
+ZOOM_MAX = 40
+INITIAL_ZOOM = 40
+TILT_COEFF = 10.0
+TILT_POW = 2
+TILT_SERIES_LEN = 32
+MOVEMENT_SERIES_LEN = 8
 
 
 def clamp(val, low, high):
@@ -39,6 +45,10 @@ def wrap(val, low, high):
     if val < low:
         val += (high - low)
     return val
+
+
+def mean(series):
+    return sum(series) / float(len(series))
 
 
 class StreetviewUtils:
@@ -111,7 +121,7 @@ class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                  nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
                  nearby_panos=NearbyPanos(), metadata_pub=None,
-                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=240):
+                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=180):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
@@ -126,7 +136,7 @@ class PanoViewerServer:
         self.zoom_max = zoom_max
         self.zoom_min = zoom_min
         self.tick_rate = tick_rate
-        self.gutter_val = 0.004
+        self.gutter_val = 0.0005
         self.tick_period = 1.0 / float(self.tick_rate)
 
         self.state = True
@@ -146,6 +156,11 @@ class PanoViewerServer:
         self.pov.w = INITIAL_ZOOM  # TODO is this alright?
         self.panoid = str()
         self.last_twist_msg = Twist()
+        self.tilt_series = deque([0.0 for i in range(TILT_SERIES_LEN)], maxlen=TILT_SERIES_LEN)
+        self.movement_series = deque([0.0 for i in range(MOVEMENT_SERIES_LEN)], maxlen=MOVEMENT_SERIES_LEN)
+        self.last_stable_tilt = 0.0
+        self.last_stable_forward = 0.0
+        self.tilt_method = self.tilt_snappy
 
     def _twist_is_in_gutter(self, twist_msg):
         return (
@@ -231,11 +246,28 @@ class PanoViewerServer:
         self.nearby_panos.set_panoid(self.panoid)
         self.panoid_pub.publish(panoid)
 
+    def tilt_snappy(self, twist_msg, coefficient):
+        stable_tilt = (mean(self.tilt_series) + self.last_stable_tilt) / 2
+        self.last_stable_tilt = stable_tilt
+        forward = (mean(self.movement_series) + self.last_stable_forward) / 2
+        self.last_stable_forward = forward
+        if forward > 0:
+            stable_tilt *= max(1.0 - forward, 0)
+        tilt = pow((-stable_tilt * self.nav_sensitivity * TILT_COEFF), TILT_POW)
+        if TILT_POW % 2 == 0 and stable_tilt > 0:
+            tilt *= -1
+        return tilt
+
+    def tilt_not_snappy(self, twist_msg, coefficient):
+        tilt = self.pov.x - coefficient * twist_msg.angular.y * self.nav_sensitivity
+        return tilt
+
     def project_pov(self, twist_msg, dt):
         coefficient = dt / self.tick_period / (1.0 / 60.0 / self.tick_period)
-        tilt = self.pov.x - coefficient * twist_msg.angular.y * self.nav_sensitivity
         heading = self.pov.z - coefficient * twist_msg.angular.z * self.nav_sensitivity
-        zoom = self.pov.w + coefficient * twist_msg.linear.z * self.nav_sensitivity
+        tilt = self.tilt_method(twist_msg, coefficient)
+        #zoom = self.pov.w + coefficient * twist_msg.linear.z * self.nav_sensitivity
+        zoom = INITIAL_ZOOM
         pov_msg = Quaternion(
             x=clamp(tilt, self.tilt_min, self.tilt_max),
             y=0,
@@ -269,6 +301,9 @@ class PanoViewerServer:
         self.time_since_last_nav_msg = now - self.last_nav_msg_t
         self.last_nav_msg_t = now
 
+        self.tilt_series.appendleft(twist.angular.y)
+        self.movement_series.appendleft(abs(twist.linear.x))
+
         if self._twist_is_in_gutter(twist):
             self.last_twist_msg = Twist()
         else:
@@ -298,8 +333,12 @@ class PanoViewerServer:
                 self._move_backward()
         else:
             # reset counters
-            self.move_forward = 0
-            self.move_backward = 0
+            if self.move_forward < 0:
+                self.move_forward += MOVEMENT_REPEAT_DELAY / 10.0
+            if self.move_backward < 0:
+                self.move_backward += MOVEMENT_REPEAT_DELAY / 10.0
+            self.move_forward = min(self.move_forward, 0)
+            self.move_backward = min(self.move_backward, 0)
 
     def handle_joy(self, joy):
         """
@@ -325,8 +364,8 @@ class PanoViewerServer:
         Wrapper around move function, resets counter
         """
         if self.move(self.pov.z):
-            self.move_forward = 0
-            self.move_backward = 0
+            self.move_forward = -MOVEMENT_REPEAT_DELAY
+            self.move_backward = -MOVEMENT_REPEAT_DELAY
 
     def _move_backward(self):
         """
@@ -334,8 +373,8 @@ class PanoViewerServer:
         heading
         """
         if self.move((self.pov.z + 180) % 360):
-            self.move_backward = 0
-            self.move_forward = 0
+            self.move_backward = -MOVEMENT_REPEAT_DELAY
+            self.move_forward = -MOVEMENT_REPEAT_DELAY
 
     def move(self, heading):
         """
@@ -363,3 +402,9 @@ class PanoViewerServer:
         rospy.logdebug('handling soft relaunch for streetview')
         self.initialize_variables()
         self.nearby_panos.handle_soft_relaunch()
+
+    def handle_tilt_snappy(self, msg):
+        if msg.data:
+            self.tilt_method = self.tilt_snappy
+        else:
+            self.tilt_method = self.tilt_not_snappy
