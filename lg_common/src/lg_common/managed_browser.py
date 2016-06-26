@@ -11,6 +11,7 @@ from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'
 DEFAULT_ARGS = [
+    '--enable-gpu-rasterization',
     '--no-first-run',
     '--allow-file-access-from-files',
     '--disable-default-apps',
