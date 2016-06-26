@@ -126,7 +126,7 @@ class PanoViewerServer:
         self.zoom_max = zoom_max
         self.zoom_min = zoom_min
         self.tick_rate = tick_rate
-        self.gutter_val = 0.004
+        self.gutter_val = 0.0005
         self.tick_period = 1.0 / float(self.tick_rate)
 
         self.state = True
