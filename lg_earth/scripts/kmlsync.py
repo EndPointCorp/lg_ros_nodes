@@ -43,9 +43,10 @@ def main():
         (r'/query.html', KmlQueryHandler),
     ], debug=True)
 
-    rospy.wait_for_service('/kmlsync/state')
-    rospy.wait_for_service('/kmlsync/playtour_query')
-    rospy.wait_for_service('/kmlsync/planet_query')
+    global_dependency_timeout = int(rospy.get_param('~global_dependency_timeout', 15))
+    rospy.wait_for_service('/kmlsync/state', global_dependency_timeout)
+    rospy.wait_for_service('/kmlsync/playtour_query', global_dependency_timeout)
+    rospy.wait_for_service('/kmlsync/planet_query', global_dependency_timeout)
 
     director_scene_topic = rospy.get_param('~director_topic', '/director/scene')
     rospy.Subscriber(director_scene_topic, GenericMessage, KmlUpdateHandler.get_scene_msg)
