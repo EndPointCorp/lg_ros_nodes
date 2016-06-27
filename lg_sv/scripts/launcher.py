@@ -55,7 +55,7 @@ def main():
     timeout = rospy.get_param('/global_dependency_timeout', 15)
 
     check_www_dependency(depend_on_webserver, host, port, 'streetview server', timeout)
-    check_www_dependency(depend_on_webserver, rosbridge_host, rosbridge_port, 'rosbridge', 'timeout')
+    check_www_dependency(depend_on_webserver, rosbridge_host, rosbridge_port, 'rosbridge', timeout)
 
     x_available_or_raise(timeout)
 
