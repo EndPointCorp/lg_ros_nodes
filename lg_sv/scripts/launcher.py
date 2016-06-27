@@ -6,8 +6,7 @@ from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
 from lg_common.helpers import check_www_dependency
-from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available
-from lg_common.helpers import DependencyException
+from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
 # FOV for zoom level 3
@@ -58,13 +57,7 @@ def main():
     check_www_dependency(depend_on_webserver, host, port, 'streetview server', timeout)
     check_www_dependency(depend_on_webserver, rosbridge_host, rosbridge_port, 'rosbridge', 'timeout')
 
-    # wait for X to become available
-    if x_available(timeout):
-        rospy.loginfo("X available")
-    else:
-        msg = "X server is not available"
-        rospy.logfatal(msg)
-        raise DependencyException(msg)
+    x_available_or_raise(timeout)
 
     # create the managed browser
     slug = server_type + "__" + "_fov-" + str(field_of_view) + "__" + "_yaw-" + str(yaw_offset) + "__" + "_pitch-" + str(pitch_offset)

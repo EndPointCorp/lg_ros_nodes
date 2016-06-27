@@ -736,3 +736,14 @@ def check_www_dependency(should_depend, host, port, name, timeout):
             raise DependencyException(msg)
         else:
             rospy.loginfo("%s is online" % name)
+
+def x_available_or_raise(timeout):
+    """
+    Checks if x is available, or will raise an error
+    """
+    if x_available(timeout):
+        rospy.loginfo("X available")
+    else:
+        msg = "X server is not available"
+        rospy.logfatal(msg)
+        raise DependencyException(msg)

@@ -10,8 +10,7 @@ from std_msgs.msg import String
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from lg_common.msg import ApplicationState
-from lg_common.helpers import DependencyException
-from lg_common.helpers import check_www_dependency, x_available, make_soft_relaunch_callback
+from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
 from lg_earth.srv import ViewsyncState
 
 
@@ -30,12 +29,7 @@ def main():
 
     check_www_dependency(depend_on_kmlsync, kmlsync_host, kmlsync_port, 'kmlsync', global_dependency_timeout)
 
-    if x_available(global_dependency_timeout):
-        rospy.loginfo("X available")
-    else:
-        msg = "X server is not available"
-        rospy.logfatal(msg)
-        raise DependencyException(msg)
+    x_available_or_raise(global_dependency_timeout)
 
     viewsync_port = None
     if rospy.get_param('~viewsync_send', False):
