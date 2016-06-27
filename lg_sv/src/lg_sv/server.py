@@ -29,10 +29,8 @@ COEFFICIENT_HIGH = 3
 ZOOM_MIN = 40
 ZOOM_MAX = 40
 INITIAL_ZOOM = 40
-TILT_COEFF = 10.0
-TILT_POW = 2
-TILT_SERIES_LEN = 32
-MOVEMENT_SERIES_LEN = 8
+IDLE_TIME_UNTIL_SNAP = 1.25
+SNAP_DURATION = 15.0
 
 
 def clamp(val, low, high):
@@ -147,6 +145,7 @@ class PanoViewerServer:
     def initialize_variables(self):
         self.button_down = False
         self.last_nav_msg_t = 0
+        self.last_nongutter_nav_msg_t = 0
         self.time_since_last_nav_msg = 0
         self.move_forward = 0
         self.move_backward = 0
@@ -156,10 +155,6 @@ class PanoViewerServer:
         self.pov.w = INITIAL_ZOOM  # TODO is this alright?
         self.panoid = str()
         self.last_twist_msg = Twist()
-        self.tilt_series = deque([0.0 for i in range(TILT_SERIES_LEN)], maxlen=TILT_SERIES_LEN)
-        self.movement_series = deque([0.0 for i in range(MOVEMENT_SERIES_LEN)], maxlen=MOVEMENT_SERIES_LEN)
-        self.last_stable_tilt = 0.0
-        self.last_stable_forward = 0.0
         self.tilt_method = self.tilt_snappy
 
     def _twist_is_in_gutter(self, twist_msg):
@@ -247,15 +242,13 @@ class PanoViewerServer:
         self.panoid_pub.publish(panoid)
 
     def tilt_snappy(self, twist_msg, coefficient):
-        stable_tilt = (mean(self.tilt_series) + self.last_stable_tilt) / 2
-        self.last_stable_tilt = stable_tilt
-        forward = (mean(self.movement_series) + self.last_stable_forward) / 2
-        self.last_stable_forward = forward
-        if forward > 0:
-            stable_tilt *= max(1.0 - forward, 0)
-        tilt = pow((-stable_tilt * self.nav_sensitivity * TILT_COEFF), TILT_POW)
-        if TILT_POW % 2 == 0 and stable_tilt > 0:
-            tilt *= -1
+        now = rospy.get_time()
+        idle_t = now - self.last_nongutter_nav_msg_t
+        if idle_t < IDLE_TIME_UNTIL_SNAP:
+            return self.tilt_not_snappy(twist_msg, coefficient)
+
+        snap_t = idle_t - IDLE_TIME_UNTIL_SNAP
+        tilt = self.pov.x * max(1 - (snap_t / SNAP_DURATION), 0)
         return tilt
 
     def tilt_not_snappy(self, twist_msg, coefficient):
@@ -301,12 +294,10 @@ class PanoViewerServer:
         self.time_since_last_nav_msg = now - self.last_nav_msg_t
         self.last_nav_msg_t = now
 
-        self.tilt_series.appendleft(twist.angular.y)
-        self.movement_series.appendleft(abs(twist.linear.x))
-
         if self._twist_is_in_gutter(twist):
             self.last_twist_msg = Twist()
         else:
+            self.last_nongutter_nav_msg_t = now
             self.last_twist_msg = twist
 
         # check to see if the pano should be moved
