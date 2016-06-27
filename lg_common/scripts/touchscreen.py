@@ -8,9 +8,7 @@ from std_msgs.msg import String
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
-from lg_common.helpers import dependency_available, x_available
-from lg_common.helpers import DependencyException
-from lg_common.helpers import x_available
+from lg_common.helpers import dependency_available, x_available, check_www_dependency
 from lg_common.helpers import make_soft_relaunch_callback
 
 
@@ -37,26 +35,10 @@ if __name__ == '__main__':
     depend_on_director = rospy.get_param('~depend_on_director', False)
     global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    if depend_on_rosbridge:
-        rospy.loginfo("Waiting for rosbridge to become available")
-        if not dependency_available(rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout):
-            msg = "Service: %s hasn't become accessible within %s seconds" % ('rosbridge', global_dependency_timeout)
-            rospy.logfatal(msg)
-            raise DependencyException(msg)
-        else:
-            rospy.loginfo("Rosbridge is online")
+    check_www_dependency(depend_on_rosbridge, rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout)
+    check_www_dependency(depend_on_director, director_host, director_port, 'director', global_dependency_timeout)
 
-    if depend_on_director:
-        rospy.loginfo("Waiting for director to become available")
-        if not dependency_available(director_host, director_port, 'director', global_dependency_timeout):
-            msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
-            rospy.logfatal(msg)
-            raise DependencyException(msg)
-        else:
-            rospy.loginfo("Director is online")
-
-    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
-    if x_available(x_timeout):
+    if x_available(global_dependency_timeout):
         rospy.loginfo("X available")
     else:
         msg = "X server is not available"

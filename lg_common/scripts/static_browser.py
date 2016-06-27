@@ -4,8 +4,7 @@ import rospy
 
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
-from lg_common.helpers import dependency_available, DependencyException
-from lg_common.helpers import discover_host_from_url, discover_port_from_url
+from lg_common.helpers import check_www_dependency, discover_host_from_url, discover_port_from_url
 
 from std_msgs.msg import String
 
@@ -31,14 +30,7 @@ if __name__ == '__main__':
 
     www_host = discover_host_from_url(url)
     www_port = discover_port_from_url(url)
-
-    if depend_on_url:
-        if not dependency_available(www_host, www_port, 'static browser URL', global_dependency_timeout):
-            msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
-            rospy.logfatal(msg)
-            raise DependencyException(msg)
-        else:
-            rospy.loginfo("URL available - continuing initialization")
+    check_www_dependency(depend_on_url, www_host, www_port 'static browser URL', global_dependency_timeout)
 
     browser = ManagedBrowser(
         geometry=geometry,

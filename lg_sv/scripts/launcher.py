@@ -5,7 +5,7 @@ import rospy
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
-from lg_common.helpers import dependency_available
+from lg_common.helpers import check_www_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available
 from lg_common.helpers import DependencyException
 
@@ -55,26 +55,11 @@ def main():
     port = discover_port_from_url(url)
     timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    if depend_on_webserver:
-        rospy.loginfo("Waiting for webserver to become available")
-        if not dependency_available(host, port, 'streetview_server', timeout):
-            msg = "Streetview server (%s:%s) did not appear within specified timeout of %s seconds" % (host, port, timeout)
-            rospy.logerr(msg)
-            raise DependencyException
-        else:
-            rospy.loginfo("Webserver available - continuing initialization")
-
-    if depend_on_rosbridge:
-        if not dependency_available(rosbridge_host, rosbridge_port, 'rosbridge', timeout):
-            msg = "Rosbridge (%s:%s) did not appear within specified timeout of %s seconds" % (rosbridge_host, rosbridge_port, timeout)
-            rospy.logerr(msg)
-            raise DependencyException
-        else:
-            rospy.loginfo("ROSbridge available - continuing initialization")
+    check_www_dependency(depend_on_webserver, host, port, 'streetview server', timeout)
+    check_www_dependency(depend_on_webserver, rosbridge_host, rosbridge_port, 'rosbridge', 'timeout')
 
     # wait for X to become available
-    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
-    if x_available(x_timeout):
+    if x_available(timeout):
         rospy.loginfo("X available")
     else:
         msg = "X server is not available"

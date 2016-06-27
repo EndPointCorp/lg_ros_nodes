@@ -723,3 +723,16 @@ def get_activity_config(scene, activity_name, window_viewport):
     except IndexError:
         return None
     return activity_config
+
+def check_www_dependency(should_depend, host, port, name, timeout):
+    """
+    Check if www dependency is available, or raise an exception
+    """
+    if should_depend:
+        rospy.loginfo("Waiting for rosbridge to become available")
+        if not dependency_available(host, port, name, timeout):
+            msg = "Service: %s hasn't become accessible within %s seconds" % (name, timeout)
+            rospy.logfatal(msg)
+            raise DependencyException(msg)
+        else:
+            rospy.loginfo("%s is online" % name)
