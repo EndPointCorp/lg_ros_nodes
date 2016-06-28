@@ -2,6 +2,16 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix timeout variable
+* refactored x_available to DRY out code mode
+* factor out dependency_available to check_www_dependency
+  This DRYs out the code a bunch.
+* Simplified street view nav snapping
+  * Wait until nav is idle to snap back to horizontal.
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
 1.3.0 (2016-06-25)
 ------------------
 * Introduce tilt snappiness

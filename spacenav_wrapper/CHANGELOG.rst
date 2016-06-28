@@ -2,6 +2,11 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix missing test_depend in spacenav_wrapper
+* Contributors: Matt Vollrath
+
 1.3.0 (2016-06-25)
 ------------------
 

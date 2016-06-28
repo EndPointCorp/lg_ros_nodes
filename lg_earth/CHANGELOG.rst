@@ -2,6 +2,16 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* refactored x_available to DRY out code mode
+* factor out dependency_available to check_www_dependency
+  This DRYs out the code a bunch.
+* add timeout to kmlsync wait_for_service
+  Instead of hanging forever, this will raise an exception at the end of
+  the timeout and kill the ros node.
+* Contributors: Will Plaut
+
 1.3.0 (2016-06-25)
 ------------------
 * Issue/158 last ack timestamp (`#229 <https://github.com/EndPointCorp/lg_ros_nodes/issues/229>`_)
