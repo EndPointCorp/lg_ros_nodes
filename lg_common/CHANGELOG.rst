@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.1 (2016-06-28)
+------------------
 * refactored x_available to DRY out code mode
 * factor out dependency_available to check_www_dependency
   This DRYs out the code a bunch.
