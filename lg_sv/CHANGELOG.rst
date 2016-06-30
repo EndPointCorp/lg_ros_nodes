@@ -2,6 +2,9 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.1 (2016-06-28)
 ------------------
 * fix timeout variable

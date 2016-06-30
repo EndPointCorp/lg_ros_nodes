@@ -2,6 +2,11 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed debug in lg_stats
+* Contributors: Wojciech Ziniewicz
+
 1.3.1 (2016-06-28)
 ------------------
 

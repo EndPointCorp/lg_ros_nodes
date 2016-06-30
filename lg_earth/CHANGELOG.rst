@@ -2,6 +2,9 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.1 (2016-06-28)
 ------------------
 * refactored x_available to DRY out code mode

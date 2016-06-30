@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed debug in lg_stats
+* Contributors: Wojciech Ziniewicz
+
 1.3.1 (2016-06-28)
 ------------------
 * refactored x_available to DRY out code mode

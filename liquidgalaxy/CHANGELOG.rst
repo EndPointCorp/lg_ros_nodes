@@ -2,6 +2,9 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.1 (2016-06-28)
 ------------------
 
