@@ -88,7 +88,7 @@ class ManagedApplication(object):
                 state_changed = True
             self.state = state
 
-            #if not state_changed:
+            # if not state_changed:
             #    return
 
             if state == ApplicationState.STOPPED:
