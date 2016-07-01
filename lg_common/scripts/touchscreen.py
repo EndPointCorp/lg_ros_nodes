@@ -17,6 +17,7 @@ if __name__ == '__main__':
 
     geometry = ManagedWindow.get_viewport_geometry()
 
+    url = rospy.get_param('~url', None)
     url_base = rospy.get_param('~url_base', 'http://lg-head/ros_touchscreens/ts/')
     command_line_args = rospy.get_param('~command_line_args', '')
     # TODO (wz) director_host and director_port should be global
@@ -40,19 +41,21 @@ if __name__ == '__main__':
 
     x_available_or_raise(global_dependency_timeout)
 
-    url = url_base + ts_name + "/"
+    if url:
+        rospy.loginfo("got prepared full url: %s" % url)
+    else:
+        url = url_base + ts_name + "/"
 
-    url = add_url_params(url,
-                         director_host=director_host,
-                         director_port=director_port,
-                         director_secure=director_secure,
-                         rosbridge_secure=rosbridge_secure,
-                         rosbridge_host=rosbridge_host,
-                         rosbridge_port=rosbridge_port)
+        url = add_url_params(url,
+                            director_host=director_host,
+                            director_port=director_port,
+                            director_secure=director_secure,
+                            rosbridge_secure=rosbridge_secure,
+                            rosbridge_host=rosbridge_host,
+                            rosbridge_port=rosbridge_port)
 
-    url = url2pathname(url)
-
-    rospy.loginfo("got url: %s" % url)
+        url = url2pathname(url)
+        rospy.loginfo("assembled a url: %s" % url)
 
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', None)
