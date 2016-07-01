@@ -222,23 +222,23 @@ class AttractLoop:
         Populate attract loop content so it looks like this:
         [
           { "presentation": {
-		     "description": "Catlin Seaview Survey",
-		     "name": "Catlin Seaview Surveys",
-	             "slug": "catlin-seaview-surveys"
-	     },
+             "description": "Catlin Seaview Survey",
+             "name": "Catlin Seaview Surveys",
+                 "slug": "catlin-seaview-surveys"
+         },
              "scenes": [
-		{
-		  "description": "Gaudi Cathedral",
-		  "duration": 1800,
-		  "name": "Gaudi Cathedral",
-		  "resource_uri": "/director_api/scene/gaudi-cathedral/",
-		  "slug": "gaudi-cathedral",
-		  "touchscreen_visible": true
-		}
+        {
+          "description": "Gaudi Cathedral",
+          "duration": 1800,
+          "name": "Gaudi Cathedral",
+          "resource_uri": "/director_api/scene/gaudi-cathedral/",
+          "slug": "gaudi-cathedral",
+          "touchscreen_visible": true
+        }
              ]
           }
          ]
-        
+
 
         The "presentation" object comes from `http://lg-head:8088/director_api/presentationgroup/<presentationgroup>` presentations
         attribute.
@@ -255,14 +255,13 @@ class AttractLoop:
                 rospy.logdebug("Here they are: %s" % presentations)
                 for presentation in presentations:
                     rospy.logdebug("Preparing content object")
-                    presentation_object = { 
+                    presentation_object = {
                                             "presentation": presentation,
                                             "scenes": self._fetch_presentation_by_slug(presentation['slug'])['scenes']
-                                          } 
+                                          }
                     rospy.logdebug("Appending presentation object %s to fetched content" % presentation_object)
                     rospy.loginfo("Fetched %s scenes" % len(presentation_object['scenes']))
                     content.append(presentation_object)
-                
 	    rospy.logdebug("Fetched new content: %s" % content)
         else:
             rospy.logdebug("No presentation groups found in attract loop sleeping for 120 seconds")
@@ -281,7 +280,7 @@ class AttractLoop:
         """
         Return json serialzed response from resource_uri url
         """
-      	fetched_object = json.loads(self.api_proxy.get("%s" % resource_uri ))
+      	fetched_object = json.loads(self.api_proxy.get("%s?format=json" % resource_uri ))
         return fetched_object
 
     def _fetch_presentationgroup_presentations(self, presentationgroups):
