@@ -2,6 +2,15 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_stats and lg_attract_loop amendments (`#246 <https://github.com/EndPointCorp/lg_ros_nodes/issues/246>`_)
+  * Made lg_stats and lg_attract_loop verbosity great again. Added default action to lg_attract_loop to make it decent again
+  * Planet default
+  * URL override for touchscreen
+  * Pep8ized tests
+* Contributors: Wojciech Ziniewicz
+
 1.3.2 (2016-06-29)
 ------------------
 * Fixed debug in lg_stats
