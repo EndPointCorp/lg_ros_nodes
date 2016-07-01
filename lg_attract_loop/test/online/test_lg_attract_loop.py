@@ -157,6 +157,15 @@ class MockEarthQueryPublisher:
         self.published_messages.append(message)
 
 
+class MockEarthPlanetPublisher:
+    def __init__(self):
+        self.published_messages = []
+
+    def publish(self, message):
+        rospy.loginfo("MEPP publishing message %s" % message)
+        self.published_messages.append(message)
+
+
 class TestAttractLoop(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
@@ -167,6 +176,7 @@ class TestAttractLoop(unittest.TestCase):
         self.mock_director_scene_publisher = MockDirectorScenePublisher()
         self.mock_director_presentation_publisher = MockDirectorPresentationPublisher()
         self.earth_query_publisher = MockEarthQueryPublisher()
+        self.earth_planet_publisher = MockEarthPlanetPublisher()
 
     def _deactivate_lg(self):
         rospy.loginfo("Changing LG state to inactive to start playback")
@@ -187,7 +197,7 @@ class TestAttractLoop(unittest.TestCase):
             api_proxy=self.mock_api, director_scene_publisher=self.mock_director_scene_publisher,
             director_presentation_publisher=self.mock_director_presentation_publisher,
             stop_action=self.stop_action, earth_query_publisher=self.earth_query_publisher,
-            default_presentation=None)
+            earth_planet_publisher=self.earth_planet_publisher, default_presentation=None)
 
         self.assertEqual(isinstance(self.attract_loop_controller, AttractLoop), True)
         self.assertEqual(self.attract_loop_controller.play_loop, False)
