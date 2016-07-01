@@ -77,9 +77,9 @@ class AttractLoop:
         elif message.data is False and self.play_loop is False:
             rospy.loginfo("Director: Attract loop becoming active")
             self.play_loop = True
-            #self.set_earth() # you can use set earth or eart planet publisher
+            rospy.sleep(2)
         else:
-            rospy.logerr("Activity message contained unknown state")
+            rospy.logerr("Activity message contained state %s and current state is %s - that's weird" % (self.message.data, self.play_loop))
 
     def _stop_attract_loop(self):
         """
