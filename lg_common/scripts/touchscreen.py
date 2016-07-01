@@ -47,12 +47,12 @@ if __name__ == '__main__':
         url = url_base + ts_name + "/"
 
         url = add_url_params(url,
-                            director_host=director_host,
-                            director_port=director_port,
-                            director_secure=director_secure,
-                            rosbridge_secure=rosbridge_secure,
-                            rosbridge_host=rosbridge_host,
-                            rosbridge_port=rosbridge_port)
+                             director_host=director_host,
+                             director_port=director_port,
+                             director_secure=director_secure,
+                             rosbridge_secure=rosbridge_secure,
+                             rosbridge_host=rosbridge_host,
+                             rosbridge_port=rosbridge_port)
 
         url = url2pathname(url)
         rospy.loginfo("assembled a url: %s" % url)
