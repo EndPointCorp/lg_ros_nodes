@@ -2,6 +2,11 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Switch to earth after entering attract loop
+* Contributors: Wojciech Ziniewicz
+
 1.3.5 (2016-07-01)
 ------------------
 * Delay attract loop kick-in by 2 seconds

@@ -314,6 +314,7 @@ class TestAttractLoop(unittest.TestCase):
 
         self._deactivate_lg()
 
+        self.assertEqual(len(self.earth_planet_publisher.published_messages), 1)  # planet message was published for the first time
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 1)  # one scene playing back right now (1000 seconds :))
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the other one in the queue
         self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
@@ -325,7 +326,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(self.attract_loop_controller.scene_timer <= 0, True)  # scene timer is going down
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 2)
         self.assertEqual(len(self.earth_query_publisher.published_messages), 1)  # playtour was published
-        self.assertEqual(len(self.earth_planet_publisher.published_messages), 1)  # playtour was published
+        self.assertEqual(len(self.earth_planet_publisher.published_messages), 2)  # planet message was published for the second time
 
         self._deactivate_lg()
 
@@ -337,7 +338,7 @@ class TestAttractLoop(unittest.TestCase):
 
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 4)
         self.assertEqual(len(self.earth_query_publisher.published_messages), 2)  # earth was stopped
-        self.assertEqual(len(self.earth_planet_publisher.published_messages), 2)  # planet change was published
+        self.assertEqual(len(self.earth_planet_publisher.published_messages), 4)  # planet change was published 4 times
 
 
 if __name__ == '__main__':
