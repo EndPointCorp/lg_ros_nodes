@@ -75,6 +75,7 @@ class AttractLoop:
             self.play_loop = False
             self._stop_attract_loop()
         elif message.data is False and self.play_loop is False:
+            self._switch_to_planet()
             rospy.loginfo("Director: Attract loop becoming active")
             self.play_loop = True
             rospy.sleep(2)
