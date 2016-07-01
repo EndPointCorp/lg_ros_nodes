@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.2 (2016-06-29)
+------------------
 * Fixed debug in lg_stats
 * Contributors: Wojciech Ziniewicz
 
