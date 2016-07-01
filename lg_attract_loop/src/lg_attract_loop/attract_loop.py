@@ -176,7 +176,7 @@ class AttractLoop:
 
     def _play_scene(self, lazy_scene, lazy_presentation):
         """
-	Accepts lazy scene object and lazy presentation object
+        Accepts lazy scene object and lazy presentation object
         Fetches full, non-lazy versions of objects
         Emits a /director/scene and /director/presentation message
         """
@@ -195,7 +195,7 @@ class AttractLoop:
 
     def _play_attract_loop_item(self):
         """
-        plays back a scene by publishing it to /director/scene and 
+        plays back a scene by publishing it to /director/scene and
         its presentation to /director/presentation
         handles the timer countdown
         """
@@ -206,11 +206,11 @@ class AttractLoop:
         if self.play_loop and self.scene_timer <= 0:
             rospy.logdebug("Inside play loop - queue size=%s" % (len(self.attract_loop_queue)))
             for playback_item in self.attract_loop_queue:
-                if playback_item['scenes']: # play item back or remove it from queue if no scenes
-		    lazy_presentation = playback_item['presentation']
-		    lazy_scene = playback_item['scenes'].pop(0) # take it away - forever
+                if playback_item['scenes']:  # play item back or remove it from queue if no scenes
+                    lazy_presentation = playback_item['presentation']
+                    lazy_scene = playback_item['scenes'].pop(0)  # take it away - forever
                     self._play_scene(lazy_scene, lazy_presentation)
-		    rospy.logdebug("Item to played back taken from self.attract_loop_queue: %s" % playback_item)
+                    rospy.logdebug("Item to played back taken from self.attract_loop_queue: %s" % playback_item)
                 else:
                     rospy.logdebug("Removing item as it does not longer have any scenes inside it")
                     self.attract_loop_queue.remove(playback_item)
@@ -244,7 +244,7 @@ class AttractLoop:
         attribute.
         The "scenes" attribute is a list of scenes for each presentation. All object are lazy here.
         """
-	# fetch presentationgroups
+        # fetch presentationgroups
         content = []
         presentationgroups = self._fetch_attract_loop_presentationgroups()
         if presentationgroups:
@@ -255,14 +255,12 @@ class AttractLoop:
                 rospy.logdebug("Here they are: %s" % presentations)
                 for presentation in presentations:
                     rospy.logdebug("Preparing content object")
-                    presentation_object = {
-                                            "presentation": presentation,
-                                            "scenes": self._fetch_presentation_by_slug(presentation['slug'])['scenes']
-                                          }
+                    presentation_object = {"presentation": presentation,
+                                           "scenes": self._fetch_presentation_by_slug(presentation['slug'])['scenes']}
                     rospy.logdebug("Appending presentation object %s to fetched content" % presentation_object)
                     rospy.loginfo("Fetched %s scenes" % len(presentation_object['scenes']))
                     content.append(presentation_object)
-	    rospy.logdebug("Fetched new content: %s" % content)
+            rospy.logdebug("Fetched new content: %s" % content)
         else:
             rospy.logdebug("No presentation groups found in attract loop sleeping for 120 seconds")
             rospy.sleep(120)
@@ -273,14 +271,14 @@ class AttractLoop:
         """
         Accepts slug of presentation and fetches full object of presentation
         """
-      	full_presentation = json.loads(self.api_proxy.get("/director_api/presentation/%s/" % presentation_name))
+        full_presentation = json.loads(self.api_proxy.get("/director_api/presentation/%s/" % presentation_name))
         return full_presentation
 
     def _fetch_by_resource_uri(self, resource_uri):
         """
         Return json serialzed response from resource_uri url
         """
-      	fetched_object = json.loads(self.api_proxy.get("%s?format=json" % resource_uri ))
+        fetched_object = json.loads(self.api_proxy.get("%s?format=json" % resource_uri))
         return fetched_object
 
     def _fetch_presentationgroup_presentations(self, presentationgroups):

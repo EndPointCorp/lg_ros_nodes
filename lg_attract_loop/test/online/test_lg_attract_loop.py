@@ -241,7 +241,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(len(self.earth_query_publisher.published_messages), 2)  # earth was stopped
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message)['description'], 'Openflights data')  # rofl scene was published in attract loop
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[1].message)['description'], 'attract loop blank scene')  # empty attract loop scene
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[2].message)['description'], '') # scene without descriptor was the 3rd scene
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[2].message)['description'], '')  # scene without descriptor was the 3rd scene
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[3].message)['description'], 'attract loop blank scene')  # blank message was published because of 'go_blank'
 
     def test_2_entering_and_exiting_attract_loop_with_stop_playtour(self):
