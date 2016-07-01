@@ -2,6 +2,14 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* PEP8zed lg_attract_loop due to development on a non-vim-non-pep8 env
+* Fixed tests for new implementation
+* Worked on attract loop - refactored
+* Testing /director/presentation attract loop population on tokyoros
+* Contributors: Wojciech Ziniewicz, wzin
+
 1.3.3 (2016-06-30)
 ------------------
 * lg_stats and lg_attract_loop amendments (`#246 <https://github.com/EndPointCorp/lg_ros_nodes/issues/246>`_)
