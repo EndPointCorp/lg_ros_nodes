@@ -724,6 +724,7 @@ def get_activity_config(scene, activity_name, window_viewport):
         return None
     return activity_config
 
+
 def check_www_dependency(should_depend, host, port, name, timeout):
     """
     Check if www dependency is available, or raise an exception
@@ -736,6 +737,7 @@ def check_www_dependency(should_depend, host, port, name, timeout):
             raise DependencyException(msg)
         else:
             rospy.loginfo("%s is online" % name)
+
 
 def x_available_or_raise(timeout):
     """
