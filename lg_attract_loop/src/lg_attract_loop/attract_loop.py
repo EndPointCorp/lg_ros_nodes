@@ -56,12 +56,16 @@ class AttractLoop:
         self.initialize_timer()
 
     def initialize_timer(self):
+        """
+        Each scene has a timer - countdown is using 1s resolution.
+        """
         rospy.Timer(rospy.Duration(1), self._play_attract_loop)
 
     def _process_activity_state_change(self, message):
         """
-        Method responsible for starting (or continuing) of playback for attract loop
-        on state change.
+        when message (that comes from /activity/active) equals True
+        then we begin the playback
+        otherwise we stop
         """
         self.scene_timer = 0
 
@@ -72,15 +76,14 @@ class AttractLoop:
         elif message.data is False and self.play_loop is False:
             rospy.loginfo("Director: Attract loop becoming active")
             self.play_loop = True
-            self.set_earth()
+            self.set_earth() # you can use set earth or eart planet publisher
         else:
             rospy.logerr("Activity message contained unknown state")
 
     def _stop_attract_loop(self):
         """
-        When state changes to True (active) then we need to decide
-        what should be the action that needs to be executed.
-        By default earth tour will just stop.
+        Emits ROS message on the basis of pre-configured action.
+        This action is executed when system becomes active.
         """
         self.play_loop = False
 
@@ -105,26 +108,35 @@ class AttractLoop:
             pass
 
     def _switch_to_planet(self):
+        """
+        Emits a message with planet change taken from configuration
+        """
         switch_to_planet_msg = String(data=self.default_planet)
         rospy.loginfo("Executing 'switch_to_planet' action")
         self.earth_planet_publisher.publish(switch_to_planet_msg)
 
     def _stop_playtour(self):
+        """
+        Emits empty message on /earth/search/query to stop the tour
+        """
         stop_tour_msg = String(data='')
         rospy.loginfo("Executing 'stop_playtour' action")
         self.earth_query_publisher.publish(stop_tour_msg)
 
     def _publish_blank_scene(self):
+        """
+        Emits a scene with empty windows to clean up all assets from screens
+        """
         rospy.loginfo("Playing blank scene")
 
         viewports = [viewport.split('/')[2] for viewport in params.get_param_names() if '/viewport/' in viewport]
 
         scene = {
-            "description": "rofl",
+            "description": "attract loop blank scene",
             "duration": 666,
-            "name": "Vader is watching",
+            "name": "attract loop blank scene",
             "resource_uri": "no uri",
-            "slug": "vader_watching",
+            "slug": "attract-loop-break",
             "windows": []
         }
 
@@ -145,22 +157,25 @@ class AttractLoop:
 
     def _play_attract_loop(self, event):
         """
-        Check if there are scenes to continue the attract loop or fetch them and play them back
+        Play items from the queue
+        If there's no queue - populate it
+        Every item in the queue is a scene + presentation
         """
         rospy.logdebug("Fetching scenes from presentations marked as attract loop")
         try:
             if self.attract_loop_queue:
                 rospy.logdebug("Attract_loop_queue contains items (%s) continuing from last played scene" % self.attract_loop_queue)
-                self._play_attract_loop_item()
             else:
-                self.attract_loop_queue = self._fetch_attract_loop_content()['scenes']
+                self.attract_loop_content = self._fetch_attract_loop_content()
                 rospy.loginfo("Populated attract_loop_queue with %s" % self.attract_loop_queue)
-                self._play_attract_loop_item()
+            self._play_attract_loop_item()
         except Exception, e:
             rospy.logdebug("Failed to populate attract loop queue with content because %s" % e)
 
     def _play_scene(self, scene, presentation, duration):
-
+        """
+        Emits a /director/scene and /director/presentation message
+        """
         rospy.logdebug("Playing scene %s with duration %s" % (scene, duration))
 
         scene_msg = GenericMessage(type='json', message=scene)
@@ -172,6 +187,10 @@ class AttractLoop:
         self.scene_timer = duration
 
     def _play_attract_loop_item(self):
+        """
+        plays back a scene by publishing to /director/scene and /director/presentation
+        handles the timer countdown
+        """
         rospy.logdebug("Executing _play_attract_loop_item - self.play_loop=%s" % self.play_loop)
         opts = '?format=json'
         rospy.logdebug("Scene timer=%s" % self.scene_timer)
