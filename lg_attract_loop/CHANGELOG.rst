@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.5 (2016-07-01)
+------------------
 * Delay attract loop kick-in by 2 seconds
 * Contributors: Wojciech Ziniewicz
 
