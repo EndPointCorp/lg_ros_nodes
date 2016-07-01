@@ -15,6 +15,7 @@ class DirectorAPIProxy:
         """
         Class responsible for getting content from director api
         """
+        rospy.loginfo("Initializing Attract Loooooooooooop")
         self.director_api_url = director_api_url
         rospy.loginfo("Using director API url: %s" % self.director_api_url)
 
@@ -76,7 +77,7 @@ class AttractLoop:
         elif message.data is False and self.play_loop is False:
             rospy.loginfo("Director: Attract loop becoming active")
             self.play_loop = True
-            self.set_earth() # you can use set earth or eart planet publisher
+            #self.set_earth() # you can use set earth or eart planet publisher
         else:
             rospy.logerr("Activity message contained unknown state")
 
@@ -161,25 +162,31 @@ class AttractLoop:
         If there's no queue - populate it
         Every item in the queue is a scene + presentation
         """
-        rospy.logdebug("Fetching scenes from presentations marked as attract loop")
+        rospy.logdebug("Populating attract loop queue with content")
         try:
             if self.attract_loop_queue:
-                rospy.logdebug("Attract_loop_queue contains items (%s) continuing from last played scene" % self.attract_loop_queue)
+                rospy.logdebug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
             else:
-                self.attract_loop_content = self._fetch_attract_loop_content()
-                rospy.loginfo("Populated attract_loop_queue with %s" % self.attract_loop_queue)
+                self.attract_loop_queue = self._fetch_attract_loop_content()
+                rospy.logdebug("Populated attract_loop_queue with %s" % self.attract_loop_queue)
             self._play_attract_loop_item()
         except Exception, e:
-            rospy.logdebug("Failed to populate attract loop queue with content because %s" % e)
+            rospy.loginfo("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
+            rospy.sleep(60)
 
-    def _play_scene(self, scene, presentation, duration):
+    def _play_scene(self, lazy_scene, lazy_presentation):
         """
+	Accepts lazy scene object and lazy presentation object
+        Fetches full, non-lazy versions of objects
         Emits a /director/scene and /director/presentation message
         """
-        rospy.logdebug("Playing scene %s with duration %s" % (scene, duration))
+        full_presentation = self._fetch_presentation_by_slug(lazy_presentation['slug'])
+        full_scene = self._fetch_by_resource_uri(lazy_scene['resource_uri'])
+        duration = full_scene['duration']
+        rospy.logdebug("Playing scene %s from presentation %s with duration %s" % (full_scene, full_presentation, duration))
 
-        scene_msg = GenericMessage(type='json', message=scene)
-        presentation_msg = GenericMessage(type='json', message=presentation)
+        scene_msg = GenericMessage(type='json', message=json.dumps(full_scene))
+        presentation_msg = GenericMessage(type='json', message=json.dumps(full_presentation))
 
         self.director_scene_publisher.publish(scene_msg)
         self.director_presentation_publisher.publish(presentation_msg)
@@ -188,7 +195,8 @@ class AttractLoop:
 
     def _play_attract_loop_item(self):
         """
-        plays back a scene by publishing to /director/scene and /director/presentation
+        plays back a scene by publishing it to /director/scene and 
+        its presentation to /director/presentation
         handles the timer countdown
         """
         rospy.logdebug("Executing _play_attract_loop_item - self.play_loop=%s" % self.play_loop)
@@ -196,70 +204,85 @@ class AttractLoop:
         rospy.logdebug("Scene timer=%s" % self.scene_timer)
 
         if self.play_loop and self.scene_timer <= 0:
-            scene_presentation = self.attract_loop_queue.pop(0)
-            scene = scene_presentation['scene']  # bare object with resource_uri
-            scene_url = "%s%s" % (scene['resource_uri'], opts)
-            presentation = scene_presentation['presentation']  # bare object with resource_uri
-
-            full_scene = json.loads(self.api_proxy.get(scene_url))  # ROS nodes understandable full scene
-            scene_duration = full_scene['duration']
-            full_serialized_scene = json.dumps(full_scene)
-            serialized_presentation = json.dumps(presentation)
-
-            self._play_scene(full_serialized_scene, serialized_presentation, scene_duration)
+            rospy.logdebug("Inside play loop - queue size=%s" % (len(self.attract_loop_queue)))
+            for playback_item in self.attract_loop_queue:
+                if playback_item['scenes']: # play item back or remove it from queue if no scenes
+		    lazy_presentation = playback_item['presentation']
+		    lazy_scene = playback_item['scenes'].pop(0) # take it away - forever
+                    self._play_scene(lazy_scene, lazy_presentation)
+		    rospy.logdebug("Item to played back taken from self.attract_loop_queue: %s" % playback_item)
+                else:
+                    rospy.logdebug("Removing item as it does not longer have any scenes inside it")
+                    self.attract_loop_queue.remove(playback_item)
 
         self.scene_timer -= 1
 
     def _fetch_attract_loop_content(self):
         """
-        Fetch presentation groups, presentations and scenes for attract loop.
-        Return a dict with the content wherE:
-        - presentationgroups is a list of presentationgroups
-        - presentations is a list of presentations
-        - scenes is alist of dictionaries containing one scene and presentation that it belongs to
-            {'scene': <scene>, 'presentation': <presentation>}
+        Populate attract loop content so it looks like this:
+        [
+          { "presentation": {
+		     "description": "Catlin Seaview Survey",
+		     "name": "Catlin Seaview Surveys",
+	             "slug": "catlin-seaview-surveys"
+	     },
+             "scenes": [
+		{
+		  "description": "Gaudi Cathedral",
+		  "duration": 1800,
+		  "name": "Gaudi Cathedral",
+		  "resource_uri": "/director_api/scene/gaudi-cathedral/",
+		  "slug": "gaudi-cathedral",
+		  "touchscreen_visible": true
+		}
+             ]
+          }
+         ]
+        
+
+        The "presentation" object comes from `http://lg-head:8088/director_api/presentationgroup/<presentationgroup>` presentations
+        attribute.
+        The "scenes" attribute is a list of scenes for each presentation. All object are lazy here.
         """
+	# fetch presentationgroups
+        content = []
         presentationgroups = self._fetch_attract_loop_presentationgroups()
         if presentationgroups:
+            rospy.loginfo("Fetched %s presentationgroups" % len(presentationgroups))
             presentations = self._fetch_presentationgroup_presentations(presentationgroups)
-            scenes = self._fetch_scenes_from_presentations(presentations)
-            content = {'presentationgroups': presentationgroups,
-                       'presentations': presentations,
-                       'scenes': scenes}
-            # rospy.loginfo("Returning content for attract loop: %s" % content)
-            return content
+            if presentations:
+                rospy.loginfo("Fetched %s presentations" % len(presentations))
+                rospy.logdebug("Here they are: %s" % presentations)
+                for presentation in presentations:
+                    rospy.logdebug("Preparing content object")
+                    presentation_object = { 
+                                            "presentation": presentation,
+                                            "scenes": self._fetch_presentation_by_slug(presentation['slug'])['scenes']
+                                          } 
+                    rospy.logdebug("Appending presentation object %s to fetched content" % presentation_object)
+                    rospy.loginfo("Fetched %s scenes" % len(presentation_object['scenes']))
+                    content.append(presentation_object)
+                
+	    rospy.logdebug("Fetched new content: %s" % content)
         else:
-            rospy.loginfo("No presentation groups found in attract loop")
+            rospy.logdebug("No presentation groups found in attract loop sleeping for 120 seconds")
             rospy.sleep(120)
-            return
 
-    def _fetch_scenes_from_presentations(self, presentations):
+        return content
+
+    def _fetch_presentation_by_slug(self, presentation_name):
         """
-        Get all scenes from presentations and fetch the object directly
-        so the list is ready to be publised on /director/scene
-
-        Returned list should contain dictionaries like {'scene': <scene>, 'presentation': <presentation>}
+        Accepts slug of presentation and fetches full object of presentation
         """
-        fetched_scenes = []
-        for presentation in presentations:
-            try:
-                presentation_slug = presentation['slug']
-                presentation_request = self.api_proxy.get("/director_api/presentation/%s/" % presentation_slug)
-                rospy.logdebug("Get %s" % presentation_request)
-                presentation_scenes = json.loads(presentation_request)['scenes']
-            except Exception, e:
-                rospy.logerr("Could not fetch presentation scenes from presentations (%s) because %s" % (presentations, e))
-                return []
+      	full_presentation = json.loads(self.api_proxy.get("/director_api/presentation/%s/" % presentation_name))
+        return full_presentation
 
-            for scene in presentation_scenes:
-                try:
-                    pass
-                except Exception, e:
-                    rospy.logerr("Could not fetch scene (%s) from presentation scenes (%s) because %s" % (scene, presentation_scenes, e))
-                    return []
-                fetched_scenes.extend([{'presentation': presentation, 'scene': scene}])
-
-        return fetched_scenes
+    def _fetch_by_resource_uri(self, resource_uri):
+        """
+        Return json serialzed response from resource_uri url
+        """
+      	fetched_object = json.loads(self.api_proxy.get("%s" % resource_uri ))
+        return fetched_object
 
     def _fetch_presentationgroup_presentations(self, presentationgroups):
         """
