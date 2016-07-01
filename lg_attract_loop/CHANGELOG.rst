@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.3 (2016-06-30)
+------------------
 * lg_stats and lg_attract_loop amendments (`#246 <https://github.com/EndPointCorp/lg_ros_nodes/issues/246>`_)
   * Made lg_stats and lg_attract_loop verbosity great again. Added default action to lg_attract_loop to make it decent again
   * Planet default
