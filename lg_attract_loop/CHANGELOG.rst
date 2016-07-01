@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.4 (2016-07-01)
+------------------
 * PEP8zed lg_attract_loop due to development on a non-vim-non-pep8 env
 * Fixed tests for new implementation
 * Worked on attract loop - refactored
