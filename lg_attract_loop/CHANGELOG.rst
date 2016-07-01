@@ -2,6 +2,11 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Delay attract loop kick-in by 2 seconds
+* Contributors: Wojciech Ziniewicz
+
 1.3.4 (2016-07-01)
 ------------------
 * PEP8zed lg_attract_loop due to development on a non-vim-non-pep8 env
