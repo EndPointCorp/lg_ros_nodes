@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.6 (2016-07-01)
+------------------
 * Switch to earth after entering attract loop
 * Contributors: Wojciech Ziniewicz
 
