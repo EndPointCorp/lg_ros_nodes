@@ -51,6 +51,8 @@ install(TARGETS spacenav_rezero hid
 catkin_install_python(PROGRAMS
   scripts/spacenav_wrap.py
   scripts/spacenav_wrap
+  scripts/spacenav_rezero.py
+  scripts/spacenav_rezero
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -58,4 +60,3 @@ if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest(test/test_spacenav_wrapper.test)
 endif()
-
