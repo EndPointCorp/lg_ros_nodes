@@ -2,6 +2,13 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* spacenav-rezeroer: added tests and fixed spacenav-wrapper tests
+* spacenav rezero refactored
+  Tests still incoming
+* Contributors: Jacob Minshall
+
 1.3.6 (2016-07-01)
 ------------------
 
