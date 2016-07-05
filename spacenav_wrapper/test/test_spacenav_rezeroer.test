@@ -1,0 +1,4 @@
+<launch>
+  <!--<node name="testing_kmlsync_node" pkg="spacenav_wrapper" type="spacenav_wrap" />-->
+  <test test-name="test_spacenav" pkg="spacenav_wrapper" type="test_spacenav_rezeroer.py" />
+</launch>
