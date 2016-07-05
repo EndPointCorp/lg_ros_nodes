@@ -3,6 +3,7 @@
 import rospy
 from geometry_msgs.msg import Twist
 
+
 GUTTER_VAL = 0.01
 
 
@@ -84,7 +85,7 @@ class SpacenavRezeroer(object):
         else:
             self.old_sample = self.new_sample
             self.counter = 0
-        if self.counter > self.max_counts:
+        if self.counter >= self.max_counts:
             rospy.loginfo('rezeroing after counter reached %s, old_sample:\n%s\nnew_sample:\n%s' % (
                 self.counter, self.old_sample, self.new_sample
             ))
@@ -127,11 +128,9 @@ class SpacenavRezeroer(object):
 
 class SpacenavWrapper(object):
     def __init__(self, twist=MockPublisher(), joy=MockPublisher(),
-                 rezero=MockFunc, gutter_val=GUTTER_VAL,
-                 translate_twist=MockFunc):
+                 gutter_val=GUTTER_VAL, translate_twist=MockFunc):
         self.twist = twist
         self.joy = joy
-        self.rezero = rezero
         self.gutter_val = gutter_val
         self.translate_twist = translate_twist
 
