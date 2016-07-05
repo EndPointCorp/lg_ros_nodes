@@ -357,10 +357,10 @@ class Processor(object):
         rospy.logdebug("Submitting to InfluxDB: '%s'" % influx_data)
         rospy.logdebug("Publishing out_msg: %s" % out_msg)
         rospy.logdebug("Types: %s, %s, %s, %s, %s" % (type(out_msg.measurement),
-                                                     type(out_msg.src_topic),
-                                                     type(out_msg.type),
-                                                     type(out_msg.metadata),
-                                                     type(out_msg.value)))
+                                                      type(out_msg.src_topic),
+                                                      type(out_msg.type),
+                                                      type(out_msg.metadata),
+                                                      type(out_msg.value)))
         self.debug_pub.publish(out_msg)
         self.influxdb_client.write_stats(influx_data)
 
