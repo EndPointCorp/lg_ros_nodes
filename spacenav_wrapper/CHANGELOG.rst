@@ -2,6 +2,11 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rename spacenav_rezero to spacenav_antispin
+* Contributors: Jacob Minshall
+
 1.3.7 (2016-07-05)
 ------------------
 * spacenav-rezeroer: added tests and fixed spacenav-wrapper tests
