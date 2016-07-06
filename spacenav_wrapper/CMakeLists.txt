@@ -51,8 +51,8 @@ install(TARGETS spacenav_rezero hid
 catkin_install_python(PROGRAMS
   scripts/spacenav_wrap.py
   scripts/spacenav_wrap
-  scripts/spacenav_rezero.py
-  scripts/spacenav_rezero
+  scripts/spacenav_antispin.py
+  scripts/spacenav_antispin
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
