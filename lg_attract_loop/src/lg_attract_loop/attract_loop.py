@@ -119,7 +119,10 @@ class AttractLoop:
 
     def _stop_playtour(self):
         """
-        Emits empty message on /earth/search/query to stop the tour
+        Emits empty message on /earth/query/tour to stop the tour
+
+        **PUFF MAGIC**
+
         """
         stop_tour_msg = String(data='')
         rospy.loginfo("Executing 'stop_playtour' action")
