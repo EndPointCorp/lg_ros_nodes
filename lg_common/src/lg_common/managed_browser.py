@@ -56,16 +56,12 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--remote-debugging-port={}'.format(self.debug_port))
         cmd.append('--log-level={}'.format(log_level))
 
-        tmp_dir = '/tmp/lg_browser_{}'.format(slug)
-        try:
-            rospy.loginfo("Purging ManagedBrowser directory: %s" % tmp_dir)
-            shutil.rmtree(tmp_dir)
-        except OSError, e:
-            rospy.loginfo("Could not purge the %s directory because %s" % (tmp_dir, e))
+        self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
+        self.clear_tmp_dir()
 
-        cmd.append('--user-data-dir={}'.format(tmp_dir))
-        cmd.append('--disk-cache-dir={}'.format(tmp_dir))
-        cmd.append('--crash-dumps-dir={}/crashes'.format(tmp_dir))
+        cmd.append('--user-data-dir={}'.format(self.tmp_dir))
+        cmd.append('--disk-cache-dir={}'.format(self.tmp_dir))
+        cmd.append('--crash-dumps-dir={}/crashes'.format(self.tmp_dir))
 
         if extensions:
             cmd.append('--load-extension={}'.format(','.join(extensions)))
@@ -103,12 +99,22 @@ class ManagedBrowser(ManagedApplication):
         cmd.extend(shlex.split('2>&1'))
         rospy.logerr("Starting cmd: %s" % cmd)
 
-        w_instance = 'oogle-chrome \\({}\\)'.format(tmp_dir)
+        w_instance = 'oogle-chrome \\({}\\)'.format(self.tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         rospy.loginfo("Command {}".format(cmd))
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
+
+    def clear_tmp_dir(self):
+        """
+        Clears out all temporary files and disk cache for this instance.
+        """
+        try:
+            rospy.loginfo("Purging ManagedBrowser directory: %s" % self.tmp_dir)
+            shutil.rmtree(self.tmp_dir)
+        except OSError, e:
+            rospy.loginfo("Could not purge the %s directory because %s" % (self.tmp_dir, e))
 
     @staticmethod
     def get_os_port():
@@ -132,6 +138,13 @@ class ManagedBrowser(ManagedApplication):
         conn = yield websocket_connect(ws_url, connect_timeout=1)
         conn.write_message(msg)
         conn.close()
+
+    def _handle_respawn(self):
+        """
+        Clear tmp_dir upon respawn.
+        """
+        super(ManagedBrowser, self)._handle_respawn()
+        self.clear_tmp_dir()
 
     def set_state(self, state):
         super(ManagedBrowser, self).set_state(state)
