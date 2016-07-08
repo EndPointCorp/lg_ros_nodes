@@ -60,6 +60,9 @@
   </group>
 
   <group if="$(arg run_browser_service)">
+    <node name="adhoc_browser_pool_bah" type="lg_common" script="adhoc_browser_pool.py">
+      <param name="viewport" value="$(arg viewport)"/>
+    </node>
   </group>
 
   <group if="$(arg run_input_handlers)">
