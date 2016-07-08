@@ -14,7 +14,7 @@ def main():
 
     topic_name = rospy.get_param('~topic_name', None)
     device_name = rospy.get_param('~device_name', None)
-    event_ecode = rospy.get_param('~event_ecode', 'EV_KEY')
+    event_ecode = rospy.get_param('~event_ecode', None)
     device_path = rospy.get_param('~device_path', None)
     user = rospy.get_param('~user', 'lg')
     group = rospy.get_param('~group', 'lg')
