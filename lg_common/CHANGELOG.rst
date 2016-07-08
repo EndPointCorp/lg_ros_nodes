@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added a close_fds fix for awesome and fixed a logging method exception that was crashing lg_attract_loop
+* Clear browser tmpdir on each spawn
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.3.8 (2016-07-06)
 ------------------
 

@@ -2,6 +2,11 @@
 Changelog for package lg_replay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Made lg_replay pass all events from touchscreens
+* Contributors: Wojciech Ziniewicz
+
 1.3.8 (2016-07-06)
 ------------------
 
