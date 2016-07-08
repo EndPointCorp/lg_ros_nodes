@@ -101,7 +101,7 @@ class ManagedWindow(object):
                     'failed to setup awesome environment: {}'.format(e.message)
                 )
             try:
-                self.proc = subprocess.Popen(cmd)
+                self.proc = subprocess.Popen(cmd, close_fds=True)
             except OSError:
                 rospy.logerr('failed to run {}'.format(XDOTOOL_BIN))
 

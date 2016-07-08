@@ -80,7 +80,7 @@ class AttractLoop:
             self.play_loop = True
             rospy.sleep(2)
         else:
-            rospy.logerr("Activity message contained state %s and current state is %s - that's weird" % (self.message.data, self.play_loop))
+            rospy.logwarn("Activity message contained state %s and current state is %s - that's weird" % (message.data, self.play_loop))
 
     def _stop_attract_loop(self):
         """
@@ -204,7 +204,6 @@ class AttractLoop:
         handles the timer countdown
         """
         rospy.logdebug("Executing _play_attract_loop_item - self.play_loop=%s" % self.play_loop)
-        opts = '?format=json'
         rospy.logdebug("Scene timer=%s" % self.scene_timer)
 
         if self.play_loop and self.scene_timer <= 0:
