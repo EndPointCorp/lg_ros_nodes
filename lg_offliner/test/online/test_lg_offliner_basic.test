@@ -1,0 +1,12 @@
+<launch>
+    <node name="lg_offliner" pkg="lg_offliner" type="lg_different.py">
+        <param name="delay" value="10"/>
+    </node>
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_lg_offliner_basic" pkg="lg_offliner" type="test_lg_offliner_basic.py"/>
+</launch>

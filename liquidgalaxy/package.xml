@@ -22,6 +22,7 @@
   <run_depend>lg_replay</run_depend>
   <run_depend>spacenav_wrapper</run_depend>
   <run_depend>lg_stats</run_depend>
+  <run_depend>lg_offliner</run_depend>
 
   <export>
     <metapackage/>
