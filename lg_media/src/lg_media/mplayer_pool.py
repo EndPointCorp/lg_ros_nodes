@@ -66,7 +66,7 @@ class ManagedMplayer(ManagedApplication):
                                                           self.window.geometry.y)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
         cmd.extend([self.url])
-        rospy.loginfo("Mplayer POOL: mplayer cmd: %s" % cmd)
+        rospy.logdebug("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
     def close(self):
@@ -92,7 +92,7 @@ class ManagedMplayer(ManagedApplication):
         Load another movie using the same instance of mplayer
         """
         with open(self.fifo_path, 'w') as fifo:
-            rospy.loginfo("Changing Mplayer %s url to %s" % (self.slug, url))
+            rospy.logdebug("Changing Mplayer %s url to %s" % (self.slug, url))
             fifo.write('loadfile %s\n' % url)
 
     def update_geometry(self, geometry):
@@ -133,21 +133,21 @@ class MplayerPool(object):
         for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
                                                            incoming_mplayers_ids,
                                                            manage_action='remove'):
-            rospy.loginfo("Removing mplayer id %s" % mplayer_pool_id)
+            rospy.logdebug("Removing mplayer id %s" % mplayer_pool_id)
             self._remove_mplayer(mplayer_pool_id)
 
         # mplayers to create
         for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
                                                            incoming_mplayers_ids,
                                                            manage_action='create'):
-            rospy.loginfo("Creating mplayer with id %s" % mplayer_pool_id)
+            rospy.logdebug("Creating mplayer with id %s" % mplayer_pool_id)
             self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
         # mplayers to update
         for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
                                                            incoming_mplayers_ids,
                                                            manage_action='update'):
-            rospy.loginfo("Updating mplayer with id %s" % mplayer_pool_id)
+            rospy.logdebug("Updating mplayer with id %s" % mplayer_pool_id)
             self._update_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
         return True
@@ -190,7 +190,7 @@ class MplayerPool(object):
 
         mplayer.set_state(ApplicationState.VISIBLE)
 
-        rospy.loginfo("MPlayer Pool: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
+        rospy.logdebug("MPlayer Pool: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
         self.mplayers[mplayer_id] = mplayer
 
         return True
@@ -199,7 +199,7 @@ class MplayerPool(object):
         name = "lg_%s_%s.fifo" % (mplayer_id, time.time())
         path = os.path.join("/tmp", name)
         os.mkfifo(path)
-        rospy.loginfo("Created FIFO file '%s'" % path)
+        rospy.logdebug("Created FIFO file '%s'" % path)
         return path
 
     def _update_mplayer(self, mplayer_pool_id, updated_mplayer):
@@ -211,7 +211,7 @@ class MplayerPool(object):
         """
 
         current_mplayer = self.mplayers[mplayer_pool_id]
-        rospy.loginfo("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
+        rospy.logdebug("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
         future_url = updated_mplayer.url
         current_mplayer.change_url(future_url)
 
@@ -227,7 +227,7 @@ class MplayerPool(object):
                 (current_geometry.width != future_geometry.width) or\
                 (current_geometry.height != future_geometry.height):
 
-            rospy.loginfo("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
+            rospy.logdebug("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
             self._remove_mplayer(mplayer_pool_id)
             self._create_mplayer(mplayer_pool_id, updated_mplayer)
 
@@ -236,7 +236,7 @@ class MplayerPool(object):
         Wipe out mplayer instance - both from the screen and memory
         """
         mplayer_instance = self.mplayers[mplayer_pool_id]
-        rospy.loginfo("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
+        rospy.logdebug("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
         mplayer_instance.close()
         del self.mplayers[mplayer_pool_id]
 
