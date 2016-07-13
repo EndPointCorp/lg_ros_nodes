@@ -57,6 +57,7 @@ class BasicBrowserData:
             new_browser.id = 'adhoc_media_browser_%s' % self.viewport_name
             new_browser.geometry = media.geometry
             new_browser.url = url
+            rospy.loginfo("New browser URL: %s" % url)
             msg.append(new_browser)
 
         self.publisher.publish(msg)
