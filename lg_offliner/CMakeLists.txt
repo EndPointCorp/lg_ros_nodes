@@ -19,7 +19,7 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
-  scripts/lg_different.py
+  scripts/lg_offliner_starter.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

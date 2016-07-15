@@ -42,7 +42,6 @@ class TestLGOfflinerBasic(object):
 
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
-    # otherwise: FAILURE: test [test_lg_media_basic] did not generate test results
     test_pkg = ROS_NODE_NAME
     test_name = "test_lg_offliner_basic"
     test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
