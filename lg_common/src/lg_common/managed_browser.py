@@ -143,8 +143,8 @@ class ManagedBrowser(ManagedApplication):
         """
         Clear tmp_dir upon respawn.
         """
-        super(ManagedBrowser, self)._handle_respawn()
         self.clear_tmp_dir()
+        super(ManagedBrowser, self)._handle_respawn()
 
     def set_state(self, state):
         super(ManagedBrowser, self).set_state(state)

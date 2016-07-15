@@ -130,25 +130,14 @@ class MplayerPool(object):
         current_mplayers_ids = get_app_instances_ids(self.mplayers)
 
         # mplayers to remove
-        for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
-                                                           incoming_mplayers_ids,
-                                                           manage_action='remove'):
+        for mplayer_pool_id in current_mplayers_ids:
             rospy.loginfo("Removing mplayer id %s" % mplayer_pool_id)
             self._remove_mplayer(mplayer_pool_id)
 
         # mplayers to create
-        for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
-                                                           incoming_mplayers_ids,
-                                                           manage_action='create'):
+        for mplayer_pool_id in incoming_mplayers_ids:
             rospy.loginfo("Creating mplayer with id %s" % mplayer_pool_id)
             self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
-
-        # mplayers to update
-        for mplayer_pool_id in get_app_instances_to_manage(current_mplayers_ids,
-                                                           incoming_mplayers_ids,
-                                                           manage_action='update'):
-            rospy.loginfo("Updating mplayer with id %s" % mplayer_pool_id)
-            self._update_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
         return True
 
@@ -201,35 +190,6 @@ class MplayerPool(object):
         os.mkfifo(path)
         rospy.loginfo("Created FIFO file '%s'" % path)
         return path
-
-    def _update_mplayer(self, mplayer_pool_id, updated_mplayer):
-        """
-        Mplayer will re-use the existing instance if geometry of new mplayer is identical but only the url is different.
-        In this case it will just load the url via fifo.
-
-        If geometry is different then new mplayer will be started and the old one will get killed.
-        """
-
-        current_mplayer = self.mplayers[mplayer_pool_id]
-        rospy.loginfo("MPlayer Pool %s: I'm going to update mplayer_pool_id: %s and instance:" % (mplayer_pool_id, current_mplayer))
-        future_url = updated_mplayer.url
-        current_mplayer.change_url(future_url)
-
-        future_geometry = WindowGeometry(x=updated_mplayer.geometry.x,
-                                         y=updated_mplayer.geometry.y,
-                                         width=updated_mplayer.geometry.width,
-                                         height=updated_mplayer.geometry.height)
-
-        current_geometry = current_mplayer.window.geometry
-
-        if (current_geometry.x != future_geometry.x) or \
-                (current_geometry.y != future_geometry.y) or \
-                (current_geometry.width != future_geometry.width) or\
-                (current_geometry.height != future_geometry.height):
-
-            rospy.loginfo("MPlayer Pool: New geometry (%s) is different from the old geometry (%s) - killing and creating new instance" % (future_geometry, current_geometry))
-            self._remove_mplayer(mplayer_pool_id)
-            self._create_mplayer(mplayer_pool_id, updated_mplayer)
 
     def _remove_mplayer(self, mplayer_pool_id):
         """
