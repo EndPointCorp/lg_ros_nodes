@@ -2,6 +2,20 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* set state of managed application on respawn
+* set proc to None after wait and set shell=True
+  With shell=True we no longer need to have /bin/sh -c be the start of our
+  command.
+* Removed @minnshalj comment
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into EndPointCorp/lg_chef_860_graphics_loading_timing_issues
+  Conflicts:
+  lg_common/src/lg_common/adhoc_browser_pool.py
+  lg_media/src/lg_media/mplayer_pool.py
+* Removed instance updating completely
+* Contributors: Galaxy Admin, Jacob Minshall
+
 1.3.10 (2016-07-13)
 -------------------
 * Fixed `EndPointCorp/lg_chef#859 <https://github.com/EndPointCorp/lg_chef/issues/859>`_
