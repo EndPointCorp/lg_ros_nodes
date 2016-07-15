@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.11 (2016-07-15)
+-------------------
 * set state of managed application on respawn
 * set proc to None after wait and set shell=True
   With shell=True we no longer need to have /bin/sh -c be the start of our
