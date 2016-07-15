@@ -140,6 +140,7 @@ class ManagedApplication(object):
         if (self.window is None) and (self.state == ApplicationState.STOPPED):
             rospy.logdebug("Handling unwanted respawn of %s by killing the process" % self)
             self.proc.stop()
+        self.set_state(self.state)
 
     def handle_soft_relaunch(self, *args, **kwargs):
         rospy.logdebug('managed application relaunch...')
