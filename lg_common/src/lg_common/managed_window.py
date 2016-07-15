@@ -102,7 +102,7 @@ class ManagedWindow(object):
                 )
             try:
                 self.proc = subprocess.Popen(cmd, close_fds=True)
-                self.proc.wait()  # I think this clears up some zombies...
+                self.proc.wait()
             except OSError:
                 rospy.logerr('failed to run {}'.format(XDOTOOL_BIN))
 
