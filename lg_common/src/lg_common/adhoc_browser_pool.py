@@ -127,7 +127,7 @@ class AdhocBrowserPool():
         if data.scene_slug == self.last_scene_slug:
 
             for browser_pool_id in data.instances:
-                rospy.loginfo("Unhiding browser with id %s" % instance_name)
+                rospy.loginfo("Unhiding browser with id %s" % browser_pool_id)
                 self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
 
             # For now there is no scene_slug => browsers[] tracking
@@ -157,6 +157,19 @@ class AdhocBrowserPool():
 
         Arguments:
             data: AdhocBrowsers, which is an array of AdhocBrowser
+
+        AdhocBrowsers
+            lg_common/AdhocBrowser[] browsers
+            string scene_slug
+
+        AdhocBrowser
+            string id
+            string url
+            string user_agent
+            string binary
+            lg_common/WindowGeometry geometry
+            lg_common/BrowserExtension[] extensions
+            lg_common/BrowserCmdArg[] command_line_args
 
         """
 

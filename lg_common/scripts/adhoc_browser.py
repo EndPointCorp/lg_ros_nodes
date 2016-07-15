@@ -5,6 +5,7 @@ from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.msg import Ready
 
 
 def main():
@@ -33,6 +34,7 @@ def main():
     adhocbrowser_viewport_publisher = rospy.Publisher(
         topic_name, AdhocBrowsers, queue_size=3)
 
+
     adhocbrowser_aggregate_topic_publisher = rospy.Publisher(
         common_topic_name, AdhocBrowsers, queue_size=3)
 
@@ -42,6 +44,7 @@ def main():
         viewport_name)
 
     rospy.Subscriber('/director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
+    rospy.Subscriber('/director/ready', Ready, adhocbrowser_pool.unhide_browsers)
 
     """
     Spin FTW
