@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>ROS Callback test</ttle>
+        <script type="text/javascript" src="roslib.min.js"></script>
+    </head>
+    <body>
+        <span id="status">Countdown</span>
+        <span id="counter"></span>
+        <script type="text/javascript">
+        function getQueryParams(qs) {
+            qs = qs.split('+').join(' ');
+            var params = {},
+                tokens,
+                re = /[?&]?([^=]+)=([^&]*)/g;
+            while (tokens = re.exec(qs)) {
+                params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+            }
+            return params;
+        }
+        // Parameters from url
+        var params = getQueryParams(document.location.search);
+        // Rosbridge url
+        var rosUrl = (params['rosbridge_secure'] === 0 ? 'ws://' : 'wss://')
+                + (params['rosbridge_host'] || '42-b' ) + ':'
+                + (params['rosbridge_port'] || '9090');
+
+        var ros = new ROSLIB.Ros({
+            url : rosUrl
+        });
+
+        var readyTopic = new ROSLIB.Topic({
+            ros: ros,
+            name: '/director/window/ready',
+            messageType: 'std_msgs/String',
+            throttle_rate: 33
+        });
+        readyTopic.advertise();
+
+        if (params['ros_instance_name'] !== undefined) {
+
+            var instance = params['ros_instance_name'];
+            var timeout = parseInt(params['timeout'] || 10);
+
+            setTimeout(function(){
+                readyTopic.publish({
+                    'data': instance
+                });
+
+                getElementById('status').innerHTML = 'SENT';
+
+            }, timeout * 1000);
+        }
+        else {
+            getElementById('status').innerHTML = 'ERROR, there is no ros_instance_name';
+        }
+
+        </script>
+    </body>
+</html>
