@@ -23,7 +23,6 @@ class AdhocBrowserPool():
         AdhocBrowserPool manages a pool of browsers on one viewport.
         self.browsers ivar keeps a dict of (id: ManagedAdhocBrowser) per viewport.
         """
-        self.lock = threading.RLock()
         self.viewport_name = viewport_name
         self._init_service()
         self.browsers = {}
@@ -53,11 +52,10 @@ class AdhocBrowserPool():
         """
         call .close() on browser object and cleanly delete the object
         """
-        rospy.logdebug("POOL %s: Removing browser with id %s" % (self.viewport_name, browser_pool_id))
-        with self.lock:
-            self.browsers[browser_pool_id].close()
-            del self.browsers[browser_pool_id]
-            rospy.logdebug("POOL %s: state after %s removal: %s" % (self.viewport_name, browser_pool_id, self.browsers))
+        rospy.loginfo("POOL %s: Removing browser with id %s" % (self.viewport_name, browser_pool_id))
+        self.browsers[browser_pool_id].close()
+        del self.browsers[browser_pool_id]
+        rospy.loginfo("POOL %s: state after %s removal: %s" % (self.viewport_name, browser_pool_id, self.browsers))
 
     def _create_browser(self, new_browser_pool_id, new_browser):
         """
@@ -176,35 +174,13 @@ class AdhocBrowserPool():
         incoming_browsers_ids = set(incoming_browsers.keys())  # set
         current_browsers_ids = get_app_instances_ids(self.browsers)  # set
 
-        # remove
-        browsers_to_remove = get_app_instances_to_manage(current_browsers_ids,
-                                                         incoming_browsers_ids,
-                                                         manage_action='remove')
-
-        rospy.logdebug("POOL %s: browsers to remove = %s" % (self.viewport_name, browsers_to_remove))
-        for browser_pool_id in browsers_to_remove:
-            rospy.logdebug("Removing browser id %s" % browser_pool_id)
+        for browser_pool_id in current_browsers_ids:
+            rospy.loginfo("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
 
-        # create
-        browsers_to_create = get_app_instances_to_manage(current_browsers_ids,
-                                                         incoming_browsers_ids,
-                                                         manage_action='create')
-
-        rospy.logdebug("POOL %s: browsers to create = %s" % (self.viewport_name, browsers_to_create))
-        for browser_pool_id in browsers_to_create:
-            rospy.logdebug("Creating browser with id %s" % browser_pool_id)
+        for browser_pool_id in incoming_browsers_ids:
+            rospy.loginfo("Creating browser with id %s" % browser_pool_id)
             self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
-
-        # update
-        browsers_to_update = get_app_instances_to_manage(current_browsers_ids,
-                                                         incoming_browsers_ids,
-                                                         manage_action='update')
-
-        rospy.logdebug("POOL %s: browsers to update = %s" % (self.viewport_name, browsers_to_update))
-        for browser_pool_id in browsers_to_update:
-            rospy.logdebug("Updating browser with id %s" % browser_pool_id)
-            self._update_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
         return True
 
