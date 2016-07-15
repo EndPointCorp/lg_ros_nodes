@@ -2,6 +2,9 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.10 (2016-07-13)
+-------------------
+
 1.3.9 (2016-07-08)
 ------------------
 * Added a close_fds fix for awesome and fixed a logging method exception that was crashing lg_attract_loop

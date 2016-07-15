@@ -33,7 +33,7 @@ class AdhocBrowserPool():
         """
         Callback for service requests. We always return self.browsers
         """
-        rospy.loginfo("POOL %s: Received Query service" % self.viewport_name)
+        rospy.logdebug("POOL %s: Received Query service" % self.viewport_name)
         return str(self.browsers)
 
     def _init_service(self):
@@ -67,9 +67,9 @@ class AdhocBrowserPool():
                                   height=new_browser.geometry.height)
 
         ros_instance_id = self._get_ros_instance_id(new_browser_pool_id)
-        rospy.loginfo("Browser URL before ros_instance addition: %s" % new_browser.url)
+        rospy.logdebug("Browser URL before ros_instance addition: %s" % new_browser.url)
         new_url = self._add_ros_instance_url_param(new_browser.url, ros_instance_id)
-        rospy.loginfo("Browser URL after ros_instance addition: %s" % new_url)
+        rospy.logdebug("Browser URL after ros_instance addition: %s" % new_url)
 
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
                                                 log_level=self.log_level,
@@ -77,10 +77,58 @@ class AdhocBrowserPool():
                                                 url=new_url)
 
         browser_to_create.set_state(ApplicationState.VISIBLE)
-        rospy.loginfo("POOL %s: Creating new browser %s with id %s and url %s" % (self.viewport_name, new_browser, new_browser_pool_id, new_url))
+        rospy.logdebug("POOL %s: Creating new browser %s with id %s and url %s" % (self.viewport_name, new_browser, new_browser_pool_id, new_url))
         self.browsers[new_browser_pool_id] = browser_to_create
-        rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
+        rospy.logdebug("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
         return True
+
+    def _update_browser(self, browser_pool_id, updated_browser):
+        """
+        Update existing browser instance
+        """
+        rospy.logdebug("POOL %s: state during updating: %s" % (self.viewport_name, self.browsers))
+        current_browser = self.browsers[browser_pool_id]
+        rospy.logdebug("Updating browser %s to it's new state: %s" % (current_browser, updated_browser))
+        future_url = updated_browser.url
+        future_geometry = WindowGeometry(x=updated_browser.geometry.x,
+                                         y=updated_browser.geometry.y,
+                                         width=updated_browser.geometry.width,
+                                         height=updated_browser.geometry.height)
+
+        current_geometry = current_browser.geometry
+
+        if current_browser.url != future_url:
+            with self.lock:
+                self._update_browser_url(browser_pool_id, current_browser, future_url)
+        else:
+            rospy.logdebug("POOL %s: not updating url of browser %s (old url=%s, new url=%s)" %
+                           (self.viewport_name, current_browser, current_browser.url, future_url))
+
+        with self.lock:
+            geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
+            if geom_success:
+                rospy.logdebug("Successfully updated browser(%s) geometry from %s to %s" % (browser_pool_id, current_geometry, future_geometry))
+            else:
+                rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
+
+    def _update_browser_url(self, browser_pool_id, current_browser, future_url):
+        try:
+            rospy.logdebug("Updating URL of browser id %s from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+            future_url = self._add_ros_instance_url_param(future_url, self._get_ros_instance_id(browser_pool_id))
+            current_browser.update_url(future_url)
+            return True
+        except Exception, e:
+            rospy.logerr("Could not update url of browser id %s because: %s" % (browser_pool_id, e))
+            return False
+
+    def _update_browser_geometry(self, browser_pool_id, current_browser, future_geometry):
+        try:
+            current_browser.update_geometry(future_geometry)
+            rospy.logdebug("Updated geometry of browser id %s" % browser_pool_id)
+            return True
+        except Exception, e:
+            rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
+            return False
 
     def _add_ros_instance_url_param(self, url, ros_instance_name):
         """
@@ -99,8 +147,7 @@ class AdhocBrowserPool():
         get_args['ros_instance_name'] = ros_instance_name
 
         # join args without encoding - browser will do the rest
-        new_q = '&'.join((['='.join([str(item[0]),str(item[1][0])]) for item in get_args.items()]))
-        #new_q = urllib.urlencode(get_args, doseq=True)
+        new_q = '&'.join((['='.join([str(item[0]), str(item[1][0])]) for item in get_args.items()]))
         url_parts = url_parts._replace(query=new_q)
         return url_parts.geturl()
 
