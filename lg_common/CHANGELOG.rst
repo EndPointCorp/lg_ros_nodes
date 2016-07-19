@@ -2,6 +2,16 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix syntax error
+* implement rosparam for extra chrome logging
+* remove chrome's logs by default
+  Plus took out an old log message that has been bugging me.
+* Comment Chrome window instance rule
+  Thanks Dmitry for asking.
+* Contributors: Jacob Minshall, Matt Vollrath
+
 1.3.11 (2016-07-15)
 -------------------
 * set state of managed application on respawn
