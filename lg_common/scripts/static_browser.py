@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     www_host = discover_host_from_url(url)
     www_port = discover_port_from_url(url)
-    check_www_dependency(depend_on_url, www_host, www_port 'static browser URL', global_dependency_timeout)
+    check_www_dependency(depend_on_url, www_host, www_port, 'static browser URL', global_dependency_timeout)
 
     browser = ManagedBrowser(
         geometry=geometry,
