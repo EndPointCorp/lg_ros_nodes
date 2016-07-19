@@ -1,5 +1,6 @@
 import rospy
 import threading
+import re
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
@@ -62,6 +63,24 @@ class AdhocBrowserPool():
             del self.browsers[browser_pool_id]
             rospy.loginfo("POOL %s: state after %s removal: %s" % (self.viewport_name, browser_pool_id, self.browsers))
 
+    def _filter_command_line_args(self, command_line_args):
+        """
+        Remove/escape dangerous command_line_args
+        """
+        result = []
+        for arg in command_line_args:
+            if ';' in arg:
+                rospy.logerror("There is ';' in command line arguments for adhock browser")
+                return []
+
+            if 'enable-arc' in arg or 'enable-nacl' in arg
+                rospy.logerror("Unsupported command line arg %s" % arg)
+                return []
+
+            result.append(arg)
+
+        return result
+
     def _create_browser(self, new_browser_pool_id, new_browser):
         """
         Create new browser instance with desired geometry.
@@ -73,6 +92,7 @@ class AdhocBrowserPool():
 
         extensions = [ self.extensions_root + extension.path for extension in new_browser.extensions ]
         command_line_args = [ cmd_arg.argument for cmd_arg in new_browser.command_line_args ]
+        command_line_args = self._filter_command_line_args(command_line_args)
         if new_browser.binary:
             binary = new_browser.binary
         else:
@@ -85,6 +105,7 @@ class AdhocBrowserPool():
                                                 extensions=extensions,
                                                 command_line_args=command_line_args,
                                                 binary=binary,
+                                                enable_audio=new_browser.enable_audio,
                                                 url=new_browser.url)
 
         rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
