@@ -22,7 +22,6 @@ DEFAULT_ARGS = [
     '--disable-pinch',
     '--overscroll-history-navigation=0',
     '--disable-touch-editing',
-    '--enable-logging=stderr',
     '--v=1',
     '--enable-webgl',
     '--ignore-gpu-blacklist'
@@ -33,7 +32,7 @@ class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
                  shell=True, command_line_args='', disk_cache_size=314572800,
-                 log_level=0, extensions=[], **kwargs):
+                 log_level=0, extensions=[], log_stderr=False, **kwargs):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -53,6 +52,10 @@ class ManagedBrowser(ManagedApplication):
 
         self.relay = TCPRelay(self.debug_port, remote_debugging_port)
 
+        if log_stderr:
+            cmd.append('--enable-logging=stderr')
+        else:
+            cmd.append('--enable-logging')
         cmd.append('--remote-debugging-port={}'.format(self.debug_port))
         cmd.append('--log-level={}'.format(log_level))
 

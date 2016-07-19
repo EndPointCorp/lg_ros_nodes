@@ -50,7 +50,7 @@ class ManagedApplication(object):
     # TODO(mv): better pid retrieval and/or signalling as a feature of
     #           ProcController.
     def _signal_proc(self, sig, retry=True):
-        rospy.logwarn('_signal_proc disabled')
+        # currently disabled (and for the foreseeable future)
         return
 
         if self.sig_retry_timer is not None:
