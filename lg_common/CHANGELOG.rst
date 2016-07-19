@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.12 (2016-07-19)
+-------------------
 * fix syntax error
 * implement rosparam for extra chrome logging
 * remove chrome's logs by default
