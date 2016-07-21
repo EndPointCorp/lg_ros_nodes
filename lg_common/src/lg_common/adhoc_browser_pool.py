@@ -82,9 +82,9 @@ class AdhocBrowserPool():
             binary = DEFAULT_BINARY
 
         ros_instance_id = self._get_ros_instance_id(new_browser_pool_id)
-        rospy.logdebug("Browser URL before ros_instance addition: %s" % new_browser.url)
+        rospy.loginfo("Browser URL before ros_instance addition: %s" % new_browser.url)
         new_url = self._add_ros_instance_url_param(new_browser.url, ros_instance_id)
-        rospy.logdebug("Browser URL after ros_instance addition: %s" % new_url)
+        rospy.loginfo("Browser URL after ros_instance addition: %s" % new_url)
 
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
                                                 log_level=self.log_level,
@@ -133,23 +133,33 @@ class AdhocBrowserPool():
         and remove old browsers
         """
         if data.scene_slug == self.last_scene_slug:
-
             for browser_pool_id in data.instances:
-                rospy.loginfo("Unhiding browser with id %s" % browser_pool_id)
-                self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
+                rospy.loginfo("Unhiding browser with id %s (type of id: %s)" % (browser_pool_id, type(browser_pool_id)))
+                rospy.loginfo("State of the pool before set visible: %s" % self.browsers)
+                try:
+                    self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
+                except KeyError:
+                    rospy.loginfo("Could not remove %s from %s because of KeyError" % (browser_pool_id, self.browsers))
 
             # For now there is no scene_slug => browsers[] tracking
             # so all the browsers who not mentioned in instances
             # treated as old and should be hided.
 
             old_browsers = set(self.browsers.keys()) - set(data.instances)
+            rospy.loginfo("State before hiding browsers %s is %s" % (old_browsers, self.browsers))
             self._hide_browsers(old_browsers)
+            rospy.loginfo("State after hiding browsers %s is %s" % (old_browsers, self.browsers))
             self._destroy_browsers(old_browsers)
+            rospy.loginfo("State after destroying browsers %s is %s" % (old_browsers, self.browsers))
         else:
             # That's possible if we've got new scene, before
             # the old scene was activated
             # (before the browsers for old scene become ready).
-            pass
+            #
+            # to handle this sittuation properly we need to remove all old instances
+
+            self._hide_browsers(set(self.browsers.keys()))
+            self._destroy_browsers(set(self.browsers.keys()))
 
     def _add_ros_instance_url_param(self, url, ros_instance_name):
         """
@@ -165,7 +175,7 @@ class AdhocBrowserPool():
             return url_parts.geturl()
 
         get_args = parse_qs(url_parts.query)
-        get_args['ros_instance_name'] = ros_instance_name
+        get_args['ros_instance_name'] = [ros_instance_name]
 
         # join args without encoding - browser will do the rest
         new_q = '&'.join((['='.join([str(item[0]), str(item[1][0])]) for item in get_args.items()]))
@@ -173,7 +183,8 @@ class AdhocBrowserPool():
         return url_parts.geturl()
 
     def _get_ros_instance_id(self, new_browser_pool_id):
-        return "%s__%s__%s" % (self.type_key, self.viewport_name, new_browser_pool_id)
+        # return "%s__%s__%s" % (self.type_key, self.viewport_name, new_browser_pool_id)
+        return new_browser_pool_id
 
     def handle_ros_message(self, data):
         """
@@ -206,14 +217,12 @@ class AdhocBrowserPool():
 
 
         incoming_browsers = self._unpack_incoming_browsers(data.browsers)
+
         incoming_browsers_ids = set(incoming_browsers.keys())  # set
         current_browsers_ids = get_app_instances_ids(self.browsers)  # set
 
         # create new browsers
         rospy.loginfo("POOL %s: browsers to create = %s" % (self.viewport_name, incoming_browsers_ids))
-        for browser_pool_id in current_browsers_ids:
-            rospy.loginfo("Removing browser id %s" % browser_pool_id)
-            self._remove_browser(browser_pool_id)
 
         for browser_pool_id in incoming_browsers_ids:
             rospy.loginfo("Creating browser with id %s" % browser_pool_id)

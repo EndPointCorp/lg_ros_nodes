@@ -31,8 +31,8 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, command_line_args='', disk_cache_size=314572800,
-                 log_level=0, extensions=[], log_stderr=False, **kwargs):
+                 shell=True, command_line_args=[], disk_cache_size=314572800,
+                 log_level=0, extensions=[], log_stderr=False, user_agent='', **kwargs):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -73,7 +73,7 @@ class ManagedBrowser(ManagedApplication):
             cmd.append('--load-extension={}'.format(','.join(extensions)))
 
         cmd.extend(DEFAULT_ARGS)
-        if command_line_args != '':
+        if command_line_args != []:
             cmd.extend(command_line_args)
 
         # All remaining kwargs are mapped to command line args.
