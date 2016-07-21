@@ -83,49 +83,48 @@ class ManagedApplication(object):
 
     def set_state(self, state):
         state_changed = False
-        with self.lock:
-            if state != self.state:
-                state_changed = True
-            self.state = state
+        if state != self.state:
+            state_changed = True
+        self.state = state
 
-            # if not state_changed:
-            #    return
+        # if not state_changed:
+        #    return
 
-            if state == ApplicationState.STOPPED:
-                rospy.logdebug("STOPPED")
-                self._signal_proc(signal.SIGCONT, retry=False)
-                self.proc.stop()
-                if self.window is not None:
-                    self.window.set_visibility(False)
+        if state == ApplicationState.STOPPED:
+            rospy.logdebug("STOPPED")
+            self._signal_proc(signal.SIGCONT, retry=False)
+            self.proc.stop()
+            if self.window is not None:
+                self.window.set_visibility(False)
 
-            elif state == ApplicationState.SUSPENDED:
-                rospy.logdebug("SUSPENDED")
-                self.proc.start()
-                self._signal_proc(signal.SIGSTOP)
-                if self.window is not None:
-                    self.window.set_visibility(False)
-                    self.window.converge()
+        elif state == ApplicationState.SUSPENDED:
+            rospy.logdebug("SUSPENDED")
+            self.proc.start()
+            self._signal_proc(signal.SIGSTOP)
+            if self.window is not None:
+                self.window.set_visibility(False)
+                self.window.converge()
 
-            elif state == ApplicationState.HIDDEN:
-                rospy.logdebug("HIDDEN")
-                self.proc.start()
-                self._signal_proc(signal.SIGCONT)
-                if self.window is not None:
-                    self.window.set_visibility(False)
-                    self.window.converge()
-                else:
-                    rospy.logwarn(
-                        'Tried to hide a ManagedApplication ' +
-                        'without a ManagedWindow'
-                    )
+        elif state == ApplicationState.HIDDEN:
+            rospy.logdebug("HIDDEN")
+            self.proc.start()
+            self._signal_proc(signal.SIGCONT)
+            if self.window is not None:
+                self.window.set_visibility(False)
+                self.window.converge()
+            else:
+                rospy.logwarn(
+                    'Tried to hide a ManagedApplication ' +
+                    'without a ManagedWindow'
+                )
 
-            elif state == ApplicationState.VISIBLE:
-                rospy.logdebug("VISIBLE")
-                self.proc.start()
-                self._signal_proc(signal.SIGCONT)
-                if self.window is not None:
-                    self.window.set_visibility(True)
-                    self.window.converge()
+        elif state == ApplicationState.VISIBLE:
+            rospy.logdebug("VISIBLE")
+            self.proc.start()
+            self._signal_proc(signal.SIGCONT)
+            if self.window is not None:
+                self.window.set_visibility(True)
+                self.window.converge()
 
     def handle_state_msg(self, msg):
         rospy.logdebug('Got state message: {}'.format(msg))
