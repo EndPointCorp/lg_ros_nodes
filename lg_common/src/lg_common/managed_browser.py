@@ -100,7 +100,7 @@ class ManagedBrowser(ManagedApplication):
 
         # finishing command line and piping output to logger
         cmd.extend(shlex.split('2>&1'))
-        rospy.logerr("Starting cmd: %s" % cmd)
+        rospy.loginfo("Starting cmd: %s" % cmd)
 
         # Different versions of Chrome use different window instances.
         # This should match 'Google-chrome' as well as 'google-chrome'
