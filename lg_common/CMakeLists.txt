@@ -60,8 +60,11 @@ install(
 
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
+  catkin_add_nosetests(test/offline/test_helpers.py)
+  catkin_add_nosetests(test/offline/test_managed_adhoc_browser.py)
   catkin_add_nosetests(test/offline/test_managed_application.py)
+  catkin_add_nosetests(test/offline/test_tcp_relay.py)
   add_rostest(test/online/test_managed_adhoc_browser_director_bridge.test)
   add_rostest(test/online/state_changer.test)
-  catkin_add_nosetests(test/offline/test_managed_adhoc_browser.py)
+
 endif()

@@ -1,5 +1,6 @@
 import rospy
 import threading
+import urllib
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
@@ -9,6 +10,8 @@ from lg_common.helpers import get_app_instances_to_manage
 from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import DirectorPoolQuery
 from managed_browser import DEFAULT_BINARY
+from urlparse import urlparse, parse_qs, parse_qsl
+
 
 class AdhocBrowserPool():
     """
@@ -32,12 +35,13 @@ class AdhocBrowserPool():
         self._init_service()
         self.browsers = {}
         self.log_level = rospy.get_param('/logging/level', 0)
+        self.type_key = "adhoc"
 
     def process_service_request(self, req):
         """
         Callback for service requests. We always return self.browsers
         """
-        rospy.loginfo("POOL %s: Received Query service" % self.viewport_name)
+        rospy.logdebug("POOL %s: Received Query service" % self.viewport_name)
         return str(self.browsers)
 
     def _init_service(self):
@@ -57,10 +61,9 @@ class AdhocBrowserPool():
         call .close() on browser object and cleanly delete the object
         """
         rospy.loginfo("POOL %s: Removing browser with id %s" % (self.viewport_name, browser_pool_id))
-        with self.lock:
-            self.browsers[browser_pool_id].close()
-            del self.browsers[browser_pool_id]
-            rospy.loginfo("POOL %s: state after %s removal: %s" % (self.viewport_name, browser_pool_id, self.browsers))
+        self.browsers[browser_pool_id].close()
+        del self.browsers[browser_pool_id]
+        rospy.loginfo("POOL %s: state after %s removal: %s" % (self.viewport_name, browser_pool_id, self.browsers))
 
     def _create_browser(self, new_browser_pool_id, new_browser):
         """
@@ -78,6 +81,11 @@ class AdhocBrowserPool():
         else:
             binary = DEFAULT_BINARY
 
+        ros_instance_id = self._get_ros_instance_id(new_browser_pool_id)
+        rospy.logdebug("Browser URL before ros_instance addition: %s" % new_browser.url)
+        new_url = self._add_ros_instance_url_param(new_browser.url, ros_instance_id)
+        rospy.logdebug("Browser URL after ros_instance addition: %s" % new_url)
+
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
                                                 log_level=self.log_level,
                                                 slug=self.viewport_name + "_" + new_browser_pool_id,
@@ -85,7 +93,7 @@ class AdhocBrowserPool():
                                                 extensions=extensions,
                                                 command_line_args=command_line_args,
                                                 binary=binary,
-                                                url=new_browser.url)
+                                                url=new_url)
 
         rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
         browser_to_create.set_state(ApplicationState.STARTED)
@@ -143,6 +151,29 @@ class AdhocBrowserPool():
             # (before the browsers for old scene become ready).
             pass
 
+    def _add_ros_instance_url_param(self, url, ros_instance_name):
+        """
+        Accepts strings of url and ros_instance_name
+        Injects ros_instance_name as a first GET argument
+        Returns modified URL
+        """
+        url_parts = urlparse(url)
+
+        if url_parts.query is None:
+            new_q = 'ros_instance_name={}'.format(ros_instance_name)
+            url_parts = url_parts._replace(query=new_q)
+            return url_parts.geturl()
+
+        get_args = parse_qs(url_parts.query)
+        get_args['ros_instance_name'] = ros_instance_name
+
+        # join args without encoding - browser will do the rest
+        new_q = '&'.join((['='.join([str(item[0]), str(item[1][0])]) for item in get_args.items()]))
+        url_parts = url_parts._replace(query=new_q)
+        return url_parts.geturl()
+
+    def _get_ros_instance_id(self, new_browser_pool_id):
+        return "%s__%s__%s" % (self.type_key, self.viewport_name, new_browser_pool_id)
 
     def handle_ros_message(self, data):
         """
@@ -180,6 +211,10 @@ class AdhocBrowserPool():
 
         # create new browsers
         rospy.loginfo("POOL %s: browsers to create = %s" % (self.viewport_name, incoming_browsers_ids))
+        for browser_pool_id in current_browsers_ids:
+            rospy.loginfo("Removing browser id %s" % browser_pool_id)
+            self._remove_browser(browser_pool_id)
+
         for browser_pool_id in incoming_browsers_ids:
             rospy.loginfo("Creating browser with id %s" % browser_pool_id)
             self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])

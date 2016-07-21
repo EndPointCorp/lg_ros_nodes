@@ -157,6 +157,15 @@ class MockEarthQueryPublisher:
         self.published_messages.append(message)
 
 
+class MockEarthPlanetPublisher:
+    def __init__(self):
+        self.published_messages = []
+
+    def publish(self, message):
+        rospy.loginfo("MEPP publishing message %s" % message)
+        self.published_messages.append(message)
+
+
 class TestAttractLoop(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
@@ -167,6 +176,7 @@ class TestAttractLoop(unittest.TestCase):
         self.mock_director_scene_publisher = MockDirectorScenePublisher()
         self.mock_director_presentation_publisher = MockDirectorPresentationPublisher()
         self.earth_query_publisher = MockEarthQueryPublisher()
+        self.earth_planet_publisher = MockEarthPlanetPublisher()
 
     def _deactivate_lg(self):
         rospy.loginfo("Changing LG state to inactive to start playback")
@@ -187,7 +197,7 @@ class TestAttractLoop(unittest.TestCase):
             api_proxy=self.mock_api, director_scene_publisher=self.mock_director_scene_publisher,
             director_presentation_publisher=self.mock_director_presentation_publisher,
             stop_action=self.stop_action, earth_query_publisher=self.earth_query_publisher,
-            default_presentation=None)
+            earth_planet_publisher=self.earth_planet_publisher, default_presentation=None)
 
         self.assertEqual(isinstance(self.attract_loop_controller, AttractLoop), True)
         self.assertEqual(self.attract_loop_controller.play_loop, False)
@@ -195,15 +205,20 @@ class TestAttractLoop(unittest.TestCase):
 
         rospy.loginfo("game is on - first wait for initialization and check whether attract loop was populated with scenes")
         rospy.sleep(2)
-        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 2)  # two scenes waiting for playback
-        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 0)  # no scenes published yet
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)  # one item waiting for playback
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue[0]['scenes']), 2)  # there are two scenes in the queue
+
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 0)  # no scenes were published yet
 
         self._deactivate_lg()
 
-        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 1)  # one scene playing back right now (1000 seconds :))
-        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the other one in the queue
-        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scene']['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
-        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scene']['description'], self.mock_api.mplayer_scene['description'])  # mplayer scene again
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the item is still in the queue
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue[0]['scenes']), 1)   # one out of two scenes left in the queue
+        print "Published scenes" % self.mock_director_scene_publisher.published_scenes
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 1)  # one scene playing back right now (1000 seconds :)
+
+        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
+        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['description'], self.mock_api.mplayer_scene['description'])  # mplayer scene again
         self.assertEqual(self.attract_loop_controller.scene_timer > 500, True)  # scene timer should be sth lik 997 here
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self.mock_api.flights_scene)  # flights scene got published
 
@@ -211,27 +226,23 @@ class TestAttractLoop(unittest.TestCase):
 
         self.assertEqual(self.attract_loop_controller.scene_timer <= 0, True)  # scene timer is going down
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 2)  # blank message was published because of 'go_blank'
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[1].message)['description'], 'rofl')  # blank message was published because of 'go_blank'
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[1].message)['windows'][0]['presentation_viewport'], 'mock3')  # blank message was published because of 'go_blank'
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[1].message)['windows'][1]['presentation_viewport'], 'mock2')  # blank message was published because of 'go_blank'
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[1].message)['windows'][2]['presentation_viewport'], 'mock1')  # blank message was published because of 'go_blank'
         self.assertEqual(len(self.earth_query_publisher.published_messages), 1)  # earth was stopped
 
         self._deactivate_lg()
 
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 3)  # flights + blank + mplayer
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[2].message)['slug'], 'mplayer-two-different-instances')  # blank message was published because of 'go_blank'
-        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 2)   # attract loop filled with new content again
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # still one item with one scene waiting to be published
         self.assertEqual(self.attract_loop_controller.scene_timer >= 9000, True)  # scene timer is going down
 
         self._activate_lg()
 
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 4)  # flights + blank + mplayer + blank
         self.assertEqual(len(self.earth_query_publisher.published_messages), 2)  # earth was stopped
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[3].message)['description'], 'rofl')  # blank message was published because of 'go_blank'
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[3].message)['windows'][0]['presentation_viewport'], 'mock3')  # blank message was published because of 'go_blank'
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[3].message)['windows'][1]['presentation_viewport'], 'mock2')  # blank message was published because of 'go_blank'
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[3].message)['windows'][2]['presentation_viewport'], 'mock1')  # blank message was published because of 'go_blank'
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message)['description'], 'Openflights data')  # rofl scene was published in attract loop
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[1].message)['description'], 'attract loop blank scene')  # empty attract loop scene
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[2].message)['description'], '')  # scene without descriptor was the 3rd scene
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[3].message)['description'], 'attract loop blank scene')  # blank message was published because of 'go_blank'
 
     def test_2_entering_and_exiting_attract_loop_with_stop_playtour(self):
         self._init_mocks()
@@ -239,7 +250,9 @@ class TestAttractLoop(unittest.TestCase):
         self.attract_loop_controller = AttractLoop(
             api_proxy=self.mock_api, director_scene_publisher=self.mock_director_scene_publisher,
             director_presentation_publisher=self.mock_director_presentation_publisher,
-            stop_action=self.stop_action, earth_query_publisher=self.earth_query_publisher,
+            stop_action=self.stop_action,
+            earth_planet_publisher=self.earth_planet_publisher,
+            earth_query_publisher=self.earth_query_publisher,
             default_presentation=None)
 
         self.assertEqual(isinstance(self.attract_loop_controller, AttractLoop), True)
@@ -248,15 +261,15 @@ class TestAttractLoop(unittest.TestCase):
 
         rospy.loginfo("game is on - first wait for initialization and check whether attract loop was populated with scenes")
         rospy.sleep(2)
-        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 2)  # two scenes waiting for playback
-        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 0)  # no scenes published yet
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)  # one item waiting for playback
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue[0]['scenes']), 2)  # there are two scenes in the queue
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 0)  # no scenes were published yet
 
         self._deactivate_lg()
 
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 1)  # one scene playing back right now (1000 seconds :))
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the other one in the queue
-        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scene']['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
-        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scene']['description'], self.mock_api.mplayer_scene['description'])  # mplayer scene again
+        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
         self.assertEqual(self.attract_loop_controller.scene_timer > 500, True)  # scene timer should be sth lik 997 here
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self.mock_api.flights_scene)  # flights scene got published
 
@@ -271,13 +284,61 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 2)  # flights + mplayer
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[1].message)['slug'], 'mplayer-two-different-instances')
         self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message)['slug'], 'flights')
-        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 2)   # attract loop filled with new content again
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # attract loop filled with new content again
         self.assertEqual(self.attract_loop_controller.scene_timer >= 9000, True)  # scene timer is going down
 
         self._activate_lg()
 
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 2)  # flights + mplayer
         self.assertEqual(len(self.earth_query_publisher.published_messages), 2)  # earth was stopped
+
+    def test_3_entering_and_exiting_attract_loop_with_go_blank_and_switch_to_planet(self):
+        self._init_mocks()
+        self.stop_action = 'go_blank_and_switch_to_planet'
+        self.attract_loop_controller = AttractLoop(
+            api_proxy=self.mock_api, director_scene_publisher=self.mock_director_scene_publisher,
+            director_presentation_publisher=self.mock_director_presentation_publisher,
+            stop_action=self.stop_action,
+            earth_planet_publisher=self.earth_planet_publisher,
+            earth_query_publisher=self.earth_query_publisher,
+            default_presentation=None)
+
+        self.assertEqual(isinstance(self.attract_loop_controller, AttractLoop), True)
+        self.assertEqual(self.attract_loop_controller.play_loop, False)
+        self.assertEqual(self.attract_loop_controller.attract_loop_queue, [])
+
+        rospy.loginfo("game is on - first wait for initialization and check whether attract loop was populated with scenes")
+        rospy.sleep(3)
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)  # two scenes waiting for playback
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 0)  # no scenes published yet
+
+        self._deactivate_lg()
+
+        self.assertEqual(len(self.earth_planet_publisher.published_messages), 1)  # planet message was published for the first time
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 1)  # one scene playing back right now (1000 seconds :))
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the other one in the queue
+        self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
+        self.assertEqual(self.attract_loop_controller.scene_timer > 500, True)  # scene timer should be sth lik 997 here
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self.mock_api.flights_scene)  # flights scene got published
+
+        self._activate_lg()
+
+        self.assertEqual(self.attract_loop_controller.scene_timer <= 0, True)  # scene timer is going down
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 2)
+        self.assertEqual(len(self.earth_query_publisher.published_messages), 1)  # playtour was published
+        self.assertEqual(len(self.earth_planet_publisher.published_messages), 2)  # planet message was published for the second time
+
+        self._deactivate_lg()
+
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 3)  # flights + mplayer + more
+        self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # attract loop filled with new content again
+        self.assertEqual(self.attract_loop_controller.scene_timer >= 9000, True)  # scene timer is going down
+
+        self._activate_lg()
+
+        self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 4)
+        self.assertEqual(len(self.earth_query_publisher.published_messages), 2)  # earth was stopped
+        self.assertEqual(len(self.earth_planet_publisher.published_messages), 4)  # planet change was published 4 times
 
 
 if __name__ == '__main__':

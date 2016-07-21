@@ -2,10 +2,52 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.9 (2016-05-20)
+1.3.12 (2016-07-19)
+-------------------
+
+1.3.11 (2016-07-15)
+-------------------
+
+1.3.10 (2016-07-13)
+-------------------
+
+1.3.9 (2016-07-08)
 ------------------
-* Fixed a typo for unknown strategies in meat.py of lg_stats (`#216 <https://github.com/EndPointCorp/lg_ros_nodes/issues/216>`_)
+
+1.3.8 (2016-07-06)
+------------------
+
+1.3.7 (2016-07-05)
+------------------
+
+1.3.6 (2016-07-01)
+------------------
+
+1.3.5 (2016-07-01)
+------------------
+
+1.3.4 (2016-07-01)
+------------------
+
+1.3.3 (2016-06-30)
+------------------
+* lg_stats and lg_attract_loop amendments (`#246 <https://github.com/EndPointCorp/lg_ros_nodes/issues/246>`_)
+  * Made lg_stats and lg_attract_loop verbosity great again. Added default action to lg_attract_loop to make it decent again
+  * Planet default
+  * URL override for touchscreen
+  * Pep8ized tests
 * Contributors: Wojciech Ziniewicz
+
+1.3.2 (2016-06-29)
+------------------
+* Fixed debug in lg_stats
+* Contributors: Wojciech Ziniewicz
+
+1.3.1 (2016-06-28)
+------------------
+
+1.3.0 (2016-06-25)
+------------------
 
 1.2.14 (2016-06-10)
 -------------------
@@ -29,10 +71,12 @@ Changelog for package lg_stats
 
 1.2.10 (2016-05-20)
 -------------------
-* 1.2.9
-* Changelogs
 * Fixed a typo for unknown strategies in meat.py of lg_stats (`#216 <https://github.com/endpointcorp/lg_ros_nodes/issues/216>`_)
-* Fixed a typo for unknown strategies in meat.py of lg_stats
+* Contributors: Wojciech Ziniewicz
+
+1.2.9 (2016-05-20)
+------------------
+* Fixed a typo for unknown strategies in meat.py of lg_stats (`#216 <https://github.com/EndPointCorp/lg_ros_nodes/issues/216>`_)
 * Contributors: Wojciech Ziniewicz
 
 1.2.8 (2016-05-19)

@@ -2,8 +2,61 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.9 (2016-05-20)
+1.3.12 (2016-07-19)
+-------------------
+
+1.3.11 (2016-07-15)
+-------------------
+
+1.3.10 (2016-07-13)
+-------------------
+
+1.3.9 (2016-07-08)
 ------------------
+
+1.3.8 (2016-07-06)
+------------------
+
+1.3.7 (2016-07-05)
+------------------
+
+1.3.6 (2016-07-01)
+------------------
+
+1.3.5 (2016-07-01)
+------------------
+
+1.3.4 (2016-07-01)
+------------------
+
+1.3.3 (2016-06-30)
+------------------
+
+1.3.2 (2016-06-29)
+------------------
+
+1.3.1 (2016-06-28)
+------------------
+* fix timeout variable
+* refactored x_available to DRY out code mode
+* factor out dependency_available to check_www_dependency
+  This DRYs out the code a bunch.
+* Simplified street view nav snapping
+  * Wait until nav is idle to snap back to horizontal.
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+1.3.0 (2016-06-25)
+------------------
+* Introduce tilt snappiness
+  * Use time series for smooth ephemeral tilt.
+  * Keep old tilt behavior, settable at runtime with the tilt_snappy topic.
+  * Slow down movement repeat.
+  * Set constant zoom.
+* Reduce street view nav gutter value
+  Helps tilt snappiness work.
+* Reduce Street View tick rate
+* Fix `#230 <https://github.com/EndPointCorp/lg_ros_nodes/issues/230>`_ and add tests
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
 
 1.2.14 (2016-06-10)
 -------------------
@@ -23,9 +76,9 @@ Changelog for package lg_sv
 
 1.2.10 (2016-05-20)
 -------------------
-* 1.2.9
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.2.9 (2016-05-20)
+------------------
 
 1.2.8 (2016-05-19)
 ------------------

@@ -2,8 +2,103 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.9 (2016-05-20)
+1.3.12 (2016-07-19)
+-------------------
+* fix syntax error
+* implement rosparam for extra chrome logging
+* remove chrome's logs by default
+  Plus took out an old log message that has been bugging me.
+* Comment Chrome window instance rule
+  Thanks Dmitry for asking.
+* Contributors: Jacob Minshall, Matt Vollrath
+
+1.3.11 (2016-07-15)
+-------------------
+* set state of managed application on respawn
+* set proc to None after wait and set shell=True
+  With shell=True we no longer need to have /bin/sh -c be the start of our
+  command.
+* Removed @minnshalj comment
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into EndPointCorp/lg_chef_860_graphics_loading_timing_issues
+  Conflicts:
+  lg_common/src/lg_common/adhoc_browser_pool.py
+  lg_media/src/lg_media/mplayer_pool.py
+* Removed instance updating completely
+* Contributors: Galaxy Admin, Jacob Minshall
+
+1.3.10 (2016-07-13)
+-------------------
+* Fixed `EndPointCorp/lg_chef#859 <https://github.com/EndPointCorp/lg_chef/issues/859>`_
+* Fixed browser vid player
+* Contributors: Galaxy Admin, Wojciech Ziniewicz
+
+1.3.9 (2016-07-08)
 ------------------
+* Added a close_fds fix for awesome and fixed a logging method exception that was crashing lg_attract_loop
+* Clear browser tmpdir on each spawn
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
+1.3.8 (2016-07-06)
+------------------
+
+1.3.7 (2016-07-05)
+------------------
+
+1.3.6 (2016-07-01)
+------------------
+
+1.3.5 (2016-07-01)
+------------------
+
+1.3.4 (2016-07-01)
+------------------
+
+1.3.3 (2016-06-30)
+------------------
+* lg_stats and lg_attract_loop amendments (`#246 <https://github.com/EndPointCorp/lg_ros_nodes/issues/246>`_)
+  * Made lg_stats and lg_attract_loop verbosity great again. Added default action to lg_attract_loop to make it decent again
+  * Planet default
+  * URL override for touchscreen
+  * Pep8ized tests
+* Contributors: Wojciech Ziniewicz
+
+1.3.2 (2016-06-29)
+------------------
+* Fixed debug in lg_stats
+* Contributors: Wojciech Ziniewicz
+
+1.3.1 (2016-06-28)
+------------------
+* refactored x_available to DRY out code mode
+* factor out dependency_available to check_www_dependency
+  This DRYs out the code a bunch.
+* Contributors: Will Plaut
+
+1.3.0 (2016-06-25)
+------------------
+* Fix remote debugging port in scripts
+* Track pytest dep in lg_common
+* Enable GPU rasterization in Chrome by default
+* Implement TCPRelay in ManagedBrowser
+* Add TCP relay for Chrome debug relay
+* Added rosnode name parameter for adhock browser pool (`#234 <https://github.com/EndPointCorp/lg_ros_nodes/issues/234>`_)
+  * Add ros_instance_name get parameter for adhoc browsers pool
+  * PEP8ized code for `#234 <https://github.com/EndPointCorp/lg_ros_nodes/issues/234>`_
+* reverted adhoc_browser_pool.py
+* lg_common helpers tests, related to touch: `#193 <https://github.com/EndPointCorp/lg_ros_nodes/issues/193>`_
+* Browser fixes (`#232 <https://github.com/EndPointCorp/lg_ros_nodes/issues/232>`_)
+  * various ManagedBrowser fixups
+  - Fixed browser names for `#145 <https://github.com/EndPointCorp/lg_ros_nodes/issues/145>`_
+  - added defult disk_cache_size param of 300mb for `#148 <https://github.com/EndPointCorp/lg_ros_nodes/issues/148>`_
+  - added stderr logging to logger pipe
+  * Various browser fixes
+  - limited browser disk cache size to 300mb `#148 <https://github.com/EndPointCorp/lg_ros_nodes/issues/148>`_
+  - parametrized verbosity of browsers `#129 <https://github.com/EndPointCorp/lg_ros_nodes/issues/129>`_
+  - made browsers use proper slugs including viewports in their names `#145 <https://github.com/EndPointCorp/lg_ros_nodes/issues/145>`_
+  * Pep8ed
+  * Pep8'd files
+* Use local copy of lg_ros_nodes
+* Contributors: Dmitry Kiselev, Matt Vollrath, Wojciech Ziniewicz, Zdenek Maxa
 
 1.2.14 (2016-06-10)
 -------------------
@@ -32,9 +127,10 @@ Changelog for package lg_common
 1.2.10 (2016-05-20)
 -------------------
 * get_activity_config now in lg_common helpers
-* 1.2.9
-* Changelogs
-* Contributors: Jacob Minshall, Wojciech Ziniewicz
+* Contributors: Jacob Minshall
+
+1.2.9 (2016-05-20)
+------------------
 
 1.2.8 (2016-05-19)
 ------------------

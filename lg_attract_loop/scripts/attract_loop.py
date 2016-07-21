@@ -20,11 +20,13 @@ def main():
     director_scene_topic_name = rospy.get_param('~director_scene_topic_name', '/director/scene')
     director_presentation_topic_name = rospy.get_param('~director_presentation_topic_name', '/director/presentation')
 
-    stop_action = rospy.get_param('~stop_action', 'go_blank')
+    stop_action = rospy.get_param('~stop_action', 'go_blank_and_switch_to_planet')
+    default_planet = rospy.get_param('~default_planet', 'earth')
     default_presentation = rospy.get_param('~default_presentation', None)
 
     # initialize Director publisher
     earth_query_publisher = rospy.Publisher('/earth/query/tour', String, queue_size=1)
+    earth_planet_publisher = rospy.Publisher('/earth/query/planet', String, queue_size=1)
     earth_state_publisher = rospy.Publisher('/earth/state', ApplicationState, queue_size=1)
 
     def set_earth(*args, **kwargs):
@@ -44,7 +46,15 @@ def main():
     director_api_proxy = DirectorAPIProxy(api_url)
 
     # initialize main logic class
-    attract_loop = AttractLoop(director_api_proxy, director_scene_publisher, director_presentation_publisher, stop_action, earth_query_publisher, default_presentation, set_earth=set_earth)
+    attract_loop = AttractLoop(director_api_proxy,
+                               director_scene_publisher,
+                               director_presentation_publisher,
+                               stop_action,
+                               earth_query_publisher,
+                               earth_planet_publisher,
+                               default_presentation=default_presentation,
+                               default_planet=default_planet,
+                               set_earth=set_earth)
 
     # subscribe to state changes
     rospy.Subscriber(activity_topic, Bool, attract_loop._process_activity_state_change)

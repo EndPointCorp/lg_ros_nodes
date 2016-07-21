@@ -2,8 +2,55 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.9 (2016-05-20)
+1.3.12 (2016-07-19)
+-------------------
+
+1.3.11 (2016-07-15)
+-------------------
+
+1.3.10 (2016-07-13)
+-------------------
+
+1.3.9 (2016-07-08)
 ------------------
+
+1.3.8 (2016-07-06)
+------------------
+
+1.3.7 (2016-07-05)
+------------------
+
+1.3.6 (2016-07-01)
+------------------
+
+1.3.5 (2016-07-01)
+------------------
+
+1.3.4 (2016-07-01)
+------------------
+
+1.3.3 (2016-06-30)
+------------------
+
+1.3.2 (2016-06-29)
+------------------
+
+1.3.1 (2016-06-28)
+------------------
+* refactored x_available to DRY out code mode
+* factor out dependency_available to check_www_dependency
+  This DRYs out the code a bunch.
+* add timeout to kmlsync wait_for_service
+  Instead of hanging forever, this will raise an exception at the end of
+  the timeout and kill the ros node.
+* Contributors: Will Plaut
+
+1.3.0 (2016-06-25)
+------------------
+* Issue/158 last ack timestamp (`#229 <https://github.com/EndPointCorp/lg_ros_nodes/issues/229>`_)
+  * Added service with last state for viewsync `#158 <https://github.com/EndPointCorp/lg_ros_nodes/issues/158>`_
+  * Added viewsync state service for monitoring of GE viewsync health `#158 <https://github.com/EndPointCorp/lg_ros_nodes/issues/158>`_
+* Contributors: Wojciech Ziniewicz
 
 1.2.14 (2016-06-10)
 -------------------
@@ -19,9 +66,9 @@ Changelog for package lg_earth
 
 1.2.10 (2016-05-20)
 -------------------
-* 1.2.9
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.2.9 (2016-05-20)
+------------------
 
 1.2.8 (2016-05-19)
 ------------------

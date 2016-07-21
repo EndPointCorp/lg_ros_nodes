@@ -2,7 +2,61 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.9 (2016-05-20)
+1.3.12 (2016-07-19)
+-------------------
+
+1.3.11 (2016-07-15)
+-------------------
+
+1.3.10 (2016-07-13)
+-------------------
+
+1.3.9 (2016-07-08)
+------------------
+* Added a close_fds fix for awesome and fixed a logging method exception that was crashing lg_attract_loop
+* Fixed docstring
+* Contributors: Wojciech Ziniewicz
+
+1.3.8 (2016-07-06)
+------------------
+
+1.3.7 (2016-07-05)
+------------------
+
+1.3.6 (2016-07-01)
+------------------
+* Switch to earth after entering attract loop
+* Contributors: Wojciech Ziniewicz
+
+1.3.5 (2016-07-01)
+------------------
+* Delay attract loop kick-in by 2 seconds
+* Contributors: Wojciech Ziniewicz
+
+1.3.4 (2016-07-01)
+------------------
+* PEP8zed lg_attract_loop due to development on a non-vim-non-pep8 env
+* Fixed tests for new implementation
+* Worked on attract loop - refactored
+* Testing /director/presentation attract loop population on tokyoros
+* Contributors: Wojciech Ziniewicz, wzin
+
+1.3.3 (2016-06-30)
+------------------
+* lg_stats and lg_attract_loop amendments (`#246 <https://github.com/EndPointCorp/lg_ros_nodes/issues/246>`_)
+  * Made lg_stats and lg_attract_loop verbosity great again. Added default action to lg_attract_loop to make it decent again
+  * Planet default
+  * URL override for touchscreen
+  * Pep8ized tests
+* Contributors: Wojciech Ziniewicz
+
+1.3.2 (2016-06-29)
+------------------
+
+1.3.1 (2016-06-28)
+------------------
+
+1.3.0 (2016-06-25)
 ------------------
 
 1.2.14 (2016-06-10)
@@ -19,9 +73,9 @@ Changelog for package lg_attract_loop
 
 1.2.10 (2016-05-20)
 -------------------
-* 1.2.9
-* Changelogs
-* Contributors: Wojciech Ziniewicz
+
+1.2.9 (2016-05-20)
+------------------
 
 1.2.8 (2016-05-19)
 ------------------

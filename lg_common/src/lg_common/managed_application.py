@@ -27,7 +27,7 @@ class ManagedApplication(object):
         self.sig_retry_timer = None
 
         if initial_state and is_valid_state(initial_state):
-            rospy.loginfo('setting intial state to %s' % initial_state)
+            rospy.logdebug('setting initial state to %s' % initial_state)
             self.state = initial_state
             self.set_state(self.state)
         else:
@@ -50,7 +50,7 @@ class ManagedApplication(object):
     # TODO(mv): better pid retrieval and/or signalling as a feature of
     #           ProcController.
     def _signal_proc(self, sig, retry=True):
-        rospy.logwarn('_signal_proc disabled')
+        # currently disabled (and for the foreseeable future)
         return
 
         if self.sig_retry_timer is not None:
@@ -62,7 +62,7 @@ class ManagedApplication(object):
             pid = self.proc.watcher.proc.pid
             try:
                 os.kill(pid, sig)
-                rospy.loginfo("Sent signal {} to pid {}".format(sig, pid))
+                rospy.logdebug("Sent signal {} to pid {}".format(sig, pid))
             except OSError:
                 rospy.logerr(
                     "OSError sending signal {} to pid {}".format(sig, pid))
@@ -88,18 +88,18 @@ class ManagedApplication(object):
                 state_changed = True
             self.state = state
 
-            #if not state_changed:
+            # if not state_changed:
             #    return
 
             if state == ApplicationState.STOPPED:
-                rospy.loginfo("STOPPED")
+                rospy.logdebug("STOPPED")
                 self._signal_proc(signal.SIGCONT, retry=False)
                 self.proc.stop()
                 if self.window is not None:
                     self.window.set_visibility(False)
 
             elif state == ApplicationState.SUSPENDED:
-                rospy.loginfo("SUSPENDED")
+                rospy.logdebug("SUSPENDED")
                 self.proc.start()
                 self._signal_proc(signal.SIGSTOP)
                 if self.window is not None:
@@ -107,7 +107,7 @@ class ManagedApplication(object):
                     self.window.converge()
 
             elif state == ApplicationState.HIDDEN:
-                rospy.loginfo("HIDDEN")
+                rospy.logdebug("HIDDEN")
                 self.proc.start()
                 self._signal_proc(signal.SIGCONT)
                 if self.window is not None:
@@ -128,7 +128,7 @@ class ManagedApplication(object):
                     self.window.converge()
 
             elif state == ApplicationState.VISIBLE:
-                rospy.loginfo("VISIBLE")
+                rospy.logdebug("VISIBLE")
                 self.proc.start()
                 self._signal_proc(signal.SIGCONT)
                 if self.window is not None:
@@ -136,18 +136,19 @@ class ManagedApplication(object):
                     self.window.converge()
 
     def handle_state_msg(self, msg):
-        rospy.loginfo('Got state message: {}'.format(msg))
+        rospy.logdebug('Got state message: {}'.format(msg))
         with self.lock:
             self.set_state(msg.state)
 
     # TODO(mv): hook this up to ProcController
     def _handle_respawn(self):
         if (self.window is not None) and (self.state != ApplicationState.STOPPED):
-            rospy.loginfo("Handling unwanted respawn of %s by converging the window" % self)
+            rospy.logdebug("Handling unwanted respawn of %s by converging the window" % self)
             self.window.converge()
         if (self.window is None) and (self.state == ApplicationState.STOPPED):
-            rospy.loginfo("Handling unwanted respawn of %s by killing the process" % self)
+            rospy.logdebug("Handling unwanted respawn of %s by killing the process" % self)
             self.proc.stop()
+        self.set_state(self.state)
 
     def handle_soft_relaunch(self, *args, **kwargs):
         rospy.logdebug('managed application relaunch...')

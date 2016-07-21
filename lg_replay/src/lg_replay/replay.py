@@ -14,16 +14,18 @@ class DeviceReplay:
     Initialized with device name
     Needs a publisher to publish messages
     """
-    def __init__(self, publisher, device_name, event_ecode='EV_KEY', device=None):
+    def __init__(self, publisher, device_name, event_ecode=None, device=None):
         """
         Needs to be initialized with publisher and device name which is an identifier that DeviceReplay
         will attach to. Optional parameter is a device_path mainly for testing purposes.
         """
-        self.event_ecode = event_ecode
         self.publisher = publisher
         self.device_name = device_name
         self.device = device
-        self.event_code_num = getattr(ecodes, self.event_ecode)
+        if event_ecode:
+            self.event_code_num = getattr(ecodes, event_ecode)
+        else:
+            self.event_code_num = None
         # TODO (wz): set device permissions using udev rules because otherwise this node needs sudo
         if self.device:
             self.device = device
@@ -38,7 +40,11 @@ class DeviceReplay:
 
     def run(self):
         for event in self.device.read_loop():
-            if event.type == self.event_code_num:
+            if self.event_code_num:
+                if event.type == self.event_code_num:
+                    publishable_event = rewrite_message_to_dict(event)
+                    self.publisher.publish_event(publishable_event)
+            else:
                 publishable_event = rewrite_message_to_dict(event)
                 self.publisher.publish_event(publishable_event)
 

@@ -4,8 +4,7 @@ import rospy
 
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
-from lg_common.helpers import dependency_available, DependencyException
-from lg_common.helpers import discover_host_from_url, discover_port_from_url
+from lg_common.helpers import check_www_dependency, discover_host_from_url, discover_port_from_url
 
 from std_msgs.msg import String
 
@@ -17,7 +16,8 @@ if __name__ == '__main__':
     url = rospy.get_param('~url', None)
     command_line_args = rospy.get_param('~command_line_args', '')
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
-    debug_port = rospy.get_param('~debug_port', 10000)
+    extra_logging = rospy.get_param('~extra_logging', False)
+    debug_port = rospy.get_param('~debug_port', None)
     user_agent = rospy.get_param(
         '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
         'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
@@ -31,21 +31,15 @@ if __name__ == '__main__':
 
     www_host = discover_host_from_url(url)
     www_port = discover_port_from_url(url)
-
-    if depend_on_url:
-        if not dependency_available(www_host, www_port, 'static browser URL', global_dependency_timeout):
-            msg = "Service: %s hasn't become accessible within %s seconds" % ('director', global_dependency_timeout)
-            rospy.logfatal(msg)
-            raise DependencyException(msg)
-        else:
-            rospy.loginfo("URL available - continuing initialization")
+    check_www_dependency(depend_on_url, www_host, www_port, 'static browser URL', global_dependency_timeout)
 
     browser = ManagedBrowser(
         geometry=geometry,
         url=url,
         command_line_args=command_line_args,
+        log_stderr=extra_logging,
         force_device_scale_factor=scale_factor,
-        debug_port=debug_port,
+        remote_debugging_port=debug_port,
         user_agent=user_agent,
         extensions=extensions
     )

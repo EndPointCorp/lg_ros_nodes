@@ -354,13 +354,13 @@ class Processor(object):
 
         influx_data = self.influxdb_client.get_data_for_influx(out_msg, self.measurement)
         out_msg.influx = str(influx_data)
-        rospy.loginfo("Submitting to InfluxDB: '%s'" % influx_data)
-        rospy.loginfo("Publishing out_msg: %s" % out_msg)
-        rospy.loginfo("Types: %s, %s, %s, %s, %s" % (type(out_msg.measurement),
-                                                     type(out_msg.src_topic),
-                                                     type(out_msg.type),
-                                                     type(out_msg.metadata),
-                                                     type(out_msg.value)))
+        rospy.logdebug("Submitting to InfluxDB: '%s'" % influx_data)
+        rospy.logdebug("Publishing out_msg: %s" % out_msg)
+        rospy.logdebug("Types: %s, %s, %s, %s, %s" % (type(out_msg.measurement),
+                                                      type(out_msg.src_topic),
+                                                      type(out_msg.type),
+                                                      type(out_msg.metadata),
+                                                      type(out_msg.value)))
         self.debug_pub.publish(out_msg)
         self.influxdb_client.write_stats(influx_data)
 

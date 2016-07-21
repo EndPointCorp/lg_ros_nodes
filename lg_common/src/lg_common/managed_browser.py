@@ -5,10 +5,13 @@ import shutil
 import shlex
 
 from lg_common import ManagedApplication, ManagedWindow
+from lg_common.tcp_relay import TCPRelay
+from lg_common.msg import ApplicationState
 from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'
 DEFAULT_ARGS = [
+    '--enable-gpu-rasterization',
     '--no-first-run',
     '--allow-file-access-from-files',
     '--disable-default-apps',
@@ -19,7 +22,6 @@ DEFAULT_ARGS = [
     '--disable-pinch',
     '--overscroll-history-navigation=0',
     '--disable-touch-editing',
-    '--enable-logging=stderr',
     '--v=1',
     '--enable-webgl',
     '--ignore-gpu-blacklist'
@@ -29,9 +31,8 @@ DEFAULT_ARGS = [
 class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True,  disk_cache_size=314572800,
-                 command_line_args=[], extensions=[], user_agent=None,
-                 log_level=0, **kwargs):
+                 shell=True, command_line_args='', disk_cache_size=314572800,
+                 log_level=0, extensions=[], log_stderr=False, **kwargs):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -47,23 +48,26 @@ class ManagedBrowser(ManagedApplication):
         if user_agent:
             cmd.append('--user-agent={}'.format(user_agent))
 
+        # If no debug port provided, pick one.
         if remote_debugging_port is None:
             remote_debugging_port = ManagedBrowser.get_os_port()
-        self.debug_port = remote_debugging_port
+        self.debug_port = ManagedBrowser.get_os_port()
 
+        self.relay = TCPRelay(self.debug_port, remote_debugging_port)
+
+        if log_stderr:
+            cmd.append('--enable-logging=stderr')
+        else:
+            cmd.append('--enable-logging')
         cmd.append('--remote-debugging-port={}'.format(self.debug_port))
         cmd.append('--log-level={}'.format(log_level))
 
-        tmp_dir = '/tmp/lg_browser_{}'.format(slug)
-        try:
-            rospy.loginfo("Purging ManagedBrowser directory: %s" % tmp_dir)
-            shutil.rmtree(tmp_dir)
-        except OSError, e:
-            rospy.loginfo("Could not purge the %s directory because %s" % (tmp_dir, e))
+        self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
+        self.clear_tmp_dir()
 
-        cmd.append('--user-data-dir={}'.format(tmp_dir))
-        cmd.append('--disk-cache-dir={}'.format(tmp_dir))
-        cmd.append('--crash-dumps-dir={}/crashes'.format(tmp_dir))
+        cmd.append('--user-data-dir={}'.format(self.tmp_dir))
+        cmd.append('--disk-cache-dir={}'.format(self.tmp_dir))
+        cmd.append('--crash-dumps-dir={}/crashes'.format(self.tmp_dir))
 
         if extensions:
             cmd.append('--load-extension={}'.format(','.join(extensions)))
@@ -101,12 +105,24 @@ class ManagedBrowser(ManagedApplication):
         cmd.extend(shlex.split('2>&1'))
         rospy.logerr("Starting cmd: %s" % cmd)
 
-        w_instance = 'oogle-chrome \\({}\\)'.format(tmp_dir)
+        # Different versions of Chrome use different window instances.
+        # This should match 'Google-chrome' as well as 'google-chrome'
+        w_instance = 'oogle-chrome \\({}\\)'.format(self.tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         rospy.loginfo("Command {}".format(cmd))
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
+
+    def clear_tmp_dir(self):
+        """
+        Clears out all temporary files and disk cache for this instance.
+        """
+        try:
+            rospy.loginfo("Purging ManagedBrowser directory: %s" % self.tmp_dir)
+            shutil.rmtree(self.tmp_dir)
+        except OSError, e:
+            rospy.loginfo("Could not purge the %s directory because %s" % (self.tmp_dir, e))
 
     @staticmethod
     def get_os_port():
@@ -130,5 +146,27 @@ class ManagedBrowser(ManagedApplication):
         conn = yield websocket_connect(ws_url, connect_timeout=1)
         conn.write_message(msg)
         conn.close()
+
+    def _handle_respawn(self):
+        """
+        Clear tmp_dir upon respawn.
+        """
+        self.clear_tmp_dir()
+        super(ManagedBrowser, self)._handle_respawn()
+
+    def set_state(self, state):
+        super(ManagedBrowser, self).set_state(state)
+
+        if state == ApplicationState.STOPPED:
+            self.relay.stop()
+
+        elif state == ApplicationState.SUSPENDED:
+            self.relay.start()
+
+        elif state == ApplicationState.HIDDEN:
+            self.relay.start()
+
+        elif state == ApplicationState.VISIBLE:
+            self.relay.start()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -4,6 +4,9 @@
 # appctl is a separate repository
 appctl
 
+# it's a copy  
+workspace_copy/
+
 build/
 bin/
 msg_gen/

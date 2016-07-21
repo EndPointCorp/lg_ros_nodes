@@ -58,6 +58,7 @@ class BasicBrowserData:
             new_browser.geometry = media.geometry
             new_browser.url = url
             msg.browsers.append(new_browser)
+            rospy.loginfo("New browser URL: %s" % url)
 
         self.publisher.publish(msg)
 

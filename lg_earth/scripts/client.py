@@ -10,8 +10,7 @@ from std_msgs.msg import String
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from lg_common.msg import ApplicationState
-from lg_common.helpers import DependencyException
-from lg_common.helpers import dependency_available, x_available, make_soft_relaunch_callback
+from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
 from lg_earth.srv import ViewsyncState
 
 
@@ -20,7 +19,7 @@ def main():
 
     kmlsync_host = 'localhost'
     kmlsync_port = rospy.get_param('/kmlsync_server/port', 8765)
-    kmlsync_timeout = rospy.get_param('/global_dependency_timeout', 15)
+    global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
     depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
     initial_state = rospy.get_param('~initial_state', 'VISIBLE')
     state_topic = rospy.get_param('~state_topic', '/earth/state')
@@ -28,22 +27,9 @@ def main():
     if os.environ.get("LG_LANG"):
         os.environ["LANG"] = os.environ["LG_LANG"]
 
-    if depend_on_kmlsync:
-        rospy.loginfo("Waiting for KMLSync to become available")
-        if not dependency_available(kmlsync_host, kmlsync_port, 'kmlsync', kmlsync_timeout):
-            msg = "Service: %s hasn't become accessible within %s seconds" % ('kmlsync', kmlsync_timeout)
-            rospy.logfatal(msg)
-            raise DependencyException(msg)
-        else:
-            rospy.loginfo("KMLSync available - continuing initialization")
+    check_www_dependency(depend_on_kmlsync, kmlsync_host, kmlsync_port, 'kmlsync', global_dependency_timeout)
 
-    x_timeout = rospy.get_param("/global_dependency_timeout", 15)
-    if x_available(x_timeout):
-        rospy.loginfo("X available")
-    else:
-        msg = "X server is not available"
-        rospy.logfatal(msg)
-        raise DependencyException(msg)
+    x_available_or_raise(global_dependency_timeout)
 
     viewsync_port = None
     if rospy.get_param('~viewsync_send', False):
