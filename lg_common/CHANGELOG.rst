@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove lock from managed application set state
+* reclassify loginfo as logdebug
+* re-classify logerr to loginfo
+* Contributors: Jacob Minshall, Wojciech Zieniewicz
+
 1.3.12 (2016-07-19)
 -------------------
 * fix syntax error
