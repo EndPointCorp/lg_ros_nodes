@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>ROS Callback test</title>
+        <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.js"></script>
+        <script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.js"></script>
+    </head>
+    <body>
+        <span id="status">Countdown</span>
+        <span id="counter"></span>
+        <span id="counter_text"></span>
+
+        <script type="text/javascript">
+        function getQueryParams(qs) {
+            qs = qs.split('+').join(' ');
+            var params = {},
+                tokens,
+                re = /[?&]?([^=]+)=([^&]*)/g;
+            while (tokens = re.exec(qs)) {
+                params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+            }
+            return params;
+        }
+        // Parameters from url
+        var params = getQueryParams(document.location.search);
+        // Rosbridge url
+        var rosUrl = (params['rosbridge_secure'] === 0 ? 'ws://' : 'wss://')
+                + (params['rosbridge_host'] || '42-b' ) + ':'
+                + (params['rosbridge_port'] || '9090');
+
+        var ros, readyTopic;
+
+        ros = new ROSLIB.Ros({
+            url : rosUrl
+        });
+
+        readyTopic = new ROSLIB.Topic({
+            ros: ros,
+            name: '/director/window/ready',
+            messageType: 'std_msgs/String',
+            throttle_rate: 33
+        });
+        readyTopic.advertise();
+
+        if (params['ros_instance_name'] !== undefined) {
+
+            var instance = params['ros_instance_name'];
+            var timeout = parseInt(params['timeout'] || 10);
+            var sentTime = null;
+            var loadTime = new Date();
+            setTimeout(function(){
+                readyTopic.publish({
+                    'data': instance
+                });
+
+                document.getElementById('status').innerHTML = 'SENT';
+                sentTime = new Date();
+
+                var sinceCounter = function() {
+                    var c = parseInt((new Date().getTime() - sentTime.getTime()) / 1000);
+                    document.getElementById('counter').innerHTML = c;
+                    setTimeout(sinceCounter, 1000);
+                };
+                document.getElementById('counter_text').innerHTML = 'seconds ago';
+                sinceCounter();
+
+            }, timeout * 1000);
+
+            var countdowner = function() {
+                var t = parseInt((new Date().getTime() - loadTime.getTime()) / 1000);
+                document.getElementById('counter').innerHTML = (timeout - t);
+                if((timeout - t) > 0) {
+                    setTimeout(countdowner, 1000);
+                }
+            };
+            countdowner();
+        }
+        else {
+            document.getElementById('status').innerHTML = 'ERROR, there is no ros_instance_name';
+        }
+
+        </script>
+    </body>
+</html>
