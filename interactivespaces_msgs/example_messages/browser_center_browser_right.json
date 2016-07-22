@@ -1,0 +1,34 @@
+{
+  "description": "",
+  "duration": 300,
+  "name": "3 screens",
+  "resource_uri": "/director_api/scene/bba2daa0-b5f7-4afa-be87-87711ffefb44__3-screens/",
+  "slug": "bba2daa0-b5f7-4afa-be87-87711ffefb44__3-screens",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {},
+      "assets": [
+        "http://osm.me/window_redy_ros_callback/?timeout=2&rosbridge_host=localhost&rosbridge_port=9090&rosbridge_secure=0&color=indianred"
+      ],
+      "height": 1713,
+      "presentation_viewport": "right_one",
+      "width": 939,
+      "x_coord": 74,
+      "y_coord": 100
+    },
+    {
+      "activity": "browser",
+      "activity_config": {},
+      "assets": [
+        "http://osm.me/window_redy_ros_callback/?timeout=2&rosbridge_host=localhost&rosbridge_port=9090&rosbridge_secure=0&color=indianred",
+        "http://osm.me/window_redy_ros_callback/?timeout=2&rosbridge_host=localhost&rosbridge_port=9090&rosbridge_secure=0&color=indianred"
+      ],
+      "height": 960,
+      "presentation_viewport": "center",
+      "width": 540,
+      "x_coord": 270,
+      "y_coord": 480
+    }
+  ]
+}

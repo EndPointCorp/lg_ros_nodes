@@ -1,0 +1,46 @@
+{
+  "description": "weiureijrwogj",
+  "duration": 300,
+  "name": "Browsers on left_two and left_three and center",
+  "resource_uri": "/director_api/scene/faf81b54-0c9d-4774-8284-09455e39b4de__browsers-on-left-two-and-left-three-and-center/",
+  "slug": "faf81b54-0c9d-4774-8284-09455e39b4de__browsers-on-left-two-and-left-three-and-center",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {},
+      "assets": [
+        "http://osm.me/window_redy_ros_callback/?timeout=2&rosbridge_host=localhost&rosbridge_port=9090&rosbridge_secure=0&color=magenta"
+      ],
+      "height": 1920,
+      "presentation_viewport": "right_one",
+      "width": 1080,
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "browser",
+      "activity_config": {},
+      "assets": [
+        "http://osm.me/window_redy_ros_callback/?timeout=2&rosbridge_host=localhost&rosbridge_port=9090&rosbridge_secure=0&color=magenta"
+      ],
+      "height": 1920,
+      "presentation_viewport": "left_one",
+      "width": 1080,
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "browser",
+      "activity_config": {},
+      "assets": [
+        "http://osm.me/window_redy_ros_callback/?timeout=2&rosbridge_host=localhost&rosbridge_port=9090&rosbridge_secure=0&color=magenta"
+      ],
+      "height": 1920,
+      "presentation_viewport": "center",
+      "width": 1080,
+      "x_coord": 0,
+      "y_coord": 0
+    }
+  ]
+}
+
