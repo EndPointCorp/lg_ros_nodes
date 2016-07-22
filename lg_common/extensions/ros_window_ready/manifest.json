@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name":           "ros_window_ready",
+  "version":        "0.1",
+  "description":    "Sends the message through ROS that application is ready",
+
+  "background": {
+    "persistent": false,
+    "scripts": [
+      "eventemitter2.min.js",
+      "roslib.min.js",
+      "listener.js"
+    ]
+  },
+
+  "permissions":    [
+    "webNavigation", "<all_urls>"
+  ]
+}
