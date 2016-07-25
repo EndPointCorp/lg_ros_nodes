@@ -52,6 +52,7 @@ class ManagedBrowser(ManagedApplication):
 
         self.relay = TCPRelay(self.debug_port, remote_debugging_port)
 
+
         if log_stderr:
             cmd.append('--enable-logging=stderr')
         else:
@@ -111,6 +112,12 @@ class ManagedBrowser(ManagedApplication):
 
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
 
+    def post_init(self):
+        super(ManagedBrowser, self).post_init()
+
+        self.add_respawn_handler(self.clear_tmp_dir)
+        self.add_state_handler(self.control_relay)
+
     def clear_tmp_dir(self):
         """
         Clears out all temporary files and disk cache for this instance.
@@ -144,16 +151,7 @@ class ManagedBrowser(ManagedApplication):
         conn.write_message(msg)
         conn.close()
 
-    def _handle_respawn(self):
-        """
-        Clear tmp_dir upon respawn.
-        """
-        self.clear_tmp_dir()
-        super(ManagedBrowser, self)._handle_respawn()
-
-    def set_state(self, state):
-        super(ManagedBrowser, self).set_state(state)
-
+    def control_relay(self, state):
         if state == ApplicationState.STOPPED:
             self.relay.stop()
 
