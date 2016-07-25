@@ -2,6 +2,17 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix ManagedBrowser race conditions
+  * Add post_init() for ManagedApplication
+  * Add add_respawn_handler and add_state_handler to ManagedApplication
+  * Bring back set_state() locking
+  * Lock AdhocBrowserPool message handling
+  * Start and stop the Chrome debug relay inside locked set_state()
+  * Remove dangerous code from ManagedApplication _handle_respawn()
+* Contributors: Matt Vollrath
+
 1.3.13 (2016-07-21)
 -------------------
 * remove lock from managed application set state
