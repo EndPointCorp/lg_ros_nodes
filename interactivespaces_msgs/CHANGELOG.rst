@@ -2,8 +2,8 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.14 (2016-07-25)
+-------------------
 * Added smooth transitions png
 * Added example messages and images
 * Contributors: Wojciech Ziniewicz

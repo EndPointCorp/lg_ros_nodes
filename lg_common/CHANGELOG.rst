@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.14 (2016-07-25)
+-------------------
 * Fix ManagedBrowser race conditions
   * Add post_init() for ManagedApplication
   * Add add_respawn_handler and add_state_handler to ManagedApplication
