@@ -119,23 +119,45 @@ class MplayerPool(object):
         """
         return {m.id: m for m in mplayers if m.media_type == 'video'}
 
+    def _partition_existing_medias(self, incoming_medias):
+        """
+        Determine which media id's belong to existing assets.
+        """
+        existing_media_urls = [m.url for m in self.mplayers.values()]
+
+        def media_exists(media):
+            return media.url in existing_media_urls
+
+        existing_media_ids = [m.id for m in incoming_medias if media_exists(m)]
+        fresh_media_ids = [m.id for m in incoming_medias if not media_exists(m)]
+
+        return existing_media_ids, fresh_media_ids
+
     def handle_ros_message(self, data):
         """
         Handles AdhocMedias messages and manages MplayerInstances in MplayerPool
         """
         with self.lock:
             incoming_mplayers = self._unpack_incoming_mplayers(data.medias)
+
             incoming_mplayers_ids = set(incoming_mplayers.keys())
 
             current_mplayers_ids = get_app_instances_ids(self.mplayers)
 
+            existing_media_ids, fresh_media_ids = self._partition_existing_medias(incoming_mplayers.values())
+
             # mplayers to remove
             for mplayer_pool_id in current_mplayers_ids:
+                if mplayer_pool_id in existing_media_ids:
+                    rospy.loginfo("Media already playing: %s" % mplayer_pool_id)
+                    continue
                 rospy.loginfo("Removing mplayer id %s" % mplayer_pool_id)
                 self._remove_mplayer(mplayer_pool_id)
 
             # mplayers to create
             for mplayer_pool_id in incoming_mplayers_ids:
+                if mplayer_pool_id in existing_media_ids:
+                    continue
                 rospy.loginfo("Creating mplayer with id %s" % mplayer_pool_id)
                 self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
