@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import threading
 import rospy
 
 from std_msgs.msg import String
@@ -109,6 +110,7 @@ class MplayerPool(object):
     def __init__(self, viewport_name):
         self.mplayers = {}  # key: app id, value: MplayerInstance
         self.viewport_name = viewport_name
+        self.lock = threading.Lock()
 
     def _unpack_incoming_mplayers(self, mplayers):
         """
@@ -121,23 +123,23 @@ class MplayerPool(object):
         """
         Handles AdhocMedias messages and manages MplayerInstances in MplayerPool
         """
+        with self.lock:
+            incoming_mplayers = self._unpack_incoming_mplayers(data.medias)
+            incoming_mplayers_ids = set(incoming_mplayers.keys())
 
-        incoming_mplayers = self._unpack_incoming_mplayers(data.medias)
-        incoming_mplayers_ids = set(incoming_mplayers.keys())
+            current_mplayers_ids = get_app_instances_ids(self.mplayers)
 
-        current_mplayers_ids = get_app_instances_ids(self.mplayers)
+            # mplayers to remove
+            for mplayer_pool_id in current_mplayers_ids:
+                rospy.loginfo("Removing mplayer id %s" % mplayer_pool_id)
+                self._remove_mplayer(mplayer_pool_id)
 
-        # mplayers to remove
-        for mplayer_pool_id in current_mplayers_ids:
-            rospy.loginfo("Removing mplayer id %s" % mplayer_pool_id)
-            self._remove_mplayer(mplayer_pool_id)
+            # mplayers to create
+            for mplayer_pool_id in incoming_mplayers_ids:
+                rospy.loginfo("Creating mplayer with id %s" % mplayer_pool_id)
+                self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
-        # mplayers to create
-        for mplayer_pool_id in incoming_mplayers_ids:
-            rospy.loginfo("Creating mplayer with id %s" % mplayer_pool_id)
-            self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
-
-        return True
+            return True
 
     def get_media_apps_info(self, request):
         """
@@ -145,8 +147,9 @@ class MplayerPool(object):
         container tracking currently running managed applications.
 
         """
-        d = {app_id: str(app_info) for app_id, app_info in self.mplayers.items()}
-        return MediaAppsInfoResponse(json=json.dumps(d))
+        with self.lock:
+            d = {app_id: str(app_info) for app_id, app_info in self.mplayers.items()}
+            return MediaAppsInfoResponse(json=json.dumps(d))
 
     def _create_mplayer(self, mplayer_id, incoming_mplayer):
         """
