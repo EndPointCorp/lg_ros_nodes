@@ -17,7 +17,7 @@ from lg_common.helpers import get_app_instances_to_manage
 
 ROS_NODE_NAME = "lg_media"
 DEFAULT_APP = "mplayer"
-DEFAULT_ARGS = "-idle -slave -cache 256 -quiet -osdlevel 0 -nomouseinput -nograbpointer"
+DEFAULT_ARGS = "-idle -slave -cache 2048 -quiet -osdlevel 0 -nomouseinput -nograbpointer -prefer-ipv4"
 SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
 
 
