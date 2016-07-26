@@ -111,6 +111,16 @@ class MplayerPool(object):
         self.mplayers = {}  # key: app id, value: MplayerInstance
         self.viewport_name = viewport_name
         self.lock = threading.Lock()
+        rospy.on_shutdown(self.clear)
+
+    def clear(self):
+        """
+        Close all mplayer instances.
+        """
+        with self.lock:
+            for k in self.mplayers.keys():
+                self.mplayers[k].close()
+                del self.mplayers[k]
 
     def _unpack_incoming_mplayers(self, mplayers):
         """
@@ -155,9 +165,7 @@ class MplayerPool(object):
                 self._remove_mplayer(mplayer_pool_id)
 
             # mplayers to create
-            for mplayer_pool_id in incoming_mplayers_ids:
-                if mplayer_pool_id in existing_media_ids:
-                    continue
+            for mplayer_pool_id in fresh_media_ids:
                 rospy.loginfo("Creating mplayer with id %s" % mplayer_pool_id)
                 self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
