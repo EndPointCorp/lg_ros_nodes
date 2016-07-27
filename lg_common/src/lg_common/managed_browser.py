@@ -110,6 +110,9 @@ class ManagedBrowser(ManagedApplication):
 
         rospy.loginfo("Command {}".format(cmd))
 
+        # clean up after thyself
+        rospy.on_shutdown(self.clear_tmp_dir)
+
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
 
     def post_init(self):
