@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.16 (2016-07-26)
+-------------------
 * stop iterating over all presentation groups
   We need to do one presentation group at a time.
 * Contributors: Jacob Minshall
