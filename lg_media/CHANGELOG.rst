@@ -2,6 +2,19 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use mplayer -loop arg when appropriate
+* Clear mplayer FIFO's on shutdown
+* Mplayer pool asset persistence across scenes
+* Lock mplayer pool public methods
+  Prevent race conditions in message handlers.
+* Remove shebang from mplayer_pool module
+* Adjust mplayer default args
+  * Prefer ipv4 to prevent observed ipv6 lookup errors
+  * Increase cache size to support high bitrate video streaming
+* Contributors: Matt Vollrath
+
 1.3.14 (2016-07-25)
 -------------------
 

@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Clear browser tmpdir on shutdown
+* Persist ad hoc browser assets across scenes
+  URL's are now encoded in consistent order.
+* Contributors: Matt Vollrath
+
 1.3.14 (2016-07-25)
 -------------------
 * Fix ManagedBrowser race conditions
