@@ -39,7 +39,7 @@ def escape_asset_url(asset_url):
 
 def add_url_params(url, **params):
     """
-    Add GET params to the url in consistent order
+    Add GET params to the url
     url: string of the URL
     params: dict containing the keyword arguments
 
@@ -48,11 +48,9 @@ def add_url_params(url, **params):
     url_parts = list(urlparse.urlparse(url))
     query_dict = dict(urlparse.parse_qsl(url_parts[4]))
     query_dict.update(params)
-    # sort by key for consistency
-    query_items = sorted(query_dict.items(), key=lambda i: i[0])
 
     # 4th index is the query params position
-    url_parts[4] = urllib.urlencode(query_items)
+    url_parts[4] = urllib.urlencode(query_dict)
 
     return urlparse.urlunparse(url_parts)
 

@@ -1,4 +1,3 @@
-import re
 import rospy
 import threading
 import urllib
@@ -50,21 +49,6 @@ class AdhocBrowserPool():
         Return dict(id: AdhocBrowser) with all AdhocBrowsers with ids as keys
         """
         return {b.id: b for b in browsers}
-
-    def _partition_existing_browser_ids(self, incoming_browsers):
-        """
-        Determine which incoming browsers are already being shown.
-        """
-        # Strip the downstream ros_instance_name query addition.
-        existing_urls = [re.sub(r'[&?]ros_instance_name=[^&]*$', '', b.url) for b in self.browsers.values()]
-
-        def browser_exists(browser):
-            return browser.url in existing_urls
-
-        existing_ids = [b.id for b in incoming_browsers if browser_exists(b)]
-        fresh_ids = [b.id for b in incoming_browsers if not browser_exists(b)]
-
-        return existing_ids, fresh_ids
 
     def _remove_browser(self, browser_pool_id):
         """
@@ -153,11 +137,19 @@ class AdhocBrowserPool():
         Returns modified URL
         """
         url_parts = urlparse(url)
+
         if url_parts.query is None:
-            sep = '?'
-        else:
-            sep = '&'
-        return url + '{}ros_instance_name={}'.format(sep, ros_instance_name)
+            new_q = 'ros_instance_name={}'.format(ros_instance_name)
+            url_parts = url_parts._replace(query=new_q)
+            return url_parts.geturl()
+
+        get_args = parse_qs(url_parts.query)
+        get_args['ros_instance_name'] = ros_instance_name
+
+        # join args without encoding - browser will do the rest
+        new_q = '&'.join((['='.join([str(item[0]), str(item[1][0])]) for item in get_args.items()]))
+        url_parts = url_parts._replace(query=new_q)
+        return url_parts.geturl()
 
     def _get_ros_instance_id(self, new_browser_pool_id):
         return "%s__%s__%s" % (self.type_key, self.viewport_name, new_browser_pool_id)
@@ -182,18 +174,12 @@ class AdhocBrowserPool():
             incoming_browsers = self._unpack_incoming_browsers(data.browsers)
             incoming_browsers_ids = set(incoming_browsers.keys())  # set
             current_browsers_ids = get_app_instances_ids(self.browsers)  # set
-            existing_ids, fresh_ids = self._partition_existing_browser_ids(incoming_browsers.values())
-            rospy.loginfo('existing ids: {}'.format(existing_ids))
-            rospy.loginfo('fresh ids: {}'.format(fresh_ids))
 
             for browser_pool_id in current_browsers_ids:
-                if browser_pool_id in existing_ids:
-                    rospy.loginfo("Keeping existing browser id %s" % browser_pool_id)
-                    continue
                 rospy.loginfo("Removing browser id %s" % browser_pool_id)
                 self._remove_browser(browser_pool_id)
 
-            for browser_pool_id in fresh_ids:
+            for browser_pool_id in incoming_browsers_ids:
                 rospy.loginfo("Creating browser with id %s" % browser_pool_id)
                 self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
