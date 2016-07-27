@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert "Persist ad hoc browser assets across scenes"
+  This was breaking ad hoc browsers.
+* Contributors: Matt Vollrath
+
 1.3.16 (2016-07-26)
 -------------------
 
