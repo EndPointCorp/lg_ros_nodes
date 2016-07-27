@@ -208,15 +208,15 @@ class AttractLoop:
 
         if self.play_loop and self.scene_timer <= 0:
             rospy.logdebug("Inside play loop - queue size=%s" % (len(self.attract_loop_queue)))
-            for playback_item in self.attract_loop_queue:
-                if playback_item['scenes']:  # play item back or remove it from queue if no scenes
-                    lazy_presentation = playback_item['presentation']
-                    lazy_scene = playback_item['scenes'].pop(0)  # take it away - forever
-                    self._play_scene(lazy_scene, lazy_presentation)
-                    rospy.logdebug("Item to played back taken from self.attract_loop_queue: %s" % playback_item)
-                else:
-                    rospy.logdebug("Removing item as it does not longer have any scenes inside it")
-                    self.attract_loop_queue.remove(playback_item)
+            playback_item = self.attract_loop_queue[0]
+            if playback_item['scenes']:  # play item back or remove it from queue if no scenes
+                lazy_presentation = playback_item['presentation']
+                lazy_scene = playback_item['scenes'].pop(0)  # take it away - forever
+                self._play_scene(lazy_scene, lazy_presentation)
+                rospy.logdebug("Item to played back taken from self.attract_loop_queue: %s" % playback_item)
+            else:
+                rospy.logdebug("Removing item as it does not longer have any scenes inside it")
+                self.attract_loop_queue.remove(playback_item)
 
         self.scene_timer -= 1
 
