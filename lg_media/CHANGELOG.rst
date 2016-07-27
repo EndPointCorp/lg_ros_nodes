@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.15 (2016-07-26)
+-------------------
 * Use mplayer -loop arg when appropriate
 * Clear mplayer FIFO's on shutdown
 * Mplayer pool asset persistence across scenes
