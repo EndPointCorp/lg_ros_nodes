@@ -47,7 +47,7 @@ chrome.webNavigation.onDOMContentLoaded.addListener(function(data) {
         var instanceName = params['ros_instance_name'];
         if (instanceName !== undefined) {
             init(params);
-            if(params['ros_window_ready_evnt']) {
+            if(params['use_app_event']) {
                 chrome.runtime.onMessage.addListener(
                     function(msg, sender, sendResponse) {
                         if (msg.type == "DIRECTOR_WINDOW_READY") {

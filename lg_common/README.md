@@ -15,6 +15,24 @@ all LG ros nodes.
 * google-chrome available in PATH `~browser_binary`
 * awesome window manager
 
+## Smooth transitions
+
+The main goal is to be able to preload assets and application before changing the experience (before the actual change of active windows).
+
+#### The implementation owerview:
+1. Publish USCS message with some AdhocBrowsers assets.
+2. 'AdhocBrowsersPool' creates browsers, in background.
+3. Applications loads assets and pulish messages to `/director/window/ready`
+4. `readiness.py` ROS node aggregates messages from browsers instances and when all the browsers have sent ready messages, sends the `/director/ready` message.
+5. After `/director/ready` message being recieved 'AdhocBrowsersPool' changes the visibility of the windows.
+
+N.B. See extensions/ros_window_ready for to get how browsers trigger ready message.
+
+#### Messages
+- AdhocBrowsers now have scene slug
+- AdhocBrowser  now contains some additional fields
+- Ready         contains scene_slug and array of ros_instance_name's of redy windows
+
 ## Scripts
 
 ### adhoc\_browser.py
@@ -152,4 +170,3 @@ Window manager.
 #### lg\_common.SceneListener
 
 Runs a callback upon scene messages.
-
