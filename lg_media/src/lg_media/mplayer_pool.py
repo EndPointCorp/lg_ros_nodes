@@ -61,10 +61,9 @@ class ManagedMplayer(ManagedApplication):
         if self.respawn:
             cmd.extend(["-loop", "0"])
 
-        cmd.extend(['-geometry', '{0}x{1}+{2}+{3}'.format(self.window.geometry.width,
-                                                          self.window.geometry.height,
-                                                          self.window.geometry.x,
-                                                          self.window.geometry.y)])
+        cmd.extend(['-geometry', '{0}x{1}'.format(self.window.geometry.width,
+                                                  self.window.geometry.height)])
+        cmd.extend(["-name", str(self.slug)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
         cmd.extend([self.url])
         rospy.logdebug("Mplayer POOL: mplayer cmd: %s" % cmd)
@@ -197,8 +196,8 @@ class MplayerPool(object):
                                   height=incoming_mplayer.geometry.height)
 
         mplayer_window = ManagedWindow(geometry=geometry,
-                                       w_instance="Mplayer \\({}\\)".format(mplayer_id),
-                                       w_class="Mplayer \\({}\\)".format(mplayer_id))
+                                       w_instance=str(mplayer_id),
+                                       w_class="MPlayer")
 
         if incoming_mplayer.on_finish == "nothing" or incoming_mplayer.on_finish == "close":
             respawn = False
