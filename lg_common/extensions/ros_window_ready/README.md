@@ -11,4 +11,18 @@ to the `/director/window/ready` ROS topic.
 - `rosbridge_host` host where ros bridge node are listening   
 - `rosbridge_port` port where ros bridge node are listening   
 - `rosbridge_secure` use or not ssl
-- `use_app_event`
+- `use_app_event` instead of `onDOMContentLoaded` wait for
+  app generated event.
+
+### Application generated message
+
+Some applications loads assets and do some initialization,
+asynchronously and `onDOMContentLoaded` will generate event
+too early.
+
+To avoid that, add `use_app_event=1` get parameter.
+To send the message broadcast dom event for window:
+
+```javascript
+window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
+```
