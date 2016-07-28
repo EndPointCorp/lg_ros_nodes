@@ -55,6 +55,43 @@ def add_url_params(url, **params):
     return urlparse.urlunparse(url_parts)
 
 
+def url_compare(a0, b0):
+    """
+    Compare two urls for equivalence. Order of query parameters is ignored.
+
+    Args:
+        a0 (str)
+        b0 (str)
+
+    Returns:
+        True if the urls are equivalent.
+    """
+    a = urlparse.urlparse(a0)
+    b = urlparse.urlparse(b0)
+
+    if a.scheme != b.scheme:
+        return False
+
+    if a.netloc != b.netloc:
+        return False
+
+    if a.path != b.path:
+        return False
+
+    if a.params != b.params:
+        return False
+
+    if a.fragment != b.fragment:
+        return False
+
+    qa = urlparse.parse_qs(a.query)
+    qb = urlparse.parse_qs(b.query)
+    if qa != qb:
+        return False
+
+    return True
+
+
 def write_log_to_file(message):
     """
     Write a log line to a file - don't use it in production!
