@@ -52,7 +52,6 @@ class ManagedBrowser(ManagedApplication):
 
         self.relay = TCPRelay(self.debug_port, remote_debugging_port)
 
-
         if log_stderr:
             cmd.append('--enable-logging=stderr')
         else:
