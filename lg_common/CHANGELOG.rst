@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix whitespace in managed_browser.py
+* Contributors: Matt Vollrath
+
 1.3.18 (2016-07-28)
 -------------------
 * Ad hoc browser persistence round deux

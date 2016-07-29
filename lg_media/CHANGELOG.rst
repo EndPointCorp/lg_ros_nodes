@@ -2,6 +2,11 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Normalize MPlayer window positioning
+* Contributors: Matt Vollrath
+
 1.3.18 (2016-07-28)
 -------------------
 
