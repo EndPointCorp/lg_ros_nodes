@@ -58,14 +58,16 @@ class ManagedMplayer(ManagedApplication):
         cmd = []
         cmd.extend([rospy.get_param("~application_path", DEFAULT_APP)])
         cmd.extend(rospy.get_param("~application_flags", DEFAULT_ARGS).split())
-        if self.respawn:
-            cmd.extend(["-loop", "0"])
 
-        cmd.extend(['-geometry', '{0}x{1}'.format(self.window.geometry.width,
-                                                  self.window.geometry.height)])
+        cmd.extend(['-geometry', '{0}x{1}+{2}+{3}'.format(self.window.geometry.width,
+                                                          self.window.geometry.height,
+                                                          self.window.geometry.x,
+                                                          self.window.geometry.y)])
         cmd.extend(["-name", str(self.slug)])
         cmd.extend(["-input", "file=%s" % self.fifo_path])
         cmd.extend([self.url])
+        if self.respawn:
+            cmd.extend(["-loop", "0"])
         rospy.logdebug("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
