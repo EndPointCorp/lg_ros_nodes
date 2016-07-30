@@ -2,6 +2,9 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.19 (2016-07-29)
 -------------------
 * Fix whitespace in managed_browser.py

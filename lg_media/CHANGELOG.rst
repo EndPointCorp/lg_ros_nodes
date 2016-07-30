@@ -2,6 +2,13 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix MPlayer looping
+  The -loop needs to come after the url.  Obviously!
+  Also, go back to specifying full geometry because it works.
+* Contributors: Matt Vollrath
+
 1.3.19 (2016-07-29)
 -------------------
 * Normalize MPlayer window positioning
