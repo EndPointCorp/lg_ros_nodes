@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.21 (2016-08-03)
+-------------------
 * Add last_uscs service to lg_common
 * Contributors: Szymon Lipiński
 
