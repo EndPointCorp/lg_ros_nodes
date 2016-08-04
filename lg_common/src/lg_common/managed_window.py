@@ -70,7 +70,7 @@ class ManagedWindow(object):
 
     def _get_command(self):
         with self.lock:
-            cmd = ['/bin/sh', '-c']
+            cmd = []
             cmd.append('echo "{}" | /usr/bin/awesome-client'.format(
                 awesome.get_script(self)
             ))
@@ -93,7 +93,7 @@ class ManagedWindow(object):
         with self.lock:
             cmd = self._get_command()
             self._cleanup_proc()
-            rospy.loginfo(' '.join(cmd))
+            rospy.logdebug(' '.join(cmd))
             try:
                 awesome.setup_environ()
             except Exception as e:
@@ -101,7 +101,9 @@ class ManagedWindow(object):
                     'failed to setup awesome environment: {}'.format(e.message)
                 )
             try:
-                self.proc = subprocess.Popen(cmd, close_fds=True)
+                self.proc = subprocess.Popen(cmd, close_fds=True, shell=True)
+                self.proc.wait()
+                self.proc = None
             except OSError:
                 rospy.logerr('failed to run {}'.format(XDOTOOL_BIN))
 

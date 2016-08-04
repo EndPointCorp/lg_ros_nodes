@@ -136,6 +136,8 @@ A `ManagedApplication` subclass for running a browser.
 * `binary` [string] - Absolute path to the browser binary. Default: `/usr/bin/google-chrome`
 * `remote_debugging_port` [int] - Specify a remote debugging port. If not provided, a port will be assigned.
 * `command_line_args` [string] - A large string of command line arguments for chrome.
+* `log_stderr` [bool] - Whether or not to log standard error (fills up quickly
+  for debugging only) Default: `False`
 
 All other keyword arguments are passed on directly to the command line.
 

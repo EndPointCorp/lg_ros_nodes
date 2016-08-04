@@ -22,7 +22,6 @@ DEFAULT_ARGS = [
     '--disable-pinch',
     '--overscroll-history-navigation=0',
     '--disable-touch-editing',
-    '--enable-logging=stderr',
     '--v=1',
     '--enable-webgl',
     '--ignore-gpu-blacklist'
@@ -33,7 +32,7 @@ class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
                  shell=True, command_line_args='', disk_cache_size=314572800,
-                 log_level=0, extensions=[], **kwargs):
+                 log_level=0, extensions=[], log_stderr=False, **kwargs):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -53,6 +52,10 @@ class ManagedBrowser(ManagedApplication):
 
         self.relay = TCPRelay(self.debug_port, remote_debugging_port)
 
+        if log_stderr:
+            cmd.append('--enable-logging=stderr')
+        else:
+            cmd.append('--enable-logging')
         cmd.append('--remote-debugging-port={}'.format(self.debug_port))
         cmd.append('--log-level={}'.format(log_level))
 
@@ -97,14 +100,25 @@ class ManagedBrowser(ManagedApplication):
 
         # finishing command line and piping output to logger
         cmd.extend(shlex.split('2>&1'))
-        rospy.logerr("Starting cmd: %s" % cmd)
+        rospy.loginfo("Starting cmd: %s" % cmd)
 
+        # Different versions of Chrome use different window instances.
+        # This should match 'Google-chrome' as well as 'google-chrome'
         w_instance = 'oogle-chrome \\({}\\)'.format(self.tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         rospy.loginfo("Command {}".format(cmd))
 
+        # clean up after thyself
+        rospy.on_shutdown(self.clear_tmp_dir)
+
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
+
+    def post_init(self):
+        super(ManagedBrowser, self).post_init()
+
+        self.add_respawn_handler(self.clear_tmp_dir)
+        self.add_state_handler(self.control_relay)
 
     def clear_tmp_dir(self):
         """
@@ -139,16 +153,7 @@ class ManagedBrowser(ManagedApplication):
         conn.write_message(msg)
         conn.close()
 
-    def _handle_respawn(self):
-        """
-        Clear tmp_dir upon respawn.
-        """
-        super(ManagedBrowser, self)._handle_respawn()
-        self.clear_tmp_dir()
-
-    def set_state(self, state):
-        super(ManagedBrowser, self).set_state(state)
-
+    def control_relay(self, state):
         if state == ApplicationState.STOPPED:
             self.relay.stop()
 

@@ -2,6 +2,82 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.21 (2016-08-03)
+-------------------
+* Add last_uscs service to lg_common
+* Contributors: Szymon Lipiński
+
+1.3.20 (2016-07-29)
+-------------------
+
+1.3.19 (2016-07-29)
+-------------------
+* Fix whitespace in managed_browser.py
+* Contributors: Matt Vollrath
+
+1.3.18 (2016-07-28)
+-------------------
+* Ad hoc browser persistence round deux
+* Contributors: Matt Vollrath
+
+1.3.17 (2016-07-27)
+-------------------
+* Revert "Persist ad hoc browser assets across scenes"
+  This was breaking ad hoc browsers.
+* Contributors: Matt Vollrath
+
+1.3.16 (2016-07-26)
+-------------------
+
+1.3.15 (2016-07-26)
+-------------------
+* Clear browser tmpdir on shutdown
+* Persist ad hoc browser assets across scenes
+  URL's are now encoded in consistent order.
+* Contributors: Matt Vollrath
+
+1.3.14 (2016-07-25)
+-------------------
+* Fix ManagedBrowser race conditions
+  * Add post_init() for ManagedApplication
+  * Add add_respawn_handler and add_state_handler to ManagedApplication
+  * Bring back set_state() locking
+  * Lock AdhocBrowserPool message handling
+  * Start and stop the Chrome debug relay inside locked set_state()
+  * Remove dangerous code from ManagedApplication _handle_respawn()
+* Contributors: Matt Vollrath
+
+1.3.13 (2016-07-21)
+-------------------
+* remove lock from managed application set state
+* reclassify loginfo as logdebug
+* re-classify logerr to loginfo
+* Contributors: Jacob Minshall, Wojciech Zieniewicz
+
+1.3.12 (2016-07-19)
+-------------------
+* fix syntax error
+* implement rosparam for extra chrome logging
+* remove chrome's logs by default
+  Plus took out an old log message that has been bugging me.
+* Comment Chrome window instance rule
+  Thanks Dmitry for asking.
+* Contributors: Jacob Minshall, Matt Vollrath
+
+1.3.11 (2016-07-15)
+-------------------
+* set state of managed application on respawn
+* set proc to None after wait and set shell=True
+  With shell=True we no longer need to have /bin/sh -c be the start of our
+  command.
+* Removed @minnshalj comment
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into EndPointCorp/lg_chef_860_graphics_loading_timing_issues
+  Conflicts:
+  lg_common/src/lg_common/adhoc_browser_pool.py
+  lg_media/src/lg_media/mplayer_pool.py
+* Removed instance updating completely
+* Contributors: Galaxy Admin, Jacob Minshall
+
 1.3.10 (2016-07-13)
 -------------------
 * Fixed `EndPointCorp/lg_chef#859 <https://github.com/EndPointCorp/lg_chef/issues/859>`_

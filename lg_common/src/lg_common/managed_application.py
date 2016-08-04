@@ -19,12 +19,15 @@ class ManagedApplication(object):
         """
         self.cmd = cmd
         self.window = window
-        self.lock = threading.RLock()
+        self.lock = threading.Lock()
         self.proc = ProcController(cmd,
                                    spawn_hooks=[self._handle_respawn],
                                    shell=shell,
                                    respawn=respawn)
         self.sig_retry_timer = None
+
+        self._respawn_handlers = []
+        self._state_handlers = []
 
         if initial_state and is_valid_state(initial_state):
             rospy.logdebug('setting initial state to %s' % initial_state)
@@ -34,6 +37,17 @@ class ManagedApplication(object):
             self.state = ApplicationState.STOPPED
 
         rospy.on_shutdown(self._cleanup)
+
+        self.post_init()
+
+    def post_init(self):
+        pass
+
+    def add_respawn_handler(self, handler):
+        self._respawn_handlers.append(handler)
+
+    def add_state_handler(self, handler):
+        self._state_handlers.append(handler)
 
     def __str__(self):
         string_representation = "<ManagedApplication: state: %s, window: %s, cmd: %s, proc: %s" % (self.state, self.window, self.cmd, self.proc)
@@ -50,7 +64,7 @@ class ManagedApplication(object):
     # TODO(mv): better pid retrieval and/or signalling as a feature of
     #           ProcController.
     def _signal_proc(self, sig, retry=True):
-        rospy.logwarn('_signal_proc disabled')
+        # currently disabled (and for the foreseeable future)
         return
 
         if self.sig_retry_timer is not None:
@@ -82,8 +96,8 @@ class ManagedApplication(object):
             return self.state
 
     def set_state(self, state):
-        state_changed = False
         with self.lock:
+            state_changed = False
             if state != self.state:
                 state_changed = True
             self.state = state
@@ -127,19 +141,29 @@ class ManagedApplication(object):
                     self.window.set_visibility(True)
                     self.window.converge()
 
+            def run_handler(handler):
+                try:
+                    handler(state)
+                except Exception as e:
+                    rospy.logerr('caught an Exception in a state change handler')
+                    rospy.logerr(e.message)
+
+            map(run_handler, self._state_handlers)
+
     def handle_state_msg(self, msg):
         rospy.logdebug('Got state message: {}'.format(msg))
-        with self.lock:
-            self.set_state(msg.state)
+        self.set_state(msg.state)
 
     # TODO(mv): hook this up to ProcController
     def _handle_respawn(self):
-        if (self.window is not None) and (self.state != ApplicationState.STOPPED):
-            rospy.logdebug("Handling unwanted respawn of %s by converging the window" % self)
-            self.window.converge()
-        if (self.window is None) and (self.state == ApplicationState.STOPPED):
-            rospy.logdebug("Handling unwanted respawn of %s by killing the process" % self)
-            self.proc.stop()
+        def run_handler(handler):
+            try:
+                handler()
+            except Exception as e:
+                rospy.logerr('caught an Exception in a respawn handler')
+                rospy.logerr(e.message)
+
+        map(run_handler, self._respawn_handlers)
 
     def handle_soft_relaunch(self, *args, **kwargs):
         rospy.logdebug('managed application relaunch...')

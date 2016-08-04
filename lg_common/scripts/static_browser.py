@@ -16,6 +16,7 @@ if __name__ == '__main__':
     url = rospy.get_param('~url', None)
     command_line_args = rospy.get_param('~command_line_args', '')
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
+    extra_logging = rospy.get_param('~extra_logging', False)
     debug_port = rospy.get_param('~debug_port', None)
     user_agent = rospy.get_param(
         '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
@@ -30,12 +31,13 @@ if __name__ == '__main__':
 
     www_host = discover_host_from_url(url)
     www_port = discover_port_from_url(url)
-    check_www_dependency(depend_on_url, www_host, www_port 'static browser URL', global_dependency_timeout)
+    check_www_dependency(depend_on_url, www_host, www_port, 'static browser URL', global_dependency_timeout)
 
     browser = ManagedBrowser(
         geometry=geometry,
         url=url,
         command_line_args=command_line_args,
+        log_stderr=extra_logging,
         force_device_scale_factor=scale_factor,
         remote_debugging_port=debug_port,
         user_agent=user_agent,
