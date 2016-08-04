@@ -1,12 +1,13 @@
 <launch>
     <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py">
         <param name="check_every_seconds_delay" value="30"/>
-        <!-- Check what happens if someone puts non-unique dict keys here  -->
-        <!-- Have a test for that?  -->
-        <param name="checks" value = "{'http': 'curl --head --max-time 3 http://wwww.google.com',
-                                       'icmp1': 'ping -W 5 -c 3 www.yahoo.com',
-                                       'icmp2': 'ping -W 5 -c 3 www.nsa.gov',
-                                       'dns': 'nslookup -timeout 5 www.endpoint.com'}"/>
+        <param name="checks" value="['curl --silent --head --max-time 3 http://www.google.com',
+                                     'ping -q -W 3 -c 3 www.yahoo.com',
+                                     'ping -q -W 3 -c 3 www.nsa.gov',
+                                     'nslookup -timeout=3 www.endpoint.com',
+                                     'ping -q -W 3 -c 3 8.8.8.8',
+                                     'ping -q -W 3 -c 3 8.8.4.4',
+                                     'nc -z -w 1 news.bbc.co.uk 80']"/>
     </node>
 
     <!-- Local rosbridge and rosapi. -->

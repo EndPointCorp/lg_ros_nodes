@@ -13,6 +13,7 @@ import ast
 import time
 import threading
 import subprocess
+import pprint
 
 import rospy
 from std_msgs.msg import String
@@ -34,8 +35,8 @@ class ConnectivityResults(object):
     def __init__(self, max_length=100):
         """
         The data structure is a list of dictionaries.
-            Each dictionary (list item) has check type as a key (e.g. icmp) and
-            the value is return exit of the check command.
+            Each dictionary keys are connectivity check commands
+            and values are the commands' results.
 
         max_length - maximum maintained length of the results list
 
@@ -49,70 +50,86 @@ class ConnectivityResults(object):
             _ = self.data.pop(0)
         self.data.append(item)
 
-    def get_status(self, last_items_to_consider=2):
+    def am_i_offline(self, last_items_to_consider=2):
         """
         Return True, False based on last_items_to_consider evaluation.
         All checks (items of dictionaries) have the same weight.
-        All results must be False in order to pronounce offline status.
+        All results must be non-zero in order to pronounce offline status.
 
         """
         for dict_check_results in self.data[-last_items_to_consider:]:
             for res in dict_check_results.values():
-                if res:
-                    return True
+                if res == 0:
+                    return False
         else:
-            return False
+            return True
 
 
 class Checker(object):
+    """
+    Connectivity checker class.
+
+    check_cmds - list of Unix utils commands to run whose result determines
+        whether we are internet online or offline.
+    debug_topic_pub - ROS debug topic to publish info about current activities
+
+    """
     def __init__(self,
                  check_every_seconds_delay=30,
-                 check_types=None,
+                 check_cmds=None,
                  debug_topic_pub=None):
         self.check_every_seconds_delay = check_every_seconds_delay
-        self.check_types = check_types
+        self.check_cmds = check_cmds
         self.debug_topic_pub = debug_topic_pub
         self._checker_thread = threading.Thread(target=self._checker_worker_thread)
         self._checker_thread.start()
         self._lock = threading.Lock()
-        self._network_offline_flag = False
+        self._results = ConnectivityResults()  # lock access here
         self.log("Worker thread started.")
 
     def on_shutdown(self):
         self.log("Received shutdown request.")
 
     def log(self, msg):
-        self.debug_topic_pub(msg)
         rospy.logdebug(msg)
+        self.debug_topic_pub.publish(msg)
 
     def _checker_worker_thread(self):
         while not rospy.is_shutdown():
             self.log("Background thread performing check loop ...")
             self._checker_worker()
+            with self._lock:
+                flag = self._results.am_i_offline()
+            self.log("Am I offline: %s" % flag)
             self.log("Background thread sleeping ...")
             for interval in range(0, self.check_every_seconds_delay):
                 if rospy.is_shutdown():
+                    self.log("Shutdown received, thread finishing ...")
                     break
                 time.sleep(1)
         self.log("Thread finished.")
 
     def _checker_worker(self):
-        # loop over all check_types commands and acquire results
-        for check_type, cmd in self.check_types.items():
-            proc = subprocess
+        # loop over all check_cmds commands and acquire results
+        results = {}
+        for cmd in self.check_cmds:
+            res = subprocess.call(cmd.split())
+            self.log("'%s' finished, result: %s" % (cmd, res))
+            results[cmd] = res
         with self._lock:
-            pass
             # just add results into the data structure
+            self._results.add(results)
 
     def service(self):
         with self._lock:
-            pass
-            # just acquire data from the data structure and emit
-            # call evaluate
+            status = self._results.am_i_offline()
+        self.log("Am I offline: %s" % status)
+        # TODO
+        # now emit data
 
     def __str__(self):
         return "%s: performing checks: '%s'" % (self.__class__.__name__,
-                                                self.check_types)
+                                                self.check_cmds)
 
 
 def main():
@@ -122,16 +139,13 @@ def main():
     check_every_seconds_delay = rospy.get_param("~check_every_seconds_delay")
     # this returns a string representation of a dictionary
     checks_str = rospy.get_param("~checks")
-    check_types = ast.literal_eval(checks_str)
-    rospy.loginfo("Configured checks to run: '%s'" % check_types)
+    check_cmds = ast.literal_eval(checks_str)
+    rospy.loginfo("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
     # TODO
-    # implement delay configuration
-    # TODO
-    # source activities - returns list of dictionaries
+    # configure the output offine message / offline activity trigger
     # use activity config configuration style here?
-    # like e.g. dns:host which to check ... possible to use this config format here?
     checker = Checker(check_every_seconds_delay=check_every_seconds_delay,
-                      check_types=check_types,
+                      check_cmds=check_cmds,
                       debug_topic_pub=debug_topic_pub)
     rospy.on_shutdown(checker.on_shutdown)
     rospy.loginfo("Started, spinning %s ..." % ROS_NODE_NAME)
