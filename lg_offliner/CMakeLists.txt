@@ -10,6 +10,13 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_python_setup()
 
+add_service_files(
+  FILES
+  Offline.srv
+)
+
+generate_messages()
+
 catkin_package(
   CATKIN_DEPENDS rospy std_msgs lg_common appctl message_runtime
 )

@@ -18,6 +18,7 @@ import pprint
 import rospy
 from std_msgs.msg import String
 
+from lg_offliner.srv import Offline
 
 ROS_NODE_NAME = "lg_offliner"
 LG_OFFLINER_DEBUG_TOPIC_DEFAULT = "debug"
@@ -85,6 +86,9 @@ class Checker(object):
         self._checker_thread.start()
         self._lock = threading.Lock()
         self._results = ConnectivityResults()  # lock access here
+        self.service = rospy.Service("%s/status" % ROS_NODE_NAME,
+                                     Offline,
+                                     self.get_offline_status)
         self.log("Worker thread started.")
 
     def on_shutdown(self):
@@ -116,16 +120,17 @@ class Checker(object):
             res = subprocess.call(cmd.split())
             self.log("'%s' finished, result: %s" % (cmd, res))
             results[cmd] = res
+            if rospy.is_shutdown():
+                return
         with self._lock:
             # just add results into the data structure
             self._results.add(results)
 
-    def service(self):
+    def get_offline_status(self, _):
         with self._lock:
             status = self._results.am_i_offline()
         self.log("Am I offline: %s" % status)
-        # TODO
-        # now emit data
+        return status
 
     def __str__(self):
         return "%s: performing checks: '%s'" % (self.__class__.__name__,
