@@ -8,6 +8,8 @@
                                      'ping -q -W 3 -c 3 8.8.8.8',
                                      'ping -q -W 3 -c 3 8.8.4.4',
                                      'nc -z -w 1 news.bbc.co.uk 80']"/>
+        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile;/director/scene:interactivespaces_msgs/GenericMessage-message.slug:value-online_scene"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline;/director/scene:interactivespaces_msgs/GenericMessage-message.slug:value-offline_scene"/>
     </node>
 
     <!-- Local rosbridge and rosapi. -->

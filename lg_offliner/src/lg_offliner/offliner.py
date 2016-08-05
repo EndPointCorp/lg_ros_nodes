@@ -16,12 +16,15 @@ import subprocess
 import pprint
 
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 
+from lg_common import helpers
 from lg_offliner.srv import Offline
+
 
 ROS_NODE_NAME = "lg_offliner"
 LG_OFFLINER_DEBUG_TOPIC_DEFAULT = "debug"
+LG_OFFLINER_OFFLINE_TOPIC_DEFAULT = "offline"
 
 
 class OfflinerException(Exception):
@@ -78,10 +81,13 @@ class Checker(object):
     def __init__(self,
                  check_every_seconds_delay=30,
                  check_cmds=None,
-                 debug_topic_pub=None):
+                 debug_topic_pub=None,
+                 offline_topic_pub=None):
         self.check_every_seconds_delay = check_every_seconds_delay
         self.check_cmds = check_cmds
+        self._current_offline_status = False
         self.debug_topic_pub = debug_topic_pub
+        self.offline_topic_pub = offline_topic_pub
         self._checker_thread = threading.Thread(target=self._checker_worker_thread)
         self._checker_thread.start()
         self._lock = threading.Lock()
@@ -102,9 +108,7 @@ class Checker(object):
         while not rospy.is_shutdown():
             self.log("Background thread performing check loop ...")
             self._checker_worker()
-            with self._lock:
-                flag = self._results.am_i_offline()
-            self.log("Am I offline: %s" % flag)
+            self.evaluate_current_status()
             self.log("Background thread sleeping ...")
             for interval in range(0, self.check_every_seconds_delay):
                 if rospy.is_shutdown():
@@ -132,6 +136,27 @@ class Checker(object):
         self.log("Am I offline: %s" % status)
         return status
 
+    def evaluate_current_status(self):
+        with self._lock:
+            flag = self._results.am_i_offline()
+        self.log("Am I offline: %s" % flag)
+        if flag != self._current_offline_status:
+            self._current_offline_status = flag
+            if self._current_offline_status:
+                self.on_becoming_offline()
+            else:
+                self.on_becoming_online()
+
+    def on_becoming_online(self):
+        self.offline_topic_pub.publish(False)
+        # TODO
+        # send the send_on_online message
+
+    def on_becoming_offline(self):
+        self.offline_topic_pub.publish(True)
+        # TODO
+        # send the send_on_offline message
+
     def __str__(self):
         return "%s: performing checks: '%s'" % (self.__class__.__name__,
                                                 self.check_cmds)
@@ -140,18 +165,25 @@ class Checker(object):
 def main():
     rospy.init_node(ROS_NODE_NAME, anonymous=True)
     debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_OFFLINER_DEBUG_TOPIC_DEFAULT)
+    offline_topic = "%s/%s" % (ROS_NODE_NAME, LG_OFFLINER_OFFLINE_TOPIC_DEFAULT)
     debug_topic_pub = rospy.Publisher(debug_topic, String, queue_size=10)
+    offline_topic_pub = rospy.Publisher(offline_topic, Bool, queue_size=10)
     check_every_seconds_delay = rospy.get_param("~check_every_seconds_delay")
-    # this returns a string representation of a dictionary
+    # this returns a string representation of a list
     checks_str = rospy.get_param("~checks")
     check_cmds = ast.literal_eval(checks_str)
     rospy.loginfo("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
     # TODO
-    # configure the output offine message / offline activity trigger
-    # use activity config configuration style here?
+    # need to extend lg_common.helpers.unpack_activity_sources to read single value properly
+    # currently it only supports min_value, max_value
+    #send_on_online = rospy.get_param("~send_on_online")
+    #rospy.loginfo(send_on_online)
+    #ss = helpers.unpack_activity_sources(send_on_online)
+    #rospy.loginfo(ss)
     checker = Checker(check_every_seconds_delay=check_every_seconds_delay,
                       check_cmds=check_cmds,
-                      debug_topic_pub=debug_topic_pub)
+                      debug_topic_pub=debug_topic_pub,
+                      offline_topic_pub=offline_topic_pub)
     rospy.on_shutdown(checker.on_shutdown)
     rospy.loginfo("Started, spinning %s ..." % ROS_NODE_NAME)
     rospy.spin()

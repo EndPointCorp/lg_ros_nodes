@@ -15,7 +15,11 @@ add_service_files(
   Offline.srv
 )
 
-generate_messages()
+generate_messages(
+  DEPENDENCIES
+  appctl
+  lg_common
+)
 
 catkin_package(
   CATKIN_DEPENDS rospy std_msgs lg_common appctl message_runtime
