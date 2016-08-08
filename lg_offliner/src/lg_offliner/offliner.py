@@ -82,12 +82,20 @@ class Checker(object):
                  check_every_seconds_delay=30,
                  check_cmds=None,
                  debug_topic_pub=None,
-                 offline_topic_pub=None):
+                 offline_topic_pub=None,
+                 send_on_online=None,
+                 send_on_offline=None):
         self.check_every_seconds_delay = check_every_seconds_delay
         self.check_cmds = check_cmds
         self._current_offline_status = False
         self.debug_topic_pub = debug_topic_pub
         self.offline_topic_pub = offline_topic_pub
+        # TODO
+        # build the instances of on_online and on_offline ros topic publishers
+        # build the messages (on_online, on_offline pre-built messages)
+        # send_on_online, send_on_offline are lists of dicts of of "activity" stuff
+        # self.on_online_pubs =
+        # self.on_offline_pubs =
         self._checker_thread = threading.Thread(target=self._checker_worker_thread)
         self._checker_thread.start()
         self._lock = threading.Lock()
@@ -150,12 +158,12 @@ class Checker(object):
     def on_becoming_online(self):
         self.offline_topic_pub.publish(False)
         # TODO
-        # send the send_on_online message
+        # send the pre-built send_on_online message
 
     def on_becoming_offline(self):
         self.offline_topic_pub.publish(True)
         # TODO
-        # send the send_on_offline message
+        # send the pre-built send_on_offline message
 
     def __str__(self):
         return "%s: performing checks: '%s'" % (self.__class__.__name__,
@@ -173,17 +181,20 @@ def main():
     checks_str = rospy.get_param("~checks")
     check_cmds = ast.literal_eval(checks_str)
     rospy.loginfo("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
-    # TODO
-    # need to extend lg_common.helpers.unpack_activity_sources to read single value properly
-    # currently it only supports min_value, max_value
-    #send_on_online = rospy.get_param("~send_on_online")
-    #rospy.loginfo(send_on_online)
-    #ss = helpers.unpack_activity_sources(send_on_online)
-    #rospy.loginfo(ss)
+    send_on_online_str = rospy.get_param("~send_on_online")
+    rospy.loginfo(send_on_online_str)
+    send_on_online = helpers.unpack_activity_sources(send_on_online_str)
+    rospy.loginfo("send_on_online: %s" % send_on_online)
+    send_on_offline_str = rospy.get_param("~send_on_offline")
+    rospy.loginfo(send_on_offline_str)
+    send_on_offline = helpers.unpack_activity_sources(send_on_offline_str)
+    rospy.loginfo("send_on_offline: %s" % send_on_offline)
     checker = Checker(check_every_seconds_delay=check_every_seconds_delay,
                       check_cmds=check_cmds,
                       debug_topic_pub=debug_topic_pub,
-                      offline_topic_pub=offline_topic_pub)
+                      offline_topic_pub=offline_topic_pub,
+                      send_on_online=send_on_online,
+                      send_on_offline=send_on_offline)
     rospy.on_shutdown(checker.on_shutdown)
     rospy.loginfo("Started, spinning %s ..." % ROS_NODE_NAME)
     rospy.spin()
