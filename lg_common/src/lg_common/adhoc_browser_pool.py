@@ -237,6 +237,10 @@ class AdhocBrowserPool():
 
         """
 
+        # Do we wait for all browsers instance ready or not
+        sync_windows = hasattr(data, 'scene_slug')
+                and hasattr(data, 'sync_windows') 
+                and data['sync_windows']
 
         incoming_browsers = self._unpack_incoming_browsers(data.browsers)
 
@@ -250,8 +254,15 @@ class AdhocBrowserPool():
             rospy.loginfo("Creating browser with id %s" % browser_pool_id)
             self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
-        # wait for readiness signal before hide old browsers
-        self.last_scene_slug = data.scene_slug
+        if sync_windows:
+            # wait for readiness signal before hide old browsers
+            self.last_scene_slug = data.scene_slug
+        else:
+            for browser_pool_id in incoming_browsers_ids:
+                self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
+
+            self._hide_browsers(current_browsers_ids)
+            self._destroy_browsers(current_browsers_ids)
 
         return True
 

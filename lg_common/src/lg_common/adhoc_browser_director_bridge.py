@@ -53,6 +53,11 @@ class AdhocBrowserDirectorBridge():
         adhoc_browsers = AdhocBrowsers()
         adhoc_browsers.scene_slug = slug
         adhoc_browsers.browsers = adhoc_browsers_list
+
+        sync = message.get('sync_windows', None)
+        if sync is not None:
+            adhoc_browsers.sync_windows = sync
+
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
         self.browser_pool_publisher.publish(adhoc_browsers)
@@ -77,6 +82,8 @@ class AdhocBrowserDirectorBridge():
         user_agent = browser_config.get('user_agent', None)
         browser_cmd_args = browser_config.get('cmd_args', None)
         extensions = browser_config.get('extensions', None)
+        enable_audio = browser_config.get('enable_audio', None)
+
         if binary:
             adhoc_browser.binary = binary
         if user_agent:
@@ -95,6 +102,8 @@ class AdhocBrowserDirectorBridge():
                 browser_extension.path = extension['path']
                 browser_extension.metadata = extension['metadata']
                 adhoc_browser.extensions.append(browser_extension)
+        if enable_audio:
+            adhoc_browser.enable_audio = enable_audio
 
         return adhoc_browser
 
