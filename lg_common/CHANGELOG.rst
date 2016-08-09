@@ -2,6 +2,17 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* unpack_activity_sources extensions
+  -corrected function's docstrings
+  -added unittets (none previously)
+  -implemented single value for values stratedy (needed for `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_),
+  including a unittest
+  -narrowed exception clauses
+  -touch: `#187 <https://github.com/EndPointCorp/lg_ros_nodes/issues/187>`_
+* Contributors: Zdenek Maxa
+
 1.3.21 (2016-08-03)
 -------------------
 * Add last_uscs service to lg_common
