@@ -36,6 +36,8 @@ play them back.
   - stop_playtour - stop any tours that may have been being played back
 * `~director_api_url` [string] - The url that the director should be found at.
   Default `os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')`
+* `~default_duration` [int] - Time that scenes with <= 0 duration should
+  take. Default `120`
 
 ### Subscribed topics
 

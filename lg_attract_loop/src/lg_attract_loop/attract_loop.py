@@ -36,7 +36,7 @@ class AttractLoop:
                  director_presentation_publisher, stop_action,
                  earth_query_publisher, earth_planet_publisher,
                  default_presentation=None, default_planet='earth',
-                 set_earth=MockFunc):
+                 set_earth=MockFunc, default_duration=120):
         """
         Class responsible for playing back presentations/scenes that are marked as "attract_loop"
         in Liquid Galaxy content management system.
@@ -54,6 +54,7 @@ class AttractLoop:
         self.play_loop = False
         self.scene_timer = 0
         self.set_earth = set_earth
+        self.default_duration = default_duration
         self.initialize_timer()
 
     def initialize_timer(self):
@@ -187,6 +188,8 @@ class AttractLoop:
         full_presentation = self._fetch_presentation_by_slug(lazy_presentation['slug'])
         full_scene = self._fetch_by_resource_uri(lazy_scene['resource_uri'])
         duration = full_scene['duration']
+        if duration <= 0:
+            duration = self.default_duration
         rospy.logdebug("Playing scene %s from presentation %s with duration %s" % (full_scene, full_presentation, duration))
 
         scene_msg = GenericMessage(type='json', message=json.dumps(full_scene))

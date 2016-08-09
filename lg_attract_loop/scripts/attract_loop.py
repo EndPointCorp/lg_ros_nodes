@@ -23,6 +23,7 @@ def main():
     stop_action = rospy.get_param('~stop_action', 'go_blank_and_switch_to_planet')
     default_planet = rospy.get_param('~default_planet', 'earth')
     default_presentation = rospy.get_param('~default_presentation', None)
+    default_duration = int(rospy.get_param('~default_duration', 120))
 
     # initialize Director publisher
     earth_query_publisher = rospy.Publisher('/earth/query/tour', String, queue_size=1)
@@ -54,7 +55,8 @@ def main():
                                earth_planet_publisher,
                                default_presentation=default_presentation,
                                default_planet=default_planet,
-                               set_earth=set_earth)
+                               set_earth=set_earth,
+                               default_duration=default_duration)
 
     # subscribe to state changes
     rospy.Subscriber(activity_topic, Bool, attract_loop._process_activity_state_change)
