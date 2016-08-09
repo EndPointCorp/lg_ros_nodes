@@ -2,8 +2,8 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.22 (2016-08-09)
+-------------------
 * fixed lg_activity test, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
 * Contributors: Zdenek Maxa
 

@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.22 (2016-08-09)
+-------------------
 * generating changelogs to satisfy jenkins lg_ros_nodes_deb_builds_master, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
 * Contributors: Zdenek Maxa
 
