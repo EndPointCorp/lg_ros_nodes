@@ -2,6 +2,9 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.22 (2016-08-09)
 -------------------
 * Merge branch 'master' into topic/113_offliner_ros_node
