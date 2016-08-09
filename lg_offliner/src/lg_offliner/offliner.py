@@ -54,14 +54,14 @@ class ConnectivityResults(object):
             _ = self.data.pop(0)
         self.data.append(item)
 
-    def am_i_offline(self, last_items_to_consider=2):
+    def am_i_offline(self, num_of_last_checks_consider=2):
         """
-        Return True, False based on last_items_to_consider evaluation.
+        Return True, False based on num_of_last_checks_consider evaluation.
         All checks (items of dictionaries) have the same weight.
         All results must be non-zero in order to pronounce offline status.
 
         """
-        for dict_check_results in self.data[-last_items_to_consider:]:
+        for dict_check_results in self.data[-num_of_last_checks_consider:]:
             for res in dict_check_results.values():
                 if res == 0:
                     return False

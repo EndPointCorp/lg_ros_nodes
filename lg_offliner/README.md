@@ -5,11 +5,6 @@ ROS software checking internet connection based on configurable network metrics.
 
 Spec / details EndPointCorp/lg_ros_nodes#113
 
-## Software requirements
-
-* network library 1 ...
-* network library 2 ...
-
 ### Nodes
 
 #### ros node lg_offliner
