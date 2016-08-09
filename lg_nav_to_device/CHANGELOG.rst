@@ -4,6 +4,8 @@ Changelog for package lg_nav_to_device
 
 Forthcoming
 -----------
+* generating changelogs to satisfy jenkins lg_ros_nodes_deb_builds_master, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* Contributors: Zdenek Maxa
 
 1.3.21 (2016-08-03)
 -------------------

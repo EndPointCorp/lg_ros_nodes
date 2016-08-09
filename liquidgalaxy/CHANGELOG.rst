@@ -2,6 +2,13 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' into topic/113_offliner_ros_node
+* Merge branch 'master' into topic/113_offliner_ros_node
+* initial, envelope ros node stuff for lg_offliner, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* Contributors: Zdenek Maxa
+
 1.3.21 (2016-08-03)
 -------------------
 

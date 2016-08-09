@@ -4,6 +4,17 @@ Changelog for package lg_offliner
 
 Forthcoming
 -----------
+* generating changelogs to satisfy jenkins lg_ros_nodes_deb_builds_master, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* generated empty changelog, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* minor, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* added on_online on_offline configurable messages, half-finished, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* custom configurable on online, on offline messages, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* implemented offline status service, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* check implemented, extended, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* intermediate commit, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* initial, envelope ros node stuff for lg_offliner, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* Contributors: Zdenek Maxa
+
 * generated empty changelog, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
 * minor, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
 * added on_online on_offline configurable messages, half-finished, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
