@@ -1,0 +1,5 @@
+<launch>
+    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+    <node name="rosapi" pkg="rosapi" type="rosapi_node"
+        clear_params="true" respawn="true" respawn_delay="3"/>
+</launch>

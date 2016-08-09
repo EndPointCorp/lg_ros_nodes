@@ -1,0 +1,43 @@
+<launch>
+    <!-- Common parameters -->
+    <arg name="broadcast_addr" default="10.42.42.255" />
+    <arg name="viewsync_master" default="false" />
+    <arg name="run_input_handlers" default="false" />
+
+    <arg name="spnav_path" default="/dev/input/spacenavigator" />
+
+    <param name="/viewport/pv_left_one" value="1080x1920+0+0" />
+    <param name="/viewport/pv_center" value="1080x1920+0+0" />
+    <param name="/viewport/pv_right_one" value="1080x1920+0+0" />
+
+
+    <group if="$(arg viewsync_master)">
+        <node name="sv_server" pkg="lg_sv" type="server.py" clear_params="true" >
+            <param name="server_type" value="streetview" />
+        </node>
+
+        <!-- Development static file server. -->
+        <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+
+    </group>
+
+    <roup if="$(arg run_input_handlers)">
+        <!-- Device drivers. -->
+        <node name="spacenav" pkg="spacenav_node" type="spacenav_node" clear_params="true" />
+    </group>
+
+    <!-- StreetView -->
+    <node name="sv_launcher_left_one" pkg="lg_sv" type="launcher.py" clear_params="true">
+      <param name="viewport" value="pv_left_one" />
+      <param name="yaw_offset" value="-1" />
+    </node>
+    <node name="sv_launcher_center" pkg="lg_sv" type="launcher.py" clear_params="true">
+      <param name="viewport" value="pv_center" />
+      <param name="show_links" value="true" />
+    </node>
+    <node name="sv_launcher_right_one" pkg="lg_sv" type="launcher.py" clear_params="true">
+      <param name="viewport" value="pv_right_one" />
+      <param name="yaw_offset" value="1" />
+    </node>
+
+</launch>

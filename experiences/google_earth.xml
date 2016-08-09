@@ -1,0 +1,88 @@
+<launch>
+  <!-- Google Earth -->
+
+  <!-- triggering groups -->
+  <arg name="run_ge" default="true" />
+  <arg name="run_input_handlers" default="false" />
+
+  <arg name="viewsync_master" default="false" />
+
+  <!-- <arg name="viewport" default="center"/> -->
+
+  <!-- Google Earth -->
+  <arg name="ge_viewsync_broadcast_addr" default="10.42.42.255"/>
+  <arg name="ge_viewsync_hostname" default="10.42.42.255"/>
+  <arg name="ge_viewsync_port" default="42001"/>
+  <arg name="ge_flyto_speed" default="5"/>
+  <arg name="ge_custom_configs"/>
+  <arg name="ge_disk_cache_size" default="512" />
+  <arg name="ge_memory_cache_size" default="128" />
+  <arg name="ge_high_quality_terrain" default="true" />
+  <arg name="ge_horiz_fov" default="15" />
+  <arg name="ge_yaw_offset" default="0" />
+  <arg name="ge_show_google_logo" default="false" />
+  <arg name="ge_kml_sync_base" default="http://localhost:8765" />
+
+
+  <!-- input devices -->
+  <arg name="spacenav_path" default="/dev/input/spacenavigator" />
+
+  <!-- viewports -->
+  <arg name="viewport_center" default="1080x1920+0+0" />
+  <arg name="viewport_left_one" default="1080x1920+0+0" />
+  <arg name="viewport_right_one" default="1080x1920+0+0" />
+
+  <!-- argument -> param mapping -->
+  <param name="/viewport/center" value="$(arg viewport_center)" />
+  <param name="/viewport/left_one" value="$(arg viewport_left_one)" />
+  <param name="/viewport/right_one" value="$(arg viewport_right_one)" />
+
+  <!-- Device drivers. -->
+  <group if="$(arg run_input_handlers)" >
+      <node name="spacenav" pkg="spacenav_node" type="spacenav_node" clear_params="true" />
+  </group>
+
+  <group if="$(arg run_ge)">
+      <node name="earth_left_one" pkg="lg_earth" type="client" clear_params="true">
+        <param name="viewsync_recv" value="true" />
+        <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
+        <param name="yaw_offset" value="65" />
+        <param name="viewport" value="left_one" />
+        <param name="kml_sync_base" value="$(arg ge_kml_sync_base)"/>
+        <param name="kml_sync_slug" value="left_one"/>
+      </node>
+      <node name="earth_center" pkg="lg_earth" type="client" clear_params="true">
+        <param name="viewsync_send" value="true" />
+        <param name="spacenav_device" value="$(arg spacenav_path)" />
+        <param name="show_compass" value="true" />
+        <param name="viewport" value="center" />
+        <param name="kml_sync_base" value="$(arg ge_kml_sync_base)"/>
+        <param name="kml_sync_slug" value="center"/>
+      </node>
+      <node name="earth_right_one" pkg="lg_earth" type="client" clear_params="true">
+        <param name="viewsync_recv" value="true" />
+        <param name="viewsync_hostname" value="$(arg broadcast_addr)" />
+        <param name="yaw_offset" value="-65" />
+        <param name="viewport" value="right_one" />
+        <param name="kml_sync_base" value="$(arg ge_kml_sync_base)"/>
+        <param name="kml_sync_slug" value="right_one"/>
+      </node>
+  </group>
+
+  <!-- Google Earth viewsync relay. -->
+  <node name="viewsync_relay" pkg="lg_earth" type="viewsync_relay" clear_params="true">
+    <param name="repeat_host" value="$(arg broadcast_addr)" />
+  </node>
+
+
+  <group if="$(arg viewsync_master)">
+      <!-- Google earth query interface. -->
+      <node name="query_writer" pkg="lg_earth" type="query" clear_params="true" />
+      <!-- Google earth KMLSyncState -->
+      <node name="kmlsync_state" pkg="lg_earth" type="kmlsync_state" clear_params="true" />
+      <!-- Google earth KMLSync <-> KMLSyncState http proxy -->
+      <node name="kmlsync_proxy" pkg="lg_earth" type="kmlsync" clear_params="true" />
+
+  </group>
+
+</launch>
