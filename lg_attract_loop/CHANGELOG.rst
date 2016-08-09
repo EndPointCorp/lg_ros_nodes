@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.23 (2016-08-09)
+-------------------
 * attract_loop: default duration time for 0 length scenes
 * Contributors: Jacob Minshall
 
