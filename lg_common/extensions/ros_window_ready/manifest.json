@@ -6,7 +6,7 @@
     "description":    "Sends the message through ROS that application is ready",
 
     "background": {
-        "persistent": false,
+        "persistent": true,
         "scripts": [
             "eventemitter2.min.js",
             "roslib.min.js",

@@ -20,8 +20,8 @@ function sendMsg(ros_window_name) {
 function init(params) {
     if (!readyTopic) {
         // Rosbridge url
-        var rosUrl = (params['rosbridge_secure'] == 0 ? 'ws://' : 'wss://')
-        + (params['rosbridge_host'] || '42-b' ) + ':'
+        var rosUrl = (params['rosbridge_secure'] == 0 ? 'wss://' : 'ws://')
+        + (params['rosbridge_host'] || 'localhost' ) + ':'
         + (params['rosbridge_port'] || '9090');
 
         ros = new ROSLIB.Ros({

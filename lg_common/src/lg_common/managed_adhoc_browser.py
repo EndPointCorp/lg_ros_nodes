@@ -18,6 +18,9 @@ class ManagedAdhocBrowser(ManagedBrowser):
         self.url = url
         self.geometry = geometry
         self.log_level = log_level
+        self.user_agent = user_agent
+        self.binary = binary
+        self.command_line_args = command_line_args
 
         super(ManagedAdhocBrowser, self).__init__(
             slug=slug,

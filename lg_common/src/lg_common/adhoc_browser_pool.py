@@ -6,9 +6,11 @@ import re
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
+from lg_common.msg import BrowserExtension
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
 from lg_common.helpers import get_app_instances_ids
 from lg_common.helpers import url_compare
+from lg_common.helpers import browser_applicable_for_reuse
 from lg_common.srv import DirectorPoolQuery
 from managed_browser import DEFAULT_BINARY
 from urlparse import urlparse, parse_qs, parse_qsl
@@ -112,9 +114,17 @@ class AdhocBrowserPool():
                                   width=new_browser.geometry.width,
                                   height=new_browser.geometry.height)
 
-        extensions = [ self.extensions_root + extension.path for extension in new_browser.extensions ]
+        extensions = []
+        for extension in new_browser.extensions:
+            if extension.path:
+                extensions.append(extension.path)
+            else:
+                extensions.append(self.extensions_root + extension.name)
+
         command_line_args = [ cmd_arg.argument for cmd_arg in new_browser.command_line_args ]
+
         command_line_args = self._filter_command_line_args(command_line_args)
+
         if new_browser.binary:
             binary = new_browser.binary
         else:
@@ -132,9 +142,8 @@ class AdhocBrowserPool():
                                                 extensions=extensions,
                                                 command_line_args=command_line_args,
                                                 binary=binary,
-                                                url=new_url,
-                                                enable_audio=new_browser.enable_audio
-                                               )
+                                                url=new_url
+                                                )
 
         rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
         browser_to_create.set_state(ApplicationState.STARTED)
@@ -314,7 +323,7 @@ class AdhocBrowserPool():
             # scene and incoming scene instances
             self.last_scene_slug = data.scene_slug
 
-            preload_windows = hasattr(data, 'preload') and data['preload']
+            preload_windows = hasattr(data, 'preload') and data.preload
 
             incoming_browsers = self._unpack_incoming_browsers(data.browsers)
             incoming_browsers_ids = set(incoming_browsers.keys())  # set
@@ -350,10 +359,10 @@ class AdhocBrowserPool():
                 # if existing browser can not be updated by any of incoming browsers, the destroy it and create new browser
 
                 update = [] # Ids
-                create = [] # Browsers
+                create = [] # Ids
                 delete = [] # Ids
 
-                for incoming_browser in incoming_browsers:
+                for incoming_browser in incoming_browsers.values():
                     # check if there's a browser instance applicable for reuse
                     for browser in self.browsers.values():
                         if browser_applicable_for_reuse(browser, incoming_browser) and not browser.id in update:
@@ -363,17 +372,17 @@ class AdhocBrowserPool():
                             break
 
                     # if there are no applicable browsers in the pool - create one
-                    create.append(incoming_browser)
+                    create.append(incoming_browser.id)
 
                 # all browsers that could not be updated need to be deleted
                 delete = set(self.browsers.keys()) - set(update)
                 self._destroy_browsers(delete)
 
-                for browser_instance in create:
-                    self._create_browser(browser_instance.id, browser_instance)
+                for browser_id in create:
+                    self._create_browser(browser_id, incoming_browsers[browser_id])
 
-                for browser_instance in create:
-                    self.browsers[browser_instance.id].set_state(ApplicationState.VISIBLE)
+                for browser_id in create:
+                    self.browsers[browser_id].set_state(ApplicationState.VISIBLE)
 
             return True
 

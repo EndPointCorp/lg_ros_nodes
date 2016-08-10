@@ -1,0 +1,37 @@
+{
+  "description": "two browsers on center with preload - alternate urls",
+  "duration": 500,
+  "name": "center",
+  "resource_uri": "blargh",
+  "slug": "blarghalt",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": false
+      },
+      "assets": [
+        "http://yandex.ru"
+      ],
+      "height": 400,
+      "presentation_viewport": "center",
+      "width": 800,
+      "x_coord": 100,
+      "y_coord": 100
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": false
+      },
+      "assets": [
+        "https://www.co.jp"
+      ],
+      "height": 400,
+      "presentation_viewport": "center",
+      "width": 800,
+      "x_coord": 100,
+      "y_coord": 900
+    }
+  ]
+}

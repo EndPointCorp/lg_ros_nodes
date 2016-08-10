@@ -235,14 +235,16 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
             asset_object['on_finish'] = 'nothing'
 
             activity_config = window.get('activity_config', {})
-            if activity_config:
-                on_finish = activity_config.get('onFinish', None)
-                google_chrome = activity_config.get('google_chrome', None)
 
+            if activity_config:
+                asset_object['activity_config'] = window['activity_config']
+                # TODO(wz):
+                # - this needs to go away - all attribs should be
+                #  kept under activity_config
+                # - onFinish should be changed to on_finish on ros_cms side
+                on_finish = activity_config.get('onFinish', None)
                 if on_finish:
                     asset_object['on_finish'] = on_finish
-                if google_chrome:
-                    asset_object['google_chrome'] = google_chrome
 
             assets.append(asset_object)
         else:
@@ -817,6 +819,9 @@ def x_available_or_raise(timeout):
 
 def browser_applicable_for_reuse(current_browser, future_browser):
     """
+    type current_browser: ManagedAdhocBrowser
+    type future_browser: AdhocBrowser.msg
+
     Compares two browsers and returns bool telling whether
     one browser can be updated to the other.
     It can't be updated if there's a difference in:
@@ -825,8 +830,10 @@ def browser_applicable_for_reuse(current_browser, future_browser):
      - user agent
      - binary
     """
+    future_browser_extensions = [ ext.name for ext in future_browser.extensions ]
+    future_browser_cmd_args = [ arg.argument for arg in future_browser.command_line_args ]
+
     return current_browser.user_agent == future_browser.user_agent and\
         current_browser.binary == future_browser.binary and\
-        current_browser.extensions == future_browser.extensions and\
-        current_browser.enable_audio == future_browser.enable_audio and\
-        current_browser.command_line_args == future_browser.command_line_args
+        current_browser.extensions == future_browser_extensions and\
+        current_browser.command_line_args == future_browser_cmd_args

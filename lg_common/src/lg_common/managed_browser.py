@@ -3,6 +3,7 @@ import rospy
 import socket
 import shutil
 import shlex
+import os
 
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.tcp_relay import TCPRelay
@@ -70,7 +71,12 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--crash-dumps-dir={}/crashes'.format(self.tmp_dir))
 
         if extensions:
-            cmd.append('--load-extension={}'.format(','.join(extensions)))
+            for extension in extensions:
+                if os.path.isdir(extension):
+                    # load an extension from a path
+                    cmd.append('--load-extension={}'.format(extension))
+                else:
+                    rospy.logwarn("Could not load extension from %s because dir does not exist" % extension)
 
         cmd.extend(DEFAULT_ARGS)
         if command_line_args != []:
