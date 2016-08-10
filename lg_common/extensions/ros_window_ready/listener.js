@@ -1,5 +1,6 @@
 var readyTopic = null;
 var ros = null;
+var sentId = null;
 
 function getQueryParams(qs) {
     qs = qs.split('+').join(' ');
@@ -39,11 +40,45 @@ function init(params) {
     }
 }
 
+function parseUrl(url) {
+    var parser = document.createElement('a');
+    parser.href = url;
+    return getQueryParams(parser.search);
+}
+
+// Listen for DOM_LOADED message from host message
+// if page was loaded before extension.
+chrome.runtime.onMessage.addListener(
+    function(msg, sender, sendResponse) {
+        if (msg.type == "DOM_LOADED") {
+            // Active page loaded
+            chrome.tabs.query({active: true}, function(tabs) {
+                if (tabs.length == 0) {
+                    return;
+                }
+                var params = parseUrl(tabs[0].url);
+                var instanceName = params['ros_instance_name'];
+                if (instanceName !== undefined) {
+                    // reentrant safe
+                    init(params);
+                    // this path only for default dom loaded event
+                    if(!params['use_app_event']) {
+                        // Do not sent msg, if it's already been sent
+                        if (sentId != instanceName) {
+                            sendMsg(instanceName);
+                            sentId = instanceName;
+                        }
+                        sendResponse({ack: sentId == instanceName});
+                    }
+                }
+            });
+        }
+    }
+);
+
 chrome.webNavigation.onDOMContentLoaded.addListener(function(data) {
     if (data && data.url && data.url.indexOf('?')) {
-        var parser = document.createElement('a');
-        parser.href = data.url;
-        var params = getQueryParams(parser.search);
+        var params = parseUrl(data.url);
         var instanceName = params['ros_instance_name'];
         if (instanceName !== undefined) {
             init(params);
@@ -51,7 +86,10 @@ chrome.webNavigation.onDOMContentLoaded.addListener(function(data) {
                 chrome.runtime.onMessage.addListener(
                     function(msg, sender, sendResponse) {
                         if (msg.type == "DIRECTOR_WINDOW_READY") {
-                            sendMsg(instanceName);
+                            if (sentId != instanceName) {
+                                sendMsg(instanceName);
+                                sentId = instanceName;
+                            }
                             sendResponse({ack: true});
                         }
                     }
