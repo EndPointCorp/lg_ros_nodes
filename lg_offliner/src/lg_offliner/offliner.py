@@ -77,25 +77,25 @@ class Checker(object):
         whether we are internet online or offline.
     debug_topic_pub - ROS debug topic to publish info about current activities
 
+    online_pubs, offline_pubs - both are lists of dictionaries, the dictionaries
+        contain ROS publisher and a predefined (from configuration) messages
+        to be send via the publisher on become online and offline status.
+
     """
     def __init__(self,
                  check_every_seconds_delay=30,
                  check_cmds=None,
                  debug_topic_pub=None,
                  offline_topic_pub=None,
-                 send_on_online=None,
-                 send_on_offline=None):
+                 online_pubs=None,
+                 offline_pubs=None):
         self.check_every_seconds_delay = check_every_seconds_delay
         self.check_cmds = check_cmds
         self._current_offline_status = False
         self.debug_topic_pub = debug_topic_pub
         self.offline_topic_pub = offline_topic_pub
-        # TODO
-        # build the instances of on_online and on_offline ros topic publishers
-        # build the messages (on_online, on_offline pre-built messages)
-        # send_on_online, send_on_offline are lists of dicts of of "activity" stuff
-        # self.on_online_pubs =
-        # self.on_offline_pubs =
+        self.online_pubs = online_pubs
+        self.offline_pubs = offline_pubs
         self._checker_thread = threading.Thread(target=self._checker_worker_thread)
         self._checker_thread.start()
         self._lock = threading.Lock()
@@ -139,6 +139,10 @@ class Checker(object):
             self._results.add(results)
 
     def get_offline_status(self, _):
+        """
+        ROS service method.
+
+        """
         with self._lock:
             status = self._results.am_i_offline()
         self.log("Am I offline: %s" % status)
@@ -157,25 +161,50 @@ class Checker(object):
 
     def on_becoming_online(self):
         self.offline_topic_pub.publish(False)
-        # TODO
-        # send the pre-built send_on_online message
+        for pub in self.offline_pubs:
+            pub["publisher"].publish(pub["message"])
 
     def on_becoming_offline(self):
         self.offline_topic_pub.publish(True)
-        # TODO
-        # send the pre-built send_on_offline message
+        for pub in self.online_pubs:
+            pub["publisher"].publish(pub["message"])
 
     def __str__(self):
         return "%s: performing checks: '%s'" % (self.__class__.__name__,
                                                 self.check_cmds)
 
 
+def process_custom_publishers(onliners=None, offliners=None):
+    """
+    The input is a list of dicts. Each dict as returned by unpack_activity_sources
+    The output is a dictionary consisting of ROS publisher and predefined message instance.
+
+    Note:
+        messages with subslots (such as GenericMessage message.slug) will need more care
+        in processing in this function.
+
+    """
+    def process(senders):
+        pub_senders = []
+        for sender in senders:
+            msg_type = helpers.get_message_type_from_string(sender["message_type"])
+            publisher = rospy.Publisher(sender["topic"], msg_type, queue_size=1)
+            msg = msg_type()
+            setattr(msg, sender["slot"], sender["value"])
+            pub_senders.append(dict(publisher=publisher, message=msg))
+        return pub_senders
+
+    online_pubs = process(onliners)
+    offline_pubs = process(offliners)
+    return online_pubs, offline_pubs
+
+
 def main():
     rospy.init_node(ROS_NODE_NAME, anonymous=True)
     debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_OFFLINER_DEBUG_TOPIC_DEFAULT)
     offline_topic = "%s/%s" % (ROS_NODE_NAME, LG_OFFLINER_OFFLINE_TOPIC_DEFAULT)
-    debug_topic_pub = rospy.Publisher(debug_topic, String, queue_size=10)
-    offline_topic_pub = rospy.Publisher(offline_topic, Bool, queue_size=10)
+    debug_topic_pub = rospy.Publisher(debug_topic, String, queue_size=1)
+    offline_topic_pub = rospy.Publisher(offline_topic, Bool, queue_size=1)
     check_every_seconds_delay = rospy.get_param("~check_every_seconds_delay")
     # this returns a string representation of a list
     checks_str = rospy.get_param("~checks")
@@ -189,12 +218,14 @@ def main():
     rospy.loginfo(send_on_offline_str)
     send_on_offline = helpers.unpack_activity_sources(send_on_offline_str)
     rospy.loginfo("send_on_offline: %s" % send_on_offline)
+    online_pubs, offline_pubs = process_custom_publishers(onliners=send_on_online,
+                                                          offliners=send_on_offline)
     checker = Checker(check_every_seconds_delay=check_every_seconds_delay,
                       check_cmds=check_cmds,
                       debug_topic_pub=debug_topic_pub,
                       offline_topic_pub=offline_topic_pub,
-                      send_on_online=send_on_online,
-                      send_on_offline=send_on_offline)
+                      online_pubs=online_pubs,
+                      offline_pubs=offline_pubs)
     rospy.on_shutdown(checker.on_shutdown)
     rospy.loginfo("Started, spinning %s ..." % ROS_NODE_NAME)
     rospy.spin()
