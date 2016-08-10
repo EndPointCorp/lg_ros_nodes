@@ -14,6 +14,7 @@ import rostopic
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
 from lg_common.helpers import load_director_message
+from lg_common.helpers import unpack_activity_sources
 
 
 DIRECTOR_MESSAGE_ACTIVITY_CONFIG_NOT_PRESENT = """
@@ -200,6 +201,107 @@ class TestHelpers(object):
             self.msg.message = m
             r = extract_first_asset_from_director_message(self.msg, "video", "center")
             assert r[0]["on_finish"] == on_finish
+
+    def test_unpack_activity_sources(self):
+        source_string = "/touchscreen/touch:interactivespaces_msgs/GenericMessage:activity"
+        result = [{"topic": "/touchscreen/touch",
+                   "message_type": "interactivespaces_msgs/GenericMessage",
+                   "strategy": "activity",
+                   "slot": None,
+                   "value_min": None,
+                   "value_max": None,
+                   "value": None}]
+        assert result == unpack_activity_sources(source_string)
+
+        source_string = "/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5"
+        result = [{"topic": "/proximity_sensor/distance",
+                   "message_type": "sensor_msgs/Range",
+                   "strategy": "value",
+                   "slot": "range",
+                   "value_min": "0",
+                   "value_max": "2.5",
+                   "value": None}]
+        assert result == unpack_activity_sources(source_string)
+
+        source_string = "/proximity_sensor/distance:sensor_msgs/Range-range:average"
+        result = [{"topic": "/proximity_sensor/distance",
+                   "message_type": "sensor_msgs/Range",
+                   "strategy": "average",
+                   "slot": "range",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": None}]
+        assert result == unpack_activity_sources(source_string)
+
+        source_string = ("/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5;"
+                         "/touchscreen/touch:interactivespaces_msgs/GenericMessage:delta")
+        result = [{"topic": "/proximity_sensor/distance",
+                   "message_type": "sensor_msgs/Range",
+                   "strategy": "value",
+                   "slot": "range",
+                   "value_min": "0",
+                   "value_max": "2.5",
+                   "value": None},
+                  {"topic": "/touchscreen/touch",
+                   "message_type": "interactivespaces_msgs/GenericMessage",
+                   "slot": None,
+                   "strategy": "delta",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": None}]
+        assert result == unpack_activity_sources(source_string)
+
+        source_string = ("/earth/query/search:std_msgs/String-data:default;"
+                         "/lg_replay/touchscreen:interactivespaces_msgs/GenericMessage-message:count;"
+                         "/spacenav/twist:geometry_msgs/Twist-angular:count_nonzero;"
+                         "/proximity/distance:sensor_msgs/Range-range:average")
+        result = [{"topic": "/earth/query/search",
+                   "message_type": "std_msgs/String",
+                   "strategy": "default",
+                   "slot": "data",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": None},
+                  {"topic": "/lg_replay/touchscreen",
+                   "message_type": "interactivespaces_msgs/GenericMessage",
+                   "slot": "message",
+                   "strategy": "count",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": None},
+                  {"topic": "/spacenav/twist",
+                   "message_type": "geometry_msgs/Twist",
+                   "slot": "angular",
+                   "strategy": "count_nonzero",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": None},
+                  {"topic": "/proximity/distance",
+                   "message_type": "sensor_msgs/Range",
+                   "slot": "range",
+                   "strategy": "average",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": None}]
+        assert result == unpack_activity_sources(source_string)
+
+        source_string = ("/appctl/mode:appctl/Mode-mode:value-tactile;"
+                         "/director/scene:interactivespaces_msgs/GenericMessage-message.slug:value-online_scene")
+        result = [{"topic": "/appctl/mode",
+                   "message_type": "appctl/Mode",
+                   "slot": "mode",
+                   "strategy": "value",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": "tactile"},
+                  {"topic": "/director/scene",
+                   "message_type": "interactivespaces_msgs/GenericMessage",
+                   "slot": "message.slug",
+                   "strategy": "value",
+                   "value_min": None,
+                   "value_max": None,
+                   "value": "online_scene"}]
+        assert result == unpack_activity_sources(source_string)
 
 if __name__ == "__main__":
     test_pkg = "lg_common"

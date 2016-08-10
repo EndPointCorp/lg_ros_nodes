@@ -2,6 +2,82 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.23 (2016-08-09)
+-------------------
+
+1.3.22 (2016-08-09)
+-------------------
+* generating changelogs to satisfy jenkins lg_ros_nodes_deb_builds_master, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* unpack_activity_sources extensions
+  -corrected function's docstrings
+  -added unittets (none previously)
+  -implemented single value for values stratedy (needed for `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_),
+  including a unittest
+  -narrowed exception clauses
+  -touch: `#187 <https://github.com/EndPointCorp/lg_ros_nodes/issues/187>`_
+* Contributors: Zdenek Maxa
+
+* unpack_activity_sources extensions
+  -corrected function's docstrings
+  -added unittets (none previously)
+  -implemented single value for values stratedy (needed for `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_),
+  including a unittest
+  -narrowed exception clauses
+  -touch: `#187 <https://github.com/EndPointCorp/lg_ros_nodes/issues/187>`_
+* Contributors: Zdenek Maxa
+
+1.3.21 (2016-08-03)
+-------------------
+* Add last_uscs service to lg_common
+* Contributors: Szymon Lipiński
+
+1.3.20 (2016-07-29)
+-------------------
+
+1.3.19 (2016-07-29)
+-------------------
+* Fix whitespace in managed_browser.py
+* Contributors: Matt Vollrath
+
+1.3.18 (2016-07-28)
+-------------------
+* Ad hoc browser persistence round deux
+* Contributors: Matt Vollrath
+
+1.3.17 (2016-07-27)
+-------------------
+* Revert "Persist ad hoc browser assets across scenes"
+  This was breaking ad hoc browsers.
+* Contributors: Matt Vollrath
+
+1.3.16 (2016-07-26)
+-------------------
+
+1.3.15 (2016-07-26)
+-------------------
+* Clear browser tmpdir on shutdown
+* Persist ad hoc browser assets across scenes
+  URL's are now encoded in consistent order.
+* Contributors: Matt Vollrath
+
+1.3.14 (2016-07-25)
+-------------------
+* Fix ManagedBrowser race conditions
+  * Add post_init() for ManagedApplication
+  * Add add_respawn_handler and add_state_handler to ManagedApplication
+  * Bring back set_state() locking
+  * Lock AdhocBrowserPool message handling
+  * Start and stop the Chrome debug relay inside locked set_state()
+  * Remove dangerous code from ManagedApplication _handle_respawn()
+* Contributors: Matt Vollrath
+
+1.3.13 (2016-07-21)
+-------------------
+* remove lock from managed application set state
+* reclassify loginfo as logdebug
+* re-classify logerr to loginfo
+* Contributors: Jacob Minshall, Wojciech Zieniewicz
+
 1.3.12 (2016-07-19)
 -------------------
 * fix syntax error

@@ -7,8 +7,8 @@ from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
-from lg_common.helpers import get_app_instances_to_manage
 from lg_common.helpers import get_app_instances_ids
+from lg_common.helpers import url_compare
 from lg_common.srv import DirectorPoolQuery
 from managed_browser import DEFAULT_BINARY
 from urlparse import urlparse, parse_qs, parse_qsl
@@ -31,7 +31,7 @@ class AdhocBrowserPool():
         self.browsers ivar keeps a dict of (id: ManagedAdhocBrowser) per viewport.
         """
         self.extensions_root = "/opt/google/chrome/extensions/"
-        self.lock = threading.RLock()
+        self.lock = threading.Lock()
         self.viewport_name = viewport_name
         self._init_service()
         self.browsers = {}
@@ -42,8 +42,9 @@ class AdhocBrowserPool():
         """
         Callback for service requests. We always return self.browsers
         """
-        rospy.logdebug("POOL %s: Received Query service" % self.viewport_name)
-        return str(self.browsers)
+        with self.lock:
+            rospy.loginfo("POOL %s: Received Query service" % self.viewport_name)
+            return str(self.browsers)
 
     def _init_service(self):
         service = rospy.Service('/browser_service/{}'.format(self.viewport_name),
@@ -56,6 +57,24 @@ class AdhocBrowserPool():
         Return dict(id: AdhocBrowser) with all AdhocBrowsers with ids as keys
         """
         return {b.id: b for b in browsers}
+
+    def _partition_existing_browser_ids(self, incoming_browsers):
+        """
+        Determine which incoming browsers are already being shown.
+        """
+        # Strip the downstream ros_instance_name query addition.
+        existing_urls = [re.sub(r'[&?]ros_instance_name=[^&]*', '', b.url) for b in self.browsers.values()]
+
+        def browser_exists(browser):
+            for url in existing_urls:
+                if url_compare(url, browser.url):
+                    return True
+            return False
+
+        existing_ids = [b.id for b in incoming_browsers if browser_exists(b)]
+        fresh_ids = [b.id for b in incoming_browsers if not browser_exists(b)]
+
+        return existing_ids, fresh_ids
 
     def _remove_browser(self, browser_pool_id):
         """
@@ -183,6 +202,54 @@ class AdhocBrowserPool():
             self._hide_browsers(set(self.browsers.keys()))
             self._destroy_browsers(set(self.browsers.keys()))
 
+    def _update_browser_url(self, browser_pool_id, current_browser, future_url):
+        try:
+            rospy.logdebug("Updating URL of browser id %s from %s to %s" % (browser_pool_id, current_browser.url, future_url))
+            future_url = self._add_ros_instance_url_param(future_url, self._get_ros_instance_id(browser_pool_id))
+            current_browser.update_url(future_url)
+            return True
+        except Exception, e:
+            rospy.logerr("Could not update url of browser id %s because: %s" % (browser_pool_id, e))
+            return False
+
+    def _update_browser_geometry(self, browser_pool_id, current_browser, future_geometry):
+        try:
+            current_browser.update_geometry(future_geometry)
+            rospy.logdebug("Updated geometry of browser id %s" % browser_pool_id)
+            return True
+        except Exception, e:
+            rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
+            return False
+
+    def _update_browser(self, browser_pool_id, updated_browser):
+        """
+        Update existing browser instance
+        Accept existing browser_pool_id and incoming browser
+        """
+        rospy.logdebug("POOL %s: state during updating: %s" % (self.viewport_name, self.browsers))
+        current_browser = self.browsers[browser_pool_id]
+        rospy.logdebug("Updating browser %s to it's new state: %s" % (current_browser, updated_browser))
+        future_url = updated_browser.url
+        future_geometry = WindowGeometry(x=updated_browser.geometry.x,
+                                         y=updated_browser.geometry.y,
+                                         width=updated_browser.geometry.width,
+                                         height=updated_browser.geometry.height)
+
+        current_geometry = current_browser.geometry
+
+        if current_browser.url != future_url:
+            self._update_browser_url(browser_pool_id, current_browser, future_url)
+        else:
+            rospy.logdebug("POOL %s: not updating url of browser %s (old url=%s, new url=%s)" %
+                           (self.viewport_name, current_browser, current_browser.url, future_url))
+
+        geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
+
+        if geom_success:
+            rospy.logdebug("Successfully updated browser(%s) geometry from %s to %s" % (browser_pool_id, current_geometry, future_geometry))
+        else:
+            rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
+
     def _add_ros_instance_url_param(self, url, ros_instance_name):
         """
         Accepts strings of url and ros_instance_name
@@ -238,32 +305,76 @@ class AdhocBrowserPool():
         """
 
         # Do we wait for all browsers instance ready or not
-        sync_windows = hasattr(data, 'scene_slug')
-                and hasattr(data, 'sync_windows') 
-                and data['sync_windows']
 
-        incoming_browsers = self._unpack_incoming_browsers(data.browsers)
 
-        incoming_browsers_ids = set(incoming_browsers.keys())  # set
-        current_browsers_ids = get_app_instances_ids(self.browsers)  # set
-
-        # create new browsers
-        rospy.loginfo("POOL %s: browsers to create = %s" % (self.viewport_name, incoming_browsers_ids))
-
-        for browser_pool_id in incoming_browsers_ids:
-            rospy.loginfo("Creating browser with id %s" % browser_pool_id)
-            self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
-
-        if sync_windows:
-            # wait for readiness signal before hide old browsers
+        with self.lock:
+            # keep the last scene slug for case when
+            # someone decides to send a message with preload set to true
+            # to be able to differentiate between previous
+            # scene and incoming scene instances
             self.last_scene_slug = data.scene_slug
-        else:
-            for browser_pool_id in incoming_browsers_ids:
-                self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
 
-            self._hide_browsers(current_browsers_ids)
-            self._destroy_browsers(current_browsers_ids)
+            preload_windows = hasattr(data, 'preload') and data['preload']
 
-        return True
+            incoming_browsers = self._unpack_incoming_browsers(data.browsers)
+            incoming_browsers_ids = set(incoming_browsers.keys())  # set
+            current_browsers_ids = get_app_instances_ids(self.browsers)  # set
+            existing_ids, fresh_ids = self._partition_existing_browser_ids(incoming_browsers.values())
+            rospy.loginfo('existing ids: {}'.format(existing_ids))
+            rospy.loginfo('current ids: {}'.format(current_browsers_ids))
+            rospy.loginfo('fresh ids: {}'.format(fresh_ids))
+            rospy.loginfo('incoming browers ids: {}'.format(incoming_browsers_ids))
+
+            # if preload_windows:
+            #  - create browsers in background
+            #  - show them after they get ready
+            # if not preload_windows:
+            #  - update browsers that are available
+            #  - create browsers that are missing
+
+            if preload_windows:
+                # create browsers in background
+                # dont show them - this is handled by an external ROS node
+                # that executes `unhide_browsers` for us
+                for browser_pool_id in incoming_browsers_ids:
+                    rospy.loginfo("POOL %s: preloading browser = %s" % (self.viewport_name, browser_pool_id))
+                    # create browsers only - unhiding wil be handled externally
+                    self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
+            else:
+                # update browsers taht are available in the pool
+                # create browsers that are missing
+                # remove redundant browsers
+
+                # iterate over incoming browsers
+                # if existing browser can be updated (extensions and cmd args are identical) then update it
+                # if existing browser can not be updated by any of incoming browsers, the destroy it and create new browser
+
+                update = [] # Ids
+                create = [] # Browsers
+                delete = [] # Ids
+
+                for incoming_browser in incoming_browsers:
+                    # check if there's a browser instance applicable for reuse
+                    for browser in self.browsers.values():
+                        if browser_applicable_for_reuse(browser, incoming_browser) and not browser.id in update:
+                            # update browser URL and geometry
+                            update.append(browser.id)
+                            self._update_browser(browser.id, incoming_browser)
+                            break
+
+                    # if there are no applicable browsers in the pool - create one
+                    create.append(incoming_browser)
+
+                # all browsers that could not be updated need to be deleted
+                delete = set(self.browsers.keys()) - set(update)
+                self._destroy_browsers(delete)
+
+                for browser_instance in create:
+                    self._create_browser(browser_instance.id, browser_instance)
+
+                for browser_instance in create:
+                    self.browsers[browser_instance.id].set_state(ApplicationState.VISIBLE)
+
+            return True
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

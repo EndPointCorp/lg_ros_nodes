@@ -103,7 +103,7 @@ class ManagedBrowser(ManagedApplication):
 
         # finishing command line and piping output to logger
         cmd.extend(shlex.split('2>&1'))
-        rospy.logerr("Starting cmd: %s" % cmd)
+        rospy.loginfo("Starting cmd: %s" % cmd)
 
         # Different versions of Chrome use different window instances.
         # This should match 'Google-chrome' as well as 'google-chrome'
@@ -112,7 +112,16 @@ class ManagedBrowser(ManagedApplication):
 
         rospy.loginfo("Command {}".format(cmd))
 
+        # clean up after thyself
+        rospy.on_shutdown(self.clear_tmp_dir)
+
         super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
+
+    def post_init(self):
+        super(ManagedBrowser, self).post_init()
+
+        self.add_respawn_handler(self.clear_tmp_dir)
+        self.add_state_handler(self.control_relay)
 
     def clear_tmp_dir(self):
         """
@@ -147,16 +156,7 @@ class ManagedBrowser(ManagedApplication):
         conn.write_message(msg)
         conn.close()
 
-    def _handle_respawn(self):
-        """
-        Clear tmp_dir upon respawn.
-        """
-        self.clear_tmp_dir()
-        super(ManagedBrowser, self)._handle_respawn()
-
-    def set_state(self, state):
-        super(ManagedBrowser, self).set_state(state)
-
+    def control_relay(self, state):
         if state == ApplicationState.STOPPED:
             self.relay.stop()
 

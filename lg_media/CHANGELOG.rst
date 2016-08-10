@@ -2,6 +2,55 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.23 (2016-08-09)
+-------------------
+
+1.3.22 (2016-08-09)
+-------------------
+
+1.3.21 (2016-08-03)
+-------------------
+
+1.3.20 (2016-07-29)
+-------------------
+* Fix MPlayer looping
+  The -loop needs to come after the url.  Obviously!
+  Also, go back to specifying full geometry because it works.
+* Contributors: Matt Vollrath
+
+1.3.19 (2016-07-29)
+-------------------
+* Normalize MPlayer window positioning
+* Contributors: Matt Vollrath
+
+1.3.18 (2016-07-28)
+-------------------
+
+1.3.17 (2016-07-27)
+-------------------
+
+1.3.16 (2016-07-26)
+-------------------
+
+1.3.15 (2016-07-26)
+-------------------
+* Use mplayer -loop arg when appropriate
+* Clear mplayer FIFO's on shutdown
+* Mplayer pool asset persistence across scenes
+* Lock mplayer pool public methods
+  Prevent race conditions in message handlers.
+* Remove shebang from mplayer_pool module
+* Adjust mplayer default args
+  * Prefer ipv4 to prevent observed ipv6 lookup errors
+  * Increase cache size to support high bitrate video streaming
+* Contributors: Matt Vollrath
+
+1.3.14 (2016-07-25)
+-------------------
+
+1.3.13 (2016-07-21)
+-------------------
+
 1.3.12 (2016-07-19)
 -------------------
 

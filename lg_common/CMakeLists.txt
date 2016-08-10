@@ -11,6 +11,7 @@ catkin_python_setup()
 add_service_files(
   FILES
   DirectorPoolQuery.srv
+  USCSMessage.srv
 )
 
 add_message_files(
@@ -36,6 +37,7 @@ catkin_install_python(PROGRAMS
   scripts/adhoc_browser.py
   scripts/state_setter.py
   scripts/touchscreen.py
+  scripts/last_uscs_message.py
   scripts/dev_webserver
   scripts/static_browser
   scripts/adhoc_browser
@@ -45,6 +47,7 @@ catkin_install_python(PROGRAMS
   scripts/command_handler_node
   scripts/readiness.py
   scripts/readiness
+  scripts/last_uscs_message
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

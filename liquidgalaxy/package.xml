@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>liquidgalaxy</name>
-  <version>1.3.12</version>
+  <version>1.3.23</version>
   <description>Liquid Galaxy metapackage</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -22,6 +22,7 @@
   <run_depend>lg_replay</run_depend>
   <run_depend>spacenav_wrapper</run_depend>
   <run_depend>lg_stats</run_depend>
+  <run_depend>lg_offliner</run_depend>
 
   <export>
     <metapackage/>

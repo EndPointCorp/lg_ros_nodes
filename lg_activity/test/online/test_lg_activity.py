@@ -45,6 +45,7 @@ class SpaceNavMockSource:
         "message_type": "geometry_msgs/Twist",
         "strategy": "delta",
         "slot": None,
+        "value": None,
         "value_min": None,
         "value_max": None
     }

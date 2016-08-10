@@ -1,0 +1,22 @@
+{
+  "description": "weiureijrwogj",
+  "duration": 300,
+  "name": "osm2 center one browser thin",
+  "resource_uri": "/director_api/scene/02fc5c94-1e7f-4f11-a733-fd994c2e893d__osm2-center-one-browser-thin/",
+  "slug": "02fc5c94-1e7f-4f11-a733-fd994c2e893d__osm2-center-one-browser-thin",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {},
+      "assets": [
+        "http://osm.me/window_redy_ros_callback/?timeout=2&rosbridge_secure=0&rosbridge_host=localhost&rosbridge_port=9090&color=yellow"
+      ],
+      "height": 1833,
+      "presentation_viewport": "center",
+      "width": 594,
+      "x_coord": 237,
+      "y_coord": 64
+    }
+  ]
+}
+

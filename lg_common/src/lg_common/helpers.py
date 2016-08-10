@@ -55,6 +55,43 @@ def add_url_params(url, **params):
     return urlparse.urlunparse(url_parts)
 
 
+def url_compare(a0, b0):
+    """
+    Compare two urls for equivalence. Order of query parameters is ignored.
+
+    Args:
+        a0 (str)
+        b0 (str)
+
+    Returns:
+        True if the urls are equivalent.
+    """
+    a = urlparse.urlparse(a0)
+    b = urlparse.urlparse(b0)
+
+    if a.scheme != b.scheme:
+        return False
+
+    if a.netloc != b.netloc:
+        return False
+
+    if a.path != b.path:
+        return False
+
+    if a.params != b.params:
+        return False
+
+    if a.fragment != b.fragment:
+        return False
+
+    qa = urlparse.parse_qs(a.query)
+    qb = urlparse.parse_qs(b.query)
+    if qa != qb:
+        return False
+
+    return True
+
+
 def write_log_to_file(message):
     """
     Write a log line to a file - don't use it in production!
@@ -86,6 +123,7 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
     Accepts two sets of app ids (current and new) and returns a list of instances
     that should be created, removed or updated on the basis of `manage_action` parameter
     """
+
     if manage_action == 'remove':
         instances_ids_to_remove = current_instances - incoming_instances
         return list(instances_ids_to_remove)
@@ -323,23 +361,27 @@ def message_is_nonzero(incoming_message):
 
 def unpack_activity_sources(sources_string):
     """
-    Unpacks ActivityTracker 'sources' param
+    Multi-purpose method, named after historically one of its first applications.
+    It unpacks sources configuration strings from roslaunch config files, from
+    ROS nodes definition.
 
     Sources string format:
 
-    <topic_name>:<message_type>-<slot[.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>]
+    <topic_name>:<message_type>-<slot[.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>|<value>]
 
     - topic_name: topic which ActivitySource will listen for incoming messages
     - message_type: type of message on the given topic
     - slot - for complex messages you may define one attribute of the message that
-    will be considered during checks. For nested attributes, delimit slots by dots.
-    - strategy - delta, value, activity, average and count. For "value" strategy you may define min/max values.
+        will be considered during checks. For nested attributes, delimit slots by dots.
+    - strategy - delta, value, activity, average and count. For "value" strategy you
+        may define min/max values or just a single value.
     It will make sense only when slot was defined.
 
     Strategies info:
      - delta means that activity is generated only if messages are different. Makes
-      sense with spacenav twist which emits 0,0,0 when no one's touching it
-     - value is used for value tresholding - generate activity only when value of slot met min/max constraints
+        sense with spacenav twist which emits 0,0,0 when no one's touching it
+     - value is used for value tresholding - generate activity only when value of slot met min/max constraints,
+        or just a single value.
      - activity - triggers activity on **every** message
      - average - not used to activity tracking - passes information about what should be done with values
      - count - same as above
@@ -353,17 +395,19 @@ def unpack_activity_sources(sources_string):
                "strategy": "activity",
                "slot": None,
                "value_min": None,
-               "value_max": None
+               "value_max": None,
+               "value": None
              }
 
     - source string:'/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5':
 
-    result: source = { "topic": "/touchscreen/touch",
-               "message_type": "interactivespaces_msgs/GenericMessage",
-               "strategy": "activity",
+    result: source = { "topic": "/proximity_sensor/distance",
+               "message_type": "sensor_msgs/Range-range",
+               "strategy": "value",
                "slot": range,
-               "value_min": 0,
-               "value_max": 2.5
+               "value_min": "0",
+               "value_max": "2.5",
+               "value": None
              }
 
     NOTE: min/max values is the range within which active == True
@@ -375,7 +419,8 @@ def unpack_activity_sources(sources_string):
                "strategy": "average",
                "slot": range,
                "value_min": None,
-               "value_max": None
+               "value_max": None,
+               "value": None
              }
 
     To define multiple sources use semicolon e.g.:
@@ -383,8 +428,9 @@ def unpack_activity_sources(sources_string):
     '/proximity_sensor/distance:sensor_msgs/Range-range:value-0,2.5
     /touchscreen/touch:interactivespaces_msgs/GenericMessage:delta'
 
-    """
+    and a list of dictionaries will be returned.
 
+    """
     sources = []
     bare_sources = sources_string.split(';')
     for source_string in bare_sources:
@@ -394,35 +440,43 @@ def unpack_activity_sources(sources_string):
         topic = source_fields[0]
         try:
             message_type = source_fields[1].split('-')[0]
-        except IndexError, e:
+        except IndexError:
             message_type = source_fields[1]
 
         try:
             slot = source_fields[1].split('-')[1]
-        except IndexError, e:
+        except IndexError:
             slot = None
 
         try:
             strategy = source_fields[2].split('-')[0]
-        except IndexError, e:
+        except IndexError:
             strategy = source_fields[2]
 
         try:
             values = source_fields[2].split('-')[1].split(',')
-            value_min = values[0]
-            value_max = values[1]
-            rospy.loginfo("Detected values min: %s, max:%s for source_string: %s" % (value_min, value_max, source_string))
-        except Exception, e:
-            rospy.loginfo("Could not get value_min/value_max from sources for source_string: %s" % source_string)
-            value_min = None
-            value_max = None
+            try:
+                value_min = values[0]
+                value_max = values[1]
+                value = None
+            except IndexError:
+                rospy.loginfo("Detected a singe value from source_string: %s" % source_string)
+                value = values[0]
+                value_min = None
+                value_max = None
+        except IndexError:
+            rospy.loginfo("Could not get value_min/value_max nor single value from sources for source_string: %s" % source_string)
+            value_min, value_max, value = None, None, None
+
         single_source['topic'] = topic
         single_source['message_type'] = message_type
         single_source['strategy'] = strategy
         single_source['slot'] = slot
         single_source['value_min'] = value_min
         single_source['value_max'] = value_max
+        single_source['value'] = value
         sources.append(single_source)
+
     return sources
 
 
@@ -759,3 +813,20 @@ def x_available_or_raise(timeout):
         msg = "X server is not available"
         rospy.logfatal(msg)
         raise DependencyException(msg)
+
+
+def browser_applicable_for_reuse(current_browser, future_browser):
+    """
+    Compares two browsers and returns bool telling whether
+    one browser can be updated to the other.
+    It can't be updated if there's a difference in:
+     - cmd args
+     - extensions are different
+     - user agent
+     - binary
+    """
+    return current_browser.user_agent == future_browser.user_agent and\
+        current_browser.binary == future_browser.binary and\
+        current_browser.extensions == future_browser.extensions and\
+        current_browser.enable_audio == future_browser.enable_audio and\
+        current_browser.command_line_args == future_browser.command_line_args

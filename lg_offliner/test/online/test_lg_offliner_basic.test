@@ -1,0 +1,21 @@
+<launch>
+    <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py">
+        <param name="check_every_seconds_delay" value="30"/>
+        <param name="checks" value="['curl --silent --head --max-time 3 http://www.google.com',
+                                     'ping -q -W 3 -c 3 www.yahoo.com',
+                                     'ping -q -W 3 -c 3 www.nsa.gov',
+                                     'nslookup -timeout=3 www.endpoint.com',
+                                     'ping -q -W 3 -c 3 8.8.8.8',
+                                     'ping -q -W 3 -c 3 8.8.4.4',
+                                     'nc -z -w 1 news.bbc.co.uk 80']"/>
+        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile;/director/scene:interactivespaces_msgs/GenericMessage-message.slug:value-online_scene"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline;/director/scene:interactivespaces_msgs/GenericMessage-message.slug:value-offline_scene"/>
+    </node>
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_lg_offliner_basic" pkg="lg_offliner" type="test_lg_offliner_basic.py"/>
+</launch>

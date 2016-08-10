@@ -93,7 +93,7 @@ class ManagedWindow(object):
         with self.lock:
             cmd = self._get_command()
             self._cleanup_proc()
-            rospy.loginfo(' '.join(cmd))
+            rospy.logdebug(' '.join(cmd))
             try:
                 awesome.setup_environ()
             except Exception as e:
