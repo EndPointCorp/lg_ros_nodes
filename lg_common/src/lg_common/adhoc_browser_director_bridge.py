@@ -54,9 +54,8 @@ class AdhocBrowserDirectorBridge():
         adhoc_browsers.scene_slug = slug
         adhoc_browsers.browsers = adhoc_browsers_list
 
-        sync = message.get('sync_windows', None)
-        if sync is not None:
-            adhoc_browsers.sync_windows = sync
+        preload = message.get('preload', False)
+        adhoc_browsers.preload = preload
 
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
