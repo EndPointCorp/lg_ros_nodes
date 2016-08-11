@@ -1,0 +1,65 @@
+{
+  "description": "two browsers on center with preload",
+  "duration": 500,
+  "name": "center",
+  "resource_uri": "blargh",
+  "slug": "blargh",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "http://edition.cnn.com"
+      ],
+      "height": 500,
+      "presentation_viewport": "center",
+      "width": 800,
+      "x_coord": 200,
+      "y_coord": 200
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "http://www.onet.pl"
+      ],
+      "height": 200,
+      "presentation_viewport": "center",
+      "width": 800,
+      "x_coord": 100,
+      "y_coord": 1500
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "http://www.onet.pl"
+      ],
+      "height": 1920,
+      "presentation_viewport": "left_one",
+      "width": 1080,
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "http://www.onet.pl"
+      ],
+      "height": 700,
+      "presentation_viewport": "right_one",
+      "width": 900,
+      "x_coord": 100,
+      "y_coord": 100
+    }
+  ]
+}
