@@ -104,15 +104,17 @@ class AdhocBrowserDirectorBridge():
         accepts brower_config (`activity_config` part of USCS/director message)
         and returns adhoc_browser object with detected activity_config attributes
         """
-        binary = browser_config.get('binary_path', None)
+        binary = browser_config.get('binary_path', '/usr/bin/google-chrome')
         user_agent = browser_config.get('user_agent', None)
         browser_cmd_args = browser_config.get('cmd_args', None)
         extensions = browser_config.get('extensions', None)
 
         if binary:
             adhoc_browser.binary = binary
+
         if user_agent:
             adhoc_browser.user_agent = user_agent
+
         if browser_cmd_args:
             for cmd_arg in browser_cmd_args:
                 browser_arg = BrowserCmdArg()
@@ -120,6 +122,7 @@ class AdhocBrowserDirectorBridge():
                 browser_arg.path = cmd_arg.path
                 browser_arg.metadata = cmd_arg.metadata
                 adhoc_browser.cmd_args.append(browser_arg)
+
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
@@ -147,6 +150,7 @@ class AdhocBrowserDirectorBridge():
             adhoc_browser = AdhocBrowser()
             adhoc_browser.id = browser_name
             adhoc_browser.url = browser['path']
+            adhoc_browser.binary = '/usr/bin/google-chrome'
             adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']
             adhoc_browser.geometry.y = browser['y_coord'] + self._get_viewport_offset()['y']
             adhoc_browser.geometry.height = browser['height']

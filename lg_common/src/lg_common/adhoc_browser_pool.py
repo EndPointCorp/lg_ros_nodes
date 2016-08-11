@@ -10,7 +10,7 @@ from lg_common.msg import BrowserExtension
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
 from lg_common.helpers import get_app_instances_ids
 from lg_common.helpers import url_compare
-from lg_common.helpers import browser_applicable_for_reuse
+from lg_common.helpers import browser_eligible_for_reuse
 from lg_common.srv import DirectorPoolQuery
 from managed_browser import DEFAULT_BINARY
 from urlparse import urlparse, parse_qs, parse_qsl
@@ -19,13 +19,16 @@ from urlparse import urlparse, parse_qs, parse_qsl
 class AdhocBrowserPool():
     """
     Handles browser pool in self.browsers
-    Dict(id => ManagedAdhocBrowser)
 
-    Smooth transitions overview:
+    self.browsers ivar is a dict where keys are browser_pool_id
+    and values are ManagedAdhocBrowser instances.
+
+    Smooth transitions functionality overview:
     - handle_ros_message creates new browsers
     - wait for ready signal (see rediness.py)
     - when new browsers ready, hide and destroy
       old browsers and show new
+
     """
     def __init__(self, viewport_name):
         """
@@ -59,24 +62,6 @@ class AdhocBrowserPool():
         Return dict(id: AdhocBrowser) with all AdhocBrowsers with ids as keys
         """
         return {b.id: b for b in browsers}
-
-    def _partition_existing_browser_ids(self, incoming_browsers):
-        """
-        Determine which incoming browsers are already being shown.
-        """
-        # Strip the downstream ros_instance_name query addition.
-        existing_urls = [re.sub(r'[&?]ros_instance_name=[^&]*', '', b.url) for b in self.browsers.values()]
-
-        def browser_exists(browser):
-            for url in existing_urls:
-                if url_compare(url, browser.url):
-                    return True
-            return False
-
-        existing_ids = [b.id for b in incoming_browsers if browser_exists(b)]
-        fresh_ids = [b.id for b in incoming_browsers if not browser_exists(b)]
-
-        return existing_ids, fresh_ids
 
     def _remove_browser(self, browser_pool_id):
         """
@@ -325,11 +310,9 @@ class AdhocBrowserPool():
 
             incoming_browsers = self._unpack_incoming_browsers(data.browsers)
             incoming_browsers_ids = set(incoming_browsers.keys())  # set
-            current_browsers_ids = get_app_instances_ids(self.browsers)  # set
-            existing_ids, fresh_ids = self._partition_existing_browser_ids(incoming_browsers.values())
-            rospy.loginfo('existing ids: {}'.format(existing_ids))
-            rospy.loginfo('current ids: {}'.format(current_browsers_ids))
-            rospy.loginfo('fresh ids: {}'.format(fresh_ids))
+            existing_browsers_ids = get_app_instances_ids(self.browsers)  # set
+
+            rospy.loginfo('existing ids: {}'.format(existing_browsers_ids))
             rospy.loginfo('incoming browers ids: {}'.format(incoming_browsers_ids))
 
             # if preload_windows:
@@ -362,12 +345,18 @@ class AdhocBrowserPool():
 
                 for incoming_browser in incoming_browsers.values():
                     # check if there's a browser instance applicable for reuse
-                    for browser in self.browsers.values():
-                        if browser_applicable_for_reuse(browser, incoming_browser) and browser.id not in update:
+                    for browser_pool_id, browser in self.browsers.items():
+                        if False:
+                        # TODO(WZ): enable this once remote debugging port is functional
+                        # and once this becomes a feature request by a customer
+                        # if browser_eligible_for_reuse(browser, incoming_browser) and browser_pool_id not in update:
+                            rospy.loginfo("Browser %s eligible for reuse with %s" % (browser, incoming_browser))
                             # update browser URL and geometry
-                            update.append(browser.id)
-                            self._update_browser(browser.id, incoming_browser)
+                            update.append(browser_pool_id)
+                            self._update_browser(browser_pool_id, incoming_browser)
                             break
+                        else:
+                            rospy.loginfo("Browser %s not eligible for reuse with %s" % (browser, incoming_browser))
 
                     # if there are no applicable browsers in the pool - create one
                     create.append(incoming_browser.id)

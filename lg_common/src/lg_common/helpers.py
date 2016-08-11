@@ -245,6 +245,9 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
                 on_finish = activity_config.get('onFinish', None)
                 if on_finish:
                     asset_object['on_finish'] = on_finish
+                google_chrome = activity_config.get('google_chrome', None)
+                if google_chrome:
+                    asset_object['on_finish'] = on_finish
 
             assets.append(asset_object)
         else:
@@ -817,7 +820,7 @@ def x_available_or_raise(timeout):
         raise DependencyException(msg)
 
 
-def browser_applicable_for_reuse(current_browser, future_browser):
+def browser_eligible_for_reuse(current_browser, future_browser):
     """
     type current_browser: ManagedAdhocBrowser
     type future_browser: AdhocBrowser.msg

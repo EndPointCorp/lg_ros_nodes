@@ -21,6 +21,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
         self.user_agent = user_agent
         self.binary = binary
         self.command_line_args = command_line_args
+        self.extensions = extensions
 
         super(ManagedAdhocBrowser, self).__init__(
             slug=slug,
@@ -34,20 +35,26 @@ class ManagedAdhocBrowser(ManagedBrowser):
             kiosk=True)
 
     def __str__(self):
-        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,
-                                                                                  self.url,
-                                                                                  self.geometry.width,
-                                                                                  self.geometry.height,
-                                                                                  self.geometry.x,
-                                                                                  self.geometry.y)
+        return "<slug: %s,\
+                url: %s,\
+                x: %s,\
+                y: %s,\
+                offset_x: %s,\
+                offset_y: %s,\
+                extensions: %s,\
+                binary: %s,\
+                command_line_args: %s>" % (self.slug,
+                                           self.url,
+                                           self.geometry.width,
+                                           self.geometry.height,
+                                           self.geometry.x,
+                                           self.geometry.y,
+                                           self.extensions,
+                                           self.binary,
+                                           self.command_line_args)
 
     def __repr__(self):
-        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,
-                                                                                  self.url,
-                                                                                  self.geometry.width,
-                                                                                  self.geometry.height,
-                                                                                  self.geometry.x,
-                                                                                  self.geometry.y)
+        return self.__str__()
 
     def update_geometry(self, geometry):
         """
