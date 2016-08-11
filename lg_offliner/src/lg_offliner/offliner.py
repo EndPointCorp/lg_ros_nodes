@@ -27,10 +27,6 @@ LG_OFFLINER_DEBUG_TOPIC_DEFAULT = "debug"
 LG_OFFLINER_OFFLINE_TOPIC_DEFAULT = "offline"
 
 
-class OfflinerException(Exception):
-    pass
-
-
 class ConnectivityResults(object):
     """
     Represents results of connectivity checks.
@@ -49,7 +45,7 @@ class ConnectivityResults(object):
         self.max_length = max_length
 
     def add(self, item):
-        if len(self.data) > self.max_length:
+        if len(self.data) == self.max_length:
             # remove first item in the list
             _ = self.data.pop(0)
         self.data.append(item)
@@ -61,6 +57,8 @@ class ConnectivityResults(object):
         All results must be non-zero in order to pronounce offline status.
 
         """
+        # -num_of_last_checks_consider won't raise IndexError
+        # even when len(self.data) is smaller
         for dict_check_results in self.data[-num_of_last_checks_consider:]:
             for res in dict_check_results.values():
                 if res == 0:
@@ -112,17 +110,21 @@ class Checker(object):
         rospy.logdebug(msg)
         self.debug_topic_pub.publish(msg)
 
+    def do_active_delay(self):
+        for interval in range(0, self.check_every_seconds_delay):
+            if rospy.is_shutdown():
+                self.log("Shutdown received, delay routine interrupted.")
+                break
+            time.sleep(1)
+
     def _checker_worker_thread(self):
+        self.do_active_delay()
         while not rospy.is_shutdown():
             self.log("Background thread performing check loop ...")
             self._checker_worker()
-            self.evaluate_current_status()
+            self._evaluate_current_status()
             self.log("Background thread sleeping ...")
-            for interval in range(0, self.check_every_seconds_delay):
-                if rospy.is_shutdown():
-                    self.log("Shutdown received, thread finishing ...")
-                    break
-                time.sleep(1)
+            self.do_active_delay()
         self.log("Thread finished.")
 
     def _checker_worker(self):
@@ -148,7 +150,7 @@ class Checker(object):
         self.log("Am I offline: %s" % status)
         return status
 
-    def evaluate_current_status(self):
+    def _evaluate_current_status(self):
         with self._lock:
             flag = self._results.am_i_offline()
         self.log("Am I offline: %s" % flag)
@@ -161,12 +163,12 @@ class Checker(object):
 
     def on_becoming_online(self):
         self.offline_topic_pub.publish(False)
-        for pub in self.offline_pubs:
+        for pub in self.online_pubs:
             pub["publisher"].publish(pub["message"])
 
     def on_becoming_offline(self):
         self.offline_topic_pub.publish(True)
-        for pub in self.online_pubs:
+        for pub in self.offline_pubs:
             pub["publisher"].publish(pub["message"])
 
     def __str__(self):
@@ -174,28 +176,29 @@ class Checker(object):
                                                 self.check_cmds)
 
 
-def process_custom_publishers(onliners=None, offliners=None):
+def process_custom_publishers(send_on_online=None, send_on_offline=None):
     """
-    The input is a list of dicts. Each dict as returned by unpack_activity_sources
+    Reads corresponding ROS params.
+    Each is a list of dicts, each dict as returned by unpack_activity_sources.
     The output is a dictionary consisting of ROS publisher and predefined message instance.
 
     Note:
         messages with subslots (such as GenericMessage message.slug) will need more care
-        in processing in this function.
+        in processing in this function, not yet implemented.
 
     """
     def process(senders):
         pub_senders = []
         for sender in senders:
             msg_type = helpers.get_message_type_from_string(sender["message_type"])
-            publisher = rospy.Publisher(sender["topic"], msg_type, queue_size=1)
+            publisher = rospy.Publisher(sender["topic"], msg_type, queue_size=5)
             msg = msg_type()
             setattr(msg, sender["slot"], sender["value"])
             pub_senders.append(dict(publisher=publisher, message=msg))
         return pub_senders
 
-    online_pubs = process(onliners)
-    offline_pubs = process(offliners)
+    online_pubs = process(send_on_online)
+    offline_pubs = process(send_on_offline)
     return online_pubs, offline_pubs
 
 
@@ -203,11 +206,10 @@ def main():
     rospy.init_node(ROS_NODE_NAME, anonymous=True)
     debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_OFFLINER_DEBUG_TOPIC_DEFAULT)
     offline_topic = "%s/%s" % (ROS_NODE_NAME, LG_OFFLINER_OFFLINE_TOPIC_DEFAULT)
-    debug_topic_pub = rospy.Publisher(debug_topic, String, queue_size=1)
-    offline_topic_pub = rospy.Publisher(offline_topic, Bool, queue_size=1)
+    debug_topic_pub = rospy.Publisher(debug_topic, String, queue_size=5)
+    offline_topic_pub = rospy.Publisher(offline_topic, Bool, queue_size=5)
     check_every_seconds_delay = rospy.get_param("~check_every_seconds_delay")
-    # this returns a string representation of a list
-    checks_str = rospy.get_param("~checks")
+    checks_str = rospy.get_param("~checks")  # this returns a string representation of a list
     check_cmds = ast.literal_eval(checks_str)
     rospy.loginfo("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
     send_on_online_str = rospy.get_param("~send_on_online")
@@ -218,8 +220,8 @@ def main():
     rospy.loginfo(send_on_offline_str)
     send_on_offline = helpers.unpack_activity_sources(send_on_offline_str)
     rospy.loginfo("send_on_offline: %s" % send_on_offline)
-    online_pubs, offline_pubs = process_custom_publishers(onliners=send_on_online,
-                                                          offliners=send_on_offline)
+    online_pubs, offline_pubs = process_custom_publishers(send_on_online=send_on_online,
+                                                          send_on_offline=send_on_offline)
     checker = Checker(check_every_seconds_delay=check_every_seconds_delay,
                       check_cmds=check_cmds,
                       debug_topic_pub=debug_topic_pub,
