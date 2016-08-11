@@ -72,11 +72,11 @@ class ManagedBrowser(ManagedApplication):
 
         if extensions:
             for extension in extensions:
-                if os.path.isdir(extension):
-                    # load an extension from a path
-                    cmd.append('--load-extension={}'.format(extension))
-                else:
+                if not os.path.isdir(extension):
+                    extensions.remove(extension)
                     rospy.logwarn("Could not load extension from %s because dir does not exist" % extension)
+
+            cmd.append('--load-extension={}'.format(','.join(extensions)))
 
         cmd.extend(DEFAULT_ARGS)
         if command_line_args != []:

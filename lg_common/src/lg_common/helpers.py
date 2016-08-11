@@ -830,8 +830,8 @@ def browser_applicable_for_reuse(current_browser, future_browser):
      - user agent
      - binary
     """
-    future_browser_extensions = [ ext.name for ext in future_browser.extensions ]
-    future_browser_cmd_args = [ arg.argument for arg in future_browser.command_line_args ]
+    future_browser_extensions = [ext.name for ext in future_browser.extensions]
+    future_browser_cmd_args = [arg.argument for arg in future_browser.command_line_args]
 
     return current_browser.user_agent == future_browser.user_agent and\
         current_browser.binary == future_browser.binary and\

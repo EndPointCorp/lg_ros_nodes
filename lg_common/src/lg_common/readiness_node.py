@@ -4,6 +4,7 @@ from lg_common.msg import Ready
 import time
 import rospy
 
+
 class ReadinessNode(object):
     """
     Keeps track of list of browsers indexed by scene slugs that they belong to
@@ -28,11 +29,10 @@ class ReadinessNode(object):
         """
         Purges the state and sets the most up to date slug
         """
-        self.state = { 'slug': slug,
-                       'browsers': [],
-                       'ready_browsers': [],
-                       'timestamp': time.time()
-                     }
+        self.state = {'slug': slug,
+                      'browsers': [],
+                      'ready_browsers': [],
+                      'timestamp': time.time()}
 
     def aggregate_browser_instances(self, message):
         """

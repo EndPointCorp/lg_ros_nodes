@@ -34,9 +34,9 @@ def main():
     adhocbrowser_viewport_publisher = rospy.Publisher(
         topic_name, AdhocBrowsers, queue_size=3)
 
-
-    adhocbrowser_aggregate_topic_publisher = rospy.Publisher(
-        common_topic_name, AdhocBrowsers, queue_size=3)
+    adhocbrowser_aggregate_topic_publisher = rospy.Publisher(common_topic_name,
+                                                             AdhocBrowsers,
+                                                             queue_size=3)
 
     adhocbrowser_director_bridge = AdhocBrowserDirectorBridge(
         adhocbrowser_aggregate_topic_publisher,

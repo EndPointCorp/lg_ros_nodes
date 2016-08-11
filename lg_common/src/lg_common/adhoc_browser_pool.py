@@ -121,7 +121,7 @@ class AdhocBrowserPool():
             else:
                 extensions.append(self.extensions_root + extension.name)
 
-        command_line_args = [ cmd_arg.argument for cmd_arg in new_browser.command_line_args ]
+        command_line_args = [cmd_arg.argument for cmd_arg in new_browser.command_line_args]
 
         command_line_args = self._filter_command_line_args(command_line_args)
 
@@ -168,7 +168,6 @@ class AdhocBrowserPool():
         for browser_pool_id in ids:
             rospy.loginfo("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
-
 
     def unhide_browsers(self, data):
         """
@@ -315,7 +314,6 @@ class AdhocBrowserPool():
 
         # Do we wait for all browsers instance ready or not
 
-
         with self.lock:
             # keep the last scene slug for case when
             # someone decides to send a message with preload set to true
@@ -358,14 +356,14 @@ class AdhocBrowserPool():
                 # if existing browser can be updated (extensions and cmd args are identical) then update it
                 # if existing browser can not be updated by any of incoming browsers, the destroy it and create new browser
 
-                update = [] # Ids
-                create = [] # Ids
-                delete = [] # Ids
+                update = []  # Ids
+                create = []  # Ids
+                delete = []  # Ids
 
                 for incoming_browser in incoming_browsers.values():
                     # check if there's a browser instance applicable for reuse
                     for browser in self.browsers.values():
-                        if browser_applicable_for_reuse(browser, incoming_browser) and not browser.id in update:
+                        if browser_applicable_for_reuse(browser, incoming_browser) and browser.id not in update:
                             # update browser URL and geometry
                             update.append(browser.id)
                             self._update_browser(browser.id, incoming_browser)

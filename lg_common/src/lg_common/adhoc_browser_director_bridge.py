@@ -84,7 +84,7 @@ class AdhocBrowserDirectorBridge():
         Returns bool
         """
         for browser in adhoc_browsers_list:
-            if browser.preload != True:
+            if not browser.preload:
                 return False
         return True
 
