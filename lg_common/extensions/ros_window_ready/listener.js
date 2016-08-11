@@ -107,7 +107,7 @@ chrome.runtime.onMessage.addListener(
             // Active page loaded
             chrome.tabs.query({active: true}, function(tabs) {
                 if (tabs.length == 0) {
-                    return;
+                    return false;
                 }
                 var params = parseUrl(tabs[0].url);
                 var instanceName = params['ros_instance_name'];
@@ -117,7 +117,7 @@ chrome.runtime.onMessage.addListener(
                     // this path only for default dom loaded event
                     if(!params['use_app_event']) {
                         // Do not sent msg, if it's already been sent
-                        waiters.push(function(){
+                        (!requirements.domLoadedMsg) && waiters.push(function(){
                           if(requirements.rosReady) {
                             sendMsg(instanceName);
                             sendResponse({ack: true});
@@ -127,6 +127,7 @@ chrome.runtime.onMessage.addListener(
                     }
                 }
             });
+            return true;
         }
     }
 );
@@ -149,6 +150,7 @@ chrome.webNavigation.onDOMContentLoaded.addListener(function(data) {
                                 }
                             });
                             update('customReadyMsg');
+                            return true;
                         }
                     }
                 );
