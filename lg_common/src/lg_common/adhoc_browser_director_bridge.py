@@ -73,7 +73,8 @@ class AdhocBrowserDirectorBridge():
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
         self.browser_pool_publisher.publish(adhoc_browsers)
-        self.aggregate_publisher.publish(adhoc_browsers)
+        if adhoc_browsers.browsers:
+            self.aggregate_publisher.publish(adhoc_browsers)
 
     def _preload_scene(self, adhoc_browsers_list):
         """

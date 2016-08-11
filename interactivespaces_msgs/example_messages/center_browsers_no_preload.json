@@ -3,7 +3,7 @@
   "duration": 500,
   "name": "center",
   "resource_uri": "blargh",
-  "slug": "blargh",
+  "slug": "blargh_no_preload",
   "windows": [
     {
       "activity": "browser",

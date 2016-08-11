@@ -16,8 +16,8 @@
       "height": 400,
       "presentation_viewport": "center",
       "width": 800,
-      "x_coord": 100,
-      "y_coord": 100
+      "x_coord": 200,
+      "y_coord": 200
     },
     {
       "activity": "browser",
@@ -30,8 +30,8 @@
       "height": 400,
       "presentation_viewport": "center",
       "width": 800,
-      "x_coord": 100,
-      "y_coord": 900
+      "x_coord": 200,
+      "y_coord": 1000
     }
   ]
 }
