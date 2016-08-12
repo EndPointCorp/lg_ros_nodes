@@ -10,6 +10,7 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 from lg_common.helpers import get_app_instances_to_manage
 from lg_common.helpers import get_app_instances_ids
 from lg_common.helpers import url_compare
+from lg_common.helpers import geometry_compare
 from lg_common.srv import DirectorPoolQuery
 
 from urlparse import urlparse, parse_qs, parse_qsl
@@ -55,14 +56,34 @@ class AdhocBrowserPool():
     def _partition_existing_browser_ids(self, incoming_browsers):
         """
         Determine which incoming browsers are already being shown.
-        """
-        # Strip the downstream ros_instance_name query addition.
-        existing_urls = [re.sub(r'[&?]ros_instance_name=[^&]*', '', b.url) for b in self.browsers.values()]
+        Take their URL *and* geometry/placement into consideration
 
-        def browser_exists(browser):
-            for url in existing_urls:
-                if url_compare(url, browser.url):
-                    return True
+        Return set of ids for:
+         - browsers that need to be created (fresh_ids)
+         - browsers that already exist (existing_ids)
+        """
+        def strip_ros_instance_name(url):
+            stripped_url = re.sub(r'[&?]ros_instance_name=[^&]*', '', url)
+            return stripped_url
+
+        def browser_exists(incoming_browser):
+            # go thru self.browsers and match url + geom
+            for existing_browser in self.browsers.values():
+                existing_browser_url = strip_ros_instance_name(existing_browser.url)
+                incoming_browser_url = strip_ros_instance_name(incoming_browser.url)
+                rospy.loginfo("Comparison: %s vs %s" % (existing_browser_url, incoming_browser_url))
+                if existing_browser_url == incoming_browser_url:
+                    rospy.loginfo("incoming_browser's url %s matches existing browser %s" % (incoming_browser_url, existing_browser_url))
+                    if geometry_compare(incoming_browser, existing_browser):
+                        rospy.loginfo("OK === incoming_browser's geometry matches existing browser ===")
+                        return True
+                    else:
+                        rospy.loginfo("incoming_browser's geometry %s does not matche existing browser %s" % (incoming_browser.geometry, existing_browser.geometry))
+                        return False
+
+                else:
+                    rospy.loginfo("incoming_browser: %s does not match existing browser %s" % (incoming_browser, existing_browser))
+                    return False
             return False
 
         existing_ids = [b.id for b in incoming_browsers if browser_exists(b)]
@@ -188,7 +209,27 @@ class AdhocBrowserPool():
         Arguments:
             data: AdhocBrowsers, which is an array of AdhocBrowser
 
+        Edgecase for browser persistence:
+
+            msg1:
+                adhoc_0 -> wp.pl *
+                adhoc_1 -> onet.pl
+                adhoc_2 -> endpoint.com
+
+
+            msg2:
+                adhoc_0 -> foo.com
+                adhoc_1 -> wp.pl *
+                adhoc_2 -> bar
+            [*] should persist
+
+            existing ids: adhoc_0
+            fresh ids: adhoc_0, adhoc_2
+
+            adhoc_0 is existing and fresh in the same time
+
         """
+        rospy.loginfo("================ NEW SCENE ===============")
 
         with self.lock:
             incoming_browsers = self._unpack_incoming_browsers(data.browsers)
