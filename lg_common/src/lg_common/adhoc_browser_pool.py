@@ -10,6 +10,7 @@ from lg_common.msg import BrowserExtension
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
 from lg_common.helpers import get_app_instances_ids
 from lg_common.helpers import url_compare
+from lg_common.helpers import geometry_compare
 from lg_common.helpers import browser_eligible_for_reuse
 from lg_common.srv import DirectorPoolQuery
 from managed_browser import DEFAULT_BINARY
@@ -214,6 +215,44 @@ class AdhocBrowserPool():
             rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
             return False
 
+
+    def _partition_existing_browser_ids(self, incoming_browsers):
+        """
+        Determine which incoming browsers are already being shown.
+        Take their URL *and* geometry/placement into consideration
+        Return set of ids for:
+         - browsers that need to be created (fresh_ids)
+         - browsers that already exist (existing_ids)
+        """
+        def strip_ros_instance_name(url):
+            stripped_url = re.sub(r'[&?]ros_instance_name=[^&]*', '', url)
+            return stripped_url
+
+        def browser_exists(incoming_browser):
+            # go thru self.browsers and match url + geom
+            for existing_browser in self.browsers.values():
+                existing_browser_url = strip_ros_instance_name(existing_browser.url)
+                incoming_browser_url = strip_ros_instance_name(incoming_browser.url)
+                rospy.loginfo("Comparison: %s vs %s" % (existing_browser_url, incoming_browser_url))
+                if existing_browser_url == incoming_browser_url:
+                    rospy.loginfo("incoming_browser's url %s matches existing browser %s" % (incoming_browser_url, existing_browser_url))
+                    if geometry_compare(incoming_browser, existing_browser):
+                        rospy.loginfo("OK === incoming_browser's geometry matches existing browser ===")
+                        return True
+                    else:
+                        rospy.loginfo("incoming_browser's geometry %s does not matche existing browser %s" % (incoming_browser.geometry, existing_browser.geometry))
+                        return False
+
+                else:
+                    rospy.loginfo("incoming_browser: %s does not match existing browser %s" % (incoming_browser, existing_browser))
+                    return False
+            return False
+
+        existing_ids = [b.id for b in incoming_browsers if browser_exists(b)]
+        fresh_ids = [b.id for b in incoming_browsers if not browser_exists(b)]
+
+        return existing_ids, fresh_ids
+
     def _update_browser(self, browser_pool_id, updated_browser):
         """
         Update existing browser instance
@@ -299,78 +338,53 @@ class AdhocBrowserPool():
 
         # Do we wait for all browsers instance ready or not
 
-        with self.lock:
-            # keep the last scene slug for case when
-            # someone decides to send a message with preload set to true
-            # to be able to differentiate between previous
-            # scene and incoming scene instances
-            self.last_scene_slug = data.scene_slug
+        rospy.loginfo("============= NEW SCENE ===============")
+        # keep the last scene slug for case when
+        # someone decides to send a message with preload set to true
+        # to be able to differentiate between previous
+        # scene and incoming scene instances
+        self.last_scene_slug = data.scene_slug
 
-            preload_windows = hasattr(data, 'preload') and data.preload
+        preload_windows = hasattr(data, 'preload') and data.preload
+        incoming_browsers = self._unpack_incoming_browsers(data.browsers)
+        incoming_browsers_ids = set(incoming_browsers.keys())  # set
 
-            incoming_browsers = self._unpack_incoming_browsers(data.browsers)
-            incoming_browsers_ids = set(incoming_browsers.keys())  # set
-            existing_browsers_ids = get_app_instances_ids(self.browsers)  # set
+        if preload_windows:
+            # if preloading - only create windows (hidden by default)
+            # an external readiness node will handle the rest
 
-            rospy.loginfo('existing ids: {}'.format(existing_browsers_ids))
-            rospy.loginfo('incoming browers ids: {}'.format(incoming_browsers_ids))
+            for browser_pool_id in incoming_browsers_ids:
+                rospy.loginfo("POOL %s: preloading browser = %s" % (self.viewport_name, browser_pool_id))
+                self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
+        else:
+            # check which browsers already exist (if any)
+            # create missing browsers
+            rospy.loginfo("Setting non-preloaded scene")
 
-            # if preload_windows:
-            #  - create browsers in background
-            #  - show them after they get ready
-            # if not preload_windows:
-            #  - update browsers that are available
-            #  - create browsers that are missing
+            current_browsers_ids = get_app_instances_ids(self.browsers)  # set
+            existing_ids, fresh_ids = self._partition_existing_browser_ids(incoming_browsers.values())
+            rospy.loginfo('existing ids: {}'.format(existing_ids))
+            rospy.loginfo('fresh ids: {}'.format(fresh_ids))
 
-            if preload_windows:
-                # create browsers in background
-                # dont show them - this is handled by an external ROS node
-                # that executes `unhide_browsers` for us
-                for browser_pool_id in incoming_browsers_ids:
-                    rospy.loginfo("POOL %s: preloading browser = %s" % (self.viewport_name, browser_pool_id))
-                    # create browsers only - unhiding wil be handled externally
-                    self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
-            else:
-                # update browsers taht are available in the pool
-                # create browsers that are missing
-                # remove redundant browsers
+            rospy.loginfo("Deciding which browsers to keep and which to remove")
+            for browser_pool_id in current_browsers_ids:
+                if browser_pool_id in existing_ids:
+                    rospy.loginfo("Keeping existing browser id %s" % browser_pool_id)
+                    continue
+                rospy.loginfo("Removing browser id %s" % browser_pool_id)
+                self._remove_browser(browser_pool_id)
 
-                # iterate over incoming browsers
-                # if existing browser can be updated (extensions and cmd args are identical) then update it
-                # if existing browser can not be updated by any of incoming browsers, the destroy it and create new browser
+            rospy.loginfo("Setting up fresh browsers")
+            for browser_pool_id in fresh_ids:
+                rospy.loginfo("Creating browser with id %s" % browser_pool_id)
+                self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
 
-                update = []  # Ids
-                create = []  # Ids
-                delete = []  # Ids
+            rospy.loginfo("Making fresh browsers visible")
+            for browser_pool_id in fresh_ids:
+                rospy.loginfo("Making browser %s visible" % browser_pool_id)
+                self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
+                self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
 
-                for incoming_browser in incoming_browsers.values():
-                    # check if there's a browser instance applicable for reuse
-                    for browser_pool_id, browser in self.browsers.items():
-                        if False:
-                        # TODO(WZ): enable this once remote debugging port is functional
-                        # and once this becomes a feature request by a customer
-                        # if browser_eligible_for_reuse(browser, incoming_browser) and browser_pool_id not in update:
-                            rospy.loginfo("Browser %s eligible for reuse with %s" % (browser, incoming_browser))
-                            # update browser URL and geometry
-                            update.append(browser_pool_id)
-                            self._update_browser(browser_pool_id, incoming_browser)
-                            break
-                        else:
-                            rospy.loginfo("Browser %s not eligible for reuse with %s" % (browser, incoming_browser))
-
-                    # if there are no applicable browsers in the pool - create one
-                    create.append(incoming_browser.id)
-
-                # all browsers that could not be updated need to be deleted
-                delete = set(self.browsers.keys()) - set(update)
-                self._destroy_browsers(delete)
-
-                for browser_id in create:
-                    self._create_browser(browser_id, incoming_browsers[browser_id])
-
-                for browser_id in create:
-                    self.browsers[browser_id].set_state(ApplicationState.VISIBLE)
-
-            return True
+        return True
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

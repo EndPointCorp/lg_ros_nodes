@@ -158,8 +158,6 @@ class AdhocBrowserDirectorBridge():
 
             activity_config = browser.get('activity_config', None)
 
-            rospy.loginfo("Activity config - here it is: %s" % activity_config)
-
             if activity_config:
                 chrome_config = activity_config.get('google_chrome', None)
                 if activity_config.get('preload', None):

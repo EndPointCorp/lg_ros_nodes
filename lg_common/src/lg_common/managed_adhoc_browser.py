@@ -83,4 +83,4 @@ class ManagedAdhocBrowser(ManagedBrowser):
 
     def close(self):
         self.set_state(ApplicationState.STOPPED)
-        self.clear_tmp_dir()
+        #self.clear_tmp_dir()
