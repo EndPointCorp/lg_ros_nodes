@@ -1,4 +1,5 @@
 import rospy
+import uuid
 
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
@@ -58,6 +59,8 @@ class AdhocBrowserDirectorBridge():
         rospy.logdebug("Extracted browsers _extract_adhoc_browsers: %s" % browsers)
 
         for browser in browsers:
+            # TODO (WZ) make a hash from url + geometry here
+            browser_id = uuid.uuid4().hex[:8]
             browser_name = 'adhoc_browser_' + self.viewport_name + '_' + str(browser_id)
             adhoc_browser = AdhocBrowser()
             adhoc_browser.id = browser_name
@@ -68,7 +71,6 @@ class AdhocBrowserDirectorBridge():
             adhoc_browser.geometry.width = browser['width']
 
             adhoc_browsers.append(adhoc_browser)
-            browser_id += 1
 
         rospy.logdebug("Returning adhocbrowsers: %s" % adhoc_browsers)
         return adhoc_browsers

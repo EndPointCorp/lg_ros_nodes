@@ -92,6 +92,21 @@ def url_compare(a0, b0):
     return True
 
 
+def geometry_compare(adhoc_browser_message, managed_adhoc_browser_instance):
+    """
+    Accepts adhoc browser message and ManagedAdhocBrowser instnace
+    and compares geometry of these
+    returns bool
+    """
+    geometry_match = (
+        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x) and\
+        int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y) and\
+        int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width) and\
+        int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
+
+    return geometry_match
+
+
 def write_log_to_file(message):
     """
     Write a log line to a file - don't use it in production!
