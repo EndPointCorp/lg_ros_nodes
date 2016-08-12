@@ -29,7 +29,7 @@ LG_OFFLINER_OFFLINE_TOPIC_DEFAULT = "offline"
 
 class ConnectivityResults(object):
     """
-    Represents results of connectivity checks.
+    Represents results of the connectivity checks.
 
     """
     def __init__(self, max_length=100):
@@ -76,8 +76,8 @@ class Checker(object):
     debug_topic_pub - ROS debug topic to publish info about current activities
 
     online_pubs, offline_pubs - both are lists of dictionaries, the dictionaries
-        contain ROS publisher and a predefined (from configuration) messages
-        to be send via the publisher on become online and offline status.
+        contain ROS publisher and a predefined (from the configuration) messages
+        to be send via the publisher on becoming online and offline.
 
     """
     def __init__(self,
@@ -128,7 +128,10 @@ class Checker(object):
         self.log("Thread finished.")
 
     def _checker_worker(self):
-        # loop over all check_cmds commands and acquire results
+        """
+        Loop over all check_cmds commands and acquire results.
+
+        """
         results = {}
         for cmd in self.check_cmds:
             res = subprocess.call(cmd.split())
