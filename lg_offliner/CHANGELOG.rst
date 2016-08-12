@@ -2,6 +2,13 @@
 Changelog for package lg_offliner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* added documentation, comments, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* online, offline unittests, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* custom online, offline message publishers, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* Contributors: Zdenek Maxa
+
 1.3.23 (2016-08-09)
 -------------------
 
