@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.25 (2016-08-12)
+-------------------
 * better detection of new and old assets
 * Added geometry checks for browser persistence and failed to cover
   edgecase http://d.pr/i/1it1J
