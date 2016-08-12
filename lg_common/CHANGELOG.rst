@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* better detection of new and old assets
+* Added geometry checks for browser persistence and failed to cover
+  edgecase http://d.pr/i/1it1J
+* Contributors: Galaxy Admin, Wojciech Zieniewicz
+
 1.3.24 (2016-08-12)
 -------------------
 

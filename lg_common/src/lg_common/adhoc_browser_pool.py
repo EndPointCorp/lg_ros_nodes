@@ -66,7 +66,6 @@ class AdhocBrowserPool():
             stripped_url = re.sub(r'[&?]ros_instance_name=[^&]*', '', url)
             return stripped_url
 
-
         def incoming_browser_already_exists_in_the_pool(checked_browser):
             for browser in self.browsers.values():
                 if browsers_are_identical(checked_browser, browser):

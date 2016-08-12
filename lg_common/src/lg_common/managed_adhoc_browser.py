@@ -26,13 +26,9 @@ class ManagedAdhocBrowser(ManagedBrowser):
         return self.__repr__()
 
     def __repr__(self):
-        return "<id: %s, slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.id,
-                                                                                  self.slug,
-                                                                                  self.url,
-                                                                                  self.geometry.width,
-                                                                                  self.geometry.height,
-                                                                                  self.geometry.x,
-                                                                                  self.geometry.y)
+        return "<id: %s, slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % \
+            (self.id, self.slug, self.url, self.geometry.width, self.geometry.height,
+             self.geometry.x, self.geometry.y)
 
     def update_geometry(self, geometry):
         """
