@@ -9,7 +9,7 @@
 # Some public design discussion:
 # https://groups.google.com/forum/#!topic/python-tornado/lhyGhLZQIxY
 
-#TODO#import MainHandler
+#TODO#import KeyholeHandler
 
 import tornado.ioloop
 import tornado.web
@@ -27,20 +27,34 @@ class KeyholeHandler(tornado.web.RequestHandler):
         return client_headers
 
     def build_client_request(self):
-        client_request = tornado.httpclient.HTTPRequest(
-            url='http://172.217.25.238' + self.request.uri,
-            method=self.request.method,
-            #allow_nonstandard_methods=True, # required for empty POST?
-            headers=self.build_client_headers(),
-            #body=self.request.body,
-            request_timeout=1.0
-        )
+        # https://github.com/tornadoweb/tornado/issues/1213
+        if self.request.method in ("POST", "PUT", "PATCH"):
+            client_request = tornado.httpclient.HTTPRequest(
+                url='http://172.217.25.238' + self.request.uri,
+                method=self.request.method,
+                headers=self.build_client_headers(),
+                body=self.request.body,
+                request_timeout=10.0
+            )
+        else: # No bodies for GET or other HTTP requests.
+            client_request = tornado.httpclient.HTTPRequest(
+                url='http://172.217.25.238' + self.request.uri,
+                method=self.request.method,
+                headers=self.build_client_headers(),
+                request_timeout=1.0
+            )
         #rospy.loginfo(self.request.headers)
         #rospy.loginfo(client_request.headers)
         return client_request
 
     def response_callback(self, response):
+        #TODO this function needs cleanup.
         if response.error:
+            rospy.logerr('got error: %s.' % (response.error))
+            if not hasattr(response.error, 'code'):
+                rospy.logerr('no error.code')
+                self.success_callback(response)
+                return
             #http://www.tornadoweb.org/en/stable/httpclient.html#tornado.httpclient.HTTPError
             if int(response.error.code) == int(599):
                 # RECURSION
@@ -59,12 +73,15 @@ class KeyholeHandler(tornado.web.RequestHandler):
             self.success_callback(response)
 
     def success_callback(self, response):
-        self.set_status(response.code)
+        try:
+            self.set_status(response.code)
+        except ValueError:
+            self.set_status(500)
         if response.body:
           self.write(response.body)
         # iterate over headers.
-        for header in response.headers:
-            self.set_header(header.key, header.value)
+        for header, value in response.headers.iteritems():
+            self.set_header(header, value)
         self.finish()
 
     def fetch_keyhole(self, callback):
@@ -76,10 +93,6 @@ class KeyholeHandler(tornado.web.RequestHandler):
 
     @tornado.web.asynchronous
     def post(self, args=None):
-        # Make sure request body is not completely empty.
-        # https://github.com/tornadoweb/tornado/issues/1213
-        if self.request.body is None:
-            self.request.body = ''
         # Handle POST same as GET.
         self.fetch_keyhole(self.response_callback)
 
@@ -94,7 +107,6 @@ if __name__ == "__main__":
     application = tornado.web.Application([
         (r"/(.*)", KeyholeHandler),
     ], debug=True)
-    #application.listen(port=proxy_port, address='127.3.3.3')
     application.listen(port=proxy_port)
 
     ioloop = tornado.ioloop.IOLoop.current()
