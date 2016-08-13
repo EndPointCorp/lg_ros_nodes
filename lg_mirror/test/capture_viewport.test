@@ -1,0 +1,20 @@
+<launch>
+  <arg name="DISPLAY" value=":42" />
+  <arg name="CAPTURE_HOST" value="127.0.0.1" />
+  <arg name="CAPTURE_VIEWPORT" value="main" />
+  <arg name="CAPTURE_WIDTH" value="1920" />
+  <arg name="CAPTURE_HEIGHT" value="1080" />
+  <param name="/viewport/$(arg CAPTURE_VIEWPORT)" value="$(arg CAPTURE_WIDTH)x$(arg CAPTURE_HEIGHT)+0+0" />
+  <node name="capture_viewport" pkg="lg_mirror" type="capture_viewport.py">
+    <param name="display" value="$(arg DISPLAY)" />
+    <param name="viewport" value="$(arg CAPTURE_VIEWPORT)" />
+    <param name="host" value="$(arg CAPTURE_HOST)" />
+  </node>
+  <!-- Copy args to env for test -->
+  <env name="DISPLAY" value="$(arg DISPLAY)" />
+  <env name="CAPTURE_HOST" value="$(arg CAPTURE_HOST)" />
+  <env name="CAPTURE_VIEWPORT" value="$(arg CAPTURE_VIEWPORT)" />
+  <env name="CAPTURE_WIDTH" value="$(arg CAPTURE_WIDTH)" />
+  <env name="CAPTURE_HEIGHT" value="$(arg CAPTURE_HEIGHT)" />
+  <test test-name="test_capture_viewport" pkg="lg_mirror" type="test_capture_viewport.py" />
+</launch>

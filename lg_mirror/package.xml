@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_mirror</name>
+  <version>0.0.0</version>
+  <description>Xorg viewport mirroring</description>
+
+  <maintainer email="lg@endpoint.com">End Point LG</maintainer>
+  <url type="website">https://liquidgalaxy.endpoint.com/</url>
+
+  <license>TODO</license>
+
+  <author email="matt@endpoint.com">Matt Vollrath</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Some test deps are listed here as build deps for convenience. -->
+  <build_depend>xvfb</build_depend>
+  <build_depend>python-psutil</build_depend>
+  <test_depend>rostest</test_depend>
+
+  <run_depend>rospy</run_depend>
+  <run_depend>appctl</run_depend>
+  <run_depend>lg_common</run_depend>
+  <run_depend>gstreamer1.0-tools</run_depend>
+  <run_depend>gstreamer1.0-plugins-base</run_depend>
+  <run_depend>gstreamer1.0-plugins-good</run_depend>
+  <run_depend>gstreamer1.0-x</run_depend>
+</package>
