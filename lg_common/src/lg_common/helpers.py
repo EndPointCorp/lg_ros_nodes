@@ -685,13 +685,12 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
     rospy.logdebug('creating callback %s' % kwargs.get('groups', 'no group'))
 
     def cb(msg):
-        rospy.logerr('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
         if msg.data == 'all':
-            rospy.logdebug('firing function for all...')
+            rospy.loginfo('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
         if 'groups' in kwargs and msg.data in kwargs['groups']:
-            rospy.logdebug('firing function for custom msg...')
+            rospy.loginfo('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)
