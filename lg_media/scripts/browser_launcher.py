@@ -4,7 +4,7 @@ import rospy
 from lg_common.msg import AdhocBrowsers, AdhocBrowser
 from lg_common import AdhocBrowserPool
 from lg_media.msg import AdhocMedias
-from lg_common.helpers import add_url_params
+from lg_common.helpers import add_url_params, make_soft_relaunch_callback
 from urllib import url2pathname
 
 VIDEOSYNC_URL = 'http://localhost:8008/lg_sv/webapps/videosync/index.html'
@@ -95,6 +95,7 @@ def main():
                                           show_controls, viewport_name)
 
     browser_pool = AdhocBrowserPool(viewport_name)
+    make_soft_relaunch_callback(browser_pool.handle_soft_relaunch, groups=["media"])
 
     rospy.Subscriber('/media_service/browser/%s' % viewport_name, AdhocMedias,
                      basic_browser_data.launch_browser)

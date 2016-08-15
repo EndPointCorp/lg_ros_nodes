@@ -6,6 +6,7 @@ from lg_media.msg import AdhocMedias
 from lg_media.srv import MediaAppsInfo
 from lg_media import DirectorMediaBridge
 from lg_media import SRV_QUERY, ROS_NODE_NAME
+from lg_common.helpers import make_soft_relaunch_callback
 from interactivespaces_msgs.msg import GenericMessage
 
 DEFAULT_VIEWPORT = 'center'
@@ -22,6 +23,7 @@ def main():
 
     topic_name = "/{0}/{1}".format(ROS_NODE_NAME, viewport_name)
     mplayer_pool = MplayerPool(viewport_name)
+    make_soft_relaunch_callback(mplayer_pool.handle_soft_relaunch, groups=["media"])
 
     # Initialize mplayer pool on specified viewport
     rospy.Subscriber(topic_name, AdhocMedias, mplayer_pool.handle_ros_message)

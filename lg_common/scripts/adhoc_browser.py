@@ -4,6 +4,7 @@ import rospy
 from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
+from lg_common.helpers import make_soft_relaunch_callback
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -22,6 +23,7 @@ def main():
     """
     topic_name = '/browser_service/{}'.format(viewport_name)
     adhocbrowser_pool = AdhocBrowserPool(viewport_name)
+    make_soft_relaunch_callback(adhocbrowser_pool.handle_soft_relaunch, groups=["media"])
     rospy.Subscriber(topic_name, AdhocBrowsers, adhocbrowser_pool.handle_ros_message)
 
     """
