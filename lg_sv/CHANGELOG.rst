@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.26 (2016-08-15)
+-------------------
 * lg_sv: kill chrome on soft relaunch
 * Contributors: Jacob Minshall
 
