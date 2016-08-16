@@ -12,8 +12,9 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 class ManagedAdhocBrowser(ManagedBrowser):
 
-    def __init__(self, geometry=None, log_level=0, slug=None, url=None):
+    def __init__(self, geometry=None, log_level=0, slug=None, url=None, uid=None):
         self.slug = slug
+        self.id = uid
         self.url = url
         self.geometry = geometry
         self.log_level = log_level
@@ -22,20 +23,12 @@ class ManagedAdhocBrowser(ManagedBrowser):
             geometry=geometry, slug=slug, url=url, kiosk=True)
 
     def __str__(self):
-        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,
-                                                                                  self.url,
-                                                                                  self.geometry.width,
-                                                                                  self.geometry.height,
-                                                                                  self.geometry.x,
-                                                                                  self.geometry.y)
+        return self.__repr__()
 
     def __repr__(self):
-        return "<slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % (self.slug,
-                                                                                  self.url,
-                                                                                  self.geometry.width,
-                                                                                  self.geometry.height,
-                                                                                  self.geometry.x,
-                                                                                  self.geometry.y)
+        return "<id: %s, slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % \
+            (self.id, self.slug, self.url, self.geometry.width, self.geometry.height,
+             self.geometry.x, self.geometry.y)
 
     def update_geometry(self, geometry):
         """
@@ -64,3 +57,4 @@ class ManagedAdhocBrowser(ManagedBrowser):
 
     def close(self):
         self.set_state(ApplicationState.STOPPED)
+        self.clear_tmp_dir()

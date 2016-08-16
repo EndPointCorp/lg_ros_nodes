@@ -92,6 +92,21 @@ def url_compare(a0, b0):
     return True
 
 
+def geometry_compare(adhoc_browser_message, managed_adhoc_browser_instance):
+    """
+    Accepts adhoc browser message and ManagedAdhocBrowser instnace
+    and compares geometry of these
+    returns bool
+    """
+    geometry_match = (
+        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x) and
+        int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y) and
+        int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width) and
+        int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
+
+    return geometry_match
+
+
 def write_log_to_file(message):
     """
     Write a log line to a file - don't use it in production!
@@ -670,13 +685,12 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
     rospy.logdebug('creating callback %s' % kwargs.get('groups', 'no group'))
 
     def cb(msg):
-        rospy.logerr('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
         if msg.data == 'all':
-            rospy.logdebug('firing function for all...')
+            rospy.loginfo('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
         if 'groups' in kwargs and msg.data in kwargs['groups']:
-            rospy.logdebug('firing function for custom msg...')
+            rospy.loginfo('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)

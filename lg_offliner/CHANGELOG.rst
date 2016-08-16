@@ -2,6 +2,12 @@
 Changelog for package lg_offliner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.26 (2016-08-15)
+-------------------
+
+1.3.25 (2016-08-12)
+-------------------
+
 1.3.24 (2016-08-12)
 -------------------
 * added documentation, comments, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_

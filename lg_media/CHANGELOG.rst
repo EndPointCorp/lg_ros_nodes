@@ -2,6 +2,15 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.26 (2016-08-15)
+-------------------
+* add soft relaunch support for all media assets
+  browser graphics, browser videos, and mplayer videos supported.
+* Contributors: Jacob Minshall
+
+1.3.25 (2016-08-12)
+-------------------
+
 1.3.24 (2016-08-12)
 -------------------
 

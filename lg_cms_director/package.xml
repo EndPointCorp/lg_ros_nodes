@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_cms_director</name>
-  <version>1.3.24</version>
+  <version>1.3.26</version>
   <description>Presentation bridge</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
