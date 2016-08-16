@@ -9,7 +9,7 @@
 # Some public design discussion:
 # https://groups.google.com/forum/#!topic/python-tornado/lhyGhLZQIxY
 
-#TODO#import KeyholeHandler
+#TODO#import ProxyHandler
 
 import tornado.ioloop
 import tornado.web
@@ -18,7 +18,7 @@ from tornado.httputil import HTTPHeaders
 import urllib
 import rospy
 
-class KeyholeHandler(tornado.web.RequestHandler):
+class ProxyHandler(tornado.web.RequestHandler):
     def build_client_headers(self):
         client_headers = HTTPHeaders(self.request.headers)
         #client_headers['Host'] = 'kh.google.com'
@@ -59,7 +59,7 @@ class KeyholeHandler(tornado.web.RequestHandler):
             if int(response.error.code) == int(599):
                 # RECURSION
                 rospy.logerr('Trying again!')
-                self.fetch_keyhole(self.response_callback)
+                self.fetch_resource(self.response_callback)
             elif int(response.error.code) == 304: # Not changed.
                 rospy.loginfo('got response: %s in %s seconds' % (response.code, response.request_time))
 #                self.success_callback(response)
@@ -84,28 +84,28 @@ class KeyholeHandler(tornado.web.RequestHandler):
             self.set_header(header, value)
         self.finish()
 
-    def fetch_keyhole(self, callback):
+    def fetch_resource(self, callback):
         client.fetch(self.build_client_request(), callback)
 
     @tornado.web.asynchronous
     def get(self, args=None):
-        self.fetch_keyhole(self.response_callback)
+        self.fetch_resource(self.response_callback)
 
     @tornado.web.asynchronous
     def post(self, args=None):
         # Handle POST same as GET.
-        self.fetch_keyhole(self.response_callback)
+        self.fetch_resource(self.response_callback)
 
 if __name__ == "__main__":
     # use `pycurl`, an external dependency
     tornado.httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
     # Single client instance
     client = tornado.httpclient.AsyncHTTPClient(max_clients=1000)
-    rospy.init_node('keyhole_proxy')
+    rospy.init_node('aggressive_proxy')
 
     proxy_port = int(rospy.get_param('~proxy_port', 9900))
     application = tornado.web.Application([
-        (r"/(.*)", KeyholeHandler),
+        (r"/(.*)", ProxyHandler),
     ], debug=True)
     application.listen(port=proxy_port)
 

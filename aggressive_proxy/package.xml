@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>aggressive_proxy</name>
+  <version>0.0.1</version>
+  <description>An Aggressive HTTP proxy, especially for Google Earth.</description>
+
+  <author email="adam@endpoint.com">Adam Vollrath</author>
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>python-pycurl</exec_depend>
+</package>
