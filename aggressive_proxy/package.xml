@@ -7,12 +7,11 @@
   <author email="adam@endpoint.com">Adam Vollrath</author>
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
 
-  <license>TODO</license>
+  <license>Apache 2.0</license>
 
   <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rospy</build_depend>
-  <exec_depend>rospy</exec_depend>
+  <depend>rospy</depend>
   <exec_depend>python-pycurl</exec_depend>
 </package>

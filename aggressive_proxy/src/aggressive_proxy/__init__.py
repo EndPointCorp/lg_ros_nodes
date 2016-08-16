@@ -1,1 +1,1 @@
-from proxy_lib import MyProxy
+from proxy_handler import ProxyHandler
