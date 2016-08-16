@@ -7,6 +7,7 @@ from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
 from lg_common.helpers import check_www_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise
+from lg_common.helpers import make_soft_relaunch_callback
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
 # FOV for zoom level 3
@@ -69,6 +70,7 @@ def main():
 
     # listen to state messages
     rospy.Subscriber('/%s/state' % server_type, ApplicationState, managed_browser.handle_state_msg)
+    make_soft_relaunch_callback(managed_browser.handle_soft_relaunch, groups=['streetview'])
 
     rospy.spin()
 

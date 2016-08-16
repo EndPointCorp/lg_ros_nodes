@@ -1,0 +1,17 @@
+<launch>
+    <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py">
+        <param name="check_every_seconds_delay" value="1"/>
+        <param name="checks" value="['ls /tmp']"/>  <!-- 0 returning command, as if online -->
+        <!-- messages with subslots (e.g. GenericMessage message.slug) will need more care in processing -->
+        <!-- not yet implemented -->
+        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile;/something/offline:appctl/Mode-mode:value-online_scene"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline;/something/offline:appctl/Mode-mode:value-offline_scene"/>
+    </node>
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_when_online" pkg="lg_offliner" type="test_when_online.py"/>
+</launch>

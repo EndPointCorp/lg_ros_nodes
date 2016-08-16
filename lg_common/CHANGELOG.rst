@@ -2,6 +2,23 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.26 (2016-08-15)
+-------------------
+* fix log messages for soft relaunches
+* add soft relaunch support for all media assets
+  browser graphics, browser videos, and mplayer videos supported.
+* Contributors: Jacob Minshall
+
+1.3.25 (2016-08-12)
+-------------------
+* better detection of new and old assets
+* Added geometry checks for browser persistence and failed to cover
+  edgecase http://d.pr/i/1it1J
+* Contributors: Galaxy Admin, Wojciech Zieniewicz
+
+1.3.24 (2016-08-12)
+-------------------
+
 1.3.23 (2016-08-09)
 -------------------
 

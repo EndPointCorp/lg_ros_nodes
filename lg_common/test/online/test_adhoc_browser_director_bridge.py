@@ -254,9 +254,11 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         rospy.loginfo("published adhoc browser => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc browser => %s" % AdhocBrowsers(browsers=center_browser))
+        rospy.loginfo("zzz %s" % zero_id(AdhocBrowsers(browsers=[center_browser])))
+        rospy.loginfo("zzz %s" % zero_id(self.mock_publisher_center.published_messages[0]))
 
-        self.assertEqual(AdhocBrowsers(browsers=[center_browser]), self.mock_publisher_center.published_messages[0])
-        self.assertEqual(AdhocBrowsers(browsers=[]), self.mock_publisher_right.published_messages[0])
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser])), zero_id(self.mock_publisher_center.published_messages[0]))
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[])), zero_id(self.mock_publisher_right.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
 
@@ -301,10 +303,15 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         rospy.loginfo("published adhoc browser => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc browser => %s" % AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3]))
-        self.assertEqual(AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3]), self.mock_publisher_center.published_messages[0])
-        self.assertEqual(AdhocBrowsers(browsers=[right_browser_4]), self.mock_publisher_right.published_messages[0])
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3])), zero_id(self.mock_publisher_center.published_messages[0]))
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[right_browser_4])), zero_id(self.mock_publisher_right.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
+
+def zero_id(d):
+    for browser in d.browsers:
+        browser.id = '0'
+    return d
 
 if __name__ == '__main__':
     import rostest

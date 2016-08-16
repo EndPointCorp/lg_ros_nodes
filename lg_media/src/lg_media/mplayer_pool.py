@@ -234,4 +234,9 @@ class MplayerPool(object):
         mplayer_instance.close()
         del self.mplayers[mplayer_pool_id]
 
+    def handle_soft_relaunch(self, *args, **kwargs):
+        mplayers = self.mplayers.keys()
+        for mplayer in mplayers:
+            self._remove_mplayer(mplayer)
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

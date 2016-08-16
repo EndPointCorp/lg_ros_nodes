@@ -145,6 +145,7 @@ class AdhocBrowserDirectorBridge():
         preload = False
 
         for browser in browsers:
+            # TODO (WZ) make a hash from url + geometry here
             browser_id = uuid.uuid4().hex[:8]
             browser_name = 'adhoc_browser_' + self.viewport_name + '_' + str(browser_id)
             adhoc_browser = AdhocBrowser()

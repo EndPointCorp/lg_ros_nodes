@@ -109,14 +109,14 @@ class ManagedBrowser(ManagedApplication):
 
         # finishing command line and piping output to logger
         cmd.extend(shlex.split('2>&1'))
-        rospy.loginfo("Starting cmd: %s" % cmd)
+        rospy.logdebug("Starting cmd: %s" % cmd)
 
         # Different versions of Chrome use different window instances.
         # This should match 'Google-chrome' as well as 'google-chrome'
         w_instance = 'oogle-chrome \\({}\\)'.format(self.tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
-        rospy.loginfo("Command {}".format(cmd))
+        rospy.logdebug("Command {}".format(cmd))
 
         # clean up after thyself
         rospy.on_shutdown(self.clear_tmp_dir)
@@ -134,10 +134,10 @@ class ManagedBrowser(ManagedApplication):
         Clears out all temporary files and disk cache for this instance.
         """
         try:
-            rospy.loginfo("Purging ManagedBrowser directory: %s" % self.tmp_dir)
+            rospy.logdebug("Purging ManagedBrowser directory: %s" % self.tmp_dir)
             shutil.rmtree(self.tmp_dir)
         except OSError, e:
-            rospy.loginfo("Could not purge the %s directory because %s" % (self.tmp_dir, e))
+            rospy.logdebug("Could not purge the %s directory because %s" % (self.tmp_dir, e))
 
     @staticmethod
     def get_os_port():

@@ -36,6 +36,7 @@ catkin_install_python(PROGRAMS
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  add_rostest(test/online/test_lg_offliner_basic.test)
-  catkin_add_nosetests(test/offline/test_lg_offliner_basic.py)
+  add_rostest(test/online/test_when_online.test)
+  add_rostest(test/online/test_when_offline.test)
+  catkin_add_nosetests(test/offline/test_basic.py)
 endif()
