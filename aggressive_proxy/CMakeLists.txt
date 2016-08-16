@@ -18,3 +18,9 @@ catkin_install_python(PROGRAMS
   scripts/proxy
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  catkin_add_nosetests(test/test_proxy_handler.py)
+  add_rostest(test/aggressive_proxy/proxy.test)
+endif()

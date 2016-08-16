@@ -1,0 +1,5 @@
+<launch>
+  <node name="testing_proxy_handler" pkg="aggressive_proxy" type="proxy.py"/>
+  <test test-name="test_aggressive_proxy" pkg="aggressive_proxy" type="test_aggressive_proxy.py">
+  </test>
+</launch>
