@@ -308,6 +308,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
 
+
 def zero_id(d):
     for browser in d.browsers:
         browser.id = '0'

@@ -62,9 +62,9 @@ def geometry_compare(adhoc_browser_message, managed_adhoc_browser_instance):
     returns bool
     """
     geometry_match = (
-        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x) and\
-        int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y) and\
-        int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width) and\
+        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x) and
+        int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y) and
+        int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width) and
         int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
 
     return geometry_match

@@ -59,7 +59,6 @@ class ManagedAdhocBrowser(ManagedBrowser):
                                            self.binary,
                                            self.command_line_args)
 
-
     def __repr__(self):
         return self.__str__()
 

@@ -169,24 +169,16 @@ class AdhocBrowserPool():
         browser_to_create = ManagedAdhocBrowser(geometry=geometry,
                                                 log_level=self.log_level,
                                                 slug=self.viewport_name + "_" + new_browser_pool_id,
-<<<<<<< HEAD
                                                 user_agent=new_browser.user_agent,
                                                 extensions=extensions,
                                                 command_line_args=command_line_args,
                                                 binary=binary,
-                                                url=new_url
-                                                )
-
-        rospy.loginfo("POOL %s: Creating new browser %s with id %s" % (self.viewport_name, new_browser, new_browser_pool_id))
-        browser_to_create.set_state(ApplicationState.STARTED)
-=======
                                                 url=new_url,
                                                 uid=new_browser_pool_id
                                                 )
 
         browser_to_create.set_state(ApplicationState.VISIBLE)
         rospy.logdebug("POOL %s: Creating new browser %s with id %s and url %s" % (self.viewport_name, new_browser, new_browser_pool_id, new_url))
->>>>>>> 54014925f9bf9d8532e630557286d87b16a0ff98
         self.browsers[new_browser_pool_id] = browser_to_create
         rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
         return True
@@ -268,7 +260,6 @@ class AdhocBrowserPool():
         except Exception, e:
             rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
             return False
-
 
     def _partition_existing_browser_ids(self, incoming_browsers):
         """
