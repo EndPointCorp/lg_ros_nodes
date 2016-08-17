@@ -1,7 +1,11 @@
 #!/usr/bin/env python
+
 # Starts up a slow HTTP server for use during automated testing.
 
 # Authored by Adam Vollrath <adam@endpoint.com>
+
+from time import time
+import json
 
 import rospy
 
@@ -9,15 +13,39 @@ from tornado.web import RequestHandler, Application
 from tornado.ioloop import IOLoop
 
 class DelayHandler(RequestHandler):
-    def get(self, args=None):
+    def initialize(self, recent_requests):
+        self.recent_requests = recent_requests
+
+    def get(self, uri):
+        # Record and timestamp this request in our recent requests.
+        try:
+            recent_requests[uri].append(time())
+        except KeyError:
+            recent_requests[uri] = [time(), ]
+
+        delay = (float(uri) / 1000) #milliseconds
+
+        # Wait until `delay` seconds since first request to this URI.
+        self.sleep(recent_requests[uri][0], delay)
+
         self.set_status(200)
-        self.write(args[0])
+
+        # Return JSON list of request timestamps.
+        self.write(json.dumps(recent_requests[uri]))
         self.finish()
 
+    def sleep(self, start, delay):
+        elapsed = time() - start
+        remaining = delay - elapsed
+        rospy.sleep(remaining)
+
 if __name__ == '__main__':
+    # Store state outside of the Web Application.
+    recent_requests = {}
+
     # Configure an upstream HTTP server for testing.
     application = Application([
-      (r"/delay/([0-9]+).html", DelayHandler),
+      (r"/delay/([0-9]+).html", DelayHandler, {'recent_requests': recent_requests}),
     ], debug=True)
 
     # Should match parameters for the aggressive proxy node during testing.
