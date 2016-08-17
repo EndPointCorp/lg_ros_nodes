@@ -13,7 +13,7 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 class ManagedAdhocBrowser(ManagedBrowser):
     def __init__(self, geometry=None, log_level=0, command_line_args=[],
                  extensions=[], binary='/usr/bin/google-chrome',
-                 user_agent=None, slug=None, url=None, uid=None):
+                 user_agent=None, slug=None, url=None, uid=None, ros_msg=None):
 
         self.slug = slug
         self.id = uid

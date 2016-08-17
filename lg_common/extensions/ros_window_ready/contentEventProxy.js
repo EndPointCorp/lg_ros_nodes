@@ -6,7 +6,7 @@
 
       if (event.data.type && (event.data.type == "DIRECTOR_WINDOW_READY")) {
           chrome.runtime.sendMessage({type: "DIRECTOR_WINDOW_READY"}, function(answer) {
-              if (answer.ack) {
+              if (answer && answer.ack) {
                   console.log("DIRECTOR_WINDOW_READY sent");
               }
           });
@@ -18,7 +18,7 @@
         if(document.readyState === 'complete') {
             chrome.runtime.sendMessage({type: "DOM_LOADED"},
             function(answer){
-                if (answer.ack) {
+                if (answer && answer.ack) {
                     clearInterval(domLoadWatchdog);
                 }
             });

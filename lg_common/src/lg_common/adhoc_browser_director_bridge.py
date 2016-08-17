@@ -61,9 +61,9 @@ class AdhocBrowserDirectorBridge():
 
         for adhoc_browser in adhoc_browsers_list:
             if adhoc_browser.preload:
-                adhoc_browser.extensions.append(ros_window_ready_ext)
                 ros_window_ready_ext = BrowserExtension()
                 ros_window_ready_ext.name = 'ros_window_ready'
+                adhoc_browser.extensions.append(ros_window_ready_ext)
 
         adhoc_browsers = AdhocBrowsers()
         adhoc_browsers.scene_slug = slug
@@ -165,7 +165,11 @@ class AdhocBrowserDirectorBridge():
                 if chrome_config:
                     adhoc_browser = self._unpack_browser_config(adhoc_browser, chrome_config)
 
-            browser_id = generate_hash(adhoc_browser.instance_hash())
+            if adhoc_browser.preload:
+                browser_id = generate_hash(adhoc_browser.__str__(), random_suffix=True)
+            else:
+                browser_id = generate_hash(adhoc_browser.__str__())
+
             adhoc_browser.id = browser_id
 
             adhoc_browsers.append(adhoc_browser)

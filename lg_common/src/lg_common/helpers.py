@@ -6,6 +6,8 @@ import base64
 import urllib
 import hashlib
 import urlparse
+import random
+import string
 
 from interactivespaces_msgs.msg import GenericMessage
 
@@ -873,12 +875,27 @@ def browser_eligible_for_reuse(current_browser, future_browser):
         current_browser.command_line_args == future_browser_cmd_args
 
 
-def generate_hash(string, length=8):
+def get_random_string(N=6):
+    """
+    Generate random string.
+    """
+    return ''.join(random.choice(string.ascii_uppercase) for _ in range(N))
+
+
+def generate_hash(string, length=8, random_suffix=False):
     """
     Accept a string (typically AdhocBrowser.instance_hash()) and
     generate a unique hash with minimal collision
 
     This will ensure that objects have their unique instance
     hashes based on their representation (all attribs)
+
+    random_suffix adds random string to the end of the hash.
+    NB. random != unique it's still possible to get two equal hashes. 
     """
-    return base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)]
+    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)]
+
+    if random_suffix:
+        return hash_str + "_" + get_random_string()
+    else:
+        return hash_str

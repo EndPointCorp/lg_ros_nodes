@@ -179,7 +179,7 @@ class AdhocBrowserPool():
 
         rospy.logdebug("POOL %s: Creating new browser %s with id %s and url %s" % (self.viewport_name, new_browser, new_browser_pool_id, new_url))
         self.browsers[new_browser_pool_id] = browser_to_create
-        rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
+        rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers.keys()))
 
         if initial_state:
             rospy.loginfo("POOL %s: setting initial state of %s to %s" % (self.viewport_name, new_browser_pool_id, initial_state))
@@ -233,11 +233,11 @@ class AdhocBrowserPool():
             # treated as old and should be hided.
 
             old_browsers = set(self.browsers.keys()) - set(data.instances)
-            rospy.loginfo("State before hiding browsers %s is %s" % (old_browsers, self.browsers))
+            rospy.loginfo("State before hiding browsers %s is %s" % (old_browsers, self.browsers.keys()))
             self._hide_browsers(old_browsers)
-            rospy.loginfo("State after hiding browsers %s is %s" % (old_browsers, self.browsers))
+            rospy.loginfo("State after hiding browsers %s is %s" % (old_browsers, self.browsers.keys()))
             self._destroy_browsers(old_browsers)
-            rospy.loginfo("State after destroying browsers %s is %s" % (old_browsers, self.browsers))
+            rospy.loginfo("State after destroying browsers %s is %s" % (old_browsers, self.browsers.keys()))
         else:
             # That's possible if we've got new scene, before
             # the old scene was activated
@@ -405,7 +405,7 @@ class AdhocBrowserPool():
             adhoc_0 is existing and fresh in the same time
 
         """
-        rospy.loginfo("================ NEW SCENE ===============")
+        rospy.loginfo("============= NEW SCENE ===============")
 
         # Do we wait for all browsers instance ready or not
 
@@ -414,14 +414,30 @@ class AdhocBrowserPool():
         # someone decides to send a message with preload set to true
         # to be able to differentiate between previous
         # scene and incoming scene instances
+        #
+        # Bug:
+        # incoming [X, Y1, Z]
+        # state    [X, Y1, Z]
+        # 
+        # incoming [X, Y preload, A]
+        # ----
+        # intact   [X]
+        # create   [Y, A] Create Y anyway because it should be preloaded
+        # delete   [Z]
+        #
+        # Now we have 2 browsers with the same id Y
+        # Possible solutions:
+        #  - don't preload a browser (Y) if it's already in the pool
+        #  - rotate the instance name of the consecutive Y browser
+
         self.last_scene_slug = data.scene_slug
 
         incoming_browsers = self._unpack_incoming_browsers(data.browsers)
         incoming_browsers_ids = set(incoming_browsers.keys())  # set
         current_browsers_ids = get_app_instances_ids(self.browsers)  # set
         ids_to_preload = set([incoming_browser_id for incoming_browser_id in incoming_browsers_ids if incoming_browsers[incoming_browser_id].preload])
-        ids_to_remove = incoming_browsers_ids - current_browsers_ids
-        ids_to_create = current_browsers_ids - incoming_browsers_ids + ids_to_preload
+        ids_to_remove = current_browsers_ids - incoming_browsers_ids
+        ids_to_create = (incoming_browsers_ids - current_browsers_ids).union(ids_to_preload)
 
         rospy.loginfo('incoming ids: {}'.format(incoming_browsers_ids))
         rospy.loginfo('preloadable ids: {}'.format(ids_to_preload))

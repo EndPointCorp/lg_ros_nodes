@@ -219,7 +219,7 @@ WindowReadyExt.prototype.directorWindowMsg = function(sender, sendResponse) {
 };
 
 
-WindowReadyExt.prototype.getSendMsgwaiter = function(sendResponse) {
+WindowReadyExt.prototype.getSendMsgWaiter = function(sendResponse) {
     if(sendResponse) {
         this.chromeCallbacks.push(sendResponse);
     }
@@ -231,7 +231,7 @@ WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
     var extension = this;
 
     // Add actual callback which will send a message
-    this.state.addWaiter('sendMsg', this.getSendMsgwaiter(sendResponse));
+    this.state.addWaiter('sendMsg', this.getSendMsgWaiter(sendResponse));
 
     // Get url parameters from
     if(sender.tabs && sender.tabs.Tab) {
@@ -248,7 +248,7 @@ WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
             var params = parseUrl(tabs[0].url);
             this.applyUrlParams(params);
             extension.state.setFlag('domLoadedMsg');
-        );
+        });
     }
 
     // Needed to use sendResponse callback asynchronusly
