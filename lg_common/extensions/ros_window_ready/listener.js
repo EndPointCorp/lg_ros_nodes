@@ -16,7 +16,7 @@ function getQueryParams(qs) {
 }
 
 function createRosUrl(params) {
-    return (params['rosbridge_secure'] == 0 ? 'wss://' : 'ws://')
+    return (params['rosbridge_secure'] == 0 ? 'ws://' : 'wss://')
         + (params['rosbridge_host'] || 'localhost' ) + ':'
         + (params['rosbridge_port'] || '9090');
 }
@@ -41,13 +41,13 @@ State.prototype.setFlag = function(key) {
 State.prototype.callWaiters = function(flag) {
     for(var wk in this.waiters) {
         if (this.waiters.hasOwnProperty(wk)) {
-           this.waiters[index](this.flags, flag);
+           this.waiters[wk](this.flags, flag);
         }
     }
 };
 
 State.prototype.addWaiter = function(key, waiter) {
-    if (this.waiters === undefined) {
+    if (this.waiters[key] === undefined) {
         this.waiters[key] = waiter;
     }
 };
@@ -71,7 +71,6 @@ function WindowReadyExt() {
     });
 
     // See getSendMsgwaiter
-    this.chromeCallbacks = [];
     this.domLoadedWaiter = function(flags) {
         // Everything is ready
         if (flags.rosReady && flags.urlParsed
@@ -80,21 +79,21 @@ function WindowReadyExt() {
 
             if(!extension.use_app_event) {
                 extension.sendMsg();
-                for (var i = 0; i < extension.chromeCallbacks.length; i++) {
-                    extension.chromeCallbacks[i]({ack: true});
+                if (extension.chromeCallback) {
+                    extension.chromeCallback({ack: true});
                 }
             }
         }
     };
 
-
+    this.attachListeners();
 }
 
 WindowReadyExt.prototype.initRos = function() {
-    console.log("Starting initialization of callback extension");
     if (this.readyTopic) {
-        console.log("Ros already initialized");
+        return;
     }
+    console.log("Starting initialization of callback extension");
 
     var extension = this;
 
@@ -107,14 +106,12 @@ WindowReadyExt.prototype.initRos = function() {
     });
 
     this.ros.on('connection', function() {
-        this.state.update('rosReady');
+        extension.state.setFlag.apply(extension.state, ['rosReady']);
         console.log('Connection made!');
     });
 
     console.log("Connecting ros object");
     this.ros.connect(this.rosUrl);
-
-    this.initTopics();
 
     this.ros.callOnConnection();
 
@@ -160,10 +157,10 @@ WindowReadyExt.prototype.attachListeners = function() {
     chrome.runtime.onMessage.addListener(
         function(msg, sender, sendResponse) {
             if (msg.type == "DOM_LOADED") {
-                return extension.domLoadedMsg(sender, sendResponse);
+                return extension.domLoadedMsg.apply(extension, [sender, sendResponse]);
             }
             if (msg.type == "DIRECTOR_WINDOW_READY") {
-                return extension.directorWindowMsg(sender, sendResponse);
+                return extension.directorWindowMsg.apply(extension, [sender, sendResponse]);
             }
         }
     );
@@ -188,14 +185,14 @@ WindowReadyExt.prototype.applyUrlParams = function(params) {
 
     var instanceName = params['ros_instance_name'];
     if (instanceName !== undefined) {
-        this.ros_window_name = ros_window_name;
+        this.ros_window_name = instanceName;
         this.state.setFlag('urlParsed');
     }
 };
 
 // Dom loaded system message
 WindowReadyExt.prototype.domLoadedEvnt = function() {
-    this.state.addWaiter('sendMsg', this.getSendMsgwaiter());
+    this.state.addWaiter('sendMsg', this.domLoadedWaiter);
     this.state.setFlag('domLoadedEvnt');
 };
 
@@ -218,25 +215,17 @@ WindowReadyExt.prototype.directorWindowMsg = function(sender, sendResponse) {
     return true;
 };
 
-
-WindowReadyExt.prototype.getSendMsgWaiter = function(sendResponse) {
-    if(sendResponse) {
-        this.chromeCallbacks.push(sendResponse);
-    }
-    return this.getSendMsgwaiter;
-};
-
 // Dom loaded message from hosted page
 WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
     var extension = this;
-
+    this.chromeCallback = sendResponse;
     // Add actual callback which will send a message
-    this.state.addWaiter('sendMsg', this.getSendMsgWaiter(sendResponse));
+    this.state.addWaiter('sendMsg', this.domLoadedWaiter);
 
     // Get url parameters from
-    if(sender.tabs && sender.tabs.Tab) {
-        var params = parseUrl(sender.tabs.Tab.url);
-        extension.applyUrlParams(params);
+    if(sender.url) {
+        var params = parseUrl(sender.url);
+        extension.applyUrlParams.apply(extension, [params]);
         extension.state.setFlag('domLoadedMsg');
     }
     else {
@@ -246,7 +235,7 @@ WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
                 return false;
             }
             var params = parseUrl(tabs[0].url);
-            this.applyUrlParams(params);
+            extension.applyUrlParams(params);
             extension.state.setFlag('domLoadedMsg');
         });
     }
