@@ -2,7 +2,9 @@ import os
 import sys
 import json
 import rospy
+import base64
 import urllib
+import hashlib
 import urlparse
 
 from interactivespaces_msgs.msg import GenericMessage
@@ -869,3 +871,14 @@ def browser_eligible_for_reuse(current_browser, future_browser):
         current_browser.binary == future_browser.binary and\
         current_browser.extensions == future_browser_extensions and\
         current_browser.command_line_args == future_browser_cmd_args
+
+
+def generate_hash(string, length=8):
+    """
+    Accept a string (typically AdhocBrowser.instance_hash()) and
+    generate a unique hash with minimal collision
+
+    This will ensure that objects have their unique instance
+    hashes based on their representation (all attribs)
+    """
+    return base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)]

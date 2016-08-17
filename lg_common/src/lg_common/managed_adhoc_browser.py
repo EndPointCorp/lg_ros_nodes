@@ -55,12 +55,36 @@ class ManagedAdhocBrowser(ManagedBrowser):
                                            self.geometry.width,
                                            self.geometry.height,
                                            self.extensions,
-                                           self.user_agent,
                                            self.binary,
+                                           self.user_agent,
                                            self.command_line_args)
 
     def __repr__(self):
         return self.__str__()
+
+    def instance_hash(self):
+        """
+        Return a string that uniquely identifies this browser instance
+        Should be reproducible and deterministic for identical browser
+        instances
+        """
+        return "url: %s,\
+                x: %s,\
+                y: %s,\
+                offset_x: %s,\
+                offset_y: %s,\
+                extensions: %s,\
+                binary: %s,\
+                user-agent: %s,\
+                command_line_args: %s>" % (self.url,
+                                           self.geometry.x,
+                                           self.geometry.y,
+                                           self.geometry.width,
+                                           self.geometry.height,
+                                           self.extensions,
+                                           self.binary,
+                                           self.user_agent,
+                                           self.command_line_args)
 
     def update_geometry(self, geometry):
         """

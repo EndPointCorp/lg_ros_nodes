@@ -1,16 +1,15 @@
 import rospy
-import uuid
 import json
 
+from lg_common import ManagedWindow
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
-from lg_common.msg import BrowserExtension
-from interactivespaces_msgs.msg import GenericMessage
-from lg_common import ManagedWindow
-from lg_common.msg import WindowGeometry
-from lg_common.helpers import extract_first_asset_from_director_message
 from lg_common.msg import BrowserCmdArg
+from lg_common.msg import WindowGeometry
 from lg_common.msg import BrowserExtension
+from lg_common.helpers import generate_hash
+from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import extract_first_asset_from_director_message
 
 
 class AdhocBrowserDirectorBridge():
@@ -36,6 +35,13 @@ class AdhocBrowserDirectorBridge():
     def translate_director(self, data):
         """
         Translates /director/scene messages to one AdhocBrowsers message and publishes it immediately
+
+        Publishes AdhocBrowsers message on a viewport browser service topic
+        Publishes AdhocBrowsers message on a common topic only if there are some browsers
+        in the message
+        Takes care of `preload` flag and adds it to ManagedAdhocBrowser instance if
+        browser should be preloaded. It emits a message with ros_window_ready extension
+        if above constraints were met.
         """
 
         try:
@@ -51,24 +57,17 @@ class AdhocBrowserDirectorBridge():
             rospy.logwarn("Director message did not contain valid json")
             return
 
-        adhoc_browsers_list, preload = self._extract_adhoc_browsers(data)
+        adhoc_browsers_list = self._extract_adhoc_browsers(data)
 
-        # Add ros_window redy extension to browsers if we
-        # do preloading
-        if preload:
-            ros_window_ready_ext = BrowserExtension()
-            ros_window_ready_ext.name = 'ros_window_ready'
-            for adhoc_browser in adhoc_browsers_list:
+        for adhoc_browser in adhoc_browsers_list:
+            if adhoc_browser.preload:
                 adhoc_browser.extensions.append(ros_window_ready_ext)
+                ros_window_ready_ext = BrowserExtension()
+                ros_window_ready_ext.name = 'ros_window_ready'
 
         adhoc_browsers = AdhocBrowsers()
         adhoc_browsers.scene_slug = slug
         adhoc_browsers.browsers = adhoc_browsers_list
-
-        if preload:
-            adhoc_browsers.preload = True
-        else:
-            adhoc_browsers.preload = False
 
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
@@ -137,38 +136,40 @@ class AdhocBrowserDirectorBridge():
         """
         Returns a list containing AdhocBrowser objects extracted from director message for viewport
         specific to adhoc_browser that this instance of bridge is tied to.
+
+        Each browser has a unique hash assigned to it. It's generated on the basis
+        of browser's attributes.
         """
         rospy.logdebug("Got data on _extract_adhoc_browsers: %s" % data)
         adhoc_browsers = []
         browsers = extract_first_asset_from_director_message(data, 'browser', self.viewport_name)
         rospy.logdebug("Extracted browsers _extract_adhoc_browsers: %s" % browsers)
-        preload = False
 
         for browser in browsers:
-            # TODO (WZ) make a hash from url + geometry here
-            browser_id = uuid.uuid4().hex[:8]
-            browser_name = 'adhoc_browser_' + self.viewport_name + '_' + str(browser_id)
             adhoc_browser = AdhocBrowser()
-            adhoc_browser.id = browser_name
             adhoc_browser.url = browser['path']
             adhoc_browser.binary = '/usr/bin/google-chrome'
             adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']
             adhoc_browser.geometry.y = browser['y_coord'] + self._get_viewport_offset()['y']
             adhoc_browser.geometry.height = browser['height']
             adhoc_browser.geometry.width = browser['width']
+            adhoc_browser.preload = False # it's a default value
 
             activity_config = browser.get('activity_config', None)
 
             if activity_config:
                 chrome_config = activity_config.get('google_chrome', None)
                 if activity_config.get('preload', None):
-                    preload = True
+                    adhoc_browser.preload = True
 
                 if chrome_config:
                     adhoc_browser = self._unpack_browser_config(adhoc_browser, chrome_config)
+
+            browser_id = generate_hash(adhoc_browser.instance_hash())
+            adhoc_browser.id = browser_id
 
             adhoc_browsers.append(adhoc_browser)
 
         rospy.logdebug("Returning adhocbrowsers: %s" % adhoc_browsers)
 
-        return adhoc_browsers, preload
+        return adhoc_browsers

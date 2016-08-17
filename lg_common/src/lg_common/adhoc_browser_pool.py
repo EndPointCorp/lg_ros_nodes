@@ -136,7 +136,7 @@ class AdhocBrowserPool():
 
         return result
 
-    def _create_browser(self, new_browser_pool_id, new_browser):
+    def _create_browser(self, new_browser_pool_id, new_browser, initial_state=None):
         """
         Create new browser instance with desired geometry.
         """
@@ -177,10 +177,16 @@ class AdhocBrowserPool():
                                                 uid=new_browser_pool_id
                                                 )
 
-        browser_to_create.set_state(ApplicationState.VISIBLE)
         rospy.logdebug("POOL %s: Creating new browser %s with id %s and url %s" % (self.viewport_name, new_browser, new_browser_pool_id, new_url))
         self.browsers[new_browser_pool_id] = browser_to_create
         rospy.loginfo("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
+
+        if initial_state:
+            rospy.loginfo("POOL %s: setting initial state of %s to %s" % (self.viewport_name, new_browser_pool_id, initial_state))
+            browser_to_create.set_state(ApplicationState.STARTED)
+        else:
+            browser_to_create.set_state(ApplicationState.VISIBLE)
+
         return True
 
     def _hide_browsers(self, ids):
@@ -410,38 +416,35 @@ class AdhocBrowserPool():
         # scene and incoming scene instances
         self.last_scene_slug = data.scene_slug
 
-        preload_windows = hasattr(data, 'preload') and data.preload
         incoming_browsers = self._unpack_incoming_browsers(data.browsers)
         incoming_browsers_ids = set(incoming_browsers.keys())  # set
+        current_browsers_ids = get_app_instances_ids(self.browsers)  # set
+        ids_to_preload = set([incoming_browser_id for incoming_browser_id in incoming_browsers_ids if incoming_browsers[incoming_browser_id].preload])
+        ids_to_remove = incoming_browsers_ids - current_browsers_ids
+        ids_to_create = current_browsers_ids - incoming_browsers_ids + ids_to_preload
 
-        if preload_windows:
-            # if preloading - only create windows (hidden by default)
-            # an external readiness node will handle the rest
+        rospy.loginfo('incoming ids: {}'.format(incoming_browsers_ids))
+        rospy.loginfo('preloadable ids: {}'.format(ids_to_preload))
+        rospy.loginfo('current ids: {}'.format(current_browsers_ids))
+        rospy.loginfo('partitioned fresh ids: {}'.format(ids_to_create))
+        rospy.loginfo('browsers to remove: {}'.format(ids_to_remove))
 
-            for browser_pool_id in incoming_browsers_ids:
-                rospy.loginfo("POOL %s: preloading browser = %s" % (self.viewport_name, browser_pool_id))
-                self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
-        else:
-            # check which browsers already exist (if any)
-            # create missing browsers
-            rospy.loginfo("Setting non-preloaded scene")
+        for browser_pool_id in ids_to_create:
+            rospy.loginfo("Creating browser %s with preload flag: %s" % (browser_pool_id, incoming_browsers[browser_pool_id].preload))
+            if incoming_browsers[browser_pool_id].preload:
+                self._create_browser(browser_pool_id,
+                                     incoming_browsers[browser_pool_id],
+                                     ApplicationState.STARTED)
+            else:
+                self._create_browser(browser_pool_id,
+                                     incoming_browsers[browser_pool_id])
 
-            current_browsers_ids = get_app_instances_ids(self.browsers)  # set
-            ids_to_remove, ids_to_create = self._partition_existing_browser_ids(incoming_browsers.values())
-            rospy.loginfo('incoming ids: {}'.format(incoming_browsers_ids))
-            rospy.loginfo('current ids: {}'.format(current_browsers_ids))
-            rospy.loginfo('partitioned fresh ids: {}'.format(ids_to_create))
-            rospy.loginfo('browsers to remove: {}'.format(ids_to_remove))
 
-            for browser_pool_id in ids_to_create:
-                rospy.loginfo("Creating browser with id %s" % browser_pool_id)
-                self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
+        for browser_pool_id in ids_to_remove:
+            rospy.loginfo("Removing browser id %s" % browser_pool_id)
+            self._remove_browser(browser_pool_id)
 
-            for browser_pool_id in ids_to_remove:
-                rospy.loginfo("Removing browser id %s" % browser_pool_id)
-                self._remove_browser(browser_pool_id)
-
-            return True
+        return True
 
     def handle_soft_relaunch(self, *args, **kwargs):
         current_browsers = self.browsers.keys()

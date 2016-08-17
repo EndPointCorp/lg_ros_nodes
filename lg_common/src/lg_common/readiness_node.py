@@ -38,9 +38,27 @@ class ReadinessNode(object):
     def aggregate_browser_instances(self, message):
         """
         Append browser instance names to state var
-        Purge the state if new director message was published -
-        rely on scene slug.
+        Append only the browsers that have the `preload` flag set to true
+
+        Purge the state if new director message was published.
+
+
+        case 1:
+         - scene X gets published (browserY, browserZ)
+         - one of the browsers from scene X doesnt start up (say browserZ)
+         - scene X gets published again (browserJ, browserK) - readiness will have following browsers
+         in it's waiting pool: browserZ browserJ browserK
+         - scene X browsers finally load up but browserZ is still dead
+         ^ solution? -> create quasi-unique browser IDS on the basis of browsers attribs
+
+        case 2:
+         - pool already has browserX and browserY in it
+         - scene with browserY and browserX gets emitted
+         - readiness waits for browserY and browserX to check in but
+         only browserY will come up because browserX will be left intact
+         in the pool because of asset persistence
         """
+
         incoming_slug = message.scene_slug
         self.last_slug = self.state.get('slug', None)
 
@@ -48,17 +66,13 @@ class ReadinessNode(object):
             # TODO (wz): what if slug is blank for consecutive scenes?
             self._purge_state(incoming_slug)
 
-        if message.preload:
-            for browser in message.browsers:
-                # TODO (wz): prolly handle exceptions here
-                # 'right_one_ea7ef35f'
-                # browser.id - eassdsada
-                # ready      - adhoc__left_one_eassdsada
+        for browser in message.browsers:
+            if browser.preload:
                 browser_id = browser.id
-                self.state['browsers'].append(browser_id)
-            rospy.loginfo("Gathered state: %s" % self.state)
-        else:
-            self._purge_state(incoming_slug)
+                if browser_id not in self.state['browsers']:
+                    self.state['browsers'].append(browser_id)
+
+        rospy.loginfo("Gathered state: %s" % self.state)
 
     def _ready(self):
         if set(self.state['ready_browsers']) == set(self.state['browsers']):

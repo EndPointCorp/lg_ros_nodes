@@ -54,8 +54,7 @@ class ManagedApplication(object):
         return string_representation
 
     def __repr__(self):
-        representation = "<ManagedApplication: state: %s, window: %s, cmd: %s, proc: %s" % (self.state, self.window, self.cmd, self.proc)
-        return representation
+        return self.__str__()
 
     def _cleanup(self):
         # explicit SIGCONT needed to prevent undeath

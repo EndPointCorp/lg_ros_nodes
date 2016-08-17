@@ -1,5 +1,6 @@
 string id
 string url
+bool preload
 string user_agent
 string binary
 lg_common/WindowGeometry geometry
