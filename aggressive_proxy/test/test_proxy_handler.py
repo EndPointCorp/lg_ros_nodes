@@ -12,7 +12,7 @@ NAME = 'test_proxy_handler'
 
 class TestProxyHandler(unittest.TestCase):
     def setUp(self):
-        self.a = 2
+        self.a = 1
 
     def tearDown(self):
         self.a = 0

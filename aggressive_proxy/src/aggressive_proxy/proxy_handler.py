@@ -6,9 +6,10 @@ import urllib
 
 
 class ProxyHandler(tornado.web.RequestHandler):
-    def initialize(self, client):
+    def initialize(self, client, upstream_socket):
         # Reference the single AsyncHTTPClient instance.
         self.client = client
+        self.upstream_socket = upstream_socket
 
     def build_client_headers(self):
         client_headers = HTTPHeaders(self.request.headers)
@@ -21,7 +22,7 @@ class ProxyHandler(tornado.web.RequestHandler):
         # https://github.com/tornadoweb/tornado/issues/1213
         if self.request.method in ("POST", "PUT", "PATCH"):
             client_request = tornado.httpclient.HTTPRequest(
-                url='http://172.217.25.238' + self.request.uri,
+                url='http://' + self.upstream_socket + self.request.uri,
                 method=self.request.method,
                 headers=self.build_client_headers(),
                 body=self.request.body,
@@ -29,7 +30,7 @@ class ProxyHandler(tornado.web.RequestHandler):
             )
         else: # No bodies for GET or other HTTP requests.
             client_request = tornado.httpclient.HTTPRequest(
-                url='http://172.217.25.238' + self.request.uri,
+                url='http://' + self.upstream_socket + self.request.uri,
                 method=self.request.method,
                 headers=self.build_client_headers(),
                 request_timeout=1.0

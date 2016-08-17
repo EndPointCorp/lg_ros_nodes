@@ -15,6 +15,8 @@ import tornado.ioloop
 import tornado.httpclient
 from aggressive_proxy import ProxyHandler
 
+from lg_common.helpers import write_log_to_file
+
 if __name__ == "__main__":
     # use `pycurl`, an external dependency
     tornado.httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
@@ -24,9 +26,11 @@ if __name__ == "__main__":
 
     rospy.init_node('aggressive_proxy')
 
-    proxy_port = int(rospy.get_param('~proxy_port', 9900))
+    proxy_port = int(rospy.get_param('~proxy_port'))
+    upstream_socket = rospy.get_param('~upstream_socket')
+
     application = tornado.web.Application([
-        (r"/(.*)", ProxyHandler, {'client': client}),
+        (r"/(.*)", ProxyHandler, {'client': client, 'upstream_socket': upstream_socket}),
     ], debug=True)
     application.listen(port=proxy_port)
 

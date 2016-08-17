@@ -1,5 +1,12 @@
 <launch>
-  <node name="testing_proxy_handler" pkg="aggressive_proxy" type="proxy.py"/>
+  <node name="testing_proxy_handler" pkg="aggressive_proxy" type="proxy.py">
+    <param name="upstream_socket" value="localhost:19999" />
+    <param name="proxy_port" value="19900" />
+  </node>
+  <node name="test_delay_server" pkg="aggressive_proxy" type="test_delay_server.py">
+    <param name="port" value="19999" />
+  </node>
   <test test-name="test_aggressive_proxy" pkg="aggressive_proxy" type="test_aggressive_proxy.py">
+    <param name="upstream_socket" value="localhost:19900" />
   </test>
 </launch>

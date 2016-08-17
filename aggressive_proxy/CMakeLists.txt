@@ -16,6 +16,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/proxy.py
   scripts/proxy
+  scripts/test_delay_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
