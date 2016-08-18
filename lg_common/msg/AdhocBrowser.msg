@@ -1,5 +1,6 @@
 string id
 string url
+string scene_slug
 bool preload
 string user_agent
 string binary

@@ -16,7 +16,7 @@ function getQueryParams(qs) {
 }
 
 function createRosUrl(params) {
-    return (params['rosbridge_secure'] == 0 ? 'ws://' : 'wss://')
+    return (params['rosbridge_secure'] == 1 ? 'wss://' : 'ws://')
         + (params['rosbridge_host'] || 'localhost' ) + ':'
         + (params['rosbridge_port'] || '9090');
 }

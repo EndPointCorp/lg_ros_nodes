@@ -144,9 +144,11 @@ class AdhocBrowserDirectorBridge():
         adhoc_browsers = []
         browsers = extract_first_asset_from_director_message(data, 'browser', self.viewport_name)
         rospy.logdebug("Extracted browsers _extract_adhoc_browsers: %s" % browsers)
+        message = json.loads(data.message)
 
         for browser in browsers:
             adhoc_browser = AdhocBrowser()
+            adhoc_browser.scene_slug = message['slug']
             adhoc_browser.url = browser['path']
             adhoc_browser.binary = '/usr/bin/google-chrome'
             adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']

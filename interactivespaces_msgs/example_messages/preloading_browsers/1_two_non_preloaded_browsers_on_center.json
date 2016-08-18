@@ -1,9 +1,9 @@
 {
-  "description": "two browsers on center with preload - alternate urls",
+  "description": "two_non_preloaded_browsers_on_center",
   "duration": 500,
   "name": "center",
   "resource_uri": "blargh",
-  "slug": "blarghalt",
+  "slug": "two_non_preloaded_browsers_on_center",
   "windows": [
     {
       "activity": "browser",
@@ -11,7 +11,7 @@
         "preload": false
       },
       "assets": [
-        "http://yandex.ru"
+        "https://cnn.com"
       ],
       "height": 400,
       "presentation_viewport": "center",
@@ -25,7 +25,7 @@
         "preload": false
       },
       "assets": [
-        "https://www.co.jp"
+        "https://www.google.com"
       ],
       "height": 400,
       "presentation_viewport": "center",

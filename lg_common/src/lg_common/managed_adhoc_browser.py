@@ -2,6 +2,7 @@
 
 import rospy
 import commands
+import time
 
 from lg_common import ManagedBrowser
 from lg_common.msg import WindowGeometry
@@ -13,8 +14,10 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 class ManagedAdhocBrowser(ManagedBrowser):
     def __init__(self, geometry=None, log_level=0, command_line_args=[],
                  extensions=[], binary='/usr/bin/google-chrome',
-                 user_agent=None, slug=None, url=None, uid=None, ros_msg=None):
+                 user_agent=None, slug=None, url=None, uid=None,
+                 scene_slug=None):
 
+        self.scene_slug = scene_slug
         self.slug = slug
         self.id = uid
         self.url = url
@@ -24,6 +27,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
         self.binary = binary
         self.command_line_args = command_line_args
         self.extensions = extensions
+        self.timestamp = time.time()
 
         super(ManagedAdhocBrowser, self).__init__(
             slug=slug,
@@ -37,17 +41,17 @@ class ManagedAdhocBrowser(ManagedBrowser):
             kiosk=True)
 
     def __str__(self):
-        return "<slug: %s,\
-                url: %s,\
-                id: %s,\
-                x: %s,\
-                y: %s,\
-                offset_x: %s,\
-                offset_y: %s,\
-                extensions: %s,\
-                binary: %s,\
-                user-agent: %s,\
-                command_line_args: %s>" % (self.slug,
+        return ("<slug: %s,"
+                "url: %s,"
+                "id: %s,"
+                "x: %s,"
+                "y: %s,"
+                "offset_x: %s,"
+                "offset_y: %s,"
+                "extensions: %s,"
+                "binary: %s,"
+                "user-agent: %s,"
+                "command_line_args: %s>") % (self.slug,
                                            self.url,
                                            self.id,
                                            self.geometry.x,

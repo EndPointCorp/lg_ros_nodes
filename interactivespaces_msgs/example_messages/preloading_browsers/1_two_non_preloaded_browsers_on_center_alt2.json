@@ -1,9 +1,9 @@
 {
-  "description": "two browsers on center with preload",
+  "description": "two_non_preloaded_browsers_on_center",
   "duration": 500,
   "name": "center",
   "resource_uri": "blargh",
-  "slug": "blargh_no_preload",
+  "slug": "two_non_preloaded_browsers_on_center_alt_slug",
   "windows": [
     {
       "activity": "browser",
@@ -13,11 +13,11 @@
       "assets": [
         "https://cnn.com"
       ],
-      "height": 400,
+      "height": 100,
       "presentation_viewport": "center",
-      "width": 800,
-      "x_coord": 100,
-      "y_coord": 100
+      "width": 100,
+      "x_coord": 200,
+      "y_coord": 300
     },
     {
       "activity": "browser",
@@ -27,11 +27,11 @@
       "assets": [
         "https://www.google.com"
       ],
-      "height": 400,
+      "height": 100,
       "presentation_viewport": "center",
-      "width": 800,
-      "x_coord": 100,
-      "y_coord": 900
+      "width": 100,
+      "x_coord": 200,
+      "y_coord": 500
     }
   ]
 }
