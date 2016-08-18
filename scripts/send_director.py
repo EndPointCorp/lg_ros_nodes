@@ -37,7 +37,11 @@ msg = GenericMessage()
 msg.type = 'json'
 msg.message = DIRECTOR_MESSAGE
 
-rospy.init_node('director_messager')
-rospy.sleep(1)
-rospy.Publisher('/director/scene', GenericMessage, queue_size=10, latch=True).publish(msg)
-rospy.sleep(1)
+try:
+    rospy.init_node('director_messager')
+    rospy.sleep(1)
+    rospy.Publisher('/director/scene', GenericMessage, queue_size=10, latch=True).publish(msg)
+    rospy.sleep(1)
+except KeyboardInterrupt:
+    print "Exiting cleanly"
+    rospy.signal_shutdown("Ctrl+c used on send_director.py")

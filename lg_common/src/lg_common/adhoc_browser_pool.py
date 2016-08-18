@@ -42,7 +42,7 @@ class AdhocBrowserPool():
         Callback for service requests. We always return self.browsers
         """
         with self.lock:
-            rospy.loginfo("Received DirectorPoolQuery service request" % self.viewport_name)
+            rospy.loginfo("Received DirectorPoolQuery service request")
             return json.dumps(self.browsers, indent=4, sort_keys=True)
 
     def _init_service(self):
@@ -60,10 +60,10 @@ class AdhocBrowserPool():
         """
         call .close() on browser object and cleanly delete the object
         """
-        rospy.logdebug("Removing browser with id %s" % (self.viewport_name, browser_pool_id))
+        rospy.logdebug("Removing browser with id %s" % (browser_pool_id))
         self.browsers[browser_pool_id].close()
         del self.browsers[browser_pool_id]
-        rospy.logdebug("State after %s removal: %s" % (self.viewport_name, browser_pool_id, self.browsers))
+        rospy.logdebug("State after %s removal: %s" % (browser_pool_id, self.browsers))
 
     def _filter_command_line_args(self, command_line_args):
         """
@@ -147,7 +147,8 @@ class AdhocBrowserPool():
         binary = self._get_browser_binary(new_browser)
         url = self._add_ros_instance_url_param(new_browser.url, new_browser_pool_id)
 
-        rospy.logdebug("Creating new browser %s with id %s and url %s" % (self.viewport_name, new_browser, new_browser_pool_id, url))
+        rospy.logdebug("Creating new browser %s with id %s and url %s" %
+                (new_browser, new_browser_pool_id, url))
         managed_adhoc_browser = ManagedAdhocBrowser(geometry=geometry,
                                                     log_level=self.log_level,
                                                     slug=self.viewport_name + "_" + new_browser_pool_id,
@@ -161,17 +162,17 @@ class AdhocBrowserPool():
                                                     )
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
-        rospy.loginfo("State after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers.keys()))
+        rospy.loginfo("State after addition of %s: %s" % (new_browser_pool_id, self.browsers.keys()))
 
         if initial_state:
-            rospy.logdebug("Setting initial state of %s to %s" % (self.viewport_name, new_browser_pool_id, initial_state))
-            browser_to_create.set_state(ApplicationState.STARTED)
+            rospy.logdebug("Setting initial state of %s to %s" % (new_browser_pool_id, initial_state))
+            managed_adhoc_browser.set_state(ApplicationState.STARTED)
         else:
-            browser_to_create.set_state(ApplicationState.VISIBLE)
+            managed_adhoc_browser.set_state(ApplicationState.VISIBLE)
 
         return True
 
-    def _hide_browsers(self, ids):
+    def _hide_browsers_ids(self, ids):
         """
         Accepts a list of browser pool ids to hide
 
@@ -187,12 +188,12 @@ class AdhocBrowserPool():
         """
         Accepts a list of browser ids to destroy (kill and remove)
         """
-        rospy.loginfo("Browsers to remove = %s" % (self.viewport_name, ids))
+        rospy.loginfo("Browsers to remove = %s" % (ids))
         for browser_pool_id in ids:
             rospy.loginfo("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
 
-    def _get_all_preloadable_instances(self):
+    def _get_all_preloadable_instances(self, data):
         """
         returns all browsers' ID prefixes shepherded by this pool, that are preloadable (which means
         that they are already shown as well as the instances that need to become unhidden)
@@ -224,14 +225,14 @@ class AdhocBrowserPool():
         unhide them and hide old browsers.
 
         """
-        with self.lock():
-            preloadable_prefixes = self._get_all_preloadable_instances()
-            old_preloadable_instances_to_remove = self._get_old_preloadable_browser_instances(preloadable_prefixes)
+        with self.lock:
+            preloadable_prefixes = self._get_all_preloadable_instances(data)
+            old_preloadable_instances_to_remove = self._get_old_preloadable_browser_instances(preloadable_prefixes, data)
             self._unhide_browser_instances(data)
             self._hide_browsers_ids(set(old_preloadable_instances_to_remove))
             self._destroy_browsers_ids(set(old_preloadable_instances_to_remove))
 
-    def _get_old_preloadable_browser_instances(self, prelodable_prefixes):
+    def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):
         """
         Accepts a list of all preloadable prefixes
         Returns a list of browsers that
@@ -300,7 +301,7 @@ class AdhocBrowserPool():
 
         """
 
-        with self.lock():
+        with self.lock:
             self.scene_slug = data.scene_slug
             rospy.loginfo("============= NEW SCENE BEGIN (slug: %s) ===============" % self.scene_slug)
             incoming_browsers = self._get_incoming_browsers_dict(data.browsers)
