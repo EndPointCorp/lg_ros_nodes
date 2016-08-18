@@ -704,6 +704,7 @@ def is_valid_state(state):
     from lg_common.msg import ApplicationState
     return state == ApplicationState.HIDDEN or \
         state == ApplicationState.STOPPED or \
+        state == ApplicationState.STARTED or \
         state == ApplicationState.SUSPENDED or \
         state == ApplicationState.VISIBLE
 

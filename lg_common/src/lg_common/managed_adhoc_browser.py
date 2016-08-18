@@ -3,6 +3,7 @@
 import rospy
 import commands
 import time
+import json
 
 from lg_common import ManagedBrowser
 from lg_common.msg import WindowGeometry
@@ -41,54 +42,20 @@ class ManagedAdhocBrowser(ManagedBrowser):
             kiosk=True)
 
     def __str__(self):
-        return ("<slug: %s,"
-                "url: %s,"
-                "id: %s,"
-                "x: %s,"
-                "y: %s,"
-                "offset_x: %s,"
-                "offset_y: %s,"
-                "extensions: %s,"
-                "binary: %s,"
-                "user-agent: %s,"
-                "command_line_args: %s>") % (self.slug,
-                                           self.url,
-                                           self.id,
-                                           self.geometry.x,
-                                           self.geometry.y,
-                                           self.geometry.width,
-                                           self.geometry.height,
-                                           self.extensions,
-                                           self.binary,
-                                           self.user_agent,
-                                           self.command_line_args)
+        return str({"slug": self.slug,
+                "url": self.url,
+                "uid": self.id,
+                "x_offset": self.geometry.x,
+                "y_offset": self.geometry.y,
+                "width": self.geometry.width,
+                "height": self.geometry.height,
+                "extensions": self.extensions,
+                "binary": self.binary,
+                "user_agent": self.user_agent,
+                "command_line_args": self.command_line_args})
 
     def __repr__(self):
         return self.__str__()
-
-    def instance_hash(self):
-        """
-        Return a string that uniquely identifies this browser instance
-        Should be reproducible and deterministic for identical browser
-        instances
-        """
-        return "url: %s,\
-                x: %s,\
-                y: %s,\
-                offset_x: %s,\
-                offset_y: %s,\
-                extensions: %s,\
-                binary: %s,\
-                user-agent: %s,\
-                command_line_args: %s>" % (self.url,
-                                           self.geometry.x,
-                                           self.geometry.y,
-                                           self.geometry.width,
-                                           self.geometry.height,
-                                           self.extensions,
-                                           self.binary,
-                                           self.user_agent,
-                                           self.command_line_args)
 
     def update_geometry(self, geometry):
         """

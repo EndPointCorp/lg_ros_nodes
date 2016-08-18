@@ -1,5 +1,6 @@
 import rospy
 import threading
+import json
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
@@ -43,7 +44,8 @@ class AdhocBrowserPool():
         """
         with self.lock:
             rospy.loginfo("Received DirectorPoolQuery service request")
-            return json.dumps(self.browsers, indent=4, sort_keys=True)
+            #return json.dumps(self.browsers)
+            return 'aaaaaaaaaaaaaaaaaaaaaa %s' % len(self.browsers)
 
     def _init_service(self):
         service = rospy.Service('/browser_service/{}'.format(self.viewport_name),
