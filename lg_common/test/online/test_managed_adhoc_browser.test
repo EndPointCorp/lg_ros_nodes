@@ -7,11 +7,11 @@
     <node name="adhoc_browser_pool_center" pkg="lg_common" type"adhoc_browser.py">
       <param name="viewport" value="center">
     </node>
-    <node name="adhoc_browser_pool_center" pkg="lg_common" type"adhoc_browser.py">
-      <param name="viewport" value="center">
+    <node name="adhoc_browser_pool_right" pkg="lg_common" type"adhoc_browser.py">
+      <param name="viewport" value="right">
     </node>
-    <node name="adhoc_browser_pool_center" pkg="lg_common" type"adhoc_browser.py">
-      <param name="viewport" value="center">
+    <node name="adhoc_browser_pool_left" pkg="lg_common" type"adhoc_browser.py">
+      <param name="viewport" value="left">
     </node>
     <!-- end of three adhoc browser pools -->
 

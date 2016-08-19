@@ -26,13 +26,13 @@ class AdhocBrowserPool():
       old browsers and show new
 
     """
-    def __init__(self, viewport_name):
+    def __init__(self, viewport_name, extensions_root="/opt/google/chrome/extensions/"):
         """
         AdhocBrowserPool manages a pool of browsers on one viewport.
         self.browsers ivar keeps a dict of (id: ManagedAdhocBrowser) per viewport.
         """
         self.browsers = {}
-        self.extensions_root = "/opt/google/chrome/extensions/"
+        self.extensions_root = extensions_root
         self.lock = threading.Lock()
         self.viewport_name = viewport_name
         self._init_service()

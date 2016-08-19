@@ -12,6 +12,18 @@ from lg_common import AdhocBrowserPool
 from lg_common import AdhocBrowserDirectorBridge
 from std_msgs.msg import String
 
+
+class MockSubscriber:
+    def __init__(self):
+        self.messages = []
+
+    def reinitialize(self):
+        self.messages = []
+
+    def record_message(self, message):
+        self.messages.append(message)
+
+
 class TestAdhocBrowserPool(unittest.TestCase):
     def setUp(self):
         """
@@ -45,7 +57,49 @@ class TestAdhocBrowserPool(unittest.TestCase):
           - make soft relaunch - verify they got killed
           - emit many browsers - dont wait and make soft relaunch - all of them should get killed
 
+         assert types:
+          - /browser_service/center AdhocBrowsers
+          - /browser_service/left AdhocBrowsers
+          - /browser_service/right AdhocBrowsers
+          - /browser_service/browsers AdhocBrowsers
+          - /director/ready Ready
+          - /director/window/ready String
+          - last but not least: rosservice for adhoc browser pool
         """
+
+        self.subscribers = []
+        self.browser_service_mock_center = MockSubscriber()
+        self.browser_service_mock_left = MockSubscriber()
+        self.browser_service_mock_right = MockSubscriber()
+        self.browser_service_mock_common = MockSubscriber()
+        self.director_window_ready_mock = MockSubscriber()
+        self.director_ready_mock = MockSubscriber()
+
+        self.subscribers.append(self.browser_service_mock_center)
+        self.subscribers.append(self.browser_service_mock_left)
+        self.subscribers.append(self.browser_service_mock_right)
+        self.subscribers.append(self.browser_service_mock_common)
+        self.subscribers.append(self.director_window_ready_mock)
+        self.subscribers.append(self.director_ready_mock)
+
+        rospy.Subscriber('/browser_service/center',
+                self.browser_service_mock_center.record_message,
+                AdhocBrowsers)
+        rospy.Subscriber('/browser_service/left',
+                self.browser_service_mock_left.record_message,
+                AdhocBrowsers)
+        rospy.Subscriber('/browser_service/right',
+                self.browser_service_mock_right.record_message,
+                AdhocBrowsers)
+        rospy.Subscriber('/browser_service/browsers',
+                self.browser_service_mock_common.record_message,
+                AdhocBrowsers)
+        rospy.Subscriber('/director/ready',
+                self.director_ready_mock.record_message,
+                Ready)
+        rospy.Subscriber('/director/window/ready',
+                self.browser_service_mock_common.record_message,
+                String)
         # extensions messages
         self.single_browser_with_extension = None
         self.single_browser_with_two_extensions = None
@@ -63,113 +117,20 @@ class TestAdhocBrowserPool(unittest.TestCase):
         self.two_browsers_with_preloading_mix_alt_slug = None
         # soft relaunch
         self.soft_relaunch_message = String(data='media')
-        # pools instances
-        adhoc_browser_pool_center = AdhocBrowserPool(viewport='testing_viewport_center')
-        adhoc_browser_pool_right = AdhocBrowserPool(viewport='testing_viewport_right')
-        adhoc_browser_pool_left = AdhocBrowserPool(viewport='testing_viewport_left')
         # director_bridge_mocks
-        director_pool =
+        director_pool = None
         # director scene publisher
         director_publisher = rospy.Publisher()
 
+    def reinitialize_mock_subscribers(self):
+        [subscriber.reinitialize() for subscriber in self.subscribers]
 
-
-    def test_1_bogus_director_message_is_ignored(self):
+    def test_1_tests_are_working(self):
         """
-        Send unrelated director message and check if empty list of browsers is published
         """
-        self.bridge_center.translate_director(self.message_bogus)
-        self.bridge_right.translate_director(self.message_bogus)
-
-        self.assertEqual(1, len(self.mock_publisher_center.published_messages))
-        self.assertEqual(1, len(self.mock_publisher_right.published_messages))
-        self.assertEqual(AdhocBrowsers(browsers=[]), self.mock_publisher_center.published_messages[0])
-        self.assertEqual(AdhocBrowsers(browsers=[]), self.mock_publisher_right.published_messages[0])
-        self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
-        self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
-
-    def test_2_center_message(self):
-        """
-        Send message containing one asset directed at 'center' viewport
-        assert for:
-        - one browser on 'center' viewport and check url + geometry (with viewport offset)
-        - empty browsers list on the other viewport
-        """
-        self.bridge_center.translate_director(self.message_center)
-        self.bridge_right.translate_director(self.message_center)
-
-        self.assertEqual(1, len(self.mock_publisher_center.published_messages))
-        self.assertEqual(1, len(self.mock_publisher_right.published_messages))
-
-        center_browser = AdhocBrowser(id='adhoc_browser_center_0',
-                                      geometry=WindowGeometry(x=10,
-                                                              y=10,
-                                                              width=600,
-                                                              height=800),
-                                      url='http://www.lol.zomg')
-
-        rospy.loginfo("published adhoc browser => %s" % self.mock_publisher_center.published_messages[0])
-        rospy.loginfo("asserted adhoc browser => %s" % AdhocBrowsers(browsers=center_browser))
-        rospy.loginfo("zzz %s" % zero_id(AdhocBrowsers(browsers=[center_browser])))
-        rospy.loginfo("zzz %s" % zero_id(self.mock_publisher_center.published_messages[0]))
-
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser])), zero_id(self.mock_publisher_center.published_messages[0]))
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[])), zero_id(self.mock_publisher_right.published_messages[0]))
-        self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
-        self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
-
-    def test_3_multi_browser_message(self):
-        """
-        Send message containing one asset directed at 'center' viewport
-        assert for:
-        - one browser on 'center' viewport and check url + geometry (with viewport offset)
-        - empty browsers list on the other viewport
-        """
-        self.bridge_center.translate_director(self.message_3)
-        self.bridge_right.translate_director(self.message_3)
-        self.assertEqual(1, len(self.mock_publisher_center.published_messages))
-        self.assertEqual(1, len(self.mock_publisher_right.published_messages))
-        center_browser_1 = AdhocBrowser(id='adhoc_browser_center_0',
-                                        geometry=WindowGeometry(x=10,
-                                                                y=10,
-                                                                width=600,
-                                                                height=800),
-                                        url='http://www.lol.zomg')
-
-        center_browser_2 = AdhocBrowser(id='adhoc_browser_center_1',
-                                        geometry=WindowGeometry(x=400,
-                                                                y=200,
-                                                                width=300,
-                                                                height=200),
-                                        url='http://www.lol2.zomg')
-
-        center_browser_3 = AdhocBrowser(id='adhoc_browser_center_2',
-                                        geometry=WindowGeometry(x=10,
-                                                                y=10,
-                                                                width=888,
-                                                                height=11),
-                                        url='http://www.lol3.zomg')
-
-        right_browser_4 = AdhocBrowser(id='adhoc_browser_right_0',
-                                       geometry=WindowGeometry(x=100,
-                                                               y=100,
-                                                               width=100,
-                                                               height=100),
-                                       url='http://www.lol4.zomg')
-
-        rospy.loginfo("published adhoc browser => %s" % self.mock_publisher_center.published_messages[0])
-        rospy.loginfo("asserted adhoc browser => %s" % AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3]))
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3])), zero_id(self.mock_publisher_center.published_messages[0]))
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[right_browser_4])), zero_id(self.mock_publisher_right.published_messages[0]))
-        self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
-        self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
-
-
-def zero_id(d):
-    for browser in d.browsers:
-        browser.id = '0'
-    return d
+        self.reinitialize_mock_subscribers()
+        self.assertEqual(1, 1)
 
 if __name__ == '__main__':
     import rostest
-    rostest.rosrun(PKG, NAME, TestAdhocBrowserDirectorBridge)
+    rostest.rosrun(PKG, NAME, TestAdhocBrowser)

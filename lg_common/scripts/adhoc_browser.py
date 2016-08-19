@@ -12,6 +12,7 @@ from lg_common.msg import Ready
 def main():
     rospy.init_node('lg_adhoc_browser', anonymous=True)
 
+    extensions_root = rospy.get_param('~extensions_root', '/opt/google/chrome/extensions/')
     viewport_name = rospy.get_param('~viewport', None)
     browser_binary = rospy.get_param('~browser_binary', '/usr/bin/google-chrome')
 
@@ -25,9 +26,13 @@ def main():
     topic_name = '/browser_service/{}'.format(viewport_name)
     common_topic_name = '/browser_service/browsers'
 
-    adhocbrowser_pool = AdhocBrowserPool(viewport_name)
-    make_soft_relaunch_callback(adhocbrowser_pool.handle_soft_relaunch, groups=["media"])
-    rospy.Subscriber(topic_name, AdhocBrowsers, adhocbrowser_pool.handle_ros_message)
+    adhocbrowser_pool = AdhocBrowserPool(viewport_name=viewport_name,
+                                         extensions_root=extensions_root)
+    make_soft_relaunch_callback(adhocbrowser_pool.handle_soft_relaunch,
+                                groups=["media"])
+    rospy.Subscriber(topic_name,
+                     AdhocBrowsers,
+                     adhocbrowser_pool.handle_ros_message)
 
     """
     Initialize director => browser pool bridge that translates director GenericMessage to AdhocBrowsers.msg
