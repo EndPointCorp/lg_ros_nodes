@@ -37,6 +37,20 @@ class ManagedApplication(object):
 
         self.post_init()
 
+    def close(self):
+        """
+        End this ManagedApplication immediately.  After closing, the instance
+        can no longer be used.
+        """
+        self.set_state(ApplicationState.STOPPED)
+        del self.lock
+        del self.cmd
+        del self.state
+        del self.proc
+        del self.window
+        del self._respawn_handlers[:]
+        del self._state_handlers[:]
+
     def post_init(self):
         pass
 
