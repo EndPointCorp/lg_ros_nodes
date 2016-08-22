@@ -78,7 +78,7 @@ class AdhocBrowserPool():
                 return []
 
             if 'enable-arc' in arg or 'enable-nacl' in arg:
-                rospy.logerror("Unsupported command line arg %s" % arg)
+                rospy.logerr("Unsupported command line arg %s" % arg)
                 return []
 
             result.append(arg)
@@ -104,10 +104,7 @@ class AdhocBrowserPool():
         """
         extensions = []
         for extension in adhoc_browser_msg.extensions:
-            if extension.path:
-                extensions.append(extension.path)
-            else:
-                extensions.append(self.extensions_root + extension.name)
+            extensions.append(self.extensions_root + extension.name)
 
         return extensions
 

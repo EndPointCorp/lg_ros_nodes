@@ -56,6 +56,26 @@ The list of browsers in the message is compared with the list of currently opene
 * `~browser_binary` [string] - absolute or relative path to browser binary
 * `~extensions_root` [string] - absolute or relative path to directory with unpacked chrome extensions
 
+```json
+{
+  "activity_config": {
+    "preload": true,
+      "google_chrome":{
+        "extensions": [
+        {
+          "name": "test_extension1"
+        },
+        {
+          "name": "test_extension2"
+        }
+        ]
+      }
+  }
+}
+```
+
+thanks to this parameter - you may emit a message with above `activity_config` without absolute path to the extension
+
 ##### Subscribed Topics
 
 * `/browser_service/<viewport>` [`lg_adhoc_browser/AdhocBrowsers`] - A list of browsers which should be opened.

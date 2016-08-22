@@ -8,3 +8,4 @@ from adhoc_browser_director_bridge import AdhocBrowserDirectorBridge
 from state_changer import StateChanger
 from log_watcher import LogWatcher
 from readiness_node import ReadinessNode
+from interactive_messages_factory import InteractiveSpacesMessagesFactory

@@ -10,6 +10,7 @@ from lg_common.msg import BrowserExtension
 from lg_common.helpers import generate_hash
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
+from lg_common.helpers import write_log_to_file
 
 
 class AdhocBrowserDirectorBridge():
@@ -57,13 +58,13 @@ class AdhocBrowserDirectorBridge():
             rospy.logwarn("Director message did not contain valid json")
             return
 
-        adhoc_browsers_list = self._extract_adhoc_browsers(data)
+        adhoc_browsers_list = self._extract_browsers_from_message(data)
 
         for adhoc_browser in adhoc_browsers_list:
             if adhoc_browser.preload:
                 ros_window_ready_ext = BrowserExtension()
                 ros_window_ready_ext.name = 'ros_window_ready'
-                adhoc_browser.extensions.append(ros_window_ready_ext)
+                adhoc_browser.extensions.insert(0, ros_window_ready_ext)
 
         adhoc_browsers = AdhocBrowsers()
         adhoc_browsers.scene_slug = slug
@@ -71,6 +72,7 @@ class AdhocBrowserDirectorBridge():
 
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
+        write_log_to_file("adhoc_browsers: %s" % adhoc_browsers)
         self.browser_pool_publisher.publish(adhoc_browsers)
         if adhoc_browsers.browsers:
             self.aggregate_publisher.publish(adhoc_browsers)
@@ -105,7 +107,7 @@ class AdhocBrowserDirectorBridge():
         """
         binary = browser_config.get('binary_path', '/usr/bin/google-chrome')
         user_agent = browser_config.get('user_agent', None)
-        browser_cmd_args = browser_config.get('cmd_args', None)
+        browser_cmd_args = browser_config.get('additional_cmd_args', None)
         extensions = browser_config.get('extensions', None)
 
         if binary:
@@ -117,22 +119,18 @@ class AdhocBrowserDirectorBridge():
         if browser_cmd_args:
             for cmd_arg in browser_cmd_args:
                 browser_arg = BrowserCmdArg()
-                browser_arg.name = cmd_arg.name
-                browser_arg.path = cmd_arg.path
-                browser_arg.metadata = cmd_arg.metadata
-                adhoc_browser.cmd_args.append(browser_arg)
+                browser_arg.argument = str(cmd_arg)
+                adhoc_browser.command_line_args.append(browser_arg)
 
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
-                browser_extension.name = extension['name']
-                browser_extension.path = extension['path']
-                browser_extension.metadata = extension['metadata']
+                browser_extension.name = str(extension['name'])
                 adhoc_browser.extensions.append(browser_extension)
 
         return adhoc_browser
 
-    def _extract_adhoc_browsers(self, data):
+    def _extract_browsers_from_message(self, data):
         """
         Returns a list containing AdhocBrowser objects extracted from director message for viewport
         specific to adhoc_browser that this instance of bridge is tied to.
@@ -140,15 +138,15 @@ class AdhocBrowserDirectorBridge():
         Each browser has a unique hash assigned to it. It's generated on the basis
         of browser's attributes.
         """
-        rospy.logdebug("Got data on _extract_adhoc_browsers: %s" % data)
+        rospy.logdebug("Got data on _extract_browsers_from_message: %s" % data)
         adhoc_browsers = []
         browsers = extract_first_asset_from_director_message(data, 'browser', self.viewport_name)
-        rospy.logdebug("Extracted browsers _extract_adhoc_browsers: %s" % browsers)
+        rospy.logdebug("Extracted browsers _extract_browsers_from_message: %s" % browsers)
         message = json.loads(data.message)
 
         for browser in browsers:
             adhoc_browser = AdhocBrowser()
-            adhoc_browser.scene_slug = message['slug']
+            adhoc_browser.scene_slug = message['slug'].encode('ascii')
             adhoc_browser.url = browser['path']
             adhoc_browser.binary = '/usr/bin/google-chrome'
             adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']

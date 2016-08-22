@@ -4,19 +4,22 @@
     <param name="/viewport/right" value="640x480+1280+0" />
 
     <!-- three adhoc browser pools -->
-    <node name="adhoc_browser_pool_center" pkg="lg_common" type"adhoc_browser.py">
-      <param name="viewport" value="center">
+    <node name="adhoc_browser_pool_center" pkg="lg_common" type="adhoc_browser.py">
+      <param name="viewport" value="center"/>
+      <param name="extensions_root" value="/tmp/extensions/"/>
     </node>
-    <node name="adhoc_browser_pool_right" pkg="lg_common" type"adhoc_browser.py">
-      <param name="viewport" value="right">
+    <node name="adhoc_browser_pool_right" pkg="lg_common" type="adhoc_browser.py">
+      <param name="viewport" value="right"/>
+      <param name="extensions_root" value="/tmp/extensions/"/>
     </node>
-    <node name="adhoc_browser_pool_left" pkg="lg_common" type"adhoc_browser.py">
-      <param name="viewport" value="left">
+    <node name="adhoc_browser_pool_left" pkg="lg_common" type="adhoc_browser.py">
+      <param name="viewport" value="left"/>
+      <param name="extensions_root" value="/tmp/extensions/"/>
     </node>
     <!-- end of three adhoc browser pools -->
 
     <!-- readiness node for handling preloading -->
-    <node name="readiness_node_42_a" pkg="lg_common" type="readiness.py"/>
+    <node name="readiness_node" pkg="lg_common" type="readiness.py"/>
     <!-- end of readiness node -->
 
     <test test-name="test_lg_common_adhoc_browser_pool" pkg="lg_common" type="test_adhoc_browser.py"/>

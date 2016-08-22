@@ -180,8 +180,8 @@ def load_director_message(message):
     try:
         ret = json.loads(message.message)
     except (ValueError, SyntaxError) as e:
-        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge")
-        rospy.logdebug("Message: %s" % message)
+        rospy.logwarn("Could not parse json message in helpers.load_director_message")
+        rospy.logwarn("Message: %s" % message)
         raise e
 
     return ret
@@ -191,19 +191,6 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     """
     Extracts **single** (first) asset and geometry and activity_config
     for given activity and viewport, e.g. all assets for browser or all KMLs for GE.
-    Returns list of dictionaries containing adhoc browser metadata e.g.:
-        [
-        { "1": { "path": "https://www.youtube.com/watch?v=un8FAjXWOBY",
-                 "height": 600,
-                 "width":800,
-                 "x_coord":100,
-                 "y_coord":100 }},
-        { "2": { "path": "https://www.youtube.com/watch?v=un8FAjXWOBY",
-                 "height": 150,
-                 "width": 300,
-                 "x_coord": 100,
-                 "y_coord": 100 }}]
-
     rtype: list
 
     Example director message:
@@ -226,31 +213,6 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
                 }
                 ]
             }
-    or
-
-    {"description": "S4",
-      "duration": 15,
-      "name": "S4",
-      "resource_uri": "/director_api/scene/9686ad33-720b-4088-8f79-30fab0e03b6d__s4/",
-      "slug": "9686ad33-720b-4088-8f79-30fab0e03b6d__s4",
-      "windows": [
-        {
-          "activity": "video",
-          "activity_config": {
-            "onFinish": "loop"
-          },
-          "assets": [
-            "http://lg-head:8088/roscoe_assets/flame.avi"
-          ],
-          "height": 1080,
-          "presentation_viewport": "display_wall-portal",
-          "width": 1920,
-          "x_coord": 960,
-          "y_coord": 540
-        }
-      ]
-    }
-
     """
     message = load_director_message(message)
     if not message:
@@ -261,7 +223,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     for window in message.get('windows', []):
         if (window.get('activity') == activity_type) and (window.get('presentation_viewport') == viewport):
             asset_object = {}
-            asset_object['path'] = window['assets'][0]
+            asset_object['path'] = str(window['assets'][0])
             asset_object['x_coord'] = window['x_coord']
             asset_object['y_coord'] = window['y_coord']
             asset_object['height'] = window['height']
