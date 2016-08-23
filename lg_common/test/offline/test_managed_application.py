@@ -2,8 +2,10 @@
 PKG = 'lg_common'
 NAME = 'test_managed_application'
 
+import gc
 import os
 import unittest
+import weakref
 
 from lg_common.msg import ApplicationState
 from appctl_support import ProcController
@@ -89,8 +91,19 @@ class TestManagedApplication(unittest.TestCase):
         self.assertEqual(1, self.app.proc.stop_count)
 
 
+class TestCleanup(unittest.TestCase):
+    def test_cleanup(self):
+        app = ManagedApplication(cmd=TEST_CMD)
+        app_ref = weakref.ref(app)
+        app.close()
+        app = None
+        gc.collect()
+        self.assertIsNone(app_ref())
+
+
 if __name__ == '__main__':
     import rostest
     rostest.rosrun(PKG, NAME, TestManagedApplication)
+    rostest.rosrun(PKG, NAME, TestCleanup)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
