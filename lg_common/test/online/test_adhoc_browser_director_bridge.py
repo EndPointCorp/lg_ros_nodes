@@ -192,6 +192,13 @@ class MockBrowserPoolPublisher:
         self.published_messages.append(adhoc_browsers)
         rospy.logdebug("After publishing, self.published_messages = %s" % self.published_messages)
 
+class MockAggregatePublisher:
+    def __init__(self):
+        self.published_messages = []
+
+    def publish(self, msg):
+        self.published_messages.append(msg)
+
 
 class TestAdhocBrowserDirectorBridge(unittest.TestCase):
     def setUp(self):
@@ -215,8 +222,18 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         self.mock_publisher_center = MockBrowserPoolPublisher()
         self.mock_publisher_right = MockBrowserPoolPublisher()
-        self.bridge_center = AdhocBrowserDirectorBridge(self.mock_publisher_center, 'center')
-        self.bridge_right = AdhocBrowserDirectorBridge(self.mock_publisher_right, 'right')
+        self.mock_aggregate_publisher_center = MockAaggregatePublisher()
+        self.mock_aggregate_publisher_right = MockAaggregatePublisher()
+        self.bridge_center = AdhocBrowserDirectorBridge(
+            self.mock_aggregate_publisher_center,
+            self.mock_publisher_center,
+            'center'
+        )
+        self.bridge_right = AdhocBrowserDirectorBridge(
+            self.mock_aggregate_publisher_right,
+            self.mock_publisher_right,
+            'right'
+        )
 
     def test_1_bogus_director_message_is_ignored(self):
         """
