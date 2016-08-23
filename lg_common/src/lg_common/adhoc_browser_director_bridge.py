@@ -153,7 +153,7 @@ class AdhocBrowserDirectorBridge():
             adhoc_browser.geometry.y = browser['y_coord'] + self._get_viewport_offset()['y']
             adhoc_browser.geometry.height = browser['height']
             adhoc_browser.geometry.width = browser['width']
-            adhoc_browser.preload = False # it's a default value
+            adhoc_browser.preload = False  # it's a default value
 
             activity_config = browser.get('activity_config', None)
 
@@ -166,9 +166,9 @@ class AdhocBrowserDirectorBridge():
                     adhoc_browser = self._unpack_browser_config(adhoc_browser, chrome_config)
 
             if adhoc_browser.preload:
-                browser_id = generate_hash(adhoc_browser.__str__(), random_suffix=True)
+                browser_id = generate_hash(self._serialize_adhoc_browser(adhoc_browser), random_suffix=True)
             else:
-                browser_id = generate_hash(adhoc_browser.__str__())
+                browser_id = generate_hash(self._serialize_adhoc_browser(adhoc_browser))
 
             adhoc_browser.id = browser_id
 
@@ -177,3 +177,17 @@ class AdhocBrowserDirectorBridge():
         rospy.logdebug("Returning adhocbrowsers: %s" % adhoc_browsers)
 
         return adhoc_browsers
+
+    def _serialize_adhoc_browser(self, adhoc_browser, filtered_slots=['scene_slug']):
+        """
+        Serialize adhoc browser but filter out
+        scene slug that it belongs to, to prevent
+        adhoc_browser hash from being unique per scene
+        """
+        serialized_browser_string = ''
+
+        for slot in adhoc_browser.__slots__:
+            if slot not in filtered_slots:
+                serialized_browser_string += getattr(adhoc_browser, slot).__str__()
+
+        return serialized_browser_string

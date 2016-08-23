@@ -854,7 +854,7 @@ def generate_hash(string, length=8, random_suffix=False):
     hashes based on their representation (all attribs)
 
     random_suffix adds random string to the end of the hash.
-    NB. random != unique it's still possible to get two equal hashes. 
+    NB. random != unique it's still possible to get two equal hashes.
     """
     hash_str = base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)]
 

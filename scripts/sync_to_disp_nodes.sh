@@ -18,7 +18,12 @@ else
 fi
 
 lg-sync --really-sync catkin/src/ /home/lg/catkin_ws/src/
-lg-run-bg 'cd catkin_ws ; source /opt/ros/indigo/setup.bash ; rosdep install --from-paths src --ignore-src --rosdistro indigo -y; catkin_make install'
-lg-sudo-bg 'stop roslaunch; start roslaunch'
+lg-run-bg 'cd catkin_ws ; \
+           source /opt/ros/indigo/setup.bash ; \
+           rosdep install --from-paths src --ignore-src --rosdistro indigo -y;
+           catkin_make install;\
+           find /home/lg/catkin_ws/src/ -iname "*.pyc" -delete '
 lg-sudo-bg 'linking extensions to /opt/google/chrome/extensions/'
 lg-sudo-bg 'sudo mkdir -p /opt/google/chrome/extensions/; sudo ln -sf /home/lg/catkin_ws/src/lg_common/extensions/* /opt/google/chrome/extensions/'
+
+echo "You need to relaunch to new version"

@@ -38,13 +38,30 @@ class AdhocBrowserPool():
         self._init_service()
         self.log_level = rospy.get_param('/logging/level', 0)
 
+    def _serialize_browser_pool(self):
+        """
+        iterates over a dict of self.browsers and returns a dict
+        where key is the ID of the browser and value is a json
+        serialized representation of browsers' .__str__() method
+
+        rtype: dict
+        """
+        serialized_browsers = {}
+        for browser_id, browser in self.browsers.items():
+            serialized_browsers[browser_id] = json.loads(browser.__str__())
+
+        return serialized_browsers
+
     def process_service_request(self, req):
         """
         Callback for service requests. We always return self.browsers
+        in a form of a strigified dictionary
         """
         with self.lock:
-            rospy.logdebug("Received AdhocBrowserPool service request")
-            return json.dumps(self.browsers)
+            response = json.dumps(self._serialize_browser_pool())
+            rospy.loginfo("Received BrowserPool service request")
+            rospy.loginfo("Returning %s" % response)
+            return response
 
     def _init_service(self):
         service = rospy.Service('/browser_service/{}'.format(self.viewport_name),
@@ -145,8 +162,10 @@ class AdhocBrowserPool():
         binary = self._get_browser_binary(new_browser)
         url = self._add_ros_instance_url_param(new_browser.url, new_browser_pool_id)
 
-        rospy.logdebug("Creating new browser %s with id %s and url %s" %
-                (new_browser, new_browser_pool_id, url))
+        rospy.logdebug(
+            "Creating new browser %s with id %s and url %s" %
+            (new_browser, new_browser_pool_id, url)
+        )
         managed_adhoc_browser = ManagedAdhocBrowser(geometry=geometry,
                                                     log_level=self.log_level,
                                                     slug=self.viewport_name + "_" + new_browser_pool_id,
@@ -246,8 +265,7 @@ class AdhocBrowserPool():
             # have an identical slug then remove all preloadable
             # instances that are not in the incoming readiness message
             # use preloadable_prefixes to find which ones are to be removed
-            if browser.id.split('_')[0] in preloadable_prefixes\
-                and browser.id not in data.instances:
+            if browser.id.split('_')[0] in preloadable_prefixes and browser.id not in data.instances:
                 remove.append(browser.id)
 
         return remove
@@ -350,7 +368,6 @@ class AdhocBrowserPool():
                                      incoming_browsers[browser_pool_id])
 
         return True
-
 
     def handle_soft_relaunch(self, *args, **kwargs):
         current_browsers = self.browsers.keys()

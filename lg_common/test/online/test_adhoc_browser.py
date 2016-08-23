@@ -7,6 +7,7 @@ import rospy
 import unittest
 import tempfile
 import os
+import json
 
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
@@ -36,6 +37,7 @@ class MockSubscriber(object):
 class TestAdhocBrowser(unittest.TestCase):
     def setUp(self):
         """
+        TODO(wz):
          test coverage for adhoc browser pool:
          - preloading:
           - emit message with preloading - verify readiness message came, make service assert
@@ -75,7 +77,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_window_ready_mock = MockSubscriber(topic_name='/director/window/ready')
         self.director_ready_mock = MockSubscriber(topic_name='/diretory/ready')
         self.director_scene_mock = MockSubscriber(topic_name='/diretory/scene')
-        self.common_mock = MockSubscriber(topic_name='all_topics') # subscriber for all messages
+        self.common_mock = MockSubscriber(topic_name='all_topics')  # subscriber for all messages
 
         self.subscribers.append(self.browser_service_mock_center)
         self.subscribers.append(self.browser_service_mock_left)
@@ -84,59 +86,88 @@ class TestAdhocBrowser(unittest.TestCase):
         self.subscribers.append(self.director_window_ready_mock)
         self.subscribers.append(self.director_ready_mock)
         self.subscribers.append(self.director_scene_mock)
-        self.subscribers.append(self.common_mock) # common channel for all msgs
+        self.subscribers.append(self.common_mock)  # common channel for all msgs
 
-        rospy.Subscriber('/browser_service/center',
-                AdhocBrowsers,
-                self.browser_service_mock_center.record_message)
-        rospy.Subscriber('/browser_service/left',
-                AdhocBrowsers,
-                self.browser_service_mock_left.record_message)
-        rospy.Subscriber('/browser_service/right',
-                AdhocBrowsers,
-                self.browser_service_mock_right.record_message)
-        rospy.Subscriber('/browser_service/browsers',
-                AdhocBrowsers,
-                self.browser_service_mock_common.record_message)
-        rospy.Subscriber('/director/ready',
-                Ready,
-                self.director_ready_mock.record_message)
-        rospy.Subscriber('/director/window/ready',
-                String,
-                self.browser_service_mock_common.record_message)
-        rospy.Subscriber('/director/scene',
-                GenericMessage,
-                self.director_scene_mock.record_message)
-
-        rospy.Subscriber('/browser_service/right',
-                AdhocBrowsers,
-                self.common_mock.record_message)
-        rospy.Subscriber('/browser_service/center',
-                AdhocBrowsers,
-                self.common_mock.record_message)
-        rospy.Subscriber('/browser_service/left',
-                AdhocBrowsers,
-                self.common_mock.record_message)
-        rospy.Subscriber('/browser_service/browsers',
-                AdhocBrowsers,
-                self.common_mock.record_message)
-        rospy.Subscriber('/director/window/ready',
-                String,
-                self.common_mock.record_message)
-        rospy.Subscriber('/director/ready',
-                Ready,
-                self.common_mock.record_message)
-        rospy.Subscriber('/director/scene',
-                GenericMessage,
-                self.common_mock.record_message)
+        rospy.Subscriber(
+            '/browser_service/center',
+            AdhocBrowsers,
+            self.browser_service_mock_center.record_message
+        )
+        rospy.Subscriber(
+            '/browser_service/left',
+            AdhocBrowsers,
+            self.browser_service_mock_left.record_message
+        )
+        rospy.Subscriber(
+            '/browser_service/right',
+            AdhocBrowsers,
+            self.browser_service_mock_right.record_message
+        )
+        rospy.Subscriber(
+            '/browser_service/browsers',
+            AdhocBrowsers,
+            self.browser_service_mock_common.record_message
+        )
+        rospy.Subscriber(
+            '/director/ready',
+            Ready,
+            self.director_ready_mock.record_message
+        )
+        rospy.Subscriber(
+            '/director/window/ready',
+            String,
+            self.browser_service_mock_common.record_message
+        )
+        rospy.Subscriber(
+            '/director/scene',
+            GenericMessage,
+            self.director_scene_mock.record_message
+        )
+        rospy.Subscriber(
+            '/browser_service/right',
+            AdhocBrowsers,
+            self.common_mock.record_message
+        )
+        rospy.Subscriber(
+            '/browser_service/center',
+            AdhocBrowsers,
+            self.common_mock.record_message
+        )
+        rospy.Subscriber(
+            '/browser_service/left',
+            AdhocBrowsers,
+            self.common_mock.record_message
+        )
+        rospy.Subscriber(
+            '/browser_service/browsers',
+            AdhocBrowsers,
+            self.common_mock.record_message
+        )
+        rospy.Subscriber(
+            '/director/window/ready',
+            String,
+            self.common_mock.record_message
+        )
+        rospy.Subscriber(
+            '/director/ready',
+            Ready,
+            self.common_mock.record_message
+        )
+        rospy.Subscriber(
+            '/director/scene',
+            GenericMessage,
+            self.common_mock.record_message
+        )
 
         rospy.init_node("test_adhoc_browser", anonymous=True)
         rospy.sleep(3)
 
         # director scene publisher
-        self.director_publisher = rospy.Publisher('/director/scene',
-                                                   GenericMessage,
-                                                   queue_size=3)
+        self.director_publisher = rospy.Publisher(
+            '/director/scene',
+            GenericMessage,
+            queue_size=3
+        )
 
     def reinitialize_mock_subscribers(self):
         [subscriber.reinitialize() for subscriber in self.subscribers]
@@ -150,7 +181,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.assertEqual(1, 1)
 
-    def test_2_chrome_extension_initialization(self):
+    def x_test_2_chrome_extension_initialization(self):
         """
         1. emit browser with extension - check if it got passed to --load-extension arg
         2. emit browser with 2 extensions - check above
@@ -175,7 +206,6 @@ class TestAdhocBrowser(unittest.TestCase):
             os.mkdir('/tmp/extensions/ros_window_ready')
         except OSError, e:
             pass
-
 
         # 1
         self.reinitialize_mock_subscribers()
@@ -238,12 +268,12 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
-        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 2)
         self.assertEqual(len(self.browser_service_mock_left.messages), 2)
         self.assertEqual(len(self.browser_service_mock_right.messages), 2)
         self.assertEqual(len(self.browser_service_mock_common.messages), 1)
 
-    def test_3_chrome_commandline_argument_passing(self):
+    def x_test_3_chrome_commandline_argument_passing(self):
         """
         1. emit browser with custom command line args - verify that they've been added to cmdargs
         """
@@ -274,7 +304,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
 
-    def test_4_chrome_user_agent_passing(self):
+    def x_test_4_chrome_user_agent_passing(self):
         """
         1. verify that chrome user agent has been set in commandline args
         """
@@ -301,7 +331,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
 
-    def test_5_chrome_binary_setting(self):
+    def x_test_5_chrome_binary_setting(self):
         """
         1. verify that chrome has been attempted to run with a custom binary (make a link)
         """
@@ -352,25 +382,91 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'mzBvRrn')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'V0zX4Pj')
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
         browsers_on_center = center_service().state
+
         try:
-            browser_on_center = json.loads(json.dumps(browser_on_center))
+            browsers_on_center = json.loads(browsers_on_center)
             json_is_valid = True
         except ValueError:
+            browsers_on_center = {}
             json_is_valid = False
 
         self.assertEqual(json_is_valid, True, 'Json returned on /browser_service/center is not valid')
-        self.assertEqual(browser_on_center, 'asd')
+        self.assertEqual(browsers_on_center['V0zX4Pj']['uid'], 'V0zX4Pj')
+        browser_timestamp = browsers_on_center['V0zX4Pj']['timestamp']
+
+        # 2
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 10)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 2)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_scene_mock.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'V0zX4Pj')
+        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id, 'V0zX4Pj')
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True, 'Json returned on /browser_service/center is not valid')
+        self.assertEqual(browsers_on_center['V0zX4Pj']['uid'], 'V0zX4Pj')
+        browser_timestamp2 = browsers_on_center['V0zX4Pj']['timestamp']
+
+        self.assertEqual(browser_timestamp, browser_timestamp2, "Emitting same message with identical browser updated the browser instance")
+
+        # 3
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_alt_slug'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 15)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 3)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_scene_mock.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'V0zX4Pj')
+        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id, 'V0zX4Pj')
+        self.assertEqual(self.browser_service_mock_center.messages[2].browsers[0].id, 'V0zX4Pj')
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True, 'Json returned on /browser_service/center is not valid')
+        self.assertEqual(browsers_on_center['V0zX4Pj']['uid'], 'V0zX4Pj')
+        browser_timestamp3 = browsers_on_center['V0zX4Pj']['timestamp']
+
+        self.assertEqual(browser_timestamp, browser_timestamp3, "Emitting same message with identical browser but different scene slug updated the browser instance")
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
-
-
 
 
 if __name__ == '__main__':

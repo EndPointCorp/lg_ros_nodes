@@ -43,18 +43,20 @@ class ManagedAdhocBrowser(ManagedBrowser):
             kiosk=True)
 
     def __str__(self):
-        return json.dumps({"slug": self.slug,
-                "url": self.url,
-                "uid": self.id,
-                "x_offset": self.geometry.x,
-                "y_offset": self.geometry.y,
-                "width": self.geometry.width,
-                "height": self.geometry.height,
-                "extensions": self.extensions,
-                "binary": self.binary,
-                "user_agent": self.user_agent,
-                "command_line_args": self.command_line_args,
-                "timestamp": self.timestamp})
+        return json.dumps({
+            "slug": self.slug,
+            "url": self.url,
+            "uid": self.id,
+            "x_offset": self.geometry.x,
+            "y_offset": self.geometry.y,
+            "width": self.geometry.width,
+            "height": self.geometry.height,
+            "extensions": self.extensions,
+            "binary": self.binary,
+            "user_agent": self.user_agent,
+            "command_line_args": self.command_line_args,
+            "timestamp": self.timestamp
+        })
 
     def __repr__(self):
         return self.__str__()

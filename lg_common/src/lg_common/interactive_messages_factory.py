@@ -194,6 +194,30 @@ class InteractiveSpacesMessagesFactory:
         ]
         }
         """)
+        self.test_one_browser_on_center_alt_slug_msg = self._create_message("""
+        {
+        "description": "one_browser_on_center_alt_slug",
+        "duration": 100,
+        "name": "one_browser_on_center_alt_slug",
+        "resource_uri": "/director_api/scene/one_browser_on_center_alt_slug/",
+        "slug": "one_browser_on_center_alt_slug",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+            },
+            "assets": [
+                "https://maps.google.com"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
         self.test_one_browser_on_center_msg = self._create_message("""
         {
         "description": "one_browser_on_center",
@@ -229,7 +253,6 @@ class InteractiveSpacesMessagesFactory:
         ]
         }
         """)
-
 
     def _create_message(self, msg_string):
         message = GenericMessage()
@@ -275,8 +298,7 @@ if __name__ == "__main__":
         print "This file, if called directly, will emit an interactivespaces.msgs.GenericMessage"
         print ""
         print "You must provide message name to emit:\n%s" % \
-                '\n'.join(["- " + method for method in dir(messages) if callable(getattr(messages, method)) and \
-                not method.startswith('_')])
+            '\n'.join(["- " + method for method in dir(messages) if callable(getattr(messages, method)) and not method.startswith('_')])
         print ""
         print "NOTE: methods beginning with 'test' are used by test suite"
         print ""
