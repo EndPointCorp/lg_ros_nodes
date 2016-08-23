@@ -181,7 +181,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.assertEqual(1, 1)
 
-    def x_test_2_chrome_extension_initialization(self):
+    def test_2_chrome_extension_initialization(self):
         """
         1. emit browser with extension - check if it got passed to --load-extension arg
         2. emit browser with 2 extensions - check above
@@ -273,7 +273,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_right.messages), 2)
         self.assertEqual(len(self.browser_service_mock_common.messages), 1)
 
-    def x_test_3_chrome_commandline_argument_passing(self):
+    def test_3_chrome_commandline_argument_passing(self):
         """
         1. emit browser with custom command line args - verify that they've been added to cmdargs
         """
@@ -304,7 +304,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
 
-    def x_test_4_chrome_user_agent_passing(self):
+    def test_4_chrome_user_agent_passing(self):
         """
         1. verify that chrome user agent has been set in commandline args
         """
@@ -331,7 +331,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
 
-    def x_test_5_chrome_binary_setting(self):
+    def test_5_chrome_binary_setting(self):
         """
         1. verify that chrome has been attempted to run with a custom binary (make a link)
         """
