@@ -192,6 +192,7 @@ class MockBrowserPoolPublisher:
         self.published_messages.append(adhoc_browsers)
         rospy.logdebug("After publishing, self.published_messages = %s" % self.published_messages)
 
+
 class MockAggregatePublisher:
     def __init__(self):
         self.published_messages = []
