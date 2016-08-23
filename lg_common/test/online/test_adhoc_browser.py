@@ -221,8 +221,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id,
-                         'MdLybZ0',
-                         'ID of a browser was not statically and deterministically generated')
+                         'eO3yVFv')
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
         # 2
@@ -239,8 +238,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id,
-                         'nDa_YfR',
-                         'ID of a browser was not statically and deterministically generated')
+                         'Jm-oj0X')
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
@@ -257,7 +255,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith('Bx63aFu_'), True)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith('jUSoMIB_'), True)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
                          'ros_window_ready',
@@ -291,7 +289,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id,
-                         'Lnp0hhU')
+                         'cNuJ1A7')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].command_line_args[0].argument,
                          "--disable-out-of-process-pac")
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].command_line_args[1].argument,
@@ -322,7 +320,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id,
-                         'e_KeGli')
+                         'DVXNLla')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].user_agent,
                          "loltestlmfaorofl")
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
@@ -355,7 +353,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id,
-                         '9EU1eGU')
+                         'GrBcdo_')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].binary, '/tmp/custom-chrome-binary')
 
         # cleanup

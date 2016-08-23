@@ -223,8 +223,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         self.mock_publisher_center = MockBrowserPoolPublisher()
         self.mock_publisher_right = MockBrowserPoolPublisher()
-        self.mock_aggregate_publisher_center = MockAaggregatePublisher()
-        self.mock_aggregate_publisher_right = MockAaggregatePublisher()
+        self.mock_aggregate_publisher_center = MockAggregatePublisher()
+        self.mock_aggregate_publisher_right = MockAggregatePublisher()
         self.bridge_center = AdhocBrowserDirectorBridge(
             self.mock_aggregate_publisher_center,
             self.mock_publisher_center,
