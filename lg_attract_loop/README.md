@@ -1,6 +1,10 @@
 lg_attract_loop
 ---------------
 
+# Overview
+
+lg_attract_loop is a ROS node that plays back scenes from a data source (e.g. a CMS). It's triggered by activity messages that tell it to start or stop playback.
+
 # Hardware requirements
 
 None
