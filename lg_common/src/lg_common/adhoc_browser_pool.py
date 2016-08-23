@@ -8,7 +8,7 @@ from lg_common.msg import WindowGeometry
 from lg_common.msg import BrowserExtension
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
 from lg_common.helpers import get_app_instances_ids
-from lg_common.srv import DirectorPoolQuery
+from lg_common.srv import BrowserPool
 from managed_browser import DEFAULT_BINARY
 from urlparse import urlparse, parse_qs
 
@@ -43,13 +43,12 @@ class AdhocBrowserPool():
         Callback for service requests. We always return self.browsers
         """
         with self.lock:
-            rospy.loginfo("Received DirectorPoolQuery service request")
-            #return json.dumps(self.browsers)
-            return 'aaaaaaaaaaaaaaaaaaaaaa %s' % len(self.browsers)
+            rospy.logdebug("Received AdhocBrowserPool service request")
+            return json.dumps(self.browsers)
 
     def _init_service(self):
         service = rospy.Service('/browser_service/{}'.format(self.viewport_name),
-                                DirectorPoolQuery,
+                                BrowserPool,
                                 self.process_service_request)
 
     def _get_incoming_browsers_dict(self, browsers):

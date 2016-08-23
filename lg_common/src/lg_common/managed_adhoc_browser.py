@@ -28,8 +28,9 @@ class ManagedAdhocBrowser(ManagedBrowser):
         self.binary = binary
         self.command_line_args = command_line_args
         self.extensions = extensions
-        self.timestamp = time.time()
+        self.timestamp = int(time.time())
 
+        # we're pass up only the stuff that matters during browser launch
         super(ManagedAdhocBrowser, self).__init__(
             slug=slug,
             url=url,
@@ -42,7 +43,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             kiosk=True)
 
     def __str__(self):
-        return str({"slug": self.slug,
+        return json.dumps({"slug": self.slug,
                 "url": self.url,
                 "uid": self.id,
                 "x_offset": self.geometry.x,
@@ -52,7 +53,8 @@ class ManagedAdhocBrowser(ManagedBrowser):
                 "extensions": self.extensions,
                 "binary": self.binary,
                 "user_agent": self.user_agent,
-                "command_line_args": self.command_line_args})
+                "command_line_args": self.command_line_args,
+                "timestamp": self.timestamp})
 
     def __repr__(self):
         return self.__str__()

@@ -15,6 +15,7 @@ from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.helpers import write_log_to_file
+from lg_common.srv import BrowserPool
 
 
 class MockSubscriber(object):
@@ -237,6 +238,10 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 1)
 
     def test_3_chrome_commandline_argument_passing(self):
         """
@@ -291,8 +296,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].user_agent,
                          "loltestlmfaorofl")
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
-        rospy.sleep(1)
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
@@ -350,6 +353,18 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'mzBvRrn')
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+        try:
+            browser_on_center = json.loads(json.dumps(browser_on_center))
+            json_is_valid = True
+        except ValueError:
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True, 'Json returned on /browser_service/center is not valid')
+        self.assertEqual(browser_on_center, 'asd')
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))

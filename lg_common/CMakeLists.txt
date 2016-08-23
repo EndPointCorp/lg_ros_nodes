@@ -10,7 +10,7 @@ catkin_python_setup()
 
 add_service_files(
   FILES
-  DirectorPoolQuery.srv
+  BrowserPool.srv
   USCSMessage.srv
 )
 
