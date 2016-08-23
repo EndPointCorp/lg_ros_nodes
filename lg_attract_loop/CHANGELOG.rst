@@ -2,6 +2,11 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update README.md
+* Contributors: Wojciech Ziniewicz
+
 1.3.26 (2016-08-15)
 -------------------
 
