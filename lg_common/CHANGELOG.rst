@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.27 (2016-08-23)
+-------------------
 * Fix whitespace error in adhoc browser test
 * Add garbage collection test for ManagedApplication
   This is part of `#262 <https://github.com/EndPointCorp/lg_ros_nodes/issues/262>`_
