@@ -39,6 +39,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             command_line_args=command_line_args,
             extensions=extensions,
             binary=binary,
+        rospy.sleep(1)
             log_level=log_level,
             kiosk=True)
 

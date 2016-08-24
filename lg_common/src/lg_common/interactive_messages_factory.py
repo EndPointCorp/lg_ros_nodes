@@ -52,14 +52,14 @@ class InteractiveSpacesMessagesFactory:
             "activity": "browser",
             "activity_config": {
                 "google_chrome":{
-                "extensions": [
-                    {
-                    "name": "test_extension1"
-                    },
-                    {
-                    "name": "test_extension2"
-                    }
-                ]
+                    "extensions": [
+                        {
+                        "name": "test_extension1"
+                        },
+                        {
+                        "name": "test_extension2"
+                        }
+                    ]
                 }
             },
             "assets": [
@@ -250,6 +250,201 @@ class InteractiveSpacesMessagesFactory:
         "resource_uri": "/director_api/scene/no_browsers/",
         "slug": "no_browsers",
         "windows": [
+        ]
+        }
+        """)
+        self.test_one_browser_with_preloading_msg = self._create_message("""
+        {
+        "description": "one_browser_with_preloading",
+        "duration": 100,
+        "name": "one_browser_with_preloading",
+        "resource_uri": "/director_api/scene/one_browser_with_preloading/",
+        "slug": "one_browser_with_preloading",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
+        self.test_one_browser_with_preloading_alt_slug_msg = self._create_message("""
+        {
+        "description": "one_browser_with_preloading_alt_slug",
+        "duration": 100,
+        "name": "one_browser_with_preloading_alt_slug",
+        "resource_uri": "/director_api/scene/one_browser_with_preloading_alt_slug/",
+        "slug": "one_browser_with_preloading_alt_slug",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
+        self.test_two_browsers_with_preloading_mix_msg = self._create_message("""
+        {
+        "description": "one_two_browsers_with_preloading_mix",
+        "duration": 100,
+        "name": "two_browsers_with_preloading_mix",
+        "resource_uri": "/director_api/scene/two_browsers_with_preloading_mix/",
+        "slug": "two_browsers_with_preloading_mix",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 100,
+            "presentation_viewport": "center",
+            "width": 100,
+            "x_coord": 300,
+            "y_coord": 300
+            },
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": false
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
+        self.test_two_browsers_with_preloading_mix_alt_slug_msg = self._create_message("""
+        {
+        "description": "one_two_browsers_with_preloading_mix_alt_slug",
+        "duration": 100,
+        "name": "two_browsers_with_preloading_mix_alt_slug",
+        "resource_uri": "/director_api/scene/two_browsers_with_preloading_mix_alt_slug/",
+        "slug": "two_browsers_with_preloading_mix_alt_slug",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 100,
+            "presentation_viewport": "center",
+            "width": 100,
+            "x_coord": 300,
+            "y_coord": 300
+            },
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": false
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
+        self.test_four_browsers_with_preloading_mix_msg = self._create_message("""
+        {
+        "description": "four_browsers_with_preloading_mix",
+        "duration": 100,
+        "name": "four_browsers_with_preloading_mix",
+        "resource_uri": "/director_api/scene/four_browsers_with_preloading_mix/",
+        "slug": "four_browsers_with_preloading_mix",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 100,
+            "presentation_viewport": "center",
+            "width": 100,
+            "x_coord": 300,
+            "y_coord": 300
+            },
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": false
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            },
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 100,
+            "presentation_viewport": "left",
+            "width": 100,
+            "x_coord": 300,
+            "y_coord": 300
+            },
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": false
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+            ],
+            "height": 333,
+            "presentation_viewport": "left",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
         ]
         }
         """)

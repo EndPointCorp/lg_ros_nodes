@@ -18,6 +18,12 @@
     </node>
     <!-- end of three adhoc browser pools -->
 
+    <!-- Development static file server for the -->
+    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
     <!-- readiness node for handling preloading -->
     <node name="readiness_node" pkg="lg_common" type="readiness.py"/>
     <!-- end of readiness node -->

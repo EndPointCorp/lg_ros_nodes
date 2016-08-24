@@ -1,6 +1,9 @@
 import rospy
 import threading
 import json
+import glob
+import lg_common
+import os
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
@@ -33,10 +36,30 @@ class AdhocBrowserPool():
         """
         self.browsers = {}
         self.extensions_root = extensions_root
+        self.lg_common_internal_extensions_root = self._get_lg_common_extensions_root()
         self.lock = threading.Lock()
         self.viewport_name = viewport_name
         self._init_service()
         self.log_level = rospy.get_param('/logging/level', 0)
+
+    def _get_lg_common_extensions_root(self):
+        """
+        Gets path to a directory with extensions for lg_common
+        e.g. '/opt/ros/indigo/lib/python2.7/dist-packages/lg_common' for
+        deb distributed extensions or '/home/lg/catkin_ws/src/lg_common/src/lg_common'
+        for lg_common built with catkin.
+
+        It returns a first matched dir under which an `extensions` dir exists
+        """
+        rospy.loginfo("Going o to check %s dirs looking for extensions" % lg_common.__path__)
+        for module_directory in lg_common.__path__:
+            possible_extensions_directory = module_directory + "/extensions"
+            rospy.loginfo("Checking if %s exists to load extensions from it" % possible_extensions_directory)
+            if os.path.isdir(possible_extensions_directory):
+                rospy.loginfo("%s exists!" % possible_extensions_directory)
+                return possible_extensions_directory
+
+        return ''
 
     def _serialize_browser_pool(self):
         """
@@ -116,11 +139,19 @@ class AdhocBrowserPool():
         to full extension's path under self.extensions_root that will
         be passed to --load-extension upon initialization
 
+        if extensions exists under lg_common/extensions directory then
+        it's going have higher prio over external extensions. In other words
+        choose lg_ros_nodes shipped extensions over external extensions from
+        the filesystem located under self.extensions_root
+
         returns: list
         """
         extensions = []
         for extension in adhoc_browser_msg.extensions:
-            extensions.append(self.extensions_root + extension.name)
+            if os.path.isdir(self.lg_common_internal_extensions_root + "/" + extension.name):
+                extensions.append(self.lg_common_internal_extensions_root + "/" + extension.name)
+            else:
+                extensions.append(self.extensions_root + extension.name)
 
         return extensions
 

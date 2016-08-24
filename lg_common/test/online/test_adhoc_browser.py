@@ -37,27 +37,6 @@ class MockSubscriber(object):
 class TestAdhocBrowser(unittest.TestCase):
     def setUp(self):
         """
-        TODO(wz):
-         test coverage for adhoc browser pool:
-         - preloading:
-          - emit message with preloading - verify readiness message came, make service assert
-          - emit the same message with preloading again - verify readiness message came, make service assert and confirm that browsers were re-created
-          - emit the same message but with different slug - verify the same as above
-          - emit non-preloaded message with different slug and make usual asserts
-          - emit message with preloading - verify readiness message came, make service assert
-          - emit non-preloaded message with the same slug and make usual asserts
-         - mix of preloading:
-          - emit two browsers - one with preloading - the other without preloading - verify readiness and service
-          - emit the same message again - non-preloaded browser needs to stay and preloaded browser needs to get re-created
-          - emit the same message again but with different slug - non-preloaded browser should stay, preloaded should get re-created
-          - emit non-preloaded message with different slug and make usual asserts
-          - emit two browsers - one with preloading - the other without preloading - verify readiness and service
-          - emit non-preloaded message with identical slug and make usual asserts
-         - soft relaunch
-          - emit many browsers - preloaded and not preloaded - wait and make asserts
-          - make soft relaunch - verify they got killed
-          - emit many browsers - dont wait and make soft relaunch - all of them should get killed
-
          assert types used in below tests:
           - /browser_service/center AdhocBrowsers
           - /browser_service/left AdhocBrowsers
@@ -75,8 +54,8 @@ class TestAdhocBrowser(unittest.TestCase):
         self.browser_service_mock_right = MockSubscriber(topic_name='/browser_service/right')
         self.browser_service_mock_common = MockSubscriber(topic_name='/browser_service/browsers')
         self.director_window_ready_mock = MockSubscriber(topic_name='/director/window/ready')
-        self.director_ready_mock = MockSubscriber(topic_name='/diretory/ready')
-        self.director_scene_mock = MockSubscriber(topic_name='/diretory/scene')
+        self.director_ready_mock = MockSubscriber(topic_name='/director/ready')
+        self.director_scene_mock = MockSubscriber(topic_name='/director/scene')
         self.common_mock = MockSubscriber(topic_name='all_topics')  # subscriber for all messages
 
         self.subscribers.append(self.browser_service_mock_center)
@@ -116,7 +95,7 @@ class TestAdhocBrowser(unittest.TestCase):
         rospy.Subscriber(
             '/director/window/ready',
             String,
-            self.browser_service_mock_common.record_message
+            self.director_window_ready_mock.record_message
         )
         rospy.Subscriber(
             '/director/scene',
@@ -181,7 +160,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.assertEqual(1, 1)
 
-    def test_2_chrome_extension_initialization(self):
+    def x_test_2_chrome_extension_initialization(self):
         """
         1. emit browser with extension - check if it got passed to --load-extension arg
         2. emit browser with 2 extensions - check above
@@ -271,7 +250,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_right.messages), 2)
         self.assertEqual(len(self.browser_service_mock_common.messages), 1)
 
-    def test_3_chrome_commandline_argument_passing(self):
+    def x_test_3_chrome_commandline_argument_passing(self):
         """
         1. emit browser with custom command line args - verify that they've been added to cmdargs
         """
@@ -302,7 +281,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
 
-    def test_4_chrome_user_agent_passing(self):
+    def x_test_4_chrome_user_agent_passing(self):
         """
         1. verify that chrome user agent has been set in commandline args
         """
@@ -329,7 +308,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
 
-    def test_5_chrome_binary_setting(self):
+    def x_test_5_chrome_binary_setting(self):
         """
         1. verify that chrome has been attempted to run with a custom binary (make a link)
         """
@@ -360,7 +339,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
 
-    def test_6_chrome_persistence(self):
+    def x_test_6_chrome_persistence(self):
         """
         1. emit one browser without preloading - make service assert
         2. emit the same message again and verify that they havent been updated
@@ -369,7 +348,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center'))
-        rospy.sleep(1)
+        rospy.sleep(3)
         self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
@@ -465,6 +444,336 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers'))
         rospy.sleep(1)
+
+    def x_test_7_adhoc_browser_preloading(self):
+        """
+         1.preloading:
+          a) emit message with preloading - verify readiness message came, make service assert
+          b) emit the same message with preloading again - verify readiness message came, make service assert and confirm that browsers were re-created
+          c) emit the same message but with different slug - verify the same as above
+          d) emit non-preloaded message with different slug and make usual asserts
+         TODO(wz)
+          - emit message with preloading - verify readiness message came, make service assert
+          - emit non-preloaded message with the same slug and make usual asserts
+        """
+        # 1a
+        self.reinitialize_mock_subscribers()
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 5)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_scene_mock.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("3rGrKjR_"), True)
+        rospy.sleep(5)
+        self.print_mock_subscribers()
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
+        self.assertEqual(len(self.director_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('3rGrKjR_'), True)
+        self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('3rGrKjR_'), True)
+        self.assertEqual(len(self.common_mock.messages), 7)
+        # get timestmp here
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True)
+        self.assertEqual(len(browsers_on_center), 1)
+        browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
+
+        # 1b
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 12)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 2)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_scene_mock.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("3rGrKjR_"), True)
+        rospy.sleep(5)
+        self.print_mock_subscribers()
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
+        self.assertEqual(len(self.director_ready_mock.messages), 2)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 2)
+        self.assertEqual(self.director_ready_mock.messages[1].instances[0].startswith('3rGrKjR_'), True)
+        self.assertEqual(self.director_window_ready_mock.messages[1].data.startswith('3rGrKjR_'), True)
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True)
+        self.assertEqual(len(browsers_on_center), 1)
+        browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
+
+        self.assertNotEqual(browser_timestamp, browser_timestamp2)
+        self.assertGreater(browser_timestamp2, browser_timestamp)
+
+        # 1c
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_alt_slug'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 19)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 3)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 2)
+        self.assertEqual(len(self.director_ready_mock.messages), 2)
+        self.assertEqual(len(self.director_scene_mock.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("3rGrKjR_"), True)
+        rospy.sleep(5)
+        self.print_mock_subscribers()
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
+        self.assertEqual(len(self.director_ready_mock.messages), 3)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 3)
+        self.assertEqual(self.director_ready_mock.messages[1].instances[0].startswith('3rGrKjR_'), True)
+        self.assertEqual(self.director_window_ready_mock.messages[1].data.startswith('3rGrKjR_'), True)
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True)
+        self.assertEqual(len(browsers_on_center), 1)
+        browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
+
+        self.assertNotEqual(browser_timestamp2, browser_timestamp3)
+        self.assertGreater(browser_timestamp3, browser_timestamp2)
+
+        # 1d
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center'))
+        rospy.sleep(3)
+        self.print_mock_subscribers()
+        self.assertEqual(len(self.common_mock.messages), 26)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 4)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 4)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 4)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 4)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 3)
+        self.assertEqual(len(self.director_ready_mock.messages), 3)
+        self.assertEqual(len(self.director_scene_mock.messages), 4)
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("3rGrKjR_"), True)
+        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id.startswith("3rGrKjR_"), True)
+        self.assertEqual(self.browser_service_mock_center.messages[2].browsers[0].id.startswith("3rGrKjR_"), True)
+        self.assertEqual(self.browser_service_mock_center.messages[3].browsers[0].id, "V0zX4Pj")
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True, 'Json returned on /browser_service/center is not valid')
+        self.assertEqual(browsers_on_center['V0zX4Pj']['uid'], 'V0zX4Pj')
+        browser_timestamp = browsers_on_center['V0zX4Pj']['timestamp']
+
+    def test_8_adhoc_browser_preloading_mix(self):
+        """
+         1. emit two browsers on one viewport - one with preloading - the other without preloading - verify readiness and service
+         2. emit the same message again - non-preloaded browser needs to stay and preloaded browser needs to get re-created
+         3. emit the same message again but with different slug - non-preloaded browser should stay, preloaded should get re-created
+         TODO(wz):
+         4. emit non-preloaded message with different slug and make usual asserts
+         5. emit two browsers - one with preloading - the other without preloading - verify readiness and service
+         6. emit non-preloaded message with identical slug and make usual asserts
+        """
+        # 1
+        self.reinitialize_mock_subscribers()
+        self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 5)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 1)
+
+        self.assertEqual(len(self.director_window_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_ready_mock.messages), 0)
+
+        self.assertEqual(len(self.director_scene_mock.messages), 1)
+
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
+        self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 2)
+
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("gRYjFDu_"), True)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "5rqAqBZ")
+
+        rospy.sleep(5)
+        self.print_mock_subscribers()
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
+        self.assertEqual(len(self.director_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('gRYjFDu_'), True)
+        self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('gRYjFDu_'), True)
+        self.assertEqual(len(self.common_mock.messages), 7)
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True)
+        self.assertEqual(len(browsers_on_center), 2)
+        if browsers_on_center.items()[0][0].startswith('gRYjFDu_'):
+            preloaded_browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
+            non_preloaded_browser_timestamp = browsers_on_center.items()[1][1]['timestamp']
+        else:
+            preloaded_browser_timestamp = browsers_on_center.items()[1][1]['timestamp']
+            non_preloaded_browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
+
+        # 2
+        self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 12)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 2)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 2)
+
+        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_ready_mock.messages), 1)
+
+        self.assertEqual(len(self.director_scene_mock.messages), 2)
+
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
+        self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 2)
+
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("gRYjFDu_"), True)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "5rqAqBZ")
+
+        rospy.sleep(5)
+        self.print_mock_subscribers()
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
+        self.assertEqual(len(self.director_ready_mock.messages), 2)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 2)
+        self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('gRYjFDu_'), True)
+        self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('gRYjFDu_'), True)
+        self.assertEqual(len(self.common_mock.messages), 14)
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True)
+        self.assertEqual(len(browsers_on_center), 2)
+
+        if browsers_on_center.items()[0][0].startswith('gRYjFDu_'):
+            preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
+            non_preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
+        else:
+            preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
+            non_preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
+
+        self.assertNotEqual(preloaded_browser_timestamp2, preloaded_browser_timestamp)
+        self.assertEqual(non_preloaded_browser_timestamp2, non_preloaded_browser_timestamp)
+
+        # 3
+        self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_alt_slug'))
+        rospy.sleep(1)
+        self.assertEqual(len(self.common_mock.messages), 19)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 3)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 3)
+
+        self.assertEqual(len(self.director_window_ready_mock.messages), 2)
+        self.assertEqual(len(self.director_ready_mock.messages), 2)
+
+        self.assertEqual(len(self.director_scene_mock.messages), 3)
+
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
+        self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 2)
+
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("gRYjFDu_"), True)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "5rqAqBZ")
+
+        rospy.sleep(10)
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
+        self.assertEqual(len(self.director_ready_mock.messages), 3)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 3)
+        self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('gRYjFDu_'), True)
+        self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('gRYjFDu_'), True)
+        self.assertEqual(len(self.common_mock.messages), 21)
+
+        rospy.wait_for_service('/browser_service/center')
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        browsers_on_center = center_service().state
+
+        try:
+            browsers_on_center = json.loads(browsers_on_center)
+            json_is_valid = True
+        except ValueError:
+            browsers_on_center = {}
+            json_is_valid = False
+
+        self.assertEqual(json_is_valid, True)
+        self.assertEqual(browsers_on_center, 'asd')
+        self.assertEqual(len(browsers_on_center), 2)
+
+        if browsers_on_center.items()[0][0].startswith('gRYjFDu_'):
+            preloaded_browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
+            non_preloaded_browser_timestamp3 = browsers_on_center.items()[1][1]['timestamp']
+        else:
+            preloaded_browser_timestamp3 = browsers_on_center.items()[1][1]['timestamp']
+            non_preloaded_browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
+
+        self.assertNotEqual(preloaded_browser_timestamp2, preloaded_browser_timestamp3)
+        self.assertEqual(non_preloaded_browser_timestamp2, non_preloaded_browser_timestamp3)
 
 
 if __name__ == '__main__':
