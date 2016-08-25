@@ -103,7 +103,7 @@ class ManagedBrowser(ManagedApplication):
             cmd.append('--app={}'.format(url))
         else:
             if kiosk:
-                #cmd.append('--kiosk')
+                cmd.append('--kiosk')
                 pass
             if url is not None:
                 cmd.append(url)
