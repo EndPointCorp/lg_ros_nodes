@@ -2,6 +2,16 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.27 (2016-08-23)
+-------------------
+* Fix whitespace error in adhoc browser test
+* Add garbage collection test for ManagedApplication
+  This is part of `#262 <https://github.com/EndPointCorp/lg_ros_nodes/issues/262>`_
+* Add close() method to ManagedApplication
+* Remove _signal_proc from ManagedApplication
+  This feature is no longer needed and never worked anyway.
+* Contributors: Matt Vollrath
+
 1.3.26 (2016-08-15)
 -------------------
 * fix log messages for soft relaunches

@@ -2,6 +2,9 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.27 (2016-08-23)
+-------------------
+
 1.3.26 (2016-08-15)
 -------------------
 * add soft relaunch support for all media assets
