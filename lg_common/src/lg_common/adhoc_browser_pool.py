@@ -347,11 +347,10 @@ class AdhocBrowserPool():
         arg_list = []
         for item in get_args.items():
             if type(item[1]) == list:
-                arg=str(item[0]) + "=" + str(item[1][0])
+                arg = str(item[0]) + "=" + str(item[1][0])
             else:
-                arg=str(item[0]) + "=" + str(item[1])
+                arg = str(item[0]) + "=" + str(item[1])
             arg_list.append(arg)
-
 
         new_q = '&'.join(arg_list)
         url_parts = url_parts._replace(query=new_q)

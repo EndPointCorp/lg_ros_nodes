@@ -164,7 +164,7 @@ class AdhocBrowserDirectorBridge():
 
                 custom_preload_event = activity_config.get('custom_preload_event', None)
 
-                if custom_preload_event == True:
+                if custom_preload_event is True:
                     adhoc_browser.custom_preload_event = True
                 else:
                     adhoc_browser.custom_preload_event = False

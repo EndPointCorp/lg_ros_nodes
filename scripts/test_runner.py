@@ -74,7 +74,7 @@ def get_tests():
 
 
 def pep8_test():
-    ret = os.system('pep8')
+    ret = os.system('pep8 --exclude=rosbridge*,catkin,lg_cms_director,docker_nodes')
     return ret
 
 
