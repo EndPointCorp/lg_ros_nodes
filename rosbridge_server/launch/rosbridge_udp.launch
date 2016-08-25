@@ -1,0 +1,22 @@
+<launch>
+  <arg name="port" default="9090" />
+  <arg name="interface" default="" />
+
+  <arg name="fragment_timeout" default="600" />
+  <arg name="delay_between_messages" default="0" />
+  <arg name="max_message_size" default="None" />
+
+  <arg name="authenticate" default="false" />
+
+  <node name="rosbridge_udp" pkg="rosbridge_server" type="rosbridge_udp" output="screen">
+    <param name="authenticate" value="$(arg authenticate)" />
+
+    <param name="port" value="$(arg port)"/>
+    <param name="interface" value="$(arg interface)"/>
+    <param name="fragment_timeout" value="$(arg fragment_timeout)"/>
+    <param name="delay_between_messages" value="$(arg delay_between_messages)"/>
+    <param name="max_message_size" value="$(arg max_message_size)"/>
+  </node>
+
+  <node name="rosapi" pkg="rosapi" type="rosapi_node" />
+</launch>
