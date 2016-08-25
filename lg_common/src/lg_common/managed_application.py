@@ -109,7 +109,6 @@ class ManagedApplication(object):
             elif state == ApplicationState.STARTED:
                 rospy.loginfo("STARTED")
                 self.proc.start()
-                self._signal_proc(signal.SIGCONT)
                 if self.window is not None:
                     self.window.set_visibility(False)
                     self.window.converge()

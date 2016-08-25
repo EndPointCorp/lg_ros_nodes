@@ -162,6 +162,13 @@ class AdhocBrowserDirectorBridge():
                 if activity_config.get('preload', None):
                     adhoc_browser.preload = True
 
+                custom_preload_event = activity_config.get('custom_preload_event', None)
+
+                if custom_preload_event == True:
+                    adhoc_browser.custom_preload_event = True
+                else:
+                    adhoc_browser.custom_preload_event = False
+
                 if chrome_config:
                     adhoc_browser = self._unpack_browser_config(adhoc_browser, chrome_config)
 

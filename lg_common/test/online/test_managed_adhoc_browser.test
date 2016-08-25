@@ -22,7 +22,7 @@
     <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
     <!-- Local rosbridge and rosapi. -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+    <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3"/>
 
     <!-- readiness node for handling preloading -->
     <node name="readiness_node" pkg="lg_common" type="readiness.py"/>

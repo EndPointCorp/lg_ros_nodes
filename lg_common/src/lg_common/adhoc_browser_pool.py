@@ -191,11 +191,16 @@ class AdhocBrowserPool():
         extensions = self._get_browser_extensions(new_browser)
         command_line_args = self._get_browser_command_line_args(new_browser)
         binary = self._get_browser_binary(new_browser)
-        url = self._add_ros_instance_url_param(new_browser.url, new_browser_pool_id)
+        if new_browser.custom_preload_event:
+            rospy.loginfo("Using custom preloading event")
+            new_browser.url = self._inject_get_argument(new_browser.url, 'use_app_event', 1)
+        else:
+            rospy.loginfo("NOT Using custom preloading event")
+        new_browser.url = self._inject_get_argument(new_browser.url, 'ros_instance_name', new_browser_pool_id)
 
         rospy.logdebug(
             "Creating new browser %s with id %s and url %s" %
-            (new_browser, new_browser_pool_id, url)
+            (new_browser, new_browser_pool_id, new_browser.url)
         )
         managed_adhoc_browser = ManagedAdhocBrowser(geometry=geometry,
                                                     log_level=self.log_level,
@@ -204,7 +209,7 @@ class AdhocBrowserPool():
                                                     extensions=extensions,
                                                     command_line_args=command_line_args,
                                                     binary=binary,
-                                                    url=url,
+                                                    url=new_browser.url,
                                                     uid=new_browser_pool_id,
                                                     scene_slug=new_browser.scene_slug
                                                     )
@@ -320,24 +325,35 @@ class AdhocBrowserPool():
                 rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool" % (browser_pool_id, self.browsers.keys()))
                 return False
 
-    def _add_ros_instance_url_param(self, url, ros_instance_name):
+    def _inject_get_argument(self, url, get_arg_name, get_arg_value):
         """
-        Accepts strings of url and ros_instance_name
-        Injects ros_instance_name as a first GET argument
-        Returns modified URL
+        Accepts a string of url and injects get argument with
+        get_arg_name and get_arg_value
+
+        returns modified URL
+
         """
         url_parts = urlparse(url)
 
         if url_parts.query is None:
-            new_q = 'ros_instance_name={}'.format(ros_instance_name)
+            new_q = '{}={}'.format(get_arg_name, get_arg_value)
             url_parts = url_parts._replace(query=new_q)
             return url_parts.geturl()
 
         get_args = parse_qs(url_parts.query)
-        get_args['ros_instance_name'] = [ros_instance_name]
+        get_args[get_arg_name] = get_arg_value
 
         # join args without encoding - browser will do the rest
-        new_q = '&'.join((['='.join([str(item[0]), str(item[1][0])]) for item in get_args.items()]))
+        arg_list = []
+        for item in get_args.items():
+            if type(item[1]) == list:
+                arg=str(item[0]) + "=" + str(item[1][0])
+            else:
+                arg=str(item[0]) + "=" + str(item[1])
+            arg_list.append(arg)
+
+
+        new_q = '&'.join(arg_list)
         url_parts = url_parts._replace(query=new_q)
         return url_parts.geturl()
 

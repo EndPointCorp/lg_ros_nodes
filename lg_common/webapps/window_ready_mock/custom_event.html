@@ -85,7 +85,7 @@
         if (params['ros_instance_name'] != undefined) {
 
             var instance = params['ros_instance_name'];
-            var timeout = parseInt(params['timeout'] || 10);
+            var timeout = parseInt(params['timeout'] || 3);
             var sentTime = null;
             var loadTime = new Date();
             setTimeout(function() {
@@ -102,7 +102,6 @@
                 document.getElementById('counter_text').innerHTML = 'seconds ago';
 
                 sinceCounter();
-                
             }, timeout * 1000);
 
             var countdowner = function() {

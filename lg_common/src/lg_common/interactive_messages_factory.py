@@ -449,6 +449,32 @@ class InteractiveSpacesMessagesFactory:
         ]
         }
         """)
+        self.test_one_browser_with_preloading_and_custom_preloading_event_msg = self._create_message("""
+        {
+        "description": "one_browser_with_preloading_and_custom_preloading_event",
+        "duration": 100,
+        "name": "one_browser_with_preloading_and_custom_preloading_event",
+        "resource_uri": "/director_api/scene/one_browser_with_preloading_and_custom_preloading_event/",
+        "slug": "one_browser_with_preloading_and_custom_preloading_event",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true,
+                "custom_preload_event": true
+            },
+            "assets": [
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/custom_event.html"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
 
     def emit_message(self, ivar_name):
         """

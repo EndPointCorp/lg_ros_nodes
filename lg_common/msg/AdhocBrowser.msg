@@ -2,6 +2,7 @@ string id
 string url
 string scene_slug
 bool preload
+bool custom_preload_event
 string user_agent
 string binary
 lg_common/WindowGeometry geometry
