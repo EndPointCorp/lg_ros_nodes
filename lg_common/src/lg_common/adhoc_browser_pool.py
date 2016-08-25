@@ -275,8 +275,10 @@ class AdhocBrowserPool():
         """
         with self.lock:
             preloadable_prefixes = self._get_all_preloadable_instances(data)
+            rospy.loginfo("Preloadable prefixes: %s" % preloadable_prefixes)
             old_preloadable_instances_to_remove = self._get_old_preloadable_browser_instances(preloadable_prefixes, data)
             self._unhide_browser_instances(data)
+            rospy.loginfo("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
             self._hide_browsers_ids(set(old_preloadable_instances_to_remove))
             self._destroy_browsers_ids(set(old_preloadable_instances_to_remove))
 
@@ -290,7 +292,7 @@ class AdhocBrowserPool():
         for browser in self.browsers.values():
             # all preloadable browsers from previous scene can be
             # safely marked for removal
-            if browser.scene_slug != data.scene_slug:
+            if (browser.scene_slug != data.scene_slug) and (browser.id.split('_')[0] in preloadable_prefixes):
                 remove.append(browser.id)
             # edgcase coverage: if two consecutive scenes
             # have an identical slug then remove all preloadable

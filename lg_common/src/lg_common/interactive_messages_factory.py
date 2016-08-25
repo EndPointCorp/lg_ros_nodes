@@ -1,5 +1,6 @@
 import sys
 import json
+import rospy
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -449,6 +450,20 @@ class InteractiveSpacesMessagesFactory:
         }
         """)
 
+    def emit_message(self, ivar_name):
+        """
+        emits message using instance variable name
+        """
+        if not self.publisher:
+            self.publisher = rospy.Publisher(
+                '/director/scene', GenericMessage, queue_size=3
+            )
+            rospy.init_node("ispaces_messages_factory")
+        message = self._get_message(ivar_name)
+        print "message string: %s" % message
+        self.publisher.publish(message)
+        return True
+
     def _create_message(self, msg_string):
         message = GenericMessage()
         message.type = 'json'
@@ -463,23 +478,11 @@ class InteractiveSpacesMessagesFactory:
     def _init_publisher(self):
         pass
 
-    def test_one_browser_with_extension(self):
-        print 'one_browser_with_extension'
-
-    def test_one_browser_with_two_extensions(self):
-        print 'one_browser_with_2_extensions'
-
-    def test_one_browser_with_two_extensions_and_preloading(self):
-        print 'one_browser_with_2_extensions'
-
-    def test_two_browsers_with_extension(self):
-        print 'two_browser_with_ext'
-
     def _get_message(self, message_name):
         """
         Returns message as json
         """
-        return getattr(self, message_name + "_msg")
+        return getattr(self, message_name)
 
 
 if __name__ == "__main__":
@@ -487,13 +490,13 @@ if __name__ == "__main__":
         messages = InteractiveSpacesMessagesFactory()
         message_name = sys.argv[1]
         print "Emitting %s message" % message_name
-        getattr(messages, message_name)()
+        messages.emit_message(message_name)
     except IndexError:
         print ""
         print "This file, if called directly, will emit an interactivespaces.msgs.GenericMessage"
         print ""
         print "You must provide message name to emit:\n%s" % \
-            '\n'.join(["- " + method for method in dir(messages) if callable(getattr(messages, method)) and not method.startswith('_')])
+            '\n'.join(["- " + ivar for ivar in dir(messages) if ivar.startswith('test_')])
         print ""
         print "NOTE: methods beginning with 'test' are used by test suite"
         print ""
