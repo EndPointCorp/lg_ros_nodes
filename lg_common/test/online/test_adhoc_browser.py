@@ -47,7 +47,7 @@ class TestAdhocBrowser(unittest.TestCase):
           - last but not least: rosservice for adhoc browser pool
         """
 
-        self.preloading_grace_time = 15
+        self.preloading_grace_time = 20
         self.message_factory = InteractiveSpacesMessagesFactory()
         self.subscribers = []
         self.browser_service_mock_center = MockSubscriber(topic_name='/browser_service/center')
@@ -160,16 +160,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
             "name": "Getting started example",
             "description": "This extension shows a Google Image search result for the current page",
-            "version": "1.0",
-
-            "browser_action": {
-                "default_icon": "icon.png",
-                "default_popup": "popup.html"
-            },
-            "permissions": [
-                "activeTab",
-                "https://ajax.googleapis.com/"
-            ]
+            "version": "1.0"
             }
         """
         try:
@@ -187,17 +178,11 @@ class TestAdhocBrowser(unittest.TestCase):
         except OSError, e:
             pass
 
-        try:
-            with open('/tmp/extensions/test_extension1', 'w') as ext1_manifest:
-                ext1_manifest.write(self.mock_extension_manifest)
-        except Exception, e:
-            pass
+        with open('/tmp/extensions/test_extension1/manifest.json', 'w') as ext1_manifest:
+            ext1_manifest.write(self.mock_extension_manifest)
 
-        try:
-            with open('/tmp/extensions/test_extension2', 'w') as ext2_manifest:
-                ext2_manifest.write(self.mock_extension_manifest)
-        except Exception, e:
-            pass
+        with open('/tmp/extensions/test_extension2/manifest.json', 'w') as ext2_manifest:
+            ext2_manifest.write(self.mock_extension_manifest)
 
     def tearDown(self):
         # cleanup
@@ -389,7 +374,6 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
-        rospy.sleep(3)
         self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
