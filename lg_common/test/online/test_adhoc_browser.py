@@ -215,7 +215,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_extension_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.print_mock_subscribers()
 
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
@@ -234,7 +233,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
@@ -253,7 +251,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 7)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
@@ -291,7 +288,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_cmdargs_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
@@ -323,7 +319,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_user_agent_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
@@ -356,7 +351,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_binary_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
@@ -385,7 +379,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
@@ -489,9 +482,6 @@ class TestAdhocBrowser(unittest.TestCase):
           b) emit the same message with preloading again - verify readiness message came, make service assert and confirm that browsers were re-created
           c) emit the same message but with different slug - verify the same as above
           d) emit non-preloaded message with different slug and make usual asserts
-         TODO(wz)
-          - emit message with preloading - verify readiness message came, make service assert
-          - emit non-preloaded message with the same slug and make usual asserts
         """
         # 1a
         self.reinitialize_mock_subscribers()
@@ -507,7 +497,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("ZRZAUVz_"), True)
-        self.print_mock_subscribers()
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
         self.assertEqual(len(self.director_window_ready_mock.messages), 1)
@@ -534,20 +523,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1b
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 14)
-        self.assertEqual(len(self.browser_service_mock_center.messages), 2)
-        self.assertEqual(len(self.browser_service_mock_left.messages), 2)
-        self.assertEqual(len(self.browser_service_mock_right.messages), 2)
-        self.assertEqual(len(self.browser_service_mock_common.messages), 2)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 2)
-        self.assertEqual(len(self.director_ready_mock.messages), 2)
-        self.assertEqual(len(self.director_scene_mock.messages), 2)
-        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("ZRZAUVz_"), True)
-        self.print_mock_subscribers()
-        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
-        self.assertEqual(len(self.director_ready_mock.messages), 2)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 2)
         self.assertEqual(self.director_ready_mock.messages[1].instances[0].startswith('ZRZAUVz_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[1].data.startswith('ZRZAUVz_'), True)
 
@@ -572,20 +548,9 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1c
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_alt_slug_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 21)
-        self.assertEqual(len(self.browser_service_mock_center.messages), 3)
-        self.assertEqual(len(self.browser_service_mock_left.messages), 3)
-        self.assertEqual(len(self.browser_service_mock_right.messages), 3)
-        self.assertEqual(len(self.browser_service_mock_common.messages), 3)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 3)
-        self.assertEqual(len(self.director_ready_mock.messages), 3)
-        self.assertEqual(len(self.director_scene_mock.messages), 3)
-        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+
+
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("ZRZAUVz_"), True)
-        self.print_mock_subscribers()
-        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
-        self.assertEqual(len(self.director_ready_mock.messages), 3)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 3)
         self.assertEqual(self.director_ready_mock.messages[1].instances[0].startswith('ZRZAUVz_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[1].data.startswith('ZRZAUVz_'), True)
 
@@ -610,16 +575,6 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1d
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.print_mock_subscribers()
-        self.assertEqual(len(self.common_mock.messages), 26)
-        self.assertEqual(len(self.browser_service_mock_center.messages), 4)
-        self.assertEqual(len(self.browser_service_mock_left.messages), 4)
-        self.assertEqual(len(self.browser_service_mock_right.messages), 4)
-        self.assertEqual(len(self.browser_service_mock_common.messages), 4)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 3)
-        self.assertEqual(len(self.director_ready_mock.messages), 3)
-        self.assertEqual(len(self.director_scene_mock.messages), 4)
-        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("ZRZAUVz_"), True)
         self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id.startswith("ZRZAUVz_"), True)
         self.assertEqual(self.browser_service_mock_center.messages[2].browsers[0].id.startswith("ZRZAUVz_"), True)
@@ -719,7 +674,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
 
-        self.print_mock_subscribers()
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
 
@@ -825,7 +779,6 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("D69tyM"), True)
 
-        self.print_mock_subscribers()
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
         self.assertEqual(len(self.director_window_ready_mock.messages), 1)
