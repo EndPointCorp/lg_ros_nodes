@@ -1,0 +1,36 @@
+{
+  "description": "2_two_browsers_on_center_mix_of_preloaded_and_not_preloaded",
+  "duration": 500,
+  "name": "center",
+  "resource_uri": "2_two_browsers_on_center_mix_of_preloaded_and_not_preloaded_alt_slug",
+  "slug": "2_two_browsers_on_center_mix_of_preloaded_and_not_preloaded_alt_slug",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "https://yandex.ru"
+      ],
+      "height": 200,
+      "presentation_viewport": "center",
+      "width": 100,
+      "x_coord": 300,
+      "y_coord": 600
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+      },
+      "assets": [
+        "http://www.onet.pl"
+      ],
+      "height": 300,
+      "presentation_viewport": "center",
+      "width": 300,
+      "x_coord": 100,
+      "y_coord": 100
+    }
+  ]
+}

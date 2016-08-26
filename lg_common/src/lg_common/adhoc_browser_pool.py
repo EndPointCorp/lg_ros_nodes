@@ -1,264 +1,421 @@
 import rospy
 import threading
-import urllib
-import re
+import json
+import glob
+import lg_common
+import os
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
+from lg_common.msg import BrowserExtension
 from lg_common.msg import AdhocBrowser, AdhocBrowsers
-from lg_common.helpers import get_app_instances_to_manage
 from lg_common.helpers import get_app_instances_ids
-from lg_common.helpers import url_compare
-from lg_common.helpers import geometry_compare
-from lg_common.srv import DirectorPoolQuery
-
-from urlparse import urlparse, parse_qs, parse_qsl
+from lg_common.srv import BrowserPool
+from managed_browser import DEFAULT_BINARY
+from urlparse import urlparse, parse_qs
 
 
 class AdhocBrowserPool():
     """
-    Handles browser pool in self.browsers
-    Dict(id => ManagedAdhocBrowser)
+    Handles browser pool on a biewport
+
+    self.browsers ivar: dict of browser_pool_id and ManagedAdhocBrowser()
+
+    Smooth transitions functionality overview:
+    - handle_ros_message creates new browsers
+    - wait for ready signal (see rediness.py)
+    - when new browsers ready, hide and destroy
+      old browsers and show new
+
     """
-    def __init__(self, viewport_name):
+    def __init__(self, viewport_name, extensions_root="/opt/google/chrome/extensions/"):
         """
         AdhocBrowserPool manages a pool of browsers on one viewport.
         self.browsers ivar keeps a dict of (id: ManagedAdhocBrowser) per viewport.
         """
+        self.browsers = {}
+        self.extensions_root = extensions_root
+        self.lg_common_internal_extensions_root = self._get_lg_common_extensions_root()
         self.lock = threading.Lock()
         self.viewport_name = viewport_name
         self._init_service()
-        self.browsers = {}
         self.log_level = rospy.get_param('/logging/level', 0)
-        self.type_key = "adhoc"
+
+    def _get_lg_common_extensions_root(self):
+        """
+        Gets path to a directory with extensions for lg_common
+        e.g. '/opt/ros/indigo/lib/python2.7/dist-packages/lg_common' for
+        deb distributed extensions or '/home/lg/catkin_ws/src/lg_common/src/lg_common'
+        for lg_common built with catkin.
+
+        It returns a first matched dir under which an `extensions` dir exists
+        """
+        rospy.loginfo("Going o to check %s dirs looking for extensions" % lg_common.__path__)
+        for module_directory in lg_common.__path__:
+            possible_extensions_directory = module_directory + "/extensions"
+            rospy.loginfo("Checking if %s exists to load extensions from it" % possible_extensions_directory)
+            if os.path.isdir(possible_extensions_directory):
+                rospy.loginfo("%s exists!" % possible_extensions_directory)
+                return possible_extensions_directory
+
+        return ''
+
+    def _serialize_browser_pool(self):
+        """
+        iterates over a dict of self.browsers and returns a dict
+        where key is the ID of the browser and value is a json
+        serialized representation of browsers' .__str__() method
+
+        rtype: dict
+        """
+        serialized_browsers = {}
+        for browser_id, browser in self.browsers.items():
+            serialized_browsers[browser_id] = json.loads(browser.__str__())
+
+        return serialized_browsers
 
     def process_service_request(self, req):
         """
         Callback for service requests. We always return self.browsers
+        in a form of a strigified dictionary
         """
         with self.lock:
-            rospy.loginfo("POOL %s: Received Query service" % self.viewport_name)
-            return str(self.browsers)
+            response = json.dumps(self._serialize_browser_pool())
+            rospy.loginfo("Received BrowserPool service request")
+            rospy.loginfo("Returning %s" % response)
+            return response
 
     def _init_service(self):
         service = rospy.Service('/browser_service/{}'.format(self.viewport_name),
-                                DirectorPoolQuery,
+                                BrowserPool,
                                 self.process_service_request)
-        return service
 
-    def _unpack_incoming_browsers(self, browsers):
+    def _get_incoming_browsers_dict(self, browsers):
         """
-        Return dict(id: AdhocBrowser) with all AdhocBrowsers with ids as keys
+        Return dict(id: AdhocBrowser()) with all AdhocBrowser()s with pool ids as keys
         """
         return {b.id: b for b in browsers}
-
-    def _partition_existing_browser_ids(self, incoming_browsers):
-        """
-        Determine which incoming browsers are already being shown.
-        Take their URL *and* geometry/placement into consideration
-
-        Return set of ids for:
-         - browsers that need to be created (fresh_ids)
-         - browsers that already exist (existing_ids)
-        """
-        def strip_ros_instance_name(url):
-            stripped_url = re.sub(r'[&?]ros_instance_name=[^&]*', '', url)
-            return stripped_url
-
-        def incoming_browser_already_exists_in_the_pool(checked_browser):
-            for browser in self.browsers.values():
-                if browsers_are_identical(checked_browser, browser):
-                    return True
-            return False
-
-        def existing_browser_exists_in_incoming_browsers(checked_browser):
-            for browser in incoming_browsers:
-                if browsers_are_identical(checked_browser, browser):
-                    return True
-            return False
-
-        def browsers_are_identical(browser_a, browser_b):
-            # go thru self.browsers and match url + geom
-            browser_a_url = strip_ros_instance_name(browser_a.url)
-            browser_b_url = strip_ros_instance_name(browser_b.url)
-            rospy.logdebug("Comparison: %s (%s) vs %s (%s)" % (browser_a_url,
-                                                               browser_a.id,
-                                                               browser_b_url,
-                                                               browser_b.id
-                                                               ))
-            if browser_a_url == browser_b_url:
-                if geometry_compare(browser_a, browser_b):
-                    return True
-            return False
-
-        # incoming_browsers_that_should_not_be_created = [b.id for b in incoming_browsers if incoming_browser_already_exists_in_the_pool(b)]
-        incoming_browsers_that_should_be_created = [b.id for b in incoming_browsers if not incoming_browser_already_exists_in_the_pool(b)]
-        existing_browsers_to_remove = [b.id for b in self.browsers.values() if not existing_browser_exists_in_incoming_browsers(b)]
-        # existing_browsers_to_leave = self.browsers.keys() - existing_browsers_to_remove
-        return existing_browsers_to_remove, incoming_browsers_that_should_be_created
 
     def _remove_browser(self, browser_pool_id):
         """
         call .close() on browser object and cleanly delete the object
         """
-        rospy.logdebug("POOL %s: Removing browser with id %s" % (self.viewport_name, browser_pool_id))
+        rospy.logdebug("Removing browser with id %s" % (browser_pool_id))
         self.browsers[browser_pool_id].close()
         del self.browsers[browser_pool_id]
-        rospy.logdebug("POOL %s: state after %s removal: %s" % (self.viewport_name, browser_pool_id, self.browsers))
+        rospy.logdebug("State after %s removal: %s" % (browser_pool_id, self.browsers))
 
-    def _create_browser(self, new_browser_pool_id, new_browser):
+    def _filter_command_line_args(self, command_line_args):
         """
-        Create new browser instance with desired geometry.
+        remove/escape dangerous command_line_args
         """
-        geometry = WindowGeometry(x=new_browser.geometry.x,
-                                  y=new_browser.geometry.y,
-                                  width=new_browser.geometry.width,
-                                  height=new_browser.geometry.height)
+        result = []
+        for arg in command_line_args:
+            if ';' in arg:
+                rospy.logerror("There is ';' in command line arguments for adhock browser")
+                return []
 
-        ros_instance_id = self._get_ros_instance_id(new_browser_pool_id)
-        rospy.logdebug("Browser URL before ros_instance addition: %s" % new_browser.url)
-        new_url = self._add_ros_instance_url_param(new_browser.url, ros_instance_id)
-        rospy.logdebug("Browser URL after ros_instance addition: %s" % new_url)
+            if 'enable-arc' in arg or 'enable-nacl' in arg:
+                rospy.logerr("Unsupported command line arg %s" % arg)
+                return []
 
-        browser_to_create = ManagedAdhocBrowser(geometry=geometry,
-                                                log_level=self.log_level,
-                                                slug=self.viewport_name + "_" + new_browser_pool_id,
-                                                url=new_url,
-                                                uid=new_browser_pool_id
-                                                )
+            result.append(arg)
 
-        browser_to_create.set_state(ApplicationState.VISIBLE)
-        rospy.logdebug("POOL %s: Creating new browser %s with id %s and url %s" % (self.viewport_name, new_browser, new_browser_pool_id, new_url))
-        self.browsers[new_browser_pool_id] = browser_to_create
-        rospy.logdebug("POOL %s: state after addition of %s: %s" % (self.viewport_name, new_browser_pool_id, self.browsers))
+        return result
+
+    def _get_browser_window_geometry(self, adhoc_browser_msg):
+        """
+        accepts AdhocBrowser message and returns WindowGeometry class instance
+        """
+        return WindowGeometry(x=adhoc_browser_msg.geometry.x,
+                              y=adhoc_browser_msg.geometry.y,
+                              width=adhoc_browser_msg.geometry.width,
+                              height=adhoc_browser_msg.geometry.height)
+
+    def _get_browser_extensions(self, adhoc_browser_msg):
+        """
+        accepts AdhocBrowser message and rewrites extension names
+        to full extension's path under self.extensions_root that will
+        be passed to --load-extension upon initialization
+
+        if extensions exists under lg_common/extensions directory then
+        it's going have higher prio over external extensions. In other words
+        choose lg_ros_nodes shipped extensions over external extensions from
+        the filesystem located under self.extensions_root
+
+        returns: list
+        """
+        extensions = []
+        for extension in adhoc_browser_msg.extensions:
+            if os.path.isdir(self.lg_common_internal_extensions_root + "/" + extension.name):
+                extensions.append(self.lg_common_internal_extensions_root + "/" + extension.name)
+            else:
+                extensions.append(self.extensions_root + extension.name)
+
+        return extensions
+
+    def _get_browser_command_line_args(self, adhoc_browser_msg):
+        """
+        accepts AdhocBrowser message and extracts command line arguments from it
+        with some filtering of dangerous stuff
+
+        returns: list
+        """
+        command_line_args = [cmd_arg.argument for cmd_arg in adhoc_browser_msg.command_line_args]
+        return self._filter_command_line_args(command_line_args)
+
+    def _get_browser_binary(self, adhoc_browser_msg):
+        """
+        accepts AdhocBrowser message and returns binary that should be used for
+        launching ManagedAdhocBrowser
+
+        returns: string
+        """
+        if adhoc_browser_msg.binary:
+            binary = adhoc_browser_msg.binary
+        else:
+            binary = DEFAULT_BINARY
+        return binary
+
+    def _create_browser(self, new_browser_pool_id, new_browser, initial_state=None):
+        """
+        Accept AdhocBrowser message and an id.
+        Assemble ManagedAdhocBrowser instance and add it to the pool
+
+        Set the initial_state of it.
+
+        returns: bool
+        """
+        geometry = self._get_browser_window_geometry(new_browser)
+        extensions = self._get_browser_extensions(new_browser)
+        command_line_args = self._get_browser_command_line_args(new_browser)
+        binary = self._get_browser_binary(new_browser)
+        if new_browser.custom_preload_event:
+            rospy.loginfo("Using custom preloading event")
+            new_browser.url = self._inject_get_argument(new_browser.url, 'use_app_event', 1)
+        else:
+            rospy.loginfo("NOT Using custom preloading event")
+        new_browser.url = self._inject_get_argument(new_browser.url, 'ros_instance_name', new_browser_pool_id)
+
+        rospy.logdebug(
+            "Creating new browser %s with id %s and url %s" %
+            (new_browser, new_browser_pool_id, new_browser.url)
+        )
+        managed_adhoc_browser = ManagedAdhocBrowser(geometry=geometry,
+                                                    log_level=self.log_level,
+                                                    slug=self.viewport_name + "_" + new_browser_pool_id,
+                                                    user_agent=new_browser.user_agent,
+                                                    extensions=extensions,
+                                                    command_line_args=command_line_args,
+                                                    binary=binary,
+                                                    url=new_browser.url,
+                                                    uid=new_browser_pool_id,
+                                                    scene_slug=new_browser.scene_slug
+                                                    )
+
+        self.browsers[new_browser_pool_id] = managed_adhoc_browser
+        rospy.loginfo("State after addition of %s: %s" % (new_browser_pool_id, self.browsers.keys()))
+
+        if initial_state:
+            rospy.logdebug("Setting initial state of %s to %s" % (new_browser_pool_id, initial_state))
+            managed_adhoc_browser.set_state(ApplicationState.STARTED)
+        else:
+            managed_adhoc_browser.set_state(ApplicationState.VISIBLE)
+
         return True
 
-    def _update_browser(self, browser_pool_id, updated_browser):
+    def _hide_browsers_ids(self, ids):
         """
-        Update existing browser instance
+        Accepts a list of browser pool ids to hide
+
+        returns: bool
         """
-        rospy.logdebug("POOL %s: state during updating: %s" % (self.viewport_name, self.browsers))
-        current_browser = self.browsers[browser_pool_id]
-        rospy.logdebug("Updating browser %s to it's new state: %s" % (current_browser, updated_browser))
-        future_url = updated_browser.url
-        future_geometry = WindowGeometry(x=updated_browser.geometry.x,
-                                         y=updated_browser.geometry.y,
-                                         width=updated_browser.geometry.width,
-                                         height=updated_browser.geometry.height)
+        for browser_pool_id in ids:
+            rospy.loginfo("Hiding browser with id %s" % browser_pool_id)
+            self.browsers[browser_pool_id].set_state(ApplicationState.HIDDEN)
 
-        current_geometry = current_browser.geometry
+        return True
 
-        if current_browser.url != future_url:
-            self._update_browser_url(browser_pool_id, current_browser, future_url)
-        else:
-            rospy.logdebug("POOL %s: not updating url of browser %s (old url=%s, new url=%s)" %
-                           (self.viewport_name, current_browser, current_browser.url, future_url))
-
-        geom_success = self._update_browser_geometry(browser_pool_id, current_browser, future_geometry)
-        if geom_success:
-            rospy.logdebug("Successfully updated browser(%s) geometry from %s to %s" % (browser_pool_id, current_geometry, future_geometry))
-        else:
-            rospy.logerr("Could not update geometry of browser (%s) (from %s to %s)" % (browser_pool_id, current_geometry, future_geometry))
-
-    def _update_browser_url(self, browser_pool_id, current_browser, future_url):
-        try:
-            rospy.logdebug("Updating URL of browser id %s from %s to %s" % (browser_pool_id, current_browser.url, future_url))
-            future_url = self._add_ros_instance_url_param(future_url, self._get_ros_instance_id(browser_pool_id))
-            current_browser.update_url(future_url)
-            return True
-        except Exception, e:
-            rospy.logerr("Could not update url of browser id %s because: %s" % (browser_pool_id, e))
-            return False
-
-    def _update_browser_geometry(self, browser_pool_id, current_browser, future_geometry):
-        try:
-            current_browser.update_geometry(future_geometry)
-            rospy.logdebug("Updated geometry of browser id %s" % browser_pool_id)
-            return True
-        except Exception, e:
-            rospy.logerr("Could not update geometry of browser id %s because: %s" % (browser_pool_id, e))
-            return False
-
-    def _add_ros_instance_url_param(self, url, ros_instance_name):
+    def _destroy_browsers_ids(self, ids):
         """
-        Accepts strings of url and ros_instance_name
-        Injects ros_instance_name as a first GET argument
-        Returns modified URL
+        Accepts a list of browser ids to destroy (kill and remove)
+        """
+        rospy.loginfo("Browsers to remove = %s" % (ids))
+        for browser_pool_id in ids:
+            rospy.loginfo("Removing browser id %s" % browser_pool_id)
+            self._remove_browser(browser_pool_id)
+
+    def _get_all_preloadable_instances(self, data):
+        """
+        returns all browsers' ID prefixes shepherded by this pool, that are preloadable (which means
+        that they are already shown as well as the instances that need to become unhidden)
+
+        all browsers are identified with an ID. preloadable browsers have a prefix+suffix ID
+        that's created from their normal stastic id + a suffix to make them be unique and reloaded
+        upon every scene (unlike non-preloadable browsers that persists thru scenes)
+
+        returns: list
+        """
+
+        # TODO (wz) - check if sha1 generates a `_` character
+        preloadable_prefixes = [new_browser_id.split('_')[0] for new_browser_id in data.instances if '_' in new_browser_id]
+
+        return preloadable_prefixes
+
+    def unhide_browsers(self, data):
+        """
+        This is a callback executed upon a message that contains information
+        about readiness of browsers that belong to a scene e.g.
+
+        -----
+          scene_slug: 659f6d8d-7c40-4f2c-911b-49390ac13e5f__tvn24
+          activity_type: browser
+          instances: ['50220834', '1234rewq']
+        -----
+
+        These browsers should already exist in STARTED state and this callback should
+        unhide them and hide old browsers.
+
+        """
+        with self.lock:
+            preloadable_prefixes = self._get_all_preloadable_instances(data)
+            rospy.loginfo("Preloadable prefixes: %s" % preloadable_prefixes)
+            old_preloadable_instances_to_remove = self._get_old_preloadable_browser_instances(preloadable_prefixes, data)
+            self._unhide_browser_instances(data)
+            rospy.loginfo("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
+            self._hide_browsers_ids(set(old_preloadable_instances_to_remove))
+            self._destroy_browsers_ids(set(old_preloadable_instances_to_remove))
+
+    def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):
+        """
+        Accepts a list of all preloadable prefixes
+        Returns a list of browsers that
+        """
+        remove = []
+
+        for browser in self.browsers.values():
+            # all preloadable browsers from previous scene can be
+            # safely marked for removal
+            if (browser.scene_slug != data.scene_slug) and (browser.id.split('_')[0] in preloadable_prefixes):
+                remove.append(browser.id)
+            # edgcase coverage: if two consecutive scenes
+            # have an identical slug then remove all preloadable
+            # instances that are not in the incoming readiness message
+            # use preloadable_prefixes to find which ones are to be removed
+            if browser.id.split('_')[0] in preloadable_prefixes and browser.id not in data.instances:
+                remove.append(browser.id)
+
+        return remove
+
+    def _unhide_browser_instances(self, data):
+        """
+        Accepts a list of browser instances that are ready to be unhidden.
+        Since data contains all browsers from a scene, we may not be shepherding
+        some of the browsers on this viewport at this time.
+
+        returns: bool
+        """
+        for browser_pool_id in data.instances:
+            rospy.loginfo("Unhiding browser with id %s" % (browser_pool_id))
+            try:
+                self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
+                return True
+            except KeyError:
+                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool" % (browser_pool_id, self.browsers.keys()))
+                return False
+
+    def _inject_get_argument(self, url, get_arg_name, get_arg_value):
+        """
+        Accepts a string of url and injects get argument with
+        get_arg_name and get_arg_value
+
+        returns modified URL
+
         """
         url_parts = urlparse(url)
 
         if url_parts.query is None:
-            new_q = 'ros_instance_name={}'.format(ros_instance_name)
+            new_q = '{}={}'.format(get_arg_name, get_arg_value)
             url_parts = url_parts._replace(query=new_q)
             return url_parts.geturl()
 
         get_args = parse_qs(url_parts.query)
-        get_args['ros_instance_name'] = ros_instance_name
+        get_args[get_arg_name] = get_arg_value
 
         # join args without encoding - browser will do the rest
-        new_q = '&'.join((['='.join([str(item[0]), str(item[1][0])]) for item in get_args.items()]))
+        arg_list = []
+        for item in get_args.items():
+            if type(item[1]) == list:
+                arg = str(item[0]) + "=" + str(item[1][0])
+            else:
+                arg = str(item[0]) + "=" + str(item[1])
+            arg_list.append(arg)
+
+        new_q = '&'.join(arg_list)
         url_parts = url_parts._replace(query=new_q)
         return url_parts.geturl()
 
-    def _get_ros_instance_id(self, new_browser_pool_id):
-        return "%s__%s__%s" % (self.type_key, self.viewport_name, new_browser_pool_id)
-
     def handle_ros_message(self, data):
         """
-        - if message has no AdhocBrowser messages in the array,
-        shutdown all browsers
-        - if the message has AdhocBrowser messages in the array:
-        -- check for an existing browser with the same id.
-        --- if it exists, update the url and geometry.
-        --- if no existing browser, create one.
-        --- if an existing browser has an id that doesn't match the new message, then
-            shut it down and remove it from the tracked instances.
+        Handles a message that contains AdhocBrowser list inside of an AdhocBrowsers message.
 
-        Arguments:
-            data: AdhocBrowsers, which is an array of AdhocBrowser
-
-        Edgecase for browser persistence:
-
-            msg1:
-                adhoc_0 -> wp.pl *
-                adhoc_1 -> onet.pl
-                adhoc_2 -> endpoint.com
-
-
-            msg2:
-                adhoc_0 -> foo.com
-                adhoc_1 -> wp.pl *
-                adhoc_2 -> bar
-            [*] should persist
-
-            existing ids: adhoc_0
-            fresh ids: adhoc_0, adhoc_2
-
-            adhoc_0 is existing and fresh in the same time
+        Creates and unhides browsers that are not preloadable.
+        Creates browsers that need to preload.
 
         """
-        rospy.loginfo("================ NEW SCENE ===============")
 
         with self.lock:
-            incoming_browsers = self._unpack_incoming_browsers(data.browsers)
+            self.scene_slug = data.scene_slug
+            rospy.loginfo("============= NEW SCENE BEGIN (slug: %s) ===============" % self.scene_slug)
+            incoming_browsers = self._get_incoming_browsers_dict(data.browsers)
             incoming_browsers_ids = set(incoming_browsers.keys())  # set
             current_browsers_ids = get_app_instances_ids(self.browsers)  # set
-            ids_to_remove, ids_to_create = self._partition_existing_browser_ids(incoming_browsers.values())
+            ids_to_preload = set([incoming_browser_id for incoming_browser_id in incoming_browsers_ids if incoming_browsers[incoming_browser_id].preload])
+            ids_to_remove = current_browsers_ids - incoming_browsers_ids
+            ids_to_create = (incoming_browsers_ids - current_browsers_ids).union(ids_to_preload)
             rospy.loginfo('incoming ids: {}'.format(incoming_browsers_ids))
+            rospy.loginfo('preloadable ids: {}'.format(ids_to_preload))
             rospy.loginfo('current ids: {}'.format(current_browsers_ids))
             rospy.loginfo('partitioned fresh ids: {}'.format(ids_to_create))
             rospy.loginfo('browsers to remove: {}'.format(ids_to_remove))
-
-            for browser_pool_id in ids_to_create:
-                rospy.loginfo("Creating browser with id %s" % browser_pool_id)
-                self._create_browser(browser_pool_id, incoming_browsers[browser_pool_id])
-
-            for browser_pool_id in ids_to_remove:
-                rospy.loginfo("Removing browser id %s" % browser_pool_id)
-                self._remove_browser(browser_pool_id)
-
+            self._create_browsers(ids_to_create, incoming_browsers)
+            self._execute_browser_housekeeping(ids_to_create, ids_to_preload, ids_to_remove)
+            rospy.loginfo("============== NEW SCENE END (slug: %s) ================" % self.scene_slug)
             return True
+
+    def _execute_browser_housekeeping(self, ids_to_create, ids_to_preload, ids_to_remove):
+        """
+        Accepts ids to create, to preload and to remove to be able to decide
+        which browsers to remove on the basis of their preloadability
+        """
+        # remove ids_to_remove but only if they constist of
+        # non-preloadable browsers
+        if len(ids_to_create - ids_to_preload) > 0:
+            self._destroy_browsers_ids(ids_to_remove)
+
+        # remove_all preloadable remnants
+        if len(ids_to_create) == 0 and ids_to_remove:
+            self._destroy_browsers_ids(ids_to_remove)
+
+        return True
+
+    def _create_browsers(self, ids_to_create, incoming_browsers):
+        """
+        Accepts a set of ids to create and incoming_browsers that contain
+        browsers with these ids.
+        """
+        for browser_pool_id in ids_to_create:
+            rospy.loginfo("Creating browser %s with preload flag: %s" % (browser_pool_id, incoming_browsers[browser_pool_id].preload))
+            if incoming_browsers[browser_pool_id].preload:
+                self._create_browser(browser_pool_id,
+                                     incoming_browsers[browser_pool_id],
+                                     ApplicationState.STARTED)
+            else:
+                self._create_browser(browser_pool_id,
+                                     incoming_browsers[browser_pool_id])
+
+        return True
 
     def handle_soft_relaunch(self, *args, **kwargs):
         current_browsers = self.browsers.keys()

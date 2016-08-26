@@ -193,6 +193,14 @@ class MockBrowserPoolPublisher:
         rospy.logdebug("After publishing, self.published_messages = %s" % self.published_messages)
 
 
+class MockAggregatePublisher:
+    def __init__(self):
+        self.published_messages = []
+
+    def publish(self, msg):
+        self.published_messages.append(msg)
+
+
 class TestAdhocBrowserDirectorBridge(unittest.TestCase):
     def setUp(self):
         """
@@ -215,8 +223,18 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         self.mock_publisher_center = MockBrowserPoolPublisher()
         self.mock_publisher_right = MockBrowserPoolPublisher()
-        self.bridge_center = AdhocBrowserDirectorBridge(self.mock_publisher_center, 'center')
-        self.bridge_right = AdhocBrowserDirectorBridge(self.mock_publisher_right, 'right')
+        self.mock_aggregate_publisher_center = MockAggregatePublisher()
+        self.mock_aggregate_publisher_right = MockAggregatePublisher()
+        self.bridge_center = AdhocBrowserDirectorBridge(
+            self.mock_aggregate_publisher_center,
+            self.mock_publisher_center,
+            'center'
+        )
+        self.bridge_right = AdhocBrowserDirectorBridge(
+            self.mock_aggregate_publisher_right,
+            self.mock_publisher_right,
+            'right'
+        )
 
     def test_1_bogus_director_message_is_ignored(self):
         """
@@ -227,8 +245,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         self.assertEqual(1, len(self.mock_publisher_center.published_messages))
         self.assertEqual(1, len(self.mock_publisher_right.published_messages))
-        self.assertEqual(AdhocBrowsers(browsers=[]), self.mock_publisher_center.published_messages[0])
-        self.assertEqual(AdhocBrowsers(browsers=[]), self.mock_publisher_right.published_messages[0])
+        self.assertEqual(AdhocBrowsers(browsers=[], scene_slug='test message'), self.mock_publisher_center.published_messages[0])
+        self.assertEqual(AdhocBrowsers(browsers=[], scene_slug='test message'), self.mock_publisher_right.published_messages[0])
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
 
@@ -246,6 +264,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         self.assertEqual(1, len(self.mock_publisher_right.published_messages))
 
         center_browser = AdhocBrowser(id='adhoc_browser_center_0',
+                                      scene_slug='test message',
+                                      binary='/usr/bin/google-chrome',
                                       geometry=WindowGeometry(x=10,
                                                               y=10,
                                                               width=600,
@@ -257,8 +277,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         rospy.loginfo("zzz %s" % zero_id(AdhocBrowsers(browsers=[center_browser])))
         rospy.loginfo("zzz %s" % zero_id(self.mock_publisher_center.published_messages[0]))
 
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser])), zero_id(self.mock_publisher_center.published_messages[0]))
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[])), zero_id(self.mock_publisher_right.published_messages[0]))
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser], scene_slug='test message')), zero_id(self.mock_publisher_center.published_messages[0]))
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[], scene_slug='test message')), zero_id(self.mock_publisher_right.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
 
@@ -274,6 +294,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         self.assertEqual(1, len(self.mock_publisher_center.published_messages))
         self.assertEqual(1, len(self.mock_publisher_right.published_messages))
         center_browser_1 = AdhocBrowser(id='adhoc_browser_center_0',
+                                        scene_slug='test message',
+                                        binary='/usr/bin/google-chrome',
                                         geometry=WindowGeometry(x=10,
                                                                 y=10,
                                                                 width=600,
@@ -281,6 +303,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
                                         url='http://www.lol.zomg')
 
         center_browser_2 = AdhocBrowser(id='adhoc_browser_center_1',
+                                        scene_slug='test message',
+                                        binary='/usr/bin/google-chrome',
                                         geometry=WindowGeometry(x=400,
                                                                 y=200,
                                                                 width=300,
@@ -288,6 +312,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
                                         url='http://www.lol2.zomg')
 
         center_browser_3 = AdhocBrowser(id='adhoc_browser_center_2',
+                                        scene_slug='test message',
+                                        binary='/usr/bin/google-chrome',
                                         geometry=WindowGeometry(x=10,
                                                                 y=10,
                                                                 width=888,
@@ -295,6 +321,8 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
                                         url='http://www.lol3.zomg')
 
         right_browser_4 = AdhocBrowser(id='adhoc_browser_right_0',
+                                       scene_slug='test message',
+                                       binary='/usr/bin/google-chrome',
                                        geometry=WindowGeometry(x=100,
                                                                y=100,
                                                                width=100,
@@ -303,8 +331,10 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         rospy.loginfo("published adhoc browser => %s" % self.mock_publisher_center.published_messages[0])
         rospy.loginfo("asserted adhoc browser => %s" % AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3]))
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3])), zero_id(self.mock_publisher_center.published_messages[0]))
-        self.assertEqual(zero_id(AdhocBrowsers(browsers=[right_browser_4])), zero_id(self.mock_publisher_right.published_messages[0]))
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[center_browser_1, center_browser_2, center_browser_3], scene_slug='test message')),
+                         zero_id(self.mock_publisher_center.published_messages[0]))
+        self.assertEqual(zero_id(AdhocBrowsers(browsers=[right_browser_4], scene_slug='test message')),
+                         zero_id(self.mock_publisher_right.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocBrowsers, type(self.mock_publisher_right.published_messages[0]))
 

@@ -1,0 +1,65 @@
+{
+  "description": "two browsers on center with preload",
+  "duration": 500,
+  "name": "center",
+  "resource_uri": "blargh",
+  "slug": "blargh",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "https://yandex.ru"
+      ],
+      "height": 400,
+      "presentation_viewport": "center",
+      "width": 800,
+      "x_coord": 200,
+      "y_coord": 200
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "http://www.onet.pl"
+      ],
+      "height": 400,
+      "presentation_viewport": "center",
+      "width": 800,
+      "x_coord": 200,
+      "y_coord": 1000
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "http://www.onet.pl"
+      ],
+      "height": 400,
+      "presentation_viewport": "left_one",
+      "width": 800,
+      "x_coord": 200,
+      "y_coord": 1000
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": true
+      },
+      "assets": [
+        "http://www.onet.pl"
+      ],
+      "height": 400,
+      "presentation_viewport": "right_one",
+      "width": 800,
+      "x_coord": 200,
+      "y_coord": 1000
+    }
+  ]
+}

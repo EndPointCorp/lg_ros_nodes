@@ -2,6 +2,8 @@
 
 import rospy
 import commands
+import time
+import json
 
 from lg_common import ManagedBrowser
 from lg_common.msg import WindowGeometry
@@ -11,24 +13,53 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 
 class ManagedAdhocBrowser(ManagedBrowser):
+    def __init__(self, geometry=None, log_level=0, command_line_args=[],
+                 extensions=[], binary='/usr/bin/google-chrome',
+                 user_agent=None, slug=None, url=None, uid=None,
+                 scene_slug=None):
 
-    def __init__(self, geometry=None, log_level=0, slug=None, url=None, uid=None):
+        self.scene_slug = scene_slug
         self.slug = slug
         self.id = uid
         self.url = url
         self.geometry = geometry
         self.log_level = log_level
+        self.user_agent = user_agent
+        self.binary = binary
+        self.command_line_args = command_line_args
+        self.extensions = extensions
+        self.timestamp = int(time.time())
 
+        # we're pass up only the stuff that matters during browser launch
         super(ManagedAdhocBrowser, self).__init__(
-            geometry=geometry, slug=slug, url=url, kiosk=True)
+            slug=slug,
+            url=url,
+            geometry=geometry,
+            user_agent=user_agent,
+            command_line_args=command_line_args,
+            extensions=extensions,
+            binary=binary,
+            log_level=log_level,
+            kiosk=True)
 
     def __str__(self):
-        return self.__repr__()
+        return json.dumps({
+            "slug": self.slug,
+            "url": self.url,
+            "uid": self.id,
+            "x_offset": self.geometry.x,
+            "y_offset": self.geometry.y,
+            "width": self.geometry.width,
+            "height": self.geometry.height,
+            "extensions": self.extensions,
+            "binary": self.binary,
+            "user_agent": self.user_agent,
+            "command_line_args": self.command_line_args,
+            "timestamp": self.timestamp
+        })
 
     def __repr__(self):
-        return "<id: %s, slug: %s, URL: %s, x: %s, y: %s, offset_x: %s, offset_y: %s>" % \
-            (self.id, self.slug, self.url, self.geometry.width, self.geometry.height,
-             self.geometry.x, self.geometry.y)
+        return self.__str__()
 
     def update_geometry(self, geometry):
         """

@@ -65,8 +65,7 @@ class ManagedApplication(object):
         return string_representation
 
     def __repr__(self):
-        representation = "<ManagedApplication: state: %s, window: %s, cmd: %s, proc: %s" % (self.state, self.window, self.cmd, self.proc)
-        return representation
+        return self.__str__()
 
     def get_state(self):
         with self.lock:
@@ -106,6 +105,13 @@ class ManagedApplication(object):
                         'Tried to hide a ManagedApplication ' +
                         'without a ManagedWindow'
                     )
+
+            elif state == ApplicationState.STARTED:
+                rospy.loginfo("STARTED")
+                self.proc.start()
+                if self.window is not None:
+                    self.window.set_visibility(False)
+                    self.window.converge()
 
             elif state == ApplicationState.VISIBLE:
                 rospy.logdebug("VISIBLE")

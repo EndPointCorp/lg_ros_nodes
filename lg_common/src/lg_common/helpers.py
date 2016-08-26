@@ -2,8 +2,12 @@ import os
 import sys
 import json
 import rospy
+import base64
 import urllib
+import hashlib
 import urlparse
+import random
+import string
 
 from interactivespaces_msgs.msg import GenericMessage
 
@@ -53,6 +57,21 @@ def add_url_params(url, **params):
     url_parts[4] = urllib.urlencode(query_dict)
 
     return urlparse.urlunparse(url_parts)
+
+
+def geometry_compare(adhoc_browser_message, managed_adhoc_browser_instance):
+    """
+    Accepts adhoc browser message and ManagedAdhocBrowser instnace
+    and compares geometry of these
+    returns bool
+    """
+    geometry_match = (
+        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x) and
+        int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y) and
+        int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width) and
+        int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
+
+    return geometry_match
 
 
 def url_compare(a0, b0):
@@ -138,6 +157,7 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
     Accepts two sets of app ids (current and new) and returns a list of instances
     that should be created, removed or updated on the basis of `manage_action` parameter
     """
+
     if manage_action == 'remove':
         instances_ids_to_remove = current_instances - incoming_instances
         return list(instances_ids_to_remove)
@@ -160,8 +180,8 @@ def load_director_message(message):
     try:
         ret = json.loads(message.message)
     except (ValueError, SyntaxError) as e:
-        rospy.logwarn("Got non json message on AdhocBrowserDirectorBridge")
-        rospy.logdebug("Message: %s" % message)
+        rospy.logwarn("Could not parse json message in helpers.load_director_message")
+        rospy.logwarn("Message: %s" % message)
         raise e
 
     return ret
@@ -171,19 +191,6 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     """
     Extracts **single** (first) asset and geometry and activity_config
     for given activity and viewport, e.g. all assets for browser or all KMLs for GE.
-    Returns list of dictionaries containing adhoc browser metadata e.g.:
-        [
-        { "1": { "path": "https://www.youtube.com/watch?v=un8FAjXWOBY",
-                 "height": 600,
-                 "width":800,
-                 "x_coord":100,
-                 "y_coord":100 }},
-        { "2": { "path": "https://www.youtube.com/watch?v=un8FAjXWOBY",
-                 "height": 150,
-                 "width": 300,
-                 "x_coord": 100,
-                 "y_coord": 100 }}]
-
     rtype: list
 
     Example director message:
@@ -195,6 +202,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
               "slug":"browser-service-test",
               "windows":[
                 {
+                "activity_config": { "some": "stuffz"},
                 "activity":"browser",
                 "assets":["https://www.youtube.com/watch?v=un8FAjXWOBY"],
                 "height":600,
@@ -205,31 +213,6 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
                 }
                 ]
             }
-    or
-
-    {"description": "S4",
-      "duration": 15,
-      "name": "S4",
-      "resource_uri": "/director_api/scene/9686ad33-720b-4088-8f79-30fab0e03b6d__s4/",
-      "slug": "9686ad33-720b-4088-8f79-30fab0e03b6d__s4",
-      "windows": [
-        {
-          "activity": "video",
-          "activity_config": {
-            "onFinish": "loop"
-          },
-          "assets": [
-            "http://lg-head:8088/roscoe_assets/flame.avi"
-          ],
-          "height": 1080,
-          "presentation_viewport": "display_wall-portal",
-          "width": 1920,
-          "x_coord": 960,
-          "y_coord": 540
-        }
-      ]
-    }
-
     """
     message = load_director_message(message)
     if not message:
@@ -240,14 +223,28 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     for window in message.get('windows', []):
         if (window.get('activity') == activity_type) and (window.get('presentation_viewport') == viewport):
             asset_object = {}
-            asset_object['path'] = window['assets'][0]
+            asset_object['path'] = str(window['assets'][0])
             asset_object['x_coord'] = window['x_coord']
             asset_object['y_coord'] = window['y_coord']
             asset_object['height'] = window['height']
             asset_object['width'] = window['width']
             asset_object['on_finish'] = 'nothing'
-            if window.get('activity_config', {}):
-                asset_object['on_finish'] = window['activity_config']['onFinish']
+
+            activity_config = window.get('activity_config', {})
+
+            if activity_config:
+                asset_object['activity_config'] = window['activity_config']
+                # TODO(wz):
+                # - this needs to go away - all attribs should be
+                #  kept under activity_config
+                # - onFinish should be changed to on_finish on ros_cms side
+                on_finish = activity_config.get('onFinish', None)
+                if on_finish:
+                    asset_object['on_finish'] = on_finish
+                google_chrome = activity_config.get('google_chrome', None)
+                if google_chrome:
+                    asset_object['on_finish'] = on_finish
+
             assets.append(asset_object)
         else:
             rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))
@@ -669,6 +666,7 @@ def is_valid_state(state):
     from lg_common.msg import ApplicationState
     return state == ApplicationState.HIDDEN or \
         state == ApplicationState.STOPPED or \
+        state == ApplicationState.STARTED or \
         state == ApplicationState.SUSPENDED or \
         state == ApplicationState.VISIBLE
 
@@ -816,3 +814,51 @@ def x_available_or_raise(timeout):
         msg = "X server is not available"
         rospy.logfatal(msg)
         raise DependencyException(msg)
+
+
+def browser_eligible_for_reuse(current_browser, future_browser):
+    """
+    type current_browser: ManagedAdhocBrowser
+    type future_browser: AdhocBrowser.msg
+
+    Compares two browsers and returns bool telling whether
+    one browser can be updated to the other.
+    It can't be updated if there's a difference in:
+     - cmd args
+     - extensions are different
+     - user agent
+     - binary
+    """
+    future_browser_extensions = [ext.name for ext in future_browser.extensions]
+    future_browser_cmd_args = [arg.argument for arg in future_browser.command_line_args]
+
+    return current_browser.user_agent == future_browser.user_agent and\
+        current_browser.binary == future_browser.binary and\
+        current_browser.extensions == future_browser_extensions and\
+        current_browser.command_line_args == future_browser_cmd_args
+
+
+def get_random_string(N=6):
+    """
+    Generate random string.
+    """
+    return ''.join(random.choice(string.ascii_uppercase) for _ in range(N))
+
+
+def generate_hash(string, length=8, random_suffix=False):
+    """
+    Accept a string (typically AdhocBrowser.instance_hash()) and
+    generate a unique hash with minimal collision
+
+    This will ensure that objects have their unique instance
+    hashes based on their representation (all attribs)
+
+    random_suffix adds random string to the end of the hash.
+    NB. random != unique it's still possible to get two equal hashes.
+    """
+    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)]
+
+    if random_suffix:
+        return hash_str + "_" + get_random_string()
+    else:
+        return hash_str

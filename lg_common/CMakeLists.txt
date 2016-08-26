@@ -10,7 +10,7 @@ catkin_python_setup()
 
 add_service_files(
   FILES
-  DirectorPoolQuery.srv
+  BrowserPool.srv
   USCSMessage.srv
 )
 
@@ -20,7 +20,10 @@ add_message_files(
   WindowGeometry.msg
   AdhocBrowser.msg
   AdhocBrowsers.msg
+  BrowserExtension.msg
+  BrowserCmdArg.msg
   StringArray.msg
+  Ready.msg
 )
 generate_messages()
 
@@ -42,6 +45,8 @@ catkin_install_python(PROGRAMS
   scripts/touchscreen
   scripts/command_handler_node.py
   scripts/command_handler_node
+  scripts/readiness.py
+  scripts/readiness
   scripts/last_uscs_message
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -63,6 +68,7 @@ if (CATKIN_ENABLE_TESTING)
   catkin_add_nosetests(test/offline/test_managed_application.py)
   catkin_add_nosetests(test/offline/test_tcp_relay.py)
   add_rostest(test/online/test_managed_adhoc_browser_director_bridge.test)
+  add_rostest(test/online/test_managed_adhoc_browser.test)
   add_rostest(test/online/state_changer.test)
 
 endif()

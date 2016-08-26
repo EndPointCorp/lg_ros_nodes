@@ -15,6 +15,24 @@ all LG ros nodes.
 * google-chrome available in PATH `~browser_binary`
 * awesome window manager
 
+## Smooth transitions
+
+The main goal is to be able to preload assets and application before changing the experience (before the actual change of active windows).
+
+#### The implementation owerview:
+1. Publish USCS message with some AdhocBrowsers assets.
+2. 'AdhocBrowsersPool' creates browsers, in background.
+3. Applications loads assets and pulish messages to `/director/window/ready`
+4. `readiness.py` ROS node aggregates messages from browsers instances and when all the browsers have sent ready messages, sends the `/director/ready` message.
+5. After `/director/ready` message being recieved 'AdhocBrowsersPool' changes the visibility of the windows.
+
+N.B. See extensions/ros_window_ready for to get how browsers trigger ready message.
+
+#### Messages
+- AdhocBrowsers now have scene slug
+- AdhocBrowser  now contains some additional fields
+- Ready         contains scene_slug and array of ros_instance_name's of redy windows
+
 ## Scripts
 
 ### adhoc\_browser.py
@@ -31,12 +49,32 @@ The list of browsers in the message is compared with the list of currently opene
 
 * if there is a browser, which `id` is not on the list, the browser is removed
 * if there is not a browser for an `id`, then the browser is created
-* if there already is a browser with the `id`, then the url and geometry are updated **[TODO: NOT IMPLEMENTED YET]**
 
 #### Parameters
 
 * `~viewport` [string] - name of the viewport to run at. This is a mandatory argument.
 * `~browser_binary` [string] - absolute or relative path to browser binary
+* `~extensions_root` [string] - absolute or relative path to directory with unpacked chrome extensions
+
+```json
+{
+  "activity_config": {
+    "preload": true,
+      "google_chrome":{
+        "extensions": [
+        {
+          "name": "test_extension1"
+        },
+        {
+          "name": "test_extension2"
+        }
+        ]
+      }
+  }
+}
+```
+
+thanks to this parameter - you may emit a message with above `activity_config` without absolute path to the extension
 
 ##### Subscribed Topics
 
@@ -152,4 +190,3 @@ Window manager.
 #### lg\_common.SceneListener
 
 Runs a callback upon scene messages.
-
