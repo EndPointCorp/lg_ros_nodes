@@ -2,6 +2,11 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* smooth transitions [WIP] (`#251 <https://github.com/EndPointCorp/lg_ros_nodes/issues/251>`_)
+* Contributors: Wojciech Ziniewicz
+
 1.3.27 (2016-08-23)
 -------------------
 

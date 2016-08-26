@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* added smooth transitions functionality (`#251 <https://github.com/EndPointCorp/lg_ros_nodes/issues/251>`_)
+* added support for loading chrome extensions in AdhocBrowser
+* added support for adding command line arguments
+* added support for using custom chrome binaries
+* Contributors: Wojciech Ziniewicz
+
 1.3.27 (2016-08-23)
 -------------------
 * Fix whitespace error in adhoc browser test
