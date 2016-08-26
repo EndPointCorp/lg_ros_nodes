@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.28 (2016-08-26)
+-------------------
 * added smooth transitions functionality (`#251 <https://github.com/EndPointCorp/lg_ros_nodes/issues/251>`_)
 * added support for loading chrome extensions in AdhocBrowser
 * added support for adding command line arguments
