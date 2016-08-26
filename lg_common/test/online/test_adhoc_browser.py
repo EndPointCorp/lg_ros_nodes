@@ -549,7 +549,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_alt_slug_msg'))
         rospy.sleep(self.preloading_grace_time)
 
-
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("ZRZAUVz_"), True)
         self.assertEqual(self.director_ready_mock.messages[1].instances[0].startswith('ZRZAUVz_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[1].data.startswith('ZRZAUVz_'), True)
@@ -632,7 +631,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
-
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
