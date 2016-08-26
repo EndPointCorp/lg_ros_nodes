@@ -277,6 +277,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
+        self.reinitialize_mock_subscribers()
 
     def test_3_chrome_commandline_argument_passing(self):
         """
@@ -308,6 +309,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
+        self.reinitialize_mock_subscribers()
 
     def test_4_chrome_user_agent_passing(self):
         """
@@ -335,6 +337,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
+        self.reinitialize_mock_subscribers()
 
     def test_5_chrome_binary_setting(self):
         """
@@ -366,6 +369,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
+        self.reinitialize_mock_subscribers()
 
     def test_6_chrome_persistence(self):
         """
@@ -471,6 +475,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
+        self.reinitialize_mock_subscribers()
 
     def test_7_adhoc_browser_preloading(self):
         """
@@ -633,6 +638,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
+        self.reinitialize_mock_subscribers()
 
     def test_8_adhoc_browser_preloading_mix(self):
         """
@@ -802,6 +808,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
+        self.reinitialize_mock_subscribers()
 
     def test_9_adhoc_browser_custom_preload_event(self):
         """
