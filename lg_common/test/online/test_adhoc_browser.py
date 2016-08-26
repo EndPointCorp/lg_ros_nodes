@@ -659,31 +659,25 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 7)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
         self.assertEqual(len(self.browser_service_mock_common.messages), 1)
-
         self.assertEqual(len(self.director_window_ready_mock.messages), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
-
         self.assertEqual(len(self.director_scene_mock.messages), 1)
+        self.assertEqual(len(self.common_mock.messages), 7)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 2)
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
-
-        self.print_mock_subscribers()
-        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
-        self.assertEqual(len(self.director_ready_mock.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
-        self.assertEqual(len(self.common_mock.messages), 7)
+
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
@@ -708,31 +702,26 @@ class TestAdhocBrowser(unittest.TestCase):
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 12)
+        self.assertEqual(len(self.common_mock.messages), 14)
         self.assertEqual(len(self.browser_service_mock_center.messages), 2)
         self.assertEqual(len(self.browser_service_mock_left.messages), 2)
         self.assertEqual(len(self.browser_service_mock_right.messages), 2)
         self.assertEqual(len(self.browser_service_mock_common.messages), 2)
-
         self.assertEqual(len(self.director_window_ready_mock.messages), 2)
         self.assertEqual(len(self.director_ready_mock.messages), 2)
-
         self.assertEqual(len(self.director_scene_mock.messages), 2)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 2)
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
 
         self.print_mock_subscribers()
-        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
-        self.assertEqual(len(self.director_ready_mock.messages), 2)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 2)
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
-        self.assertEqual(len(self.common_mock.messages), 14)
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
@@ -766,25 +755,21 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_left.messages), 3)
         self.assertEqual(len(self.browser_service_mock_right.messages), 3)
         self.assertEqual(len(self.browser_service_mock_common.messages), 3)
-
         self.assertEqual(len(self.director_window_ready_mock.messages), 3)
         self.assertEqual(len(self.director_ready_mock.messages), 3)
-
         self.assertEqual(len(self.director_scene_mock.messages), 3)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 2)
+        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
+        self.assertEqual(len(self.common_mock.messages), 21)
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
 
-        self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 2)
-        self.assertEqual(len(self.director_ready_mock.messages), 3)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 3)
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
-        self.assertEqual(len(self.common_mock.messages), 21)
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
