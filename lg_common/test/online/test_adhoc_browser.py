@@ -48,6 +48,7 @@ class TestAdhocBrowser(unittest.TestCase):
         """
 
         self.preloading_grace_time = 20
+        self.message_emission_grace_time = 3
         self.message_factory = InteractiveSpacesMessagesFactory()
         self.subscribers = []
         self.browser_service_mock_center = MockSubscriber(topic_name='/browser_service/center')
@@ -187,7 +188,7 @@ class TestAdhocBrowser(unittest.TestCase):
     def tearDown(self):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def reinitialize_mock_subscribers(self):
         [subscriber.reinitialize() for subscriber in self.subscribers]
@@ -211,7 +212,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_extension_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
@@ -228,7 +229,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 2
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
@@ -243,12 +244,13 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
+
         # 3
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.print_mock_subscribers()
-        self.assertEqual(len(self.common_mock.messages), 5)
+        self.assertEqual(len(self.common_mock.messages), 7)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -266,7 +268,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.assertEqual(len(self.browser_service_mock_center.messages), 2)
         self.assertEqual(len(self.browser_service_mock_left.messages), 2)
         self.assertEqual(len(self.browser_service_mock_right.messages), 2)
@@ -274,7 +276,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_3_chrome_commandline_argument_passing(self):
         """
@@ -283,7 +285,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_cmdargs_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
@@ -305,7 +307,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_4_chrome_user_agent_passing(self):
         """
@@ -314,7 +316,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_user_agent_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
@@ -332,7 +334,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_5_chrome_binary_setting(self):
         """
@@ -346,7 +348,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_binary_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.print_mock_subscribers()
         self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
@@ -363,7 +365,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_6_chrome_persistence(self):
         """
@@ -403,7 +405,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.assertEqual(len(self.common_mock.messages), 10)
         self.assertEqual(len(self.browser_service_mock_center.messages), 2)
         self.assertEqual(len(self.browser_service_mock_left.messages), 2)
@@ -435,7 +437,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # 3
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_alt_slug_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
         self.assertEqual(len(self.common_mock.messages), 15)
         self.assertEqual(len(self.browser_service_mock_center.messages), 3)
         self.assertEqual(len(self.browser_service_mock_left.messages), 3)
@@ -468,7 +470,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_7_adhoc_browser_preloading(self):
         """
@@ -522,7 +524,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1b
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 14)
+        self.assertEqual(len(self.common_mock.messages), 15)
         self.assertEqual(len(self.browser_service_mock_center.messages), 2)
         self.assertEqual(len(self.browser_service_mock_left.messages), 2)
         self.assertEqual(len(self.browser_service_mock_right.messages), 2)
@@ -630,7 +632,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_8_adhoc_browser_preloading_mix(self):
         """
@@ -799,7 +801,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_9_adhoc_browser_custom_preload_event(self):
         """
@@ -850,7 +852,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
 
 if __name__ == '__main__':
