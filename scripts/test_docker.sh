@@ -29,6 +29,10 @@ function start_xvfb () {
     #/etc/init.d/xvfb start
     #export DISPLAY=:1.0
 
+    echo "Installing Xvfb"
+
+    sudo apt-get install -q -y x11-apps xvfb
+
     msg="Started Xvfb"
 
     xinerama="+xinerama"
