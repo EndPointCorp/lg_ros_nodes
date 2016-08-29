@@ -464,7 +464,7 @@ class InteractiveSpacesMessagesFactory:
                 "custom_preload_event": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/custom_event.html"
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/custom_event.html?use_app_event=1"
             ],
             "height": 333,
             "presentation_viewport": "center",

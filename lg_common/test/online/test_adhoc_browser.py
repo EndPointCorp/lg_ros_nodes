@@ -725,7 +725,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_custom_preloading_event_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 7)
+        self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -734,20 +734,14 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_window_ready_mock.messages), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
-        self.assertEqual(len(self.director_scene_mock.messages), 1)
-
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 1)
 
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("D69tyM"), True)
 
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
         self.assertEqual(len(self.director_window_ready_mock.messages), 1)
-        self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('D69tyM'), True)
-        self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('D69tyM'), True)
-        self.assertEqual(len(self.common_mock.messages), 7)
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
