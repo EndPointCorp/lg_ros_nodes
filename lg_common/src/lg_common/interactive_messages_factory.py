@@ -99,7 +99,7 @@ class InteractiveSpacesMessagesFactory:
                 }
             },
             "assets": [
-                "https://maps.google.com"
+                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
