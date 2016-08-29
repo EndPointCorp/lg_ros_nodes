@@ -25,6 +25,33 @@ function build_docker() {
   docker build --pull -t ${DOCKER_NAME} .
 }
 
+function start_xvfb () {
+    #/etc/init.d/xvfb start
+    #export DISPLAY=:1.0
+
+    msg="Started Xvfb"
+
+    xinerama="+xinerama"
+    if [ "$NO_XINERAMA" = "true" ]; then
+        xinerama=""
+        msg="$msg, xinerama disabled"
+    fi
+    randr="+extension RANDR"
+    if [ "$NO_RANDR" = "true" ]; then
+        randr=""
+        msg="$msg, randr disabled"
+    fi
+
+    Xvfb :1 $randr $xinerama -nolock \
+        -nocursor -screen 0 1920x1080x24 \
+        &> /tmp/host/xvfb_start.log &
+
+    export DISPLAY=:1
+
+    msg="$msg, DISPLAY=$DISPLAY"
+    echo $msg
+}
+
 # runs tests and returns the return value
 function run_tests() {
   echo running ${DOCKER_NAME}
@@ -59,6 +86,19 @@ function cleanup() {
 }
 
 set -e
+
+if [ "$NO_XVFB" != "true" ]; then
+    start_xvfb
+else
+    xclock &
+    XC_PID=$(pgrep xclock)
+    if [ "x$XC_PID" == "x" ]; then
+        echo "Couldn't connect to Xorg server"
+        if [ ! -f /tmp/.X11/X0 ]; then
+            echo "Xorg socket (/tmp/.X11/X0) not found."
+        fi
+    fi
+fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${DIR}/..

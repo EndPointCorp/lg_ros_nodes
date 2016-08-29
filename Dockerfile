@@ -5,7 +5,8 @@ MAINTAINER Jacob Minshall <jacob@endpoint.com>
 
 # install system dependencies
 RUN apt-get update && \
-      apt-get install -y g++ pep8 && \
+      apt-get install -y g++ pep8 \
+      xvfb x11-apps && \
       rm -rf /var/lib/apt/lists/*
 
 # entrypoint

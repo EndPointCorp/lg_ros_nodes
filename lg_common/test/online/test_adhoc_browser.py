@@ -206,12 +206,8 @@ class TestAdhocBrowser(unittest.TestCase):
 
     def test_2_chrome_extension_initialization(self):
         """
-        1. emit browser with extension - check if it got passed to --load-extension arg
-        2. emit browser with 2 extensions - check above
-        3. emit browser with 2 extensions and prelaoding - ros_window_ready should be loaded implicitly as a first extension
+        emit browser with extension - check if it got passed to --load-extension arg
         """
-
-        # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_extension_msg'))
         rospy.sleep(self.message_emission_grace_time)
@@ -229,25 +225,11 @@ class TestAdhocBrowser(unittest.TestCase):
                          'HSq87uI')
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
-        # 2
-        self.reinitialize_mock_subscribers()
-        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_msg'))
-        rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 5)
-        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_left.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_right.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_common.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 0)
-        self.assertEqual(len(self.director_ready_mock.messages), 0)
-        self.assertEqual(len(self.director_scene_mock.messages), 1)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id,
-                         'ovych17')
-        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
 
-        # 3
+    def test_2_chrome_extension_initialization_with_two_extensions(self):
+        """
+        emit browser with 2 extensions
+        """
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
         rospy.sleep(self.preloading_grace_time)
@@ -279,6 +261,27 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
         self.reinitialize_mock_subscribers()
+
+    def test_2_chrome_extension_initialization_with_preloading(self):
+        """
+        emit browser with 2 extensions and prelaoding - ros_window_ready should be loaded implicitly as a first extension
+        """
+        self.reinitialize_mock_subscribers()
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_msg'))
+        rospy.sleep(self.message_emission_grace_time)
+        self.assertEqual(len(self.common_mock.messages), 5)
+        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_left.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_right.messages), 1)
+        self.assertEqual(len(self.browser_service_mock_common.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_ready_mock.messages), 0)
+        self.assertEqual(len(self.director_scene_mock.messages), 1)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id,
+                         'ovych17')
+        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
 
     def test_3_chrome_commandline_argument_passing(self):
         """
