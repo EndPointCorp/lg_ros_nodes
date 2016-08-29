@@ -81,3 +81,6 @@ tmp.launch
 
 # docker copy of nodes
 docker_nodes/
+
+#tmp for mounting into docker
+tmp/*

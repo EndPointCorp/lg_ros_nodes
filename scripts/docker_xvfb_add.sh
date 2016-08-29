@@ -15,7 +15,7 @@ start_xvfb() {
         msg="$msg, randr disabled"
     fi
 
-    Xvfb :1 $randr $xinerama -nolock \
+    Xvfb :1 -ac $randr $xinerama -nolock \
         -nocursor -screen 0 1920x1080x24 \
         &> /tmp/xvfb_start.log &
 

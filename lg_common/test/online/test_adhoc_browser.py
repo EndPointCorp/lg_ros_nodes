@@ -241,7 +241,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_window_ready_mock.messages), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith('F8qFi0S_'), True)
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith('81MzhqG_'), True)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
                          'ros_window_ready',
@@ -680,7 +680,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # 3
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_alt_slug_msg'))
-        rospy.sleep(self.preloading_grace_time)
+        rospy.sleep(self.preloading_grace_time + 5)
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")

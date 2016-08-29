@@ -6,15 +6,25 @@ MAINTAINER Jacob Minshall <jacob@endpoint.com>
 # install system dependencies
 RUN apt-get update && \
       apt-get install -y g++ pep8 \
+      python-pytest wget \
       xvfb x11-apps && \
       rm -rf /var/lib/apt/lists/*
+
+RUN \
+      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+      echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list && \
+      apt-get update && \
+      apt-get install -y google-chrome-stable && \
+      rm -rf /var/lib/apt/lists/*
+
 
 # entrypoint
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
 RUN chmod 0755 /ros_entrypoint.sh
 
 COPY scripts/docker_xvfb_add.sh /docker_xvfb_add.sh
-RUN chmod 0755 /docker_xvfb_add.sh && /docker_xvfb_add.sh
+RUN chmod 0755 /docker_xvfb_add.sh && sync
+ENV DISPLAY :1
 
 # add test user, being root isn't fun
 ENV TEST_USER test_docker
@@ -34,7 +44,7 @@ COPY setup.cfg $PROJECT_ROOT/
 
 CMD cd ${HOME}/catkin_ws/catkin && \
     sudo cp -r /docker_nodes/* src/ && \
-    export DISPLAY=:1 && \
+    /docker_xvfb_add.sh && \
     sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME} && \
     sudo apt-get update && \
     rosdep update && \

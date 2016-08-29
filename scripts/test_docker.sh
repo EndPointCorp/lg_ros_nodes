@@ -28,7 +28,7 @@ function build_docker() {
 
 # runs tests and returns the return value
 function run_tests() {
-  echo running ${DOCKER_NAME}
+  echo running ${DOCKER_NAME} in `pwd`
   docker run \
     --name ${DOCKER_NAME} \
     --rm \
