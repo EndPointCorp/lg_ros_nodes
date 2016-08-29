@@ -13,6 +13,9 @@ RUN apt-get update && \
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
 RUN chmod 0755 /ros_entrypoint.sh
 
+COPY scripts/docker_xvfb_add.sh /docker_xvfb_add.sh
+RUN chmod 0755 /docker_xvfb_add.sh && /docker_xvfb_add.sh
+
 # add test user, being root isn't fun
 ENV TEST_USER test_docker
 ENV HOME /home/test_docker
@@ -31,6 +34,7 @@ COPY setup.cfg $PROJECT_ROOT/
 
 CMD cd ${HOME}/catkin_ws/catkin && \
     sudo cp -r /docker_nodes/* src/ && \
+    export DISPLAY=:1 && \
     sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME} && \
     sudo apt-get update && \
     rosdep update && \
