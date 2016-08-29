@@ -1,4 +1,4 @@
-function start_xvfb () {
+start_xvfb() {
     #/etc/init.d/xvfb start
     #export DISPLAY=:1.0
 
