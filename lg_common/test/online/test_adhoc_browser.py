@@ -720,7 +720,7 @@ class TestAdhocBrowser(unittest.TestCase):
         """
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_custom_preloading_event_msg'))
-        rospy.sleep(self.preloading_grace_time)
+        rospy.sleep(self.preloading_grace_time+10)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
