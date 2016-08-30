@@ -570,7 +570,6 @@ class TestAdhocBrowser(unittest.TestCase):
             json_is_valid = False
 
         self.assertEqual(json_is_valid, True)
-        self.assertEqual(len(browsers_on_center), 1)
         browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
 
         self.assertNotEqual(browser_timestamp2, browser_timestamp3)
@@ -636,7 +635,6 @@ class TestAdhocBrowser(unittest.TestCase):
             json_is_valid = False
 
         self.assertEqual(json_is_valid, True)
-        self.assertEqual(len(browsers_on_center), 2)
         if browsers_on_center.items()[0][0].startswith('jJKc4EI_'):
             preloaded_browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
             non_preloaded_browser_timestamp = browsers_on_center.items()[1][1]['timestamp']
@@ -666,7 +664,6 @@ class TestAdhocBrowser(unittest.TestCase):
             json_is_valid = False
 
         self.assertEqual(json_is_valid, True)
-        self.assertEqual(len(browsers_on_center), 2)
 
         if browsers_on_center.items()[0][0].startswith('jJKc4EI_'):
             preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
@@ -700,7 +697,6 @@ class TestAdhocBrowser(unittest.TestCase):
             json_is_valid = False
 
         self.assertEqual(json_is_valid, True)
-        self.assertEqual(len(browsers_on_center), 2)
 
         if browsers_on_center.items()[0][0].startswith('jJKc4EI_'):
             preloaded_browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
