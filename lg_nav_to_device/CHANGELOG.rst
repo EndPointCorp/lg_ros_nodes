@@ -2,6 +2,14 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.30 (2016-08-31)
+-------------------
+
+1.3.29 (2016-08-31)
+-------------------
+* synced broken changelogs
+* Contributors: Wojciech Ziniewicz
+
 1.3.28 (2016-08-26)
 -------------------
 

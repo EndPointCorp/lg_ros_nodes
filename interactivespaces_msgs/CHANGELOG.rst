@@ -2,6 +2,15 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.30 (2016-08-31)
+-------------------
+
+1.3.29 (2016-08-31)
+-------------------
+* synced broken changelogs
+* Formatted teh changelog
+* Contributors: Wojciech Ziniewicz
+
 1.3.28 (2016-08-26)
 -------------------
 * smooth transitions
