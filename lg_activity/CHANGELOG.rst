@@ -2,6 +2,9 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.29 (2016-08-31)
 -------------------
 * synced broken changelogs
