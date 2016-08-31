@@ -2,6 +2,11 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Formatted teh changelog
+* Contributors: Wojciech Ziniewicz
+
 1.3.28 (2016-08-26)
 -------------------
 * smooth transitions

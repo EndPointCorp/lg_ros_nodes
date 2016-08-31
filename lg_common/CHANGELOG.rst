@@ -2,6 +2,19 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Raised some timeouts again
+* Longer timeout for custom callback
+* Formatted teh changelog
+* Dont rely on postponed removal - shouldnt be tested
+* More timeouts!
+* Making custom preloading event better again
+* Added Xvfb to docker tests
+* Split test cases to separate defs and made Xvfb enabled in Docker
+* Changed maps.google.com slowness to something local and fast and amended some tests
+* Contributors: Wojciech Ziniewicz
+
 1.3.28 (2016-08-26)
 -------------------
 * added smooth transitions functionality #251 `https://github.com/EndPointCorp/lg_ros_nodes/issues/251`
