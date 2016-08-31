@@ -2,8 +2,8 @@
 Changelog for package rosbridge_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.30 (2016-08-31)
+-------------------
 * Revert "Removed rosbridge"
   This reverts commit bf6f8e22b7b8bc182efc7339a89979fc116552bb.
 * Contributors: Wojciech Ziniewicz
