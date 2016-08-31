@@ -13,6 +13,7 @@ import rospkg
 
 from lg_offliner import ROS_NODE_NAME
 from lg_offliner import ConnectivityResults
+from lg_offliner import Checker
 
 
 class TestConnectivityResults(object):
@@ -68,4 +69,5 @@ if __name__ == "__main__":
     # run only itself
     test_path = os.path.abspath(os.path.abspath(__file__))
     # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
-    pytest.main("%s -s -v --junit-xml=%s" % (test_path, pytest_result_path))
+    #pytest.main("-vv -rfsX -s --junit-xml=%s --cov=. --cov-report term-missing %s" % (pytest_result_path, test_path))
+    pytest.main("-vv -rfsX -s --junit-xml=%s %s" % (pytest_result_path, test_path))
