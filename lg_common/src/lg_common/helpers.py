@@ -862,3 +862,23 @@ def generate_hash(string, length=8, random_suffix=False):
         return hash_str + "_" + get_random_string()
     else:
         return hash_str
+
+
+def handle_initial_state(call_back):
+    """
+    Query for initial state from state service and run
+    the call back with that state if available
+    """
+    rospy.wait_for_service('/initial_state')
+
+    from lg_common.srv import InitialUSCS, InitialUSCSResponse
+
+    initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
+
+    state = initial_state_service.call()
+    rospy.loginfo('got state: %s' % state.message)
+    if state and state != InitialUSCSResponse():
+        try:
+            call_back(state)
+        except Exception as e:
+            rospy.logerr("Error running callback, %s" % e.message)

@@ -12,6 +12,7 @@ add_service_files(
   FILES
   BrowserPool.srv
   USCSMessage.srv
+  InitialUSCS.srv
 )
 
 add_message_files(
