@@ -4,6 +4,8 @@ Changelog for package lg_attract_loop
 
 Forthcoming
 -----------
+* synced broken changelogs
+* Contributors: Wojciech Ziniewicz
 
 1.3.28 (2016-08-26)
 -------------------

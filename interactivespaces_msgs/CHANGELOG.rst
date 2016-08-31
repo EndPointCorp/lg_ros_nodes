@@ -4,6 +4,7 @@ Changelog for package interactivespaces_msgs
 
 Forthcoming
 -----------
+* synced broken changelogs
 * Formatted teh changelog
 * Contributors: Wojciech Ziniewicz
 

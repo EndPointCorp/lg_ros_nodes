@@ -4,6 +4,18 @@ Changelog for package lg_common
 
 Forthcoming
 -----------
+* synced broken changelogs
+* Raised some timeouts again
+* Longer timeout for custom callback
+* Formatted teh changelog
+* Dont rely on postponed removal - shouldnt be tested
+* More timeouts!
+* Making custom preloading event better again
+* Added Xvfb to docker tests
+* Split test cases to separate defs and made Xvfb enabled in Docker
+* Changed maps.google.com slowness to something local and fast and amended some tests
+* Contributors: Wojciech Ziniewicz
+
 * Raised some timeouts again
 * Longer timeout for custom callback
 * Formatted teh changelog
