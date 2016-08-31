@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.29 (2016-08-31)
+-------------------
 * synced broken changelogs
 * Raised some timeouts again
 * Longer timeout for custom callback
