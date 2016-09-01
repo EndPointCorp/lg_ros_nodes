@@ -1,0 +1,2 @@
+class MirrorException(Exception):
+    pass

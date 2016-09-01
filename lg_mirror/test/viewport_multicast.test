@@ -1,0 +1,6 @@
+<launch>
+  <param name="/viewport/first" value="1920x1080+0+0" />
+  <param name="/viewport/second" value="1920x1080+1920+0" />
+  <param name="/viewport/third" value="1920x1080+3840+0" />
+  <test test-name="test_viewport_multicast" pkg="lg_mirror" type="test_viewport_multicast.py" />
+</launch>
