@@ -388,15 +388,11 @@ class AdhocBrowserPool():
         """
         Accepts ids to create, to preload and to remove to be able to decide
         which browsers to remove on the basis of their preloadability
-        """
-        # remove ids_to_remove but only if they constist of
-        # non-preloadable browsers
-        if len(ids_to_create - ids_to_preload) > 0:
-            self._destroy_browsers_ids(ids_to_remove)
 
-        # remove_all preloadable remnants
-        if len(ids_to_create) == 0 and ids_to_remove:
-            self._destroy_browsers_ids(ids_to_remove)
+        Remove all browsers that are not preloadable immediately
+        """
+        if len(ids_to_remove - ids_to_preload) > 0:
+            self._destroy_browsers_ids(ids_to_remove - ids_to_preload)
 
         return True
 
