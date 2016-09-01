@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Refactored adhoc browser pool housekeeping
+* Contributors: Galaxy Admin
+
 1.3.30 (2016-08-31)
 -------------------
 

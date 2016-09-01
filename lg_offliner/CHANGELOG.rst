@@ -2,6 +2,11 @@
 Changelog for package lg_offliner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* test coverage experiments, touch: `#237 <https://github.com/EndPointCorp/lg_ros_nodes/issues/237>`_
+* Contributors: Zdenek Maxa
+
 1.3.30 (2016-08-31)
 -------------------
 
