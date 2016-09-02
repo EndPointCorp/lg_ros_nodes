@@ -1,0 +1,5 @@
+<launch>
+  <node name="touch_router" pkg="lg_mirror" type="touch_router_node.py">
+  </node>
+  <test test-name="test_touch_router" pkg="lg_mirror" type="test_touch_router.py" />
+</launch>

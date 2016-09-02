@@ -1,0 +1,8 @@
+<launch>
+  <arg name="test_viewport" value="test_default" />
+  <env name="TEST_VIEWPORT" value="$(arg test_viewport)" />
+  <node name="touch_router" pkg="lg_mirror" type="touch_router_node.py">
+    <param name="default_viewport" value="$(arg test_viewport)" />
+  </node>
+  <test test-name="test_touch_router" pkg="lg_mirror" type="test_touch_router.py" />
+</launch>
