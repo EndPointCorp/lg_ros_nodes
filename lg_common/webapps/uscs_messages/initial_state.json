@@ -1,0 +1,21 @@
+{
+  "decription": "initial_state",
+  "duration": 0,
+  "name": "initial_state",
+  "resource_uri": "/director_api/scene/initial_state",
+  "slug": "initial_state",
+  "windows": [
+    {
+    "activity": "browser",
+    "activity_config": {},
+    "assets": [
+      "http://lg-head/touchscreen_assets/index.html"
+    ],
+    "height": 1080,
+    "presentation_viewport": "touchscreen",
+    "width": 1920,
+    "x_coord": 0,
+    "y_coord": 0
+  }
+  ]
+}
