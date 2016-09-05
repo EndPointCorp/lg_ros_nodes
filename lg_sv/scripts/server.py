@@ -129,7 +129,6 @@ def main():
             return
         handle_director_message(scene)
 
-
     on_new_scene(handle_director_message)
     handle_initial_state(initial_state_handler)
 
