@@ -9,6 +9,7 @@ import json
 
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.srv import BrowserPool
+from interactivespaces_msgs.msg import GenericMessage
 
 
 class TestAdhocBrowser(unittest.TestCase):
