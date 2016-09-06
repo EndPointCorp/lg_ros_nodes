@@ -1,0 +1,45 @@
+{
+  "decription": "on_online",
+  "duration": 0,
+  "name": "on_online",
+  "resource_uri": "/director_api/scene/on_online",
+  "slug": "on_online",
+  "windows": [
+    {
+    "activity": "browser",
+    "activity_config": {},
+    "assets": [
+      "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_online.html"
+    ],
+    "height": 300,
+    "presentation_viewport": "center",
+    "width": 300,
+    "x_coord": 0,
+    "y_coord": 0
+  },
+  {
+  "activity": "browser",
+  "activity_config": {},
+  "assets": [
+    "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_online.html"
+  ],
+  "height": 300,
+  "presentation_viewport": "wall",
+  "width": 300,
+  "x_coord": 0,
+  "y_coord": 0
+  },
+  {
+  "activity": "browser",
+  "activity_config": {},
+  "assets": [
+    "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_online.html"
+  ],
+  "height": 1080,
+  "presentation_viewport": "touchscreen",
+  "width": 1920,
+  "x_coord": 0,
+  "y_coord": 0
+  }
+  ]
+}

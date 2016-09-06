@@ -1,0 +1,45 @@
+{
+  "decription": "on_active",
+  "duration": 0,
+  "name": "on_active",
+  "resource_uri": "/director_api/scene/on_active",
+  "slug": "on_active",
+  "windows": [
+    {
+    "activity": "browser",
+    "activity_config": {},
+    "assets": [
+      "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_active.html"
+    ],
+    "height": 300,
+    "presentation_viewport": "center",
+    "width": 300,
+    "x_coord": 0,
+    "y_coord": 0
+  },
+  {
+  "activity": "browser",
+  "activity_config": {},
+  "assets": [
+    "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_active.html"
+  ],
+  "height": 300,
+  "presentation_viewport": "wall",
+  "width": 300,
+  "x_coord": 0,
+  "y_coord": 0
+  },
+  {
+  "activity": "browser",
+  "activity_config": {},
+  "assets": [
+    "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_active.html"
+  ],
+  "height": 1080,
+  "presentation_viewport": "touchscreen",
+  "width": 1920,
+  "x_coord": 0,
+  "y_coord": 0
+  }
+  ]
+}

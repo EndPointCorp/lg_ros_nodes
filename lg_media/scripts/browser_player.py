@@ -4,6 +4,7 @@ import rospy
 from lg_media.msg import AdhocMedias
 from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import handle_initial_state
 
 DEFAULT_VIEWPORT = 'center'
 MEDIA_TYPE = 'browser_video'
@@ -21,6 +22,7 @@ def main():
     director_bridge = DirectorMediaBridge(adhoc_media_publisher, viewport_name, MEDIA_TYPE)
     rospy.Subscriber('/director/scene', GenericMessage,
                      director_bridge.translate_director)
+    handle_initial_state(director_bridge.translate_director)
     rospy.spin()
 
 if __name__ == '__main__':

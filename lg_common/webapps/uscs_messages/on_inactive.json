@@ -1,0 +1,45 @@
+{
+  "decription": "on_inactive",
+  "duration": 0,
+  "name": "on_inactive",
+  "resource_uri": "/director_api/scene/on_inactive",
+  "slug": "on_inactive",
+  "windows": [
+    {
+    "activity": "browser",
+    "activity_config": {},
+    "assets": [
+      "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_inactive.html"
+    ],
+    "height": 300,
+    "presentation_viewport": "center",
+    "width": 300,
+    "x_coord": 0,
+    "y_coord": 0
+  },
+  {
+  "activity": "browser",
+  "activity_config": {},
+  "assets": [
+    "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_inactive.html"
+  ],
+  "height": 300,
+  "presentation_viewport": "wall",
+  "width": 300,
+  "x_coord": 0,
+  "y_coord": 0
+  },
+  {
+  "activity": "browser",
+  "activity_config": {},
+  "assets": [
+    "http://127.0.0.1:8008/lg_common/webapps/uscs_messages/state_pages/on_inactive.html"
+  ],
+  "height": 1080,
+  "presentation_viewport": "touchscreen",
+  "width": 1920,
+  "x_coord": 0,
+  "y_coord": 0
+  }
+  ]
+}
