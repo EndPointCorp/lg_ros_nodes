@@ -869,7 +869,8 @@ def handle_initial_state(call_back):
     Query for initial state from state service and run
     the call back with that state if available
     """
-    rospy.wait_for_service('/initial_state')
+    # commenting out for now
+    #rospy.wait_for_service('/initial_state')
 
     from lg_common.srv import InitialUSCS, InitialUSCSResponse
 
