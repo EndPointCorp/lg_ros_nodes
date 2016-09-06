@@ -36,15 +36,16 @@ def main():
     depend_on_scene_repository = rospy.get_param('~depend_on_scene_repository', True)
     global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    initial_state_scene_url = rospy.get_param('~initial_state_scene_url', '')
 
-    if initial_state_scene_url:
-        scheme = urlparse(initial_state_scene_url)
-        if not scheme.port:
-            port = 80
-        else:
-            port = scheme.port
-        check_www_dependency(depend_on_scene_repository, scheme.hostname, port, 'initial_state_url', global_dependency_timeout)
+    def set_url(param):
+        initial_state_scene_url = rospy.get_param('~initial_state_scene_url', '')
+        if url:
+            scheme = urlparse(initial_state_scene_url)
+            if not scheme.port:
+                port = 80
+            else:
+                port = scheme.port
+            check_www_dependency(depend_on_scene_repository, scheme.hostname, port, 'initial_state_url', global_dependency_timeout)
 
     on_online_state_scene_url = rospy.get_param('~on_online_state_scene_url', '')
     if on_online_state_scene_url:
