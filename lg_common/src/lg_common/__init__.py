@@ -9,3 +9,4 @@ from state_changer import StateChanger
 from log_watcher import LogWatcher
 from readiness_node import ReadinessNode
 from interactive_messages_factory import InteractiveSpacesMessagesFactory
+from uscs_service import USCSService
