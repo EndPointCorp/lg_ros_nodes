@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.0 (2016-09-06)
+------------------
 * Implement mirroring capture and playback
 * Contributors: Matt Vollrath
 
