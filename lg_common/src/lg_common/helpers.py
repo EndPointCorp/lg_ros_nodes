@@ -870,7 +870,11 @@ def handle_initial_state(call_back):
     the call back with that state if available
     """
     # commenting out for now
-    #rospy.wait_for_service('/initial_state')
+    try:
+        rospy.wait_for_service('/initial_state', 10)
+    except:
+        rospy.logerr("This system does not support initial state setting")
+        return
 
     from lg_common.srv import InitialUSCS, InitialUSCSResponse
 
