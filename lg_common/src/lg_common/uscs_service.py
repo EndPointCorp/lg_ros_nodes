@@ -66,12 +66,12 @@ class USCSService:
         If data == False then emit on_offline_state message
         """
         if self.director_scene_publisher:
-            if message.data == True and self.on_online_state:
+            if message.data is True and self.on_online_state:
                 """
                 We became online
                 """
                 self.director_scene_publisher.publish(self.on_online_state)
-            if message.data == False and self.on_offline_state:
+            if message.data is False and self.on_offline_state:
                 """
                 We became offline
                 """
@@ -83,12 +83,12 @@ class USCSService:
         and emits appropriate message from ivars
         """
         if self.director_scene_publisher:
-            if message.data == True and self.on_active_state:
+            if message.data is True and self.on_active_state:
                 """
                 We became active
                 """
                 self.director_scene_publisher.publish(self.on_active_state)
-            if message.data == False and self.on_inactive_state:
+            if message.data is False and self.on_inactive_state:
                 """
                 We became inactive
                 """

@@ -27,6 +27,17 @@ ON_ACTIVE_STATE = "http://lg-head:8088/director_api/on_active_scene"
 
 
 def main():
+    def set_url(param):
+        url = rospy.get_param(param, '')
+        if url:
+            scheme = urlparse(url)
+            if not scheme.port:
+                port = 80
+            else:
+                port = scheme.port
+            check_www_dependency(depend_on_scene_repository, scheme.hostname, port, param[1:], global_dependency_timeout)
+        return url
+
     rospy.init_node('lg_uscs', anonymous=False)
 
     director_topic = rospy.get_param('~director_topic', '/director/scene')
@@ -36,52 +47,11 @@ def main():
     depend_on_scene_repository = rospy.get_param('~depend_on_scene_repository', True)
     global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-
-    def set_url(param):
-        initial_state_scene_url = rospy.get_param('~initial_state_scene_url', '')
-        if url:
-            scheme = urlparse(initial_state_scene_url)
-            if not scheme.port:
-                port = 80
-            else:
-                port = scheme.port
-            check_www_dependency(depend_on_scene_repository, scheme.hostname, port, 'initial_state_url', global_dependency_timeout)
-
-    on_online_state_scene_url = rospy.get_param('~on_online_state_scene_url', '')
-    if on_online_state_scene_url:
-        scheme = urlparse(on_online_state_scene_url)
-        if not scheme.port:
-            port = 80
-        else:
-            port = scheme.port
-        check_www_dependency(depend_on_scene_repository, scheme.hostname, port, 'initial_state_url', global_dependency_timeout)
-
-    on_offline_state_scene_url = rospy.get_param('~on_offline_state_scene_url', '')
-    if on_offline_state_scene_url:
-        scheme = urlparse(on_offline_state_scene_url)
-        if not scheme.port:
-            port = 80
-        else:
-            port = scheme.port
-        check_www_dependency(depend_on_scene_repository, scheme.hostname, port, 'initial_state_url', global_dependency_timeout)
-
-    on_active_state_scene_url = rospy.get_param('~on_active_state_scene_url', '')
-    if on_active_state_scene_url:
-        scheme = urlparse(on_active_state_scene_url)
-        if not scheme.port:
-            port = 80
-        else:
-            port = scheme.port
-        check_www_dependency(depend_on_scene_repository, scheme.hostname, port, 'initial_state_url', global_dependency_timeout)
-
-    on_inactive_state_scene_url = rospy.get_param('~on_inactive_state_scene_url', '')
-    if on_inactive_state_scene_url:
-        scheme = urlparse(on_inactive_state_scene_url)
-        if not scheme.port:
-            port = 80
-        else:
-            port = scheme.port
-        check_www_dependency(depend_on_scene_repository, scheme.hostname, port, 'initial_state_url', global_dependency_timeout)
+    initial_state_scene_url = set_url('~initial_state_scene_url')
+    on_online_state_scene_url = set_url('~on_online_state_scene_url')
+    on_offline_state_scene_url = set_url('~on_offline_state_scene_url')
+    on_active_state_scene_url = set_url('~on_active_state_scene_url')
+    on_inactive_state_scene_url = set_url('~on_inactive_state_scene_url')
 
     director_scene_publisher = rospy.Publisher(
         director_topic, GenericMessage, queue_size=3)
