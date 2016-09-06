@@ -15,7 +15,7 @@ class MockPub(object):
         self.published_messages.append(message)
 
 
-class TestManagedApplication(unittest.TestCase):
+class TestUSCSService(unittest.TestCase):
     def setUp(self):
         self.director_scene_publisher = MockPub()
         self.us = USCSService(

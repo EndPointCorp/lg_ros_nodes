@@ -39,6 +39,7 @@ def main():
     rospy.Subscriber('/director/scene',
                      GenericMessage,
                      adhoc_media_mplayer_director_bridge.translate_director)
+
     handle_initial_state(adhoc_media_mplayer_director_bridge.translate_director)
 
     # Create service service about the mplayer pool service

@@ -876,9 +876,10 @@ def handle_initial_state(call_back):
     initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
 
     state = initial_state_service.call()
-    rospy.loginfo('got state: %s' % state.message)
+    rospy.loginfo('got initial state: %s' % state.message)
     if state and state != InitialUSCSResponse():
         try:
+            # TODO(WZ) `state` must be converted to GenericMessage
             call_back(state)
         except Exception as e:
-            rospy.logerr("Error running callback, %s" % e.message)
+            rospy.logerr("Error running initial_state callback, %s" % e.message)
