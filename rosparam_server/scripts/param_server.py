@@ -3,6 +3,7 @@
 import rospy
 import tornado.ioloop
 import tornado.web
+import tornado.httpserver
 
 def debug():
     import pdb
@@ -27,7 +28,12 @@ def main():
         (r"/(.*)", ParamHandler),
     ])
 
-    application.listen(port)
+    #application.listen(port)
+    http_server = tornado.httpserver.HTTPServer(application, ssl_options={
+        "certfile": "/home/lg/etc/ros.crt",
+        "keyfile": "/home/lg/etc/ros.key",
+    })
+    http_server.listen(port)
     ioloop = tornado.ioloop.IOLoop.current()
     rospy.on_shutdown(ioloop.stop)
     ioloop.start()
