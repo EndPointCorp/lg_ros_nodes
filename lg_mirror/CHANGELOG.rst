@@ -1,24 +1,25 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package lg_offliner
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package lg_mirror
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
+* Implement mirroring capture and playback
+* Contributors: Matt Vollrath
+
+* Implement mirroring capture and playback
+* Contributors: Matt Vollrath
 
 1.3.31 (2016-09-01)
 -------------------
-* test coverage experiments, touch: `#237 <https://github.com/EndPointCorp/lg_ros_nodes/issues/237>`_
-* Contributors: Zdenek Maxa
 
-1.3.30 (2016-08-31)
--------------------
+1.3.30 (2016-08-31 13:29)
+-------------------------
 
-1.3.29 (2016-08-31)
--------------------
-* synced broken changelogs
-* Contributors: Wojciech Ziniewicz
+1.3.29 (2016-08-31 13:16)
+-------------------------
 
-1.3.28 (2016-08-23)
+1.3.28 (2016-08-26)
 -------------------
 
 1.3.27 (2016-08-23)
@@ -27,41 +28,17 @@ Forthcoming
 1.3.26 (2016-08-15)
 -------------------
 
-1.3.25 (2016-08-12)
--------------------
+1.3.25 (2016-08-12 12:54)
+-------------------------
 
-1.3.24 (2016-08-12)
--------------------
-* added documentation, comments, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* online, offline unittests, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* custom online, offline message publishers, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* Contributors: Zdenek Maxa
+1.3.24 (2016-08-12 11:33)
+-------------------------
 
-1.3.23 (2016-08-09)
--------------------
+1.3.23 (2016-08-09 12:17)
+-------------------------
 
-1.3.22 (2016-08-09)
--------------------
-* generating changelogs to satisfy jenkins lg_ros_nodes_deb_builds_master, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* generated empty changelog, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* minor, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* added on_online on_offline configurable messages, half-finished, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* custom configurable on online, on offline messages, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* implemented offline status service, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* check implemented, extended, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* intermediate commit, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* initial, envelope ros node stuff for lg_offliner, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* Contributors: Zdenek Maxa
-
-* generated empty changelog, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* minor, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* added on_online on_offline configurable messages, half-finished, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* custom configurable on online, on offline messages, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* implemented offline status service, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* check implemented, extended, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* intermediate commit, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* initial, envelope ros node stuff for lg_offliner, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
-* Contributors: Zdenek Maxa
+1.3.22 (2016-08-09 14:09)
+-------------------------
 
 1.3.21 (2016-08-03)
 -------------------
@@ -261,6 +238,9 @@ Forthcoming
 1.1.21 (2015-10-22)
 -------------------
 
+1.1.20 (2015-10-21)
+-------------------
+
 1.1.19 (2015-10-20 21:30)
 -------------------------
 
@@ -330,6 +310,9 @@ Forthcoming
 1.0.7 (2015-08-12 14:05)
 ------------------------
 
+1.0.6 (2015-08-10)
+------------------
+
 1.0.5 (2015-08-03)
 ------------------
 
@@ -362,3 +345,6 @@ Forthcoming
 
 0.0.2 (2015-07-21 17:11)
 ------------------------
+
+0.0.1 (2015-07-08)
+------------------

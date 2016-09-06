@@ -2,6 +2,21 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* initial state setting of ros nodes (`#270 <https://github.com/endpointcorp/lg_ros_nodes/issues/270>`_)
+  * initial state setting of ros nodes
+  * Made new initial vars and mechanisms as a work towards completion of `#274 <https://github.com/endpointcorp/lg_ros_nodes/issues/274>`_
+  * Made new initial vars and mechanisms as a work towards completion of `#274 <https://github.com/endpointcorp/lg_ros_nodes/issues/274>`_
+  * Added test suite and functoinality for uscs service
+  * Fixed a typo
+  * Added USCS service to kmlsync tests
+  * DRYed out uscs code and pep8 fixes
+  * Removing wait_for_service dependency
+  * Added test coverage for setting initial state for adhoc_browser_pool `#165 <https://github.com/endpointcorp/lg_ros_nodes/issues/165>`_
+  * import generic message in test
+* Contributors: Jacob Minshall
+
 1.3.31 (2016-09-01)
 -------------------
 * Refactored adhoc browser pool housekeeping
