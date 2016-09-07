@@ -3,6 +3,7 @@
         <param name="check_every_seconds_delay" value="30"/>
         <param name="max_num_of_rounds_to_retain" value="100"/>
         <param name="num_of_last_check_rounds_consider" value="2"/>
+        <param name="socket_timeout" value="1"/>
         <param name="checks" value="['curl --silent --head --max-time 3 http://www.google.com',
                                      'ping -q -W 3 -c 3 www.yahoo.com',
                                      'nslookup -timeout=3 www.endpoint.com',

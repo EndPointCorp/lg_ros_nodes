@@ -14,6 +14,7 @@ import time
 import threading
 import subprocess
 import pprint
+import socket
 
 import rospy
 from std_msgs.msg import String, Bool
@@ -222,6 +223,8 @@ def main():
     check_every_seconds_delay = rospy.get_param("~check_every_seconds_delay")
     max_num_of_rounds_to_retain = rospy.get_param("~max_num_of_rounds_to_retain", 100)
     num_of_last_check_rounds_consider = rospy.get_param("~num_of_last_check_rounds_consider", 2)
+    socket_timeout = rospy.get_param("~socket_timeout", 1)
+    socket.setdefaulttimeout(socket_timeout)
     checks_str = rospy.get_param("~checks")  # this returns a string representation of a list
     check_cmds = ast.literal_eval(checks_str)
     rospy.loginfo("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
