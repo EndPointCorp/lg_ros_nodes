@@ -1,5 +1,5 @@
 lg\_mirror
----------
+----------
 
 Software for mirroring portions of a screen on other portions of a screen.
 
@@ -110,3 +110,10 @@ Typically, you will need to configure:
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
 * A `playback_node` for each viewport.
+
+## Authorship in an Alternate History
+
+Prior to this git tree, authors were:
+
+* Matt Vollrath
+* Jacob Minshall - EvdevDeviceInfo service
