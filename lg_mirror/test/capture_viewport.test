@@ -5,7 +5,7 @@
   <arg name="CAPTURE_WIDTH" value="1920" />
   <arg name="CAPTURE_HEIGHT" value="1080" />
   <param name="/viewport/$(arg CAPTURE_VIEWPORT)" value="$(arg CAPTURE_WIDTH)x$(arg CAPTURE_HEIGHT)+0+0" />
-  <node name="capture_viewport" pkg="lg_mirror" type="capture_viewport.py">
+  <node name="capture_viewport" pkg="lg_mirror" type="capture_viewport_node.py">
     <param name="display" value="$(arg DISPLAY)" />
     <param name="viewport" value="$(arg CAPTURE_VIEWPORT)" />
     <param name="host" value="$(arg CAPTURE_HOST)" />
