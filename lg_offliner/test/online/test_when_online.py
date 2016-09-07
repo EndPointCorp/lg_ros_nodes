@@ -44,7 +44,7 @@ class TestLGOfflinerWhenOnline(object):
 
     def test_checker(self):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        time.sleep(2)
+        time.sleep(4)
         assert self.get_offline_status() is False
 
 
