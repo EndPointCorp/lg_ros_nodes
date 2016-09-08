@@ -1,0 +1,12 @@
+---
+string name
+uint16 vendor
+uint16 product
+uint16 version
+uint16 bustype
+uint16[] types
+uint16[] abs_codes
+uint16[] rel_codes
+uint16[] key_codes
+int32[] abs_min
+int32[] abs_max

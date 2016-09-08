@@ -12,6 +12,7 @@ add_service_files(
   FILES
   BrowserPool.srv
   USCSMessage.srv
+  InitialUSCS.srv
 )
 
 add_message_files(
@@ -37,7 +38,7 @@ catkin_install_python(PROGRAMS
   scripts/adhoc_browser.py
   scripts/state_setter.py
   scripts/touchscreen.py
-  scripts/last_uscs_message.py
+  scripts/uscs_service.py
   scripts/dev_webserver
   scripts/static_browser
   scripts/adhoc_browser
@@ -47,7 +48,7 @@ catkin_install_python(PROGRAMS
   scripts/command_handler_node
   scripts/readiness.py
   scripts/readiness
-  scripts/last_uscs_message
+  scripts/uscs_service
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -67,8 +68,10 @@ if (CATKIN_ENABLE_TESTING)
   catkin_add_nosetests(test/offline/test_managed_adhoc_browser.py)
   catkin_add_nosetests(test/offline/test_managed_application.py)
   catkin_add_nosetests(test/offline/test_tcp_relay.py)
+  catkin_add_nosetests(test/offline/test_uscs_service.py)
   add_rostest(test/online/test_managed_adhoc_browser_director_bridge.test)
   add_rostest(test/online/test_managed_adhoc_browser.test)
   add_rostest(test/online/state_changer.test)
-
+  add_rostest(test/online/uscs_service.test)
+  add_rostest(test/online/uscs_initial_state_adhoc_browser.test)
 endif()

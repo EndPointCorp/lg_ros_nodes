@@ -4,7 +4,7 @@ import rospy
 from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
-from lg_common.helpers import make_soft_relaunch_callback
+from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import Ready
 
@@ -51,6 +51,7 @@ def main():
 
     rospy.Subscriber('/director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
     rospy.Subscriber('/director/ready', Ready, adhocbrowser_pool.unhide_browsers)
+    handle_initial_state(adhocbrowser_director_bridge.translate_director)
 
     """
     Spin FTW

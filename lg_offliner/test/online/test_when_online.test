@@ -1,6 +1,7 @@
 <launch>
     <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py">
         <param name="check_every_seconds_delay" value="1"/>
+        <param name="socket_timeout" value="1"/>
         <param name="checks" value="['ls /tmp']"/>  <!-- 0 returning command, as if online -->
         <!-- messages with subslots (e.g. GenericMessage message.slug) will need more care in processing -->
         <!-- not yet implemented -->

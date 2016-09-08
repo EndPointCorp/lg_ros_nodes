@@ -14,6 +14,7 @@ import time
 import threading
 import subprocess
 import pprint
+import socket
 
 import rospy
 from std_msgs.msg import String, Bool
@@ -32,34 +33,37 @@ class ConnectivityResults(object):
     Represents results of the connectivity checks.
 
     """
-    def __init__(self, max_length=100):
+    def __init__(self, max_num_of_rounds_to_retain=100, num_of_last_check_rounds_consider=2):
         """
         The data structure is a list of dictionaries.
             Each dictionary keys are connectivity check commands
             and values are the commands' results.
 
-        max_length - maximum maintained length of the results list
+        max_num_of_rounds_to_retain - maximum maintained length of the results list
 
         """
         self.data = list()
-        self.max_length = max_length
+        self.max_num_of_rounds_to_retain = max_num_of_rounds_to_retain
+        self.num_of_last_check_rounds_consider = num_of_last_check_rounds_consider
 
     def add(self, item):
-        if len(self.data) == self.max_length:
+        if len(self.data) == self.max_num_of_rounds_to_retain:
             # remove first item in the list
             _ = self.data.pop(0)
         self.data.append(item)
 
-    def am_i_offline(self, num_of_last_checks_consider=2):
+    def am_i_offline(self):
         """
-        Return True, False based on num_of_last_checks_consider evaluation.
+        Return True, False based on num_of_last_check_rounds_consider
+            rounds evaluations.
         All checks (items of dictionaries) have the same weight.
         All results must be non-zero in order to pronounce offline status.
+            if any results in the considered rounds is 0, the
+            online status is still maintained.
 
         """
-        # -num_of_last_checks_consider won't raise IndexError
-        # even when len(self.data) is smaller
-        for dict_check_results in self.data[-num_of_last_checks_consider:]:
+        # -num_of_last_check_rounds_consider won't raise IndexError when len(self.data) is smaller
+        for dict_check_results in self.data[-self.num_of_last_check_rounds_consider:]:
             for res in dict_check_results.values():
                 if res == 0:
                     return False
@@ -82,6 +86,8 @@ class Checker(object):
     """
     def __init__(self,
                  check_every_seconds_delay=30,
+                 max_num_of_rounds_to_retain=100,
+                 num_of_last_check_rounds_consider=2,
                  check_cmds=None,
                  debug_topic_pub=None,
                  offline_topic_pub=None,
@@ -97,7 +103,10 @@ class Checker(object):
         self._checker_thread = threading.Thread(target=self._checker_worker_thread)
         self._checker_thread.start()
         self._lock = threading.Lock()
-        self._results = ConnectivityResults()  # lock access here
+        # lock access here for ConnectivityResults
+        self._results = ConnectivityResults(
+            max_num_of_rounds_to_retain=max_num_of_rounds_to_retain,
+            num_of_last_check_rounds_consider=num_of_last_check_rounds_consider)
         self.service = rospy.Service("%s/status" % ROS_NODE_NAME,
                                      Offline,
                                      self.get_offline_status)
@@ -212,6 +221,10 @@ def main():
     debug_topic_pub = rospy.Publisher(debug_topic, String, queue_size=5)
     offline_topic_pub = rospy.Publisher(offline_topic, Bool, queue_size=5)
     check_every_seconds_delay = rospy.get_param("~check_every_seconds_delay")
+    max_num_of_rounds_to_retain = rospy.get_param("~max_num_of_rounds_to_retain", 100)
+    num_of_last_check_rounds_consider = rospy.get_param("~num_of_last_check_rounds_consider", 2)
+    socket_timeout = rospy.get_param("~socket_timeout", 1)
+    socket.setdefaulttimeout(socket_timeout)
     checks_str = rospy.get_param("~checks")  # this returns a string representation of a list
     check_cmds = ast.literal_eval(checks_str)
     rospy.loginfo("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
@@ -226,6 +239,8 @@ def main():
     online_pubs, offline_pubs = process_custom_publishers(send_on_online=send_on_online,
                                                           send_on_offline=send_on_offline)
     checker = Checker(check_every_seconds_delay=check_every_seconds_delay,
+                      max_num_of_rounds_to_retain=max_num_of_rounds_to_retain,
+                      num_of_last_check_rounds_consider=num_of_last_check_rounds_consider,
                       check_cmds=check_cmds,
                       debug_topic_pub=debug_topic_pub,
                       offline_topic_pub=offline_topic_pub,

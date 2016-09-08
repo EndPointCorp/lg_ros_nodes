@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 import rospy
+import json
+
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
-from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity
+from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity, handle_initial_state
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String, Bool
@@ -82,6 +84,7 @@ def main():
 
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
+        rospy.loginfo('running handle director w/ scene: %s' % scene)
         has_asset = has_activity(scene, server_type)
         has_no_activity = has_activity(scene, 'no_activity')
         if has_no_activity:
@@ -118,7 +121,16 @@ def main():
         server.pub_pov(pov)
         server.pub_panoid(String(panoid))
 
+    def initial_state_handler(uscs_msg):
+        try:
+            rospy.loginfo("about to load json: %s" % uscs_msg.message)
+            scene = json.loads(uscs_msg.message)
+        except:
+            return
+        handle_director_message(scene)
+
     on_new_scene(handle_director_message)
+    handle_initial_state(initial_state_handler)
 
     rospy.spin()
 
