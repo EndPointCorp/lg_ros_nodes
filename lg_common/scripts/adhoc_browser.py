@@ -12,9 +12,8 @@ from lg_common.msg import Ready
 def main():
     rospy.init_node('lg_adhoc_browser', anonymous=True)
 
-    extensions_root = rospy.get_param('~extensions_root', '/opt/google/chrome/extensions/')
+    extensions_root = rospy.get_param('~extensions_root', '/opt/endpoint/chrome/extensions/')
     viewport_name = rospy.get_param('~viewport', None)
-    browser_binary = rospy.get_param('~browser_binary', '/usr/bin/google-chrome')
 
     if not viewport_name:
         rospy.logerr("Viewport is not set in the roslaunch file. Exiting.")

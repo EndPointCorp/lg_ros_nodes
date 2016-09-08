@@ -15,46 +15,24 @@ all LG ros nodes.
 * google-chrome available in PATH `~browser_binary`
 * awesome window manager
 
-## Smooth transitions
-
-The main goal is to be able to preload assets and application before changing the experience (before the actual change of active windows).
-
-#### The implementation owerview:
-1. Publish USCS message with some AdhocBrowsers assets.
-2. 'AdhocBrowsersPool' creates browsers, in background.
-3. Applications loads assets and pulish messages to `/director/window/ready`
-4. `readiness.py` ROS node aggregates messages from browsers instances and when all the browsers have sent ready messages, sends the `/director/ready` message.
-5. After `/director/ready` message being recieved 'AdhocBrowsersPool' changes the visibility of the windows.
-
-N.B. See extensions/ros_window_ready for to get how browsers trigger ready message.
-
 #### Messages
-- AdhocBrowsers now have scene slug
-- AdhocBrowser  now contains some additional fields
-- Ready         contains scene_slug and array of ros_instance_name's of redy windows
+- AdhocBrowser - contains all information needed to start and fully
+  configure an application inside of a Google Chrome browser
+- AdhocBrowsers - contains list of AdhocBrowser messages
+- Ready - message emitted from within an AdhocBrowser instance (e.g.
+  google-chrome-stable extension) that notifies 3rd party about the fact
+that DOM inside the browser acquired a `loaded` state
 
 ## Scripts
 
 ### adhoc\_browser.py
 
-ROS software for running and interfacing with the Chrome browser.
-
-Listens to on a ROS topic, and creates, removes, and updates the browser windows.
-
-Each ROS message needs to contain a list of all the browser windows to show. The browsers are distinguished using the `id` field.
-
-The node manages internal list of opened browsers.
-
-The list of browsers in the message is compared with the list of currently opened browsers, and then:
-
-* if there is a browser, which `id` is not on the list, the browser is removed
-* if there is not a browser for an `id`, then the browser is created
+Provides a browser pool for running and managing chrome browser instances with some content loaded into them.
 
 #### Parameters
 
 * `~viewport` [string] - name of the viewport to run at. This is a mandatory argument.
-* `~browser_binary` [string] - absolute or relative path to browser binary
-* `~extensions_root` [string] - absolute or relative path to directory with unpacked chrome extensions
+* `~extensions_root` [string] - absolute or relative path to directory with unpacked chrome extensions - defaults to `/opt/endpoint/chrome/extensions/`
 
 ```json
 {
@@ -79,54 +57,44 @@ thanks to this parameter - you may emit a message with above `activity_config` w
 ##### Subscribed Topics
 
 * `/browser_service/<viewport>` [`lg_adhoc_browser/AdhocBrowsers`] - A list of browsers which should be opened.
+* `/director/scene`
 
 #### Messages
 
 ##### AdhocBrowsers
 
-* `browsers` - [`AdhocBrowser[]`]
+* Contains a list of browsers
 
 ##### AdhocBrowser
 
-* `id` - [`string`] - Browser id.
-* `geometry` - [`lg_common/WindowGeometry`] - Geometry of the browser window.
-* `url` - [`string'] - Url to be loaded into the browser.
+* string `id` - static ID of the browser - generated from its attributes
+  to prevent restarts of identical browsers across scenes
+* string `url` - URL that browser will be started up with
+* string `scene_slug` - slug of a scene from USCS message that contained
+  the asset
+* bool `preload` - flag for turning
+  [preloading](https://github.com/EndPointCorp/lg_ros_nodes/wiki/Unified-State-Control-System-API#preloading) on/off
+* bool `custom_preload_event` - name of the custom event that will
+  trigger preloading (defined
+[here](https://github.com/EndPointCorp/lg_ros_nodes/tree/master/lg_common/src/lg_common/extensions/ros_window_ready#application-generated-message))
+* string `user_agent` - user agent of the browser
+* string `binary` - browser binary - defaults to google-chrome
+* lg_common/WindowGeometry `geometry` - geometry of the window (defined
+  below)
+* lg_common/BrowserExtension[] `extensions` - list of extensions' names.
+  Extension won't be loaded if it does not exist. By default extension
+will be looked for in `lg_common/src/lg_common/extensions` and under
+`/opt/endpoint/chrome/extensions` as a fallback.
+* lg_common/BrowserCmdArg[] `command_line_args` - additional command
+  line arguments provided and appended verbatim e.g. `--enable-nacl`
 
-#### Adhoc browser example
+##### WindowGeometry
 
-The below examples assume that the node is configured like this:
-
-```html
-    <node name="image_browser" pkg="lg_adhoc_browser" type="client">
-        <param name="viewport" value="superone" />
-    </node>
-```
-
-* After a fresh start, there should be no browsers.
-
-* This should show one window with the `endpoint.com` website:
-
-```
-rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}]"
-```
-
-* This should show another window, with the `google.com` website:
-
-```
-rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}, {id: '42x', geometry: {x: 600, y: 600, width: 300, height: 400}, url: 'http://google.com'}]"
-```
-
-* This should leave just the `endpoint.com` window shown:
-
-```
-rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[{id: '42d', geometry: {x: 100, y: 200, width: 300, height: 400}, url: 'http://endpoint.com'}]"
-```
-
-* This should close all existing windows:
-
-```
-rostopic pub /browser_service/superone lg_adhoc_browser/AdhocBrowsers "[]"
-```
+- int32 `x` - x offset of the position of window, relative to Xorg point
+  0,0
+- int32 `y` - y offset of the position of window, relative to Xorg point
+- uint32 `width` - width of the window
+- uint32 `height` - height of the window
 
 ### dev\_webserver.py
 
