@@ -42,7 +42,7 @@ target_link_libraries(lg_spacenav_globe
   joystick_navigator
 )
 
-install(TARGETS portal_nav joystick_navigator
+install(TARGETS lg_spacenav_globe joystick_navigator
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
