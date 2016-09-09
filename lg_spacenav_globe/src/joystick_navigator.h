@@ -26,7 +26,7 @@ class JoystickNavigator {
       double joystick_sensitivity);
 
   // Updates the nav context with the latest pose from the camera.
-  void ProcessCameraMoved(const portal_nav::PortalPose& pose);
+  void ProcessCameraMoved(const lg_spacenav_globe::PortalPose& pose);
 
   // Takes a normalized joystick twist and nudges the camera pose.
   void ProcessJoy(const geometry_msgs::Twist& normalized_joy);

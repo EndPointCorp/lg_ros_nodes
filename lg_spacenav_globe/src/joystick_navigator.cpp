@@ -65,7 +65,7 @@ void JoystickNavigator::Init(
 }
 
 void JoystickNavigator::ProcessCameraMoved(
-    const portal_nav::PortalPose& portal_pose) {
+    const lg_spacenav_globe::PortalPose& portal_pose) {
   // Allow touchscreen takeover.
   if (!under_joy_control_ &&
         !EqualPoses(portal_pose.current_pose, last_camera_pose_)) {

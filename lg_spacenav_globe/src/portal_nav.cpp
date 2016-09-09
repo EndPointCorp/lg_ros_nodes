@@ -7,7 +7,7 @@
 #include <geometry_msgs/Twist.h>
 
 #include "joystick_navigator.h"
-#include "portal_nav/PortalPose.h"
+#include "lg_spacenav_globe/PortalPose.h"
 
 // #define DEBUG
 
@@ -21,7 +21,7 @@ class PortalNavigatorNode {
   // Callbacks for ROS topic subscriptions:
   void HandleSpaceNav(const geometry_msgs::Twist::ConstPtr& twist);
   void HandleKioskPose(
-      const portal_nav::PortalPose::ConstPtr& portal_pose);
+      const lg_spacenav_globe::PortalPose::ConstPtr& portal_pose);
 
  private:
   ros::NodeHandle n_;
@@ -90,7 +90,7 @@ void PortalNavigatorNode::HandleSpaceNav(
 }
 
 void PortalNavigatorNode::HandleKioskPose(
-    const portal_nav::PortalPose::ConstPtr& portal_pose) {
+    const lg_spacenav_globe::PortalPose::ConstPtr& portal_pose) {
 #ifdef DEBUG
   ROS_INFO("HandleKioskPose curr lat:%lf, lon:%lf, alt:%lf, hdg:%lf, tlt:%lf",
            portal_pose->current_pose.position.y,
