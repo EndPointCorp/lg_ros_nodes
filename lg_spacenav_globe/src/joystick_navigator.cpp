@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "portal_nav/PortalPose.h"
+#include "lg_spacenav_globe/PortalPose.h"
 
 static const double kPi = 3.141592653589793;
 static const double kPoleLat = 90.0 - 0.00001;
