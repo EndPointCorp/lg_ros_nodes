@@ -13,7 +13,7 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
 
-#include "portal_nav/PortalPose.h"
+#include "lg_spacenav_globe/PortalPose.h"
 
 class CameraBuffer;
 
