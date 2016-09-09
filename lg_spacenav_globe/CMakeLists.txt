@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(spacenav_gmaps)
+project(lg_spacenav_globe)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
@@ -27,17 +27,17 @@ include_directories(
 
 add_library(joystick_navigator src/joystick_navigator.cpp)
 
-add_executable(spacenav_gmaps src/portal_nav.cpp)
+add_executable(lg_spacenav_globe src/portal_nav.cpp)
 
-add_dependencies(spacenav_gmaps
-  spacenav_gmaps_generate_messages_cpp
+add_dependencies(lg_spacenav_globe
+  lg_spacenav_globe_generate_messages_cpp
   joystick_navigator
 )
 add_dependencies(joystick_navigator
-  spacenav_gmaps_generate_messages_cpp
+  lg_spacenav_globe_generate_messages_cpp
 )
 
-target_link_libraries(spacenav_gmaps
+target_link_libraries(lg_spacenav_globe
   ${catkin_LIBRARIES}
   joystick_navigator
 )

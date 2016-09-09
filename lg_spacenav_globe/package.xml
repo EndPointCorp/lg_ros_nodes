@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>spacenav_gmaps</name>
+  <name>lg_spacenav_globe</name>
   <version>1.4.0</version>
   <description>Spacenavigator input normalizer for google maps</description>
 

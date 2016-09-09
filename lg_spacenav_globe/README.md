@@ -1,4 +1,4 @@
-spacenav\_gmaps
+lg\_spacenav\_globe
 -----------
 
 ROS tools for navigating the Google Maps globe.
