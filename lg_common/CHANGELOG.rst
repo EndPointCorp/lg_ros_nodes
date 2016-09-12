@@ -2,6 +2,9 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.1 (2016-09-12)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes

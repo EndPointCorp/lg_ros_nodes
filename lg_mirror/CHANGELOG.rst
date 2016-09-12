@@ -2,6 +2,9 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.1 (2016-09-12)
 ------------------
 * Merge pull request `#275 <https://github.com/EndPointCorp/lg_ros_nodes/issues/275>`_ from EndPointCorp/issue/100_viewport_mirroring

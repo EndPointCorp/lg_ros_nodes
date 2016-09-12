@@ -23,6 +23,10 @@
   <run_depend>spacenav_wrapper</run_depend>
   <run_depend>lg_stats</run_depend>
   <run_depend>lg_offliner</run_depend>
+  <run_depend>lg_proximity</run_depend>
+  <run_depend>lg_spacenav_globe</run_depend>
+  <run_depend>lg_rfreceiver</run_depend>
+  <run_depend>lg_wireless_devices</run_depend>
 
   <export>
     <metapackage/>
