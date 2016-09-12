@@ -16,43 +16,50 @@ GRACE_DELAY = 0.5  # seconds
 TEST_DEFAULT_VIEWPORT = os.environ.get('TEST_VIEWPORT')
 EXPECTED_DEFAULT_MSG = [] if TEST_DEFAULT_VIEWPORT is None else [TEST_DEFAULT_VIEWPORT]
 TEST_MESSAGE_TEMPLATE = """
-{
+{{
   "name": "test_touch_router_name",
   "description": "test_touch_router_description",
   "resource_uri": "test_touch_router_uri",
   "slug": "test_touch_router_slug",
   "duration": 0,
   "windows": [
-    %s
+    {windows}
   ]
-}
+}}
 """
 
 WINDOW_TEMPLATE = """
-{
-  "activity": "%s",
-  "activity_config": {
-    "route_touch": %s
-  },
+{{
+  "activity": "{activity}",
+  "activity_config": {{
+    "route_touch": {route_touch},
+    "viewport": "{source}"
+  }},
   "assets": [
-    "viewport://center"
+    "{source}"
   ],
   "width": 640,
   "height": 480,
   "x_coord": 0,
   "y_coord": 0,
-  "presentation_viewport": "%s"
-}
+  "presentation_viewport": "{target}"
+}}
 """
 
 
-def gen_window(route, viewport, activity=MIRROR_ACTIVITY_TYPE):
-    route = 'true' if route else 'false'
-    return WINDOW_TEMPLATE % (activity, route, viewport)
+def gen_window(route, source, target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE):
+    route_touch = 'true' if route else 'false'
+    return WINDOW_TEMPLATE.format(
+        activity=activity,
+        source=source,
+        target=target,
+        route_touch=route_touch,
+    )
 
 
 def gen_scene(windows):
-    return TEST_MESSAGE_TEMPLATE % ', '.join(windows)
+    joined_windows = ', '.join(windows)
+    return TEST_MESSAGE_TEMPLATE.format(windows=joined_windows)
 
 
 def gen_scene_msg(scene):
