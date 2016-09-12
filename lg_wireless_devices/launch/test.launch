@@ -1,0 +1,4 @@
+<launch>
+  <node name="sender" pkg="lg_wireless_devices" type="wireless_watcher.py" />
+  <node name="rciver" pkg="lg_wireless_devices" type="command_handler.py" />
+</launch>

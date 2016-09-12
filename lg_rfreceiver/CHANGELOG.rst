@@ -1,0 +1,169 @@
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package lg_rfreceiver
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1.4.0 (2016-06-14)
+-------------------
+
+1.0.28 (2016-06-14)
+-------------------
+
+1.0.27 (2016-06-02)
+-------------------
+* pep8 fixes
+* Contributors: Jacob Minshall
+
+1.0.26 (2016-04-28)
+-------------------
+
+1.0.25 (2016-04-08)
+-------------------
+
+1.0.24 (2016-04-08)
+-------------------
+
+1.0.23 (2016-04-06)
+-------------------
+
+1.0.22 (2016-04-06)
+-------------------
+
+1.0.21 (2016-04-06)
+-------------------
+
+1.0.20 (2016-02-03)
+-------------------
+
+1.0.19 (2016-02-01)
+-------------------
+
+1.0.18 (2016-02-01)
+-------------------
+
+1.0.17 (2016-01-18)
+-------------------
+* Added docs for new params
+* rfreceiver:sender.py
+  - modified script to prevent it from dying if there's no device
+  - added verbosity and params
+* 1.0.16
+* changelog bump
+  Just changes to pano_app in here. No more awkward zoom when changing
+  between panos in the runway. We track the current pov now instead of
+  setting a random zoom.
+* 1.0.15
+* Changelogs for 1.0.15
+* 1.0.14
+* Changelogs for 1.0.14
+* 1.0.13
+* Changelogs for 1.0.13
+* 1.0.12
+* Changelogs
+* 1.0.11
+* Changelogs for 1.0.11
+* 1.0.10
+* maybe release notes should go here..
+  Instead of just saying "bumped changelogs" I guess some good information
+  should go here about why a release is being made... This is really just
+  a small change to start setting the state so we can support videos with
+  our pano app.
+* 1.0.9
+* bump changelogs
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.0.12 (2015-11-26)
+-------------------
+
+1.0.11 (2015-11-24)
+-------------------
+
+1.0.16 (2015-12-17)
+-------------------
+* 1.0.15
+* Changelogs for 1.0.15
+* 1.0.14
+* Changelogs for 1.0.14
+* 1.0.13
+* Changelogs for 1.0.13
+* 1.0.12
+* Changelogs
+* 1.0.11
+* Changelogs for 1.0.11
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
+1.0.10 (2015-11-20)
+-------------------
+
+1.0.9 (2015-11-19)
+------------------
+
+1.0.8 (2015-11-19)
+------------------
+
+1.0.7 (2015-11-17)
+------------------
+
+1.0.6 (2015-11-17)
+------------------
+
+1.0.5 (2015-11-16)
+------------------
+
+1.0.4 (2015-11-16)
+------------------
+
+1.0.3 (2015-11-16)
+------------------
+* Added proper changelog versions
+* Contributors: Wojciech Ziniewicz
+
+1.0.2 (2015-11-16)
+------------------
+
+1.0.0 (2015-11-13)
+------------------
+
+0.0.9 (2015-11-13)
+------------------
+* Downgraded package version temporarily before release
+* Catkin release management
+  - remove debian metadata that's duplicating catkin metadata
+  - removed changelos for later autogeneration
+  - edited all packages.xmls everywhere to reset to version 1.0
+* 1.3.1
+* unifying version
+* initial changelog creation
+* add urls to package.xml for lg_builder's sake
+* LINT and cleanup for rfreceiver package
+* spring cleaning, updated all version numbers
+* Amended debian metadata to build new packages
+* SSL and stats changes
+  - added keyfob logging to statistics reports
+  - amended README.md
+  - made rfreceiver configurable
+  - added clear_button_message parameter here and there
+  - added possibility of specifying reset command
+  - made file_writer.py more testable
+  - fixed SSL management script
+* Bugfixing
+* Bumped rfreceiver version
+* Added state to rfreceiver and made it publish mode change on buttondown
+* Bumped versions for new release
+* Added support for replacing packages
+* Fix params in rfreceiver and maxbotix
+  Use private parameters.
+* Add device_path and baud_rate params to rfreceiver
+* Fix params in rfreceiver and maxbotix
+  Use private parameters.
+* Add device_path and baud_rate params to rfreceiver
+* Fix kill_browser.py script omission in rfreceiver
+* Added unit tests to rfreceiver and onboard
+* PEP8 and modelines for catkin packages
+* Update README for rfreceiver
+* Increment evdev_teleport and rfreceiver debs
+* Split rfreceiver browser kill into separate script
+* catkin: initial debian packaging configs.
+* Add relaunch to rfreceiver node
+* Initial Ros package for clear button receiver
+  Needs hookups for relaunch-like activity.
+* Contributors: Jacob Minshall, Kiel Christofferson, Matt Vollrath, Wojciech Ziniewicz, Wojtek Ziniewicz

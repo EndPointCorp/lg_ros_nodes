@@ -1,0 +1,7 @@
+<launch>
+    <node name="lg_proximity" pkg="lg_proximity" type="sender.py">
+        <param name="test_mode" value="true" />
+    </node>
+
+    <test test-name="test_lg_proximity_startup" pkg="lg_proximity" type="test_lg_proximity_startup.py"/>
+</launch>
