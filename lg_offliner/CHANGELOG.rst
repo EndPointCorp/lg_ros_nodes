@@ -2,6 +2,12 @@
 Changelog for package lg_offliner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* added configurable socket timeout, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* lg_offliner more configurables, touch: `#113 <https://github.com/EndPointCorp/lg_ros_nodes/issues/113>`_
+* Contributors: Zdenek Maxa
+
 1.4.0 (2016-09-06)
 ------------------
 

@@ -2,6 +2,20 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Topic/various ros nodes (`#277 <https://github.com/EndPointCorp/lg_ros_nodes/issues/277>`_)
+  * Added spacenav_gmaps ros node
+  * Added wireless devices and lg_rfreceiver nodes
+  * Renamed spacenav_gmaps to lg_spacenav_globe
+  * Fixed cmakelist for lg_spacenav_globe
+  * Changed path for header files
+  * Another header update
+  * A bunch of name changes
+  * Working out the deps
+  * Added tests stub for proximity sensor
+* Contributors: Wojciech Ziniewicz
+
 1.4.0 (2016-09-09)
 -------------------
 

@@ -2,6 +2,16 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#275 <https://github.com/EndPointCorp/lg_ros_nodes/issues/275>`_ from EndPointCorp/issue/100_viewport_mirroring
+  Touch teleportation
+* Authorship in lg_mirror README
+  Mad creds to @minshallj who can't be gitblamed for this anymore. He's
+  free!
+* Touch teleportation
+* Contributors: Matt Vollrath
+
 1.4.0 (2016-09-06)
 ------------------
 * Implement mirroring capture and playback
