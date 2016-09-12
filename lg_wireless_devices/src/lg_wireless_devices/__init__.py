@@ -1,1 +1,1 @@
-from lg_wireless_watcher import WirelessWatcher
+from wireless_watcher import WirelessWatcher

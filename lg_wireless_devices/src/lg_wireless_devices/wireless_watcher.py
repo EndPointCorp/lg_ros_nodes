@@ -2,7 +2,7 @@
 # THIS FILE IS MANAGED BY CHEF AND THIS IS JUST A PLACEHOLDER ####
 import evdev
 import rospy
-from command_handler.msg import Command
+from lg_wireless_devices.msg import Command
 from time import time
 
 
