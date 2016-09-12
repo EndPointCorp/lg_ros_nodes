@@ -21,9 +21,9 @@ class TouchRouter:
                 config.get(MIRROR_TOUCH_CONFIG_KEY) is True
             )
 
-        route_viewports = [
+        route_viewports = set([
             w.get('presentation_viewport') for w in windows if should_route(w)
-        ]
+        ])
 
         if len(route_viewports) == 0:
             route_viewports = self.default_viewports
