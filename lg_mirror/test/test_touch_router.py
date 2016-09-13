@@ -16,43 +16,50 @@ GRACE_DELAY = 0.5  # seconds
 TEST_DEFAULT_VIEWPORT = os.environ.get('TEST_VIEWPORT')
 EXPECTED_DEFAULT_MSG = [] if TEST_DEFAULT_VIEWPORT is None else [TEST_DEFAULT_VIEWPORT]
 TEST_MESSAGE_TEMPLATE = """
-{
+{{
   "name": "test_touch_router_name",
   "description": "test_touch_router_description",
   "resource_uri": "test_touch_router_uri",
   "slug": "test_touch_router_slug",
   "duration": 0,
   "windows": [
-    %s
+    {windows}
   ]
-}
+}}
 """
 
 WINDOW_TEMPLATE = """
-{
-  "activity": "%s",
-  "activity_config": {
-    "route_touch": %s
-  },
+{{
+  "activity": "{activity}",
+  "activity_config": {{
+    "route_touch": {route_touch},
+    "viewport": "viewport://{source}"
+  }},
   "assets": [
-    "viewport://center"
+    "viewport://{source}"
   ],
   "width": 640,
   "height": 480,
   "x_coord": 0,
   "y_coord": 0,
-  "presentation_viewport": "%s"
-}
+  "presentation_viewport": "{target}"
+}}
 """
 
 
-def gen_window(route, viewport, activity=MIRROR_ACTIVITY_TYPE):
-    route = 'true' if route else 'false'
-    return WINDOW_TEMPLATE % (activity, route, viewport)
+def gen_window(route, source, target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE):
+    route_touch = 'true' if route else 'false'
+    return WINDOW_TEMPLATE.format(
+        activity=activity,
+        source=source,
+        target=target,
+        route_touch=route_touch,
+    )
 
 
 def gen_scene(windows):
-    return TEST_MESSAGE_TEMPLATE % ', '.join(windows)
+    joined_windows = ', '.join(windows)
+    return TEST_MESSAGE_TEMPLATE.format(windows=joined_windows)
 
 
 def gen_scene_msg(scene):
@@ -105,7 +112,8 @@ class TestTouchRouter(unittest.TestCase):
         rospy.sleep(GRACE_DELAY)
         self.assertEqual(2, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
-        self.assertEqual(['not_the_default'], msg.strings)
+        self.assertEqual(1, len(msg.strings))
+        self.assertTrue('not_the_default' in msg.strings)
 
     def test_two_routes(self):
         window0 = gen_window(True, 'not_the_default')
@@ -116,7 +124,9 @@ class TestTouchRouter(unittest.TestCase):
         rospy.sleep(GRACE_DELAY)
         self.assertEqual(2, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
-        self.assertEqual(['not_the_default', 'also_not_the_default'], msg.strings)
+        self.assertEqual(2, len(msg.strings))
+        self.assertTrue('not_the_default' in msg.strings)
+        self.assertTrue('also_not_the_default' in msg.strings)
 
     def test_reset(self):
         window = gen_window(True, 'not_the_default')
@@ -126,7 +136,8 @@ class TestTouchRouter(unittest.TestCase):
         rospy.sleep(GRACE_DELAY)
         self.assertEqual(2, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
-        self.assertEqual(['not_the_default'], msg.strings)
+        self.assertEqual(1, len(msg.strings))
+        self.assertTrue('not_the_default' in msg.strings)
 
         window = gen_window(False, 'also_not_the_default', activity='not_mirror')
         scene = gen_scene([window])
