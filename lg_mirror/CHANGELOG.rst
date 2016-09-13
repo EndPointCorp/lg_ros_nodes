@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.3 (2016-09-12)
+------------------
 * Fix touch routing direction
 * Settify touch router viewport list
 * Contributors: Matt Vollrath
