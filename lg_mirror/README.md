@@ -50,9 +50,9 @@ However, all playback instances for the same source viewport must have equal dim
 
 #### Overview
 
-A required router for touch event redirection. This mechanism allows mirror windows to request that touch events be routed to the presentation viewport instead of the default route during a scene.
+A required router for touch event redirection. This mechanism allows mirror windows to request that touch events be routed to the source viewport instead of the default route during a scene.
 
-During a scene with no touch routing mirror activities (e.g. blank scene), the router will direct touch events to its default viewport (typically, the touchscreen). If a mirror activity is detected in a scene with the `route_touch` activity config key set to `true`, touches will instead be routed to the presentation viewport of that activity. Multiple activities in a scene may request touch routing, and they will all receive touches.
+During a scene with no touch routing mirror activities (e.g. blank scene), the router will direct touch events to its default viewport (typically, the touchscreen). If a mirror activity is detected in a scene with the `route_touch` activity config key set to `true`, touches will instead be routed to the source viewport of that activity. Multiple activities in a scene may request touch routing, and they will all receive touches.
 
 The purpose of this is to mirror an application from main screens to the touchscreen and route touches back to the application, as a quick way to integrate an existing un-synchronized application.
 
