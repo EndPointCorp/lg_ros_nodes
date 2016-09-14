@@ -113,6 +113,9 @@ catkin_install_python(PROGRAMS
   scripts/capture_viewport_node.py
   scripts/playback_node.py
   scripts/touch_router_node.py
+  scripts/capture_viewport_node
+  scripts/playback_node
+  scripts/touch_router_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
