@@ -6,6 +6,8 @@ import urllib2
 import json
 from lg_json_config.srv import JSONConfig
 from lg_json_config.srv import JSONConfigMore
+from lg_json_config.srv import JSONConfigResponse
+from lg_json_config.srv import JSONConfigMoreResponse
 
 
 NODE_NAME = 'lg_json_config'
