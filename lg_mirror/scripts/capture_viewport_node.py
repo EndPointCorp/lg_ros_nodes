@@ -5,6 +5,7 @@ import rospy
 from lg_mirror.capture_viewport import CaptureViewport
 from lg_mirror.utils import viewport_to_multicast_group
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import handle_initial_state
 
 
 def main():
@@ -32,6 +33,8 @@ def main():
     rospy.Subscriber('/director/scene',
                      GenericMessage,
                      capture.handle_scene_msg)
+
+    handle_initial_state(capture.handle_scene_msg)
 
     rospy.spin()
 

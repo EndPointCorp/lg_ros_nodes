@@ -4,6 +4,7 @@ import os
 import rospy
 from lg_mirror.playback import MirrorPlaybackPool
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import handle_initial_state
 
 
 def main():
@@ -23,6 +24,8 @@ def main():
     rospy.Subscriber('/director/scene',
                      GenericMessage,
                      pool.handle_scene_msg)
+
+    handle_initial_state(pool.handle_scene_msg)
 
     rospy.spin()
 

@@ -121,7 +121,7 @@ class MirrorPlaybackPool:
             x=self.geometry.x + window['x_coord'],
             y=self.geometry.y + window['y_coord']
         )
-        target_viewport = window['assets'][0].lstrip('viewport://')
+        target_viewport = window['assets'][0].replace('viewport://', '')
         source_host = viewport_to_multicast_group(target_viewport)
         source_port = get_mirror_port()
         player = MirrorPlayback(
