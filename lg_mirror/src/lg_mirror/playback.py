@@ -102,7 +102,8 @@ class MirrorPlaybackPool:
         conf = window.get('activity_config', {})
         conf_json = json.dumps(conf, sort_keys=True)
         conf_hash = md5.new(conf_json).hexdigest()[8:]
-        target_viewport = window['assets'][0].lstrip('viewport://')
+        target_viewport = conf.get('viewport', '')
+        target_viewport = target_viewport.replace('viewport://', '')
         n = '_'.join(map(str, [
             self.viewport,
             target_viewport,
@@ -121,7 +122,9 @@ class MirrorPlaybackPool:
             x=self.geometry.x + window['x_coord'],
             y=self.geometry.y + window['y_coord']
         )
-        target_viewport = window['assets'][0].replace('viewport://', '')
+        conf = window.get('activity_config', {})
+        target_viewport = conf.get('viewport', '')
+        target_viewport = target_viewport.replace('viewport://', '')
         source_host = viewport_to_multicast_group(target_viewport)
         source_port = get_mirror_port()
         player = MirrorPlayback(
