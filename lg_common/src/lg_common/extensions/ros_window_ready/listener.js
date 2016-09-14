@@ -1,25 +1,3 @@
-function readLocalSettings(callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', chrome.extension.getURL('rosbridge.conf'), true);
-    xhr.onreadystatechange = function() {
-        if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-            var params = {};
-            var arr = xhr.responseText.split('\n');
-            for (var i = 0; i < arr.length; i++) {
-                if(arr[i].indexOf('=') > 0) {
-                    var pair = arr[i].trim().split('=');
-                    params[pair[0]] = pair[1];
-                }
-            }
-            callback(params);
-        }
-        if(xhr.readyState == XMLHttpRequest.DONE && xhr.status != 200) {
-            callback();
-        }
-    };
-    xhr.send();
-}
-
 function parseUrl(url) {
     var parser = document.createElement('a');
     parser.href = url;
@@ -37,11 +15,16 @@ function getQueryParams(qs) {
     return params;
 }
 
+function createRosUrl(params) {
+    return (params['rosbridge_secure'] == 0 ? 'ws://' : 'wss://')
+        + (params['rosbridge_host'] || 'localhost' ) + ':'
+        + (params['rosbridge_port'] || '9090');
+}
+
 function State() {
     this.flags = {
       rosReady: false,
       urlParsed: false,
-      defaultsLoaded: false,
       domLoadedMsg: false,
       domLoadedEvnt: false,
       customReadyMsg: false
@@ -80,22 +63,9 @@ function WindowReadyExt() {
     this.state = new State();
 
     var extension = this;
-    this.defaults = {
-        rosbridge_secure: true,
-        rosbridge_host: 'localhost',
-        rosbridge_port: 9090
-    };
-    readLocalSettings(function(params) {
-        if (params) {
-            extension.defaults = params;
-        }
-        extension.state.setFlag.apply(extension.state, ['defaultsLoaded']);
-    });
-
     this.state.addWaiter('initRos', function(flags) {
         // Initialize ros, after we've got url parameters
-        // ros_window_name and defaults
-        if (flags.urlParsed && flags.defaultsLoaded && !flags.rosReady) {
+        if (flags.urlParsed && !flags.rosReady) {
             extension.initRos();
         }
     });
@@ -103,7 +73,7 @@ function WindowReadyExt() {
     // See getSendMsgwaiter
     this.domLoadedWaiter = function(flags) {
         // Everything is ready
-        if (flags.rosReady && flags.urlParsed && flags.defaultsLoaded
+        if (flags.rosReady && flags.urlParsed
             // And one we auqired dom loaded one way or another
             && (flags.domLoadedMsg || flags.domLoadedEvnt)) {
 
@@ -204,34 +174,11 @@ WindowReadyExt.prototype.attachListeners = function() {
     });
 };
 
-function isTrue(val) {
-    return val == '1' || val == 'true' || val == 1;
-}
-
-WindowReadyExt.prototype.createRosUrl = function(params) {
-    var protocol = isTrue(this.defaults['rosbridge_secure']) ? 'wss://' : 'ws://';
-    if (params['rosbridge_secure'] !== undefined) {
-        protocol = isTrue(params['rosbridge_secure']) ? 'wss://' : 'ws://';
-    }
-
-    var host = this.defaults['rosbridge_host'];
-    if (params['rosbridge_host'] !== undefined) {
-        host = params['rosbridge_host'];
-    }
-
-    var port = this.defaults['rosbridge_port'];
-    if (params['rosbridge_port'] !== undefined) {
-        port = params['rosbridge_port'];
-    }
-
-    return protocol + host + ':' + port;
-}
-
 // * Parse and set ros url
 // * Initialize ROS
 // * Set ros_instance_name
 WindowReadyExt.prototype.applyUrlParams = function(params) {
-    this.rosUrl = this.createRosUrl(params);
+    this.rosUrl = createRosUrl(params);
 
     // Used !! to explicitly convert to boolean
     this.use_app_event = !!params['use_app_event'];
@@ -256,8 +203,7 @@ WindowReadyExt.prototype.directorWindowMsg = function(sender, sendResponse) {
     var extension = this;
     this.state.addWaiter('directorWindowMsg', function(flags) {
         // Initialize ros, after we've got url parameters
-        if (flags.urlParsed && flags.defaultsLoaded &&
-            flags.rosReady && flags.customReadyMsg) {
+        if (flags.urlParsed && flags.rosReady && flags.customReadyMsg) {
             if (extension.use_app_event) {
                 extension.sendMsg();
             }
