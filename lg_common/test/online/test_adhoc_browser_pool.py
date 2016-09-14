@@ -27,6 +27,8 @@ lg_common.ManagedAdhocBrowser = AdhocBrowserPoolStub
 class TestAdhocBrowserPool(unittest.TestCase):
     def setUp(self):
         self.pool = AdhocBrowserPool('center')
+        rospy.set_param('rosbridge_secure', True)
+        rospy.set_param('rosbridge_port', 1234)
 
     def tearDown(self):
         pass
@@ -36,6 +38,9 @@ class TestAdhocBrowserPool(unittest.TestCase):
 
         self.pool._create_browser(self, 'test_test', test_browser_msg, initial_state=None)
         assert self.pool.browsers['test_test'] is not None
+        assert 'test_test' in self.pool.browsers['test_test'].kwargs['url']
+        assert 'rosbridge_secure=1' in self.pool.browsers['test_test'].kwargs['url']
+        assert 'rosbridge_port=1234' in self.pool.browsers['test_test'].kwargs['url']
 
 
 if __name__ == '__main__':
