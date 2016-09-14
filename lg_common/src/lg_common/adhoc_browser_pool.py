@@ -41,6 +41,8 @@ class AdhocBrowserPool():
         self.viewport_name = viewport_name
         self._init_service()
         self.log_level = rospy.get_param('/logging/level', 0)
+        self.rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
+        self.rosbridge_secure = rospy.get_param('~rosbridge_secure', False)
 
     def _get_lg_common_extensions_root(self):
         """
@@ -197,6 +199,15 @@ class AdhocBrowserPool():
         else:
             rospy.loginfo("NOT Using custom preloading event")
         new_browser.url = self._inject_get_argument(new_browser.url, 'ros_instance_name', new_browser_pool_id)
+
+        # Default host for rosbridge is localhost
+        # and we are not going to change that very often
+        new_browser.url = self._inject_get_argument(new_browser.url,
+                                                    'rosbridge_port',
+                                                    self.rosbridge_port)
+        new_browser.url = self._inject_get_argument(new_browser.url,
+                                                    'rosbridge_secure',
+                                                    if self.rosbridge_secure: 1 else 0)
 
         rospy.logdebug(
             "Creating new browser %s with id %s and url %s" %
