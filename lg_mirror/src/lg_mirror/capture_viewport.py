@@ -53,7 +53,6 @@ class CaptureViewport:
         self.lock = threading.Lock()
 
         self.geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
-        self.viewport_match = 'viewport://{}'.format(viewport)
         self._previous_width = None
         self._previous_height = None
 
@@ -117,8 +116,11 @@ class CaptureViewport:
             activity = window.get('activity', '')
             if activity != MIRROR_ACTIVITY_TYPE:
                 continue
-            assets = window.get('assets', [])
-            if self.viewport_match in assets:
+            config = window.get('activity_config', {})
+            source_viewport = config.get('viewport', '')
+            # allow viewport:// specifier
+            source_viewport = source_viewport.replace('viewport://', '')
+            if source_viewport == self.viewport:
                 self._start_capture(window)
                 return
 
