@@ -35,7 +35,7 @@ class MirrorPlayback:
         self.playing = False
 
     @property
-    def window_name(self):
+    def window_name_match(self):
         return '{name} : {cmd}'.format(
             name=self.instance_name,
             cmd=PLAYBACK_CMD
@@ -45,7 +45,7 @@ class MirrorPlayback:
         args = map(lambda arg: arg.format(
             rtp_host=self.source_host,
             rtp_port=self.source_port,
-            w_name=self.window_name,
+            w_name=self.instance_name,
             display=self.display
         ), PLAYBACK_ARGS)
 
@@ -54,7 +54,7 @@ class MirrorPlayback:
         return cmd
 
     def _gen_window(self):
-        return ManagedWindow(w_name=self.window_name, geometry=self.geometry)
+        return ManagedWindow(w_name=self.window_name_match, geometry=self.geometry)
 
     def start(self):
         if self.playing:
