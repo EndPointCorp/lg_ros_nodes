@@ -39,6 +39,7 @@ class AdhocBrowserPool():
         self.lg_common_internal_extensions_root = self._get_lg_common_extensions_root()
         self.lock = threading.Lock()
         self.viewport_name = viewport_name
+        # FIXME: make this class ros - offline: move ros dependancies to script
         self._init_service()
         self.log_level = rospy.get_param('/logging/level', 0)
         self.rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
