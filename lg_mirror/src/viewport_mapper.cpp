@@ -50,7 +50,7 @@ ViewportMapper::ViewportMapper(const std::string& device_name, const std::string
  * \brief Map xinput events for this device.
  * \return true if successful.
  */
-bool ViewportMapper::Map() const {
+void ViewportMapper::Map() const {
   WindowGeometryPtr root_geometry = GetRootGeometry();
 
   std::ostringstream cmd;
@@ -65,10 +65,8 @@ bool ViewportMapper::Map() const {
 
   int stat = system(cmd.str().c_str());
   if (stat != 0) {
-    return false;
+    throw ViewportMapperExecError("xinput command returned non-zero");
   }
-
-  return true;
 }
 
 /**

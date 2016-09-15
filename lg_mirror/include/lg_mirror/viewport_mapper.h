@@ -37,7 +37,7 @@ class ViewportMapperExecError : public std::exception {
 class ViewportMapper {
   public:
     ViewportMapper(const std::string& device_name, const std::string& viewport_geometry);
-    bool Map() const;
+    void Map() const;
     static lg_common::WindowGeometryPtr GeometryFromString(const std::string& s);
     static lg_common::WindowGeometryPtr GetRootGeometry();
     static ViewportMapperTypes::TransformMatrixPtr TransformGeometry(
