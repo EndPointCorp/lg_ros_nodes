@@ -37,9 +37,11 @@ RosEventRelay::RosEventRelay(
  * \param msg List of viewports that should receive touches.
  */
 void RosEventRelay::HandleRouterMessage(const StringArrayPtr& msg) {
+  ROS_DEBUG("Got router message");
   bool should_route = false;
   std::size_t num_viewports = msg->strings.size();
   for (std::size_t i; i < num_viewports; i++) {
+    ROS_DEBUG_STREAM("Comparing " << viewport_name_ << " to " << msg->strings[i]);
     if (msg->strings[i] == viewport_name_) {
       should_route = true;
       break;
@@ -47,8 +49,10 @@ void RosEventRelay::HandleRouterMessage(const StringArrayPtr& msg) {
   }
 
   if (should_route) {
+    ROS_DEBUG("should route");
     OpenRoute_();
   } else {
+    ROS_DEBUG("should not route");
     CloseRoute_();
   }
 }
