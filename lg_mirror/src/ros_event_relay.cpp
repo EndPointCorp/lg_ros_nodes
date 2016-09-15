@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 
+#include "constants.h"
 #include "lg_common/StringArray.h"
 #include "ros_event_relay.h"
 #include "uinput_device.h"
@@ -9,6 +10,7 @@
 
 using lg_common::StringArray;
 using lg_common::StringArrayPtr;
+using lg_mirror::TOUCH_EVENTS_TOPIC;
 
 /**
  * \brief Constructor
@@ -69,7 +71,7 @@ void RosEventRelay::OpenRoute_() {
     return;
   }
   routing_ = true;
-  s_ = n_.subscribe("/lg_mirror/routing", 10, &UinputDevice::HandleEventMessage, &device_);
+  s_ = n_.subscribe(TOUCH_EVENTS_TOPIC, 10, &UinputDevice::HandleEventMessage, &device_);
 }
 
 /**

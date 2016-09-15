@@ -9,7 +9,11 @@
 
 #include "lg_mirror/EvdevEvent.h"
 #include "lg_mirror/EvdevEvents.h"
+#include "constants.h"
 #include "device_service.h"
+
+using lg_mirror::TOUCH_EVENTS_TOPIC;
+using lg_mirror::DEVICE_INFO_SERVICE;
 
 const char* DEVICE_PATH_PARAM = "~device_path";
 
@@ -50,14 +54,14 @@ int main(int argc, char** argv) {
   /* advertise the topic */
 
   ros::Publisher evdev_pub =
-    n.advertise<lg_mirror::EvdevEvents>("/lg_mirror/event", 1);
+    n.advertise<lg_mirror::EvdevEvents>(TOUCH_EVENTS_TOPIC, 1);
 
   /* begin relaying from the device to the topic */
 
   lg_mirror::EvdevEvents events_msg;
 
   DeviceServicer ds(device_fd);
-  ros::ServiceServer service = n.advertiseService("/lg_mirror/device_info",
+  ros::ServiceServer service = n.advertiseService(DEVICE_INFO_SERVICE,
 		  &DeviceServicer::get_device_info, &ds);
   ros::AsyncSpinner as(1);
   as.start();

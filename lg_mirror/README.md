@@ -80,7 +80,7 @@ Reads touch events from a touchscreen and publishes them.
 
 #### Published Topics
 
-* `/lg_mirror/event` [EvdevEvents] - Touch events.
+* `/lg_mirror/touch_events` [EvdevEvents] - Touch events.
 
 #### Services
 
@@ -98,7 +98,7 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 
 #### Subscribed Topics
 
-* `/lg_mirror/event`
+* `/lg_mirror/touch_events`
 * `/lg_mirror/active_touch_routes`
 
 ## Configuration

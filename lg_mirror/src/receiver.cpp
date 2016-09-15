@@ -2,6 +2,7 @@
 #include <string>
 #include <boost/format.hpp>
 
+#include "constants.h"
 #include "uinput_device.h"
 #include "viewport_mapper.h"
 #include "ros_event_relay.h"
@@ -9,8 +10,9 @@
 
 const char* DEVICE_NAME_BASE = "Virtual Touchscreen (%s)";
 const char* VIEWPORT_PARAM = "viewport";
-const std::string DEVICE_INFO_SERVICE = "/lg_mirror/device_info";
-const std::string ACTIVATION_TOPIC = "/lg_mirror/touch_viewport";
+
+using lg_mirror::DEVICE_INFO_SERVICE;
+using lg_mirror::TOUCH_ROUTE_TOPIC;
 
 bool init(ros::NodeHandle n) {
   std::string viewport_name;
@@ -74,7 +76,7 @@ bool init(ros::NodeHandle n) {
   /* instantiate an event relay */
 
   RosEventRelay relay(n, viewport_name, uinput_device, *viewport_mapper);
-  n.subscribe("/lg_mirror/routing", 10, &RosEventRelay::HandleRouterMessage, &relay);
+  n.subscribe(TOUCH_ROUTE_TOPIC, 10, &RosEventRelay::HandleRouterMessage, &relay);
 
   return true;
 }
