@@ -1,4 +1,5 @@
 #include <string>
+#include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 #include <stdexcept>
 #include <vector>
@@ -151,7 +152,7 @@ WindowGeometryPtr ViewportMapper::GeometryFromString(const std::string& s) {
 WindowGeometryPtr ViewportMapper::GetRootGeometry() {
   const char* CMD = "/usr/bin/xwininfo -root | /usr/bin/awk '/-geometry/ { print $2 }'";
 
-  std::string s = util::exec(CMD);
+  std::string s = boost::trim_copy(util::exec(CMD));
 
   WindowGeometryPtr geometry = GeometryFromString(s);
   return geometry;
