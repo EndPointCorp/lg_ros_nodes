@@ -41,9 +41,9 @@ SCENE_TEMPLATE = """
     {
       "activity": "mirror",
       "activity_config": {
+        "viewport": "%s"
       },
       "assets": [
-        "viewport://%s"
       ],
       "presentation_viewport": "playback",
       "width": %s,
