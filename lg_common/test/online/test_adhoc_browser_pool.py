@@ -5,6 +5,7 @@ import rospy
 import unittest
 import lg_common
 from lg_common.msg import AdhocBrowser
+from lg_common import AdhocBrowserPool
 
 
 PKG = 'lg_common'
