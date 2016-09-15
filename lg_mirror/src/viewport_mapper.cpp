@@ -108,7 +108,8 @@ TransformMatrixPtr ViewportMapper::TransformGeometry(WindowGeometryPtr a, Window
  * \param s Xorg window geometry string.
  * \return Window geometry.
  */
-WindowGeometryPtr ViewportMapper::GeometryFromString(const std::string& s) {
+WindowGeometryPtr ViewportMapper::GeometryFromString(const std::string& source) {
+  const std::string s = boost::trim_copy(source);
   std::size_t hwsep = s.find("x", 0);
   if (hwsep == std::string::npos) {
     throw ViewportMapperStringError("Geometry string is missing x");
@@ -158,7 +159,7 @@ WindowGeometryPtr ViewportMapper::GeometryFromString(const std::string& s) {
 WindowGeometryPtr ViewportMapper::GetRootGeometry() {
   const char* CMD = "/usr/bin/xwininfo -root | /usr/bin/awk '/-geometry/ { print $2 }'";
 
-  std::string s = boost::trim_copy(util::exec(CMD));
+  std::string s = util::exec(CMD);
 
   WindowGeometryPtr geometry = GeometryFromString(s);
   return geometry;
