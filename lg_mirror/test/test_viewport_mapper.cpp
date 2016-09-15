@@ -31,6 +31,7 @@ TEST(ViewportMapperTests, geometryFromString) {
   tryGeometryString("1920x1080+100+200", 1920, 1080, 100, 200);
   tryGeometryString("16384x16384+0+0", 16384, 16384, 0, 0);
   tryGeometryString("800x600-1-2", 800, 600, -1, -2);
+  tryGeometryString(" 800x600-1-2 ", 800, 600, -1, -2);
 
   tryBrokenGeometryString("asdf");
   tryBrokenGeometryString("1024x768");
