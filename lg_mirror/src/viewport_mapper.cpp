@@ -49,7 +49,8 @@ ViewportMapper::ViewportMapper(const std::string& device_name, const std::string
 
 /**
  * \brief Map xinput events for this device.
- * \return true if successful.
+ *
+ * May throw ViewportMapperStringError, ViewportMapperExecError.
  */
 void ViewportMapper::Map() const {
   WindowGeometryPtr root_geometry = GetRootGeometry();
