@@ -37,7 +37,7 @@ class TestAdhocBrowserPool(unittest.TestCase):
     def test_rosbridge_params_passed(self):
         test_browser_msg = AdhocBrowser()
 
-        self.pool._create_browser(self, 'test_test', test_browser_msg)
+        self.pool._create_browser('test_test', test_browser_msg)
         assert self.pool.browsers['test_test'] is not None
         assert 'test_test' in self.pool.browsers['test_test'].kwargs['url']
         assert 'rosbridge_secure=1' in self.pool.browsers['test_test'].kwargs['url']
