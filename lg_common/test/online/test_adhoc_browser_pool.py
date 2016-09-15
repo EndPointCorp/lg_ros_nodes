@@ -3,26 +3,12 @@
 import time
 import rospy
 import unittest
-import lg_common
 from lg_common.msg import AdhocBrowser
 from lg_common import AdhocBrowserPool
 
 
 PKG = 'lg_common'
 NAME = 'test_adhoc_browser_pool'
-
-
-class AdhocBrowserPoolStub():
-    def __init__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
-        self.state = None
-
-    def set_state(self, state):
-        self.state = state
-
-
-lg_common.ManagedAdhocBrowser = AdhocBrowserPoolStub
 
 
 class TestAdhocBrowserPool(unittest.TestCase):
@@ -39,9 +25,9 @@ class TestAdhocBrowserPool(unittest.TestCase):
 
         self.pool._create_browser('test_test', test_browser_msg)
         assert self.pool.browsers['test_test'] is not None
-        assert 'test_test' in self.pool.browsers['test_test'].kwargs['url']
-        assert 'rosbridge_secure=1' in self.pool.browsers['test_test'].kwargs['url']
-        assert 'rosbridge_port=1234' in self.pool.browsers['test_test'].kwargs['url']
+        assert 'test_test' in self.pool.browsers['test_test'].url
+        assert 'rosbridge_secure=1' in self.pool.browsers['test_test'].url
+        assert 'rosbridge_port=1234' in self.pool.browsers['test_test'].url
 
 
 if __name__ == '__main__':
