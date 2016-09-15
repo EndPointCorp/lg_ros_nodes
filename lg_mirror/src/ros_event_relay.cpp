@@ -67,7 +67,10 @@ void RosEventRelay::OpenRoute_() {
   try {
     mapper_.Map();
   } catch(ViewportMapperExecError e) {
-    ROS_ERROR_STREAM("Mapping viewport: " << e.what());
+    ROS_ERROR_STREAM("Mapping viewport exec error: " << e.what());
+    return;
+  } catch(ViewportMapperStringError e) {
+    ROS_ERROR_STREAM("Mapping viewport string error: " << e.what());
     return;
   }
   routing_ = true;

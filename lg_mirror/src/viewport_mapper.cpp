@@ -2,6 +2,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 #include <stdexcept>
+#include <new>
 #include <vector>
 #include <stdlib.h>
 #include <boost/lexical_cast.hpp>
@@ -141,6 +142,10 @@ WindowGeometryPtr ViewportMapper::GeometryFromString(const std::string& s) {
 
   } catch(boost::bad_lexical_cast e) {
     throw ViewportMapperStringError("Invalid numeric in geometry string");
+  } catch(std::out_of_range e) {
+    throw ViewportMapperStringError("Substring index out of range");
+  } catch(std::bad_alloc e) {
+    throw ViewportMapperStringError("Failed to allocate substring");
   }
 
   return geometry;
