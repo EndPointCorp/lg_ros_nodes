@@ -33,7 +33,7 @@ class TestAdhocBrowserPool(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_rosbridge_params_passed:
+    def test_rosbridge_params_passed(self):
         test_browser_msg = AdhocBrowser()
 
         self.pool._create_browser(self, 'test_test', test_browser_msg, initial_state=None)
