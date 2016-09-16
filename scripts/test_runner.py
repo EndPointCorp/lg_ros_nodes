@@ -15,6 +15,8 @@ commands and checks exit status from them.
 import os
 import re
 import sys
+from os import listdir
+from os.path import isfile, join
 
 FAIL = 1
 
@@ -101,8 +103,13 @@ def run_tests():
         print "RAN TEST: %s\nGot exit code %d" % (test, flag)
     # check for non-zero exit status, and fail if found
     if filter(None, fail_flags.values()):
-        print "Some tests are filed, print logs."
-        os.system("cat /home/test_docker/.ros/log/*.log")
+        print "Some tests are failed, print logs."
+        logs_dir = "/home/test_docker/.ros/log"
+        log_files = [f for f in listdir(logs_dir) if isfile(join(logs_dir, f))]
+        for f in log_files:
+            print "Print file %s:" % join(logs_dir, f)
+            with open(join(logs_dir, f), 'r') as fin:
+                print fin.read()
         sys.exit(FAIL)
 
 if __name__ == '__main__':
