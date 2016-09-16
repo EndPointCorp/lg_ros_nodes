@@ -85,7 +85,7 @@ def run_tests():
         # rosunit will urn the offline test just the same
         # benefit is that it respects pytest stuff
         # previous, nosetests command was this:
-        #c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
+        # c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
         c = "rosunit %s" % nose_test
         print "RUNNING: '%s'" % c
         ret = os.system(c)
@@ -101,6 +101,8 @@ def run_tests():
         print "RAN TEST: %s\nGot exit code %d" % (test, flag)
     # check for non-zero exit status, and fail if found
     if filter(None, fail_flags.values()):
+        print "Some tests are filed, print logs."
+        os.system("cat /home/test_docker/.ros/log/*.log")
         sys.exit(FAIL)
 
 if __name__ == '__main__':
