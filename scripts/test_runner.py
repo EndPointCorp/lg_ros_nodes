@@ -15,7 +15,7 @@ commands and checks exit status from them.
 import os
 import re
 import sys
-from subprocess import CalledProcessError, check_output
+from subprocess import CalledProcessError, check_output, STDOUT
 from os import listdir
 from os.path import isfile, join
 
