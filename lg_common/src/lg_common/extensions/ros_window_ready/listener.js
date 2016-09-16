@@ -15,8 +15,13 @@ function getQueryParams(qs) {
     return params;
 }
 
+function isTrue(val) {
+    return val === '1' || val === 1 || val === true
+        || ('' + val).toLowerCase() === 'true';
+}
+
 function createRosUrl(params) {
-    return (params['rosbridge_secure'] == 0 ? 'ws://' : 'wss://')
+    return (isTrue(params['rosbridge_secure']) ? 'wss://' : 'ws://')
         + (params['rosbridge_host'] || 'localhost' ) + ':'
         + (params['rosbridge_port'] || '9090');
 }
@@ -129,8 +134,12 @@ WindowReadyExt.prototype.initRos = function() {
     console.log("Advertised on the topic /director/window/ready");
 };
 
-WindowReadyExt.prototype.onRosError = function() {
-    console.log( error );
+WindowReadyExt.prototype.onRosError = function(error) {
+    console.log(error);
+    // If you want to retry connection to ros
+    // do it here. Change the url, and call
+    // this.ros.connect(this.rosUrl);
+    // callbacks already binded
 };
 
 WindowReadyExt.prototype.sendMsg = function() {
