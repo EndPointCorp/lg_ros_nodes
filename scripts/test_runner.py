@@ -89,7 +89,7 @@ def run_command(command):
     print "RUNNING: '%s'" % command
     # return os.system(c)
     try:
-        print subprocess.check_output(command, shell=True)
+        print check_output(command, shell=True)
     except CalledProcessError as e:
         return e.returncode
     return 0
