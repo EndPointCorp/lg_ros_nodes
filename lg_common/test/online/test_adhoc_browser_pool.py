@@ -14,8 +14,8 @@ NAME = 'test_adhoc_browser_pool'
 class TestAdhocBrowserPool(unittest.TestCase):
     def setUp(self):
         self.pool = AdhocBrowserPool('center')
-        rospy.set_param('rosbridge_secure', True)
-        rospy.set_param('rosbridge_port', 1234)
+        rospy.set_param('~rosbridge_secure', True)
+        rospy.set_param('~rosbridge_port', 1234)
 
     def tearDown(self):
         pass
@@ -28,8 +28,8 @@ class TestAdhocBrowserPool(unittest.TestCase):
 
         url = self.pool.browsers['test_test'].url
         assert 'ros_instance_name=test_test' in url
-        assert 'rosbridge_secure' in url
-        assert 'rosbridge_port' in url
+        assert 'rosbridge_secure=1' in url
+        assert 'rosbridge_port=1234' in url
 
 if __name__ == '__main__':
     rospy.init_node(NAME)
