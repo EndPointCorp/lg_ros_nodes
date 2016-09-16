@@ -87,12 +87,12 @@ def run_command(command):
     Execute comand and prints the stdout
     """
     print "RUNNING: '%s'" % command
-    # return os.system(c)
-    try:
-        print check_output(command, shell=True, stderr=STDOUT)
-    except CalledProcessError as e:
-        return e.returncode
-    return 0
+    return os.system(c)
+    # try:
+    #     print check_output(command, shell=True, stderr=STDOUT)
+    # except CalledProcessError as e:
+    #     return e.returncode
+    # return 0
 
 
 def run_tests():
