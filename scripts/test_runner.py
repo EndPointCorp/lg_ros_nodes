@@ -15,9 +15,11 @@ commands and checks exit status from them.
 import os
 import re
 import sys
+from subprocess import CalledProcessError, check_output
 from os import listdir
 from os.path import isfile, join
 
+PRINT_ROSTEST_LOGS = False
 FAIL = 1
 
 
@@ -80,6 +82,19 @@ def pep8_test():
     return ret
 
 
+def run_command(command):
+    """
+    Execute comand and prints the stdout
+    """
+    print "RUNNING: '%s'" % command
+    # return os.system(c)
+    try:
+        print subprocess.check_output(command, shell=True)
+    except CalledProcessError as e:
+        return e.returncode
+    return 0
+
+
 def run_tests():
     nose_tests, ros_tests = get_tests()
     fail_flags = {}
@@ -89,27 +104,26 @@ def run_tests():
         # previous, nosetests command was this:
         # c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
         c = "rosunit %s" % nose_test
-        print "RUNNING: '%s'" % c
-        ret = os.system(c)
-        fail_flags[nose_test] = ret
+        fail_flags[nose_test] = run_command(c)
     for ros_test in ros_tests:
         c = 'rostest %s' % ros_test
         print "RUNNING: '%s'" % c
-        ret = os.system(c)
-        fail_flags[ros_test] = ret
+        fail_flags[ros_test] = run_command(c)
     fail_flags['pep8'] = pep8_test()
     print "\n\nFINAL SUMMARY:\n"
     for test, flag in sorted(fail_flags.items()):
         print "RAN TEST: %s\nGot exit code %d" % (test, flag)
     # check for non-zero exit status, and fail if found
     if filter(None, fail_flags.values()):
-        print "Some tests are failed, print logs."
-        logs_dir = "/home/test_docker/.ros/log"
-        log_files = [f for f in listdir(logs_dir) if isfile(join(logs_dir, f))]
-        for f in log_files:
-            print "Print file %s:" % join(logs_dir, f)
-            with open(join(logs_dir, f), 'r') as fin:
-                print fin.read()
+        if PRINT_ROSTEST_LOGS:
+            print "========== Some tests are failed, print logs =================="
+            logs_dir = "/home/test_docker/.ros/log"
+            log_files = [f for f in listdir(logs_dir) if isfile(join(logs_dir, f))]
+            for f in log_files:
+                print "Print file %s:" % join(logs_dir, f)
+                with open(join(logs_dir, f), 'r') as fin:
+                    print fin.read()
+            print "---------------------------------------------------------------"
         sys.exit(FAIL)
 
 if __name__ == '__main__':
