@@ -26,13 +26,10 @@ class TestAdhocBrowserPool(unittest.TestCase):
         self.pool._create_browser('test_test', test_browser_msg)
         assert self.pool.browsers['test_test'] is not None
 
-        print "Browser url is: " + self.pool.browsers['test_test'].url
-
-        assert 'test_test' in self.pool.browsers['test_test'].url
-        assert 'rosbridge_secure=1' in self.pool.browsers['test_test'].url
-        assert 'rosbridge_port=1234' in self.pool.browsers['test_test'].url
-
-        assert 1 == 0, "Test should fails"
+        url = self.pool.browsers['test_test'].url
+        assert 'test_test' in url
+        assert 'rosbridge_secure=1' in url
+        assert 'rosbridge_port=1234' in url
 
 if __name__ == '__main__':
     rospy.init_node(NAME)

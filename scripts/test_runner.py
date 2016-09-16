@@ -19,7 +19,7 @@ from subprocess import CalledProcessError, check_output, STDOUT
 from os import listdir
 from os.path import isfile, join
 
-PRINT_ROSTEST_LOGS = False
+PRINT_ROSTEST_LOGS = True
 FAIL = 1
 
 
@@ -87,12 +87,7 @@ def run_command(command):
     Execute comand and prints the stdout
     """
     print "RUNNING: '%s'" % command
-    return os.system(c)
-    # try:
-    #     print check_output(command, shell=True, stderr=STDOUT)
-    # except CalledProcessError as e:
-    #     return e.returncode
-    # return 0
+    return os.system(command)
 
 
 def run_tests():
