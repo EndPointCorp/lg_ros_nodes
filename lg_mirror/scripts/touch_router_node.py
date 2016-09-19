@@ -5,8 +5,9 @@ import rospy
 import sys
 
 from lg_mirror.touch_router import TouchRouter
-from lg_common.helpers import on_new_scene
+from lg_common.helpers import on_new_scene, load_director_message
 from lg_common.msg import StringArray
+from lg_common.helpers import handle_initial_state
 
 
 def main():
@@ -26,8 +27,11 @@ def main():
 
     touch_router = TouchRouter(default_viewport)
 
-    # Init latching to the default viewport.
-    touch_router.handle_scene(publish_active_touch_routes, {})
+    # Hacky callback to parse the initial scene.
+    def handle_initial_scene_msg(msg):
+        d = load_director_message(msg)
+        touch_router.handle_scene(publish_active_touch_routes, d)
+    handle_initial_state(handle_initial_scene_msg)
 
     scene_cb = partial(touch_router.handle_scene, publish_active_touch_routes)
     on_new_scene(scene_cb)

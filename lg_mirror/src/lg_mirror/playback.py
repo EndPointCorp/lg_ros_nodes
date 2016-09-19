@@ -1,5 +1,6 @@
 import json
 import md5
+import rospy
 import threading
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.helpers import load_director_message
@@ -127,6 +128,7 @@ class MirrorPlaybackPool:
         target_viewport = target_viewport.replace('viewport://', '')
         source_host = viewport_to_multicast_group(target_viewport)
         source_port = get_mirror_port()
+        rospy.loginfo("Using geometry for playback: %s" % geometry)
         player = MirrorPlayback(
             instance_name=instance_name,
             display=self.display,

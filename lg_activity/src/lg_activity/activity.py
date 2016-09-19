@@ -2,6 +2,7 @@
 
 import rospy
 import sys
+import threading
 
 from lg_common.helpers import unpack_activity_sources
 from lg_common.helpers import list_of_dicts_is_homogenous
@@ -9,6 +10,7 @@ from lg_common.helpers import rewrite_message_to_dict
 from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
 from lg_activity.msg import ActivityState
+from lg_activity.srv import Active
 from std_msgs.msg import Bool
 
 
@@ -294,6 +296,7 @@ class ActivityTracker:
             raise ActivityTrackerException
 
         self.active = True
+        self._lock = threading.Lock()
         self.initialized_sources = []
         self.activity_states = {}
         self.debug = debug
@@ -319,6 +322,14 @@ class ActivityTracker:
             (self.sources, self.initialized_sources, self.timeout, self.publisher)
         return string_representation
 
+    def _get_activity_status(self, _):
+        """
+        ROS service method for retrieving activity state
+
+        """
+        with self._lock:
+            return self.active
+
     def tick(self, topic_name, state):
         """
         Tick should be passed to ActivitySource.
@@ -335,25 +346,26 @@ class ActivityTracker:
 
         If all states turned True (active) then proper message is emitted
         """
-        if topic_name not in self.activity_states:
-            self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-
-        try:
-            try:
-                if self.activity_states[topic_name]['state'] == state:
-                    rospy.logdebug("State of %s didnt change" % topic_name)
-                else:
-                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-                    rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
-            except KeyError:
-                rospy.loginfo("Initializing topic name state: %s" % topic_name)
+        with self._lock:
+            if topic_name not in self.activity_states:
                 self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
 
-            self._check_states()
-            return True
-        except Exception, e:
-            rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
-            return False
+            try:
+                try:
+                    if self.activity_states[topic_name]['state'] == state:
+                        rospy.logdebug("State of %s didnt change" % topic_name)
+                    else:
+                        self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+                        rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
+                except KeyError:
+                    rospy.loginfo("Initializing topic name state: %s" % topic_name)
+                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+
+                self._check_states()
+                return True
+            except Exception, e:
+                rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
+                return False
 
     def _source_has_been_inactive(self, source):
         """
