@@ -111,6 +111,18 @@ Typically, you will need to configure:
 * A `capture_viewport_node` for each viewport.
 * A `playback_node` for each viewport.
 
+## Development/Testing
+
+There are rostests, nosetests, and gtests for this package.  Run them with `catkin_make run_tests_lg_mirror && catkin_test_results`.
+
+A combination of launch file and USCS message script can be used for testing mirroring.
+
+```
+roslaunch launch/mirror_dev.launch
+python test/test_mirror_scene.py
+python test/blank_scene.py
+```
+
 ## Authorship in an Alternate History
 
 Prior to this git tree, authors were:

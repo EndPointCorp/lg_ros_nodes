@@ -1,0 +1,23 @@
+<launch>
+  <param name="/viewport/left_one" value="450x800+0+0" />
+  <param name="/viewport/center" value="450x800+480+0" />
+  <param name="/viewport/right_one" value="450x800+960+0" />
+  <node name="mirror_capture_left_one" pkg="lg_mirror" type="capture_viewport_node">
+    <param name="viewport" value="left_one" />
+  </node>
+  <node name="mirror_capture_center" pkg="lg_mirror" type="capture_viewport_node">
+    <param name="viewport" value="center" />
+  </node>
+  <node name="mirror_capture_right_one" pkg="lg_mirror" type="capture_viewport_node">
+    <param name="viewport" value="right_one" />
+  </node>
+  <node name="mirror_playback_left_one" pkg="lg_mirror" type="playback_node">
+    <param name="viewport" value="left_one" />
+  </node>
+  <node name="mirror_playback_center" pkg="lg_mirror" type="playback_node">
+    <param name="viewport" value="center" />
+  </node>
+  <node name="mirror_playback_right_one" pkg="lg_mirror" type="playback_node">
+    <param name="viewport" value="right_one" />
+  </node>
+</launch>
