@@ -96,12 +96,9 @@ class MirrorPlaybackPool:
     def _window_to_instance_name(self, window):
         conf = window.get('activity_config', {})
         conf_json = json.dumps(conf, sort_keys=True)
-        conf_hash = md5.new(conf_json).hexdigest()[8:]
-        target_viewport = conf.get('viewport', '')
-        target_viewport = target_viewport.replace('viewport://', '')
+        conf_hash = md5.new(conf_json).hexdigest()[-6:]
         n = '_'.join(map(str, [
             self.viewport,
-            target_viewport,
             window['width'],
             window['height'],
             window['x_coord'],
