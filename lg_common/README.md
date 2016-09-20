@@ -34,25 +34,27 @@ Provides a browser pool for running and managing chrome browser instances with s
 * `~viewport` [string] - name of the viewport to run at. This is a mandatory argument.
 * `~extensions_root` [string] - absolute or relative path to directory with unpacked chrome extensions - defaults to `/opt/endpoint/chrome/extensions/`
 
-```json
-{
-  "activity_config": {
-    "preload": true,
-      "google_chrome":{
-        "extensions": [
-        {
-          "name": "test_extension1"
-        },
-        {
-          "name": "test_extension2"
-        }
-        ]
+    ```json
+    {
+      "activity_config": {
+        "preload": true,
+          "google_chrome":{
+            "extensions": [
+            {
+              "name": "test_extension1"
+            },
+            {
+              "name": "test_extension2"
+            }
+            ]
+          }
       }
-  }
-}
-```
+    }
+    ```
 
-thanks to this parameter - you may emit a message with above `activity_config` without absolute path to the extension
+    thanks to this parameter - you may emit a message with above `activity_config` without absolute path to the extension
+
+* `~rosbridge_secure` (boolean) and `~rosbridge_port` these two parameters are passed via get arguments to all created browsers, to provide rosbridge connection data for extensions and applications.
 
 ##### Subscribed Topics
 
