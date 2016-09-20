@@ -19,8 +19,6 @@ PLAYBACK_ARGS = [
     '!',
     'jpegdec',
     '!',
-    'taginject', 'tags="title={w_name}"',
-    '!',
     'xvimagesink', 'display={display}', 'sync=false'
 ]
 
@@ -37,16 +35,12 @@ class MirrorPlayback:
 
     @property
     def window_name_match(self):
-        return '{name} : {cmd}'.format(
-            name=self.instance_name,
-            cmd=PLAYBACK_CMD
-        )
+        return PLAYBACK_CMD
 
     def _gen_command(self):
         args = map(lambda arg: arg.format(
             rtp_host=self.source_host,
             rtp_port=self.source_port,
-            w_name=self.instance_name,
             display=self.display
         ), PLAYBACK_ARGS)
 
