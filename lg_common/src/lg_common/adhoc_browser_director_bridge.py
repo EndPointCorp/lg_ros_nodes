@@ -57,6 +57,9 @@ class AdhocBrowserDirectorBridge():
         except ValueError:
             rospy.logwarn("Director message did not contain valid json")
             return
+        except TypeError:
+            rospy.logwarn("Director message did not contai valid type. Type was %s, and content was: %s" % (type(message), message))
+            return
 
         adhoc_browsers_list = self._extract_browsers_from_message(data)
 

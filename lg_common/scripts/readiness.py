@@ -5,6 +5,7 @@ from lg_common.msg import AdhocBrowsers
 from lg_common import ReadinessNode
 from std_msgs.msg import String
 from lg_common.msg import Ready
+from lg_common.helpers import handle_initial_state
 
 
 def main():

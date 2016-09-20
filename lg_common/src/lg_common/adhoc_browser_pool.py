@@ -291,6 +291,7 @@ class AdhocBrowserPool():
 
         """
         with self.lock:
+            rospy.loginfo("============UNHIDING BEGIN %s ============" % data.instances)
             preloadable_prefixes = self._get_all_preloadable_instances(data)
             rospy.loginfo("Preloadable prefixes: %s" % preloadable_prefixes)
             old_preloadable_instances_to_remove = self._get_old_preloadable_browser_instances(preloadable_prefixes, data)
@@ -298,6 +299,7 @@ class AdhocBrowserPool():
             rospy.loginfo("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
             self._hide_browsers_ids(set(old_preloadable_instances_to_remove))
             self._destroy_browsers_ids(set(old_preloadable_instances_to_remove))
+            rospy.loginfo("============UNHIDING END %s   ============" % data.instances)
 
     def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):
         """
@@ -332,10 +334,10 @@ class AdhocBrowserPool():
             rospy.loginfo("Unhiding browser with id %s" % (browser_pool_id))
             try:
                 self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
-                return True
             except KeyError:
                 rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool" % (browser_pool_id, self.browsers.keys()))
-                return False
+            except Exception, e:
+                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool because: %s" % (browser_pool_id, self.browsers.keys(), e))
 
     def _inject_get_argument(self, url, get_arg_name, get_arg_value):
         """
@@ -403,8 +405,14 @@ class AdhocBrowserPool():
 
         Remove all browsers that are not preloadable immediately
         """
-        if len(ids_to_remove - ids_to_preload) > 0:
-            self._destroy_browsers_ids(ids_to_remove - ids_to_preload)
+        if len(ids_to_preload) > 0:
+            # if there exist ANY preloadable browsers in new scene then
+            # filter out all old browsers that are preloadable and need to stay
+            # on the screens until new browsers become ready and old browsers
+            # will get hidden and removed
+            ids_to_remove = [ browser for browser in ids_to_remove if not '_' in browser]
+
+        self._destroy_browsers_ids(ids_to_remove)
 
         return True
 

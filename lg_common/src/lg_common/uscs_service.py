@@ -110,7 +110,7 @@ class USCSService:
         Just return the current state
         """
         state = self.current_uscs_message()
-        return InitialUSCSResponse(state.type, json.dumps(state.message))
+        return InitialUSCSResponse(state.type, state.message)
 
     def update_uscs_message(self, message):
         """
@@ -188,6 +188,6 @@ class USCSService:
 
         initial_state = USCSMessageResponse()
         initial_state.type = 'json'
-        initial_state.message = message
+        initial_state.message = json.dumps(message)
 
         return initial_state

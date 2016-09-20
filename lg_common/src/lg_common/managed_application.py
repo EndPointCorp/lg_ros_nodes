@@ -114,8 +114,9 @@ class ManagedApplication(object):
                     self.window.converge()
 
             elif state == ApplicationState.VISIBLE:
-                rospy.logdebug("VISIBLE")
-                self.proc.start()
+                rospy.loginfo("VISIBLE")
+                if not self.proc.started:
+                    self.proc.start()
                 if self.window is not None:
                     self.window.set_visibility(True)
                     self.window.converge()

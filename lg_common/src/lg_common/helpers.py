@@ -856,7 +856,7 @@ def generate_hash(string, length=8, random_suffix=False):
     random_suffix adds random string to the end of the hash.
     NB. random != unique it's still possible to get two equal hashes.
     """
-    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)]
+    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)].replace('_', '')
 
     if random_suffix:
         return hash_str + "_" + get_random_string()
@@ -871,7 +871,7 @@ def handle_initial_state(call_back):
     """
     # commenting out for now
     try:
-        rospy.wait_for_service('/initial_state', 10)
+        rospy.wait_for_service('/initial_state', 15)
     except:
         rospy.logerr("This system does not support initial state setting")
         return
@@ -881,6 +881,8 @@ def handle_initial_state(call_back):
     initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
 
     state = initial_state_service.call()
-    rospy.loginfo('got initial state: %s' % state.message)
     if state and state != InitialUSCSResponse():
+        rospy.loginfo('got initial state: %s for callback %s' % (state.message, call_back))
         call_back(state)
+    else:
+        rospy.logwarn('Could not get valid initial state for callback %s')
