@@ -21,9 +21,36 @@ function isTrue(val) {
 }
 
 function createRosUrl(params) {
-    return (isTrue(params['rosbridge_secure']) ? 'wss://' : 'ws://')
+    if (params['rosbridge_secure'] === undefined) {
+        // Set the default value
+        var protocol = 'wss://';
+    }
+    else {
+        var protocol = (isTrue(params['rosbridge_secure']) ? 'wss://' : 'ws://');
+    }
+    return protocol
         + (params['rosbridge_host'] || 'localhost' ) + ':'
         + (params['rosbridge_port'] || '9090');
+}
+
+function loadGETParams(url, callback) {
+    var params = parseUrl(url);
+    if (params['ros_instance_name'] !== undefined) {
+        callback(params);
+    }
+    else {
+        // woops, looks like google maps
+        chrome.history.search({text: '', maxResults: 10}, function(histItems) {
+            for (var i = 0; i < histItems.length; i++) {
+                var histItem = histItems[i];
+                if (histItem.url && histItem.url.indexOf('ros_instance_name') >= 0) {
+                    var params = parseUrl(histItem.url);
+                    callback(params);
+                }
+            }
+            console.log('ERROR: Failed to load ros_instance_name and rosbridge parameters');
+        });
+    }
 }
 
 function State() {
@@ -175,10 +202,11 @@ WindowReadyExt.prototype.attachListeners = function() {
     );
 
     chrome.webNavigation.onDOMContentLoaded.addListener(function(data) {
-        if (data && data.url && data.url.indexOf('?')) {
-            var params = parseUrl(data.url);
-            extension.applyUrlParams.apply(extension, [params]);
-            extension.domLoadedEvnt.apply(extension, []);
+        if (data && data.url) {
+            loadGETParams(data.url, function(params) {
+                extension.applyUrlParams.apply(extension, [params]);
+                extension.domLoadedEvnt.apply(extension, []);
+            });
         }
     });
 };
@@ -233,9 +261,10 @@ WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
 
     // Get url parameters from
     if(sender.url) {
-        var params = parseUrl(sender.url);
-        extension.applyUrlParams.apply(extension, [params]);
-        extension.state.setFlag('domLoadedMsg');
+        loadGETParams(sender.url, function(params){
+            extension.applyUrlParams.apply(extension, [params]);
+            extension.state.setFlag('domLoadedMsg');
+        });
     }
     else {
         chrome.tabs.query({active: true}, function(tabs) {
@@ -243,9 +272,10 @@ WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
                 console.log("Can't aquire url");
                 return false;
             }
-            var params = parseUrl(tabs[0].url);
-            extension.applyUrlParams(params);
-            extension.state.setFlag('domLoadedMsg');
+            loadGETParams(tabs[0].url, function(params){
+                extension.applyUrlParams(params);
+                extension.state.setFlag('domLoadedMsg');
+            });
         });
     }
 
