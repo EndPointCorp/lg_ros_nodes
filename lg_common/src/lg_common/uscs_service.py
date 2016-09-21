@@ -91,13 +91,13 @@ class USCSService:
         and emits appropriate message from ivars
         """
         if self.director_scene_publisher:
-            if message.data is True and self.on_active_state and self.active == False:
+            if message.data is True and self.on_active_state and self.active is False:
                 """
                 We became active
                 """
                 self.director_scene_publisher.publish(self.on_active_state)
                 self.active = True
-            if message.data is False and self.on_inactive_state and self.active == True:
+            if message.data is False and self.on_inactive_state and self.active is True:
                 """
                 We became inactive
                 """

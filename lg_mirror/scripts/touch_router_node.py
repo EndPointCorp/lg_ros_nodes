@@ -10,6 +10,7 @@ from lg_common.msg import StringArray
 from lg_common.helpers import handle_initial_state
 from lg_mirror.touch_router import SubscribeListener
 
+
 def main():
     rospy.init_node('lg_mirror_touch_router')
 

@@ -410,7 +410,7 @@ class AdhocBrowserPool():
             # filter out all old browsers that are preloadable and need to stay
             # on the screens until new browsers become ready and old browsers
             # will get hidden and removed
-            ids_to_remove = [ browser for browser in ids_to_remove if not '_' in browser]
+            ids_to_remove = [browser for browser in ids_to_remove if '_' not in browser]
 
         self._destroy_browsers_ids(ids_to_remove)
 
