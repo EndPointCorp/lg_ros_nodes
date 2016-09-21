@@ -307,7 +307,7 @@ class ActivityTracker:
             raise ActivityTrackerException(msg)
         self.sources = sources
         self.publisher = publisher
-        #self.publisher.publish(Bool(data=True))  # init the state with True (active)
+        self.publisher.publish(Bool(data=True))  # init the state with True (active)
         self._validate_sources()
         self._init_activity_sources()
         rospy.loginfo("Initialized ActivityTracker: %s" % self)

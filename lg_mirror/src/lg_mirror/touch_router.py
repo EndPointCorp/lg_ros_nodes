@@ -1,7 +1,25 @@
 import re
+import rospy
 
 from constants import MIRROR_ACTIVITY_TYPE
 from constants import MIRROR_TOUCH_CONFIG_KEY
+
+
+class SubscribeListener:
+    def __init__(self, publish_callback):
+        self.publish_callback = publish_callback
+
+    def peer_subscribe(self, topic_name, topic_publish, peer_publish):
+        rospy.logdebug("New subscription. %s / %s / %s" % (
+            topic_name,
+            self.publish_callback,
+            self.publish_callback)
+        )
+
+        self.publish_callback(topic_name)
+
+    def peer_unsubscribe(self, topic_name, num_peers):
+        pass
 
 
 class TouchRouter:
@@ -10,6 +28,8 @@ class TouchRouter:
             self.default_viewports = set()
         else:
             self.default_viewports = set([default_viewport])
+
+        self.route_viewports = self.default_viewports
 
     @staticmethod
     def maybe_route(routed, window):
@@ -54,8 +74,21 @@ class TouchRouter:
         windows = scene.get('windows', [])
 
         route_viewports = reduce(TouchRouter.maybe_route, windows, set())
+        self.route_viewports = route_viewports
 
         if len(route_viewports) == 0:
             route_viewports = self.default_viewports
 
         publish_cb(frozenset(route_viewports))
+
+    def handle_new_listener(self, publish_cb, data):
+        """
+        Handles new listener connection
+
+        Args:
+            publish_cb (function): Callback for publishing the list of
+                viewports.
+            data: data about new listener
+        """
+        rospy.loginfo("New listener %s" % data)
+        publish_cb(frozenset(self.route_viewports))
