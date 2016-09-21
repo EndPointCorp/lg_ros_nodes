@@ -2,6 +2,9 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.4 (2016-09-21)
 ------------------
 * Added weberver and uscs initial state nodes to testing suite of lg_mirror to make tests green again
