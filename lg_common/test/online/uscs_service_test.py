@@ -105,12 +105,14 @@ class TestUSCSService(unittest.TestCase):
 
     def test_4_active_state(self):
         """
+        Sending `active=True` should not send a message because
+        uscs service is active by default after initialization
         """
         self.activity_publisher.publish(Bool(data=True))
         rospy.sleep(self.msg_emission_grace_time)
         self.assertEqual(len(self.connectivity_mock_subscriber.state), 0)
-        self.assertEqual(len(self.activity_mock_subscriber.state), 1)
-        self.assertEqual(len(self.director_mock_subscriber.state), 1)
+        self.assertEqual(len(self.activity_mock_subscriber.state), 0)
+        self.assertEqual(len(self.director_mock_subscriber.state), 0)
 
     def test_5_inactive_state(self):
         """
