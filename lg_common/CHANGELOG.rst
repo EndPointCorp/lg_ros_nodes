@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.4 (2016-09-21)
+------------------
 * Amended tests to honor new behavior of uscs service
 * WE're not using underscores anymore
 * Pep8ized code
