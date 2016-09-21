@@ -2,6 +2,19 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Activity, USCS service and mirror amendments
+  - made mirror re-publish messages for touch receiver after earlier
+  initial state subscription
+  - made activity send initial state again and uscs service ignore it
+* Various preloading fixes
+  - added Activity service definition
+  - amended logging
+  - made unhiding not destroy browsers badly
+* Fixes for initial scene handling by lg_mirror and activity service for lg_Activity
+* Contributors: Wojciech Ziniewicz
+
 1.4.3 (2016-09-12)
 ------------------
 

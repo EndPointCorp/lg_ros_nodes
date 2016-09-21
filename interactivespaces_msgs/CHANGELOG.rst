@@ -2,6 +2,12 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed geometry of an example mirroring message
+* Simplify mirroring example message
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.4.3 (2016-09-12)
 ------------------
 

@@ -2,6 +2,12 @@
 Changelog for package lg_json_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added proper imports
+* Added lg_json_config
+* Contributors: Wojciech Ziniewicz
+
 1.4.3 (2016-07-08)
 ------------------
 

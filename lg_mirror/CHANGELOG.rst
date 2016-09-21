@@ -2,6 +2,44 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added weberver and uscs initial state nodes to testing suite of lg_mirror to make tests green again
+* Added locking for touch router
+* Pep8ized code
+* Activity, USCS service and mirror amendments
+  - made mirror re-publish messages for touch receiver after earlier
+  initial state subscription
+  - made activity send initial state again and uscs service ignore it
+* Shorten mirror playback pool instance name
+  Less redundancy.
+* Update mirror test scene for single activity
+* Remove support for multiple mirror playbacks
+  See https://github.com/EndPointCorp/lg_ros_nodes/issues/100#issuecomment-248199114
+* Add mirror dev/testing artifacts
+* Fixes for initial scene handling by lg_mirror and activity service for lg_Activity
+* Trim geometry strings downstream
+* Debug logging in touch route handler
+* Catch mapping exceptions
+* Correct ViewportMapper::Map docstring
+* Add test case for geometry trimming
+* Trim geometry strings in viewport mapper
+* Prevent mirror route subscriber descoping
+* Use exception for touch mapping errors
+* Normalize mirror touch topics/services
+* Fix capture viewport test
+  Expected message changed, so must the test.
+* Normalize mirror playback viewport config
+  Switch from assets for activity_config['viewport'] and don't require viewport://
+* Fix mirror playback window name convention
+  Was setting window name with incorrect, redundant value.
+* Use activity_config for capture viewport
+* Fix lg_mirror runtime install path
+* Added initial state handling to mirroring
+* Added symlinks to lg_mirror nodes
+* Correct lg_mirror README on touch routing
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.4.3 (2016-09-12)
 ------------------
 * Fix touch routing direction

@@ -2,6 +2,11 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed spacenav globe executable creation
+* Contributors: Wojciech Ziniewicz
+
 1.4.3 (2016-09-12)
 ------------------
 

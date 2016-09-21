@@ -2,6 +2,59 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Amended tests to honor new behavior of uscs service
+* WE're not using underscores anymore
+* Pep8ized code
+* Activity, USCS service and mirror amendments
+  - made mirror re-publish messages for touch receiver after earlier
+  initial state subscription
+  - made activity send initial state again and uscs service ignore it
+* Remove extension
+* rename extension
+* rename
+* Extension for tactile smooth loading
+* Updated readme with rosbridge parameters description
+* Various preloading fixes
+  - added Activity service definition
+  - amended logging
+  - made unhiding not destroy browsers badly
+* Read get parameters for rosbridge and ros_window_name from history
+* Fixes for initial scene handling by lg_mirror and activity service for lg_Activity
+* Pass rosbridge connection params from rosparam via adhocbrowserspool get_args
+  Fix build
+  Add comments for further refactor
+  Add test for adhock_browser_pool
+  Add test for adhoc_browser_pool
+  Actual test for parameters passing
+  Made tet for adhoc browser pool
+  Made tet for adhoc browser pool
+  Fix tests
+  Fix tests
+  Fix tests
+  Fix tests
+  Fix tests
+  Fix tests
+  More debug output for tests
+  More debug output for tests
+  More debug output for tests
+  Print stdout for rostest
+  Print stdout for rostest
+  Print stdout for rostest
+  Print stdout for rostest
+  Print stdout for rostest
+  Tests for rosbridge connection
+  More tests
+  More tests
+  More tests
+  Reverted test_runner
+* Revert "Add default rosbridge config for ros window ready extension"
+  This reverts commit 4928aa929ffba2fe1bc0af7b813b70ffac72b229.
+* Add default rosbridge config for ros window ready extension
+* Switch ros_window_ready extension to use ssl connection by default
+* Contributors: Wojciech Ziniewicz, kiselev-dv
+
 1.4.3 (2016-09-12)
 ------------------
 
