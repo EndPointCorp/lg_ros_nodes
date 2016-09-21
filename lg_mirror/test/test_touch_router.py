@@ -77,10 +77,16 @@ class RouteReceiver:
 class TestTouchRouter(unittest.TestCase):
     def setUp(self):
         self.receiver = RouteReceiver()
+        self.director_receiver = RouteReceiver()
         rospy.Subscriber(
             '/lg_mirror/active_touch_routes',
             StringArray,
             self.receiver.handle_msg
+        )
+        rospy.Subscriber(
+            '/director/scene',
+            GenericMessage,
+            self.director_receiver.handle_msg
         )
         self.scene_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
 
@@ -89,7 +95,8 @@ class TestTouchRouter(unittest.TestCase):
 
     def test_init_latch(self):
         rospy.sleep(GRACE_DELAY)
-        self.assertEqual(1, len(self.receiver.msgs))
+        # 3 messages because of initial state, initialization and subscriberlistener
+        self.assertEqual(3, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
 
@@ -99,6 +106,7 @@ class TestTouchRouter(unittest.TestCase):
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
         rospy.sleep(GRACE_DELAY)
+        # two messages by default [strings: ['test_default'], strings: ['test_default']]
         self.assertEqual(2, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
