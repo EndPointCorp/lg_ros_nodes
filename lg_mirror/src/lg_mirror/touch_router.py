@@ -1,5 +1,6 @@
 import re
 import rospy
+import threading
 
 from constants import MIRROR_ACTIVITY_TYPE
 from constants import MIRROR_TOUCH_CONFIG_KEY
@@ -30,6 +31,7 @@ class TouchRouter:
             self.default_viewports = set([default_viewport])
 
         self.route_viewports = self.default_viewports
+        self.lock = threading.Lock()
 
     @staticmethod
     def maybe_route(routed, window):
@@ -71,15 +73,16 @@ class TouchRouter:
                 viewports.
             scene (dict): Director scene.
         """
-        windows = scene.get('windows', [])
+        with self.lock:
+            windows = scene.get('windows', [])
 
-        route_viewports = reduce(TouchRouter.maybe_route, windows, set())
-        self.route_viewports = route_viewports
+            route_viewports = reduce(TouchRouter.maybe_route, windows, set())
+            self.route_viewports = route_viewports
 
-        if len(route_viewports) == 0:
-            route_viewports = self.default_viewports
+            if len(route_viewports) == 0:
+                route_viewports = self.default_viewports
 
-        publish_cb(frozenset(route_viewports))
+            publish_cb(frozenset(route_viewports))
 
     def handle_new_listener(self, publish_cb, data):
         """
@@ -90,5 +93,6 @@ class TouchRouter:
                 viewports.
             data: data about new listener
         """
-        rospy.loginfo("New listener %s" % data)
-        publish_cb(frozenset(self.route_viewports))
+        with self.lock:
+            rospy.loginfo("New listener %s" % data)
+            publish_cb(self.route_viewports)
