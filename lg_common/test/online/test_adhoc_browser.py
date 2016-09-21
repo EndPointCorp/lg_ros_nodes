@@ -619,7 +619,7 @@ class TestAdhocBrowser(unittest.TestCase):
         rospy.sleep(self.preloading_grace_time)
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPFWrJ")
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
 
@@ -647,7 +647,7 @@ class TestAdhocBrowser(unittest.TestCase):
         rospy.sleep(self.preloading_grace_time + 10)
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPFWrJ")
 
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
@@ -680,7 +680,7 @@ class TestAdhocBrowser(unittest.TestCase):
         rospy.sleep(self.preloading_grace_time + 5)
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("jJKc4EI_"), True)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPF_WrJ")
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[1].id, "CPFWrJ")
 
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('jJKc4EI_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('jJKc4EI_'), True)
