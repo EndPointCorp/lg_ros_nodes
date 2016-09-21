@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+
+    "name":           "earth_smooth_loader",
+    "version":        "0.1",
+    "description":    "Publish js message on Google maps globe loaded",
+
+    "background": {
+        "persistent": true,
+        "scripts": ["background.js"]
+    },
+
+    "permissions": [
+        "<all_urls>", "webRequest", "tabs"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["earth-ready.js"]
+        }
+    ]
+}
