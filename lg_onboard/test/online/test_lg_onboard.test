@@ -1,0 +1,12 @@
+<launch>
+    <node name="lg_onboard" pkg="lg_onboard" type="onboard.py">
+        <param name="param1" value="30"/>
+    </node>
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_lg_onboard" pkg="lg_onboard" type="test_lg_onboard.py"/>
+</launch>
