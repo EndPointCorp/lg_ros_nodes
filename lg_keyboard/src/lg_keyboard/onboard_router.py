@@ -53,7 +53,9 @@ class OnboardRouter:
             if visibility.data is False:
                 if not (self.last_state == visibility.data):
                     self.onboard_activate_publisher.publish(StringArray([]))
+                    self.last_state = False
             else:
                 if not (self.last_state == visibility.data):
                     active_viewport_msg = StringArray(self.active_viewport)
                     self.onboard_activate_publisher.publish(active_viewport_msg)
+                    self.last_state = True
