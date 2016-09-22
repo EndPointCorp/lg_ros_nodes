@@ -11,7 +11,7 @@ Software for mirroring portions of a screen on other portions of a screen.
 
 Manages capture processes for the given viewport.
 
-In practice, this will start a GStreamer `ximagesrc`, encode the video stream to MJPEG, payload as RTP, and emit datagrams. The target host is automatically determined by the viewport key.
+In practice, this will start a GStreamer `ximagesrc`, encode the video stream to VP8, payload as RTP, and emit datagrams. The target host is automatically determined by the viewport key.
 
 Each viewport may only have one capture process in a scene.
 
@@ -21,9 +21,9 @@ All playback instances sourcing the same viewport must have identical dimensions
 
 * `viewport` [str] - Viewport to be managed by this node. Required.
 * `display` [str] - Xorg DISPLAY to use. Default: Value of DISPLAY environment.
-* `quality` [int] - JPEG encoding quality [0, 100]. Higher is more quality. Default: `85`
 * `show_pointer` [bool] - Show the mouse pointer in the capture. Default: `false`
-* `host` [str] - Target host for RTP datagrams. Can be any uni, multi, or broadcast address. Default: automatically determined by viewport.
+* `janus_port` [int] - RTP port for this viewport. See Janus Gateway config for port:viewport mapping. Required.
+* `/lg_mirror/janus_stream_host` [str] - Target host for RTP datagrams. Can be any uni, multi, or broadcast address. Required.
 
 #### Subscribed Topics
 
@@ -39,8 +39,11 @@ There is no limit to how many playback instances can be spawned by a scene chang
 
 However, all playback instances for the same source viewport must have equal dimensions.
 
+#### Parameters
+
 * `viewport` [str] - Viewport to be managed by this node. Required.
 * `display` [str] - Xorg DISPLAY to use. This is for testing. Default: Value of DISPLAY environment.
+* `/lg_mirror/janus_rest_uri` [str] - URI to Janus Gateway REST API. Required.
 
 #### Subscribed Topics
 
@@ -103,17 +106,31 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 
 ## Configuration
 
-Typically, you will need to configure:
+For full capability, you will need to configure:
 
+* A separate Janus Gateway instance with VP8/RTP streaming agents and REST API.
+* Global parameter `/lg_mirror/janus_rest_uri` (see `playback_node`)
+* Global parameter `/lg_mirror/janus_stream_host` (see `capture_viewport_node`)
 * A single `touch_sender` for the touchscreen device, on its host.
 * A single `touch_router_node`, anywhere on the graph, defaulting to the touchscreen viewport.
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
 * A `playback_node` for each viewport.
 
+## Playback Webapp
+
+The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requires a couple of params:
+
+* `janusUrl` : url to Janus Gateway REST API
+* `viewport` : source viewport
+
+The webapp will connect to Janus and look for a stream whose description matches `"Mirror: %viewport%"`
+
 ## Development/Testing
 
 There are rostests, nosetests, and gtests for this package.  Run them with `catkin_make run_tests_lg_mirror && catkin_test_results`.
+
+A [test Janus Gateway instance can be run in docker](https://github.com/EndPointCorp/docker-janus).  Janus Gateway is required for mirroring.
 
 A combination of launch file and USCS message script can be used for testing mirroring.
 
