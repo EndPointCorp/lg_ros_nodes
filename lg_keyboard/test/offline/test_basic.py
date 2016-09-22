@@ -11,7 +11,7 @@ import os
 import pytest
 import rospkg
 
-from lg_onboard import ROS_NODE_NAME
+from lg_keyboard import ROS_NODE_NAME
 
 
 class TestMyTest(object):

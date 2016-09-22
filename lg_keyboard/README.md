@@ -1,4 +1,4 @@
-lg\_onboard
+lg\_keyboard
 ------------
 
 ROS software handling displying onboard keyboard on the Liquid Galaxy system.
@@ -7,7 +7,7 @@ Spec / details: EndPointCorp/lg_ros_nodes#127
 
 ### Nodes
 
-#### ros node lg_onboard
+#### ros node lg\_keyboard
 
 
 ### Parameters

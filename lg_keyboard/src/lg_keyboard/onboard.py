@@ -11,7 +11,7 @@ from std_msgs.msg import String, Bool
 from lg_common import helpers
 
 
-ROS_NODE_NAME = "lg_onboard"
+ROS_NODE_NAME = "lg_keyboard"
 
 
 def main():

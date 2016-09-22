@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
 """
-lg_onboard online tests (the lg_onboard ROS node is started by rostest ...)
+lg_keyboard online tests (the lg_keyboard ROS node is started by rostest ...)
 
 starting roslaunch for development:
-    roslaunch --screen lg_onboard/test/online/test_lg_onboard.test
+    roslaunch --screen lg_keyboard/test/online/test_lg_keyboard.test
     could do:
-    py.test -s -v lg_onboard/test/online/test_lg_onboard.py
+    py.test -s -v lg_keyboard/test/online/test_lg_keyboard.py
 
 running tests manually:
-    rostest lg_onboard/test/online/test_lg_onboard.test
+    rostest lg_keyboard/test/online/test_lg_keyboard.test
         (as long as it contains <test> tag, it's the same as launch file)
 
 """
@@ -22,7 +22,7 @@ import pytest
 import rospy
 import rospkg
 
-from lg_onboard import ROS_NODE_NAME
+from lg_keyboard import ROS_NODE_NAME
 
 
 class TestOnlineTest(object):
