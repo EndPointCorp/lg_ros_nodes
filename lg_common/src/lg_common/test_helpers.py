@@ -60,6 +60,7 @@ BROWSER_WINDOW_TEMPLATE = """
 }}
 """
 
+
 def gen_touch_window(
         route,
         source,
@@ -72,6 +73,7 @@ def gen_touch_window(
         target=target,
         route_touch=route_touch,
     )
+
 
 def gen_browser_window(
         route,

@@ -22,7 +22,6 @@ from lg_common.test_helpers import gen_scene
 from lg_common.test_helpers import gen_scene_msg
 
 
-
 class ReceiverMock:
     def __init__(self):
         self.msg = []
@@ -32,19 +31,6 @@ class ReceiverMock:
 
 
 class TestOnlineTest(object):
-    """
-    Coverage:
-    - publish one message with two windows without route_touch:
-     - publish visibility = True
-     - assert that /lg_onboard/activate contained the default viewport
-    - publish one message with two windows with route_touch on one:
-     - publish visibility = True
-     - assert that /lg_onboard/activate contained the viepwort with route_touch
-    - publish one message with two windows with route_touch on both of them:
-     - publish visibility = True
-     - assert that /lg_onboard/activate contained all viepwort with route_touch
-    """
-
     def setup_method(self, method):
         self.grace_delay = 1
         self.onboard_visibility_receiver = ReceiverMock()

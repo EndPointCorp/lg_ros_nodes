@@ -31,7 +31,7 @@ class OnboardRouter:
         self,
         default_viewport=[],
         onboard_activate_publisher=None
-        ):
+    ):
 
         self.onboard_activate_publisher = onboard_activate_publisher
         self.default_viewport = default_viewport
@@ -54,4 +54,3 @@ class OnboardRouter:
         else:
             active_viewport_msg = StringArray(self.active_viewport)
             self.onboard_activate_publisher.publish(active_viewport_msg)
-
