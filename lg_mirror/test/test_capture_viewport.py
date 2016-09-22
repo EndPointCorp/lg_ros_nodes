@@ -22,6 +22,7 @@ CAPTURE_VIEWPORT = os.environ.get('CAPTURE_VIEWPORT')
 CAPTURE_DISPLAY = os.environ.get('DISPLAY')
 CAPTURE_WIDTH = int(os.environ.get('CAPTURE_WIDTH'))
 CAPTURE_HEIGHT = int(os.environ.get('CAPTURE_HEIGHT'))
+CAPTURE_PORT = int(os.environ.get('CAPTURE_PORT'))
 
 SOCK_TIMEOUT = 3  # seconds
 
@@ -152,7 +153,7 @@ class TestCaptureViewport(unittest.TestCase):
 
     def test_capture_socket(self):
         addr = CAPTURE_HOST
-        port = get_mirror_port()
+        port = CAPTURE_PORT
         sock = create_listen_sock(addr, port)
 
         self.pub.publish(CAPTURE_SCENE)

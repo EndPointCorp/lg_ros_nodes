@@ -8,27 +8,34 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state
 
 
+def required_param(key, coer=None):
+    val = rospy.get_param(key)
+    if val is None:
+        raise ValueError('"{}" param required'.format(key))
+    if coer is not None:
+        val = coer(val)
+    return val
+
+
 def main():
     rospy.init_node('mirror_capture_viewport')
 
-    viewport = rospy.get_param('~viewport')
-    if viewport is None:
-        raise ValueError('Private parameter "viewport" is required')
+    viewport = required_param('~viewport')
+    janus_host = required_param('/lg_mirror/janus_stream_host', str)
+    janus_port = required_param('~janus_port', int)
 
     env_display = os.environ.get('DISPLAY')
     display = rospy.get_param('~display', env_display)
     if display is None:
         raise ValueError('DISPLAY env or private "display" param required')
 
-    quality = int(rospy.get_param('~quality', 85))
     show_pointer = str(rospy.get_param('~show_pointer', False)).lower()
-    host = rospy.get_param('~host', viewport_to_multicast_group(viewport))
 
     capture = CaptureViewport(viewport,
                               display,
-                              quality,
                               show_pointer,
-                              host)
+                              janus_host,
+                              janus_port)
 
     rospy.Subscriber('/director/scene',
                      GenericMessage,

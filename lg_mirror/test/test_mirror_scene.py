@@ -21,6 +21,19 @@ DIRECTOR_MESSAGE = """
       "presentation_viewport": "left_one",
       "x_coord": 0,
       "y_coord": 0
+    },
+    {
+      "activity": "mirror",
+      "activity_config": {
+        "viewport": "center"
+      },
+      "assets": [
+      ],
+      "width": 450,
+      "height": 800,
+      "presentation_viewport": "right_one",
+      "x_coord": 0,
+      "y_coord": 0
     }
   ]
 }

@@ -21,34 +21,25 @@ CAPTURE_ARGS = [
     'videoconvert',
     '!',
     'capsfilter',
-    'caps=video/x-raw,format=I420,width={target_width},height={target_height},framerate=60/1',
+    'caps=video/x-raw,width={target_width},height={target_height},framerate=30/1',
     '!',
     'queue',
     '!',
-    'jpegenc', 'quality={quality}',
+    'vp8enc', 'target-bitrate=1024000', 'deadline=33333', 'cpu-used=16', 'max-quantizer=24',
     '!',
-    'queue',
-    '!',
-    'rtpjpegpay',
+    'rtpvp8pay',
     '!',
     'udpsink', 'host={addr}', 'port={port}', 'sync=false'
 ]
 
 
 class CaptureViewport:
-    def __init__(self, viewport, display, quality, show_pointer, host=None, port=None):
+    def __init__(self, viewport, display, show_pointer, janus_host, janus_port):
         self.viewport = str(viewport)
         self.display = str(display)
-        self.quality = int(quality)
         self.show_pointer = show_pointer
-        if host is not None:
-            self.addr = str(host)
-        else:
-            self.addr = viewport_to_multicast_group(viewport)
-        if port is not None:
-            self.port = int(port)
-        else:
-            self.port = get_mirror_port()
+        self.janus_host = janus_host
+        self.janus_port = janus_port
         self.proc = None
         self.lock = threading.Lock()
 
@@ -88,11 +79,10 @@ class CaptureViewport:
             endx=self.geometry.x + self.geometry.width - 1,
             endy=self.geometry.y + self.geometry.height - 1,
             show_pointer=str(self.show_pointer).lower(),
-            quality=self.quality,
             target_width=target_width,
             target_height=target_height,
-            addr=self.addr,
-            port=self.port,
+            addr=self.janus_host,
+            port=self.janus_port,
             display=self.display
         ), CAPTURE_ARGS)
 

@@ -10,7 +10,6 @@ import weakref
 from lg_common.msg import WindowGeometry
 from lg_mirror import MirrorException
 from lg_mirror.playback import MirrorPlayback
-from lg_mirror.utils import get_mirror_port
 
 
 class TestMirrorPlayback(unittest.TestCase):
@@ -21,9 +20,8 @@ class TestMirrorPlayback(unittest.TestCase):
         geometry = WindowGeometry(width=1920, height=1080, x=0, y=0)
         pb = MirrorPlayback(
             instance_name=NAME,
-            display=':0',
-            source_host='127.0.0.1',
-            source_port=get_mirror_port(),
+            janus_url='http://localhost:8188/janus',
+            source_viewport='test',
             geometry=geometry
         )
 
