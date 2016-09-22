@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """
 lg_onboard ROS node implementation.
-
 """
 
 
