@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+body {
+  background-color: black;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+#stream, video {
+  pointer-events: none;
+}
+</style>
+<script type="text/javascript" src="js/lib/adapter.js"></script>
+<script type="text/javascript" src="js/lib/janus.nojquery.js"></script>
+</head>
+
+<body>
+<div id="stream"></div>
+<script type="text/javascript">
+// disable context menu
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+}, false);
+
+var janus;
+var streamHandle;
+var streamDiv = document.getElementById('stream');
+
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+var janusUrl = getParameterByName('janusUrl');
+if (!janusUrl) {
+  console.error('Must specify janusUrl param');
+}
+
+var viewport = getParameterByName('viewport');
+if (!viewport) {
+  console.error('Must specify viewport param');
+}
+var expectedStream = 'Mirror: ' + viewport;
+
+(function init() {
+  Janus.init({
+    debug: false,
+    callback: function() {
+      console.log('janus initialized');
+      establish();
+    }
+  });
+})();
+
+function establish() {
+  janus = new Janus({
+    server: janusUrl,
+    success: function() {
+      console.log('janus connection established:', janus.getServer());
+      attach();
+    },
+    error: function(cause) {
+      console.error(cause);
+    },
+    destroyed: function() {
+    }
+  });
+}
+
+function attach() {
+  janus.attach({
+    plugin: 'janus.plugin.streaming',
+    success: function(pluginHandle) {
+      console.log('attached to streaming plugin with handle:', pluginHandle);
+      streamHandle = pluginHandle;
+      getStreams();
+    },
+    error: function(cause) {
+      console.error(cause);
+    },
+    onmessage: function(msg, jsep) {
+      if (jsep !== undefined && jsep !== null) {
+        console.log('handling sdp:', jsep);
+        streamHandle.createAnswer({
+          jsep: jsep,
+          media: { audioSend: false, videoSend: false },
+          success: function(ourJsep) {
+            var body = { request: 'start' };
+            streamHandle.send({ message: body, jsep: ourJsep });
+          },
+          error: function (cause) {
+            console.error(cause);
+          }
+        });
+      }
+    },
+    onremotestream: function(stream) {
+      console.log('got remote stream:', stream);
+      var video = document.createElement('video');
+      video.autoplay = true;
+      streamDiv.appendChild(video);
+      attachMediaStream(video, stream);
+    }
+  });
+}
+
+function findStream(list) {
+  for (var i in list) {
+    var stream = list[i];
+    if (stream.description == expectedStream) {
+      return stream;
+    }
+  }
+  return null;
+}
+
+function getStreams() {
+  var body = { request: 'list' };
+  streamHandle.send({
+    message: body,
+    success: function(response) {
+      console.log('stream list response:', response);
+      
+      var stream = findStream(response.list);
+      if (stream) {
+        var streamId = stream.id;
+        startStream(streamId);
+      } else {
+        console.error('Could not find "' + expectedStream + '" in streams');
+      }
+    },
+    error: function (cause) {
+      console.error(cause);
+    }
+  });
+}
+
+function startStream(id) {
+  var body = { request: 'watch', id: id };
+  streamHandle.send({
+    message: body,
+    error: function (cause) {
+      console.error(cause);
+    }
+  });
+}
+</script>
+</body>
+
+</html>
