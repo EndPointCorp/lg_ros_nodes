@@ -26,6 +26,8 @@ include_directories(
 
 catkin_install_python(PROGRAMS
   scripts/onboard.py
+  scripts/onboard_router.py
+  scripts/onboard_router
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

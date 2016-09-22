@@ -47,7 +47,7 @@ BROWSER_WINDOW_TEMPLATE = """
 {{
   "activity": "browser",
   "activity_config": {{
-    "route_touch": {route_touch},
+    "route_touch": {route_touch}
   }},
   "assets": [
     "https://cnn.com"

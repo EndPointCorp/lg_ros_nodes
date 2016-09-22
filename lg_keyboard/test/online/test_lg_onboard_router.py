@@ -46,7 +46,7 @@ class TestOnlineTest(object):
     """
 
     def setup_method(self, method):
-        self.grace_delay = 0.5
+        self.grace_delay = 1
         self.onboard_visibility_receiver = ReceiverMock()
         self.onboard_activate_receiver = ReceiverMock()
         self.director_receiver = ReceiverMock()
@@ -60,7 +60,7 @@ class TestOnlineTest(object):
         rospy.Subscriber(
             '/lg_onboard/activate',
             StringArray,
-            self.onboard_visibility_receiver.append
+            self.onboard_activate_receiver.append
         )
 
         rospy.Subscriber(
@@ -140,12 +140,16 @@ class TestOnlineTest(object):
 
         The cthulhu_fhtagn viepwort should be emitted
         """
-        window1 = gen_browser_window(
+        window1 = gen_touch_window(
             route=True,
-            target='cthulhu_fhtagn')
-        window2 = gen_browser_window(
+            target='blaaah',
+            source='cthulhu_fhtagn',
+            activity='mirror')
+        window2 = gen_touch_window(
             route=False,
-            target='iah_iah')
+            source='iah_iah',
+            target='asfdnewrq',
+            activity='mirror')
         scene = gen_scene([window1, window2])
         scene_msg = gen_scene_msg(scene)
         self.director_publisher.publish(scene_msg)
@@ -165,12 +169,16 @@ class TestOnlineTest(object):
 
         The cthulhu_fhtagn viepwort should be emitted
         """
-        window1 = gen_browser_window(
+        window1 = gen_touch_window(
             route=True,
-            target='cthulhu_fhtagn')
-        window2 = gen_browser_window(
+            source='cthulhu_fhtagn',
+            target='123rtghj',
+            activity='mirror')
+        window2 = gen_touch_window(
             route=True,
-            target='iah_iah')
+            source='iah_iah',
+            target='123rtghj',
+            activity='mirror')
         scene = gen_scene([window1, window2])
         scene_msg = gen_scene_msg(scene)
         self.director_publisher.publish(scene_msg)
