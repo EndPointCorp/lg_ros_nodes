@@ -1,6 +1,6 @@
-#!/usr/bin/env python
 """
 lg_onboard ROS node implementation.
+
 """
 
 
@@ -10,12 +10,27 @@ from std_msgs.msg import String, Bool
 from lg_common import helpers
 
 
-ROS_NODE_NAME = "lg_keyboard"
+ROS_NODE_NAME = "lg_onboard"
 
 
-def main():
-    rospy.init_node(ROS_NODE_NAME, anonymous=True)
+class OnboardManager(object):
+    """
+    Onboard manager handles starting, showing and terminating
+    the onboard system application.
 
-    #rospy.on_shutdown( ... method ...)
-    rospy.loginfo("Started, spinning %s ..." % ROS_NODE_NAME)
-    rospy.spin()
+    """
+    def __init__(self):
+        # list of lg_common.ManagedApplication
+        self.onboard_procs = []
+        # TODO
+        # init dbus as necessary
+        pass
+
+    def handle_activate(self, viewports):
+        # TODO
+        # 1) start onboards on target viewports
+        # 2) kill running onboards processes - upon reception of empty array StringArray([])
+        pass
+
+    def on_shutdown(self):
+        rospy.loginfo("Received shutdown request.")

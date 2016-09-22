@@ -181,7 +181,7 @@ class TestOnlineTest(object):
 
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
-    test_pkg = ROS_NODE_NAME
+    test_pkg = "lg_keyboard"
     test_name = "test_lg_onboard_router"
     test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
     pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
