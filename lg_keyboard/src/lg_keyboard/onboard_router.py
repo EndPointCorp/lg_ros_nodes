@@ -41,21 +41,34 @@ class OnboardRouter:
             scene = load_director_message(scene)
             windows = scene.get('windows', None)
             if windows:
+                self._hide_onboard()
                 received_active_viewport = route_touch_to_viewports(windows, route_touch_key='route_touch', activity_type='mirror')
                 if received_active_viewport:
                     self.active_viewport = received_active_viewport
                 else:
                     # no viewports received - falling back to default
                     self.active_viewport = self.default_viewport
+            else:
+                self._hide_onboard()
+
+    def _hide_onboard(self):
+        """
+        Publishes empty string of viewports to
+        hide onboard on all of them
+        """
+        rospy.loginfo("HIDING onboard")
+        self.onboard_activate_publisher.publish(StringArray([]))
 
     def handle_visibility(self, visibility):
         with self.lock:
             if visibility.data is False:
                 if not (self.last_state == visibility.data):
-                    self.onboard_activate_publisher.publish(StringArray([]))
+                    rospy.loginfo("HIDING onboard")
+                    self._hide_onboard()
                     self.last_state = False
             else:
                 if not (self.last_state == visibility.data):
+                    rospy.loginfo("SHOWING onboard on %s" % self.active_viewport)
                     active_viewport_msg = StringArray(self.active_viewport)
                     self.onboard_activate_publisher.publish(active_viewport_msg)
                     self.last_state = True

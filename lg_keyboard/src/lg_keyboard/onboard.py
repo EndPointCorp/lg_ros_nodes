@@ -5,12 +5,15 @@ lg_onboard ROS node implementation.
 
 
 import rospy
-from std_msgs.msg import String, Bool
+import rospkg
+import subprocess
 
+from std_msgs.msg import String, Bool
 from lg_common import helpers
 from lg_common import ManagedApplication
 from lg_common import ManagedWindow
 from lg_common.msg import ApplicationState
+from lg_common.msg import WindowGeometry
 
 ROS_NODE_NAME = "lg_onboard"
 
@@ -59,40 +62,61 @@ class OnboardManager(object):
 
 
 class OnboardLauncher(object):
-    def __init__(self, config, viewport=None):
+    def __init__(self, config_path, viewport=None):
         self.viewport = viewport
         self.selected = False
         self.app = None
         self.window = None
-        self.config = config
-
+        viewport_geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
         cmd = ['/usr/bin/onboard', '-m']
 
         if self.viewport is not None:
-            window = ManagedWindow()
-            geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
+            onboard_width = viewport_geometry.width
+            onboard_height = viewport_geometry.height / 4
 
-            width = geometry.width
-            height = geometry.height / 4
-            x = geometry.x
-            y = geometry.y + geometry.height - height
+            onboard_geometry = WindowGeometry(
+                x=viewport_geometry.x,
+                y=viewport_geometry.height,
+                width=viewport_geometry.width,
+                height=viewport_geometry.height
+            )
+
+            self.config = OnboardConfig(
+                config_path=config_path,
+                geometry=onboard_geometry
+                ).get_config()
+
+            self.window = ManagedWindow(
+                w_class='Onboard',
+                geometry=onboard_geometry,
+                visible=False
+            )
+
+            x = onboard_geometry.x
+            y = viewport_geometry.height - onboard_height
             cmd.extend(map(str, [
                 '-x', x,
                 '-y', y,
-                '-s', '{}x{}'.format(width, height)
+                '-s', '{}x{}'.format(viewport_geometry.width, viewport_geometry.height)
             ]))
+            self.cmd = cmd
         else:
             message = "Could not find viewport for OnboardLauncher - dying"
             rospy.logerr(message)
             raise OnboardViewportException(message)
 
-        self.app = ManagedApplication(cmd, window)
 
     def show_onboard(self):
         """
         Idempotently shows onboard window
         """
-        dconf = Popen(['/usr/bin/dconf', 'load', '/org/onboard/'], stdin=PIPE)
+        # onboard -m -x -y -s
+
+        self.app = ManagedApplication(self.cmd, self.window)
+        dconf = subprocess.Popen(['/usr/bin/dconf', 'load', '/org/onboard/'],
+                                 stdin=subprocess.PIPE,
+                                 close_fds=True)
+        rospy.loginfo("Using config => %s" % self.config)
         dconf.communicate(input=self.config)
 
         self.app.set_state(ApplicationState.VISIBLE)
@@ -101,4 +125,29 @@ class OnboardLauncher(object):
         """
         Idemmpotently hides onboard window
         """
-        self.app.set_state(ApplicationState.HIDDEN)
+        if self.app:
+            self.app.set_state(ApplicationState.STOPPED)
+
+
+class OnboardConfig(object):
+    def __init__(self, config_path=None, geometry=None):
+        self.geometry = geometry
+        self.config_path = config_path
+        config_path = rospkg.RosPack().get_path('onboard') + "/config"
+        self.config = self._read_onboard_config(config_path)
+
+    def _read_onboard_config(self, config_path):
+        default_config_file = config_path + "/onboard-default.dconf"
+
+        with open(default_config_file) as cf:
+            config = cf.read().replace('{config_path}', config_path)
+            if self.geometry is not None:
+                config = config.replace('{docking}', 'false')
+            else:
+                config = config.replace('{docking}', 'true')
+
+        return config
+
+    def get_config(self):
+        rospy.loginfo("Returning onboard config: %s" % self.config)
+        return self.config

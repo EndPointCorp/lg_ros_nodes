@@ -13,7 +13,7 @@ from lg_keyboard import OnboardViewportException
 def main():
     rospy.init_node(ROS_NODE_NAME)
     viewport = rospy.get_param("~viewport", None)
-    config = rospy.get_param("~config", None)
+    config_path = rospy.get_param("~config_path", None)
 
     if not viewport:
         message = "No viewport set for OnboardManager - dying"
@@ -22,7 +22,7 @@ def main():
 
     onboard_launcher = OnboardLauncher(
         viewport=viewport,
-        config=config
+        config_path=config_path
     )
     onboard_mgr = OnboardManager(
         viewport=viewport,
