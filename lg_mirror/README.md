@@ -31,6 +31,8 @@ All playback instances sourcing the same viewport must have identical dimensions
 
 ### playback\_node
 
+**This node is presently deprecated, use a browser activity to launch playback browsers.**
+
 #### Overview
 
 Manages playback windows for the given viewport.
@@ -115,7 +117,8 @@ For full capability, you will need to configure:
 * A single `touch_router_node`, anywhere on the graph, defaulting to the touchscreen viewport.
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
-* A `playback_node` for each viewport.
+* An `lg_common::dev_webserver.py` for each host.
+* An `lg_common::adhoc_browser.py` for each viewport.
 
 ## Playback Webapp
 
