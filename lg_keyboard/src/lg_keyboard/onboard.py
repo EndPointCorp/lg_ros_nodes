@@ -87,7 +87,7 @@ class OnboardLauncher(object):
                 ).get_config()
 
             self.window = ManagedWindow(
-                w_class='Onboard',
+                w_class='onboard',
                 geometry=onboard_geometry,
                 visible=False
             )
