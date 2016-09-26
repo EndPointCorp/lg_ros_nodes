@@ -45,11 +45,10 @@ if (!janusUrl) {
   console.error('Must specify janusUrl param');
 }
 
-var viewport = getParameterByName('viewport');
-if (!viewport) {
-  console.error('Must specify viewport param');
+var streamDescription = getParameterByName('streamDescription');
+if (!streamDescription) {
+  console.error('Must specify streamDescription param');
 }
-var expectedStream = 'Mirror: ' + viewport;
 
 (function init() {
   Janus.init({
@@ -116,7 +115,7 @@ function attach() {
 function findStream(list) {
   for (var i in list) {
     var stream = list[i];
-    if (stream.description == expectedStream) {
+    if (stream.description == streamDescription) {
       return stream;
     }
   }
@@ -135,7 +134,7 @@ function getStreams() {
         var streamId = stream.id;
         startStream(streamId);
       } else {
-        console.error('Could not find "' + expectedStream + '" in streams');
+        console.error('Could not find "' + streamDescription + '" in streams');
       }
     },
     error: function (cause) {

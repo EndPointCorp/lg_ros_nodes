@@ -31,6 +31,8 @@ All playback instances sourcing the same viewport must have identical dimensions
 
 ### playback\_node
 
+**This node is presently deprecated, use a browser activity to launch playback browsers.**
+
 #### Overview
 
 Manages playback windows for the given viewport.
@@ -115,14 +117,15 @@ For full capability, you will need to configure:
 * A single `touch_router_node`, anywhere on the graph, defaulting to the touchscreen viewport.
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
-* A `playback_node` for each viewport.
+* An `lg_common::dev_webserver.py` for each host.
+* An `lg_common::adhoc_browser.py` for each viewport.
 
 ## Playback Webapp
 
 The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requires a couple of params:
 
 * `janusUrl` : url to Janus Gateway REST API
-* `viewport` : source viewport
+* `streamDescription` : description of the stream (viewport name)
 
 The webapp will connect to Janus and look for a stream whose description matches `"Mirror: %viewport%"`
 
