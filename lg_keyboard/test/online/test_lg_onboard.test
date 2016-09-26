@@ -1,6 +1,8 @@
 <launch>
+    <param name="/viewport/test_viewport" value="640x480+640+0" />
+
     <node name="lg_onboard" pkg="lg_keyboard" type="onboard.py">
-        <param name="param1" value="30"/>
+        <param name="viewport" value="test_viewport"/>
     </node>
 
     <!-- Local rosbridge and rosapi. -->

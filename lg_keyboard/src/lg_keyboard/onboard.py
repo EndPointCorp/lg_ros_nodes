@@ -10,7 +10,7 @@ from std_msgs.msg import String, Bool
 from lg_common import helpers
 from lg_common import ManagedApplication
 from lg_common import ManagedWindow
-
+from lg_common.msg import ApplicationState
 
 ROS_NODE_NAME = "lg_onboard"
 
@@ -30,7 +30,7 @@ class OnboardManager(object):
         self.launcher = launcher
         if not self.viewport:
             rospy.logerr("No viewport was configured for OnboardManager")
-        if not self.layncher:
+        if not self.launcher:
             rospy.logerr("No launcher was passed to OnboardManager")
 
     def _show_keyboard(self):
@@ -49,7 +49,7 @@ class OnboardManager(object):
         if self.viewport was not emitted on the incoming list
         """
         if len(message.strings) > 0:
-            if self.viewport in message.string:
+            if self.viewport in message.strings:
                 self._show_keyboard()
             else:
                 self._hide_keyboard()
@@ -70,7 +70,7 @@ class OnboardLauncher(object):
 
         if self.viewport is not None:
             window = ManagedWindow()
-            geometry = self.ManagedWindow.lookup_viewport_geometry(self.viewport)
+            geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
 
             width = geometry.width
             height = geometry.height / 4

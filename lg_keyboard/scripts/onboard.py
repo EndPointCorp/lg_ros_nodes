@@ -17,7 +17,7 @@ def main():
 
     if not viewport:
         message = "No viewport set for OnboardManager - dying"
-        rospy.logerror(message)
+        rospy.logerr(message)
         raise OnboardViewportException(message)
 
     onboard_launcher = OnboardLauncher(

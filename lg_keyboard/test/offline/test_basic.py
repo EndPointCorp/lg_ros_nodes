@@ -12,12 +12,20 @@ import pytest
 import rospkg
 
 from lg_keyboard import OnboardManager
+from lg_keyboard import OnboardLauncher
 
 
 class TestOnboardManager(object):
 
+
     def test_something_basic(self):
-        om = OnboardManager()
+        test_launcher = OnboardLauncher(
+            viewport='test_viewport'
+        )
+        om = OnboardManager(
+            viewport='test_viewport',
+            launcher=test_launcher
+        )
         assert True
 
 
