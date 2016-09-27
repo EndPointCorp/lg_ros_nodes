@@ -54,8 +54,8 @@ class OnboardManager(object):
         if len(message.strings) > 0:
             if self.viewport in message.strings:
                 self._show_keyboard()
-            else:
-                self._hide_keyboard()
+        else:
+            self._hide_keyboard()
 
     def on_shutdown(self):
         rospy.loginfo("Received shutdown request.")
