@@ -87,7 +87,7 @@ class OnboardLauncher(object):
                 ).get_config()
 
             self.window = ManagedWindow(
-                w_class='onboard',
+                w_name='onboard',
                 geometry=onboard_geometry,
                 visible=False
             )
@@ -97,7 +97,7 @@ class OnboardLauncher(object):
             cmd.extend(map(str, [
                 '-x', x,
                 '-y', y,
-                '-s', '{}x{}'.format(viewport_geometry.width, viewport_geometry.height)
+                '-s', '{}x{}'.format(viewport_geometry.width, onboard_height)
             ]))
             self.cmd = cmd
         else:
@@ -133,7 +133,7 @@ class OnboardConfig(object):
     def __init__(self, config_path=None, geometry=None):
         self.geometry = geometry
         self.config_path = config_path
-        config_path = rospkg.RosPack().get_path('onboard') + "/config"
+        config_path = rospkg.RosPack().get_path('lg_keyboard') + "/config"
         self.config = self._read_onboard_config(config_path)
 
     def _read_onboard_config(self, config_path):
