@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>rosbridge_server</name>
-  <version>1.4.5</version>
+  <version>1.4.6</version>
   <description>A WebSocket interface to rosbridge.</description>
 
   <license>BSD</license>

@@ -7,6 +7,11 @@
 
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
+  <!-- USCS for initial state -->
+  <!--
+  <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" />
+  -->
+
   <node name="mirror_capture_left_one" pkg="lg_mirror" type="capture_viewport_node">
     <param name="viewport" value="left_one" />
     <param name="janus_port" value="6000" />
@@ -20,13 +25,24 @@
     <param name="janus_port" value="6002" />
   </node>
 
-  <node name="mirror_playback_left_one" pkg="lg_mirror" type="playback_node">
-    <param name="viewport" value="left_one" />
+  <!-- three adhoc browser pools -->
+  <node name="adhoc_browser_pool_center" pkg="lg_common" type="adhoc_browser.py">
+    <param name="viewport" value="left_one"/>
   </node>
-  <node name="mirror_playback_center" pkg="lg_mirror" type="playback_node">
-    <param name="viewport" value="center" />
+  <node name="adhoc_browser_pool_right" pkg="lg_common" type="adhoc_browser.py">
+    <param name="viewport" value="center"/>
   </node>
-  <node name="mirror_playback_right_one" pkg="lg_mirror" type="playback_node">
-    <param name="viewport" value="right_one" />
+  <node name="adhoc_browser_pool_left" pkg="lg_common" type="adhoc_browser.py">
+    <param name="viewport" value="right_one"/>
   </node>
+
+  <!-- Local rosbridge and rosapi. -->
+  <!--
+  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
+  -->
+
+  <!-- readiness node for handling preloading -->
+  <!--
+  <node name="readiness_node" pkg="lg_common" type="readiness.py" />
+  -->
 </launch>

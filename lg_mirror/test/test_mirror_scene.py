@@ -7,7 +7,7 @@ DIRECTOR_MESSAGE = """
   "duration": 0,
   "name": "test whatever",
   "resource_uri": "bogus",
-  "slug": "test message",
+  "slug": "test_message",
   "windows": [
     {
       "activity": "mirror",
@@ -32,6 +32,34 @@ DIRECTOR_MESSAGE = """
       "width": 450,
       "height": 800,
       "presentation_viewport": "right_one",
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": false
+      },
+      "assets": [
+        "http://localhost:8008/lg_mirror/webapps/playback/index.html?janusUrl=http://localhost:8188/janus&streamDescription=center"
+      ],
+      "presentation_viewport": "left_one",
+      "width": 450,
+      "height": 800,
+      "x_coord": 0,
+      "y_coord": 0
+    },
+    {
+      "activity": "browser",
+      "activity_config": {
+        "preload": false
+      },
+      "assets": [
+        "http://localhost:8008/lg_mirror/webapps/playback/index.html?janusUrl=http://localhost:8188/janus&streamDescription=center"
+      ],
+      "presentation_viewport": "right_one",
+      "width": 450,
+      "height": 800,
       "x_coord": 0,
       "y_coord": 0
     }
