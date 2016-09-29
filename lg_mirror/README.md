@@ -29,7 +29,22 @@ All playback instances sourcing the same viewport must have identical dimensions
 
 * `/director/scene` [GenericMessage] - Director scene messages.
 
+### capture\_webcam\_node
+
+Constantly captures video stream from a V4L2 device.
+
+#### Parameters
+
+* `device` [str] - Path to V4L2 device. Default: `/dev/video0`
+* `width` [int] - Width of output video stream in pixels. Default: auto selected by V4L2.
+* `height` [int] - Height of output video stream in pixels. Default: auto selected by V4L2.
+* `framerate` [int] - Frame rate of output video stream in frames per second. Default: auto selected by V4L2.
+* `max_quantizer` [int] - Maximum quantization level. Lower is higher quality. Default: `60`
+* `target_bitrate` [int] - Target video bitrate in bits/sec. Default: `768000`
+
 ### playback\_node
+
+**This node is presently deprecated, use a browser activity to launch playback browsers.**
 
 #### Overview
 
@@ -115,14 +130,15 @@ For full capability, you will need to configure:
 * A single `touch_router_node`, anywhere on the graph, defaulting to the touchscreen viewport.
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
-* A `playback_node` for each viewport.
+* An `lg_common::dev_webserver.py` for each host.
+* An `lg_common::adhoc_browser.py` for each viewport.
 
 ## Playback Webapp
 
 The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requires a couple of params:
 
 * `janusUrl` : url to Janus Gateway REST API
-* `viewport` : source viewport
+* `streamDescription` : description of the stream (viewport name)
 
 The webapp will connect to Janus and look for a stream whose description matches `"Mirror: %viewport%"`
 

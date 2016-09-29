@@ -175,14 +175,16 @@ WindowReadyExt.prototype.sendMsg = function() {
       return;
     }
 
+    this.sentIds[this.ros_window_name] = true;
+
     console.log("Going to send " + this.ros_window_name);
     this.readyTopic.publish({'data': this.ros_window_name});
     console.log("Sent " + this.ros_window_name);
-    console.log("Unadvertising on the topic");
-    this.readyTopic.unadvertise();
-    console.log("Unadvertised on the topic");
 
-    this.sentIds[this.ros_window_name] = true;
+    this.repeatInterval = setInterval(function() {
+        this.readyTopic.publish({'data': this.ros_window_name});
+        console.log("Repeat window ready msg " + this.ros_window_name);
+    }, 1000);
 };
 
 WindowReadyExt.prototype.attachListeners = function() {

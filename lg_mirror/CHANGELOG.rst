@@ -2,6 +2,16 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.6 (2016-09-28)
+------------------
+In this release we switch mirroring playback from GStreamer xvimagesink playback to an ad hoc browser connecting to [Janus Gateway](https://github.com/meetecho/janus-gateway) via WebRTC.
+
+* Add webcam capture node
+  Captures V4L2 device, streams VP8/RTP/UDP.
+* Use ad hoc browsers for mirror playback
+* Add mirror playback webapp
+* Contributors: Matt Vollrath
+
 1.4.5 (2016-09-21)
 ------------------
 

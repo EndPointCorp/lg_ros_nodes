@@ -1,0 +1,20 @@
+<launch>
+  <arg name="device" default="/dev/video0" />
+  <arg name="width" default="1920" />
+  <arg name="height" default="1080" />
+  <arg name="framerate" default="30" />
+  <arg name="max_quantizer" default="60" />
+  <arg name="target_bitrate" default="512000" />
+  <arg name="janus_port" default="6000" />
+  <arg name="janus_host" default="localhost" />
+  <param name="/lg_mirror/janus_stream_host" value="$(arg janus_host)" />
+  <node name="webcam" pkg="lg_mirror" type="capture_webcam_node">
+    <param name="janus_port" value="$(arg janus_port)" />
+    <param name="device" value="$(arg device)" />
+    <param name="width" value="$(arg width)" />
+    <param name="height" value="$(arg height)" />
+    <param name="framerate" value="$(arg framerate)" />
+    <param name="max_quantizer" value="$(arg max_quantizer)" />
+    <param name="target_bitrate" value="$(arg target_bitrate)" />
+  </node>
+</launch>
