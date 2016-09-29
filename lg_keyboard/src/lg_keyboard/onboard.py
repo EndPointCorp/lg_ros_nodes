@@ -140,11 +140,8 @@ class OnboardConfig(object):
         default_config_file = config_path + "/onboard-default.dconf"
 
         with open(default_config_file) as cf:
-            config = cf.read().replace('{config_path}', config_path)
-            if self.geometry is not None:
-                config = config.replace('{docking}', 'false')
-            else:
-                config = config.replace('{docking}', 'true')
+            config = cf.read()
+        config = config.replace('{config_path}', config_path)
 
         return config
 

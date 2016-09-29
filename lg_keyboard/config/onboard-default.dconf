@@ -28,7 +28,7 @@ start-minimized=false
 force-to-top=false
 
 [window]
-docking-enabled={docking}
+docking-enabled=false
 docking-shrink-workarea=false
 resize-handles=''
 
