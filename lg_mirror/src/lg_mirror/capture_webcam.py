@@ -6,27 +6,27 @@ from appctl_support import ProcController
 CAPTURE_CMD = 'gst-launch-1.0'
 CAPTURE_ARGS = [
     'v4l2src',
-        'device={device}',
+    'device={device}',
     '!',
     'videoscale',
     '!',
     'capsfilter',
-        'caps={caps}',
+    'caps={caps}',
     '!',
     'queue',
     '!',
     'vp8enc',
-        'target-bitrate={target_bitrate}',
-        'deadline=33333',
-        'cpu-used=16',
-        'max-quantizer={max_quantizer}',
+    'target-bitrate={target_bitrate}',
+    'deadline=33333',
+    'cpu-used=16',
+    'max-quantizer={max_quantizer}',
     '!',
     'rtpvp8pay',
     '!',
     'udpsink',
-        'host={addr}',
-        'port={port}',
-        'sync=false'
+    'host={addr}',
+    'port={port}',
+    'sync=false'
 ]
 
 
