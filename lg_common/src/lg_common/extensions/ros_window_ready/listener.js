@@ -181,9 +181,10 @@ WindowReadyExt.prototype.sendMsg = function() {
     this.readyTopic.publish({'data': this.ros_window_name});
     console.log("Sent " + this.ros_window_name);
 
+    var self = this;
     this.repeatInterval = setInterval(function() {
-        this.readyTopic.publish({'data': this.ros_window_name});
-        console.log("Repeat window ready msg " + this.ros_window_name);
+        self.readyTopic.publish({'data': self.ros_window_name});
+        console.log("Repeat window ready msg " + self.ros_window_name);
     }, 1000);
 };
 
