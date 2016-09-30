@@ -97,8 +97,7 @@ class TestOnboardRouter(object):
         assert self.router.active_viewport == ["center"]
 
     def test_handle_visibility_hide_onboard(self):
-        msg = Bool()
-        msg.data = False
+        msg = Bool(data=False)
         assert self.router.last_state is None
         self.router.handle_visibility(msg)
         assert self.router.last_state is False
@@ -115,8 +114,7 @@ class TestOnboardRouter(object):
         assert len(self.publisher.msgs) == 1
 
     def test_handle_visibility_show_onboard(self):
-        msg = Bool()
-        msg.data = True
+        msg = Bool(data=True)
         assert self.router.last_state is None
         self.router.handle_visibility(msg)
         assert self.router.last_state is True
