@@ -5,7 +5,7 @@ from interactivespaces_msgs.msg import GenericMessage
 if __name__ == '__main__':
     scene_msg = GenericMessage()
     scene_msg.type = 'json'
-    scene_msg.message = '{}'
+    scene_msg.message = '{"slug":"blank"}'
 
     rospy.init_node('director_messager')
     scene_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=100)
