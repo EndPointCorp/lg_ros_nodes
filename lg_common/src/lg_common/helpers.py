@@ -886,3 +886,39 @@ def handle_initial_state(call_back):
         call_back(state)
     else:
         rospy.logwarn('Could not get valid initial state for callback %s')
+
+
+def route_touch_to_viewports(windows, route_touch_key='route_touch', activity_type='mirror'):
+    """
+    Iterates over windows and returns list of viewports from
+    activity_config with route_touch set to true
+
+    Args:
+        windows (dict): Windows from a director scene.
+        route_touch_key (str): name of the attrib for touch routing
+        activity_type (str): name of the activity type to consider
+
+    Returns:
+        set(str): Accumulated set of viewports that should be receiving
+            touch events.
+    """
+    import re
+
+    active_touch_routes = []
+
+    for window in windows:
+        activity = window.get('activity')
+        if activity != activity_type:
+            continue
+
+        config = window.get('activity_config', {})
+        if route_touch_key not in config:
+            continue
+        if config.get(route_touch_key) is not True:
+            continue
+
+        source = config.get('viewport', '')
+        viewport = re.sub(r'^viewport:\/\/', '', source, count=1)
+        active_touch_routes.append(viewport)
+
+    return set(active_touch_routes)
