@@ -4,6 +4,7 @@ import rospy
 import urllib
 import json
 import threading
+import sys
 
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
@@ -135,14 +136,14 @@ class USCSService:
         """
         response = urllib.urlopen(url)
         if response.code != 200:
-            rospy.logwarn("Got non-200 error status (%s) from url: %s" % (response.code, url))
+            rospy.logerr("Got non-200 error status (%s) from url: %s" % (response.code, url))
             rospy.sleep(3)
             return None
 
         try:
             message = response.read()
         except Exception:
-            rospy.logwarn("Could not get response for initial state service")
+            rospy.logerr("Could not get response for initial state service")
             rospy.sleep(3)
             return None
 
@@ -151,7 +152,7 @@ class USCSService:
                 message = json.loads(message)
             return message
         except ValueError:
-            rospy.logwarn("invalid initial_state url: (%s)" % scene_url)
+            rospy.logerr("invalid initial_state url: (%s)" % scene_url)
             rospy.sleep(3)
             return None
 
@@ -163,7 +164,8 @@ class USCSService:
             message.message = json.dumps(message_json)
             return message
         except ValueError:
-            print "Could not decode json message for msg_string: %s" % msg_string
+            message = "Could not decode json message for msg_string: %s" % msg_string
+            rospy.logerr(message)
             sys.exit(1)
 
     def _grab_scene(self, scene_url):
