@@ -28,13 +28,9 @@ class OnboardManager(object):
     the onboard system application.
 
     """
-    def __init__(self, viewport=None, launcher=None):
+    def __init__(self, viewport, launcher):
         self.viewport = viewport
         self.launcher = launcher
-        if not self.viewport:
-            rospy.logerr("No viewport was configured for OnboardManager")
-        if not self.launcher:
-            rospy.logerr("No launcher was passed to OnboardManager")
 
     def _show_keyboard(self):
         self.launcher.show_onboard()
@@ -51,9 +47,8 @@ class OnboardManager(object):
         Call hide_keyboard to idempotently close keyboard
         if self.viewport was not emitted on the incoming list
         """
-        if len(message.strings) > 0:
-            if self.viewport in message.strings:
-                self._show_keyboard()
+        if self.viewport in message.strings:
+            self._show_keyboard()
         else:
             self._hide_keyboard()
 
@@ -62,76 +57,63 @@ class OnboardManager(object):
 
 
 class OnboardLauncher(object):
-    def __init__(self, config_path, viewport=None):
+    def __init__(self, config_path, viewport):
         self.viewport = viewport
         self.selected = False
-        self.app = None
-        self.window = None
+
         viewport_geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
         cmd = ['/usr/bin/onboard', '-m']
 
-        if self.viewport is not None:
-            onboard_width = viewport_geometry.width
-            onboard_height = viewport_geometry.height / 4
+        onboard_width = viewport_geometry.width
+        onboard_height = viewport_geometry.height / 4
+        onboard_x = viewport_geometry.x
+        onboard_y = viewport_geometry.y + (viewport_geometry.height - onboard_height)
 
-            onboard_geometry = WindowGeometry(
-                x=viewport_geometry.x,
-                y=viewport_geometry.height,
-                width=viewport_geometry.width,
-                height=viewport_geometry.height
-            )
+        onboard_geometry = WindowGeometry(
+            x=onboard_x,
+            y=onboard_y,
+            width=onboard_width,
+            height=onboard_height
+        )
 
-            self.config = OnboardConfig(
-                config_path=config_path,
-                geometry=onboard_geometry
-                ).get_config()
+        self.config = OnboardConfig(
+            config_path=config_path
+        ).get_config()
 
-            self.window = ManagedWindow(
-                w_name='onboard',
-                geometry=onboard_geometry,
-                visible=False
-            )
+        window = ManagedWindow(
+            w_class='Onboard',
+            geometry=onboard_geometry,
+            visible=False
+        )
 
-            x = onboard_geometry.x
-            y = viewport_geometry.height - onboard_height
-            cmd.extend(map(str, [
-                '-x', x,
-                '-y', y,
-                '-s', '{}x{}'.format(viewport_geometry.width, onboard_height)
-            ]))
-            self.cmd = cmd
-        else:
-            message = "Could not find viewport for OnboardLauncher - dying"
-            rospy.logerr(message)
-            raise OnboardViewportException(message)
-
+        cmd.extend(map(str, [
+            '-x', onboard_x,
+            '-y', onboard_y,
+            '-s', '{}x{}'.format(onboard_width, onboard_height)
+        ]))
+        self.app = ManagedApplication(cmd, window=window)
 
     def show_onboard(self):
         """
         Idempotently shows onboard window
         """
-        # onboard -m -x -y -s
-
-        self.app = ManagedApplication(self.cmd, self.window)
+        rospy.loginfo("Using config => %s" % self.config)
         dconf = subprocess.Popen(['/usr/bin/dconf', 'load', '/org/onboard/'],
                                  stdin=subprocess.PIPE,
                                  close_fds=True)
-        rospy.loginfo("Using config => %s" % self.config)
         dconf.communicate(input=self.config)
 
         self.app.set_state(ApplicationState.VISIBLE)
 
     def hide_onboard(self):
         """
-        Idemmpotently hides onboard window
+        Idempotently hides onboard window
         """
-        if self.app:
-            self.app.set_state(ApplicationState.STOPPED)
+        self.app.set_state(ApplicationState.STOPPED)
 
 
 class OnboardConfig(object):
-    def __init__(self, config_path=None, geometry=None):
-        self.geometry = geometry
+    def __init__(self, config_path=None):
         self.config_path = config_path
         config_path = rospkg.RosPack().get_path('lg_keyboard') + "/config"
         self.config = self._read_onboard_config(config_path)
@@ -140,11 +122,8 @@ class OnboardConfig(object):
         default_config_file = config_path + "/onboard-default.dconf"
 
         with open(default_config_file) as cf:
-            config = cf.read().replace('{config_path}', config_path)
-            if self.geometry is not None:
-                config = config.replace('{docking}', 'false')
-            else:
-                config = config.replace('{docking}', 'true')
+            config = cf.read()
+        config = config.replace('{config_path}', config_path)
 
         return config
 
