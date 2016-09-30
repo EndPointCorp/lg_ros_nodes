@@ -209,6 +209,7 @@ class AdhocBrowserPool():
         new_browser.url = self._inject_get_argument(new_browser.url,
                                                     'rosbridge_secure',
                                                     1 if self.rosbridge_secure else 0)
+        
 
         rospy.logdebug(
             "Creating new browser %s with id %s and url %s" %
@@ -361,10 +362,12 @@ class AdhocBrowserPool():
         arg_list = []
         for item in get_args.items():
             if type(item[1]) == list:
-                arg = str(item[0]) + "=" + str(item[1][0])
+                for val in item[1]:
+                    arg = str(item[0]) + "=" + str(val)
+                    arg_list.append(arg)
             else:
                 arg = str(item[0]) + "=" + str(item[1])
-            arg_list.append(arg)
+                arg_list.append(arg)
 
         new_q = '&'.join(arg_list)
         url_parts = url_parts._replace(query=new_q)
