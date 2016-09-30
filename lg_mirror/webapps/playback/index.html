@@ -108,6 +108,7 @@ function attach() {
       video.autoplay = true;
       streamDiv.appendChild(video);
       attachMediaStream(video, stream);
+      window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
     }
   });
 }
