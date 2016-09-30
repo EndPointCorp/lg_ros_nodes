@@ -3,9 +3,7 @@
 import rospy
 
 from lg_common.msg import StringArray
-
 from lg_keyboard import ROS_NODE_NAME
-from lg_keyboard import OnboardManager
 from lg_keyboard import OnboardLauncher
 from lg_keyboard import OnboardViewportException
 
@@ -20,19 +18,11 @@ def main():
         rospy.logerr(message)
         raise OnboardViewportException(message)
 
-    onboard_launcher = OnboardLauncher(
-        viewport=viewport,
-        config_path=config_path
-    )
-    onboard_mgr = OnboardManager(
-        viewport=viewport,
-        launcher=onboard_launcher
-    )
-
+    onboard_launcher = OnboardLauncher(config_path, viewport)
     onboard_activate_subscriber = rospy.Subscriber("/lg_onboard/activate",
                                                    StringArray,
-                                                   onboard_mgr.handle_activate)
-    rospy.on_shutdown(onboard_mgr.on_shutdown)
+                                                   onboard_launcher.handle_activate)
+    rospy.on_shutdown(onboard_launcher.on_shutdown)
     rospy.loginfo("Started, spinning %s ..." % ROS_NODE_NAME)
     rospy.spin()
 

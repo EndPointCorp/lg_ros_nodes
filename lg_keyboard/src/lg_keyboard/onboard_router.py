@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 """
 lg_onboard router ROS node implementation.
+
 """
 
 
 import rospy
 import threading
-from interactivespaces_msgs.msg import GenericMessage
+
 from lg_common.msg import StringArray
 from lg_common.helpers import route_touch_to_viewports
 from lg_common.helpers import load_director_message
-
-
-ROS_NODE_NAME = "lg_onboard_router"
 
 
 class OnboardRouter:
@@ -23,13 +21,9 @@ class OnboardRouter:
     - idempotently listen on /onboard/visibility
     - publish StringArray with viewport that onboard should be shown on /lg_onboard/activate
     - make it provide service with active viewport
-    """
-    def __init__(
-        self,
-        default_viewport=[],
-        onboard_activate_publisher=None
-    ):
 
+    """
+    def __init__(self, default_viewport=[], onboard_activate_publisher=None):
         self.lock = threading.Lock()
         self.last_state = None
         self.onboard_activate_publisher = onboard_activate_publisher
@@ -42,7 +36,10 @@ class OnboardRouter:
             windows = scene.get('windows', None)
             if windows:
                 self._hide_onboard()
-                received_active_viewport = route_touch_to_viewports(windows, route_touch_key='route_touch', activity_type='mirror')
+                received_active_viewport = route_touch_to_viewports(
+                    windows,
+                    route_touch_key='route_touch',
+                    activity_type='mirror')
                 if received_active_viewport:
                     self.active_viewport = received_active_viewport
                 else:
@@ -55,6 +52,7 @@ class OnboardRouter:
         """
         Publishes empty string of viewports to
         hide onboard on all of them
+
         """
         rospy.loginfo("HIDING onboard")
         self.onboard_activate_publisher.publish(StringArray([]))
