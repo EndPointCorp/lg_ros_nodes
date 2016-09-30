@@ -5,6 +5,7 @@ from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
+from lg_common.helpers import check_www_dependency
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import Ready
 
@@ -14,6 +15,10 @@ def main():
 
     extensions_root = rospy.get_param('~extensions_root', '/opt/endpoint/chrome/extensions/')
     viewport_name = rospy.get_param('~viewport', None)
+    rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
+    rosbridge_host = rospy.get_param('~rosbridge_port', 'localhost')
+    depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', True)
+    global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
 
     if not viewport_name:
         rospy.logerr("Viewport is not set in the roslaunch file. Exiting.")
@@ -22,6 +27,8 @@ def main():
     """
     Initialize adhoc browser pool
     """
+    check_www_dependency(depend_on_rosbridge, rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout)
+
     topic_name = '/browser_service/{}'.format(viewport_name)
     common_topic_name = '/browser_service/browsers'
 
