@@ -8,7 +8,7 @@
     "background": {
         "persistent": true,
         "scripts": [
-            "jquery-3.1.0.min.js", "blocker.js"
+            "jquery-3.1.0.min.js", "lg-stats.js", "blocker.js"
         ]
     },
 

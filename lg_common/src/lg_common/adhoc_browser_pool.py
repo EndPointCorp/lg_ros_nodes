@@ -181,6 +181,12 @@ class AdhocBrowserPool():
             binary = DEFAULT_BINARY
         return binary
 
+    def _get_browser_allowed_urls(self, adhoc_browser_msg):
+        if adhoc_browser_msg.allowed_urls:
+            return adhoc_browser_msg.allowed_urls
+
+        return None
+
     def _create_browser(self, new_browser_pool_id, new_browser, initial_state=None):
         """
         Accept AdhocBrowser message and an id.
@@ -209,7 +215,13 @@ class AdhocBrowserPool():
         new_browser.url = self._inject_get_argument(new_browser.url,
                                                     'rosbridge_secure',
                                                     1 if self.rosbridge_secure else 0)
-        
+
+        allowed_urls = self._get_browser_allowed_urls(new_browser)
+        if allowed_urls :
+            new_browser.url = self._inject_get_argument(new_browser.url,
+                                                        'allowed_urls',
+                                                        allowed_urls)
+
 
         rospy.logdebug(
             "Creating new browser %s with id %s and url %s" %

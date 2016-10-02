@@ -24,6 +24,7 @@
                 params[key] = [params[key], val];
             }
         }
+        console.log("Parsed params", params);
         return params;
     }
 
@@ -32,9 +33,10 @@
     var stats = new LgStats();
 
     function setParamsAndProceed(url, callback) {
+        console.log("Read conf from url: " + url);
         var conf = parseUrl(url);
         redirectUrl = conf.redirect_to || url;
-        callback(conf.allowed_pages);
+        callback(conf.allowed_urls);
     }
 
     function load(ready) {
@@ -43,7 +45,9 @@
 
             if(tabs.length > 0 && tabs[0].url
                 && tabs[0].url.indexOf('allowed_urls') >= 0) {
+                console.log("Read conf from url");
                 setParamsAndProceed(tabs[0].url, ready);
+                return;
             }
 
             // 2. history
@@ -51,17 +55,19 @@
                 for (var i = 0; i < histItems.length; i++) {
                     var histItem = histItems[i];
                     if (histItem.url && histItem.url.indexOf('allowed_urls') >= 0) {
+                        console.log("Read conf from history");
                         setParamsAndProceed(tabs[0].url, ready);
+                        return;
                     }
                 }
 
                 // 3. config file
-                $.get( "file:///opt/ep/allowed_pages.json", function( data ) {
-                    console.log("Allowed pages: " + data);
+                $.get( "file:///opt/ep/allowed_urls.json", function( data ) {
                     var conf = JSON.parse(data);
                     if (conf) {
+                        console.log("Read conf from /opt/ep/allowed_urls.json");
                         redirectUrl = conf.redirect_to;
-                        ready(conf.allowed_pages);
+                        ready(conf.allowed_urls);
                     }
                     else {
                         console.log("FAILED to load allowed pages");
@@ -72,6 +78,7 @@
     }
 
     function onTemplatesLoaded(allowed_pages) {
+        console.log("Parse allowed urls:", allowed_pages);
         // Precompile regexes
         for (var i = 0; i < allowed_pages.length; i++) {
             if (allowed_pages[i]) {
@@ -119,21 +126,6 @@
     }
 
     chrome.webNavigation.onBeforeNavigate.addListener(onNavigate);
-/*
-    function checkTabs() {
-        chrome.tabs.getAllInWindow(null, function(tabs){
-            for (var i = 0; i < tabs.length; i++) {
-                if(tabs[i].url) {
-                    if (!allowed(tabs[i].url)) {
-                        chrome.tabs.update(
-                            tabs[i].id,
-                            {url: "http://localhost/away.html"}
-                        );
-                    }
-                }
-            }
-        });
-    }
-*/
+    chrome.webNavigation.onCommitted.addListener(onNavigate);
 
 })();

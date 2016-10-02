@@ -18,8 +18,8 @@ function LgStats(options) {
     this.password = opt.password || 'jsstats';
     this.database = opt.database || 'jsstats';
     this.useSSL = (opt.useSSL === undefined ? true : opt.useSSL);
-    this.defaultTags = options.defaultTags || {};
-    this.defaultMeasure = options.defaultMeasure || 'jsstats';
+    this.defaultTags = opt.defaultTags || {};
+    this.defaultMeasure = opt.defaultMeasure || 'jsstats';
 
     if (opt.url) {
         this.url = opt.url;
