@@ -112,6 +112,7 @@ class AdhocBrowserDirectorBridge():
         user_agent = browser_config.get('user_agent', None)
         browser_cmd_args = browser_config.get('additional_cmd_args', None)
         extensions = browser_config.get('extensions', None)
+        allowed_urls = extensions = browser_config.get('allowed_urls', None)
 
         if binary:
             adhoc_browser.binary = binary
@@ -130,6 +131,11 @@ class AdhocBrowserDirectorBridge():
                 browser_extension = BrowserExtension()
                 browser_extension.name = str(extension['name'])
                 adhoc_browser.extensions.append(browser_extension)
+
+        if allowed_urls:
+            for aurl in allowed_urls:
+                adhoc_browser.allowed_urls.append(str(aurl))
+
 
         return adhoc_browser
 
