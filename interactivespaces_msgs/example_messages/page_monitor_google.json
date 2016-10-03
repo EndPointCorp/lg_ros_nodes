@@ -1,16 +1,14 @@
 {
-  "description": "one browser with exts",
+  "description": "url page monitor",
   "duration": 20,
-  "name": "center extensions",
-  "resource_uri": "/director_api/scene/center ext",
-  "slug": "center-ext",
+  "name": "url page monitor",
+  "resource_uri": "/director_api/scene/url_page_foo_bar",
+  "slug": "center-url-page-monitor",
   "windows": [
     {
       "activity": "browser",
       "activity_config": {
         "google_chrome":{
-          "user_agent": "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19",
-          "cmd_args": ["--disable-out-of-process-pac", "--enable-arc"],
           "allowed_urls": ["google.com", "endpoint.com"]
         }
       },
@@ -19,20 +17,6 @@
       ],
       "height": 1080,
       "presentation_viewport": "center",
-      "width": 1920,
-      "x_coord": 0,
-      "y_coord": 0
-    },
-    {
-      "activity": "mirror",
-      "assets": [
-      ],
-      "activity_config": {
-        "viewport": "wall",
-        "route_touch": true
-      },
-      "height": 1080,
-      "presentation_viewport": "kiosk",
       "width": 1920,
       "x_coord": 0,
       "y_coord": 0

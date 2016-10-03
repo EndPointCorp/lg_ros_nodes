@@ -217,12 +217,13 @@ class AdhocBrowserPool():
                                                     1 if self.rosbridge_secure else 0)
 
         allowed_urls = self._get_browser_allowed_urls(new_browser)
-        if allowed_urls :
-            new_browser.url = self._inject_get_argument(new_browser.url,
-                                                        'allowed_urls',
-                                                        allowed_urls)
 
-
+        if allowed_urls:
+            new_browser.url = self._inject_get_argument(
+                new_browser.url,
+                'allowed_urls',
+                allowed_urls
+            )
         rospy.logdebug(
             "Creating new browser %s with id %s and url %s" %
             (new_browser, new_browser_pool_id, new_browser.url)
