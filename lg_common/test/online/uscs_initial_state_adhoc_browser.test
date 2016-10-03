@@ -20,5 +20,8 @@
     </node>
     <!-- end of three adhoc browser pools -->
 
+    <!-- Local rosbridge and rosapi. -->
+    <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3"/>
+
   <test test-name="test_uscs_service" pkg="lg_common" type="uscs_initial_state_adhoc_browser.py" />
 </launch>

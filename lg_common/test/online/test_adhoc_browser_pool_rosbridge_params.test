@@ -1,5 +1,5 @@
 <launch>
     <param name="/viewport/center" value="640x480+640+0" />
     <test test-name="test_adhoc_browser_pool" pkg="lg_common"
-        type="test_adhoc_browser_pool.py"/>
+        type="test_adhoc_browser_pool_rosbridge_params.py"/>
 </launch>
