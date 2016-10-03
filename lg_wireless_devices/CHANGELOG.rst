@@ -4,6 +4,8 @@ Changelog for package lg_wireless_devices
 
 Forthcoming
 -----------
+* Generated changelog
+* Contributors: Wojciech Ziniewicz
 
 1.4.6 (2016-09-28)
 ------------------

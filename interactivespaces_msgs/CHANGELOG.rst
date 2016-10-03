@@ -4,6 +4,7 @@ Changelog for package interactivespaces_msgs
 
 Forthcoming
 -----------
+* Generated changelog
 * Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
   * Urls monitoring
   * Parse allowed urls config from get args
@@ -18,6 +19,24 @@ Forthcoming
   * Tests for allowed urls message passing
   * Tests for allowed urls message passing
   * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Revert "REnamed helper method"
+  This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.
+  * Tests amendment and PEP8
+  * Added missing files
+  * Amending tests to match ros_window_ready new bahavior
+  * More amendments to ros_window_ready
+  * Fixed test roslaunch files
+  * Fixed log string eval and uscs tests
+  * Amended tests
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz
+
+* Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
+  * Urls monitoring
+  * Parse allowed urls config from get args
+  * page monitor parameters passing
+  * Page urls monitoring: readme, tests and get_args passing
+  * Add allowed urls to adhoc browser message
   * Tests for allowed urls message passing
   * Revert "REnamed helper method"
   This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.

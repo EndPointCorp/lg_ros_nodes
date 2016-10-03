@@ -4,6 +4,8 @@ Changelog for package lg_spacenav_globe
 
 Forthcoming
 -----------
+* Generated changelog
+* Contributors: Wojciech Ziniewicz
 
 1.4.6 (2016-09-28)
 ------------------

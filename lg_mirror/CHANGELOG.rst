@@ -4,6 +4,17 @@ Changelog for package lg_mirror
 
 Forthcoming
 -----------
+* Generated changelog
+* Added rosbridge deps for adhoc browser
+* Made lg_mirror activate itself slightly later with custom preload message
+* PEP8
+* Onboard and touch routing
+  - added TDD stuffz for onboard router
+  - factored out shared methods from lg_mirror to helpers
+  - created test_helpers for message and window generation
+  - created onboard_router ros node
+* Contributors: Wojciech Ziniewicz
+
 * Added rosbridge deps for adhoc browser
 * Made lg_mirror activate itself slightly later with custom preload message
 * PEP8
