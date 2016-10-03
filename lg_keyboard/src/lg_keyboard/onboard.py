@@ -100,11 +100,9 @@ class OnboardConfig(object):
 
     def _read_onboard_config(self, config_path):
         default_config_file = config_path + "/onboard-default.dconf"
-
         with open(default_config_file) as cf:
             config = cf.read()
         config = config.replace('{config_path}', config_path)
-
         return config
 
     def get_config(self):

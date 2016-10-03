@@ -39,7 +39,7 @@ catkin_install_python(PROGRAMS
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  add_rostest(test/online/test_lg_onboard.test)
-  add_rostest(test/online/test_lg_onboard_router.test)
-  catkin_add_nosetests(test/offline/test_basic.py)
+  add_rostest(test/online/test_onboard_router.test)
+  catkin_add_nosetests(test/offline/test_onboard_router.py)
+  catkin_add_nosetests(test/offline/test_onboard.py)
 endif()
