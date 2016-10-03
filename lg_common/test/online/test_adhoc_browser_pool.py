@@ -41,9 +41,9 @@ class TestAdhocBrowserPool(unittest.TestCase):
         assert self.pool.browsers['test_test'] is not None
 
         url = self.pool.browsers['test_test'].url
-        assert '&allowed_urls=endpoint.com' in url
-        assert '&allowed_urls=google.com' in url
-        assert '&allowed_urls=test_url_pattern' in url
+        assert 'allowed_urls=endpoint' in url
+        assert 'allowed_urls=google' in url
+        assert 'allowed_urls=test_url_pattern' in url
 
 if __name__ == '__main__':
     rospy.init_node(NAME)
