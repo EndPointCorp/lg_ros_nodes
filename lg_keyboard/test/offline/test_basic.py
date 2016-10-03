@@ -17,7 +17,6 @@ from lg_keyboard import OnboardLauncher
 
 class TestOnboardManager(object):
 
-
     def test_something_basic(self):
         test_launcher = OnboardLauncher(
             viewport='test_viewport'
