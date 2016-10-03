@@ -35,8 +35,11 @@ $BUILD $SRCDIR/lg_earth
 $BUILD $SRCDIR/lg_media
 $BUILD $SRCDIR/lg_nav_to_device
 $BUILD $SRCDIR/lg_replay
+$BUILD $SRCDIR/lg_rfreceiver
+$BUILD $SRCDIR/lg_spacenav_globe
 $BUILD $SRCDIR/lg_sv
 $BUILD $SRCDIR/lg_stats
 $BUILD $SRCDIR/lg_offliner
+$BUILD $SRCDIR/lg_wireless_devices
 $BUILD $SRCDIR/spacenav_wrapper
 $BUILD $SRCDIR/liquidgalaxy
