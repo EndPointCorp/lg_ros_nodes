@@ -10,15 +10,13 @@ from lg_common import AdhocBrowserPool
 PKG = 'lg_common'
 NAME = 'test_adhoc_browser_pool'
 
-pool_created = False
 
 class TestAdhocBrowserPool(unittest.TestCase):
     def setUp(self):
-        if not pool_created:
+        if not hasattr(self, 'pool'):
             rospy.set_param('~rosbridge_secure', True)
             rospy.set_param('~rosbridge_port', 1234)
             self.pool = AdhocBrowserPool('center')
-            pool_created = True
 
     def tearDown(self):
         pass
