@@ -1,0 +1,14 @@
+<launch>
+    <param name="/viewport/test_viewport" value="640x480+640+0" />
+
+    <node name="lg_onboard" pkg="lg_keyboard" type="onboard.py">
+        <param name="viewport" value="test_viewport"/>
+    </node>
+
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_lg_onboard" pkg="lg_keyboard" type="test_lg_onboard.py"/>
+</launch>

@@ -25,7 +25,7 @@ CAPTURE_ARGS = [
     '!',
     'queue',
     '!',
-    'vp8enc', 'target-bitrate=1024000', 'deadline=33333', 'cpu-used=16', 'max-quantizer=24',
+    'vp8enc', 'keyframe-max-dist=1', 'target-bitrate=1024000', 'deadline=33333', 'cpu-used=16', 'max-quantizer=24',
     '!',
     'rtpvp8pay',
     '!',

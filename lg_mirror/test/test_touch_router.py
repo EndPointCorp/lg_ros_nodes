@@ -10,60 +10,14 @@ import unittest
 from lg_mirror.constants import MIRROR_ACTIVITY_TYPE
 from lg_common.msg import StringArray
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.test_helpers import gen_touch_window
+from lg_common.test_helpers import gen_scene
+from lg_common.test_helpers import gen_scene_msg
 
 
 GRACE_DELAY = 0.5  # seconds
 TEST_DEFAULT_VIEWPORT = os.environ.get('TEST_VIEWPORT')
 EXPECTED_DEFAULT_MSG = [] if TEST_DEFAULT_VIEWPORT is None else [TEST_DEFAULT_VIEWPORT]
-TEST_MESSAGE_TEMPLATE = """
-{{
-  "name": "test_touch_router_name",
-  "description": "test_touch_router_description",
-  "resource_uri": "test_touch_router_uri",
-  "slug": "test_touch_router_slug",
-  "duration": 0,
-  "windows": [
-    {windows}
-  ]
-}}
-"""
-
-WINDOW_TEMPLATE = """
-{{
-  "activity": "{activity}",
-  "activity_config": {{
-    "route_touch": {route_touch},
-    "viewport": "viewport://{source}"
-  }},
-  "assets": [
-    "viewport://{source}"
-  ],
-  "width": 640,
-  "height": 480,
-  "x_coord": 0,
-  "y_coord": 0,
-  "presentation_viewport": "{target}"
-}}
-"""
-
-
-def gen_window(route, source, target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE):
-    route_touch = 'true' if route else 'false'
-    return WINDOW_TEMPLATE.format(
-        activity=activity,
-        source=source,
-        target=target,
-        route_touch=route_touch,
-    )
-
-
-def gen_scene(windows):
-    joined_windows = ', '.join(windows)
-    return TEST_MESSAGE_TEMPLATE.format(windows=joined_windows)
-
-
-def gen_scene_msg(scene):
-    return GenericMessage(type='json', message=scene)
 
 
 class RouteReceiver:
@@ -101,7 +55,7 @@ class TestTouchRouter(unittest.TestCase):
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
 
     def test_no_route(self):
-        window = gen_window(False, 'not_the_default')
+        window = gen_touch_window(False, 'not_the_default', target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE)
         scene = gen_scene([window])
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
@@ -112,8 +66,8 @@ class TestTouchRouter(unittest.TestCase):
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
 
     def test_one_route(self):
-        window0 = gen_window(True, 'not_the_default')
-        window1 = gen_window(False, 'also_not_the_default')
+        window0 = gen_touch_window(True, 'not_the_default', target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE)
+        window1 = gen_touch_window(False, 'also_not_the_default', target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE)
         scene = gen_scene([window0, window1])
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
@@ -124,8 +78,8 @@ class TestTouchRouter(unittest.TestCase):
         self.assertTrue('not_the_default' in msg.strings)
 
     def test_two_routes(self):
-        window0 = gen_window(True, 'not_the_default')
-        window1 = gen_window(True, 'also_not_the_default')
+        window0 = gen_touch_window(True, 'not_the_default', target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE)
+        window1 = gen_touch_window(True, 'also_not_the_default', target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE)
         scene = gen_scene([window0, window1])
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
@@ -137,7 +91,7 @@ class TestTouchRouter(unittest.TestCase):
         self.assertTrue('also_not_the_default' in msg.strings)
 
     def test_reset(self):
-        window = gen_window(True, 'not_the_default')
+        window = gen_touch_window(True, 'not_the_default', target=TEST_DEFAULT_VIEWPORT, activity=MIRROR_ACTIVITY_TYPE)
         scene = gen_scene([window])
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
@@ -147,7 +101,7 @@ class TestTouchRouter(unittest.TestCase):
         self.assertEqual(1, len(msg.strings))
         self.assertTrue('not_the_default' in msg.strings)
 
-        window = gen_window(False, 'also_not_the_default', activity='not_mirror')
+        window = gen_touch_window(False, 'also_not_the_default', target=TEST_DEFAULT_VIEWPORT, activity='not_mirror')
         scene = gen_scene([window])
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)

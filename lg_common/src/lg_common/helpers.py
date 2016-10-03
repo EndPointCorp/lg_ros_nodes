@@ -790,14 +790,14 @@ def get_activity_config(scene, activity_name, window_viewport):
     return activity_config
 
 
-def check_www_dependency(should_depend, host, port, name, timeout):
+def check_external_dependency(should_depend, host, port, name, timeout):
     """
     Check if www dependency is available, or raise an exception
     """
     if should_depend:
         rospy.loginfo("Waiting for rosbridge to become available")
         if not dependency_available(host, port, name, timeout):
-            msg = "Service: %s hasn't become accessible within %s seconds" % (name, timeout)
+            msg = "Service: %s (%s:%s) hasn't become accessible within %s seconds" % (name, timeout)
             rospy.logfatal(msg)
             raise DependencyException(msg)
         else:
@@ -886,3 +886,39 @@ def handle_initial_state(call_back):
         call_back(state)
     else:
         rospy.logwarn('Could not get valid initial state for callback %s')
+
+
+def route_touch_to_viewports(windows, route_touch_key='route_touch', activity_type='mirror'):
+    """
+    Iterates over windows and returns list of viewports from
+    activity_config with route_touch set to true
+
+    Args:
+        windows (dict): Windows from a director scene.
+        route_touch_key (str): name of the attrib for touch routing
+        activity_type (str): name of the activity type to consider
+
+    Returns:
+        set(str): Accumulated set of viewports that should be receiving
+            touch events.
+    """
+    import re
+
+    active_touch_routes = []
+
+    for window in windows:
+        activity = window.get('activity')
+        if activity != activity_type:
+            continue
+
+        config = window.get('activity_config', {})
+        if route_touch_key not in config:
+            continue
+        if config.get(route_touch_key) is not True:
+            continue
+
+        source = config.get('viewport', '')
+        viewport = re.sub(r'^viewport:\/\/', '', source, count=1)
+        active_touch_routes.append(viewport)
+
+    return set(active_touch_routes)

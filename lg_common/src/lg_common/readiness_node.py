@@ -89,7 +89,7 @@ class ReadinessNode(object):
             rospy.loginfo("Became ready: %s" % self.state)
             self.readiness_publisher.publish(ready_msg)
         else:
-            rospy.logwarn("Tried to emit a /director/ready message without browser instnces")
+            rospy.logdebug("Tried to emit a /director/ready message without browser instnces")
 
     def handle_readiness(self, message):
         """
@@ -105,9 +105,9 @@ class ReadinessNode(object):
                     self.state['ready_browsers'].append(instance_name)
                     rospy.loginfo("State after one of the browsers became ready %s" % self.state)
                 else:
-                    rospy.logwarn("Readiness node received browser instance id that's alread7 ready")
+                    rospy.logdebug("Readiness node received browser instance id that was already ready")
             else:
-                rospy.logwarn("Readiness node received unknown browser instance id")
+                rospy.logdebug("Readiness node received unknown browser instance id")
 
         if self._ready():
             self._publish_readiness()

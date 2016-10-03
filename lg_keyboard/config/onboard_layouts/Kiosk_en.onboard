@@ -1,0 +1,128 @@
+<?xml version="1.0" ?>
+<keyboard id="Compact" format="3.0">
+
+  <include file="/usr/share/onboard/layouts/key_defs.xml"/>
+  <!--  <include file='key_defs.xml'/> -->
+
+    <!--<box border="1" spacing="1.5">-->
+    <box border="10" spacing="0">
+        <panel>
+            <panel layer="alpha" filename="Compact-Alpha.svg">
+                <key group="alphanumeric" id="AB01" label_margin="15.0"/>
+                <key group="alphanumeric" id="AD09"/>
+                <key group="alphanumeric" id="AD03"/>
+                <key group="alphanumeric" id="AD02"/>
+                <key group="alphanumeric" id="AD01"/>
+                <key group="alphanumeric" id="AD07"/>
+                <key group="alphanumeric" id="AD06"/>
+                <key group="alphanumeric" id="AD05"/>
+                <key group="alphanumeric" id="AD04"/>
+                <!--<key group="alphanumeric" id="TLDE"/>-->
+                <!--<key group="alphanumeric" id="LSGT"/>-->
+                <!--<key group="alphanumeric" id="BKSL"/>-->
+                <key group="alphanumeric" id="AD10"/>
+                <key group="alphanumeric" id="AB08"/>
+                <key group="alphanumeric" id="AC04"/>
+                <key group="alphanumeric" id="AC05"/>
+                <key group="alphanumeric" id="AC06"/>
+                <key group="alphanumeric" id="AC07"/>
+                <key group="alphanumeric" id="AB09"/>
+                <key group="alphanumeric" id="AC01"/>
+                <key group="alphanumeric" id="AC02"/>
+                <key group="alphanumeric" id="AC03"/>
+                <key group="alphanumeric" id="AB05"/>
+                <key group="alphanumeric" id="AB04"/>
+                <key group="alphanumeric" id="AB06"/>
+                <key group="alphanumeric" id="AC08"/>
+                <key group="alphanumeric" id="AC09"/>
+                <key group="alphanumeric" id="AB03"/>
+                <key group="alphanumeric" id="AB02"/>
+                <key group="alphanumeric" id="AD08"/>
+                <key group="alphanumeric" id="AB07"/>
+<!--
+                <key group='misc'      id='CAPS'/>
+-->
+                <key group='shifts'    id='LFSH'/>
+                <key group='shifts'    id='RTSH' label="shift" label_x_align="0.9" label_margin="15.0"/>
+<!--
+                <key group='bottomrow' id='LCTL'/>
+                <key group='bottomrow' id='LALT'/>
+                <key group='bottomrow' id='RALT'/>
+                <key group="bottomrow" id="LWIN"/>
+-->
+                <key group="bottomrow" id="SPCE"/>
+                <!--<key group="bottomrow" id="DELE.next-to-backspace" label="delete" image=""/>-->
+                <key group="bottomrow" id="BKSP" label="backspace" image="" label_x_align="0.9" label_margin="15"/>
+                <!--<key group="misc" id="TAB"/>-->
+                <key group="misc" id="RTRN" label="go" label_x_align="0.90" label_margin="15"/>
+                <key group="directions_alpha" id="LEFT"/>
+                <key group="directions_alpha" id="RGHT"/>
+                <!--<key group="directions_alpha" id="UP"/>
+                <key group="directions_alpha" id="DOWN"/>-->
+                <key group="bottomrow" id="layer1" label="?123" scan_priority="3" sticky_behavior="lock" label_x_align="0.1" label_margin="15"/>
+            </panel>
+            <panel layer="numbers" filename="Compact-Alpha.svg" border="0">
+                <key group="alphanumeric" id="AD01" char="1" label="1"/>
+                <key group="alphanumeric" id="AD02" char="2" label="2"/>
+                <key group="alphanumeric" id="AD03" char="3" label="3"/>
+                <key group="alphanumeric" id="AD04" char="4" label="4"/>
+                <key group="alphanumeric" id="AD05" char="5" label="5"/>
+                <key group="alphanumeric" id="AD06" char="6" label="6"/>
+                <key group="alphanumeric" id="AD07" char="7" label="7"/>
+                <key group="alphanumeric" id="AD08" char="8" label="8"/>
+                <key group="alphanumeric" id="AD09" char="9" label="9"/>
+                <key group="alphanumeric" id="AD10" char="0" label="0"/>
+                <key group="alphanumeric" id="AC01" char="@" label="@"/>
+                <key group="alphanumeric" id="AC02" char="#" label="#"/>
+                <key group="alphanumeric" id="AC03" char="$" label="$"/>
+                <key group="alphanumeric" id="AC04" char="%" label="%"/>
+                <key group="alphanumeric" id="AC05" char="&amp;" label="&amp;"/>
+                <key group="alphanumeric" id="AC06" char="-" label="-"/>
+                <key group="alphanumeric" id="AC07" char="+" label="+"/>
+                <key group="alphanumeric" id="AC08" char="(" label="("/>
+                <key group="alphanumeric" id="AC09" char=")" label=")"/>
+                <key group="alphanumeric" id="AB01" char="*" label="*"/>
+                <key group="alphanumeric" id="AB02" char="&quot;" label="&quot;"/>
+                <key group="alphanumeric" id="AB03" char="'" label="'"/>
+                <key group="alphanumeric" id="AB04" char=":" label=":"/>
+                <key group="alphanumeric" id="AB05" char=";" label=";"/>
+                <key group="alphanumeric" id="AB06" char="!" label="!"/>
+                <key group="alphanumeric" id="AB07" char="?" label="?"/>
+                <key group="alphanumeric" id="AB08" char="=" label="="/>
+                <key group="alphanumeric" id="AB09" char="\" label="\"/>
+<!--
+                <key group='misc'      id='CAPS'/>
+                <key group='shifts'    id='LFSH'/>
+                <key group='shifts'    id='RTSH'/>
+                <key group='bottomrow' id='LCTL'/>
+                <key group='bottomrow' id='LALT'/>
+                <key group='bottomrow' id='RALT'/>
+                <key group="bottomrow" id="LWIN"/>
+-->
+                <key group="bottomrow" id="SPCE"/>
+                <!--<key group="bottomrow" id="DELE.next-to-backspace" label="delete" image=""/>-->
+                <key group="bottomrow" id="BKSP" label="backspace" image="" label_x_align="0.9" label_margin="15"/>
+                <!--<key group="misc" id="TAB"/>-->
+                <key group="misc" id="RTRN" label="go" label_x_align="0.90" label_margin="15"/>
+                <key group="directions_alpha" id="LEFT"/>
+                <key group="directions_alpha" id="RGHT"/>
+                <!--<key group="directions_alpha" id="UP"/>
+                <key group="directions_alpha" id="DOWN"/>-->
+                <!--<key group="bottomrow" id="layer0" label="abc" scan_priority="3"/>-->
+                <key group="bottomrow" id="layer0" label="abc" scan_priority="3" sticky_behavior="lock" label_x_align="0.1" label_margin="15"/>
+            </panel>
+        </panel>
+        <!--<panel id="paneswitch" filename="Compact-Alpha.svg">
+            <key group="bottomrow" id="hide" expand="false"/>
+            <box orientation="vertical">
+                <box orientation="horizontal" expand="false">
+                    <key group="bottomrow" id="showclick"/>
+                    <key group="bottomrow" id="move"/>
+                </box>
+                <key group="bottomrow" id="layer0" scan_priority="3"/>
+                <key group="bottomrow" id="layer1" scan_priority="3"/>
+                <key group="bottomrow" id="layer2" scan_priority="3"/>
+            </box>
+        </panel>-->
+    </box>
+</keyboard>

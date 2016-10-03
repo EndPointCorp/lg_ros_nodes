@@ -1,0 +1,37 @@
+[keyboard]
+touch-feedback-enabled=true
+
+[theme-settings]
+key-size=94.0
+key-stroke-width=0.0
+key-gradient-direction=-3.0
+color-scheme='{config_path}/onboard_layouts/Charcoal.colors'
+key-fill-gradient=8.0
+key-style='gradient'
+key-stroke-gradient=8.0
+roundrect-radius=20.0
+
+[/]
+current-settings-page=0
+use-system-defaults=false
+show-tooltips=false
+theme='{config_path}/onboard_layouts/Blackboard.theme'
+show-status-icon=false
+key-label-overrides=['LWIN::super', 'RWIN::super']
+xembed-onboard=false
+layout='{config_path}/onboard_layouts/Kiosk_en.onboard'
+schema-version='2.1'
+key-label-font='Roboto light'
+system-theme-associations={'HighContrastInverse': 'HighContrastInverse', 'Greybird': '/usr/share/onboard/themes/Nightshade.theme', 'HighContrast': 'HighContrast', 'Default': '', 'LowContrast': 'LowContrast'}
+snippets=@as []
+start-minimized=false
+force-to-top=false
+
+[window]
+docking-enabled=false
+docking-shrink-workarea=false
+resize-handles=''
+
+[icon-palette]
+resize-handles=''
+
