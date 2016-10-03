@@ -16,7 +16,7 @@ class TestAdhocBrowserPool(unittest.TestCase):
         self.pool_created = False
 
     def setUp(self):
-        if not self.pool_created
+        if not self.pool_created:
             rospy.set_param('~rosbridge_secure', True)
             rospy.set_param('~rosbridge_port', 1234)
             self.pool = AdhocBrowserPool('center')
