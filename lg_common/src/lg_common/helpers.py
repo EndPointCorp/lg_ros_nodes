@@ -797,7 +797,7 @@ def check_www_dependency(should_depend, host, port, name, timeout):
     if should_depend:
         rospy.loginfo("Waiting for rosbridge to become available")
         if not dependency_available(host, port, name, timeout):
-            msg = "Service: %s (%s:%s) hasn't become accessible within %s seconds" % (name, timeout)
+            msg = "Service: %s (%s:%s) hasn't become accessible within %s seconds" % (name, host, port, timeout)
             rospy.logfatal(msg)
             raise DependencyException(msg)
         else:
