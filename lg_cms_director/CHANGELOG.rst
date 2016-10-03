@@ -4,6 +4,10 @@ Changelog for package lg_cms_director
 
 Forthcoming
 -----------
+* More changelogs
+* Generated changelog
+* Contributors: Wojciech Ziniewicz
+
 * Generated changelog
 * Contributors: Wojciech Ziniewicz
 
