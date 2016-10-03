@@ -27,7 +27,6 @@ def main():
     """
     Initialize adhoc browser pool
     """
-    check_www_dependency(depend_on_rosbridge, rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout)
 
     topic_name = '/browser_service/{}'.format(viewport_name)
     common_topic_name = '/browser_service/browsers'
