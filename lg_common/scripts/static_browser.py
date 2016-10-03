@@ -4,7 +4,7 @@ import rospy
 
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
-from lg_common.helpers import check_external_dependency, discover_host_from_url, discover_port_from_url
+from lg_common.helpers import check_www_dependency, discover_host_from_url, discover_port_from_url
 
 from std_msgs.msg import String
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     www_host = discover_host_from_url(url)
     www_port = discover_port_from_url(url)
-    check_external_dependency(depend_on_url, www_host, www_port, 'static browser URL', global_dependency_timeout)
+    check_www_dependency(depend_on_url, www_host, www_port, 'static browser URL', global_dependency_timeout)
 
     browser = ManagedBrowser(
         geometry=geometry,

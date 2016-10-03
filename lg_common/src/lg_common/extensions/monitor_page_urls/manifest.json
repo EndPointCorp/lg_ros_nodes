@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+
+    "name":           "monitor_page_urls",
+    "version":        "0.1",
+    "description":    "Checks the pages urls over the list of regexps, and block not allowed pages",
+
+    "background": {
+        "persistent": true,
+        "scripts": [
+            "jquery-3.1.0.min.js", "lg-stats.js", "blocker.js"
+        ]
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_start",
+            "all_frames": true
+        }
+    ],
+
+    "permissions":    [
+        "<all_urls>", "webNavigation",
+        "webRequest", "webRequestBlocking",
+        "tabs", "storage", "history"
+    ]
+}

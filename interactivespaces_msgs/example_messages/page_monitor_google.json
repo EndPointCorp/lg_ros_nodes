@@ -1,0 +1,25 @@
+{
+  "description": "url page monitor",
+  "duration": 20,
+  "name": "url page monitor",
+  "resource_uri": "/director_api/scene/url_page_foo_bar",
+  "slug": "center-url-page-monitor",
+  "windows": [
+    {
+      "activity": "browser",
+      "activity_config": {
+        "google_chrome":{
+          "allowed_urls": ["google.com", "endpoint.com"]
+        }
+      },
+      "assets": [
+        "http://www.google.com/search?q=End+Point+Liquid+Galaxy"
+      ],
+      "height": 1080,
+      "presentation_viewport": "center",
+      "width": 1920,
+      "x_coord": 0,
+      "y_coord": 0
+    }
+  ]
+}

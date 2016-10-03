@@ -31,6 +31,7 @@ class TestAdhocBrowserPool(unittest.TestCase):
         assert 'rosbridge_secure=1' in url
         assert 'rosbridge_port=1234' in url
 
+
 if __name__ == '__main__':
     rospy.init_node(NAME)
     import rostest

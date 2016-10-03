@@ -10,7 +10,7 @@ from std_msgs.msg import String
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from lg_common.msg import ApplicationState
-from lg_common.helpers import check_external_dependency, x_available_or_raise, make_soft_relaunch_callback
+from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
 from lg_earth.srv import ViewsyncState
 
 
@@ -27,7 +27,7 @@ def main():
     if os.environ.get("LG_LANG"):
         os.environ["LANG"] = os.environ["LG_LANG"]
 
-    check_external_dependency(depend_on_kmlsync, kmlsync_host, kmlsync_port, 'kmlsync', global_dependency_timeout)
+    check_www_dependency(depend_on_kmlsync, kmlsync_host, kmlsync_port, 'kmlsync', global_dependency_timeout)
 
     x_available_or_raise(global_dependency_timeout)
 

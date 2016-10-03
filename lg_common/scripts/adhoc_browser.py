@@ -5,7 +5,7 @@ from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
-from lg_common.helpers import check_external_dependency
+from lg_common.helpers import check_www_dependency
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import Ready
 
