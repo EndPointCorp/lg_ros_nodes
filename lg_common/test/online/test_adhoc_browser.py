@@ -199,7 +199,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
         self.assertEqual(len(self.browser_service_mock_common.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith('81MzhqG_'), True)
