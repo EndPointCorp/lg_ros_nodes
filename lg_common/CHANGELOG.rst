@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.7 (2016-10-03)
+------------------
 * More changelogs
 * Generated changelog
 * Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)

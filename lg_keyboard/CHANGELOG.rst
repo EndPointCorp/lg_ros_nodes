@@ -2,8 +2,8 @@
 Changelog for package lg_keyboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.7 (2016-10-03)
+------------------
 * More changelogs
 * Generated changelog
 * tests implemented, fixed, touch: `#127 <https://github.com/EndPointCorp/lg_ros_nodes/issues/127>`_

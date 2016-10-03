@@ -2,8 +2,8 @@
 Changelog for package rosbridge_library
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.7 (2016-10-03)
+------------------
 * More changelogs
 * Generated changelog
 * Contributors: Wojciech Ziniewicz
