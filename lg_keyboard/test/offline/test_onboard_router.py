@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-test_onboard_router - unit tests for onboard.router.py
+test_onboard_router - unit tests for onboard_router.py
 offline tests - not requiring the ROS node itself to run.
 
 """

@@ -2,17 +2,28 @@
 
 """
 lg_keyboard_router online tests
+
+starting roslaunch for development:
+    roslaunch --screen lg_keyboard/test/online/test_onboard_router.test
+    could do:
+    py.test -s -v lg_keyboard/test/online/test_onboard_router.py
+
+running tests manually:
+    rostest lg_keyboard/test/online/test_onboard_router.test
+        (as long as it contains <test> tag, it's the same as launch file)
+
 """
 
 
 import os
 import time
+from multiprocessing import Array
 
 import pytest
 import rospy
 import rospkg
+from multiprocessing import Array
 
-from lg_keyboard import ROS_NODE_NAME
 from lg_common.msg import StringArray
 from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
@@ -22,54 +33,72 @@ from lg_common.test_helpers import gen_scene
 from lg_common.test_helpers import gen_scene_msg
 
 
-class ReceiverMock:
-    def __init__(self):
-        self.msg = []
-
-    def append(self, msg):
-        self.msg.append(msg)
+SCENE = Array('c', 1000)  # size
+VISIBILITY = Array('c', 1000)  # size
+ACTIVATE = Array('c', 1000)  # size
 
 
 class TestOnboardRouterOnline(object):
     def setup_method(self, method):
-        rospy.init_node("lg_keyboard_onboard_router", anonymous=True)
-        self.grace_delay = 3
-        rospy.sleep(self.grace_delay)
-        self.onboard_visibility_receiver = ReceiverMock()
-        self.onboard_activate_receiver = ReceiverMock()
-        self.director_receiver = ReceiverMock()
         rospy.Subscriber(
             '/lg_onboard/visibility',
             Bool,
-            self.onboard_visibility_receiver.append
+            self.callback_visibility_receiver
         )
         rospy.Subscriber(
             '/lg_onboard/activate',
             StringArray,
-            self.onboard_activate_receiver.append
+            self.callback_activate_receiver
         )
         rospy.Subscriber(
             '/director/scene',
             GenericMessage,
-            self.director_receiver.append
+            self.callback_scene_receiver
         )
         self.director_publisher = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
         self.visibility_publisher = rospy.Publisher('/lg_onboard/visibility', Bool, queue_size=10)
+        SCENE.value = "UNDEFINED"
+        VISIBILITY.value = "UNDEFINED"
+        ACTIVATE.value = "UNDEFINED"
+        # must be after pubs/subs initialization:
+        rospy.init_node("lg_keyboard_onboard_router", anonymous=True)
+        self.grace_delay = 3
+        rospy.sleep(self.grace_delay)
 
-    def active_wait(self, what, how_many, timeout=10):
+    def teardown_method(self, method):
+        time.sleep(1)
+
+    @staticmethod
+    def callback_scene_receiver(msg):
+        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
+        SCENE.value = str(msg.message)
+
+    @staticmethod
+    def callback_visibility_receiver(msg):
+        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
+        VISIBILITY.value = str(msg.data)
+
+    @staticmethod
+    def callback_activate_receiver(msg):
+        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
+        ACTIVATE.value = str(msg.strings)
+
+    def active_wait(self, what, where, timeout=5):
         for _ in range(timeout):
             rospy.sleep(1)
-            if len(what) == how_many:
+            if where == what:
                 break
+        assert where == what
 
     def test_1_sending_messages_work(self):
-        return
-        self.director_publisher.publish(GenericMessage(type='json', message='{}'))
+        msg = GenericMessage(type='json', message='{}')
+        self.director_publisher.publish(msg)
+        time.sleep(1)
         self.visibility_publisher.publish(Bool(data=True))
-        self.active_wait(self.director_receiver.msg, 1)
-        assert len(self.director_receiver.msg) == 1
-        assert len(self.onboard_visibility_receiver.msg) == 1
-        assert self.director_receiver.msg[0] == GenericMessage(type='json', message='{}')
+        time.sleep(1)
+        self.active_wait('{}', SCENE.value)
+        self.active_wait('True', VISIBILITY.value)
+        self.active_wait("['kiosk']", ACTIVATE.value)
 
     def test_2_default_viewport_no_route_touch(self):
         """
@@ -78,22 +107,19 @@ class TestOnboardRouterOnline(object):
 
         Default viewport should be emitted after visibility message
         on the activate topic
+
         """
         window = gen_browser_window(route=False, target='cthulhu_fhtagn')
         scene = gen_scene([window])
         scene_msg = gen_scene_msg(scene)
         self.director_publisher.publish(scene_msg)
-        self.active_wait(self.director_receiver.msg, 1)
-        assert len(self.director_receiver.msg) == 1
+        time.sleep(1)
+        # need to ensure visibility last value flip
+        self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
-        self.active_wait(self.onboard_visibility_receiver.msg, 1)
-        assert len(self.onboard_visibility_receiver.msg) == 1
-        # activate sends first empty list (to shut down onboard) and then the
-        # viewport activation list for onboards
-        self.active_wait(self.onboard_activate_receiver.msg, 2)
-        assert len(self.onboard_activate_receiver.msg) == 2
-        assert len(self.onboard_activate_receiver.msg[1].strings) == 1
-        assert self.onboard_activate_receiver.msg[1].strings[0] == 'kiosk'
+        time.sleep(1)
+        self.active_wait('True', VISIBILITY.value)
+        self.active_wait("['kiosk']", ACTIVATE.value)
 
     def test_3_default_viewport_no_route_touch(self):
         """
@@ -109,14 +135,13 @@ class TestOnboardRouterOnline(object):
         scene = gen_scene([window1, window2])
         scene_msg = gen_scene_msg(scene)
         self.director_publisher.publish(scene_msg)
-        self.active_wait(self.director_receiver.msg, 1)
-        assert len(self.director_receiver.msg) == 1
+        time.sleep(1)
+        # need to ensure visibility last value flip
+        self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
-        self.active_wait(self.onboard_visibility_receiver.msg, 2)
-        assert len(self.onboard_visibility_receiver.msg) == 1
-        assert len(self.onboard_activate_receiver.msg) == 2
-        assert len(self.onboard_activate_receiver.msg[1].strings) == 2
-        assert self.onboard_activate_receiver.msg[1].strings[0] == 'kiosk'
+        time.sleep(1)
+        self.active_wait('True', VISIBILITY.value)
+        self.active_wait("['kiosk']", ACTIVATE.value)
 
     def test_4_route_touch_on_one_viewport(self):
         """
@@ -124,8 +149,8 @@ class TestOnboardRouterOnline(object):
         without with route touch set to `true` on one of them
 
         The cthulhu_fhtagn viepwort should be emitted
+
         """
-        return
         window1 = gen_touch_window(
             route=True,
             target='blaaah',
@@ -139,14 +164,13 @@ class TestOnboardRouterOnline(object):
         scene = gen_scene([window1, window2])
         scene_msg = gen_scene_msg(scene)
         self.director_publisher.publish(scene_msg)
-        rospy.sleep(self.grace_delay)
-        assert len(self.director_receiver.msg) == 1
+        time.sleep(1)
+        # need to ensure visibility last value flip
+        self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
-        rospy.sleep(self.grace_delay)
-        assert len(self.onboard_visibility_receiver.msg) == 1
-        assert len(self.onboard_activate_receiver.msg) == 1
-        assert len(self.onboard_activate_receiver.msg[0].strings) == 1
-        assert self.onboard_activate_receiver.msg[0].strings[0] == 'cthulhu_fhtagn'
+        time.sleep(1)
+        self.active_wait('True', VISIBILITY.value)
+        self.active_wait("['cthulhu_fhtagn']", ACTIVATE.value)
 
     def test_5_route_touch_on_two_viewports(self):
         """
@@ -154,8 +178,8 @@ class TestOnboardRouterOnline(object):
         without with route touch set to `true` on one of them
 
         The cthulhu_fhtagn viepwort should be emitted
+
         """
-        return
         window1 = gen_touch_window(
             route=True,
             source='cthulhu_fhtagn',
@@ -169,21 +193,19 @@ class TestOnboardRouterOnline(object):
         scene = gen_scene([window1, window2])
         scene_msg = gen_scene_msg(scene)
         self.director_publisher.publish(scene_msg)
-        rospy.sleep(self.grace_delay)
-        assert len(self.director_receiver.msg) == 1
+        time.sleep(1)
+        # need to ensure visibility last value flip
+        self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
-        rospy.sleep(self.grace_delay)
-        assert len(self.onboard_visibility_receiver.msg) == 1
-        assert len(self.onboard_activate_receiver.msg) == 1
-        assert len(self.onboard_activate_receiver.msg[0].strings) == 2
-        assert 'cthulhu_fhtagn' in self.onboard_activate_receiver.msg[0].strings
-        assert 'iah_iah' in self.onboard_activate_receiver.msg[0].strings
+        time.sleep(1)
+        self.active_wait('True', VISIBILITY.value)
+        self.active_wait("['cthulhu_fhtagn', 'iah_iah']", ACTIVATE.value)
 
 
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
     test_pkg = "lg_keyboard"
-    test_name = "test_lg_onboard_router"
+    test_name = "test_onboard_router"
     test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
     pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
     # run only itself

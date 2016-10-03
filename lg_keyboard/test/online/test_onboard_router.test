@@ -15,5 +15,10 @@
         <param name="default_viewport" value="kiosk"/>
     </node>
 
-    <test test-name="test_lg_onboard_router" pkg="lg_keyboard" type="test_lg_onboard_router.py"/>
+    <!-- Local rosbridge and rosapi. -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+        <arg name="port" value="9875" />
+    </include>
+
+    <test test-name="test_onboard_router" pkg="lg_keyboard" type="test_onboard_router.py"/>
 </launch>
