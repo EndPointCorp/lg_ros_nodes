@@ -5,7 +5,7 @@ import rospy
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.helpers import add_url_params
-from lg_common.helpers import check_www_dependency
+from lg_common.helpers import check_external_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise
 from lg_common.helpers import make_soft_relaunch_callback
 
@@ -55,8 +55,8 @@ def main():
     port = discover_port_from_url(url)
     timeout = rospy.get_param('/global_dependency_timeout', 15)
 
-    check_www_dependency(depend_on_webserver, host, port, 'streetview server', timeout)
-    check_www_dependency(depend_on_webserver, rosbridge_host, rosbridge_port, 'rosbridge', timeout)
+    check_external_dependency(depend_on_webserver, host, port, 'streetview server', timeout)
+    check_external_dependency(depend_on_webserver, rosbridge_host, rosbridge_port, 'rosbridge', timeout)
 
     x_available_or_raise(timeout)
 

@@ -13,7 +13,7 @@ from std_msgs.msg import Bool
 from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common import USCSService
-from lg_common.helpers import check_www_dependency
+from lg_common.helpers import check_external_dependency
 
 
 # TODO implement this in the ros_cms side of things so
@@ -35,7 +35,7 @@ def main():
                 port = 80
             else:
                 port = scheme.port
-            check_www_dependency(depend_on_scene_repository, scheme.hostname, port, param[1:], global_dependency_timeout)
+            check_external_dependency(depend_on_scene_repository, scheme.hostname, port, param[1:], global_dependency_timeout)
         return url
 
     rospy.init_node('lg_uscs', anonymous=False)
