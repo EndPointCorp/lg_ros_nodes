@@ -13,7 +13,7 @@ from lg_common.helpers import route_touch_to_viewports
 from lg_common.helpers import load_director_message
 
 
-class OnboardRouter:
+class OnboardRouter(object):
     """
     - handle initial state
     - have a default viewport for showing onboard
@@ -30,43 +30,52 @@ class OnboardRouter:
         self.default_viewport = default_viewport
         self.active_viewport = default_viewport
 
+    def _hide_onboard(self):
+        """
+        Publishes empty string of viewports to hide onboard on all of them.
+
+        """
+        rospy.loginfo("Hiding Onboard ...")
+        self.onboard_activate_publisher.publish(StringArray([]))
+
+    def _show_onboard(self):
+        """
+        Publishes an array of strings with viewports to show onboard on.
+
+        """
+        rospy.loginfo("Showing Onboard on %s" % self.active_viewport)
+        active_viewport_msg = StringArray(self.active_viewport)
+        self.onboard_activate_publisher.publish(active_viewport_msg)
+
     def handle_scene(self, scene):
         with self.lock:
             scene = load_director_message(scene)
             windows = scene.get('windows', None)
+            self._hide_onboard()
             if windows:
-                self._hide_onboard()
                 received_active_viewport = route_touch_to_viewports(
                     windows,
                     route_touch_key='route_touch',
                     activity_type='mirror')
                 if received_active_viewport:
-                    self.active_viewport = received_active_viewport
+                    self.active_viewport = list(received_active_viewport)
                 else:
                     # no viewports received - falling back to default
                     self.active_viewport = self.default_viewport
-            else:
-                self._hide_onboard()
-
-    def _hide_onboard(self):
-        """
-        Publishes empty string of viewports to
-        hide onboard on all of them
-
-        """
-        rospy.loginfo("HIDING onboard")
-        self.onboard_activate_publisher.publish(StringArray([]))
 
     def handle_visibility(self, visibility):
+        """
+        Process visibility boolean messages.
+        Repeated messages of the same value are not processed.
+        Only the value flip situation is considered.
+
+        """
         with self.lock:
+            if visibility.data == self.last_state:
+                return
             if visibility.data is False:
-                if not (self.last_state == visibility.data):
-                    rospy.loginfo("HIDING onboard")
-                    self._hide_onboard()
-                    self.last_state = False
+                self._hide_onboard()
+                self.last_state = False
             else:
-                if not (self.last_state == visibility.data):
-                    rospy.loginfo("SHOWING onboard on %s" % self.active_viewport)
-                    active_viewport_msg = StringArray(self.active_viewport)
-                    self.onboard_activate_publisher.publish(active_viewport_msg)
-                    self.last_state = True
+                self._show_onboard()
+                self.last_state = True
