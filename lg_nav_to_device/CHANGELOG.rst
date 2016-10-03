@@ -2,6 +2,9 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.7 (2016-10-03)
 ------------------
 * More changelogs

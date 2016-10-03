@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update metapackage deps
+* Contributors: Matt Vollrath
+
 1.4.7 (2016-10-03)
 ------------------
 * More changelogs
