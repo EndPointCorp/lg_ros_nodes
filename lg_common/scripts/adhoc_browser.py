@@ -5,7 +5,7 @@ from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
-from lg_common.helpers import check_external_dependency
+from lg_common.helpers import check_www_dependency
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import Ready
 
@@ -27,6 +27,7 @@ def main():
     """
     Initialize adhoc browser pool
     """
+    check_www_dependency(depend_on_rosbridge, rosbridge_host, rosbridge_port, 'rosbridge', global_dependency_timeout)
 
     topic_name = '/browser_service/{}'.format(viewport_name)
     common_topic_name = '/browser_service/browsers'

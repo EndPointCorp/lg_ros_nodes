@@ -790,7 +790,7 @@ def get_activity_config(scene, activity_name, window_viewport):
     return activity_config
 
 
-def check_external_dependency(should_depend, host, port, name, timeout):
+def check_www_dependency(should_depend, host, port, name, timeout):
     """
     Check if www dependency is available, or raise an exception
     """
