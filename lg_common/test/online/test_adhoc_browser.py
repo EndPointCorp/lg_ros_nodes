@@ -58,7 +58,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_window_ready_mock = MockSubscriber(topic_name='/director/window/ready')
         self.director_ready_mock = MockSubscriber(topic_name='/director/ready')
         self.director_scene_mock = MockSubscriber(topic_name='/director/scene')
-        self.common_mock = MockSubscriber(topic_name='all_topics')  # subscriber for all messages
 
         self.subscribers.append(self.browser_service_mock_center)
         self.subscribers.append(self.browser_service_mock_left)
@@ -67,7 +66,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.subscribers.append(self.director_window_ready_mock)
         self.subscribers.append(self.director_ready_mock)
         self.subscribers.append(self.director_scene_mock)
-        self.subscribers.append(self.common_mock)  # common channel for all msgs
 
         rospy.Subscriber(
             '/browser_service/center',
@@ -103,41 +101,6 @@ class TestAdhocBrowser(unittest.TestCase):
             '/director/scene',
             GenericMessage,
             self.director_scene_mock.record_message
-        )
-        rospy.Subscriber(
-            '/browser_service/right',
-            AdhocBrowsers,
-            self.common_mock.record_message
-        )
-        rospy.Subscriber(
-            '/browser_service/center',
-            AdhocBrowsers,
-            self.common_mock.record_message
-        )
-        rospy.Subscriber(
-            '/browser_service/left',
-            AdhocBrowsers,
-            self.common_mock.record_message
-        )
-        rospy.Subscriber(
-            '/browser_service/browsers',
-            AdhocBrowsers,
-            self.common_mock.record_message
-        )
-        rospy.Subscriber(
-            '/director/window/ready',
-            String,
-            self.common_mock.record_message
-        )
-        rospy.Subscriber(
-            '/director/ready',
-            Ready,
-            self.common_mock.record_message
-        )
-        rospy.Subscriber(
-            '/director/scene',
-            GenericMessage,
-            self.common_mock.record_message
         )
 
         rospy.init_node("test_adhoc_browser", anonymous=True)
@@ -212,7 +175,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_extension_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -233,7 +195,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
         rospy.sleep(self.preloading_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 7)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -269,7 +230,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -291,7 +251,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_cmdargs_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -322,7 +281,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_user_agent_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -354,7 +312,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_binary_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -382,7 +339,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 5)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
@@ -411,7 +367,6 @@ class TestAdhocBrowser(unittest.TestCase):
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 10)
         self.assertEqual(len(self.browser_service_mock_center.messages), 2)
         self.assertEqual(len(self.browser_service_mock_left.messages), 2)
         self.assertEqual(len(self.browser_service_mock_right.messages), 2)
@@ -443,7 +398,6 @@ class TestAdhocBrowser(unittest.TestCase):
         # 3
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_alt_slug_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(len(self.common_mock.messages), 15)
         self.assertEqual(len(self.browser_service_mock_center.messages), 3)
         self.assertEqual(len(self.browser_service_mock_left.messages), 3)
         self.assertEqual(len(self.browser_service_mock_right.messages), 3)
@@ -495,19 +449,16 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
         self.assertEqual(len(self.browser_service_mock_common.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
-
-        self.assertEqual(len(self.common_mock.messages), 7)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith("ZRZAUVz_"), True)
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(self.director_ready_mock.messages[0].instances[0].startswith('ZRZAUVz_'), True)
         self.assertEqual(self.director_window_ready_mock.messages[0].data.startswith('ZRZAUVz_'), True)
-        self.assertEqual(len(self.common_mock.messages), 7)
         # get timestmp here
 
         rospy.wait_for_service('/browser_service/center')
@@ -725,9 +676,8 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_common.messages), 1)
 
-        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
@@ -736,7 +686,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages), 1)
+        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
