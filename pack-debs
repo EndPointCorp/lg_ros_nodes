@@ -34,6 +34,7 @@ $BUILD $SRCDIR/lg_cms_director
 $BUILD $SRCDIR/lg_earth
 $BUILD $SRCDIR/lg_media
 $BUILD $SRCDIR/lg_nav_to_device
+$BUILD $SRCDIR/lg_proximity
 $BUILD $SRCDIR/lg_replay
 $BUILD $SRCDIR/lg_rfreceiver
 $BUILD $SRCDIR/lg_spacenav_globe
