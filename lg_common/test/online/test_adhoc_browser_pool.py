@@ -37,10 +37,10 @@ class TestAdhocBrowserPool(unittest.TestCase):
         test_browser_msg.allowed_urls.append('google.com')
         test_browser_msg.allowed_urls.append('test_url_pattern')
 
-        self.pool._create_browser('test_test', test_browser_msg)
-        assert self.pool.browsers['test_test'] is not None
+        self.pool._create_browser('test_test_2', test_browser_msg)
+        assert self.pool.browsers['test_test_2'] is not None
 
-        url = self.pool.browsers['test_test'].url
+        url = self.pool.browsers['test_test_2'].url
         assert 'allowed_urls=endpoint' in url
         assert 'allowed_urls=google' in url
         assert 'allowed_urls=test_url_pattern' in url
