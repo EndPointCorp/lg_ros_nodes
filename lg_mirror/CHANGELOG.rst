@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.9 (2016-10-04)
+------------------
 * Add lg_common as build_depends, because binaries need its generated messages.
 * Contributors: Matt Vollrath
 
