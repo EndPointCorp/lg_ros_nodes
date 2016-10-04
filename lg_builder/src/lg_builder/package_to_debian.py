@@ -54,18 +54,16 @@ def rosdep_install_deps(package_path):
     subprocess.check_output(rosdep_cmd)
 
 
-def catkin_to_apt_name(catkin_name):
+def resolve_rosdep(catkin_name):
     """Resolve a catkin package name to an APT package name.
 
-    If the package is part of the ROS distro, rosdep will resolve the name.
-
-    Otherwise, the name will be generated.
+    If rosdep can't find the package, a name will be made up.
 
     Args:
         catkin_name (str)
 
     Returns:
-        str: APT package name.
+        set(str): APT package names.
     """
     rosdep_cmd = [
         'rosdep',
@@ -82,14 +80,65 @@ def catkin_to_apt_name(catkin_name):
             )
 
         assert rosdep_output.splitlines()[0] == '#apt'
-        deb_name = rosdep_output.splitlines()[1]
+        deb_names = rosdep_output.splitlines()[1].split()
     except:
-        # Fall back to a dumb string format.
-        deb_name = 'ros-{distro}-{name}'.format(
-            distro=ROS_DISTRO,
-            name=str(catkin_name).replace('_', '-')
-        )
-    return deb_name
+        deb_names = [catkin_to_apt_name(catkin_name)]
+    return set(deb_names)
+
+
+def catkin_to_apt_name(catkin_name):
+    """Format a package name as if it were part of the distro.
+
+    Args:
+        catkin_name (str)
+
+    Returns:
+        str: Made up package name.
+    """
+    return 'ros-{distro}-{name}'.format(
+        distro=ROS_DISTRO,
+        name=str(catkin_name).replace('_', '-')
+    )
+
+
+def get_build_depends(package):
+    """Get list of deb package build depends.
+
+    Args:
+        package (catkin_pkg.package.Package)
+
+    Returns:
+        list(str): Build dependencies.
+    """
+    build_depends = map(
+        resolve_rosdep,
+        list(set(package.buildtool_depends) | set(package.build_depends))
+    )
+    build_depends = [d for s in build_depends for d in s]
+
+    build_depends.insert(0, 'debhelper (>= 9.0.0)')
+
+    return build_depends
+
+
+def get_run_depends(package):
+    """Get list of deb package run depends.
+
+    Args:
+        package (catkin_pkg.package.Package)
+
+    Returns:
+        list(str): Run dependencies.
+    """
+    run_depends = map(
+        resolve_rosdep,
+        package.run_depends
+    )
+    run_depends = [d for s in run_depends for d in s]
+
+    run_depends.insert(0, '${shlibs:Depends}, ${misc:Depends}')
+
+    return run_depends
 
 
 def generate_control(package):
@@ -122,12 +171,7 @@ def generate_control(package):
 
     control.append('Maintainer: {}'.format(maintainer))
 
-    build_depends = map(
-        catkin_to_apt_name,
-        list(set(package.buildtool_depends) | set(package.build_depends))
-    )
-
-    build_depends.insert(0, 'debhelper (>= 9.0.0)')
+    build_depends = get_build_depends(package)
 
     control.append('Build-Depends: {}'.format(
         ', '.join(build_depends)
@@ -145,12 +189,7 @@ def generate_control(package):
     control.append('Package: {}'.format(source))
     control.append('Architecture: any')
 
-    run_depends = map(
-        catkin_to_apt_name,
-        package.run_depends
-    )
-
-    run_depends.insert(0, '${shlibs:Depends}, ${misc:Depends}')
+    run_depends = get_run_depends(package)
 
     control.append('Depends: {}'.format(
         ', '.join(run_depends)
