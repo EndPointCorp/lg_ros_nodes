@@ -23,9 +23,7 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
                 "google_chrome":{
                 "extensions": [
-                    {
-                    "name": "test_extension1"
-                    }
+                    "test_extension1"
                 ]
                 }
             },
@@ -81,12 +79,8 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
                 "google_chrome":{
                     "extensions": [
-                        {
-                        "name": "test_extension1"
-                        },
-                        {
-                        "name": "test_extension2"
-                        }
+                        "test_extension1",
+                        "test_extension2"
                     ]
                 }
             },
@@ -116,12 +110,8 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true,
                 "google_chrome":{
                 "extensions": [
-                    {
-                    "name": "test_extension1"
-                    },
-                    {
-                    "name": "test_extension2"
-                    }
+                    "test_extension1",
+                    "test_extension2"
                 ]
                 }
             },
