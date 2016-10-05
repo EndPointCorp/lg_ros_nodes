@@ -25,11 +25,14 @@ CAPTURE_ARGS = [
     '!',
     'queue',
     '!',
-    'vp8enc', 'keyframe-max-dist=1', 'target-bitrate=1024000', 'deadline=33333', 'cpu-used=16', 'max-quantizer={max_quantizer}',
+    'vp8enc',
+    'keyframe-max-dist=1', 'target-bitrate=1024000', 'deadline=33333',
+    'cpu-used=16', 'max-quantizer={max_quantizer}',
     '!',
     'rtpvp8pay',
     '!',
-    'udpsink', 'host={addr}', 'port={port}', 'sync=false'
+    'udpsink',
+    'host={addr}', 'port={port}', 'sync=false'
 ]
 
 
