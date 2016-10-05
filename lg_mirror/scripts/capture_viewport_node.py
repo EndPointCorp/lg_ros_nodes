@@ -30,10 +30,14 @@ def main():
         raise ValueError('DISPLAY env or private "display" param required')
 
     show_pointer = str(rospy.get_param('~show_pointer', False)).lower()
+    framerate = int(rospy.get_param('~framerate', 30))
+    max_quantizer = int(rospy.get_param('~max_quantizer', 24))
 
     capture = CaptureViewport(viewport,
                               display,
                               show_pointer,
+                              framerate,
+                              max_quantizer,
                               janus_host,
                               janus_port)
 

@@ -22,6 +22,8 @@ All playback instances sourcing the same viewport must have identical dimensions
 * `viewport` [str] - Viewport to be managed by this node. Required.
 * `display` [str] - Xorg DISPLAY to use. Default: Value of DISPLAY environment.
 * `show_pointer` [bool] - Show the mouse pointer in the capture. Default: `false`
+* `framerate` [int] - Capture framerate in FPS. Default: `30`
+* `max_quantizer` [int] - Minimum image quality for VP8 encoding. Lower is higher quality `[0-63]`. Default: `24`
 * `janus_port` [int] - RTP port for this viewport. See Janus Gateway config for port:viewport mapping. Required.
 * `/lg_mirror/janus_stream_host` [str] - Target host for RTP datagrams. Can be any uni, multi, or broadcast address. Required.
 

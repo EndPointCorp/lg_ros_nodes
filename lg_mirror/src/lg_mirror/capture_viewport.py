@@ -21,11 +21,11 @@ CAPTURE_ARGS = [
     'videoconvert',
     '!',
     'capsfilter',
-    'caps=video/x-raw,width={target_width},height={target_height},framerate=30/1',
+    'caps=video/x-raw,width={target_width},height={target_height},framerate={framerate}/1',
     '!',
     'queue',
     '!',
-    'vp8enc', 'keyframe-max-dist=1', 'target-bitrate=1024000', 'deadline=33333', 'cpu-used=16', 'max-quantizer=24',
+    'vp8enc', 'keyframe-max-dist=1', 'target-bitrate=1024000', 'deadline=33333', 'cpu-used=16', 'max-quantizer={max_quantizer}',
     '!',
     'rtpvp8pay',
     '!',
@@ -34,10 +34,12 @@ CAPTURE_ARGS = [
 
 
 class CaptureViewport:
-    def __init__(self, viewport, display, show_pointer, janus_host, janus_port):
+    def __init__(self, viewport, display, show_pointer, framerate, max_quantizer, janus_host, janus_port):
         self.viewport = str(viewport)
         self.display = str(display)
         self.show_pointer = show_pointer
+        self.framerate = int(framerate)
+        self.max_quantizer = int(max_quantizer)
         self.janus_host = janus_host
         self.janus_port = janus_port
         self.proc = None
@@ -79,6 +81,8 @@ class CaptureViewport:
             endx=self.geometry.x + self.geometry.width - 1,
             endy=self.geometry.y + self.geometry.height - 1,
             show_pointer=str(self.show_pointer).lower(),
+            framerate=self.framerate,
+            max_quantizer=self.max_quantizer,
             target_width=target_width,
             target_height=target_height,
             addr=self.janus_host,
