@@ -2,6 +2,11 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Changes t spacenav globe and ros window ready extension
+* Contributors: wojciech ziniewicz
+
 1.4.10 (2016-10-06)
 -------------------
 

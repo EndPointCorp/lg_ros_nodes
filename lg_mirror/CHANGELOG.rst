@@ -2,6 +2,9 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.10 (2016-10-06)
 -------------------
 * NEver publish empty viewports

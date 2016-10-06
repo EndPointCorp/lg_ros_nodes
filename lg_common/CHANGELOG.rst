@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Changes t spacenav globe and ros window ready extension
+* amended the cmd args
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
 1.4.10 (2016-10-06)
 -------------------
 * Changed attrib name for retrieving command line args
