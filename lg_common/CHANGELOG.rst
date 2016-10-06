@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.11 (2016-10-06)
+-------------------
 * Changes t spacenav globe and ros window ready extension
 * amended the cmd args
 * Contributors: Wojciech Ziniewicz, wojciech ziniewicz
