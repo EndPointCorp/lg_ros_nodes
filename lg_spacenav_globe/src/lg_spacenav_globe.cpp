@@ -38,9 +38,9 @@ class PortalNavigatorNode {
 
 void PortalNavigatorNode::Run(void) {
   kiosk_pub_ = n_.advertise<geometry_msgs::PoseStamped>(
-      "/portal_nav/kiosk_goto_pose", 1);
+      "/lg_spacenav_globe/kiosk_goto_pose", 1);
   display_pub_ = n_.advertise<geometry_msgs::PoseStamped>(
-      "/portal_nav/display_goto_pose", 1);
+      "/lg_spacenav_globe/display_goto_pose", 1);
 
   ros::param::param<double>(
       "~joystick_sensitivity",
@@ -118,7 +118,7 @@ void PortalNavigatorNode::HandleKioskPose(
  * main()
  */
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "portal_nav");
+  ros::init(argc, argv, "lg_spacenav_globe");
   PortalNavigatorNode node;
   node.Run();
   return 0;
