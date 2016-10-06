@@ -139,7 +139,7 @@ class InteractiveSpacesMessagesFactory:
             "activity": "browser",
             "activity_config": {
                 "google_chrome":{
-                    "additional_cmd_args": [
+                    "command_line_args": [
                         "--disable-out-of-process-pac",
                         "--enable-benchmarking",
                         "--enable-crash-reporter"
