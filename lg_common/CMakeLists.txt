@@ -13,6 +13,7 @@ add_service_files(
   BrowserPool.srv
   USCSMessage.srv
   InitialUSCS.srv
+  BrowserURL.srv
 )
 
 add_message_files(
@@ -25,6 +26,7 @@ add_message_files(
   BrowserCmdArg.msg
   StringArray.msg
   Ready.msg
+  BrowserURL.msg
 )
 generate_messages()
 
