@@ -14,8 +14,6 @@ body {
   pointer-events: none;
 }
 </style>
-<script type="text/javascript" src="js/lib/adapter.js"></script>
-<script type="text/javascript" src="js/lib/janus.nojquery.js"></script>
 </head>
 
 <body>
@@ -26,8 +24,6 @@ document.addEventListener('contextmenu', function(e) {
   e.preventDefault();
 }, false);
 
-var janus;
-var streamHandle;
 var streamDiv = document.getElementById('stream');
 
 function getParameterByName(name, url) {
@@ -40,119 +36,23 @@ function getParameterByName(name, url) {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-var janusUrl = getParameterByName('janusUrl');
-if (!janusUrl) {
-  console.error('Must specify janusUrl param');
+var viewport = getParameterByName('viewport');
+if (!viewport) {
+  console.error('Must specify viewport param');
 }
 
-var streamDescription = getParameterByName('streamDescription');
-if (!streamDescription) {
-  console.error('Must specify streamDescription param');
+var serverUri = getParameterByName('serverUri');
+if (!serverUri) {
+  serverUri = 'http://localhost:8080';
 }
+console.log('Using serverUri: ', serverUri);
 
-(function init() {
-  Janus.init({
-    debug: false,
-    callback: function() {
-      console.log('janus initialized');
-      establish();
-    }
-  });
-})();
+var streamPath = serverUri + '/stream?topic=/lg_mirror/viewport/' + viewport;
 
-function establish() {
-  janus = new Janus({
-    server: janusUrl,
-    success: function() {
-      console.log('janus connection established:', janus.getServer());
-      attach();
-    },
-    error: function(cause) {
-      console.error(cause);
-    },
-    destroyed: function() {
-    }
-  });
-}
+var img = document.createElement('img');
+img.src = streamPath;
+streamDiv.appendChild(img);
 
-function attach() {
-  janus.attach({
-    plugin: 'janus.plugin.streaming',
-    success: function(pluginHandle) {
-      console.log('attached to streaming plugin with handle:', pluginHandle);
-      streamHandle = pluginHandle;
-      getStreams();
-    },
-    error: function(cause) {
-      console.error(cause);
-    },
-    onmessage: function(msg, jsep) {
-      if (jsep !== undefined && jsep !== null) {
-        console.log('handling sdp:', jsep);
-        streamHandle.createAnswer({
-          jsep: jsep,
-          media: { audioSend: false, videoSend: false },
-          success: function(ourJsep) {
-            var body = { request: 'start' };
-            streamHandle.send({ message: body, jsep: ourJsep });
-          },
-          error: function (cause) {
-            console.error(cause);
-          }
-        });
-      }
-    },
-    onremotestream: function(stream) {
-      console.log('got remote stream:', stream);
-      var video = document.createElement('video');
-      video.autoplay = true;
-      streamDiv.appendChild(video);
-      attachMediaStream(video, stream);
-      window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
-    }
-  });
-}
-
-function findStream(list) {
-  for (var i in list) {
-    var stream = list[i];
-    if (stream.description == streamDescription) {
-      return stream;
-    }
-  }
-  return null;
-}
-
-function getStreams() {
-  var body = { request: 'list' };
-  streamHandle.send({
-    message: body,
-    success: function(response) {
-      console.log('stream list response:', response);
-      
-      var stream = findStream(response.list);
-      if (stream) {
-        var streamId = stream.id;
-        startStream(streamId);
-      } else {
-        console.error('Could not find "' + streamDescription + '" in streams');
-      }
-    },
-    error: function (cause) {
-      console.error(cause);
-    }
-  });
-}
-
-function startStream(id) {
-  var body = { request: 'watch', id: id };
-  streamHandle.send({
-    message: body,
-    error: function (cause) {
-      console.error(cause);
-    }
-  });
-}
 </script>
 </body>
 

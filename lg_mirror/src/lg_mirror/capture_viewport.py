@@ -3,14 +3,12 @@ import threading
 from lg_common import ManagedWindow
 from lg_common.helpers import load_director_message
 from lg_common.msg import WindowGeometry
-from appctl_support import ProcController
+from lg_mirror.gst_publisher import GstPublisher
 from lg_mirror.constants import MIRROR_ACTIVITY_TYPE
-from lg_mirror.utils import viewport_to_multicast_group
-from lg_mirror.utils import get_mirror_port, aspect_scale_source
+from lg_mirror.utils import aspect_scale_source
 
 
-CAPTURE_CMD = 'gst-launch-1.0'
-CAPTURE_ARGS = [
+CAPTURE_PIPELINE = [
     'ximagesrc',
     'startx={startx}', 'starty={starty}', 'endx={endx}', 'endy={endy}',
     'display-name={display}', 'show-pointer={show_pointer}',
@@ -21,34 +19,24 @@ CAPTURE_ARGS = [
     'videoconvert',
     '!',
     'capsfilter',
-    'caps=video/x-raw,width={target_width},height={target_height},framerate={framerate}/1',
+    'caps=video/x-raw,format=UYVY,width={target_width},height={target_height},framerate={framerate}/1',
     '!',
-    'queue',
-    '!',
-    'vp8enc',
-    'keyframe-max-dist=1', 'target-bitrate=1024000', 'deadline=33333',
-    'cpu-used=16', 'max-quantizer={max_quantizer}',
-    '!',
-    'rtpvp8pay',
-    '!',
-    'udpsink',
-    'host={addr}', 'port={port}', 'sync=false'
+    'appsink name=sink'
 ]
 
 
 class CaptureViewport:
-    def __init__(self, viewport, display, show_pointer, framerate, max_quantizer, janus_host, janus_port):
+    def __init__(self, viewport, display, show_pointer, framerate, image_pub):
         self.viewport = str(viewport)
         self.display = str(display)
         self.show_pointer = show_pointer
         self.framerate = int(framerate)
-        self.max_quantizer = int(max_quantizer)
-        self.janus_host = janus_host
-        self.janus_port = janus_port
-        self.proc = None
-        self.lock = threading.Lock()
+        self.image_pub = image_pub
 
         self.geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
+        self.lock = threading.Lock()
+
+        self._gst = None
         self._previous_width = None
         self._previous_height = None
 
@@ -67,7 +55,7 @@ class CaptureViewport:
         )
 
         # If we were already capturing for this target, NOP.
-        if (self.proc is not None
+        if (self._gst is not None
                 and self._previous_width == target_width
                 and self._previous_height == target_height):
             return
@@ -77,7 +65,7 @@ class CaptureViewport:
         self._previous_width = target_width
         self._previous_height = target_height
 
-        args = map(lambda arg: arg.format(
+        pipeline = ' '.join(map(lambda arg: arg.format(
             startx=self.geometry.x,
             starty=self.geometry.y,
             # Subtract 1 from width/height to workaround gstreamer wierdness.
@@ -85,23 +73,17 @@ class CaptureViewport:
             endy=self.geometry.y + self.geometry.height - 1,
             show_pointer=str(self.show_pointer).lower(),
             framerate=self.framerate,
-            max_quantizer=self.max_quantizer,
             target_width=target_width,
             target_height=target_height,
-            addr=self.janus_host,
-            port=self.janus_port,
             display=self.display
-        ), CAPTURE_ARGS)
+        ), CAPTURE_PIPELINE))
 
-        cmd = [CAPTURE_CMD]
-        cmd.extend(args)
-
-        self.proc = ProcController(cmd)
-        self.proc.start()
+        self._gst = GstPublisher(pipeline, self.image_pub)
+        self._gst.start()
 
     def _end_capture(self):
-        if self.proc is not None:
-            self.proc.stop()
+        if self._gst is not None:
+            self._gst.stop()
         self._previous_width = None
         self._previous_height = None
 
