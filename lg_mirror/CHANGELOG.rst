@@ -2,6 +2,11 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* NEver publish empty viewports
+* Contributors: Wojciech Ziniewicz
+
 1.4.9 (2016-10-04)
 ------------------
 * Add lg_common as build_depends, because binaries need its generated messages.

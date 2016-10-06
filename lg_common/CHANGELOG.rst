@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Changed attrib name for retrieving command line args
+* Work for `#296 <https://github.com/EndPointCorp/lg_ros_nodes/issues/296>`_ (`#299 <https://github.com/EndPointCorp/lg_ros_nodes/issues/299>`_)
+* Changed path to extensions attribute
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
 1.4.9 (2016-10-04)
 ------------------
 

@@ -2,6 +2,9 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.9 (2016-10-04)
 ------------------
 

@@ -2,6 +2,9 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.4.9 (2016-10-04)
 ------------------
 * Handle multiple deps per entry in lg-ros-build
