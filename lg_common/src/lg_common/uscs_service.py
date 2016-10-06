@@ -77,33 +77,53 @@ class USCSService:
                 """
                 We became online
                 """
-                self.director_scene_publisher.publish(self.on_online_state)
-                self.online = True
+                if self.idempotently_publish_scene(self.on_online_state):
+                    self.online = True
             if message.data is False and self.on_offline_state:
                 """
                 We became offline
                 """
-                self.director_scene_publisher.publish(self.on_offline_state)
-                self.online = False
+                if self.idempotently_publish_scene(self.on_offline_state):
+                    self.online = False
 
     def handle_activity_message(self, message):
         """
         Accepts active/inactive state message
         and emits appropriate message from ivars
         """
-        if self.director_scene_publisher:
-            if message.data is True and self.on_active_state and self.active is False:
-                """
-                We became active
-                """
-                self.director_scene_publisher.publish(self.on_active_state)
-                self.active = True
-            if message.data is False and self.on_inactive_state and self.active is True:
-                """
-                We became inactive
-                """
-                self.director_scene_publisher.publish(self.on_inactive_state)
-                self.active = False
+        with self.lock:
+            if self.director_scene_publisher:
+                if message.data is True and self.on_active_state and self.active is False:
+                    """
+                    We became active
+                    """
+                    if self.idempotently_publish_scene(self.on_active_state):
+                        self.active = True
+                if message.data is False and self.on_inactive_state and self.active is True:
+                    """
+                    We became inactive
+                    """
+                    if self.idempotently_publish_scene(self.on_inactive_state):
+                        self.active = False
+
+    def idempotently_publish_scene(self, scene):
+        """
+        Attempt to publish a scene but first try to see
+        if the scene is not already published
+        """
+        rospy.logdebug("Current state is:%s" % self.state)
+        rospy.logdebug("Publishing new state: %s" % scene)
+
+        current_state = json.loads(self.state.message)
+        new_state = json.loads(scene.message)
+
+        if current_state['slug'] == new_state['slug']:
+            rospy.loginfo("Not publishing scene '%s' as it's already published" % current_state['slug'])
+        else:
+            rospy.loginfo("Publishing scene '%s' due to a callback for new state" % new_state['slug'])
+            self.director_scene_publisher.publish(scene)
+
+        return True
 
     def current_uscs_message(self, *args, **kwargs):
         """
@@ -127,7 +147,7 @@ class USCSService:
         Subscribed to track the current state
         """
         with self.lock:
-            rospy.loginfo("Getting message {}".format(message))
+            rospy.logdebug("Getting message {}".format(message))
             self.state = message
 
     def _get_json_from_url(self, url, to_json=True):
