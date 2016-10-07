@@ -71,7 +71,6 @@ class ReadinessNode(object):
             if slug:
                 self.uscs_messages[slug] = message
 
-
     def aggregate_browser_instances(self, message):
         """
         Callback for common browser topic with AdhocBrowsers msg type
@@ -129,7 +128,7 @@ class ReadinessNode(object):
             else:
                 return False
         else:
-            rospy.logdebug("Not enough browsers gathered - joined: %s, registered %s, total: %s" %(ready_browsers, registered_browsers, number_of_browsers_to_join))
+            rospy.logdebug("Not enough browsers gathered - joined: %s, registered %s, total: %s" % (ready_browsers, registered_browsers, number_of_browsers_to_join))
             return False
 
     def _publish_readiness(self):
