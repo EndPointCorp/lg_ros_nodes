@@ -2,6 +2,11 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Lg activity fixed by spacenav buffer change
+* Contributors: wojciech ziniewicz
+
 1.4.11 (2016-10-06)
 -------------------
 

@@ -2,6 +2,15 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* TEst fix + pep8
+* Readiness changes
+  - made director service wait for readiness node before sending messages
+  - made readiness evaluate total number of browsers using director topic
+  instead of non-comprehensive common browser topic
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
 1.4.11 (2016-10-06)
 -------------------
 * Changes t spacenav globe and ros window ready extension
