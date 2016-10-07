@@ -2,6 +2,177 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.12 (2016-10-07)
+-------------------
+* TEst fix + pep8
+* Readiness changes
+  - made director service wait for readiness node before sending messages
+  - made readiness evaluate total number of browsers using director topic
+  instead of non-comprehensive common browser topic
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
+1.4.11 (2016-10-06)
+-------------------
+* Changes t spacenav globe and ros window ready extension
+* amended the cmd args
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
+1.4.10 (2016-10-06)
+-------------------
+* Changed attrib name for retrieving command line args
+* Work for `#296 <https://github.com/EndPointCorp/lg_ros_nodes/issues/296>`_ (`#299 <https://github.com/EndPointCorp/lg_ros_nodes/issues/299>`_)
+* Changed path to extensions attribute
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
+1.4.9 (2016-10-04)
+------------------
+
+1.4.8 (2016-10-03)
+------------------
+
+1.4.7 (2016-10-03)
+------------------
+* More changelogs
+* Generated changelog
+* Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
+  * Urls monitoring
+  * Parse allowed urls config from get args
+  * page monitor parameters passing
+  * Page urls monitoring: readme, tests and get_args passing
+  * Add allowed urls to adhoc browser message
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Revert "REnamed helper method"
+  This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.
+  * Tests amendment and PEP8
+  * Added missing files
+  * Amending tests to match ros_window_ready new bahavior
+  * More amendments to ros_window_ready
+  * Fixed test roslaunch files
+  * Fixed log string eval and uscs tests
+  * Amended tests
+* REnamed helper method
+* Added rosbridge deps for adhoc browser
+* Made lg_mirror activate itself slightly later with custom preload message
+* Fixed verbosity of USCS
+* fixed undefined constant
+* Fix null pointer
+* Switch run_at to document start for ros_window_ready extension
+* Switch run_at to document start for ros_window_ready extension
+* Repeat window ready message once a sec.
+* PEP8 and some reduntant stuffz removal
+* Onboard test coverage
+  - added onboard_router symlink and made it deployable
+  - amended tests to cover mirroring only (it's the only one that we want
+  to support)
+  - amended tests slightly to go green
+* Onboard and touch routing
+  - added TDD stuffz for onboard router
+  - factored out shared methods from lg_mirror to helpers
+  - created test_helpers for message and window generation
+  - created onboard_router ros node
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz, Zdenek Maxa, kiselev-dv
+
+* Generated changelog
+* Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
+  * Urls monitoring
+  * Parse allowed urls config from get args
+  * page monitor parameters passing
+  * Page urls monitoring: readme, tests and get_args passing
+  * Add allowed urls to adhoc browser message
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Revert "REnamed helper method"
+  This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.
+  * Tests amendment and PEP8
+  * Added missing files
+  * Amending tests to match ros_window_ready new bahavior
+  * More amendments to ros_window_ready
+  * Fixed test roslaunch files
+  * Fixed log string eval and uscs tests
+  * Amended tests
+* REnamed helper method
+* Added rosbridge deps for adhoc browser
+* Made lg_mirror activate itself slightly later with custom preload message
+* Fixed verbosity of USCS
+* fixed undefined constant
+* Fix null pointer
+* Switch run_at to document start for ros_window_ready extension
+* Switch run_at to document start for ros_window_ready extension
+* Repeat window ready message once a sec.
+* PEP8 and some reduntant stuffz removal
+* Onboard test coverage
+  - added onboard_router symlink and made it deployable
+  - amended tests to cover mirroring only (it's the only one that we want
+  to support)
+  - amended tests slightly to go green
+* Onboard and touch routing
+  - added TDD stuffz for onboard router
+  - factored out shared methods from lg_mirror to helpers
+  - created test_helpers for message and window generation
+  - created onboard_router ros node
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz, Zdenek Maxa, kiselev-dv
+
+* Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
+  * Urls monitoring
+  * Parse allowed urls config from get args
+  * page monitor parameters passing
+  * Page urls monitoring: readme, tests and get_args passing
+  * Add allowed urls to adhoc browser message
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Revert "REnamed helper method"
+  This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.
+  * Tests amendment and PEP8
+  * Added missing files
+  * Amending tests to match ros_window_ready new bahavior
+  * More amendments to ros_window_ready
+  * Fixed test roslaunch files
+  * Fixed log string eval and uscs tests
+  * Amended tests
+* REnamed helper method
+* Added rosbridge deps for adhoc browser
+* Made lg_mirror activate itself slightly later with custom preload message
+* Fixed verbosity of USCS
+* fixed undefined constant
+* Fix null pointer
+* Switch run_at to document start for ros_window_ready extension
+* Switch run_at to document start for ros_window_ready extension
+* Repeat window ready message once a sec.
+* PEP8 and some reduntant stuffz removal
+* Onboard test coverage
+  - added onboard_router symlink and made it deployable
+  - amended tests to cover mirroring only (it's the only one that we want
+  to support)
+  - amended tests slightly to go green
+* Onboard and touch routing
+  - added TDD stuffz for onboard router
+  - factored out shared methods from lg_mirror to helpers
+  - created test_helpers for message and window generation
+  - created onboard_router ros node
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz, Zdenek Maxa, kiselev-dv
+
 1.4.6 (2016-09-28)
 ------------------
 

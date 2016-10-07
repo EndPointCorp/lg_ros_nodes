@@ -23,10 +23,35 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
                 "google_chrome":{
                 "extensions": [
-                    {
-                    "name": "test_extension1"
-                    }
+                    "test_extension1"
                 ]
+                }
+            },
+            "assets": [
+                "https://maps.google.com"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
+        self.test_one_browser_with_allowed_urls_msg = self._create_message("""
+        {
+        "description": "one browser with allowed urls",
+        "duration": 100,
+        "name": "one browser with allowed urls",
+        "resource_uri": "/director_api/scene/one_browser_with_allowed_urls/",
+        "slug": "one_browser_with_allowed_urls",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "google_chrome":{
+                    "allowed_urls": ["google.com", "endpoint.com"]
                 }
             },
             "assets": [
@@ -54,12 +79,8 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
                 "google_chrome":{
                     "extensions": [
-                        {
-                        "name": "test_extension1"
-                        },
-                        {
-                        "name": "test_extension2"
-                        }
+                        "test_extension1",
+                        "test_extension2"
                     ]
                 }
             },
@@ -89,12 +110,8 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true,
                 "google_chrome":{
                 "extensions": [
-                    {
-                    "name": "test_extension1"
-                    },
-                    {
-                    "name": "test_extension2"
-                    }
+                    "test_extension1",
+                    "test_extension2"
                 ]
                 }
             },
@@ -122,7 +139,7 @@ class InteractiveSpacesMessagesFactory:
             "activity": "browser",
             "activity_config": {
                 "google_chrome":{
-                    "additional_cmd_args": [
+                    "command_line_args": [
                         "--disable-out-of-process-pac",
                         "--enable-benchmarking",
                         "--enable-crash-reporter"

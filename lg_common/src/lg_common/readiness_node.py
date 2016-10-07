@@ -1,8 +1,11 @@
+import time
+import rospy
+import threading
+import json
+
 from lg_common.msg import AdhocBrowsers
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import Ready
-import time
-import rospy
 
 
 class ReadinessNode(object):
@@ -13,6 +16,7 @@ class ReadinessNode(object):
     self.state = {
                     'slug': 'scene-test',
                     'ready_browsers': []
+                    'num_browsers': 0,
                     'browsers': [
                         'adhoc_browser_f9db1u3b4',
                         'adhoc_browser_23048h5ue'
@@ -21,50 +25,64 @@ class ReadinessNode(object):
                  }
     """
     def __init__(self,
-                 readiness_publisher):
+                 readiness_publisher
+                 ):
+        self.lock = threading.Lock()
         self._purge_state(None)
         self.last_slug = None
+        self.uscs_messages = {}
         self.readiness_publisher = readiness_publisher
+
+    def node_ready(self, query):
+        """
+        Since director bridge should start running AFTER
+        readiness node gets activated, provide a service
+        that will become available after all subs and pubs
+        get initialized to signal director bridge that
+        readiness node is ready.
+        """
+        if self.lock and self.state:
+            return True
+        else:
+            return False
 
     def _purge_state(self, slug):
         """
         Purges the state and sets the most up to date slug
         """
-        self.state = {'slug': slug,
-                      'browsers': [],
-                      'ready_browsers': [],
-                      'timestamp': time.time()}
+        with self.lock:
+            self.state = {'slug': slug,
+                          'num_browsers': 0,
+                          'browsers': [],
+                          'ready_browsers': [],
+                          'timestamp': time.time()}
+
+    def save_uscs_message(self, message):
+        """
+        Saves director message scene to know
+        how many browsers should be activated for this scene
+
+        """
+        with self.lock:
+            rospy.loginfo("Got uscs message: %s" % message)
+            message = json.loads(message.message)
+            slug = message.get('slug', None)
+
+            if slug:
+                self.uscs_messages[slug] = message
 
     def aggregate_browser_instances(self, message):
         """
+        Callback for common browser topic with AdhocBrowsers msg type
+
         Append browser instance names to state var
         Append only the browsers that have the `preload` flag set to true
-
-        Purge the state if new director message was published.
-
-
-        case 1:
-         - scene X gets published (browserY, browserZ)
-         - one of the browsers from scene X doesnt start up (say browserZ)
-         - scene X gets published again (browserJ, browserK) - readiness will have following browsers
-         in it's waiting pool: browserZ browserJ browserK
-         - scene X browsers finally load up but browserZ is still dead
-         ^ solution? -> create quasi-unique browser IDS on the basis of browsers attribs
-
-        case 2:
-         - pool already has browserX and browserY in it
-         - scene with browserY and browserX gets emitted
-         - readiness waits for browserY and browserX to check in but
-         only browserY will come up because browserX will be left intact
-         in the pool because of asset persistence
         """
 
-        incoming_slug = message.scene_slug
         self.last_slug = self.state.get('slug', None)
 
-        if incoming_slug != self.last_slug:
-            # TODO (wz): what if slug is blank for consecutive scenes?
-            self._purge_state(incoming_slug)
+        if message.scene_slug != self.last_slug:
+            self._purge_state(message.scene_slug)
 
         for browser in message.browsers:
             if browser.preload:
@@ -72,12 +90,45 @@ class ReadinessNode(object):
                 if browser_id not in self.state['browsers']:
                     self.state['browsers'].append(browser_id)
 
-        rospy.loginfo("Gathered state: %s" % self.state)
+        rospy.loginfo("Gathered new browsers: %s" % self.state)
+
+    def _get_number_of_prelaodable_browsers_to_join(self):
+        """
+        Parses last USCS message and returns the number of preloadable
+        browsers that should join the scene
+        """
+        num_browsers = 0
+
+        try:
+            windows = self.uscs_messages[self.state['slug']]['windows']
+        except KeyError:
+            slug = self.state['slug']
+            rospy.logwarn("Could not get number of preloadable browsers for this USCS message for slug: %s" % slug)
+            return 0
+
+        for window in windows:
+            if window['activity'] == 'browser':
+                activity_config = window.get('activity_config', None)
+                if activity_config:
+                    preload = activity_config.get('preload', None)
+                    if preload:
+                        num_browsers += 1
+
+        rospy.logdebug("Got number of preloadable browsers = %s" % num_browsers)
+        return num_browsers
 
     def _ready(self):
-        if set(self.state['ready_browsers']) == set(self.state['browsers']):
-            return True
+        number_of_browsers_to_join = self._get_number_of_prelaodable_browsers_to_join()
+        ready_browsers = set(self.state['ready_browsers'])
+        registered_browsers = self.state['browsers']
+
+        if len(ready_browsers) == number_of_browsers_to_join:
+            if set(ready_browsers) == set(registered_browsers):
+                return True
+            else:
+                return False
         else:
+            rospy.logdebug("Not enough browsers gathered - joined: %s, registered %s, total: %s" % (ready_browsers, registered_browsers, number_of_browsers_to_join))
             return False
 
     def _publish_readiness(self):
@@ -89,25 +140,28 @@ class ReadinessNode(object):
             rospy.loginfo("Became ready: %s" % self.state)
             self.readiness_publisher.publish(ready_msg)
         else:
-            rospy.logwarn("Tried to emit a /director/ready message without browser instnces")
+            rospy.logdebug("Tried to emit a /director/ready message without browser instnces")
 
     def handle_readiness(self, message):
         """
         Wait for browser extensions to check in under /director/window/ready
         Emit a /director/ready message as soon as all browsers that checked
         in under /browser_service/browsers got ready
+
+        The number of browsers needs to match the number of preloadable
+        browers in the director scene message
         """
         if message.data:
             instance_name = message.data
-            rospy.loginfo("Got instance name ready signal from %s" % instance_name)
+            rospy.logdebug("Got instance name ready signal from %s" % instance_name)
             if instance_name in self.state['browsers']:
                 if instance_name not in self.state['ready_browsers']:
                     self.state['ready_browsers'].append(instance_name)
                     rospy.loginfo("State after one of the browsers became ready %s" % self.state)
                 else:
-                    rospy.logwarn("Readiness node received browser instance id that's alread7 ready")
+                    rospy.logdebug("Readiness node received browser instance id that was already ready")
             else:
-                rospy.logwarn("Readiness node received unknown browser instance id")
+                rospy.logdebug("Readiness node received unknown browser instance id")
 
         if self._ready():
             self._publish_readiness()

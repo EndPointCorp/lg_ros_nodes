@@ -93,7 +93,8 @@ class ManagedWindow(object):
         with self.lock:
             cmd = self._get_command()
             self._cleanup_proc()
-            rospy.logdebug(' '.join(cmd))
+            cmd_str = ' '.join(cmd)
+            rospy.logdebug(cmd_str)
             try:
                 awesome.setup_environ()
             except Exception as e:
@@ -105,6 +106,6 @@ class ManagedWindow(object):
                 self.proc.wait()
                 self.proc = None
             except OSError:
-                rospy.logerr('failed to run {}'.format(XDOTOOL_BIN))
+                rospy.logerr('failed to run {}'.format(cmd_str))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

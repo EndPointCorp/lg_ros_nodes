@@ -2,6 +2,60 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.12 (2016-10-07)
+-------------------
+
+1.4.11 (2016-10-06)
+-------------------
+
+1.4.10 (2016-10-06)
+-------------------
+* NEver publish empty viewports
+* Contributors: Wojciech Ziniewicz
+
+1.4.9 (2016-10-04)
+------------------
+* Add lg_common as build_depends, because binaries need its generated messages.
+* Contributors: Matt Vollrath
+
+1.4.8 (2016-10-03)
+------------------
+
+1.4.7 (2016-10-03)
+------------------
+* More changelogs
+* Generated changelog
+* Added rosbridge deps for adhoc browser
+* Made lg_mirror activate itself slightly later with custom preload message
+* PEP8
+* Onboard and touch routing
+  - added TDD stuffz for onboard router
+  - factored out shared methods from lg_mirror to helpers
+  - created test_helpers for message and window generation
+  - created onboard_router ros node
+* Contributors: Wojciech Ziniewicz
+
+* Generated changelog
+* Added rosbridge deps for adhoc browser
+* Made lg_mirror activate itself slightly later with custom preload message
+* PEP8
+* Onboard and touch routing
+  - added TDD stuffz for onboard router
+  - factored out shared methods from lg_mirror to helpers
+  - created test_helpers for message and window generation
+  - created onboard_router ros node
+* Contributors: Wojciech Ziniewicz
+
+* Added rosbridge deps for adhoc browser
+* Made lg_mirror activate itself slightly later with custom preload message
+* PEP8
+* Onboard and touch routing
+  - added TDD stuffz for onboard router
+  - factored out shared methods from lg_mirror to helpers
+  - created test_helpers for message and window generation
+  - created onboard_router ros node
+* Contributors: Wojciech Ziniewicz
+
 1.4.6 (2016-09-28)
 ------------------
 In this release we switch mirroring playback from GStreamer xvimagesink playback to an ad hoc browser connecting to [Janus Gateway](https://github.com/meetecho/janus-gateway) via WebRTC.

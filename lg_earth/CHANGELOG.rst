@@ -2,6 +2,107 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.12 (2016-10-07)
+-------------------
+
+1.4.11 (2016-10-06)
+-------------------
+
+1.4.10 (2016-10-06)
+-------------------
+
+1.4.9 (2016-10-04)
+------------------
+
+1.4.8 (2016-10-03)
+------------------
+
+1.4.7 (2016-10-03)
+------------------
+* More changelogs
+* Generated changelog
+* Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
+  * Urls monitoring
+  * Parse allowed urls config from get args
+  * page monitor parameters passing
+  * Page urls monitoring: readme, tests and get_args passing
+  * Add allowed urls to adhoc browser message
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Revert "REnamed helper method"
+  This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.
+  * Tests amendment and PEP8
+  * Added missing files
+  * Amending tests to match ros_window_ready new bahavior
+  * More amendments to ros_window_ready
+  * Fixed test roslaunch files
+  * Fixed log string eval and uscs tests
+  * Amended tests
+* REnamed helper method
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz
+
+* Generated changelog
+* Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
+  * Urls monitoring
+  * Parse allowed urls config from get args
+  * page monitor parameters passing
+  * Page urls monitoring: readme, tests and get_args passing
+  * Add allowed urls to adhoc browser message
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Revert "REnamed helper method"
+  This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.
+  * Tests amendment and PEP8
+  * Added missing files
+  * Amending tests to match ros_window_ready new bahavior
+  * More amendments to ros_window_ready
+  * Fixed test roslaunch files
+  * Fixed log string eval and uscs tests
+  * Amended tests
+* REnamed helper method
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz
+
+* Implement page urls monitor extension (`#293 <https://github.com/EndPointCorp/lg_ros_nodes/issues/293>`_)
+  * Urls monitoring
+  * Parse allowed urls config from get args
+  * page monitor parameters passing
+  * Page urls monitoring: readme, tests and get_args passing
+  * Add allowed urls to adhoc browser message
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Tests for allowed urls message passing
+  * Revert "REnamed helper method"
+  This reverts commit 1b6343469bb20d3fe3bf00a7098063f78c904131.
+  * Tests amendment and PEP8
+  * Added missing files
+  * Amending tests to match ros_window_ready new bahavior
+  * More amendments to ros_window_ready
+  * Fixed test roslaunch files
+  * Fixed log string eval and uscs tests
+  * Amended tests
+* REnamed helper method
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz
+
 1.4.6 (2016-09-28)
 ------------------
 

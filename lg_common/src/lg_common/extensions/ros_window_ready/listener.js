@@ -36,7 +36,9 @@ function createRosUrl(params) {
 function loadGETParams(url, callback) {
     var params = parseUrl(url);
     if (params['ros_instance_name'] !== undefined) {
-        callback(params);
+      console.log("Read url", url);
+      callback(params);
+      return;
     }
     else {
         // woops, looks like google maps
@@ -44,8 +46,10 @@ function loadGETParams(url, callback) {
             for (var i = 0; i < histItems.length; i++) {
                 var histItem = histItems[i];
                 if (histItem.url && histItem.url.indexOf('ros_instance_name') >= 0) {
+                    console.log("Red from history", histItem.url);
                     var params = parseUrl(histItem.url);
                     callback(params);
+                    return;
                 }
             }
             console.log('ERROR: Failed to load ros_instance_name and rosbridge parameters');
@@ -71,11 +75,16 @@ State.prototype.setFlag = function(key) {
 };
 
 State.prototype.callWaiters = function(flag) {
-    for(var wk in this.waiters) {
-        if (this.waiters.hasOwnProperty(wk)) {
-           this.waiters[wk](this.flags, flag);
-        }
+  var changes = false;
+  for(var wk in this.waiters) {
+    if (this.waiters.hasOwnProperty(wk)) {
+      changes = changes || this.waiters[wk](this.flags, flag);
     }
+  }
+
+  if (changes) {
+    this.callWaiters(null);
+  }
 };
 
 State.prototype.addWaiter = function(key, waiter) {
@@ -181,9 +190,10 @@ WindowReadyExt.prototype.sendMsg = function() {
     this.readyTopic.publish({'data': this.ros_window_name});
     console.log("Sent " + this.ros_window_name);
 
+    var self = this;
     this.repeatInterval = setInterval(function() {
-        this.readyTopic.publish({'data': this.ros_window_name});
-        console.log("Repeat window ready msg " + this.ros_window_name);
+        self.readyTopic.publish({'data': self.ros_window_name});
+        console.log("Repeat window ready msg " + self.ros_window_name);
     }, 1000);
 };
 
@@ -218,13 +228,13 @@ WindowReadyExt.prototype.attachListeners = function() {
 // * Set ros_instance_name
 WindowReadyExt.prototype.applyUrlParams = function(params) {
     this.rosUrl = createRosUrl(params);
-
     // Used !! to explicitly convert to boolean
     this.use_app_event = !!params['use_app_event'];
 
     var instanceName = params['ros_instance_name'];
     if (instanceName !== undefined) {
         this.ros_window_name = instanceName;
+        console.log("Acuired ros_window_name", this.ros_window_name);
         this.state.setFlag('urlParsed');
     }
 };

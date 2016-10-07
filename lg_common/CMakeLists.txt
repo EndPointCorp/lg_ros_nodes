@@ -10,6 +10,7 @@ catkin_python_setup()
 
 add_service_files(
   FILES
+  NodeReady.srv
   BrowserPool.srv
   USCSMessage.srv
   InitialUSCS.srv
@@ -74,5 +75,6 @@ if (CATKIN_ENABLE_TESTING)
   add_rostest(test/online/state_changer.test)
   add_rostest(test/online/uscs_service.test)
   add_rostest(test/online/uscs_initial_state_adhoc_browser.test)
-  add_rostest(test/online/test_adhoc_browser_pool.test)
+  add_rostest(test/online/test_adhoc_browser_pool_rosbridge_params.test)
+  add_rostest(test/online/test_adhoc_browser_url_monitor.test)
 endif()

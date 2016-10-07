@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_mirror</name>
-  <version>1.4.6</version>
+  <version>1.4.12</version>
   <description>Xorg viewport mirroring</description>
 
   <maintainer email="lg@endpoint.com">End Point LG</maintainer>
@@ -17,6 +17,7 @@
   <build_depend>message_generation</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>boost</build_depend>
+  <build_depend>lg_common</build_depend>
 
   <!-- Some test deps are listed here as build deps for convenience. -->
   <build_depend>xvfb</build_depend>

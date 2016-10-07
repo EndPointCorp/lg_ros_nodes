@@ -7,13 +7,12 @@
   "windows": [
     {
     "activity": "browser",
-    "activity_config": {},
     "assets": [
-      "http://lg-head/touchscreen_assets/index.html"
+      "http://google.com"
     ],
-    "height": 1080,
+    "height": 480,
     "presentation_viewport": "touchscreen",
-    "width": 1920,
+    "width": 640,
     "x_coord": 0,
     "y_coord": 0
   }

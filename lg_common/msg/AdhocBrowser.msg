@@ -5,6 +5,7 @@ bool preload
 bool custom_preload_event
 string user_agent
 string binary
+string[] allowed_urls
 lg_common/WindowGeometry geometry
 lg_common/BrowserExtension[] extensions
 lg_common/BrowserCmdArg[] command_line_args

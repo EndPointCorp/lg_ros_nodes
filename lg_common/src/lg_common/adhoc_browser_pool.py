@@ -181,6 +181,12 @@ class AdhocBrowserPool():
             binary = DEFAULT_BINARY
         return binary
 
+    def _get_browser_allowed_urls(self, adhoc_browser_msg):
+        if adhoc_browser_msg.allowed_urls:
+            return adhoc_browser_msg.allowed_urls
+
+        return None
+
     def _create_browser(self, new_browser_pool_id, new_browser, initial_state=None):
         """
         Accept AdhocBrowser message and an id.
@@ -210,6 +216,14 @@ class AdhocBrowserPool():
                                                     'rosbridge_secure',
                                                     1 if self.rosbridge_secure else 0)
 
+        allowed_urls = self._get_browser_allowed_urls(new_browser)
+
+        if allowed_urls:
+            new_browser.url = self._inject_get_argument(
+                new_browser.url,
+                'allowed_urls',
+                allowed_urls
+            )
         rospy.logdebug(
             "Creating new browser %s with id %s and url %s" %
             (new_browser, new_browser_pool_id, new_browser.url)
@@ -309,9 +323,9 @@ class AdhocBrowserPool():
         remove = []
 
         for browser in self.browsers.values():
-            # all preloadable browsers from previous scene can be
-            # safely marked for removal
-            if (browser.scene_slug != data.scene_slug) and (browser.id.split('_')[0] in preloadable_prefixes):
+            # if browser is not member of incoming scene (data),
+            # then it may be marked for removal
+            if (browser.scene_slug != data.scene_slug) and (browser.id.split('_')[0] not in preloadable_prefixes):
                 remove.append(browser.id)
             # edgcase coverage: if two consecutive scenes
             # have an identical slug then remove all preloadable
@@ -361,10 +375,12 @@ class AdhocBrowserPool():
         arg_list = []
         for item in get_args.items():
             if type(item[1]) == list:
-                arg = str(item[0]) + "=" + str(item[1][0])
+                for val in item[1]:
+                    arg = str(item[0]) + "=" + str(val)
+                    arg_list.append(arg)
             else:
                 arg = str(item[0]) + "=" + str(item[1])
-            arg_list.append(arg)
+                arg_list.append(arg)
 
         new_q = '&'.join(arg_list)
         url_parts = url_parts._replace(query=new_q)

@@ -2,6 +2,34 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.12 (2016-10-07)
+-------------------
+
+1.4.11 (2016-10-06)
+-------------------
+
+1.4.10 (2016-10-06)
+-------------------
+
+1.4.9 (2016-10-04)
+------------------
+* Handle multiple deps per entry in lg-ros-build
+  Was breaking the build on a change to the GStreamer rosdep entries made in August.
+  https://github.com/ros/rosdistro/commit/c52f479dbd4346e854adaba389c92705d604bf1b
+* Contributors: Matt Vollrath
+
+1.4.8 (2016-10-03)
+------------------
+
+1.4.7 (2016-10-03)
+------------------
+* More changelogs
+* Generated changelog
+* Contributors: Wojciech Ziniewicz
+
+* Generated changelog
+* Contributors: Wojciech Ziniewicz
+
 1.4.6 (2016-09-28)
 ------------------
 

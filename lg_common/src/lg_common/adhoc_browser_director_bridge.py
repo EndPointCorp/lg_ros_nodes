@@ -64,6 +64,12 @@ class AdhocBrowserDirectorBridge():
         adhoc_browsers_list = self._extract_browsers_from_message(data)
 
         for adhoc_browser in adhoc_browsers_list:
+            if adhoc_browser.allowed_urls:
+                monitor_page_urls_ext = BrowserExtension()
+                monitor_page_urls_ext.name = 'monitor_page_urls'
+                adhoc_browser.extensions.insert(0, monitor_page_urls_ext)
+
+        for adhoc_browser in adhoc_browsers_list:
             if adhoc_browser.preload:
                 ros_window_ready_ext = BrowserExtension()
                 ros_window_ready_ext.name = 'ros_window_ready'
@@ -110,8 +116,9 @@ class AdhocBrowserDirectorBridge():
         """
         binary = browser_config.get('binary_path', '/usr/bin/google-chrome')
         user_agent = browser_config.get('user_agent', None)
-        browser_cmd_args = browser_config.get('additional_cmd_args', None)
+        browser_cmd_args = browser_config.get('command_line_args', None)
         extensions = browser_config.get('extensions', None)
+        allowed_urls = browser_config.get('allowed_urls', None)
 
         if binary:
             adhoc_browser.binary = binary
@@ -128,8 +135,12 @@ class AdhocBrowserDirectorBridge():
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
-                browser_extension.name = str(extension['name'])
+                browser_extension.name = str(extension)
                 adhoc_browser.extensions.append(browser_extension)
+
+        if allowed_urls:
+            for aurl in allowed_urls:
+                adhoc_browser.allowed_urls.append(str(aurl))
 
         return adhoc_browser
 
@@ -188,7 +199,13 @@ class AdhocBrowserDirectorBridge():
 
         return adhoc_browsers
 
-    def _serialize_adhoc_browser(self, adhoc_browser, filtered_slots=['scene_slug']):
+    def _serialize_adhoc_browser(
+            self,
+            adhoc_browser,
+            filtered_slots=[
+                'scene_slug',
+                'allowed_urls'
+            ]):
         """
         Serialize adhoc browser but filter out
         scene slug that it belongs to, to prevent
