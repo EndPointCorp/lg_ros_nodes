@@ -58,6 +58,7 @@ def main():
     rospy.Subscriber('/director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
     rospy.Subscriber('/director/ready', Ready, adhocbrowser_pool.unhide_browsers)
 
+    rospy.wait_for_service('/readiness_node/ready', 15)
     handle_initial_state(adhocbrowser_director_bridge.translate_director)
 
     """
