@@ -323,9 +323,9 @@ class AdhocBrowserPool():
         remove = []
 
         for browser in self.browsers.values():
-            # all preloadable browsers from previous scene can be
-            # safely marked for removal
-            if (browser.scene_slug != data.scene_slug) and (browser.id.split('_')[0] in preloadable_prefixes):
+            # if browser is not member of incoming scene (data),
+            # then it may be marked for removal
+            if (browser.scene_slug != data.scene_slug) and (browser.id.split('_')[0] not in preloadable_prefixes):
                 remove.append(browser.id)
             # edgcase coverage: if two consecutive scenes
             # have an identical slug then remove all preloadable
