@@ -20,9 +20,7 @@ def main():
                                           Ready,
                                           queue_size=20)
 
-
     readiness_node = ReadinessNode(readiness_publisher)
-
 
     handle_initial_state(readiness_node.save_uscs_message)
 
