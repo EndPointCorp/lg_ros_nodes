@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.12 (2016-10-07)
+-------------------
 * TEst fix + pep8
 * Readiness changes
   - made director service wait for readiness node before sending messages
