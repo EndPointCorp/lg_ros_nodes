@@ -65,4 +65,8 @@ class TouchRouter:
         """
         with self.lock:
             rospy.loginfo("New listener %s" % data)
+
+            if len(self.route_viewports) == 0:
+                self.route_viewports = self.default_viewports
+
             publish_cb(self.route_viewports)

@@ -5,14 +5,13 @@
 // nudged poses based on the previous camera pose, then sends the results to the
 // supplied CameraBuffer.
 
-#ifndef EXPERIMENTAL_ACME_SRC_PORTAL_CATKIN_SRC_PORTAL_NAV_SRC_JOYSTICK_NAVIGATOR_H_
-#define EXPERIMENTAL_ACME_SRC_PORTAL_CATKIN_SRC_PORTAL_NAV_SRC_JOYSTICK_NAVIGATOR_H_
+#ifndef EXPERIMENTAL_ACME_SRC_PORTAL_CATKIN_SRC_LG_SPACENAV_GLOBE_SRC_JOYSTICK_NAVIGATOR_H_
+#define EXPERIMENTAL_ACME_SRC_PORTAL_CATKIN_SRC_LG_SPACENAV_GLOBE_SRC_JOYSTICK_NAVIGATOR_H_
 
 #include <time.h>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
-
 #include "lg_spacenav_globe/PortalPose.h"
 
 class CameraBuffer;
@@ -84,4 +83,4 @@ class JoystickNavigator {
   ros::Publisher *display_pub_;
 };
 
-#endif  // EXPERIMENTAL_ACME_SRC_PORTAL_CATKIN_SRC_PORTAL_NAV_SRC_JOYSTICK_NAVIGATOR_H_
+#endif  // EXPERIMENTAL_ACME_SRC_PORTAL_CATKIN_SRC_LG_SPACENAV_GLOBE_SRC_JOYSTICK_NAVIGATOR_H_

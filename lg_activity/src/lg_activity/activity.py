@@ -44,7 +44,7 @@ class ActivitySource:
      triggered the activity by applying the provided strategy type
      - erase aggregated messages upon "is_active" call
     """
-    DELTA_MSG_COUNT = 5
+    DELTA_MSG_COUNT = 50
 
     def __init__(self, memory_limit=1024000,
                  topic=None, message_type=None,

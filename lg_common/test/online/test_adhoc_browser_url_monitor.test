@@ -20,6 +20,10 @@
       <param name="viewport" value="center"/>
     </node>
 
+    <!-- readiness node for handling preloading -->
+    <node name="readiness_node" pkg="lg_common" type="readiness.py"/>
+    <!-- end of readiness node -->
+
     <!-- Local rosbridge and rosapi. -->
     <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3"/>
 

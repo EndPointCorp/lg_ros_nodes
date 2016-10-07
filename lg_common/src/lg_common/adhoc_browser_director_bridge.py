@@ -116,7 +116,7 @@ class AdhocBrowserDirectorBridge():
         """
         binary = browser_config.get('binary_path', '/usr/bin/google-chrome')
         user_agent = browser_config.get('user_agent', None)
-        browser_cmd_args = browser_config.get('additional_cmd_args', None)
+        browser_cmd_args = browser_config.get('command_line_args', None)
         extensions = browser_config.get('extensions', None)
         allowed_urls = browser_config.get('allowed_urls', None)
 
@@ -135,7 +135,7 @@ class AdhocBrowserDirectorBridge():
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
-                browser_extension.name = str(extension['name'])
+                browser_extension.name = str(extension)
                 adhoc_browser.extensions.append(browser_extension)
 
         if allowed_urls:
