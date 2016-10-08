@@ -55,8 +55,7 @@ class OnboardRouter(object):
             if windows:
                 received_active_viewport = route_touch_to_viewports(
                     windows,
-                    route_touch_key='route_touch',
-                    activity_type='mirror')
+                    route_touch_key='route_touch')
                 if received_active_viewport:
                     self.active_viewport = list(received_active_viewport)
                 else:

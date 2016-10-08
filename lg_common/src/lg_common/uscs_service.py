@@ -148,7 +148,9 @@ class USCSService:
         """
         with self.lock:
             rospy.logdebug("Getting message {}".format(message))
-            self.state = message
+            self.state = USCSMessageResponse()
+            self.state.type = message.type
+            self.state.message = message.message
 
     def _get_json_from_url(self, url, to_json=True):
         """

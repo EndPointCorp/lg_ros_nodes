@@ -46,7 +46,7 @@ class TouchRouter:
         """
         with self.lock:
             windows = scene.get('windows', [])
-            route_viewports = route_touch_to_viewports(windows, route_touch_key=MIRROR_TOUCH_CONFIG_KEY, activity_type=MIRROR_ACTIVITY_TYPE)
+            route_viewports = route_touch_to_viewports(windows, route_touch_key=MIRROR_TOUCH_CONFIG_KEY)
             self.route_viewports = route_viewports
 
             if len(route_viewports) == 0:
