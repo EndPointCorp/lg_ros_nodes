@@ -5,7 +5,7 @@ from gi.repository import Gst
 Gst.init(None)
 
 import rospy
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CameraInfo, Image
 
 
 class PipelineException(Exception):
@@ -17,9 +17,10 @@ class VideoFormatException(Exception):
 
 
 class GstPublisher(threading.Thread):
-    def __init__(self, pipeline, publisher):
+    def __init__(self, pipeline, image_pub, info_pub):
         super(GstPublisher, self).__init__()
-        self.publisher = publisher
+        self.image_pub = image_pub
+        self.info_pub = info_pub
 
         self.pipeline = Gst.parse_launch(pipeline)
         if self.pipeline is None:
@@ -33,7 +34,8 @@ class GstPublisher(threading.Thread):
                 'Could not find an element named "sink" in pipeline: {}'.format(pipeline)
             )
 
-        self.msg = Image()
+        self.image_msg = Image()
+        self.info_msg = CameraInfo()
 
     @staticmethod
     def get_encoding_stride(fmt):
@@ -90,17 +92,22 @@ class GstPublisher(threading.Thread):
 
     def _publish_sample(self):
         sample = self.sink.emit('pull-sample')
+        timestamp = rospy.Time.now()
         buf = sample.get_buffer()
         caps = sample.get_caps()
         width, height, fmt = GstPublisher.parse_caps(caps)
         encoding, stride = GstPublisher.get_encoding_stride(fmt)
-        self.msg.width = width
-        self.msg.height = height
-        self.msg.encoding = encoding
-        self.msg.step = width * stride
-        self.msg.header.stamp = rospy.Time.now()
-        self.msg.data = buf.extract_dup(0, buf.get_size())
-        self.publisher.publish(self.msg)
+        self.info_msg.width = width
+        self.info_msg.height = height
+        self.info_msg.header.stamp = timestamp
+        self.image_msg.width = width
+        self.image_msg.height = height
+        self.image_msg.encoding = encoding
+        self.image_msg.step = width * stride
+        self.image_msg.header.stamp = timestamp
+        self.image_msg.data = buf.extract_dup(0, buf.get_size())
+        self.info_pub.publish(self.info_msg)
+        self.image_pub.publish(self.image_msg)
 
     def run(self):
         self.pipeline.set_state(Gst.State.PLAYING)

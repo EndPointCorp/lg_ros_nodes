@@ -14,14 +14,15 @@ import rospy
 from lg_common import ManagedWindow
 from appctl_support import ProcController
 from interactivespaces_msgs.msg import GenericMessage
-from sensor_msgs.msg import Image
-from lg_mirror.utils import get_viewport_topic
+from sensor_msgs.msg import CameraInfo, Image
+from lg_mirror.utils import get_viewport_raw_topic, get_viewport_info_topic
 
 CAPTURE_VIEWPORT = os.environ.get('CAPTURE_VIEWPORT')
 CAPTURE_DISPLAY = os.environ.get('DISPLAY')
 CAPTURE_WIDTH = int(os.environ.get('CAPTURE_WIDTH'))
 CAPTURE_HEIGHT = int(os.environ.get('CAPTURE_HEIGHT'))
-CAPTURE_TOPIC = get_viewport_topic(CAPTURE_VIEWPORT)
+CAPTURE_TOPIC = get_viewport_raw_topic(CAPTURE_VIEWPORT)
+INFO_TOPIC = get_viewport_info_topic(CAPTURE_VIEWPORT)
 
 SOCK_TIMEOUT = 3  # seconds
 
@@ -72,12 +73,12 @@ HALF_SCALE_SCENE = GenericMessage(
     ))
 
 
-class ImageCapture:
+class TopicCapture:
     def __init__(self):
-        self.images = []
+        self.msgs = []
 
-    def handle_image(self, msg):
-        self.images.append(msg)
+    def handle_msg(self, msg):
+        self.msgs.append(msg)
 
 
 class TestCaptureViewport(unittest.TestCase):
@@ -86,8 +87,10 @@ class TestCaptureViewport(unittest.TestCase):
         geometry = ManagedWindow.lookup_viewport_geometry(CAPTURE_VIEWPORT)
         geometry_str = '{}x{}x24'.format(CAPTURE_WIDTH, CAPTURE_HEIGHT)
 
-        self.capture = ImageCapture()
-        self.capture_sub = rospy.Subscriber(CAPTURE_TOPIC, Image, self.capture.handle_image)
+        self.image_capture = TopicCapture()
+        self.image_capture_sub = rospy.Subscriber(CAPTURE_TOPIC, Image, self.image_capture.handle_msg)
+        self.info_capture = TopicCapture()
+        self.info_capture_sub = rospy.Subscriber(INFO_TOPIC, CameraInfo, self.info_capture.handle_msg)
 
         # Run an Xvfb with the configured DISPLAY and geometry matching the
         # viewport exactly.
@@ -107,33 +110,46 @@ class TestCaptureViewport(unittest.TestCase):
         rospy.sleep(0.5)
         self.xvfb.stop()
 
-    def test_capture_image(self):
-        self.assertEqual(0, len(self.capture.images))
+    def test_capture_image_and_info(self):
+        self.assertEqual(0, len(self.image_capture.msgs))
+        self.assertEqual(0, len(self.info_capture.msgs))
 
         self.pub.publish(CAPTURE_SCENE)
 
         rospy.sleep(1.0)
 
-        first = self.capture.images[0]
-        self.assertEqual(CAPTURE_WIDTH, first.width)
-        self.assertEqual(CAPTURE_HEIGHT, first.height)
+        first_image = self.image_capture.msgs[0]
+        self.assertEqual(CAPTURE_WIDTH, first_image.width)
+        self.assertEqual(CAPTURE_HEIGHT, first_image.height)
+        first_info = self.info_capture.msgs[0]
+        self.assertEqual(CAPTURE_WIDTH, first_info.width)
+        self.assertEqual(CAPTURE_HEIGHT, first_info.height)
+
+        self.assertEqual(first_image.header.stamp, first_info.header.stamp)
+        self.assertEqual(first_image.header.seq, first_info.header.seq)
 
         # Now try a different viewport size.
         self.pub.publish(HALF_SCALE_SCENE)
 
         rospy.sleep(1.0)
 
-        last = self.capture.images[-1]
-        self.assertEqual(CAPTURE_WIDTH / 2, last.width)
-        self.assertEqual(CAPTURE_HEIGHT / 2, last.height)
+        last_image = self.image_capture.msgs[-1]
+        self.assertEqual(CAPTURE_WIDTH / 2, last_image.width)
+        self.assertEqual(CAPTURE_HEIGHT / 2, last_image.height)
+        last_info = self.info_capture.msgs[-1]
+        self.assertEqual(CAPTURE_WIDTH / 2, last_info.width)
+        self.assertEqual(CAPTURE_HEIGHT / 2, last_info.height)
 
         # We shouldn't get any more images after publishing blank scene.
         self.pub.publish(BLANK_SCENE)
 
         rospy.sleep(1.0)
-        num_images = len(self.capture.images)
+        num_images = len(self.image_capture.msgs)
+        num_infos = len(self.info_capture.msgs)
+        self.assertEqual(num_images, num_infos)
         rospy.sleep(1.0)
-        self.assertEqual(num_images, len(self.capture.images))
+        self.assertEqual(num_images, len(self.image_capture.msgs))
+        self.assertEqual(num_infos, len(self.info_capture.msgs))
 
 
 if __name__ == '__main__':

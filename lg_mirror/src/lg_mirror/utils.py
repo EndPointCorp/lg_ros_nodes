@@ -36,16 +36,46 @@ def aspect_scale_source(source_geometry, dest_geometry):
     return int(round(width)), int(round(height))
 
 
-def get_viewport_topic(viewport_name):
+def get_viewport_base_topic(viewport_name):
     """
-    Return a good topic name for the viewport.
+    Return a good base topic name for the viewport.
+
+    Actual image transport topic names will be based on this name.
+
+    See http://wiki.ros.org/image_transport
 
     Args:
         viewport_name (str)
 
     Returns:
-        str: Topic name for the viewport.
+        str: Base topic name for the viewport.
     """
     return '/lg_mirror/viewport/{}'.format(viewport_name)
+
+
+def get_viewport_raw_topic(viewport_name):
+    """
+    Return raw image topic for a viewport.
+
+    Args:
+        viewport_name (str)
+
+    Returns:
+        str: Raw image topic for the viewport.
+    """
+    return get_viewport_base_topic(viewport_name) + '/image_raw'
+
+
+def get_viewport_info_topic(viewport_name):
+    """
+    Return CameraInfo topic for a viewport.
+
+    Args:
+        viewport_name (str)
+
+    Returns:
+        str: CameraInfo topic for the viewport.
+    """
+    return get_viewport_base_topic(viewport_name) + '/camera_info'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

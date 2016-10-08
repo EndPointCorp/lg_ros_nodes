@@ -26,12 +26,13 @@ CAPTURE_PIPELINE = [
 
 
 class CaptureViewport:
-    def __init__(self, viewport, display, show_pointer, framerate, image_pub):
+    def __init__(self, viewport, display, show_pointer, framerate, image_pub, info_pub):
         self.viewport = str(viewport)
         self.display = str(display)
         self.show_pointer = show_pointer
         self.framerate = int(framerate)
         self.image_pub = image_pub
+        self.info_pub = info_pub
 
         self.geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
         self.lock = threading.Lock()
@@ -78,7 +79,7 @@ class CaptureViewport:
             display=self.display
         ), CAPTURE_PIPELINE))
 
-        self._gst = GstPublisher(pipeline, self.image_pub)
+        self._gst = GstPublisher(pipeline, self.image_pub, self.info_pub)
         self._gst.start()
 
     def _end_capture(self):

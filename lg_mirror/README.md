@@ -28,7 +28,8 @@ All playback instances sourcing the same viewport must have identical dimensions
 
 #### Published Topics
 
-* `/lg_mirror/viewport/{viewport_name}` [Image] - Raw viewport stream.
+* `/lg_mirror/viewport/{viewport_name}/image` [sensors\_msgs/Image] - Raw viewport stream.
+* `/lg_mirror/viewport/{viewport_name}/camera_info` [sensor\_msgs/Camerainfo] - [Image metadata](http://wiki.ros.org/image_pipeline/CameraInfo).
 
 ### capture\_webcam\_node
 
