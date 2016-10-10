@@ -2,6 +2,16 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Test precedence matters
+* Refactored adhoc browser tests and fixed a bug
+* properly set the uscs message response
+* fix route_touch_to_viewports
+  No longer filter by activity_type.
+* Fixed preloading logic
+* Contributors: Jacob Minshall, Wojciech Ziniewicz, wojciech ziniewicz
+
 1.4.12 (2016-10-07)
 -------------------
 * TEst fix + pep8
