@@ -17,6 +17,7 @@ add_service_files(
   srv
   FILES
   EvdevDeviceInfo.srv
+  TouchRoutes.srv
 )
 
 catkin_python_setup()
