@@ -47,7 +47,7 @@ if (!serverUri) {
 }
 console.log('Using serverUri: ', serverUri);
 
-var streamPath = serverUri + '/stream?topic=/lg_mirror/viewport/' + viewport;
+var streamPath = serverUri + '/stream?topic=/lg_mirror/viewport/' + viewport + '/image_raw';
 
 var img = document.createElement('img');
 img.src = streamPath;
