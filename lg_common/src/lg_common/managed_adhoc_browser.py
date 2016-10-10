@@ -16,13 +16,14 @@ class ManagedAdhocBrowser(ManagedBrowser):
     def __init__(self, geometry=None, log_level=0, command_line_args=[],
                  extensions=[], binary='/usr/bin/google-chrome',
                  user_agent=None, slug=None, url=None, uid=None,
-                 scene_slug=None):
+                 scene_slug=None, preload=False):
 
         self.scene_slug = scene_slug
         self.slug = slug
         self.id = uid
         self.url = url
         self.geometry = geometry
+        self.preload = preload
         self.log_level = log_level
         self.user_agent = user_agent
         self.binary = binary

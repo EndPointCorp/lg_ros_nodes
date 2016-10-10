@@ -2,6 +2,13 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.13 (2016-10-10)
+-------------------
+* Changes for `#301 <https://github.com/EndPointCorp/lg_ros_nodes/issues/301>`_
+* fix route_touch_to_viewports
+  No longer filter by activity_type.
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
 1.4.12 (2016-10-07)
 -------------------
 
