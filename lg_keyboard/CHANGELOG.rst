@@ -2,8 +2,8 @@
 Changelog for package lg_keyboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.13 (2016-10-10)
+-------------------
 * fix route_touch_to_viewports
   No longer filter by activity_type.
 * Contributors: Jacob Minshall
