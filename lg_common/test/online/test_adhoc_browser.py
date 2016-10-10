@@ -566,7 +566,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-    def test_10_browser_id_is_predictable(self):
+    def test_9a_browser_id_is_predictable(self):
         """
         emit browser message twice. ID of two browsers should be identical
         """
@@ -576,7 +576,7 @@ class TestAdhocBrowser(unittest.TestCase):
                 'test_one_browser_with_two_extensions_and_preloading_msg'
             )
         )
-        rospy.sleep(self.preloading_grace_time)
+        rospy.sleep(self.message_emission_grace_time)
         self.assertEqual(
             self.browser_service_mock_center.messages[0].browsers[0].id.startswith('81MzhqG_'),
             True
