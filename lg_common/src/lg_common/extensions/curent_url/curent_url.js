@@ -19,7 +19,7 @@ function createRosUrl(params) {
 function CurrentUrlExt(params) {
     this.parameters = params || {};
     this.readInterval = params.curent_url_read_interval || 500;
-    this.topicKey = params.curent_url_topic_key
+    this.browserKey = params.curent_url_key
                     || params.ros_instance_name;
 
     this.rosbridgeUrl = createRosUrl(this.parameters);
@@ -53,7 +53,11 @@ CurrentUrlExt.prototype.handleUrl = function(curentURL) {
 
 CurrentUrlExt.prototype.sendURL = function(url) {
     if (this.topic) {
-        this.topic.publish({'data': url});
+        this.topic.publish({
+            'url': url,
+            'id': this.browserKey,
+            'viewport': ''
+        });
     }
     this.lastURL = url;
 };
@@ -66,7 +70,7 @@ CurrentUrlExt.prototype.onRosConneted = function(error) {
 
     this.topic = new ROSLIB.Topic({
         ros: this.ros,
-        name: '/browser/' + this.topicKey + '/current_url',
+        name: '/browser/extension/current_url',
         messageType: 'std_msgs/String',
         throttle_rate: 33
     });
