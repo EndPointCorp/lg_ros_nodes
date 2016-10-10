@@ -8,7 +8,7 @@ import sys
 from std_msgs.msg import String
 
 
-class USCSService:
+class BrowserURLService:
 
     def __init__(self):
         """
@@ -18,7 +18,7 @@ class USCSService:
         self.scene = None
         self.lock = threading.Lock()
 
-    def handle_uscs_message(self, message):
+    def handle_browsers_message(self, message):
         """
         Update state with initial urls
         """
@@ -35,5 +35,8 @@ class USCSService:
     def get_browsers_urls(self):
         pass
 
-    def _get_browsers_and_urls(self, uscs_msg):
-        return {}
+    def _get_browsers_and_urls(self, browsers_msg):
+        browsers = {}
+        for b in browsers_msg.browsers:
+            browsers[b.id] = b.url
+        return browsers
