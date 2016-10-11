@@ -94,7 +94,7 @@ class AdhocBrowserPool():
         """
         serialized_browsers = {}
         for browser_id, browser in self.browsers.items():
-            serialized_browser = json.loads(browser.__str__()
+            serialized_browser = json.loads(browser.__str__())
             for key in self.browsers_info[browser_id].keys():
                 serialized_browser[key] = self.browsers_info[browser_id][key]
 
