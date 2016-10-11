@@ -138,7 +138,7 @@ class AdhocBrowserPool():
                       BrowserPool,
                       self.process_service_request)
 
-        rospy.Subscriber("/browser/{}/update_url".format(self.viewport_name),
+        rospy.Subscriber("/browser_service/{}/update_url".format(self.viewport_name),
                          BrowserURL,
                          self.process_url_update)
 

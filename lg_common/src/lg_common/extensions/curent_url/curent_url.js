@@ -68,14 +68,16 @@ CurrentUrlExt.prototype.onRosError = function(error) {
 
 CurrentUrlExt.prototype.onRosConneted = function(error) {
 
+    var topicName = '/browser_service/' + this.view + '/update_url';
     this.topic = new ROSLIB.Topic({
         ros: this.ros,
-        name: '/browser/extension/current_url',
+        name: topicName,
         messageType: 'std_msgs/String',
         throttle_rate: 33
     });
 
     this.topic.advertise();
+    console.log('Topic ' + topicName + ' advertized');
 
     if (this.lastURL) {
         this.sendURL(this.lastURL);
