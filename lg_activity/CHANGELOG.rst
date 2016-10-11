@@ -2,6 +2,11 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Refactored lg_activity and tested it with proximity sensor
+* Contributors: Wojciech Ziniewicz
+
 1.4.13 (2016-10-10)
 -------------------
 
