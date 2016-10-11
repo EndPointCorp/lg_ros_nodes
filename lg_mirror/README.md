@@ -21,6 +21,7 @@ All playback instances sourcing the same viewport must have identical dimensions
 * `display` [str] - Xorg DISPLAY to use. Default: Value of DISPLAY environment.
 * `show_pointer` [bool] - Show the mouse pointer in the capture. Default: `false`
 * `framerate` [int] - Capture framerate in FPS. Default: `30`
+* `quality` [int] - Capture jpeg quality [0-100]. Default: `85`
 
 #### Subscribed Topics
 
@@ -137,8 +138,10 @@ For full mirror and touch capability, you will need to configure:
 
 The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requires a couple of params:
 
-* `serverUri` : Path to `web_video_server`. Default: `http://localhost:8080`
 * `viewport` : Viewport name. Required.
+* `rosbridge_host` : Rosbridge host. Default: `localhost`
+* `rosbridge_port` : Rosbridge port. Default: `9090`
+* `rosbridge_secure` : Use wss for rosbridge? Default: `false`
 
 ## Viewport Capture Bandwidth
 
