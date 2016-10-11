@@ -24,7 +24,6 @@ function CurrentUrlExt(params) {
 
     this.rosbridgeUrl = createRosUrl(this.parameters);
     this.lastURL = null;
-    this.createTopic();
     this.initRos();
     this.initWatch();
 }
@@ -55,8 +54,7 @@ CurrentUrlExt.prototype.sendURL = function(url) {
     if (this.topic) {
         this.topic.publish({
             'url': url,
-            'id': this.browserKey,
-            'viewport': this.viewport
+            'browser_id': this.browserKey
         });
     }
     this.lastURL = url;
@@ -68,7 +66,7 @@ CurrentUrlExt.prototype.onRosError = function(error) {
 
 CurrentUrlExt.prototype.onRosConneted = function(error) {
 
-    var topicName = '/browser_service/' + this.view + '/update_url';
+    var topicName = '/browser_service/' + this.viewport + '/update_url';
     this.topic = new ROSLIB.Topic({
         ros: this.ros,
         name: topicName,
@@ -90,7 +88,7 @@ CurrentUrlExt.prototype.initRos = function(url) {
     }
     var extension = this;
 
-    console.log("This is rosUrl: " + this.rosUrl);
+    console.log("This is rosUrl: " + this.rosbridgeUrl);
 
     this.ros = new ROSLIB.Ros();
 

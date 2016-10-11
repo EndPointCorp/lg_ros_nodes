@@ -5,7 +5,6 @@ import glob
 import lg_common
 import os
 import time
-import re
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
@@ -15,7 +14,9 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers, BrowserURL
 from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import BrowserPool
 from managed_browser import DEFAULT_BINARY
-from urlparse import urlparse, parse_qs
+from urlparse import urlparse, parse_qs, urlunparse
+from urllib import urlencode
+
 
 
 class AdhocBrowserPool():
@@ -73,13 +74,17 @@ class AdhocBrowserPool():
     def _normalize_url(self, current_url, injected_get_args):
         replace = []
 
-        for match in re.findall('(\?|\&)([^=]+)\=([^&]+)', current_url):
-            for injected in injected_get_args:
-                if (injected in match):
-                    replace.append(match)
+        url_parts = urlparse(current_url)
+        if url_parts.query:
+            get_args = parse_qs(url_parts.query, keep_blank_values=True)
+            filtered = dict( (k, v) for k, v in get_args.iteritems() if not k in injected_get_args)
 
-        for s in replace:
-            current_url = current_url.replace(current_url, s, '')
+            newurl = urlunparse([
+                url_parts.scheme, url_parts.netloc, url_parts.path, url_parts.params,
+                urlencode(filtered, doseq=True), # query string
+                url_parts.fragment ])
+
+            return newurl
 
         return current_url
 
@@ -99,8 +104,8 @@ class AdhocBrowserPool():
                 serialized_browser[key] = self.browsers_info[browser_id][key]
 
             serialized_browser['current_url_normalized'] = self._normalize_url(
-                serialized_browser['current_url'],
-                serialized_browser['injected_get_args'])
+                serialized_browser.get('current_url', ''),
+                serialized_browser.get('injected_get_args', []))
 
             serialized_browsers[browser_id] = serialized_browser
 
@@ -132,7 +137,7 @@ class AdhocBrowserPool():
         with self.lock:
             browser_info = self.browsers_info.get(msg.browser_id, None)
             if browser_info:
-                browser_info['curent_url'] = msg.url
+                browser_info['current_url'] = msg.url
                 browser_info['url_ts'] = time.time()
 
     def _init_service(self):
@@ -254,7 +259,7 @@ class AdhocBrowserPool():
         browser_info = {}
         browser_info['ros_instance_name'] = new_browser_pool_id
         browser_info['initial_url'] = new_browser.url
-        browser_info['curent_url'] = new_browser.url
+        browser_info['current_url'] = new_browser.url
         browser_info['url_ts'] = time.time()
         browser_info['creation_ts'] = time.time()
         browser_info['injected_get_args'] = []
@@ -286,8 +291,8 @@ class AdhocBrowserPool():
         browser_info['injected_get_args'].append('ros_instance_name')
 
         # Add viewport to evry browser
-        new_browser.url = self._inject_get_argument(new_browser.url, 'ros_instance_name', new_browser_pool_id)
-        browser_info['injected_get_args'].append('ros_instance_name')
+        new_browser.url = self._inject_get_argument(new_browser.url, 'viewport', self.viewport_name)
+        browser_info['injected_get_args'].append('viewport')
 
         # Default host for rosbridge is localhost
         # and we are not going to change that very often

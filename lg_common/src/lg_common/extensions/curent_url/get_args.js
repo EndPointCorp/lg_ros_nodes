@@ -31,8 +31,6 @@ function getQueryParams(qs) {
 }
 
 function requiredArgExists(url, required) {
-    if
-
     if(isArray(required)) {
         for (var i = 0; i < required.length; i++) {
             if (url.indexOf(required[i]) < 0) {
