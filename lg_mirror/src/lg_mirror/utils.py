@@ -53,29 +53,16 @@ def get_viewport_base_topic(viewport_name):
     return '/lg_mirror/viewport/{}'.format(viewport_name)
 
 
-def get_viewport_raw_topic(viewport_name):
+def get_viewport_image_topic(viewport_name):
     """
-    Return raw image topic for a viewport.
+    Return compressed image topic for a viewport.
 
     Args:
         viewport_name (str)
 
     Returns:
-        str: Raw image topic for the viewport.
+        str: Compressed image topic for the viewport.
     """
-    return get_viewport_base_topic(viewport_name) + '/image_raw'
-
-
-def get_viewport_info_topic(viewport_name):
-    """
-    Return CameraInfo topic for a viewport.
-
-    Args:
-        viewport_name (str)
-
-    Returns:
-        str: CameraInfo topic for the viewport.
-    """
-    return get_viewport_base_topic(viewport_name) + '/camera_info'
+    return get_viewport_base_topic(viewport_name) + '/compressed'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

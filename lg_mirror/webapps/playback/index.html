@@ -2,6 +2,10 @@
 <html>
 
 <head>
+<script type="text/javascript" src="js/lib/bson.min.js"></script>
+<script type="text/javascript" src="js/lib/eventemitter2.min.js"></script>
+<script type="text/javascript" src="js/lib/roslib.min.js"></script>
+<script type="text/javascript" src="js/util.js"></script>
 <style>
 body {
   background-color: black;
@@ -10,7 +14,7 @@ body {
   margin: 0;
   overflow: hidden;
 }
-#stream, video {
+#stream, img {
   pointer-events: none;
 }
 </style>
@@ -26,32 +30,41 @@ document.addEventListener('contextmenu', function(e) {
 
 var streamDiv = document.getElementById('stream');
 
-function getParameterByName(name, url) {
-  if (!url) url = window.location.href;
-  name = name.replace(/[\[\]]/g, "\\$&");
-  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-    results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
+var rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
+var rosbridgePort = getParameterByName('rosbridge_port', String, '9090');
+var rosbridgeSecure = getParameterByName('rosbridge_secure', stringToBoolean, 'false');
+var rosbridgeUrl = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
 
-var viewport = getParameterByName('viewport');
+var viewport = getParameterByName('viewport', String);
 if (!viewport) {
   console.error('Must specify viewport param');
 }
 
-var serverUri = getParameterByName('serverUri');
-if (!serverUri) {
-  serverUri = 'http://localhost:8080';
-}
-console.log('Using serverUri: ', serverUri);
-
-var streamPath = serverUri + '/stream?topic=/lg_mirror/viewport/' + viewport + '/image_raw';
+// Must match the form of lg_mirror.utils.get_viewport_image_topic()
+var streamTopic = '/lg_mirror/viewport/' + viewport + '/compressed';
 
 var img = document.createElement('img');
-img.src = streamPath;
 streamDiv.appendChild(img);
+
+var ros = new ROSLIB.Ros();
+ros.connect(rosbridgeUrl);
+var streamTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: streamTopic,
+  messageType: 'sensor_msgs/CompressedImage'
+});
+
+var lastBlobUrl;
+streamTopic.subscribe(function(msg) {
+  var contentType = 'image/' + msg.format;
+  var blob = new Blob([msg.data.buffer], {type: contentType});
+  var blobUrl = URL.createObjectURL(blob);
+  img.src = blobUrl;
+  if (lastBlobUrl) {
+    URL.revokeObjectURL(lastBlobUrl);
+  }
+  lastBlobUrl = blobUrl;
+});
 
 </script>
 </body>

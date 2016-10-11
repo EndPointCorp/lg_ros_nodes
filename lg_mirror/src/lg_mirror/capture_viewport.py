@@ -18,21 +18,27 @@ CAPTURE_PIPELINE = [
     '!',
     'videoconvert',
     '!',
-    'capsfilter',
-    'caps=video/x-raw,format=UYVY,width={target_width},height={target_height},framerate={framerate}/1',
+    'queue',
     '!',
-    'appsink name=sink'
+    'jpegenc',
+    'quality={quality}',
+    '!',
+    'capsfilter',
+    'caps=image/jpeg,width={target_width},height={target_height},framerate={framerate}/1',
+    '!',
+    'appsink',
+    'name=sink'
 ]
 
 
 class CaptureViewport:
-    def __init__(self, viewport, display, show_pointer, framerate, image_pub, info_pub):
+    def __init__(self, viewport, display, show_pointer, framerate, quality, image_pub):
         self.viewport = str(viewport)
         self.display = str(display)
         self.show_pointer = show_pointer
         self.framerate = int(framerate)
+        self.quality = int(quality)
         self.image_pub = image_pub
-        self.info_pub = info_pub
 
         self.geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
         self.lock = threading.Lock()
@@ -74,12 +80,13 @@ class CaptureViewport:
             endy=self.geometry.y + self.geometry.height - 1,
             show_pointer=str(self.show_pointer).lower(),
             framerate=self.framerate,
+            quality=self.quality,
             target_width=target_width,
             target_height=target_height,
             display=self.display
         ), CAPTURE_PIPELINE))
 
-        self._gst = GstPublisher(pipeline, self.image_pub, self.info_pub)
+        self._gst = GstPublisher(pipeline, self.image_pub)
         self._gst.start()
 
     def _end_capture(self):

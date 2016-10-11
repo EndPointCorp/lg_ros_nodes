@@ -5,7 +5,7 @@ from gi.repository import Gst
 Gst.init(None)
 
 import rospy
-from sensor_msgs.msg import CameraInfo, Image
+from sensor_msgs.msg import CompressedImage
 
 
 class PipelineException(Exception):
@@ -17,10 +17,9 @@ class VideoFormatException(Exception):
 
 
 class GstPublisher(threading.Thread):
-    def __init__(self, pipeline, image_pub, info_pub):
+    def __init__(self, pipeline, image_pub):
         super(GstPublisher, self).__init__()
         self.image_pub = image_pub
-        self.info_pub = info_pub
 
         self.pipeline = Gst.parse_launch(pipeline)
         if self.pipeline is None:
@@ -34,11 +33,11 @@ class GstPublisher(threading.Thread):
                 'Could not find an element named "sink" in pipeline: {}'.format(pipeline)
             )
 
-        self.image_msg = Image()
-        self.info_msg = CameraInfo()
+        self.image_msg = CompressedImage()
 
     @staticmethod
     def get_encoding_stride(fmt):
+        # only useful when publishing raw images
         encoding = None
         stride = None
 
@@ -74,6 +73,7 @@ class GstPublisher(threading.Thread):
 
     @staticmethod
     def parse_caps(caps):
+        # only useful when publishing raw images
         width = None
         height = None
         fmt = None
@@ -94,19 +94,12 @@ class GstPublisher(threading.Thread):
         sample = self.sink.emit('pull-sample')
         timestamp = rospy.Time.now()
         buf = sample.get_buffer()
-        caps = sample.get_caps()
-        width, height, fmt = GstPublisher.parse_caps(caps)
-        encoding, stride = GstPublisher.get_encoding_stride(fmt)
-        self.info_msg.width = width
-        self.info_msg.height = height
-        self.info_msg.header.stamp = timestamp
-        self.image_msg.width = width
-        self.image_msg.height = height
-        self.image_msg.encoding = encoding
-        self.image_msg.step = width * stride
+        #caps = sample.get_caps()
+        #width, height, fmt = GstPublisher.parse_caps(caps)
+        # TODO(mv): get format from caps
+        self.image_msg.format = 'jpeg'
         self.image_msg.header.stamp = timestamp
         self.image_msg.data = buf.extract_dup(0, buf.get_size())
-        self.info_pub.publish(self.info_msg)
         self.image_pub.publish(self.image_msg)
 
     def run(self):
