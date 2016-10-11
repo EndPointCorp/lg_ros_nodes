@@ -19,8 +19,8 @@ function createRosUrl(params) {
 function CurrentUrlExt(params) {
     this.parameters = params || {};
     this.readInterval = params.curent_url_read_interval || 500;
-    this.browserKey = params.curent_url_key
-                    || params.ros_instance_name;
+    this.browserKey = params.ros_instance_name;
+    this.viewport = params.viewport;
 
     this.rosbridgeUrl = createRosUrl(this.parameters);
     this.lastURL = null;
@@ -56,7 +56,7 @@ CurrentUrlExt.prototype.sendURL = function(url) {
         this.topic.publish({
             'url': url,
             'id': this.browserKey,
-            'viewport': ''
+            'viewport': this.viewport
         });
     }
     this.lastURL = url;
