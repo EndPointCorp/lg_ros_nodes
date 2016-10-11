@@ -16,7 +16,6 @@ from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import BrowserPool
 from managed_browser import DEFAULT_BINARY
 from urlparse import urlparse, parse_qs
-from jsonmerge import merge
 
 
 class AdhocBrowserPool():
@@ -95,12 +94,15 @@ class AdhocBrowserPool():
         """
         serialized_browsers = {}
         for browser_id, browser in self.browsers.items():
-            serialized_browser = merge(json.loads(browser.__str__()),
-                                       self.browsers_info[browser_id])
-            serialized_browsers[browser_id] = serialized_browser
+            serialized_browser = json.loads(browser.__str__()
+            for key in self.browsers_info[browser_id].keys():
+                serialized_browser[key] = self.browsers_info[browser_id][key]
+
             serialized_browser['current_url_normalized'] = self._normalize_url(
                 serialized_browser['current_url'],
                 serialized_browser['injected_get_args'])
+
+            serialized_browsers[browser_id] = serialized_browser
 
         return serialized_browsers
 
