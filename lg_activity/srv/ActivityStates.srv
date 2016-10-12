@@ -1,2 +1,2 @@
 ---
-ActivityState[] activity_states
+string state

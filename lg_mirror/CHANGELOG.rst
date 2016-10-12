@@ -2,6 +2,9 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.14 (2016-10-11)
+-------------------
+
 1.4.13 (2016-10-10)
 -------------------
 * Changes for `#301 <https://github.com/EndPointCorp/lg_ros_nodes/issues/301>`_
