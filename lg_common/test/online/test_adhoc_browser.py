@@ -193,7 +193,8 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
         browsers_on_center = self.get_browsers_thru_service('center')
-        self.assertEqual('test_extension1' in browsers_on_center.items()[0][1]['extensions'], True)
+        # Two service extensions + extensions from message
+        self.assertEqual('test_extension1' in browsers_on_center.items()[0][1]['extensions'][2], True)
 
     def test_2a_chrome_extension_initialization_with_two_extensions(self):
         """
