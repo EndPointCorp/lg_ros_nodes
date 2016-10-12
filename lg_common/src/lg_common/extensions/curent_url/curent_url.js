@@ -70,7 +70,7 @@ CurrentUrlExt.prototype.onRosConneted = function(error) {
     this.topic = new ROSLIB.Topic({
         ros: this.ros,
         name: topicName,
-        messageType: 'std_msgs/String',
+        messageType: 'lg_common/BrowserURL',
         throttle_rate: 33
     });
 
