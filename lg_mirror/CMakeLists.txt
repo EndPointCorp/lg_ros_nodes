@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_mirror)
 
 find_package(catkin REQUIRED COMPONENTS
+  lg_common
   roscpp
   message_generation
 )
