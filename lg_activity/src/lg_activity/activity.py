@@ -3,13 +3,13 @@
 import rospy
 import sys
 import threading
+import json
 
 from lg_common.helpers import unpack_activity_sources
 from lg_common.helpers import list_of_dicts_is_homogenous
 from lg_common.helpers import rewrite_message_to_dict
 from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
-from lg_activity.msg import ActivityState
 from lg_activity.srv import Active
 from std_msgs.msg import Bool
 
@@ -44,7 +44,7 @@ class ActivitySource:
      triggered the activity by applying the provided strategy type
      - erase aggregated messages upon "is_active" call
     """
-    DELTA_MSG_COUNT = 5
+    DELTA_MSG_COUNT = 15
 
     def __init__(self, memory_limit=1024000,
                  topic=None, message_type=None,
@@ -166,9 +166,19 @@ class ActivitySource:
         self.messages.append(deserialized_msg)
 
     def _messages_met_value_constraints(self):
+        """
+        Checks accumulated messages (typically 1 message)
+        And finds out if value of the slot (e.g. 3.17)
+        is within value_min:value_max range. If it's within
+        the range, then method returns False meaning that
+        values exceeded the range (making system active)
+
+        Values outside of the value_min/value_max range make
+        system become inactive.
+        """
         for message in self.messages:
-            value = message.values()[0]
-            if value >= self.value_min and value <= self.value_max:
+            value = float(message.values()[0])
+            if value >= float(self.value_min) and value <= float(self.value_max):
                 return False
         return True
 
@@ -208,17 +218,13 @@ class ActivitySource:
             return True  # if list is not homogenous than there was activity
 
     def _is_value_active(self):
-        if len(self.messages) < 1:
-            rospy.loginfo("Not enough messages (minimum of 1) for 'value' strategy")
-            return
-
         if self._messages_met_value_constraints():
-            self.messages = []
             self.callback(self.topic, state=False, strategy='value')
+            self.messages = []
             return False  # messages met the constraints
         else:
-            self.messages = []
             self.callback(self.topic, state=True, strategy='value')
+            self.messages = []
             return True  # messages didnt meet the constraints
 
     def _is_activity_active(self):
@@ -413,7 +419,7 @@ class ActivityTracker:
         elif (not self.sources_active_within_timeout) and self.active:
             self.active = False
             self.publisher.publish(Bool(data=False))
-            rospy.loginfo("State turned from True to False because of state: %s" % self.sources_active_within_timeout)
+            rospy.loginfo("State turned from True to False because no sources were active within the timeout")
             rospy.loginfo("States: %s" % self.activity_states)
         else:
             rospy.logdebug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
@@ -446,16 +452,7 @@ class ActivityTracker:
         Should return boolean activity state based on timeout and sources states
         Used mainly for Service for debugging purposes
         """
-        activity_states_list = []
-
-        for state_name, state_data in self.activity_states.iteritems():
-            a = ActivityState(topic=state_name,
-                              state=state_data['state'],
-                              timestamp=state_data['time'])
-
-            activity_states_list.append(a)
-
-        return activity_states_list
+        return json.dumps(self.activity_states)
 
     def poll_activities(self):
         for source in self.initialized_sources:

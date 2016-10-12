@@ -9,6 +9,7 @@ from lg_common.helpers import on_new_scene, load_director_message
 from lg_common.msg import StringArray
 from lg_common.helpers import handle_initial_state
 from lg_mirror.touch_router import SubscribeListener
+from lg_mirror.srv import TouchRoutes
 
 
 def main():
@@ -36,6 +37,8 @@ def main():
         touch_router.handle_scene(publish_active_touch_routes, d)
 
     handle_initial_state(handle_initial_scene_msg)
+
+    rospy.Service('/lg_mirror/active_touch_routes', TouchRoutes, touch_router.handle_service_request)
 
     scene_cb = partial(touch_router.handle_scene, publish_active_touch_routes)
 

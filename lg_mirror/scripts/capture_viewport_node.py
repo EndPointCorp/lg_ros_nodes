@@ -3,9 +3,10 @@
 import os
 import rospy
 from lg_mirror.capture_viewport import CaptureViewport
-from lg_mirror.utils import viewport_to_multicast_group
+from lg_mirror.utils import get_viewport_image_topic
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state
+from sensor_msgs.msg import CompressedImage
 
 
 def required_param(key, coer=None):
@@ -21,8 +22,6 @@ def main():
     rospy.init_node('mirror_capture_viewport')
 
     viewport = required_param('~viewport')
-    janus_host = required_param('/lg_mirror/janus_stream_host', str)
-    janus_port = required_param('~janus_port', int)
 
     env_display = os.environ.get('DISPLAY')
     display = rospy.get_param('~display', env_display)
@@ -30,12 +29,18 @@ def main():
         raise ValueError('DISPLAY env or private "display" param required')
 
     show_pointer = str(rospy.get_param('~show_pointer', False)).lower()
+    framerate = int(rospy.get_param('~framerate', 30))
+    quality = int(rospy.get_param('~quality', 85))
+
+    image_topic = get_viewport_image_topic(viewport)
+    image_pub = rospy.Publisher(image_topic, CompressedImage, queue_size=1)
 
     capture = CaptureViewport(viewport,
                               display,
                               show_pointer,
-                              janus_host,
-                              janus_port)
+                              framerate,
+                              quality,
+                              image_pub)
 
     rospy.Subscriber('/director/scene',
                      GenericMessage,

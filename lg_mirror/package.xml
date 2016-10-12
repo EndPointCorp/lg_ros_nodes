@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_mirror</name>
-  <version>1.4.9</version>
+  <version>1.4.14</version>
   <description>Xorg viewport mirroring</description>
 
   <maintainer email="lg@endpoint.com">End Point LG</maintainer>
@@ -26,6 +26,7 @@
   <test_depend>rosunit</test_depend>
 
   <run_depend>message_runtime</run_depend>
+  <run_depend>sensor_msgs</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>appctl</run_depend>
@@ -34,4 +35,6 @@
   <run_depend>gstreamer1.0-plugins-base</run_depend>
   <run_depend>gstreamer1.0-plugins-good</run_depend>
   <run_depend>gstreamer1.0-x</run_depend>
+  <run_depend>python-gst-1.0</run_depend>
+  <run_depend>web_video_server</run_depend>
 </package>

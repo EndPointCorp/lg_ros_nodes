@@ -46,7 +46,7 @@ seconds. Default: `/activity/active`
 * `~activity_sources` [string] - Default: `''`. string containing configuration
   for activity sources in following format:
 
-`<topic_name>:<message_type>[-<slot.sub_slot.sub_sub_slot>]:<strategy>[-<value_min><value_max>]`
+`<topic_name>:<message_type>[-<slot.sub_slot.sub_sub_slot>]:<strategy>[-<value_min>,<value_max>]`
 
 - `topic_name` - name of the ROS topic that activity source (e.g. user
   input) publishes to e.g. `/spacenav/twist`
@@ -66,6 +66,7 @@ value is **within** the `value_min`:`value_max` range
  - `activity`
 - `value_min` - minimum value for the `value` strategy
 - `value_max` - maximum value for the `value` strategy
+NOTE: If slot/subslot value flowing on a topic is within the range then system is active
 
 For example:
 

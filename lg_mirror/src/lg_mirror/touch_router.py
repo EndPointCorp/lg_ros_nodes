@@ -34,6 +34,16 @@ class TouchRouter:
         self.route_viewports = self.default_viewports
         self.lock = threading.Lock()
 
+    def handle_service_request(self, req):
+        """
+        Returns a string[] of active viewports
+        """
+        with self.lock:
+            if len(self.route_viewports) == 0:
+                return self.default_viewports
+            else:
+                return self.route_viewports
+
     def handle_scene(self, publish_cb, scene):
         """
         Handles an incoming director scene by publishing the list of viewports
@@ -46,7 +56,7 @@ class TouchRouter:
         """
         with self.lock:
             windows = scene.get('windows', [])
-            route_viewports = route_touch_to_viewports(windows, route_touch_key=MIRROR_TOUCH_CONFIG_KEY, activity_type=MIRROR_ACTIVITY_TYPE)
+            route_viewports = route_touch_to_viewports(windows, route_touch_key=MIRROR_TOUCH_CONFIG_KEY)
             self.route_viewports = route_viewports
 
             if len(route_viewports) == 0:
@@ -65,4 +75,8 @@ class TouchRouter:
         """
         with self.lock:
             rospy.loginfo("New listener %s" % data)
+
+            if len(self.route_viewports) == 0:
+                self.route_viewports = self.default_viewports
+
             publish_cb(self.route_viewports)

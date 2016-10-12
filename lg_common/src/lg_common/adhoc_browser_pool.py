@@ -329,7 +329,8 @@ class AdhocBrowserPool():
                                                     binary=binary,
                                                     url=new_browser.url,
                                                     uid=new_browser_pool_id,
-                                                    scene_slug=new_browser.scene_slug
+                                                    scene_slug=new_browser.scene_slug,
+                                                    preload=new_browser.preload
                                                     )
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
@@ -411,21 +412,25 @@ class AdhocBrowserPool():
     def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):
         """
         Accepts a list of all preloadable prefixes
-        Returns a list of browsers that
+        Returns a list of prelodable browser prefixes that should be removed
+
+        Consider preloadable browsers only
         """
         remove = []
 
-        for browser in self.browsers.values():
-            # all preloadable browsers from previous scene can be
-            # safely marked for removal
-            if (browser.scene_slug != data.scene_slug) and (browser.id.split('_')[0] in preloadable_prefixes):
-                remove.append(browser.id)
-            # edgcase coverage: if two consecutive scenes
-            # have an identical slug then remove all preloadable
-            # instances that are not in the incoming readiness message
-            # use preloadable_prefixes to find which ones are to be removed
-            if browser.id.split('_')[0] in preloadable_prefixes and browser.id not in data.instances:
-                remove.append(browser.id)
+        for browser_instance in self.browsers.values():
+            # consider only preloadable browsers
+            if browser_instance.preload is True:
+                # if browser prefix is not mentioned in the incoming scene
+                # then it may be marked for removal
+                if browser_instance.id.split('_')[0] not in preloadable_prefixes:
+                    remove.append(browser_instance.id)
+                # edgcase coverage: if two consecutive scenes
+                # have an identical slug then remove all preloadable
+                # instances that are not in the incoming readiness message
+                # use preloadable_prefixes to find which ones are to be removed
+                if browser_instance.id.split('_')[0] in preloadable_prefixes and browser_instance.id not in data.instances:
+                    remove.append(browser_instance.id)
 
         return remove
 

@@ -11,8 +11,6 @@ Software for mirroring portions of a screen on other portions of a screen.
 
 Manages capture processes for the given viewport.
 
-In practice, this will start a GStreamer `ximagesrc`, encode the video stream to VP8, payload as RTP, and emit datagrams. The target host is automatically determined by the viewport key.
-
 Each viewport may only have one capture process in a scene.
 
 All playback instances sourcing the same viewport must have identical dimensions.
@@ -22,12 +20,17 @@ All playback instances sourcing the same viewport must have identical dimensions
 * `viewport` [str] - Viewport to be managed by this node. Required.
 * `display` [str] - Xorg DISPLAY to use. Default: Value of DISPLAY environment.
 * `show_pointer` [bool] - Show the mouse pointer in the capture. Default: `false`
-* `janus_port` [int] - RTP port for this viewport. See Janus Gateway config for port:viewport mapping. Required.
-* `/lg_mirror/janus_stream_host` [str] - Target host for RTP datagrams. Can be any uni, multi, or broadcast address. Required.
+* `framerate` [int] - Capture framerate in FPS. Default: `30`
+* `quality` [int] - Capture jpeg quality [0-100]. Default: `85`
 
 #### Subscribed Topics
 
 * `/director/scene` [GenericMessage] - Director scene messages.
+
+#### Published Topics
+
+* `/lg_mirror/viewport/{viewport_name}/image` [sensors\_msgs/Image] - Raw viewport stream.
+* `/lg_mirror/viewport/{viewport_name}/camera_info` [sensor\_msgs/Camerainfo] - [Image metadata](http://wiki.ros.org/image_pipeline/CameraInfo).
 
 ### capture\_webcam\_node
 
@@ -121,15 +124,13 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 
 ## Configuration
 
-For full capability, you will need to configure:
+For full mirror and touch capability, you will need to configure:
 
-* A separate Janus Gateway instance with VP8/RTP streaming agents and REST API.
-* Global parameter `/lg_mirror/janus_rest_uri` (see `playback_node`)
-* Global parameter `/lg_mirror/janus_stream_host` (see `capture_viewport_node`)
 * A single `touch_sender` for the touchscreen device, on its host.
 * A single `touch_router_node`, anywhere on the graph, defaulting to the touchscreen viewport.
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
+* A `web_video_server::web_video_server` for each host.
 * An `lg_common::dev_webserver.py` for each host.
 * An `lg_common::adhoc_browser.py` for each viewport.
 
@@ -137,10 +138,26 @@ For full capability, you will need to configure:
 
 The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requires a couple of params:
 
-* `janusUrl` : url to Janus Gateway REST API
-* `streamDescription` : description of the stream (viewport name)
+* `viewport` : Viewport name. Required.
+* `rosbridge_host` : Rosbridge host. Default: `localhost`
+* `rosbridge_port` : Rosbridge port. Default: `9090`
+* `rosbridge_secure` : Use wss for rosbridge? Default: `false`
 
-The webapp will connect to Janus and look for a stream whose description matches `"Mirror: %viewport%"`
+## Viewport Capture Bandwidth
+
+At 1080p with UYVY encoding, the image size is:
+
+`1920 * 1080 * 2 = 4,147,200 bytes`
+
+At 30 FPS, the publishing rate is:
+
+`4147200 * 30 = 124,416,000 bytes/sec`
+
+Which comes out to:
+
+`124416000 * 8 = 995,328,000 bits/sec`
+
+So, expect 1920x1080@30Hz to saturate a gigabit switch if your `web_video_server` is on a different host from the capture.
 
 ## Development/Testing
 

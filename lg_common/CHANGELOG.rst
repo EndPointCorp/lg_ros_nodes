@@ -2,6 +2,41 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.14 (2016-10-11)
+-------------------
+
+1.4.13 (2016-10-10)
+-------------------
+* Test precedence matters
+* Refactored adhoc browser tests and fixed a bug
+* properly set the uscs message response
+* fix route_touch_to_viewports
+  No longer filter by activity_type.
+* Fixed preloading logic
+* Contributors: Jacob Minshall, Wojciech Ziniewicz, wojciech ziniewicz
+
+1.4.12 (2016-10-07)
+-------------------
+* TEst fix + pep8
+* Readiness changes
+  - made director service wait for readiness node before sending messages
+  - made readiness evaluate total number of browsers using director topic
+  instead of non-comprehensive common browser topic
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
+1.4.11 (2016-10-06)
+-------------------
+* Changes t spacenav globe and ros window ready extension
+* amended the cmd args
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
+1.4.10 (2016-10-06)
+-------------------
+* Changed attrib name for retrieving command line args
+* Work for `#296 <https://github.com/EndPointCorp/lg_ros_nodes/issues/296>`_ (`#299 <https://github.com/EndPointCorp/lg_ros_nodes/issues/299>`_)
+* Changed path to extensions attribute
+* Contributors: Wojciech Ziniewicz, wojciech ziniewicz
+
 1.4.9 (2016-10-04)
 ------------------
 

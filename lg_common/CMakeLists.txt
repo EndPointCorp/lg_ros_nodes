@@ -10,6 +10,7 @@ catkin_python_setup()
 
 add_service_files(
   FILES
+  NodeReady.srv
   BrowserPool.srv
   USCSMessage.srv
   InitialUSCS.srv
