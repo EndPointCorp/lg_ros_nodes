@@ -34,6 +34,16 @@ class TouchRouter:
         self.route_viewports = self.default_viewports
         self.lock = threading.Lock()
 
+    def handle_service_request(self, req):
+        """
+        Returns a string[] of active viewports
+        """
+        with self.lock:
+            if len(self.route_viewports) == 0:
+                return self.default_viewports
+            else:
+                return self.route_viewports
+
     def handle_scene(self, publish_cb, scene):
         """
         Handles an incoming director scene by publishing the list of viewports

@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_mirror)
 
 find_package(catkin REQUIRED COMPONENTS
+  lg_common
   roscpp
   message_generation
 )
@@ -17,6 +18,7 @@ add_service_files(
   srv
   FILES
   EvdevDeviceInfo.srv
+  TouchRoutes.srv
 )
 
 catkin_python_setup()
@@ -129,9 +131,7 @@ install(
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_aspect_scale.py)
-  catkin_add_nosetests(test/test_playback.py)
-  add_rostest(test/capture_viewport.test)
-  add_rostest(test/viewport_multicast.test)
+  #add_rostest(test/capture_viewport.test)
   add_rostest(test/touch_router.test)
   add_rostest(test/touch_router_no_default.test)
   catkin_add_gtest(test_${PROJECT_NAME}_viewport_mapper test/test_viewport_mapper.cpp)
