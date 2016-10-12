@@ -208,8 +208,8 @@ class TestAdhocBrowser(unittest.TestCase):
         #self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
         #                 'ros_window_ready',
         #                 'ros_window_ready didnt get inserted onto exts list as a first extension')
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension1')
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[2].name, 'test_extension2')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
