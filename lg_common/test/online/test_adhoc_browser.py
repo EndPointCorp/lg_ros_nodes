@@ -204,9 +204,10 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id.startswith('81MzhqG_'), True)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
-                         'ros_window_ready',
-                         'ros_window_ready didnt get inserted onto exts list as a first extension')
+        # Dmitry: moved extensions injecting into browser_pool
+        #self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
+        #                 'ros_window_ready',
+        #                 'ros_window_ready didnt get inserted onto exts list as a first extension')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension1')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[2].name, 'test_extension2')
 
