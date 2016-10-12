@@ -27,7 +27,6 @@ def main():
         '/lg_mirror/active_touch_routes',
         StringArray,
         queue_size=10,
-        latch=True,
         subscriber_listener=SubscribeListener(new_listener_cb)
     )
 
