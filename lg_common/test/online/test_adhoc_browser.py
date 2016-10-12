@@ -164,7 +164,7 @@ class TestAdhocBrowser(unittest.TestCase):
     def get_browsers_thru_service(self, viewport):
         rospy.wait_for_service('/browser_service/%s' % viewport)
         viewport_service = rospy.ServiceProxy('/browser_service/%s' % viewport, BrowserPool)
-        browsers_on_viewport = viewport_service().state
+        browsers_on_viewport = viewport_service('{}').state
 
         try:
             browsers_on_viewport = json.loads(browsers_on_viewport)
@@ -193,7 +193,8 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
         browsers_on_center = self.get_browsers_thru_service('center')
-        self.assertEqual('test_extension1' in browsers_on_center.items()[0][1]['extensions'][0], True)
+        # Two service extensions + extensions from message
+        self.assertEqual('test_extension1' in ' '.join(browsers_on_center.items()[0][1]['extensions']), True)
 
     def test_2a_chrome_extension_initialization_with_two_extensions(self):
         """
@@ -206,14 +207,16 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
-                         'ros_window_ready',
-                         'ros_window_ready didnt get inserted onto exts list as a first extension')
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension1')
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[2].name, 'test_extension2')
+        # Dmitry: moved extensions injecting into browser_pool
+        #self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
+        #                 'ros_window_ready',
+        #                 'ros_window_ready didnt get inserted onto exts list as a first extension')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
 
         browsers_on_center = self.get_browsers_thru_service('center')
-        self.assertEqual(len(browsers_on_center.items()[0][1]['extensions']), 3)
+        # Two extensions, +ros_window_ready +url_monitor
+        self.assertEqual(len(browsers_on_center.items()[0][1]['extensions']), 4)
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
@@ -453,7 +456,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
-        rospy.sleep(self.preloading_grace_time + 10)
+        rospy.sleep(self.preloading_grace_time + 30)
 
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
@@ -463,14 +466,12 @@ class TestAdhocBrowser(unittest.TestCase):
         extensions_on_first_browser = browsers_on_center.items()[0][1].get('extensions', None)
         extensions_on_second_browser = browsers_on_center.items()[1][1].get('extensions', None)
 
-        if extensions_on_first_browser:
-            if 'ros_window_ready' in browsers_on_center.items()[0][1]['extensions'][0]:
-                preloaded_browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
-                non_preloaded_browser_timestamp = browsers_on_center.items()[1][1]['timestamp']
-        else:
-            if 'ros_window_ready' in browsers_on_center.items()[1][1]['extensions'][0]:
-                preloaded_browser_timestamp = browsers_on_center.items()[1][1]['timestamp']
-                non_preloaded_browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
+        if extensions_on_first_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[0][1]['extensions']):
+            preloaded_browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
+            non_preloaded_browser_timestamp = browsers_on_center.items()[1][1]['timestamp']
+        elif extensions_on_second_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[1][1]['extensions']):
+            preloaded_browser_timestamp = browsers_on_center.items()[1][1]['timestamp']
+            non_preloaded_browser_timestamp = browsers_on_center.items()[0][1]['timestamp']
 
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
@@ -484,14 +485,12 @@ class TestAdhocBrowser(unittest.TestCase):
         extensions_on_first_browser = browsers_on_center.items()[0][1].get('extensions', None)
         extensions_on_second_browser = browsers_on_center.items()[1][1].get('extensions', None)
 
-        if extensions_on_first_browser:
-            if 'ros_window_ready' in browsers_on_center.items()[0][1]['extensions'][0]:
-                preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
-                non_preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
-        else:
-            if 'ros_window_ready' in browsers_on_center.items()[1][1]['extensions'][0]:
-                preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
-                non_preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
+        if extensions_on_first_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[0][1]['extensions']):
+            preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
+            non_preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
+        elif extensions_on_second_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[1][1]['extensions']):
+            preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
+            non_preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
 
         self.assertNotEqual(preloaded_browser_timestamp2, preloaded_browser_timestamp)
         self.assertEqual(non_preloaded_browser_timestamp2, non_preloaded_browser_timestamp)
@@ -507,14 +506,12 @@ class TestAdhocBrowser(unittest.TestCase):
         extensions_on_first_browser = browsers_on_center.items()[0][1].get('extensions', None)
         extensions_on_second_browser = browsers_on_center.items()[1][1].get('extensions', None)
 
-        if extensions_on_first_browser:
-            if 'ros_window_ready' in browsers_on_center.items()[0][1]['extensions'][0]:
-                preloaded_browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
-                non_preloaded_browser_timestamp3 = browsers_on_center.items()[1][1]['timestamp']
-        else:
-            if 'ros_window_ready' in browsers_on_center.items()[1][1]['extensions'][0]:
-                preloaded_browser_timestamp3 = browsers_on_center.items()[1][1]['timestamp']
-                non_preloaded_browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
+        if extensions_on_first_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[0][1]['extensions']):
+            preloaded_browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
+            non_preloaded_browser_timestamp3 = browsers_on_center.items()[1][1]['timestamp']
+        elif extensions_on_second_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[1][1]['extensions']):
+            preloaded_browser_timestamp3 = browsers_on_center.items()[1][1]['timestamp']
+            non_preloaded_browser_timestamp3 = browsers_on_center.items()[0][1]['timestamp']
 
         self.assertNotEqual(preloaded_browser_timestamp2, preloaded_browser_timestamp3)
         self.assertEqual(non_preloaded_browser_timestamp2, non_preloaded_browser_timestamp3)

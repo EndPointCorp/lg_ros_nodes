@@ -4,16 +4,19 @@ import json
 import glob
 import lg_common
 import os
+import time
 
 from lg_common import ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
 from lg_common.msg import WindowGeometry
 from lg_common.msg import BrowserExtension
-from lg_common.msg import AdhocBrowser, AdhocBrowsers
+from lg_common.msg import AdhocBrowser, AdhocBrowsers, BrowserURL
 from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import BrowserPool
 from managed_browser import DEFAULT_BINARY
-from urlparse import urlparse, parse_qs
+from urlparse import urlparse, parse_qs, urlunparse
+from urllib import urlencode
+
 
 
 class AdhocBrowserPool():
@@ -34,7 +37,11 @@ class AdhocBrowserPool():
         AdhocBrowserPool manages a pool of browsers on one viewport.
         self.browsers ivar keeps a dict of (id: ManagedAdhocBrowser) per viewport.
         """
+
         self.browsers = {}
+        self.browsers_info = {}
+
+        # FIXME: Check that extensions_root ends with '/'
         self.extensions_root = extensions_root
         self.lg_common_internal_extensions_root = self._get_lg_common_extensions_root()
         self.lock = threading.Lock()
@@ -64,7 +71,25 @@ class AdhocBrowserPool():
 
         return ''
 
-    def _serialize_browser_pool(self):
+    def _normalize_url(self, current_url, injected_get_args):
+        replace = []
+
+        url_parts = urlparse(current_url)
+        if url_parts.query:
+            get_args = parse_qs(url_parts.query, keep_blank_values=True)
+            filtered = dict( (k, v) for k, v in get_args.iteritems() if not k in injected_get_args)
+
+            newurl = urlunparse([
+                url_parts.scheme, url_parts.netloc, url_parts.path, url_parts.params,
+                urlencode(filtered, doseq=True), # query string
+                url_parts.fragment ])
+
+            return newurl
+
+        return current_url
+
+
+    def _serialize_browser_pool(self, with_info=False):
         """
         iterates over a dict of self.browsers and returns a dict
         where key is the ID of the browser and value is a json
@@ -74,7 +99,15 @@ class AdhocBrowserPool():
         """
         serialized_browsers = {}
         for browser_id, browser in self.browsers.items():
-            serialized_browsers[browser_id] = json.loads(browser.__str__())
+            serialized_browser = json.loads(browser.__str__())
+            for key in self.browsers_info[browser_id].keys():
+                serialized_browser[key] = self.browsers_info[browser_id][key]
+
+            serialized_browser['current_url_normalized'] = self._normalize_url(
+                serialized_browser.get('current_url', ''),
+                serialized_browser.get('injected_get_args', []))
+
+            serialized_browsers[browser_id] = serialized_browser
 
         return serialized_browsers
 
@@ -83,16 +116,38 @@ class AdhocBrowserPool():
         Callback for service requests. We always return self.browsers
         in a form of a strigified dictionary
         """
+
         with self.lock:
             response = json.dumps(self._serialize_browser_pool())
             rospy.loginfo("Received BrowserPool service request")
             rospy.loginfo("Returning %s" % response)
+
+            try:
+                options = json.loads(req.options)
+                self._filter_service_response(options, response)
+            except:
+                pass
+
             return response
 
+    def _filter_service_response(self, options, response):
+        pass
+
+    def process_url_update(self, msg):
+        with self.lock:
+            browser_info = self.browsers_info.get(msg.browser_id, None)
+            if browser_info:
+                browser_info['current_url'] = msg.url
+                browser_info['url_ts'] = time.time()
+
     def _init_service(self):
-        service = rospy.Service('/browser_service/{}'.format(self.viewport_name),
-                                BrowserPool,
-                                self.process_service_request)
+        rospy.Service('/browser_service/{}'.format(self.viewport_name),
+                      BrowserPool,
+                      self.process_service_request)
+
+        rospy.Subscriber("/browser_service/{}/update_url".format(self.viewport_name),
+                         BrowserURL,
+                         self.process_url_update)
 
     def _get_incoming_browsers_dict(self, browsers):
         """
@@ -107,6 +162,7 @@ class AdhocBrowserPool():
         rospy.logdebug("Removing browser with id %s" % (browser_pool_id))
         self.browsers[browser_pool_id].close()
         del self.browsers[browser_pool_id]
+        del self.browsers_info[browser_pool_id]
         rospy.logdebug("State after %s removal: %s" % (browser_pool_id, self.browsers))
 
     def _filter_command_line_args(self, command_line_args):
@@ -136,25 +192,29 @@ class AdhocBrowserPool():
                               width=adhoc_browser_msg.geometry.width,
                               height=adhoc_browser_msg.geometry.height)
 
-    def _get_browser_extensions(self, adhoc_browser_msg):
+    def _get_browser_extensions(self, adhoc_browser_msg, system_extensions):
         """
         accepts AdhocBrowser message and rewrites extension names
         to full extension's path under self.extensions_root that will
         be passed to --load-extension upon initialization
+
+        adds extensions from system_extensions which were added by
+        pool itself to serve internal needs
 
         if extensions exists under lg_common/extensions directory then
         it's going have higher prio over external extensions. In other words
         choose lg_ros_nodes shipped extensions over external extensions from
         the filesystem located under self.extensions_root
 
-        returns: list
+        returns: list of extensions paths
         """
         extensions = []
-        for extension in adhoc_browser_msg.extensions:
-            if os.path.isdir(self.lg_common_internal_extensions_root + "/" + extension.name):
-                extensions.append(self.lg_common_internal_extensions_root + "/" + extension.name)
+        msg_extensions = [extension.name for extension in adhoc_browser_msg.extensions]
+        for extension in system_extensions + msg_extensions:
+            if os.path.isdir(self.lg_common_internal_extensions_root + "/" + extension):
+                extensions.append(self.lg_common_internal_extensions_root + "/" + extension)
             else:
-                extensions.append(self.extensions_root + extension.name)
+                extensions.append(self.extensions_root + extension)
 
         return extensions
 
@@ -196,25 +256,55 @@ class AdhocBrowserPool():
 
         returns: bool
         """
+        browser_info = {}
+        browser_info['ros_instance_name'] = new_browser_pool_id
+        browser_info['initial_url'] = new_browser.url
+        browser_info['current_url'] = new_browser.url
+        browser_info['url_ts'] = time.time()
+        browser_info['creation_ts'] = time.time()
+        browser_info['injected_get_args'] = []
+
+        additional_extensions = []
+        if new_browser.allowed_urls:
+            additional_extensions.append('monitor_page_urls')
+
+        if new_browser.preload:
+            additional_extensions.append('ros_window_ready')
+
+        additional_extensions.append('curent_url')
+
+
         geometry = self._get_browser_window_geometry(new_browser)
-        extensions = self._get_browser_extensions(new_browser)
+        extensions = self._get_browser_extensions(new_browser, additional_extensions)
         command_line_args = self._get_browser_command_line_args(new_browser)
         binary = self._get_browser_binary(new_browser)
+
+
         if new_browser.custom_preload_event:
             rospy.loginfo("Using custom preloading event")
             new_browser.url = self._inject_get_argument(new_browser.url, 'use_app_event', 1)
         else:
             rospy.loginfo("NOT Using custom preloading event")
+
+        # Add ros_instance_name to evry browser
         new_browser.url = self._inject_get_argument(new_browser.url, 'ros_instance_name', new_browser_pool_id)
+        browser_info['injected_get_args'].append('ros_instance_name')
+
+        # Add viewport to evry browser
+        new_browser.url = self._inject_get_argument(new_browser.url, 'viewport', self.viewport_name)
+        browser_info['injected_get_args'].append('viewport')
 
         # Default host for rosbridge is localhost
         # and we are not going to change that very often
         new_browser.url = self._inject_get_argument(new_browser.url,
                                                     'rosbridge_port',
                                                     self.rosbridge_port)
+        browser_info['injected_get_args'].append('rosbridge_port')
+
         new_browser.url = self._inject_get_argument(new_browser.url,
                                                     'rosbridge_secure',
                                                     1 if self.rosbridge_secure else 0)
+        browser_info['injected_get_args'].append('rosbridge_secure')
 
         allowed_urls = self._get_browser_allowed_urls(new_browser)
 
@@ -224,6 +314,8 @@ class AdhocBrowserPool():
                 'allowed_urls',
                 allowed_urls
             )
+            browser_info['injected_get_args'].append('allowed_urls')
+
         rospy.logdebug(
             "Creating new browser %s with id %s and url %s" %
             (new_browser, new_browser_pool_id, new_browser.url)
@@ -242,6 +334,7 @@ class AdhocBrowserPool():
                                                     )
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
+        self.browsers_info[new_browser_pool_id] = browser_info
         rospy.loginfo("State after addition of %s: %s" % (new_browser_pool_id, self.browsers.keys()))
 
         if initial_state:
