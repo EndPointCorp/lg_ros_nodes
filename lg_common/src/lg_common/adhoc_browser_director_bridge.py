@@ -123,7 +123,10 @@ class AdhocBrowserDirectorBridge():
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
-                browser_extension.name = str(extension['name'])
+                if isinstance(extension, basestring):
+                    browser_extension.name = str(extension)
+                else:
+                    browser_extension.name = str(extension['name'])
                 adhoc_browser.extensions.append(browser_extension)
 
         if allowed_urls:
