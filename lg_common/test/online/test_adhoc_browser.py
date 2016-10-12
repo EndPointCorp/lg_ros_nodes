@@ -487,14 +487,12 @@ class TestAdhocBrowser(unittest.TestCase):
         extensions_on_first_browser = browsers_on_center.items()[0][1].get('extensions', None)
         extensions_on_second_browser = browsers_on_center.items()[1][1].get('extensions', None)
 
-        if extensions_on_first_browser:
-            if 'ros_window_ready' in ' '.join(browsers_on_center.items()[0][1]['extensions']):
-                preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
-                non_preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
-        else:
-            if 'ros_window_ready' in ' '.join(browsers_on_center.items()[1][1]['extensions']):
-                preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
-                non_preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
+        if extensions_on_first_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[0][1]['extensions']):
+            preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
+            non_preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
+        elif extensions_on_second_browser and 'ros_window_ready' in ' '.join(browsers_on_center.items()[1][1]['extensions']):
+            preloaded_browser_timestamp2 = browsers_on_center.items()[1][1]['timestamp']
+            non_preloaded_browser_timestamp2 = browsers_on_center.items()[0][1]['timestamp']
 
         self.assertNotEqual(preloaded_browser_timestamp2, preloaded_browser_timestamp)
         self.assertEqual(non_preloaded_browser_timestamp2, non_preloaded_browser_timestamp)
