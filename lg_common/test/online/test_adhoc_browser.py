@@ -164,7 +164,7 @@ class TestAdhocBrowser(unittest.TestCase):
     def get_browsers_thru_service(self, viewport):
         rospy.wait_for_service('/browser_service/%s' % viewport)
         viewport_service = rospy.ServiceProxy('/browser_service/%s' % viewport, BrowserPool)
-        browsers_on_viewport = viewport_service().state
+        browsers_on_viewport = viewport_service('{}').state
 
         try:
             browsers_on_viewport = json.loads(browsers_on_viewport)
@@ -193,7 +193,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
         browsers_on_center = self.get_browsers_thru_service('center')
-        self.assertEqual('test_extension1' in browsers_on_center.items()[0][1]['extensions'][0], True)
+        self.assertEqual('test_extension1' in browsers_on_center.items()[0][1]['extensions'], True)
 
     def test_2a_chrome_extension_initialization_with_two_extensions(self):
         """
@@ -214,7 +214,8 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
 
         browsers_on_center = self.get_browsers_thru_service('center')
-        self.assertEqual(len(browsers_on_center.items()[0][1]['extensions']), 3)
+        # Two extensions, +ros_window_ready +url_monitor
+        self.assertEqual(len(browsers_on_center.items()[0][1]['extensions']), 4)
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
