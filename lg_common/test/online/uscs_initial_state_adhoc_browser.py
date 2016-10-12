@@ -29,7 +29,7 @@ class TestAdhocBrowser(unittest.TestCase):
     def test_1_adhoc_browser_pool_pulled_initial_state_from_uscs_service(self):
         rospy.sleep(3)
         rospy.sleep(3)
-        browsers_on_touchscreen = self.touchscreen_browser_service().state
+        browsers_on_touchscreen = self.touchscreen_browser_service('{}').state
         browsers_on_touchscreen = json.loads(browsers_on_touchscreen)
         self.assertEqual(len(browsers_on_touchscreen), 1)
 
@@ -41,7 +41,7 @@ class TestAdhocBrowser(unittest.TestCase):
         rospy.sleep(3)
 
         # make sure browsers went away
-        browsers_on_touchscreen = self.touchscreen_browser_service().state
+        browsers_on_touchscreen = self.touchscreen_browser_service('{}').state
         browsers_on_touchscreen = json.loads(browsers_on_touchscreen)
         self.assertEqual(len(browsers_on_touchscreen), 0)
 
