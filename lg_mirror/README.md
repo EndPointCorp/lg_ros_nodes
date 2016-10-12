@@ -144,22 +144,6 @@ The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requir
 * `rosbridge_port` : Rosbridge port. Default: `9090`
 * `rosbridge_secure` : Use wss for rosbridge? Default: `false`
 
-## Viewport Capture Bandwidth
-
-At 1080p with UYVY encoding, the image size is:
-
-`1920 * 1080 * 2 = 4,147,200 bytes`
-
-At 30 FPS, the publishing rate is:
-
-`4147200 * 30 = 124,416,000 bytes/sec`
-
-Which comes out to:
-
-`124416000 * 8 = 995,328,000 bits/sec`
-
-So, expect 1920x1080@30Hz to saturate a gigabit switch if your `web_video_server` is on a different host from the capture.
-
 ## Development/Testing
 
 There are rostests, nosetests, and gtests for this package.  Run them with `catkin_make run_tests_lg_mirror && catkin_test_results`.
