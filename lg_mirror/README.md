@@ -139,7 +139,7 @@ For full mirror and touch capability, you will need to configure:
 
 The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requires a couple of params:
 
-* `viewport` : Viewport name. Required.
+* `played_back_viewport` : Viewport name for playback. Required.
 * `rosbridge_host` : Rosbridge host. Default: `localhost`
 * `rosbridge_port` : Rosbridge port. Default: `9090`
 * `rosbridge_secure` : Use wss for rosbridge? Default: `false`

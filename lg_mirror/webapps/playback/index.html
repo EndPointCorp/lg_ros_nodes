@@ -35,7 +35,7 @@ var rosbridgePort = getParameterByName('rosbridge_port', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridge_secure', stringToBoolean, 'false');
 var rosbridgeUrl = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
 
-var viewport = getParameterByName('viewport', String);
+var viewport = getParameterByName('played_back_viewport', String);
 if (!viewport) {
   console.error('Must specify viewport param');
 }
