@@ -18,7 +18,6 @@ from urlparse import urlparse, parse_qs, urlunparse
 from urllib import urlencode
 
 
-
 class AdhocBrowserPool():
     """
     Handles browser pool on a biewport
@@ -77,17 +76,16 @@ class AdhocBrowserPool():
         url_parts = urlparse(current_url)
         if url_parts.query:
             get_args = parse_qs(url_parts.query, keep_blank_values=True)
-            filtered = dict( (k, v) for k, v in get_args.iteritems() if not k in injected_get_args)
+            filtered = dict((k, v) for k, v in get_args.iteritems() if k not in injected_get_args)
 
             newurl = urlunparse([
                 url_parts.scheme, url_parts.netloc, url_parts.path, url_parts.params,
-                urlencode(filtered, doseq=True), # query string
-                url_parts.fragment ])
+                urlencode(filtered, doseq=True),   # query string
+                url_parts.fragment])
 
             return newurl
 
         return current_url
-
 
     def _serialize_browser_pool(self, with_info=False):
         """
@@ -273,12 +271,10 @@ class AdhocBrowserPool():
 
         additional_extensions.append('curent_url')
 
-
         geometry = self._get_browser_window_geometry(new_browser)
         extensions = self._get_browser_extensions(new_browser, additional_extensions)
         command_line_args = self._get_browser_command_line_args(new_browser)
         binary = self._get_browser_binary(new_browser)
-
 
         if new_browser.custom_preload_event:
             rospy.loginfo("Using custom preloading event")

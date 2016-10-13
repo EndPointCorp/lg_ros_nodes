@@ -934,7 +934,7 @@ def wait_for_pub_sub_connections(network=[], sleep=1, timeout=10, num_connection
     to wait for all of them to have at least 1 connection
     """
     timeout = timeout
-    actors_names = ','.join([ actor.name for actor in network ])
+    actors_names = ','.join([actor.name for actor in network])
 
     for interval in xrange(0, timeout):
         if all_actors_connected(network, num_connections):
@@ -946,7 +946,7 @@ def wait_for_pub_sub_connections(network=[], sleep=1, timeout=10, num_connection
             rospy.sleep(sleep)
             timeout -= 1
 
-    actors_names_connections = ','.join([ actor.name + ":" + str(actor.get_num_connections()) for actor in network ])
+    actors_names_connections = ','.join([actor.name + ":" + str(actor.get_num_connections()) for actor in network])
 
     message = "Some publishers and subscribers didnt reach %s connection requirement in %s seconds" % (num_connections, timeout)
     rospy.logerr(message)

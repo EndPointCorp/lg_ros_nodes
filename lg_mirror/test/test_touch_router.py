@@ -48,7 +48,7 @@ class TestTouchRouter(unittest.TestCase):
         """Helper for when we want to check that a message is the default value."""
 
     def test_init_latch(self):
-        rospy.sleep(GRACE_DELAY+3)
+        rospy.sleep(GRACE_DELAY + 3)
         self.assertEqual(2, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
