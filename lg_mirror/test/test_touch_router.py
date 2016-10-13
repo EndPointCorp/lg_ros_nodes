@@ -48,9 +48,8 @@ class TestTouchRouter(unittest.TestCase):
         """Helper for when we want to check that a message is the default value."""
 
     def test_init_latch(self):
-        rospy.sleep(GRACE_DELAY)
-        # 3 messages because of initial state, initialization and subscriberlistener
-        self.assertEqual(3, len(self.receiver.msgs))
+        rospy.sleep(GRACE_DELAY+3)
+        self.assertEqual(2, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
 
@@ -60,8 +59,7 @@ class TestTouchRouter(unittest.TestCase):
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
         rospy.sleep(GRACE_DELAY)
-        # two messages by default [strings: ['test_default'], strings: ['test_default']]
-        self.assertEqual(2, len(self.receiver.msgs))
+        self.assertEqual(1, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
 
@@ -72,7 +70,7 @@ class TestTouchRouter(unittest.TestCase):
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
         rospy.sleep(GRACE_DELAY)
-        self.assertEqual(2, len(self.receiver.msgs))
+        self.assertEqual(1, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(1, len(msg.strings))
         self.assertTrue('not_the_default' in msg.strings)
@@ -84,7 +82,7 @@ class TestTouchRouter(unittest.TestCase):
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
         rospy.sleep(GRACE_DELAY)
-        self.assertEqual(2, len(self.receiver.msgs))
+        self.assertEqual(1, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(2, len(msg.strings))
         self.assertTrue('not_the_default' in msg.strings)
@@ -96,7 +94,7 @@ class TestTouchRouter(unittest.TestCase):
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
         rospy.sleep(GRACE_DELAY)
-        self.assertEqual(2, len(self.receiver.msgs))
+        self.assertEqual(1, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(1, len(msg.strings))
         self.assertTrue('not_the_default' in msg.strings)
@@ -106,7 +104,7 @@ class TestTouchRouter(unittest.TestCase):
         scene_msg = gen_scene_msg(scene)
         self.scene_pub.publish(scene_msg)
         rospy.sleep(GRACE_DELAY)
-        self.assertEqual(3, len(self.receiver.msgs))
+        self.assertEqual(2, len(self.receiver.msgs))
         msg = self.receiver.msgs[-1]
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
 
