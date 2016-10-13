@@ -456,7 +456,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
-        rospy.sleep(self.preloading_grace_time + 30)
+        rospy.sleep(self.preloading_grace_time + 15)
 
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
@@ -475,7 +475,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
-        rospy.sleep(self.preloading_grace_time)
+        rospy.sleep(self.preloading_grace_time + 15)
 
         self.assertEqual(len(self.director_ready_mock.messages), 2)
 
@@ -497,7 +497,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # 3
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_alt_slug_msg'))
-        rospy.sleep(self.preloading_grace_time)
+        rospy.sleep(self.preloading_grace_time + 15)
 
         self.assertEqual(len(self.director_ready_mock.messages), 3)
 
