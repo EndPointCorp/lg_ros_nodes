@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.17 (2016-10-13)
+-------------------
 * Shift mirroring back to web_video_server
   Use web_video_server undocumented "ros_compressed" type to stream CompressedImage data.
 * Contributors: Matt Vollrath
