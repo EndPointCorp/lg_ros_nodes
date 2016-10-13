@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.16 (2016-10-13)
+-------------------
 * Renamed mirroring viewport param as it was conflicting with current_url extension viewport param
 * Contributors: Wojciech Ziniewicz
 

@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.16 (2016-10-13)
+-------------------
 * Amended test waits
 * Contributors: Wojciech Ziniewicz
 
