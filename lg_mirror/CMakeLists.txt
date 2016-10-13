@@ -131,7 +131,7 @@ install(
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_aspect_scale.py)
-  #add_rostest(test/capture_viewport.test)
+  add_rostest(test/capture_viewport.test)
   add_rostest(test/touch_router.test)
   add_rostest(test/touch_router_no_default.test)
   catkin_add_gtest(test_${PROJECT_NAME}_viewport_mapper test/test_viewport_mapper.cpp)
