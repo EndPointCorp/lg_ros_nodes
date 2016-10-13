@@ -4,10 +4,6 @@ PKG = 'lg_mirror'
 NAME = 'test_capture_viewport'
 
 import os
-import psutil
-import select
-import socket
-import struct
 import unittest
 from PIL import Image
 from cStringIO import StringIO
