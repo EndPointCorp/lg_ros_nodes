@@ -18,7 +18,7 @@ function createRosUrl(params) {
 
 function CurrentUrlExt(params) {
     this.parameters = params || {};
-    this.readInterval = params.curent_url_read_interval || 500;
+    this.readInterval = params.current_url_read_interval || 500;
     this.browserKey = params.ros_instance_name;
     this.viewport = params.viewport;
 
@@ -43,8 +43,8 @@ CurrentUrlExt.prototype.normalizeURL = function(url) {
     return url;
 };
 
-CurrentUrlExt.prototype.handleUrl = function(curentURL) {
-    var url = this.normalizeURL(curentURL);
+CurrentUrlExt.prototype.handleUrl = function(currentURL) {
+    var url = this.normalizeURL(currentURL);
     if (url != this.lastURL) {
         this.sendURL(url);
     }

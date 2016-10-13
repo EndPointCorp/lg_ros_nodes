@@ -269,7 +269,7 @@ class AdhocBrowserPool():
         if new_browser.preload:
             additional_extensions.append('ros_window_ready')
 
-        additional_extensions.append('curent_url')
+        additional_extensions.append('current_url')
 
         geometry = self._get_browser_window_geometry(new_browser)
         extensions = self._get_browser_extensions(new_browser, additional_extensions)
