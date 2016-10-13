@@ -4,9 +4,7 @@
   <param name="/viewport/right_one" value="450x800+960+0" />
 
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" />
-  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py">
-    <param name="binary_encoder" value="bson" />
-  </node>
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server" />
 
   <!-- USCS for initial state -->
   <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" />
@@ -34,14 +32,4 @@
   <node name="adhoc_browser_pool_left" pkg="lg_common" type="adhoc_browser.py">
     <param name="viewport" value="right_one"/>
   </node>
-
-  <!-- Local rosbridge and rosapi. -->
-  <!--
-  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
-  -->
-
-  <!-- readiness node for handling preloading -->
-  <!--
-  <node name="readiness_node" pkg="lg_common" type="readiness.py" />
-  -->
 </launch>

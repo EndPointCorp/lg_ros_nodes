@@ -16,9 +16,8 @@ class VideoFormatException(Exception):
     pass
 
 
-class GstPublisher(threading.Thread):
+class GstPublisher:
     def __init__(self, pipeline, image_pub):
-        super(GstPublisher, self).__init__()
         self.image_pub = image_pub
 
         self.pipeline = Gst.parse_launch(pipeline)
@@ -32,6 +31,11 @@ class GstPublisher(threading.Thread):
             raise PipelineException(
                 'Could not find an element named "sink" in pipeline: {}'.format(pipeline)
             )
+        self.sink.set_property('emit-signals', True)
+        self.sink.set_property('sync', False)
+        self.sink.set_property('max-buffers', 2)
+        self.sink.set_property('drop', True)
+        self.sink.connect('new-sample', self._publish_sample, None)
 
         self.image_msg = CompressedImage()
 
@@ -90,8 +94,10 @@ class GstPublisher(threading.Thread):
 
         return width, height, fmt
 
-    def _publish_sample(self):
-        sample = self.sink.emit('pull-sample')
+    def _publish_sample(self, sink, meta):
+        if rospy.is_shutdown() or self.pipeline.target_state is not Gst.State.PLAYING:
+            return Gst.FlowReturn.EOS
+        sample = sink.emit('pull-sample')
         timestamp = rospy.Time.now()
         buf = sample.get_buffer()
         #caps = sample.get_caps()
@@ -101,12 +107,10 @@ class GstPublisher(threading.Thread):
         self.image_msg.header.stamp = timestamp
         self.image_msg.data = buf.extract_dup(0, buf.get_size())
         self.image_pub.publish(self.image_msg)
+        return Gst.FlowReturn.OK
 
-    def run(self):
+    def start(self):
         self.pipeline.set_state(Gst.State.PLAYING)
-        while self.pipeline.target_state is Gst.State.PLAYING and not rospy.is_shutdown():
-            self._publish_sample()
-        self.stop()
 
     def stop(self):
         self.pipeline.set_state(Gst.State.NULL)
@@ -116,8 +120,8 @@ class GstPublisher(threading.Thread):
 if __name__ == '__main__':
     import time
     rospy.init_node('gst_test')
-    pub = rospy.Publisher('/gst_test', Image, queue_size=1)
-    pipeline = 'videotestsrc is-live=true ! capsfilter caps=video/x-raw,format=UYVY,width=1920,height=1080,framerate=30/1 ! appsink name=sink'
+    pub = rospy.Publisher('/gst_test/compressed', CompressedImage, queue_size=1)
+    pipeline = 'videotestsrc is-live=true ! videoconvert ! capsfilter caps=video/x-raw,format=I420,width=1920,height=1080,framerate=30/1 ! queue ! jpegenc ! appsink name=sink'
     gst = GstPublisher(pipeline, pub)
     gst.start()
     rospy.spin()
