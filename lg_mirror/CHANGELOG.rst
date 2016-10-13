@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.15 (2016-10-13)
+-------------------
 * PEP8
 * Amended relaunch tester and lg_mirror touch router tests to handle lack
   of latching better

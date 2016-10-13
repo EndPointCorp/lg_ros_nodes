@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.15 (2016-10-13)
+-------------------
 * Current url extension fixes
 * PEP8
 * Initial state setting tests and tuning
