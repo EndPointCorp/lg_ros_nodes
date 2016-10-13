@@ -12,6 +12,10 @@ import string
 from interactivespaces_msgs.msg import GenericMessage
 
 
+class PublisherSubscriberConnectionsException(Exception):
+    pass
+
+
 class WrongActivityDefinition(Exception):
     pass
 
@@ -922,3 +926,44 @@ def route_touch_to_viewports(windows, route_touch_key='route_touch'):
         active_touch_routes.append(viewport)
 
     return set(active_touch_routes)
+
+
+def wait_for_pub_sub_connections(network=[], sleep=1, timeout=10, num_connections=1):
+    """
+    iterates over network items (typically publishers and subscribers)
+    to wait for all of them to have at least 1 connection
+    """
+    timeout = timeout
+    actors_names = ','.join([ actor.name for actor in network ])
+
+    for interval in xrange(0, timeout):
+        if all_actors_connected(network, num_connections):
+            rospy.loginfo("All actors connected - ready to handle initial state")
+            rospy.sleep(1)
+            return True
+        else:
+            rospy.logwarn("Waiting for topics (%s) to become connected" % actors_names)
+            rospy.sleep(sleep)
+            timeout -= 1
+
+    actors_names_connections = ','.join([ actor.name + ":" + str(actor.get_num_connections()) for actor in network ])
+
+    message = "Some publishers and subscribers didnt reach %s connection requirement in %s seconds" % (num_connections, timeout)
+    rospy.logerr(message)
+    raise PublisherSubscriberConnectionsException(message)
+
+
+def all_actors_connected(actors=[], num_connections=1):
+    """
+    Returns True if all actors have at least `num_connections` number of connections.
+
+    Useful with methods that need to check if pub sub network is connected
+    """
+    for actor in actors:
+        rospy.loginfo("Actor: %s num connections: %s, limit %s" % (actor.name, actor.get_num_connections(), num_connections))
+        if actor.get_num_connections() < num_connections:
+            return False
+        else:
+            rospy.logwarn("Actor: %s reached required number of connections: %s" % (actor.name, num_connections))
+
+    return True

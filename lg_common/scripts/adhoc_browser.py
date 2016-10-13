@@ -6,6 +6,8 @@ from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
 from lg_common.helpers import check_www_dependency
+from lg_common.helpers import wait_for_pub_sub_connections
+from lg_common.helpers import all_actors_connected
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import Ready
 
@@ -31,13 +33,21 @@ def main():
     topic_name = '/browser_service/{}'.format(viewport_name)
     common_topic_name = '/browser_service/browsers'
 
+    actors = []
+
     adhocbrowser_pool = AdhocBrowserPool(viewport_name=viewport_name,
                                          extensions_root=extensions_root)
+
     make_soft_relaunch_callback(adhocbrowser_pool.handle_soft_relaunch,
                                 groups=["media"])
-    rospy.Subscriber(topic_name,
-                     AdhocBrowsers,
-                     adhocbrowser_pool.handle_ros_message)
+
+    browser_service_sub = rospy.Subscriber(
+        topic_name,
+        AdhocBrowsers,
+        adhocbrowser_pool.handle_ros_message
+    )
+
+    actors.append(browser_service_sub)
 
     """
     Initialize director => browser pool bridge that translates director GenericMessage to AdhocBrowsers.msg
@@ -45,20 +55,26 @@ def main():
 
     adhocbrowser_viewport_publisher = rospy.Publisher(
         topic_name, AdhocBrowsers, queue_size=3)
+    actors.append(adhocbrowser_viewport_publisher)
 
     adhocbrowser_aggregate_topic_publisher = rospy.Publisher(common_topic_name,
                                                              AdhocBrowsers,
                                                              queue_size=3)
+    actors.append(adhocbrowser_aggregate_topic_publisher)
 
     adhocbrowser_director_bridge = AdhocBrowserDirectorBridge(
         adhocbrowser_aggregate_topic_publisher,
         adhocbrowser_viewport_publisher,
         viewport_name)
 
-    rospy.Subscriber('/director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
-    rospy.Subscriber('/director/ready', Ready, adhocbrowser_pool.unhide_browsers)
+    director_scene_sub = rospy.Subscriber('/director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
+    actors.append(director_scene_sub)
+    director_ready_sub = rospy.Subscriber('/director/ready', Ready, adhocbrowser_pool.unhide_browsers)
+    actors.append(director_ready_sub)
 
     rospy.wait_for_service('/readiness_node/ready', 15)
+    wait_for_pub_sub_connections(actors)
+
     handle_initial_state(adhocbrowser_director_bridge.translate_director)
 
     """
