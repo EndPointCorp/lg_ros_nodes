@@ -2,6 +2,34 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* PEP8
+* Amended relaunch tester and lg_mirror touch router tests to handle lack
+  of latching better
+* Don't latch mirroring topic
+* Remove obsolete passage about mirror bandwidth
+* Add mirror cmake dep on lg_common
+* Remove cruft dep from lg_mirror
+* Fix mirror README config description
+* Use ROS Image for viewport mirroring (`#300 <https://github.com/EndPointCorp/lg_ros_nodes/issues/300>`_)
+  * Add framerate, max_q args to viewport capture
+  * Reformat capture viewport args
+  * Use ROS Image for viewport mirroring
+  * Remove obsolete tests from lg_mirror
+  * Publish CameraInfo for capture_viewport images
+  Expected by many ROS applications.  The info published implies that the
+  image comes from an uncalibrated camera.  If needed, we can figure out
+  a noop distortion model.
+  * Fix viewport topic in mirror webapp
+  * Switch mirroring to rosbridge mjpeg stream
+  Requires rosbridge param:
+  * "binary_encoder": "bson"
+  * Update mirror README
+  * Amended sync script
+  * Commented out viewport tests - TBD for @mvollrath
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.4.14 (2016-10-11)
 -------------------
 

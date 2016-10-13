@@ -2,6 +2,43 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Current url extension fixes
+* PEP8
+* Initial state setting tests and tuning
+  - added scripts/relaunch_test.sh to see test if chrome comes up after
+  relaunch
+  - added adhoc_browser procedure for checking if all topics are connected
+* Fixed state switching in uscs service
+* Fix adhoc_browser test
+* Fix adhoc_browser test
+* Fix adhoc_browser test
+* Fix adhoc_browser test
+* Fix adhoc_browser test
+* Fix adhoc_browser test
+* Fix adhoc_browser test
+* Fix adhoc_browser test
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into browser_url
+  Conflicts:
+  lg_common/src/lg_common/adhoc_browser_director_bridge.py
+* Changed adhoc_browser test
+* Changed adhoc_browser test
+* Parse string and obj extensions in director bridge
+* Fix extension publishing message type
+* Fix extensions parsing in director bridge
+* Fixed extension (topic name and roslib initialization)
+  Fixed url normalization in service
+  Fixed typo in service
+* fix syntax
+* Merge json manualy
+* Fix topic
+* Refactored to use browsers service for url tracking
+* Ros service for curent url
+* Ros sceleton
+* Extension
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz, kiselev-dv
+
 1.4.14 (2016-10-11)
 -------------------
 
