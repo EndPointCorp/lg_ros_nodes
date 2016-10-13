@@ -4,12 +4,15 @@
   <param name="/viewport/right_one" value="450x800+960+0" />
 
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" />
-  <node name="web_video_server" pkg="web_video_server" type="web_video_server" />
+  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py">
+    <param name="binary_encoder" value="bson" />
+  </node>
 
   <!-- USCS for initial state -->
-  <!--
   <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" />
-  -->
+
+  <!-- readiness node for handling preloading -->
+  <node name="readiness_node" pkg="lg_common" type="readiness.py"/>
 
   <node name="mirror_capture_left_one" pkg="lg_mirror" type="capture_viewport_node">
     <param name="viewport" value="left_one" />

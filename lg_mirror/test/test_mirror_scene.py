@@ -41,7 +41,7 @@ DIRECTOR_MESSAGE = """
         "preload": false
       },
       "assets": [
-        "http://localhost:8008/lg_mirror/webapps/playback/index.html?viewport=center"
+        "http://localhost:8008/lg_mirror/webapps/playback/index.html?played_back_viewport=center"
       ],
       "presentation_viewport": "left_one",
       "width": 450,
@@ -55,7 +55,7 @@ DIRECTOR_MESSAGE = """
         "preload": false
       },
       "assets": [
-        "http://localhost:8008/lg_mirror/webapps/playback/index.html?viewport=center"
+        "http://localhost:8008/lg_mirror/webapps/playback/index.html?played_back_viewport=center"
       ],
       "presentation_viewport": "right_one",
       "width": 450,
