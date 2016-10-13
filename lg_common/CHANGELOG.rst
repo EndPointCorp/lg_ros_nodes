@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Amended test waits
+* Contributors: Wojciech Ziniewicz
+
 1.4.15 (2016-10-13)
 -------------------
 * Current url extension fixes
