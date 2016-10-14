@@ -21,5 +21,7 @@ install(PROGRAMS
   scripts/reader
   scripts/sqlite_storage.py
   scripts/sqlite_storage
+  scripts/sqlite_uscs_storage.py
+  scripts/sqlite_uscs_storage
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
