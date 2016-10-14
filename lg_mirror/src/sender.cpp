@@ -16,6 +16,7 @@ using lg_mirror::TOUCH_EVENTS_TOPIC;
 using lg_mirror::DEVICE_INFO_SERVICE;
 
 const char* DEVICE_PATH_PARAM = "~device_path";
+const std::size_t EVENTS_QUEUE_LENGTH = 10;
 
 int main(int argc, char** argv) {
 
@@ -54,7 +55,8 @@ int main(int argc, char** argv) {
   /* advertise the topic */
 
   ros::Publisher evdev_pub =
-    n.advertise<lg_mirror::EvdevEvents>(TOUCH_EVENTS_TOPIC, 1);
+    n.advertise<lg_mirror::EvdevEvents>(TOUCH_EVENTS_TOPIC,
+                                        EVENTS_QUEUE_LENGTH);
 
   /* begin relaying from the device to the topic */
 
