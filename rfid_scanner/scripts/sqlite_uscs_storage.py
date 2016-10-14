@@ -77,8 +77,8 @@ class RfidStorage(object):
             rospy.logfatal('Error trying to create uscs msg table...')
 
     def insert_uscs_row(self, rfid, uscs_message):
-        insert_query = 'INSERT OR REPLACE INTO %s (rfid, uscs) VALUES (?, ?)'
-        self.cur.execute(insert_query, tuple(rfid, json.dumps(uscs_message)))
+        insert_query = 'INSERT OR REPLACE INTO %s (rfid, uscs) VALUES (?, ?)' % self.table_name
+        self.cur.execute(insert_query, (rfid, json.dumps(uscs_message)))
         self.db.commit()
 
     def get_uscs(self, rfid):
