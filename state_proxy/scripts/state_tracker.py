@@ -9,10 +9,10 @@ from urllib2 import urlopen
 
 
 class StateTracker(object):
-    def __init__(self, state_publisher, update_spreadsheet_pub, last_uscs_service,
+    def __init__(self, state_publisher, update_rfid_pub, last_uscs_service,
                  tactile_flag='', display_url_service=None, kiosk_url_service=None):
         self.state_publisher = state_publisher
-        self.update_spreadsheet_pub = update_spreadsheet_pub
+        self.update_rfid_pub = update_rfid_pub
         self.last_uscs_service = last_uscs_service
         self.last_runway_card = None
         self.ignore_card = 'click!![1,[3,null,[true],[null,null,0],null,null,false,1],1]'
@@ -105,12 +105,12 @@ class StateTracker(object):
         self.last_rfid = msg.data
         state = self.build_state()
         state['rfid'] = msg.data
-        self.update_spreadsheet_pub.publish(json.dumps(state))
+        self.update_rfid_pub.publish(json.dumps(state))
 
 def main():
     rospy.init_node('state_tracker')
     current_state_topic = rospy.get_param('~current_state_topic', '/state_tracker/current_state')
-    update_spreadsheet_topic = rospy.get_param('~update_spreadsheet_topic', '/rfid/spreadsheet/update')
+    update_rfid_topic = rospy.get_param('~update_rfid_topic', '/rfid/uscs/update')
     tactile_flag = rospy.get_param('~tactile_flag', '')
 
     # wait for service or kill node
@@ -123,9 +123,9 @@ def main():
     display_url_service = rospy.ServiceProxy('/browser_service/wall', BrowserPool)
 
     current_state = rospy.Publisher(current_state_topic, String, queue_size=10)
-    update_spreadsheet_pub = rospy.Publisher(update_spreadsheet_topic, String, queue_size=10)
+    update_rfid_pub = rospy.Publisher(update_rfid_topic, String, queue_size=10)
     state_tracker = StateTracker(
-        current_state, update_spreadsheet_pub, last_uscs_service,
+        current_state, update_rfid_pub, last_uscs_service,
         tactile_flag=tactile_flag, display_url_service=display_url_service,
         kiosk_url_service=kiosk_url_service)
 
