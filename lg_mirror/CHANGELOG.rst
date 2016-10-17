@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.18 (2016-10-17)
+-------------------
 * Increase lg_mirror touch sender event queue size
   Losing these events can only cause sadness.
 * Correct mirror build deps
