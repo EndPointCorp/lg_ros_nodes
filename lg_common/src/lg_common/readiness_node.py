@@ -2,10 +2,39 @@ import time
 import rospy
 import threading
 import json
+import threading
 
 from lg_common.msg import AdhocBrowsers
 from lg_common.msg import AdhocBrowser
 from lg_common.msg import Ready
+from std_msgs.msg import String
+
+
+class ReadinessHandbrake(object):
+    """
+    Makes readiness node become ready within specified timeout
+    """
+    def __init__(self, callback, timeout):
+        self.callback = callback
+        self.timeout = timeout
+
+    def handle_uscs_message(self, message):
+        """
+        Reset the timer
+        """
+        rospy.loginfo("ReadinessHandbrake registered message")
+        self._timer_thread = threading.Thread(
+            target=self._timer_worker_thread
+        )
+        self._timer_thread.start()
+
+    def _timer_worker_thread(self):
+        for interval in range(0, self.timeout):
+            rospy.logdebug("Waiting for readiness %s" % interval)
+            rospy.sleep(1)
+
+        self.callback(force=True)
+        rospy.loginfo("Executing readiness handbrake callback %s" % self.callback)
 
 
 class ReadinessNode(object):
@@ -16,7 +45,6 @@ class ReadinessNode(object):
     self.state = {
                     'slug': 'scene-test',
                     'ready_browsers': []
-                    'num_browsers': 0,
                     'browsers': [
                         'adhoc_browser_f9db1u3b4',
                         'adhoc_browser_23048h5ue'
@@ -25,13 +53,15 @@ class ReadinessNode(object):
                  }
     """
     def __init__(self,
-                 readiness_publisher
+                 readiness_publisher=None,
+                 timeout_publisher=None
                  ):
         self.lock = threading.Lock()
         self._purge_state(None)
         self.last_slug = None
         self.uscs_messages = {}
         self.readiness_publisher = readiness_publisher
+        self.timeout_publisher = timeout_publisher
 
     def node_ready(self, query):
         """
@@ -52,8 +82,8 @@ class ReadinessNode(object):
         """
         with self.lock:
             self.state = {'slug': slug,
-                          'num_browsers': 0,
                           'browsers': [],
+                          'ready': False,
                           'ready_browsers': [],
                           'timestamp': time.time()}
 
@@ -62,8 +92,12 @@ class ReadinessNode(object):
         Saves director message scene to know
         how many browsers should be activated for this scene
 
+        Sets the timer for readiness timeout.
+
         """
         with self.lock:
+            self.state['ready'] = False
+            self.timestamp = time.time()
             rospy.loginfo("Got uscs message: %s" % message)
             message = json.loads(message.message)
             slug = message.get('slug', None)
@@ -131,11 +165,14 @@ class ReadinessNode(object):
             rospy.logdebug("Not enough browsers gathered - joined: %s, registered %s, total: %s" % (ready_browsers, registered_browsers, number_of_browsers_to_join))
             return False
 
-    def _publish_readiness(self):
+    def _publish_readiness(self, force=False):
         if self.state['ready_browsers']:
             ready_msg = Ready()
             ready_msg.scene_slug = self.state['slug']
-            ready_msg.instances = self.state['ready_browsers']
+            if force:
+                ready_msg.instances = self.state['browsers']
+            else:
+                ready_msg.instances = self.state['ready_browsers']
             ready_msg.activity_type = 'browser'
             rospy.loginfo("Became ready: %s" % self.state)
             self.readiness_publisher.publish(ready_msg)
@@ -163,6 +200,29 @@ class ReadinessNode(object):
             else:
                 rospy.logdebug("Readiness node received unknown browser instance id")
 
+        self.try_to_become_ready()
+
+    def become_ready(self, force=False):
+        """
+        Sets the effective state to "ready" by emitting messages
+        and setting states.
+
+        If force is used - all browsers (even these that are not ready)
+        are going to be unhidden
+        """
+        self._publish_readiness(force=force)
+        self._purge_state(self.last_slug)
+        self.state['ready'] = True
+
+    def try_to_become_ready(self, force=False):
+        """
+        Method for becoming ready e.g. publishing readiness
+        """
         if self._ready():
-            self._publish_readiness()
-            self._purge_state(self.last_slug)
+            self.become_ready()
+
+        if force is True and not self._ready():
+            message = "Scene %s did not become ready within specified timeout" % self.state['slug']
+            rospy.logwarn(message)
+            self.timeout_publisher.publish(String(data=message))
+            self.become_ready(force=force)

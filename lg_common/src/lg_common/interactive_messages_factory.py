@@ -271,6 +271,31 @@ class InteractiveSpacesMessagesFactory:
         ]
         }
         """)
+        self.test_one_browser_with_preloading_and_wrong_url_msg = self._create_message("""
+        {
+        "description": "one_browser_with_preloading_and_wrong_url",
+        "duration": 100,
+        "name": "one_browser_with_preloading_and_wrong_url",
+        "resource_uri": "/director_api/scene/one_browser_with_preloading_and_wrong_url/",
+        "slug": "one_browser_with_preloading_and_wrong_url",
+        "windows": [
+            {
+            "activity": "browser",
+            "activity_config": {
+                "preload": true
+            },
+            "assets": [
+                "http://asdasdasdaqweqwe.com"
+            ],
+            "height": 333,
+            "presentation_viewport": "center",
+            "width": 333,
+            "x_coord": 22,
+            "y_coord": 22
+            }
+        ]
+        }
+        """)
         self.test_one_browser_with_preloading_msg = self._create_message("""
         {
         "description": "one_browser_with_preloading",

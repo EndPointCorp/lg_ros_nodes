@@ -3,6 +3,7 @@
 import rospy
 from lg_common.msg import AdhocBrowsers
 from lg_common import ReadinessNode
+from lg_common import ReadinessHandbrake
 from std_msgs.msg import String
 from lg_common.srv import NodeReady
 from lg_common.msg import Ready
@@ -16,17 +17,36 @@ def main():
     readiness_topic_name = '/director/ready'
     window_instances_topic_name = '/director/window/ready'
 
+    readiness_timeout = rospy.get_param("~timeout", 10)
+
     readiness_publisher = rospy.Publisher(readiness_topic_name,
                                           Ready,
                                           queue_size=20)
 
-    readiness_node = ReadinessNode(readiness_publisher)
+    timeout_publisher = rospy.Publisher('/director/error',
+                                        String,
+                                        queue_size=10)
+
+    readiness_node = ReadinessNode(
+        readiness_publisher=readiness_publisher,
+        timeout_publisher=timeout_publisher
+    )
+
+    readiness_handbrake = ReadinessHandbrake(
+        callback=readiness_node.try_to_become_ready,
+        timeout=readiness_timeout,
+    )
 
     handle_initial_state(readiness_node.save_uscs_message)
+    handle_initial_state(readiness_handbrake.handle_uscs_message)
 
     rospy.Subscriber('/director/scene',
                      GenericMessage,
                      readiness_node.save_uscs_message)
+
+    rospy.Subscriber('/director/scene',
+                     GenericMessage,
+                     readiness_handbrake.handle_uscs_message)
 
     rospy.Subscriber(window_instances_topic_name,
                      String,
