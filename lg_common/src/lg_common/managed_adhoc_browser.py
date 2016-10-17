@@ -86,6 +86,8 @@ class ManagedAdhocBrowser(ManagedBrowser):
             rospy.logerr("URL change command: %s, returned a status code: %s and output %s because %s" % (cmd, status, output, e))
             return False
 
-    def close(self):
+    def close(self, delay=None):
+        if delay:
+            time.sleep(delay)
         self.set_state(ApplicationState.STOPPED)
         self.clear_tmp_dir()
