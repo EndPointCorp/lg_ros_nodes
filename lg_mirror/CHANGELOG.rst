@@ -2,6 +2,14 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Increase lg_mirror touch sender event queue size
+  Losing these events can only cause sadness.
+* Correct mirror build deps
+  Away with psutil, hello PIL.
+* Contributors: Matt Vollrath
+
 1.4.17 (2016-10-13)
 -------------------
 * Shift mirroring back to web_video_server
