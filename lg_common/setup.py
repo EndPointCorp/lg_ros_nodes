@@ -9,7 +9,8 @@ d = generate_distutils_setup(
     package_data={
         'lg_common': [
             'extensions/ros_window_ready/*',
-            'extensions/monitor_page_urls/*'
+            'extensions/monitor_page_urls/*',
+            'extensions/current_url/*'
         ]
     },
     scripts=['bin/lg-code-to-command'],

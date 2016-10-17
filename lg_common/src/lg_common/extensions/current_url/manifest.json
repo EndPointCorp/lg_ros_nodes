@@ -1,0 +1,19 @@
+{
+    "manifest_version": 2,
+
+    "name":           "current_url",
+    "version":        "0.1",
+    "description":    "Publish data about current url",
+
+    "background": {
+        "persistent": true,
+        "scripts": [
+            "get_args.js",  "eventemitter2.min.js", "roslib.min.js", "current_url.js"
+        ]
+    },
+
+    "permissions":    [
+        "<all_urls>", "webNavigation",
+        "tabs", "history"
+    ]
+}

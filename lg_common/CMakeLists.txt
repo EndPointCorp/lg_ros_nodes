@@ -26,6 +26,7 @@ add_message_files(
   BrowserCmdArg.msg
   StringArray.msg
   Ready.msg
+  BrowserURL.msg
 )
 generate_messages()
 

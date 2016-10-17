@@ -63,18 +63,6 @@ class AdhocBrowserDirectorBridge():
 
         adhoc_browsers_list = self._extract_browsers_from_message(data)
 
-        for adhoc_browser in adhoc_browsers_list:
-            if adhoc_browser.allowed_urls:
-                monitor_page_urls_ext = BrowserExtension()
-                monitor_page_urls_ext.name = 'monitor_page_urls'
-                adhoc_browser.extensions.insert(0, monitor_page_urls_ext)
-
-        for adhoc_browser in adhoc_browsers_list:
-            if adhoc_browser.preload:
-                ros_window_ready_ext = BrowserExtension()
-                ros_window_ready_ext.name = 'ros_window_ready'
-                adhoc_browser.extensions.insert(0, ros_window_ready_ext)
-
         adhoc_browsers = AdhocBrowsers()
         adhoc_browsers.scene_slug = slug
         adhoc_browsers.browsers = adhoc_browsers_list
@@ -135,7 +123,10 @@ class AdhocBrowserDirectorBridge():
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
-                browser_extension.name = str(extension)
+                if isinstance(extension, basestring):
+                    browser_extension.name = str(extension)
+                else:
+                    browser_extension.name = str(extension['name'])
                 adhoc_browser.extensions.append(browser_extension)
 
         if allowed_urls:

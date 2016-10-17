@@ -91,46 +91,50 @@ class USCSService:
         Accepts active/inactive state message
         and emits appropriate message from ivars
         """
-        with self.lock:
-            if self.director_scene_publisher:
-                if message.data is True and self.on_active_state and self.active is False:
-                    """
-                    We became active
-                    """
-                    if self.idempotently_publish_scene(self.on_active_state):
-                        self.active = True
-                if message.data is False and self.on_inactive_state and self.active is True:
-                    """
-                    We became inactive
-                    """
-                    if self.idempotently_publish_scene(self.on_inactive_state):
-                        self.active = False
+        rospy.loginfo("Incoming message: %s. Current state: %s" % (message, self.active))
+        if self.director_scene_publisher:
+            if (message.data is True) and (self.active is False):
+                """
+                We became active
+                """
+                rospy.loginfo("Active False => True")
+                self.idempotently_publish_scene(self.on_active_state)
+                self.active = True
+            if (message.data is False) and (self.active is True):
+                """
+                We became inactive
+                """
+                rospy.loginfo("Active True => False")
+                self.idempotently_publish_scene(self.on_inactive_state)
+                self.active = False
 
     def idempotently_publish_scene(self, scene):
         """
         Attempt to publish a scene but first try to see
         if the scene is not already published
         """
-        rospy.logdebug("Current state is:%s" % self.state)
-        rospy.logdebug("Publishing new state: %s" % scene)
+        if scene:
+            rospy.logdebug("Current state is:%s" % self.state)
+            rospy.logdebug("Publishing new state: %s" % scene)
 
-        current_state = json.loads(self.state.message)
-        new_state = json.loads(scene.message)
+            current_state = json.loads(self.state.message)
+            new_state = json.loads(scene.message)
 
-        if current_state['slug'] == new_state['slug']:
-            rospy.loginfo("Not publishing scene '%s' as it's already published" % current_state['slug'])
+            if current_state['slug'] == new_state['slug']:
+                rospy.loginfo("Not publishing scene '%s' as it's already published" % current_state['slug'])
+            else:
+                rospy.loginfo("Publishing scene '%s' due to a callback for new state" % new_state['slug'])
+                self.director_scene_publisher.publish(scene)
+
+            return True
         else:
-            rospy.loginfo("Publishing scene '%s' due to a callback for new state" % new_state['slug'])
-            self.director_scene_publisher.publish(scene)
-
-        return True
+            return False
 
     def current_uscs_message(self, *args, **kwargs):
         """
         Service run to tell nodes their state when they start up, this
         service should be depended on after director is up
         """
-        rospy.loginfo("Current state: %s" % self.state)
         if self.state:
             return self.state
         return USCSMessageResponse()
@@ -148,7 +152,9 @@ class USCSService:
         """
         with self.lock:
             rospy.logdebug("Getting message {}".format(message))
-            self.state = message
+            self.state = USCSMessageResponse()
+            self.state.type = message.type
+            self.state.message = message.message
 
     def _get_json_from_url(self, url, to_json=True):
         """

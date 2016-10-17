@@ -2,27 +2,24 @@
   <param name="/viewport/left_one" value="450x800+0+0" />
   <param name="/viewport/center" value="450x800+480+0" />
   <param name="/viewport/right_one" value="450x800+960+0" />
-  <param name="/lg_mirror/janus_rest_uri" value="http://localhost:8188/janus" />
-  <param name="/lg_mirror/janus_stream_host" value="localhost" />
 
-  <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+  <node name="webserver" pkg="lg_common" type="dev_webserver.py" />
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server" />
 
   <!-- USCS for initial state -->
-  <!--
   <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" />
-  -->
+
+  <!-- readiness node for handling preloading -->
+  <node name="readiness_node" pkg="lg_common" type="readiness.py"/>
 
   <node name="mirror_capture_left_one" pkg="lg_mirror" type="capture_viewport_node">
     <param name="viewport" value="left_one" />
-    <param name="janus_port" value="6000" />
   </node>
   <node name="mirror_capture_center" pkg="lg_mirror" type="capture_viewport_node">
     <param name="viewport" value="center" />
-    <param name="janus_port" value="6001" />
   </node>
   <node name="mirror_capture_right_one" pkg="lg_mirror" type="capture_viewport_node">
     <param name="viewport" value="right_one" />
-    <param name="janus_port" value="6002" />
   </node>
 
   <!-- three adhoc browser pools -->
@@ -35,14 +32,4 @@
   <node name="adhoc_browser_pool_left" pkg="lg_common" type="adhoc_browser.py">
     <param name="viewport" value="right_one"/>
   </node>
-
-  <!-- Local rosbridge and rosapi. -->
-  <!--
-  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
-  -->
-
-  <!-- readiness node for handling preloading -->
-  <!--
-  <node name="readiness_node" pkg="lg_common" type="readiness.py" />
-  -->
 </launch>

@@ -56,7 +56,7 @@
                     var histItem = histItems[i];
                     if (histItem.url && histItem.url.indexOf('allowed_urls') >= 0) {
                         console.log("Read conf from history");
-                        setParamsAndProceed(tabs[0].url, ready);
+                        setParamsAndProceed(histItem.url, ready);
                         return;
                     }
                 }
