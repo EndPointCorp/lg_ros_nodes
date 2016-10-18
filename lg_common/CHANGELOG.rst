@@ -2,6 +2,25 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Parametrized hide and destroy delay and PEP8ized
+* Revert "Revert "Added delay""
+  This reverts commit c6df1f7e3a3e9a3e6d07d255648a468c54ec5075.
+* Fix typo
+* PEP8 and stuffz
+* Some hokeypokey
+* Revert "Added delay"
+  This reverts commit 690661968ed22ea648ff2f2b0d2fd2426312ea7f.
+* Small amendments
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Added delay
+* Work towards `#295 <https://github.com/EndPointCorp/lg_ros_nodes/issues/295>`_
+  - added ReadinessHandbrake class
+  - made new try_to_become_ready method with some idempotency
+  - added tests
+* Contributors: Galaxy Admin, Wojciech Ziniewicz
+
 1.4.18 (2016-10-17)
 -------------------
 

@@ -114,9 +114,8 @@ to the release tag
 - to make new release you need to:
 
 ```shell
-cd catkin/src
-touch CATKIN_IGNORE
-cd -
+touch catkin/CATKIN_IGNORE
+touch docker_nodes/CATKIN_IGNORE
 ```
 
 - make sure your tags are pulled - otherwise you'll generate a duplicate

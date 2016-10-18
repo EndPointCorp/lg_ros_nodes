@@ -2,6 +2,11 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Small amendments
+* Contributors: Wojciech Ziniewicz
+
 1.4.18 (2016-10-17)
 -------------------
 * Increase lg_mirror touch sender event queue size
