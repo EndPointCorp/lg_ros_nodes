@@ -81,8 +81,8 @@ class ReadinessNode(object):
         Purges the state and sets the most up to date slug
         """
         self.state = {'slug': slug,
-                        'browsers': [],
-                        'ready_browsers': []}
+                      'browsers': [],
+                      'ready_browsers': []}
 
     def save_uscs_message(self, message):
         """
@@ -94,9 +94,8 @@ class ReadinessNode(object):
             self.ready = False
             message = json.loads(message.message)
             slug = message.get('slug', None)
-            rospy.loginfo("Got uscs message slug: %s" % slug)
-
             if slug:
+                rospy.loginfo("Waiting for browsers to join to scene %s" % slug)
                 self.uscs_messages[slug] = message
                 self._purge_state(slug)
 
@@ -209,6 +208,7 @@ class ReadinessNode(object):
         """
         with self.lock:
             self.ready = True
+            rospy.loginfo("Scene %s is becoming active" % self.state['slug'])
             self._publish_readiness(force=force)
             self._purge_state(self.last_slug)
 
