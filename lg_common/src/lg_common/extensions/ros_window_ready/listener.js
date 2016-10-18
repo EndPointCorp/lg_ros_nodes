@@ -152,7 +152,7 @@ WindowReadyExt.prototype.initRos = function() {
             messageType: 'std_msgs/String',
             throttle_rate: 33
         });
-        this.readyTopic.advertise();
+        extension.readyTopic.advertise();
         console.log("Advertised on the topic /director/window/ready");
 
         extension.state.setFlag.apply(extension.state, ['rosReady']);
