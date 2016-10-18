@@ -36,7 +36,6 @@ function createRosUrl(params) {
 function loadGETParams(url, callback) {
     var params = parseUrl(url);
     if (params['ros_instance_name'] !== undefined) {
-      console.log("Read url", url);
       callback(params);
       return;
     }
@@ -120,9 +119,10 @@ function WindowReadyExt() {
 
             if(!extension.use_app_event) {
                 extension.sendMsg();
-                if (extension.chromeCallback) {
-                    extension.chromeCallback({ack: true});
-                }
+            }
+            // Send answer to hosted page anyway
+            if (extension.chromeCallback) {
+                extension.chromeCallback({ack: true});
             }
         }
     };
@@ -226,7 +226,6 @@ WindowReadyExt.prototype.applyUrlParams = function(params) {
     var instanceName = params['ros_instance_name'];
     if (instanceName !== undefined) {
         this.ros_window_name = instanceName;
-        console.log("Acuired ros_window_name", this.ros_window_name);
         this.state.setFlag('urlParsed');
     }
 };
