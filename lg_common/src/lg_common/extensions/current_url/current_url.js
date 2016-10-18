@@ -88,8 +88,6 @@ CurrentUrlExt.prototype.initRos = function(url) {
     }
     var extension = this;
 
-    console.log("This is rosUrl: " + this.rosbridgeUrl);
-
     this.ros = new ROSLIB.Ros();
 
     this.ros.on('error', function(error) {
@@ -97,10 +95,11 @@ CurrentUrlExt.prototype.initRos = function(url) {
     });
 
     this.ros.on('connection', function() {
+        console.log('ROS Connetion made to ' + this.rosbridgeUrl);
         extension.onRosConneted.apply(extension, []);
-        console.log('Connection made!');
     });
 
+    console.log("Trying to connect to ROS with URL: " + this.rosbridgeUrl);
     this.ros.connect(this.rosbridgeUrl);
     this.ros.callOnConnection();
 };

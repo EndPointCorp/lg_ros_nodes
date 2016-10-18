@@ -26,7 +26,9 @@ function getQueryParams(qs) {
             params[key] = [params[key], val];
         }
     }
-    console.log("Parsed params", params);
+    if (Object.keys(params).length > 0) {
+        console.log("Url params parsed: ", params);
+    }
     return params;
 }
 

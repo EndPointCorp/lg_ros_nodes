@@ -134,11 +134,8 @@ WindowReadyExt.prototype.initRos = function() {
     if (this.readyTopic) {
         return;
     }
-    console.log("Starting initialization of callback extension");
 
     var extension = this;
-
-    console.log("This is rosUrl: " + this.rosUrl);
 
     this.ros = new ROSLIB.Ros();
 
@@ -147,27 +144,24 @@ WindowReadyExt.prototype.initRos = function() {
     });
 
     this.ros.on('connection', function() {
-        extension.state.setFlag.apply(extension.state, ['rosReady']);
         console.log('Connection made!');
+
+        extension.readyTopic = new ROSLIB.Topic({
+            ros: extension.ros,
+            name: '/director/window/ready',
+            messageType: 'std_msgs/String',
+            throttle_rate: 33
+        });
+        this.readyTopic.advertise();
+        console.log("Advertised on the topic /director/window/ready");
+
+        extension.state.setFlag.apply(extension.state, ['rosReady']);
     });
 
-    console.log("Connecting ros object");
+    console.log("Trying to connect to ROS with URL: " + this.rosUrl);
     this.ros.connect(this.rosUrl);
 
     this.ros.callOnConnection();
-
-    console.log("Initializing /director/window/ready topic");
-    this.readyTopic = new ROSLIB.Topic({
-        ros: this.ros,
-        name: '/director/window/ready',
-        messageType: 'std_msgs/String',
-        throttle_rate: 33
-    });
-    console.log("Initialized /director/window/ready topic");
-
-    console.log("Advertising on the topic /director/window/ready");
-    this.readyTopic.advertise();
-    console.log("Advertised on the topic /director/window/ready");
 };
 
 WindowReadyExt.prototype.onRosError = function(error) {
@@ -180,20 +174,18 @@ WindowReadyExt.prototype.onRosError = function(error) {
 
 WindowReadyExt.prototype.sendMsg = function() {
     if(this.sentIds[this.ros_window_name]) {
-      console.log("Msg for window" + this.ros_window_name + " already been sent");
       return;
     }
 
     this.sentIds[this.ros_window_name] = true;
 
-    console.log("Going to send " + this.ros_window_name);
     this.readyTopic.publish({'data': this.ros_window_name});
     console.log("Sent " + this.ros_window_name);
+    console.log("Repeating window ready msg once a second");
 
     var self = this;
     this.repeatInterval = setInterval(function() {
         self.readyTopic.publish({'data': self.ros_window_name});
-        console.log("Repeat window ready msg " + self.ros_window_name);
     }, 1000);
 };
 
@@ -247,7 +239,7 @@ WindowReadyExt.prototype.domLoadedEvnt = function() {
 
 // Custom message recieved
 WindowReadyExt.prototype.directorWindowMsg = function(sender, sendResponse) {
-    console.log('Got DIRECTOR_WINDOW_READY message');
+    console.log('Got DIRECTOR_WINDOW_READY message from content');
 
     var extension = this;
     this.state.addWaiter('directorWindowMsg', function(flags) {
@@ -281,7 +273,7 @@ WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
     else {
         chrome.tabs.query({active: true}, function(tabs) {
             if (tabs.length == 0) {
-                console.log("Can't aquire url");
+                console.log("Can't aquire url, active tabs are empty");
                 return false;
             }
             loadGETParams(tabs[0].url, function(params){

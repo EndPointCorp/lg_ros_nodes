@@ -1,4 +1,5 @@
 (function (){
+    FILE_CONFIG_URL = "file:///opt/endpoint/chrome/extensions/monitor_page_urls/allowed_urls.json";
 
     function parseUrl(url) {
         var parser = document.createElement('a');
@@ -62,7 +63,7 @@
                 }
 
                 // 3. config file
-                $.get( "file:///opt/ep/allowed_urls.json", function( data ) {
+                $.get(FILE_CONFIG_URL, function( data ) {
                     var conf = JSON.parse(data);
                     if (conf) {
                         console.log("Read conf from /opt/ep/allowed_urls.json");
@@ -70,8 +71,10 @@
                         ready(conf.allowed_urls);
                     }
                     else {
-                        console.log("FAILED to load allowed pages");
+                        console.log("FAILED to parse allowed pages");
                     }
+                }).fail(function() {
+                    console.log("FAILED to parse allowed pages");
                 });
             });
         });
@@ -94,12 +97,13 @@
         if (details.parentFrameId != -1) {
             return
         }
+
         if(!allowed(details.url)) {
             try {
                 stats.sendMsg('Block page ' + details.url);
             }
             catch (e) {
-                console.log(e);
+                console.log("Failed to send stats ", e);
             }
             console.log('Block page ' + details.url);
             chrome.tabs.update(details.tabId, {url: redirectUrl});
@@ -107,7 +111,7 @@
     }
 
     function allowed(url) {
-        if (!templates) {
+        if (!templates || redirectUrl == url) {
             return true;
         }
 
