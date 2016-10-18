@@ -31,7 +31,13 @@ class AdhocBrowserPool():
       old browsers and show new
 
     """
-    def __init__(self, viewport_name, extensions_root="/opt/google/chrome/extensions/"):
+    def __init__(
+        self,
+        viewport_name,
+        extensions_root="/opt/google/chrome/extensions/",
+        hide_delay=0.5,
+        destroy_delay=2
+    ):
         """
         AdhocBrowserPool manages a pool of browsers on one viewport.
         self.browsers ivar keeps a dict of (id: ManagedAdhocBrowser) per viewport.
@@ -39,6 +45,8 @@ class AdhocBrowserPool():
 
         self.browsers = {}
         self.browsers_info = {}
+        self.hide_delay = hide_delay
+        self.destroy_delay = destroy_delay
 
         # FIXME: Check that extensions_root ends with '/'
         self.extensions_root = extensions_root
@@ -401,8 +409,8 @@ class AdhocBrowserPool():
             old_preloadable_instances_to_remove = self._get_old_preloadable_browser_instances(preloadable_prefixes, data)
             self._unhide_browser_instances(data)
             rospy.loginfo("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
-            self._hide_browsers_ids(set(old_preloadable_instances_to_remove), delay=0.5)
-            self._destroy_browsers_ids(set(old_preloadable_instances_to_remove), delay=2)
+            self._hide_browsers_ids(set(old_preloadable_instances_to_remove), delay=self.hide_delay)
+            self._destroy_browsers_ids(set(old_preloadable_instances_to_remove), delay=self.destroy_delay)
             rospy.loginfo("============UNHIDING END %s   ============" % data.instances)
 
     def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):

@@ -21,6 +21,8 @@ def main():
     rosbridge_host = rospy.get_param('~rosbridge_port', 'localhost')
     depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', True)
     global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
+    hide_delay = rospy.get_param('~hide_delay', 0.5)
+    destroy_delay = rospy.get_param('~destroy_delay', 2)
 
     if not viewport_name:
         rospy.logerr("Viewport is not set in the roslaunch file. Exiting.")
@@ -36,7 +38,9 @@ def main():
     actors = []
 
     adhocbrowser_pool = AdhocBrowserPool(viewport_name=viewport_name,
-                                         extensions_root=extensions_root)
+                                         extensions_root=extensions_root,
+                                         hide_delay=hide_delay,
+                                         destroy_delay=destroy_delay)
 
     make_soft_relaunch_callback(adhocbrowser_pool.handle_soft_relaunch,
                                 groups=["media"])
