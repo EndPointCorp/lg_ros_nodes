@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.19 (2016-10-18)
+-------------------
 * Small amendments
 * Contributors: Wojciech Ziniewicz
 

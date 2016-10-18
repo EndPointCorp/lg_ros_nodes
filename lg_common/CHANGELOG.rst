@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.19 (2016-10-18)
+-------------------
 * Parametrized hide and destroy delay and PEP8ized
 * Revert "Revert "Added delay""
   This reverts commit c6df1f7e3a3e9a3e6d07d255648a468c54ec5075.
