@@ -570,7 +570,7 @@ class TestAdhocBrowser(unittest.TestCase):
         Ready message should come after readiness handbrake timeout of 10 seconds (default)
         """
         self.reinitialize_mock_subscribers()
-        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_wrong_url'))
+        self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_wrong_url_msg'))
         rospy.sleep(self.preloading_grace_time + 20)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
