@@ -55,7 +55,7 @@ class StateTracker(object):
                 continue
 
             for i in range(len(window.get('assets', []))):
-                if 'maps.google.com' in window['assets'][i] and \
+                if ('maps.google.com' in window['assets'][i] or "google.com/maps" in window['assets'][i]) and \
                         self.tactile_flag not in window['assets'][i]:
                     window['assets'][i] += self.tactile_flag
 

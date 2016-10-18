@@ -42,12 +42,12 @@ class StateSetter(object):
         # we follow a special path, also if just the new state is tactile we
         # follow another but different special path
 
-        if self.handle_current_and_new_tactile(state):
-            self._clear_state()
-            return
+        #if self.handle_current_and_new_tactile(state):
+        #    self._clear_state()
+        #    return
 
-        if self.handle_new_state_tactile(state):
-            return
+        #if self.handle_new_state_tactile(state):
+        #    return
 
         self.publish_uscs(state)
         self._clear_state()
