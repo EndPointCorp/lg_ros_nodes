@@ -153,12 +153,12 @@ class AdhocBrowserPool():
         """
         return {b.id: b for b in browsers}
 
-    def _remove_browser(self, browser_pool_id, delay=None):
+    def _remove_browser(self, browser_pool_id):
         """
         call .close() on browser object and cleanly delete the object
         """
         rospy.logdebug("Removing browser with id %s" % (browser_pool_id))
-        self.browsers[browser_pool_id].close(delay=delay)
+        self.browsers[browser_pool_id].close()
         del self.browsers[browser_pool_id]
         del self.browsers_info[browser_pool_id]
         rospy.logdebug("State after %s removal: %s" % (browser_pool_id, self.browsers))
@@ -341,7 +341,7 @@ class AdhocBrowserPool():
 
         return True
 
-    def _hide_browsers_ids(self, ids, delay=None):
+    def _hide_browsers_ids(self, ids):
         """
         Accepts a list of browser pool ids to hide
 
@@ -349,18 +349,18 @@ class AdhocBrowserPool():
         """
         for browser_pool_id in ids:
             rospy.loginfo("Hiding browser with id %s" % browser_pool_id)
-            self.browsers[browser_pool_id].set_state(ApplicationState.HIDDEN, delay=delay)
+            self.browsers[browser_pool_id].set_state(ApplicationState.HIDDEN)
 
         return True
 
-    def _destroy_browsers_ids(self, ids, delay=None):
+    def _destroy_browsers_ids(self, ids):
         """
         Accepts a list of browser ids to destroy (kill and remove)
         """
         rospy.loginfo("Browsers to remove = %s" % (ids))
         for browser_pool_id in ids:
             rospy.loginfo("Removing browser id %s" % browser_pool_id)
-            self._remove_browser(browser_pool_id, delay=delay)
+            self._remove_browser(browser_pool_id)
 
     def _get_all_preloadable_instances(self, data):
         """
@@ -401,8 +401,8 @@ class AdhocBrowserPool():
             old_preloadable_instances_to_remove = self._get_old_preloadable_browser_instances(preloadable_prefixes, data)
             self._unhide_browser_instances(data)
             rospy.loginfo("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
-            self._hide_browsers_ids(set(old_preloadable_instances_to_remove), delay=0.5)
-            self._destroy_browsers_ids(set(old_preloadable_instances_to_remove), delay=2)
+            self._hide_browsers_ids(set(old_preloadable_instances_to_remove))
+            self._destroy_browsers_ids(set(old_preloadable_instances_to_remove))
             rospy.loginfo("============UNHIDING END %s   ============" % data.instances)
 
     def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):

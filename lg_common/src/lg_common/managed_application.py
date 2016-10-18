@@ -1,7 +1,6 @@
 import os
 import signal
 import threading
-import time
 
 import rospy
 from appctl_support import ProcController
@@ -72,7 +71,7 @@ class ManagedApplication(object):
         with self.lock:
             return self.state
 
-    def set_state(self, state, delay=None):
+    def set_state(self, state):
         with self.lock:
             state_changed = False
             if state != self.state:
@@ -99,8 +98,6 @@ class ManagedApplication(object):
                 rospy.logdebug("HIDDEN")
                 self.proc.start()
                 if self.window is not None:
-                    if delay:
-                        time.sleep(delay)
                     self.window.set_visibility(False)
                     self.window.converge()
                 else:
