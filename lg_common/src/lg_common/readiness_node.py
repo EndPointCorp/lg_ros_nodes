@@ -92,8 +92,6 @@ class ReadinessNode(object):
         Saves director message scene to know
         how many browsers should be activated for this scene
 
-        Sets the timer for readiness timeout.
-
         """
         with self.lock:
             self.state['ready'] = False
@@ -104,6 +102,7 @@ class ReadinessNode(object):
 
             if slug:
                 self.uscs_messages[slug] = message
+                self._purge_state(slug)
 
     def aggregate_browser_instances(self, message):
         """
@@ -221,7 +220,7 @@ class ReadinessNode(object):
         if self._ready():
             self.become_ready()
 
-        if force is True and not self._ready():
+        if force is True and not self.state['ready']:
             message = "Scene %s did not become ready within specified timeout" % self.state['slug']
             rospy.logwarn(message)
             self.timeout_publisher.publish(String(data=message))

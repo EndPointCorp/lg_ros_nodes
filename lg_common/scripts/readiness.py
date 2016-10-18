@@ -23,7 +23,7 @@ def main():
                                           Ready,
                                           queue_size=20)
 
-    timeout_publisher = rospy.Publisher('/director/error',
+    timeout_publisher = rospy.Publisher('/director/window/error',
                                         String,
                                         queue_size=10)
 
