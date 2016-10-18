@@ -43,7 +43,7 @@ class StateTracker(object):
         windows = current_state.get('windows', [])
         for window in windows:
             url = self.grab_url(window, i)
-            window['assets'][0] = url
+            window['assets'] = [url]
             i += 1
 
         current_state = self.handle_tactile(current_state)
