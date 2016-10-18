@@ -34,7 +34,7 @@ class ReadinessHandbrake(object):
             rospy.sleep(1)
 
         self.callback(force=True)
-        rospy.loginfo("Executing readiness handbrake callback %s" % self.callback)
+        rospy.loginfo("Executing readiness handbrake callback")
 
 
 class ReadinessNode(object):
@@ -48,8 +48,7 @@ class ReadinessNode(object):
                     'browsers': [
                         'adhoc_browser_f9db1u3b4',
                         'adhoc_browser_23048h5ue'
-                    ],
-                    'timestamp': 1466167808.940136
+                    ]
                  }
     """
     def __init__(self,
@@ -58,6 +57,7 @@ class ReadinessNode(object):
                  ):
         self.lock = threading.Lock()
         self._purge_state(None)
+        self.ready = False
         self.last_slug = None
         self.uscs_messages = {}
         self.readiness_publisher = readiness_publisher
@@ -80,12 +80,9 @@ class ReadinessNode(object):
         """
         Purges the state and sets the most up to date slug
         """
-        with self.lock:
-            self.state = {'slug': slug,
-                          'browsers': [],
-                          'ready': False,
-                          'ready_browsers': [],
-                          'timestamp': time.time()}
+        self.state = {'slug': slug,
+                        'browsers': [],
+                        'ready_browsers': []}
 
     def save_uscs_message(self, message):
         """
@@ -94,11 +91,10 @@ class ReadinessNode(object):
 
         """
         with self.lock:
-            self.state['ready'] = False
-            self.timestamp = time.time()
-            rospy.loginfo("Got uscs message: %s" % message)
+            self.ready = False
             message = json.loads(message.message)
             slug = message.get('slug', None)
+            rospy.loginfo("Got uscs message slug: %s" % slug)
 
             if slug:
                 self.uscs_messages[slug] = message
@@ -115,13 +111,15 @@ class ReadinessNode(object):
         self.last_slug = self.state.get('slug', None)
 
         if message.scene_slug != self.last_slug:
-            self._purge_state(message.scene_slug)
+            with self.lock:
+                self._purge_state(message.scene_slug)
 
         for browser in message.browsers:
             if browser.preload:
                 browser_id = browser.id
                 if browser_id not in self.state['browsers']:
-                    self.state['browsers'].append(browser_id)
+                    with self.lock:
+                        self.state['browsers'].append(browser_id)
 
         rospy.loginfo("Gathered new browsers: %s" % self.state)
 
@@ -137,7 +135,7 @@ class ReadinessNode(object):
         except KeyError:
             slug = self.state['slug']
             rospy.logwarn("Could not get number of preloadable browsers for this USCS message for slug: %s" % slug)
-            return 0
+            return num_browsers
 
         for window in windows:
             if window['activity'] == 'browser':
@@ -209,9 +207,10 @@ class ReadinessNode(object):
         If force is used - all browsers (even these that are not ready)
         are going to be unhidden
         """
-        self._publish_readiness(force=force)
-        self._purge_state(self.last_slug)
-        self.state['ready'] = True
+        with self.lock:
+            self.ready = True
+            self._publish_readiness(force=force)
+            self._purge_state(self.last_slug)
 
     def try_to_become_ready(self, force=False):
         """
@@ -220,7 +219,7 @@ class ReadinessNode(object):
         if self._ready():
             self.become_ready()
 
-        if force is True and not self.state['ready']:
+        if force is True and self.ready is not True:
             message = "Scene %s did not become ready within specified timeout" % self.state['slug']
             rospy.logwarn(message)
             self.timeout_publisher.publish(String(data=message))
