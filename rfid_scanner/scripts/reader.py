@@ -51,7 +51,7 @@ def main():
 
     port = rospy.get_param('~device_path', '/dev/rfid_scanner')
     baudrate = rospy.get_param('~baudrate', 9600)
-    pub_topic = rospy.get_param('~pub_topic', '/rfid/scan')
+    pub_topic = rospy.get_param('~pub_topic', '/rfid/uscs/scan')
     debug_pub_topic = rospy.get_param('~debug_topic', '/rfid/set')
     debug_timeout = rospy.get_param('~debug_timeout_seconds', 30)
 

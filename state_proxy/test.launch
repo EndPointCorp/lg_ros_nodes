@@ -1,0 +1,4 @@
+<launch>
+  <node name="state_tracker" pkg="state_proxy" type="state_tracker"/>
+  <node name="state_setter" pkg="state_proxy" type="state_setter"/>
+</launch>

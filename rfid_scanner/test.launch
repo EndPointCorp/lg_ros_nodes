@@ -1,0 +1,4 @@
+<launch>
+  <node name="rfid" pkg="rfid_scanner" type="reader"/>
+  <node name="sqlite_storage" pkg="rfid_scanner" type="sqlite_uscs_storage"/>
+</launch>
