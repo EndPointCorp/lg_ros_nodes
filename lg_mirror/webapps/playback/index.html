@@ -2,6 +2,8 @@
 <html>
 
 <head>
+<script type="text/javascript" src="js/lib/eventemitter2.min.js"></script>
+<script type="text/javascript" src="js/lib/roslib.min.js"></script>
 <script type="text/javascript" src="js/util.js"></script>
 <style>
 body {
@@ -28,11 +30,29 @@ document.addEventListener('contextmenu', function(e) {
 
 var streamDiv = document.getElementById('stream');
 
+var rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
+var rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
+var rosbridgeSecure = getParameterByName('rosbridge_secure', stringToBoolean, false);
+var rosbridgeUrl = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
+var rosInstanceName = getParameterByName('ros_instance_name', String);
 var webVideoServerUri = getParameterByName('web_video_server', String, 'http://localhost:8080');
 var viewport = getParameterByName('played_back_viewport', String);
 if (!viewport) {
   console.error('Must specify viewport param');
 }
+
+var ros = new ROSLIB.Ros();
+ros.connect(rosbridgeUrl);
+
+var readinessTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/director/window/ready',
+  messageType: 'std_msgs/String'
+});
+readinessTopic.advertise();
+var readinessMsg = new ROSLIB.Message({
+   data: rosInstanceName
+});
 
 // Must match the form of lg_mirror.utils.get_viewport_base_topic()
 // ros_compressed stream type will append /compressed
@@ -40,6 +60,10 @@ var streamTopic = '/lg_mirror/viewport/' + viewport;
 var streamUrl = webVideoServerUri + '/stream?type=ros_compressed&topic=' + streamTopic;
 
 var img = document.createElement('img');
+img.onload = function(ev) {
+  console.log('load at', ev.timeStamp, 'ms');
+  readinessTopic.publish(readinessMsg);
+}
 streamDiv.appendChild(img);
 img.src = streamUrl;
 
