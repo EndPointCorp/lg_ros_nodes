@@ -2,6 +2,9 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.5.0 (2016-10-19)
 ------------------
 * getting changelogs / package versions ready
