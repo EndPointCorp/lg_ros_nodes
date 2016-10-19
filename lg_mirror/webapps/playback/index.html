@@ -40,6 +40,12 @@ var streamTopic = '/lg_mirror/viewport/' + viewport;
 var streamUrl = webVideoServerUri + '/stream?type=ros_compressed&topic=' + streamTopic;
 
 var img = document.createElement('img');
+img.onload = function(ev) {
+  console.log('load at', ev.timeStamp, 'ms');
+  setTimeout(function(){
+    window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
+  }, 1000);
+}
 streamDiv.appendChild(img);
 img.src = streamUrl;
 
