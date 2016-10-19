@@ -4,6 +4,15 @@ Changelog for package rfid_scanner
 
 Forthcoming
 -----------
+* getting changelogs / package versions ready
+* small fixes to get rfids working
+* mostly working state tracking / setting
+* Fixed typos, done sqlite uscs storage node
+* Add separate node for uscs messages
+* Add separate node for uscs messages
+* initial rfid code
+* Contributors: Dmitry Kiselev, Jacob Minshall, kiselev-dv
+
 * small fixes to get rfids working
 * mostly working state tracking / setting
 * Fixed typos, done sqlite uscs storage node

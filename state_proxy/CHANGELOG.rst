@@ -4,6 +4,15 @@ Changelog for package state_proxy
 
 Forthcoming
 -----------
+* getting changelogs / package versions ready
+* small fixes to get rfids working
+* mostly working state tracking / setting
+* update state tracker to work with the uscs sqlite storage
+* remove message runtime dependency
+* initial state handler
+  State tracker is working with USCS messages.
+* Contributors: Jacob Minshall
+
 * small fixes to get rfids working
 * mostly working state tracking / setting
 * update state tracker to work with the uscs sqlite storage
