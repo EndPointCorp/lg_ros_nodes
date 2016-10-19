@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.0 (2016-10-19)
+------------------
 * Fix typo in ros_window_ready extension
 * Remove infinite cycle in ros_window_ready extension logging
 * JS extensions logs cleanup

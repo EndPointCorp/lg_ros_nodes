@@ -2,8 +2,8 @@
 Changelog for package rfid_scanner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.0 (2016-10-19)
+------------------
 * getting changelogs / package versions ready
 * small fixes to get rfids working
 * mostly working state tracking / setting
