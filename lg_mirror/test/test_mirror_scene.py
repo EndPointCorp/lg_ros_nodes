@@ -39,7 +39,7 @@ DIRECTOR_MESSAGE = """
       "activity": "browser",
       "activity_config": {
         "preload": true,
-        "custom_prelaod_event": true
+        "custom_preload_event": true
       },
       "assets": [
         "http://localhost:8008/lg_mirror/webapps/playback/index.html?played_back_viewport=center"
@@ -54,7 +54,7 @@ DIRECTOR_MESSAGE = """
       "activity": "browser",
       "activity_config": {
         "preload": true,
-        "custom_prelaod_event": true
+        "custom_preload_event": true
       },
       "assets": [
         "http://localhost:8008/lg_mirror/webapps/playback/index.html?played_back_viewport=center"
