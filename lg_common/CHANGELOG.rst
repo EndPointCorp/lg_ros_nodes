@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.2 (2016-10-19)
+------------------
 * Better readiness logging and forceful activation
 * Contributors: Wojciech Ziniewicz
 
