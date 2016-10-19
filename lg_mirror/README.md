@@ -131,7 +131,6 @@ For full mirror and touch capability, you will need to configure:
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
 * A `web_video_server::web_video_server` for each host.
-* A `rosbridge_server::rosbridge_websocket.py` for each host (for preloading).
 * An `lg_common::dev_webserver.py` for each host.
 * An `lg_common::adhoc_browser.py` for each viewport.
 
@@ -141,12 +140,6 @@ The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requir
 
 * `played_back_viewport` : Viewport name for playback. Required.
 * `web_video_server` : URL to the `web_video_server`. Default: `http://localhost:8080`
-
-Also, implicit ad hoc browser params are needed for preloading:
-* `rosbridge_host`
-* `rosbridge_port`
-* `rosbridge_secure`
-* `ros_instance_name`
 
 ## Development/Testing
 
