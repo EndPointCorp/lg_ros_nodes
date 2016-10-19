@@ -17,7 +17,7 @@ def main():
     readiness_topic_name = '/director/ready'
     window_instances_topic_name = '/director/window/ready'
 
-    readiness_timeout = rospy.get_param("~timeout", 10)
+    readiness_timeout = rospy.get_param("/readiness/timeout", 10)
 
     readiness_publisher = rospy.Publisher(readiness_topic_name,
                                           Ready,

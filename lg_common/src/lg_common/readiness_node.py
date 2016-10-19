@@ -22,7 +22,7 @@ class ReadinessHandbrake(object):
         """
         Reset the timer
         """
-        rospy.loginfo("ReadinessHandbrake registered message")
+        rospy.logdebug("ReadinessHandbrake registered message")
         self._timer_thread = threading.Thread(
             target=self._timer_worker_thread
         )
@@ -33,8 +33,8 @@ class ReadinessHandbrake(object):
             rospy.logdebug("Waiting for readiness %s" % interval)
             rospy.sleep(1)
 
+        rospy.loginfo("Executing readiness handbrake to activate unactivated browsers within specified timeout of %s secs" % self.timeout)
         self.callback(force=True)
-        rospy.loginfo("Executing readiness handbrake callback")
 
 
 class ReadinessNode(object):
@@ -58,7 +58,6 @@ class ReadinessNode(object):
         self.lock = threading.Lock()
         self._purge_state(None)
         self.ready = False
-        self.last_slug = None
         self.uscs_messages = {}
         self.readiness_publisher = readiness_publisher
         self.timeout_publisher = timeout_publisher
@@ -91,6 +90,7 @@ class ReadinessNode(object):
 
         """
         with self.lock:
+            rospy.loginfo("Received new director scene")
             self.ready = False
             message = json.loads(message.message)
             slug = message.get('slug', None)
@@ -98,8 +98,11 @@ class ReadinessNode(object):
                 rospy.loginfo("Waiting for browsers to join to scene %s" % slug)
                 self.uscs_messages[slug] = message
                 self._purge_state(slug)
+                rospy.loginfo("Current state is: %s" % json.dumps(self.state, indent=4))
+            else:
+                rospy.logwarn("Readiness node received message without slug this no preloading will be performed")
 
-    def aggregate_browser_instances(self, message):
+    def aggregate_browser_instances(self, browsers):
         """
         Callback for common browser topic with AdhocBrowsers msg type
 
@@ -107,20 +110,14 @@ class ReadinessNode(object):
         Append only the browsers that have the `preload` flag set to true
         """
 
-        self.last_slug = self.state.get('slug', None)
-
-        if message.scene_slug != self.last_slug:
-            with self.lock:
-                self._purge_state(message.scene_slug)
-
-        for browser in message.browsers:
-            if browser.preload:
+        for browser in browsers.browsers:
+            if browser.preload and (browser.scene_slug == self.state['slug']):
                 browser_id = browser.id
                 if browser_id not in self.state['browsers']:
                     with self.lock:
+                        rospy.loginfo("Browser with id %s added to waiting pool" % browser_id)
                         self.state['browsers'].append(browser_id)
 
-        rospy.loginfo("Gathered new browsers: %s" % self.state)
 
     def _get_number_of_prelaodable_browsers_to_join(self):
         """
@@ -147,7 +144,7 @@ class ReadinessNode(object):
         rospy.logdebug("Got number of preloadable browsers = %s" % num_browsers)
         return num_browsers
 
-    def _ready(self):
+    def _all_browsers_joined(self):
         number_of_browsers_to_join = self._get_number_of_prelaodable_browsers_to_join()
         ready_browsers = set(self.state['ready_browsers'])
         registered_browsers = self.state['browsers']
@@ -162,18 +159,18 @@ class ReadinessNode(object):
             return False
 
     def _publish_readiness(self, force=False):
-        if self.state['ready_browsers']:
-            ready_msg = Ready()
-            ready_msg.scene_slug = self.state['slug']
-            if force:
-                ready_msg.instances = self.state['browsers']
-            else:
-                ready_msg.instances = self.state['ready_browsers']
-            ready_msg.activity_type = 'browser'
-            rospy.loginfo("Became ready: %s" % self.state)
-            self.readiness_publisher.publish(ready_msg)
-        else:
-            rospy.logdebug("Tried to emit a /director/ready message without browser instnces")
+        """
+        Emit a message that will let adhoc browser pool know that we're ready
+        if readiness publication is forced, make all browsers ready
+        """
+        ready_msg = Ready()
+        ready_msg.scene_slug = self.state['slug']
+        if force:
+            self.state['ready_browsers'] = self.state['browsers']
+        ready_msg.instances = self.state['ready_browsers']
+        ready_msg.activity_type = 'browser'
+        rospy.loginfo("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
+        self.readiness_publisher.publish(ready_msg)
 
     def handle_readiness(self, message):
         """
@@ -190,7 +187,8 @@ class ReadinessNode(object):
             if instance_name in self.state['browsers']:
                 if instance_name not in self.state['ready_browsers']:
                     self.state['ready_browsers'].append(instance_name)
-                    rospy.loginfo("State after one of the browsers became ready %s" % self.state)
+                    rospy.loginfo("Browser with ID %s joined (%s out of %s)" % (instance_name, len(self.state['ready_browsers']), len(self.state['browsers'])))
+                    rospy.loginfo("Current state is: %s" % json.dumps(self.state, indent=4))
                 else:
                     rospy.logdebug("Readiness node received browser instance id that was already ready")
             else:
@@ -208,15 +206,14 @@ class ReadinessNode(object):
         """
         with self.lock:
             self.ready = True
-            rospy.loginfo("Scene %s is becoming active" % self.state['slug'])
+            rospy.loginfo("Scene %s is becoming ready (force=%s)" % (self.state['slug'], force))
             self._publish_readiness(force=force)
-            self._purge_state(self.last_slug)
 
     def try_to_become_ready(self, force=False):
         """
         Method for becoming ready e.g. publishing readiness
         """
-        if self._ready():
+        if self._all_browsers_joined() and not self.ready:
             self.become_ready()
 
         if force is True and self.ready is not True:
