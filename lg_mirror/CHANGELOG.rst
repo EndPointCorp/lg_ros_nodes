@@ -2,6 +2,18 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add preloading support for mirror playback (`#306 <https://github.com/endpointcorp/lg_ros_nodes/issues/306>`_)
+  * Add preloading support for mirror playback
+  * Made things lil bit more simple
+  * Fixed typo
+  * Added small timeout to img readiness
+* Revert "Add preloading support for mirror playback (`#304 <https://github.com/endpointcorp/lg_ros_nodes/issues/304>`_)"
+  This reverts commit 088d96cb4b349d695dfd8bd59a5e37697e68182f.
+* Add preloading support for mirror playback (`#304 <https://github.com/endpointcorp/lg_ros_nodes/issues/304>`_)
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.5.1 (2016-10-19)
 ------------------
 
