@@ -1,0 +1,6 @@
+<launch>
+  <node name="rfid" pkg="rfid_scanner" type="reader">
+    <param name="debug_timeout" value="15"/>
+  </node>
+  <node name="sqlite_storage" pkg="rfid_scanner" type="sqlite_uscs_storage"/>
+</launch>

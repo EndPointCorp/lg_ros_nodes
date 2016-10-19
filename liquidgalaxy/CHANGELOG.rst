@@ -2,6 +2,14 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.1 (2016-10-19)
+------------------
+* add new ros ndoes as dependencies
+* Contributors: Jacob Minshall
+
+1.5.0 (2016-10-19)
+------------------
+
 1.4.19 (2016-10-18)
 -------------------
 

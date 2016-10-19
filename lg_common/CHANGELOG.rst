@@ -2,6 +2,16 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.1 (2016-10-19)
+------------------
+
+1.5.0 (2016-10-19)
+------------------
+* Fix typo in ros_window_ready extension
+* Remove infinite cycle in ros_window_ready extension logging
+* JS extensions logs cleanup
+* Contributors: kiselev-dv
+
 1.4.19 (2016-10-18)
 -------------------
 * Parametrized hide and destroy delay and PEP8ized
