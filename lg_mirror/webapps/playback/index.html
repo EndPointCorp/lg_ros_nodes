@@ -42,12 +42,22 @@ var streamUrl = webVideoServerUri + '/stream?type=ros_compressed&topic=' + strea
 var img = document.createElement('img');
 img.onload = function(ev) {
   console.log('load at', ev.timeStamp, 'ms');
+  window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
+  // TODO (WZ)
+  // - wait for message on /director/ready (lg_common/Ready)
+  // - check if your ros_instance_name was on the `instances` list in the message
+  // - as soon as the the message comes on the topic - get ready by waiting 1
+  // seconds (or wait GET arg amount of seconds) to get rid of the previous scene
+  // in the playback stream
   setTimeout(function(){
-    window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
-  }, 1000);
+      streamDiv.appendChild(img);
+  }, 3000);
 }
-streamDiv.appendChild(img);
+
+
 img.src = streamUrl;
+
+
 
 </script>
 </body>

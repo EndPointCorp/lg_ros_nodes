@@ -38,12 +38,12 @@ class ManagedApplication(object):
 
         self.post_init()
 
-    def close(self):
+    def close(self, delay=None):
         """
         End this ManagedApplication immediately.  After closing, the instance
         can no longer be used.
         """
-        self.set_state(ApplicationState.STOPPED)
+        self.set_state(ApplicationState.STOPPED, delay=delay)
         del self.lock
         del self.cmd
         del self.state
@@ -84,6 +84,9 @@ class ManagedApplication(object):
 
             if state == ApplicationState.STOPPED:
                 rospy.logdebug("STOPPED")
+                if delay:
+                    rospy.loginfo("Waiting %s seconds to destroy the browser" % delay)
+                    time.sleep(delay)
                 self.proc.stop()
                 if self.window is not None:
                     self.window.set_visibility(False)
@@ -100,6 +103,7 @@ class ManagedApplication(object):
                 self.proc.start()
                 if self.window is not None:
                     if delay:
+                        rospy.loginfo("Waiting %s seconds to hide the browser" % delay)
                         time.sleep(delay)
                     self.window.set_visibility(False)
                     self.window.converge()
