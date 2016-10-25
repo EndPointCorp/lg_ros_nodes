@@ -15,7 +15,7 @@ class TestAdhocBrowserPool(unittest.TestCase):
     def setUp(self):
         rospy.set_param('~rosbridge_secure', True)
         rospy.set_param('~rosbridge_port', 1234)
-        self.pool = AdhocBrowserPool('center')
+        self.pool = AdhocBrowserPool('center', "/opt/google/chrome/extensions/", 0, 0)
 
     def tearDown(self):
         pass
