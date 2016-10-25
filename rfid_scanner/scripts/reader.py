@@ -18,7 +18,6 @@ class RfidListener(object):
         self.last_mode = None
         self._setup_device()
 
-
     def _setup_device(self):
         self.device = serial.Serial(port=self.port, baudrate=self.baudrate)
 
