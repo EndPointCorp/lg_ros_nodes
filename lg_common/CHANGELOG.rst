@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix adhoc browser test
+* Contributors: Matt Vollrath
+
 1.5.3 (2016-10-25)
 ------------------
 * Revamp delays in ad hoc browser pool

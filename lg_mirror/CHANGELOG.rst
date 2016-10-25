@@ -2,6 +2,11 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed body events
+* Contributors: Wojciech Ziniewicz
+
 1.5.3 (2016-10-25)
 ------------------
 * Add visibility delay for mirror playback
