@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.4 (2016-10-25)
+------------------
 * Fix adhoc browser test
 * Contributors: Matt Vollrath
 

@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.4 (2016-10-25)
+------------------
 * Fixed body events
 * Contributors: Wojciech Ziniewicz
 
