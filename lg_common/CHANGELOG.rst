@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revamp delays in ad hoc browser pool
+  * Remove bad delays from ManagedApplication
+  * Converge window before setting ProcController goal state
+  * Fix some other cruft
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
 1.5.2 (2016-10-19)
 ------------------
 * Better readiness logging and forceful activation

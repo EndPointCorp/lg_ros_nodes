@@ -2,6 +2,12 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add visibility delay for mirror playback
+  Prevent showing the previous scene's content by waiting for the scene to be ready (and then some).
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.5.2 (2016-10-19)
 ------------------
 * Add preloading support for mirror playback (`#306 <https://github.com/endpointcorp/lg_ros_nodes/issues/306>`_)
