@@ -27,7 +27,7 @@ class StateSetter(object):
         except:
             rospy.logerr("Last state from /uscs/message service returned non-json parsable (%s)" % state)
             return {}
-	
+
     def handle_state_setting(self, msg):
         self.state = None
         try:
@@ -160,7 +160,7 @@ def main():
 
     rospy.wait_for_service('/uscs/message', 10)
     last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
-    
+
     state_setter = StateSetter(state_pub, display_pub, kiosk_pub, runway_pub, last_uscs_service)
 
     rospy.Service('/state_setter/desired_state', DesiredState, state_setter.desired_state)

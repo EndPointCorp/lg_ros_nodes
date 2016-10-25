@@ -61,7 +61,6 @@ class StateTracker(object):
 
         return state
 
-
     def grab_url(self, window, index=None):
         """
         given a window (from the director message) grab either the kiosk or
@@ -106,6 +105,7 @@ class StateTracker(object):
         state = self.build_state()
         state['rfid'] = msg.data
         self.update_rfid_pub.publish(json.dumps(state))
+
 
 def main():
     rospy.init_node('state_tracker')
