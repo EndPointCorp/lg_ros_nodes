@@ -118,7 +118,6 @@ class ReadinessNode(object):
                         rospy.loginfo("Browser with id %s added to waiting pool" % browser_id)
                         self.state['browsers'].append(browser_id)
 
-
     def _get_number_of_prelaodable_browsers_to_join(self):
         """
         Parses last USCS message and returns the number of preloadable
