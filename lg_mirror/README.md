@@ -141,6 +141,8 @@ The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requir
 
 * `played_back_viewport` : Viewport name for playback. Required.
 * `web_video_server` : URL to the `web_video_server`. Default: `http://localhost:8080`
+* `readiness_fallback_duration` : Assume the scene is ready after N ms. Default: `2000`
+* `visibility_delay` : After scene is ready, wait N ms to show the stream. Default: `1500`
 
 Also, ad hoc browser params are needed for preloading (added implicitly
 by pool on production):

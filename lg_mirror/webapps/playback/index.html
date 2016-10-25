@@ -3,6 +3,8 @@
 
 <head>
 <script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript" src="js/lib/eventemitter2.min.js"></script>
+<script type="text/javascript" src="js/lib/roslib.min.js"></script>
 <style>
 body {
   background-color: black;
@@ -11,7 +13,7 @@ body {
   margin: 0;
   overflow: hidden;
 }
-#stream, img {
+body, #stream, img {
   pointer-events: none;
   user-select: none;
 }
@@ -28,11 +30,28 @@ document.addEventListener('contextmenu', function(e) {
 
 var streamDiv = document.getElementById('stream');
 
+var rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
+var rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
+var rosbridgeSecure = getParameterByName('rosbridge_secure', stringToBoolean, false);
+var rosbridgeUrl = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
+var rosInstanceName = getParameterByName('ros_instance_name', String, null);
 var webVideoServerUri = getParameterByName('web_video_server', String, 'http://localhost:8080');
 var viewport = getParameterByName('played_back_viewport', String);
 if (!viewport) {
   console.error('Must specify viewport param');
 }
+
+var readinessFallbackDuration = getParameterByName('readiness_fallback_duration', Number, 2000);
+var visibilityDelay = getParameterByName('visibility_delay', Number, 1500);
+
+var ros = new ROSLIB.Ros();
+ros.connect(rosbridgeUrl);
+
+var readinessTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/director/ready',
+  messageType: 'lg_common/Ready'
+});
 
 // Must match the form of lg_mirror.utils.get_viewport_base_topic()
 // ros_compressed stream type will append /compressed
@@ -41,23 +60,33 @@ var streamUrl = webVideoServerUri + '/stream?type=ros_compressed&topic=' + strea
 
 var img = document.createElement('img');
 img.onload = function(ev) {
-  console.log('load at', ev.timeStamp, 'ms');
+  console.log('(pre-)loaded first frame of stream at', ev.timeStamp, 'ms');
   window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
-  // TODO (WZ)
-  // - wait for message on /director/ready (lg_common/Ready)
-  // - check if your ros_instance_name was on the `instances` list in the message
-  // - as soon as the the message comes on the topic - get ready by waiting 1
-  // seconds (or wait GET arg amount of seconds) to get rid of the previous scene
-  // in the playback stream
-  setTimeout(function(){
-      streamDiv.appendChild(img);
-  }, 3000);
 }
 
+function showStream() {
+  var now = window.performance.now();
+  console.log('showing stream at', now, 'ms');
+  streamDiv.appendChild(img);
+}
+
+function instanceIsReady() {
+  var now = window.performance.now();
+  console.log('instance', rosInstanceName, 'is ready at', now);
+  readinessTopic.unsubscribe(handleSceneReadiness);
+  clearTimeout(readinessFallbackTimeout);
+  setTimeout(showStream, visibilityDelay);
+}
+
+function handleSceneReadiness(msg) {
+  if (msg.instances.indexOf(rosInstanceName) >= 0) {
+    instanceIsReady();
+  }
+}
+readinessTopic.subscribe(handleSceneReadiness);
+var readinessFallbackTimeout = setTimeout(instanceIsReady, readinessFallbackDuration);
 
 img.src = streamUrl;
-
-
 
 </script>
 </body>
