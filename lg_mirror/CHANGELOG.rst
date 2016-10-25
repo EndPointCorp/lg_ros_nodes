@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.3 (2016-10-25)
+------------------
 * Add visibility delay for mirror playback
   Prevent showing the previous scene's content by waiting for the scene to be ready (and then some).
 * Contributors: Matt Vollrath, Wojciech Ziniewicz
