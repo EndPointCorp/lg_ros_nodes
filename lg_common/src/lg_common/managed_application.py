@@ -38,12 +38,12 @@ class ManagedApplication(object):
 
         self.post_init()
 
-    def close(self, delay=None):
+    def close(self):
         """
         End this ManagedApplication immediately.  After closing, the instance
         can no longer be used.
         """
-        self.set_state(ApplicationState.STOPPED, delay=delay)
+        self.set_state(ApplicationState.STOPPED)
         del self.lock
         del self.cmd
         del self.state
@@ -72,39 +72,29 @@ class ManagedApplication(object):
         with self.lock:
             return self.state
 
-    def set_state(self, state, delay=None):
+    def set_state(self, state):
         with self.lock:
             state_changed = False
             if state != self.state:
                 state_changed = True
             self.state = state
 
-            # if not state_changed:
-            #    return
-
             if state == ApplicationState.STOPPED:
                 rospy.logdebug("STOPPED")
-                if delay:
-                    rospy.loginfo("Waiting %s seconds to destroy the browser" % delay)
-                    time.sleep(delay)
                 self.proc.stop()
                 if self.window is not None:
                     self.window.set_visibility(False)
 
             elif state == ApplicationState.SUSPENDED:
                 rospy.logdebug("SUSPENDED")
-                self.proc.start()
                 if self.window is not None:
                     self.window.set_visibility(False)
                     self.window.converge()
+                self.proc.start()
 
             elif state == ApplicationState.HIDDEN:
                 rospy.logdebug("HIDDEN")
-                self.proc.start()
                 if self.window is not None:
-                    if delay:
-                        rospy.loginfo("Waiting %s seconds to hide the browser" % delay)
-                        time.sleep(delay)
                     self.window.set_visibility(False)
                     self.window.converge()
                 else:
@@ -112,21 +102,21 @@ class ManagedApplication(object):
                         'Tried to hide a ManagedApplication ' +
                         'without a ManagedWindow'
                     )
+                self.proc.start()
 
             elif state == ApplicationState.STARTED:
                 rospy.loginfo("STARTED")
-                self.proc.start()
                 if self.window is not None:
                     self.window.set_visibility(False)
                     self.window.converge()
+                self.proc.start()
 
             elif state == ApplicationState.VISIBLE:
                 rospy.loginfo("VISIBLE")
-                if not self.proc.started:
-                    self.proc.start()
                 if self.window is not None:
                     self.window.set_visibility(True)
                     self.window.converge()
+                self.proc.start()
 
             def run_handler(handler):
                 try:

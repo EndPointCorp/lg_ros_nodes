@@ -88,5 +88,5 @@ class ManagedAdhocBrowser(ManagedBrowser):
             return False
 
     def close(self, delay=None):
-        self.set_state(ApplicationState.STOPPED, delay=delay)
+        self.set_state(ApplicationState.STOPPED)
         self.clear_tmp_dir()
