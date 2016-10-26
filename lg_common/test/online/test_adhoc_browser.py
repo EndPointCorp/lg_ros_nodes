@@ -5,6 +5,7 @@ NAME = 'test_adhoc_browser'
 
 import rospy
 import unittest
+import time
 import tempfile
 import os
 import json
@@ -160,6 +161,8 @@ class TestAdhocBrowser(unittest.TestCase):
         for iteration in xrange(0, timeout):
             if val1 == val2:
                 return True
+            else:
+                time.sleep(1)
 
         return False
 
