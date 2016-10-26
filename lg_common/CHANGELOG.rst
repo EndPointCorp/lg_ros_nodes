@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.6 (2016-10-26)
+------------------
 * Forgot to sleep
 * Converted dumb waits to something more robust
 * Test fixing
