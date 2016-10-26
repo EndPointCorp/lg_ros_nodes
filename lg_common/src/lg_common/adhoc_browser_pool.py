@@ -241,8 +241,8 @@ class AdhocBrowserPool():
 
         returns: string
         """
-        if adhoc_browser_msg.binary:
-            binary = adhoc_browser_msg.binary
+        if adhoc_browser_msg.version:
+            binary = "/usr/bin/google-chrome-%s" % adhoc_browser_msg.version
         else:
             binary = DEFAULT_BINARY
         return binary

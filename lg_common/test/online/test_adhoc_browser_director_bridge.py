@@ -265,7 +265,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         center_browser = AdhocBrowser(id='adhoc_browser_center_0',
                                       scene_slug='test message',
-                                      binary='/usr/bin/google-chrome',
+                                      version='stable',
                                       geometry=WindowGeometry(x=10,
                                                               y=10,
                                                               width=600,
@@ -295,7 +295,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         self.assertEqual(1, len(self.mock_publisher_right.published_messages))
         center_browser_1 = AdhocBrowser(id='adhoc_browser_center_0',
                                         scene_slug='test message',
-                                        binary='/usr/bin/google-chrome',
+                                        version='stable',
                                         geometry=WindowGeometry(x=10,
                                                                 y=10,
                                                                 width=600,
@@ -304,7 +304,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         center_browser_2 = AdhocBrowser(id='adhoc_browser_center_1',
                                         scene_slug='test message',
-                                        binary='/usr/bin/google-chrome',
+                                        version='stable',
                                         geometry=WindowGeometry(x=400,
                                                                 y=200,
                                                                 width=300,
@@ -313,7 +313,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         center_browser_3 = AdhocBrowser(id='adhoc_browser_center_2',
                                         scene_slug='test message',
-                                        binary='/usr/bin/google-chrome',
+                                        version='stable',
                                         geometry=WindowGeometry(x=10,
                                                                 y=10,
                                                                 width=888,
@@ -322,7 +322,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
 
         right_browser_4 = AdhocBrowser(id='adhoc_browser_right_0',
                                        scene_slug='test message',
-                                       binary='/usr/bin/google-chrome',
+                                       version='stable',
                                        geometry=WindowGeometry(x=100,
                                                                y=100,
                                                                width=100,

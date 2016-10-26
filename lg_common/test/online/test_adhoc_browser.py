@@ -282,13 +282,8 @@ class TestAdhocBrowser(unittest.TestCase):
 
     def test_5_chrome_binary_setting(self):
         """
-        1. verify that chrome has been attempted to run with a custom binary (make a link)
+        1. verify that chrome has been attempted to run with a custom binary e.g. beta
         """
-        try:
-            os.symlink("/usr/bin/google-chrome", "/tmp/custom-chrome-binary")
-        except Exception:
-            pass
-
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_custom_binary_msg'))
@@ -297,11 +292,11 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].binary, '/tmp/custom-chrome-binary')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].version, 'beta')
 
         browsers_on_center = self.get_browsers_thru_service('center')
 
-        self.assertEqual(browsers_on_center.items()[0][1]['binary'], '/tmp/custom-chrome-binary')
+        self.assertEqual(browsers_on_center.items()[0][1]['binary'], '/usr/bin/google-chrome-beta')
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))

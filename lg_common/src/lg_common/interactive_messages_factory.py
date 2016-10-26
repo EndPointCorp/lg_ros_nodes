@@ -197,7 +197,7 @@ class InteractiveSpacesMessagesFactory:
             "activity": "browser",
             "activity_config": {
                 "google_chrome":{
-                    "binary_path": "/tmp/custom-chrome-binary"
+                    "version": "beta"
                 }
             },
             "assets": [
