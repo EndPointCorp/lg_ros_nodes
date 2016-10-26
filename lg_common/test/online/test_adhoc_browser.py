@@ -590,7 +590,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_wrong_url_msg'))
 
-        self.wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time + 20)
+        self.wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
@@ -646,6 +646,10 @@ class TestAdhocBrowser(unittest.TestCase):
         )
         rospy.sleep(self.message_emission_grace_time)
         self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id.startswith(browser_prefix), True)
+
+        # cleanup
+        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
+        rospy.sleep(self.message_emission_grace_time)
 
 
 if __name__ == '__main__':
