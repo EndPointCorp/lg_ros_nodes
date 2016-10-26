@@ -198,7 +198,7 @@ class TestActivityTracker(unittest.TestCase):
         spacenav = SpaceNavMockSource()
         sources = ActivitySourceDetector(spacenav.source_string).get_sources()
         pub = MockPublisher()
-        timeout = 2
+        timeout = 6
         tracker = ActivityTracker(publisher=pub, timeout=timeout, sources=sources, debug=True)
         self.assertTrue(tracker.active)
         self.assertTrue(pub.data[-1])
@@ -216,14 +216,12 @@ class TestActivityTracker(unittest.TestCase):
             self.assertEqual(len(pub.data), 1)
             p.publish(msg_a)
         # sleep for longer than timeout
-        rospy.sleep(timeout + 3)
+        rospy.sleep(timeout + 2)
         tracker.poll_activities()
         # should be inactive
         self.assertFalse(tracker.active)
         self.assertFalse(pub.data[-1])
         self.assertEqual(len(pub.data), 2)
-
-        rospy.sleep(timeout + 3)
 
         # publish different message once to set to active
         p.publish(msg_b)
@@ -253,7 +251,7 @@ class TestActivityTracker(unittest.TestCase):
     def test_aaa_spacenav_thing(self):
         debug_pub = rospy.Publisher('/spacenav/twist', Twist, queue_size=10)
         debug_sub = rospy.Subscriber('/spacenav/twist', Twist, self.foo_cb)
-        rospy.sleep(1)
+        rospy.sleep(2)
         debug_pub.publish(make_twist_messages(0))
 
     def test_invalid_activity_source_arguments(self):
