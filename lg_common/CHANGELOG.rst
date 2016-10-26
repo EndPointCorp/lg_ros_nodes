@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Match Chrome unstable window instance names
+  There are ever-changing variations, but the path to the tmp_dir is always present and unique.
+* Contributors: Matt Vollrath
+
 1.5.4 (2016-10-25)
 ------------------
 * Fix adhoc browser test
