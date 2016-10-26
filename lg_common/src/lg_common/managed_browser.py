@@ -111,9 +111,9 @@ class ManagedBrowser(ManagedApplication):
         # finishing command line and piping output to logger
         rospy.logdebug("Starting cmd: %s" % cmd)
 
-        # Different versions of Chrome use different window instances.
-        # This should match 'Google-chrome' as well as 'google-chrome'
-        w_instance = 'oogle-chrome \\({}\\)'.format(self.tmp_dir)
+        # Different versions of Chrome use different window instance names.
+        # Matching the tmp_dir should work for all of them.
+        w_instance = '\\({}\\)'.format(self.tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry)
 
         rospy.logdebug("Command {}".format(cmd))
