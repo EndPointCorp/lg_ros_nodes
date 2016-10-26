@@ -2,6 +2,12 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Converted dumb waits to something more robust
+* Test fixing
+* Contributors: Wojciech Ziniewicz
+
 1.5.5 (2016-10-26)
 ------------------
 

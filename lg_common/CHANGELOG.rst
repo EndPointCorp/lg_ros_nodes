@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Forgot to sleep
+* Converted dumb waits to something more robust
+* Test fixing
+* Made AdhocBrowser data structure for defining gogoel chrome version compatible with ros cms data
+* Contributors: Wojciech Ziniewicz
+
 1.5.5 (2016-10-26)
 ------------------
 * Match Chrome unstable window instance names
