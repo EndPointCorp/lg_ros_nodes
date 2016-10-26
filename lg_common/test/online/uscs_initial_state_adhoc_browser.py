@@ -34,7 +34,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(browsers_on_touchscreen), 1)
 
         for browser_id, browser_data in browsers_on_touchscreen.items():
-            self.assertEqual(browser_data['binary'], '/usr/bin/google-chrome')
+            self.assertEqual(browser_data['binary'], '/usr/bin/google-chrome-stable')
 
         #cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))

@@ -619,17 +619,16 @@ class TestAdhocBrowser(unittest.TestCase):
             )
         )
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(
-            self.browser_service_mock_center.messages[0].browsers[0].id.startswith('81MzhqG_'),
-            True
-        )
+
+        browser_prefix = self.browser_service_mock_center.messages[0].browsers[0].id.split('_')[0]
+
         self.director_publisher.publish(
             self.message_factory._get_message(
                 'test_one_browser_with_two_extensions_and_preloading_msg'
             )
         )
         rospy.sleep(self.message_emission_grace_time)
-        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id.startswith('81MzhqG_'), True)
+        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id.startswith(browser_prefix), True)
 
 
 if __name__ == '__main__':

@@ -227,7 +227,7 @@ class TestActivityTracker(unittest.TestCase):
 
         # publish different message once to set to active
         p.publish(msg_b)
-        rospy.sleep(0.5)
+        rospy.sleep(2)
         tracker.poll_activities()
         self.assertTrue(tracker.active)
         self.assertTrue(pub.data[-1])
