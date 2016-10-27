@@ -90,6 +90,11 @@ def cppcheck_test():
     return ret
 
 
+def gjslint_test():
+    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,lg_cms_director' -r catkin/src")
+    return ret
+
+
 def run_tests():
     nose_tests, ros_tests, g_tests = get_tests()
     fail_flags = {}
@@ -114,6 +119,7 @@ def run_tests():
         fail_flags[g_test + '_gtest'] = ret
     fail_flags['pep8'] = pep8_test()
     fail_flags['cppcheck'] = cppcheck_test()
+    fail_flags['gjslint'] = gjslint_test()
     print "\n\nFINAL SUMMARY:\n"
     for test, flag in sorted(fail_flags.items()):
         print "RAN TEST: %s\nGot exit code %d" % (test, flag)

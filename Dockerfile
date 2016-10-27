@@ -5,7 +5,7 @@ MAINTAINER Jacob Minshall <jacob@endpoint.com>
 
 # install system dependencies
 RUN apt-get update && \
-      apt-get install -y g++ pep8 cppcheck \
+      apt-get install -y g++ pep8 cppcheck closure-linter \
       python-pytest wget \
       xvfb x11-apps && \
       rm -rf /var/lib/apt/lists/*
