@@ -39,8 +39,10 @@ class RfidListener(object):
         the one corresponding to the current rfid.
         """
         if msg.data == True:
+            self.send_notification("Now listening for rfids to pair with the current state")
             self.last_debug_message = rospy.get_time()
         elif msg.data == False:
+            self.send_notification("No longer listening for rfids to pair, only listening to set the state")
             self.last_debug_message = 0
 
     def run(self):
@@ -63,7 +65,7 @@ def main():
     port = rospy.get_param('~device_path', '/dev/rfid_scanner')
     baudrate = rospy.get_param('~baudrate', 9600)
     pub_topic = rospy.get_param('~pub_topic', '/rfid/uscs/scan')
-    debug_pub_topic = rospy.get_param('~debug_topic', '/rfid/set')
+    debug_pub_topic = rospy.get_param('~set_topic', '/rfid/set')
     debug_timeout = rospy.get_param('~debug_timeout_seconds', 30)
     notification_topic = rospy.get_param('~notification_topic', '/portal_launcher/notification')
 

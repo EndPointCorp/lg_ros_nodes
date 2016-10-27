@@ -107,7 +107,7 @@ class RfidStorage(object):
 def main():
     rospy.init_node('sqlite_rfid_storage')
 
-    local_path = rospy.get_param('~remote_database', '/home/lg/rfid/rfid_storage.db')
+    local_path = rospy.get_param('~database_path', '/home/lg/rfid/rfid_storage.db')
     scan_topic = rospy.get_param('~scan_topic', '/rfid/uscs/scan')
     state_set_topic = rospy.get_param('~state_set_topic', '/state_setter/set_state')
     error_topic = rospy.get_param('~error_topic', '/info/error')

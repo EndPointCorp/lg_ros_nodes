@@ -2,6 +2,9 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.5.6 (2016-10-26)
 ------------------
 * Converted dumb waits to something more robust
