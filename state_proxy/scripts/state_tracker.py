@@ -3,6 +3,7 @@ import rospy
 import json
 
 from lg_common.srv import BrowserPool, USCSMessage
+from lg_common.helpers import add_url_params
 from std_msgs.msg import String
 from appctl.msg import Mode
 from urllib2 import urlopen
@@ -39,12 +40,21 @@ class StateTracker(object):
             rospy.logerr("Error parsing last uscs message as json")
             return
 
-        i = 0
         windows = current_state.get('windows', [])
         for window in windows:
-            url = self.grab_url(window, i)
-            window['assets'] = [url]
-            i += 1
+            url = self.grab_url(window)
+            if url is None:
+                continue
+            # adding cms_protocol and cms_port for the portal launcher
+            # only needed on the kiosk
+            if window.get('presentation_viewport', None) == 'kiosk':
+                # default port and protocol
+                protocol = 'http'
+                port = '8088'
+                if 'https' in url:
+                    protocol = 'https'
+                    port = '443'
+                window['assets'] = [add_url_params(url, cms_protocol=protocol, cms_port=port)]
 
         current_state = self.handle_tactile(current_state)
         return current_state
@@ -57,11 +67,16 @@ class StateTracker(object):
             for i in range(len(window.get('assets', []))):
                 if ('maps.google.com' in window['assets'][i] or "google.com/maps" in window['assets'][i]) and \
                         self.tactile_flag not in window['assets'][i]:
-                    window['assets'][i] += self.tactile_flag
+                    flag = self.tactile_flag.split("=")[1]
+                    window['assets'][i] = add_url_params(window['assets'][i], esrch=flag)
+                # adding cms_protocol and cms_port for the portal launcher
+                # only needed on the kiosk
+                #if window.get('presentation_viewport', None) == 'kiosk':
+                #    window['assets'][i] = add_url_params(window['assets'][i], cms_protocol='https', cms_port='443')
 
         return state
 
-    def grab_url(self, window, index=None):
+    def grab_url(self, window):
         """
         given a window (from the director message) grab either the kiosk or
         the display current url based on the viewport from the window. Apply
