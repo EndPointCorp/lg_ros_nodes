@@ -49,6 +49,7 @@ def get_cmakes():
 def lookup(path):
     ros_tests = []
     nose_tests = []
+    g_tests = False
     with open(path) as f:
         for l in f:
             res = re.search("^[^#]*add_rostest\((.*)\)", l)
@@ -59,18 +60,24 @@ def lookup(path):
             if res:
                 nosetest_path = res.groups()[0]
                 nose_tests.append(nosetest_path)
-    return nose_tests, ros_tests
+            res = re.search("^[^#]*catkin_add_gtest\(.*\)", l)
+            if res:
+                g_tests = True
+    return nose_tests, ros_tests, g_tests
 
 
 def get_tests():
     cmakes = get_cmakes()
     nose_tests = []
     ros_tests = []
+    g_tests = []
     for cmake in cmakes:
-        nose, ros = lookup(cmake + '/CMakeLists.txt')
+        nose, ros, gt = lookup(cmake + '/CMakeLists.txt')
         nose_tests += [cmake + '/' + test for test in nose]
         ros_tests += [cmake + '/' + test for test in ros]
-    return nose_tests, ros_tests
+        if gt:
+            g_tests.append(os.path.basename(cmake))
+    return nose_tests, ros_tests, g_tests
 
 
 def pep8_test():
@@ -79,7 +86,7 @@ def pep8_test():
 
 
 def run_tests():
-    nose_tests, ros_tests = get_tests()
+    nose_tests, ros_tests, g_tests = get_tests()
     fail_flags = {}
     for nose_test in nose_tests:
         # rosunit will urn the offline test just the same
@@ -95,6 +102,11 @@ def run_tests():
         print "RUNNING: '%s'" % c
         ret = os.system(c)
         fail_flags[ros_test] = ret
+    for g_test in g_tests:
+        c = 'cd catkin; catkin_make run_tests_%s_gtest' % g_test
+        print "RUNNING: '%s'" % c
+        ret = os.system(c)
+        fail_flags[g_test + '_gtest'] = ret
     fail_flags['pep8'] = pep8_test()
     print "\n\nFINAL SUMMARY:\n"
     for test, flag in sorted(fail_flags.items()):
