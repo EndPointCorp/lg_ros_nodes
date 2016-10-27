@@ -2,6 +2,11 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.7 (2016-10-27)
+------------------
+* rfid notification changes
+* Contributors: Jacob Minshall
+
 1.5.6 (2016-10-26)
 ------------------
 

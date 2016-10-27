@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.7 (2016-10-27)
+------------------
+* Better cleanup in tests
+* Contributors: Wojciech Ziniewicz
+
 1.5.6 (2016-10-26)
 ------------------
 * Forgot to sleep
