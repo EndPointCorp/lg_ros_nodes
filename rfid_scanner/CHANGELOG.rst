@@ -2,8 +2,8 @@
 Changelog for package rfid_scanner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.7 (2016-10-27)
+------------------
 * rfid notification changes
 * Contributors: Jacob Minshall
 
