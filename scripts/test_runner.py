@@ -85,6 +85,11 @@ def pep8_test():
     return ret
 
 
+def cppcheck_test():
+    ret = os.system("cppcheck --enable=style --error-exitcode=1 --suppress='*:*spacenav_wrapper/src/hid.c' catkin/src")
+    return ret
+
+
 def run_tests():
     nose_tests, ros_tests, g_tests = get_tests()
     fail_flags = {}
@@ -108,6 +113,7 @@ def run_tests():
         ret = os.system(c)
         fail_flags[g_test + '_gtest'] = ret
     fail_flags['pep8'] = pep8_test()
+    fail_flags['cppcheck'] = cppcheck_test()
     print "\n\nFINAL SUMMARY:\n"
     for test, flag in sorted(fail_flags.items()):
         print "RAN TEST: %s\nGot exit code %d" % (test, flag)
