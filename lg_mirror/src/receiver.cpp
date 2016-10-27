@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 
   try {
     viewport_mapper = new ViewportMapper(device_name, viewport_geometry);
-  } catch(ViewportMapperStringError e) {
+  } catch(ViewportMapperStringError& e) {
     ROS_ERROR_STREAM("ViewportMapper: " << e.what());
     fail();
   }

@@ -48,7 +48,7 @@ bool UinputDevice::Init(const lg_mirror::EvdevDeviceInfoResponse& info) {
 
   try {
     InitDevice_(fd, info);
-  } catch (UinputDeviceInitError e) {
+  } catch (UinputDeviceInitError& e) {
     ROS_ERROR_STREAM(e.what());
     close(fd);
     return false;

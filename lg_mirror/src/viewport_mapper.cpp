@@ -141,11 +141,11 @@ WindowGeometryPtr ViewportMapper::GeometryFromString(const std::string& source) 
       s.substr(yi, s.length()-yi)
     );
 
-  } catch(boost::bad_lexical_cast e) {
+  } catch(boost::bad_lexical_cast& e) {
     throw ViewportMapperStringError("Invalid numeric in geometry string");
-  } catch(std::out_of_range e) {
+  } catch(std::out_of_range& e) {
     throw ViewportMapperStringError("Substring index out of range");
-  } catch(std::bad_alloc e) {
+  } catch(std::bad_alloc& e) {
     throw ViewportMapperStringError("Failed to allocate substring");
   }
 
