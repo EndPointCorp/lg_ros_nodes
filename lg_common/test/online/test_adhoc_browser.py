@@ -554,7 +554,6 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_left.messages), 1)
         self.assertEqual(len(self.browser_service_mock_right.messages), 1)
 
-
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 1)
