@@ -14,7 +14,7 @@ function getQueryParams(qs) {
         tokens,
         re = /[?&]?([^=]+)=([^&]*)/g;
     while (tokens = re.exec(qs)) {
-        var key = decodeURIComponent(tokens[1])
+        var key = decodeURIComponent(tokens[1]);
         var val = decodeURIComponent(tokens[2]);
         if (params[key] === undefined) {
             params[key] = val;

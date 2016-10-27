@@ -13,7 +13,7 @@
             tokens,
             re = /[?&]?([^=]+)=([^&]*)/g;
         while (tokens = re.exec(qs)) {
-            var key = decodeURIComponent(tokens[1])
+            var key = decodeURIComponent(tokens[1]);
             var val = decodeURIComponent(tokens[2]);
             if (params[key] === undefined) {
                 params[key] = val;
@@ -95,7 +95,7 @@
     function onNavigate(details) {
         // Bypass all the requests for subframes
         if (details.parentFrameId != -1) {
-            return
+            return;
         }
 
         if(!allowed(details.url)) {
