@@ -183,6 +183,18 @@ bool UinputDevice::WaitForXinput() {
 }
 
 /**
+ * \brief Floats the xinput device pointer.
+ * \return true if successful.
+ */
+bool UinputDevice::FloatPointer() const {
+  std::ostringstream cmd;
+  cmd << "/usr/bin/xinput float '" << device_name_ << "'";
+
+  int status = system(cmd.str().c_str());
+  return status == 0;
+}
+
+/**
  * \brief Handles a ROS message containing a vector of events.
  *
  * Implicitly writes a SYN event after the incoming events.

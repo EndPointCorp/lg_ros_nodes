@@ -10,6 +10,7 @@
 
 const char* DEVICE_NAME_BASE = "Virtual Touchscreen (%s)";
 const char* VIEWPORT_PARAM = "viewport";
+const char* FLOAT_POINTER_PARAM = "float_pointer";
 
 using lg_mirror::DEVICE_INFO_SERVICE;
 using lg_mirror::TOUCH_ROUTE_TOPIC;
@@ -27,6 +28,7 @@ int main(int argc, char** argv) {
 
   ros::NodeHandle n("~");
 
+  bool float_pointer = false;
   std::string viewport_name;
   std::string device_name;
   std::string viewport_geometry;
@@ -34,6 +36,7 @@ int main(int argc, char** argv) {
 
   /* grab parameters */
 
+  n.param<bool>(FLOAT_POINTER_PARAM, float_pointer, false);
   if (!n.getParam(VIEWPORT_PARAM, viewport_name)) {
     ROS_ERROR("'viewport' parameter is required");
     fail();
@@ -83,6 +86,15 @@ int main(int argc, char** argv) {
   if (!uinput_device.WaitForXinput()) {
     ROS_ERROR("xinput query was cancelled");
     fail();
+  }
+
+  /* float the pointer if appropriate */
+
+  if (float_pointer) {
+    if (!uinput_device.FloatPointer()) {
+      ROS_ERROR("failed to float pointer");
+      fail();
+    }
   }
 
   /* instantiate an event relay */
