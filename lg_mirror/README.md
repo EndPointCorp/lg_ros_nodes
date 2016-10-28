@@ -116,6 +116,7 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 #### Parameters
 
 * `viewport` [str] - The viewport to be managed by this receiver.
+* `float_pointer` [bool] - Float the xinput device pointer. This prevents interference with Chrome when there are multiple receivers on the same DISPLAY. **This may be later deprecated by activity-specific configuration.** Default: `false`
 
 #### Subscribed Topics
 
