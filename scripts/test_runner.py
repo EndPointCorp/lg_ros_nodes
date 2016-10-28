@@ -81,7 +81,7 @@ def get_tests():
 
 
 def pep8_test():
-    ret = os.system('pep8 --exclude=rosbridge*,appctl,lg_cms_director,docker_nodes --config=./setup.cfg catkin/src')
+    ret = os.system('pep8 --exclude=rosbridge*,appctl,rosout_logger,lg_cms_director,docker_nodes --config=./setup.cfg catkin/src')
     return ret
 
 
