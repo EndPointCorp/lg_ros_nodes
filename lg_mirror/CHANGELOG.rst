@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.8 (2016-10-27)
+------------------
 * Add float_pointer param for touch receiver
   Allows for floating the pointer to prevent interference between multiple pointers in Chrome.
 * Contributors: Matt Vollrath
