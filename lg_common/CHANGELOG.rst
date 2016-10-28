@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add the new lib directories
+* Contributors: Jacob Minshall
+
 1.5.8 (2016-10-27)
 ------------------
 
