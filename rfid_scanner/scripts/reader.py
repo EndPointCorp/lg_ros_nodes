@@ -27,7 +27,7 @@ class RfidListener(object):
         rospy.loginfo(msg)
         if not self.notify:
             return
-        note = { 'title': 'rfid', 'message': msg }
+        note = {'title': 'rfid', 'message': msg}
         self.notify.publish(json.dumps(note))
 
     def handle_debug_msg(self, msg):
@@ -38,10 +38,10 @@ class RfidListener(object):
         rfid. If not, then we are changing the state of the system to
         the one corresponding to the current rfid.
         """
-        if msg.data == True:
+        if msg.data:
             self.send_notification("Now listening for rfids to pair with the current state")
             self.last_debug_message = rospy.get_time()
-        elif msg.data == False:
+        else:
             self.send_notification("No longer listening for rfids to pair, only listening to set the state")
             self.last_debug_message = 0
 
