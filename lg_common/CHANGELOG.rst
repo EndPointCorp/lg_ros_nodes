@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.10 (2016-10-31)
+-------------------
 * Refactored rfreceiver and fixed tests for chrome url monitor
 * More tests fixing
 * PEP8 and tests refactoring

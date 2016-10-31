@@ -2,8 +2,8 @@
 Changelog for package lg_rfreceiver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.10 (2016-10-31)
+-------------------
 * Refactored rfreceiver and fixed tests for chrome url monitor
 * Contributors: Wojciech Ziniewicz
 
