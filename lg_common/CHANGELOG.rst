@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Refactored rfreceiver and fixed tests for chrome url monitor
+* More tests fixing
+* PEP8 and tests refactoring
+* Contributors: Wojciech Ziniewicz
+
 1.5.9 (2016-10-28)
 ------------------
 * add the new lib directories
