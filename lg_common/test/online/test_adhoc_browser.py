@@ -1,16 +1,9 @@
 #!/usr/bin/env python
-
-PKG = 'lg_common'
-NAME = 'test_adhoc_browser'
-
 import rospy
 import unittest
-import time
-import tempfile
 import os
 import json
 
-from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
 from lg_common.msg import Ready
 from interactivespaces_msgs.msg import GenericMessage
@@ -18,6 +11,11 @@ from std_msgs.msg import String
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.helpers import write_log_to_file
 from lg_common.srv import BrowserPool
+from lg_common.test_helpers import wait_for_assert_equal
+
+
+PKG = 'lg_common'
+NAME = 'test_adhoc_browser'
 
 
 class MockSubscriber(object):
@@ -116,7 +114,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         try:
             os.mkdir('/tmp/extensions')
-        except OSError, e:
+        except OSError:
             pass
 
         self.mock_extension_manifest = """
@@ -130,17 +128,17 @@ class TestAdhocBrowser(unittest.TestCase):
         """
         try:
             os.mkdir('/tmp/extensions/test_extension1')
-        except OSError, e:
+        except OSError:
             pass
 
         try:
             os.mkdir('/tmp/extensions/test_extension2')
-        except OSError, e:
+        except OSError:
             pass
 
         try:
             os.mkdir('/tmp/extensions/ros_window_ready')
-        except OSError, e:
+        except OSError:
             pass
 
         with open('/tmp/extensions/test_extension1/manifest.json', 'w') as ext1_manifest:
@@ -153,18 +151,6 @@ class TestAdhocBrowser(unittest.TestCase):
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
-
-    def wait_for_assert_equal(self, val1, val2, timeout):
-        """
-        Waits for two values to become equal within specified timeout
-        """
-        for iteration in xrange(0, timeout):
-            if val1 == val2:
-                return True
-            else:
-                time.sleep(1)
-
-        return False
 
     def reinitialize_mock_subscribers(self):
         [subscriber.reinitialize() for subscriber in self.subscribers]
@@ -215,13 +201,13 @@ class TestAdhocBrowser(unittest.TestCase):
         """
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
-        self.wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, timeout=self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, timeout=self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         # Dmitry: moved extensions injecting into browser_pool
-        #self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
+        # self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name,
         #                 'ros_window_ready',
         #                 'ros_window_ready didnt get inserted onto exts list as a first extension')
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
@@ -327,7 +313,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
-        self.wait_for_assert_equal(len(self.director_scene_mock.messages), 1, self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_scene_mock.messages), 1, self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
@@ -335,13 +321,13 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'r2Dw7jO')
 
         browsers_on_center = self.get_browsers_thru_service('center')
-        #self.assertEqual(browsers_on_center, 'asd')
+        # self.assertEqual(browsers_on_center, 'asd')
         browser_timestamp_before = browsers_on_center['r2Dw7jO']['timestamp']
         self.assertEqual(browsers_on_center['r2Dw7jO']['uid'], 'r2Dw7jO')
 
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
-        self.wait_for_assert_equal(len(self.director_scene_mock.messages), 2, self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_scene_mock.messages), 2, self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 2)
@@ -393,7 +379,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1a
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_msg'))
-        self.wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
@@ -403,7 +389,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         # 1b
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_msg'))
-        self.wait_for_assert_equal(len(self.director_ready_mock.messages), 2, self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 2, self.preloading_grace_time)
         self.assertEqual(len(self.director_ready_mock.messages), 2)
 
         browsers_on_center = self.get_browsers_thru_service('center')
@@ -416,7 +402,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1c
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_alt_slug_msg'))
 
-        self.wait_for_assert_equal(len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
         self.assertEqual(len(self.director_ready_mock.messages), 3)
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(browsers_on_center), 1)
@@ -428,7 +414,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1d
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
 
-        self.wait_for_assert_equal(len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
         self.assertEqual(len(self.director_ready_mock.messages), 3)
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(browsers_on_center), 1)
@@ -469,7 +455,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
 
-        self.wait_for_assert_equal(len(self.director_ready_mock.messages), 1, self.preloading_grace_time + 15)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 1, self.preloading_grace_time + 15)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
         browsers_on_center = self.get_browsers_thru_service('center')
@@ -488,7 +474,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
 
-        self.wait_for_assert_equal(len(self.director_ready_mock.messages), 2, self.preloading_grace_time + 15)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 2, self.preloading_grace_time + 15)
         self.assertEqual(len(self.director_ready_mock.messages), 2)
 
         browsers_on_center = self.get_browsers_thru_service('center')
@@ -510,7 +496,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 3
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_alt_slug_msg'))
 
-        self.wait_for_assert_equal(len(self.director_ready_mock.messages), 3, self.preloading_grace_time + 15)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 3, self.preloading_grace_time + 15)
         self.assertEqual(len(self.director_ready_mock.messages), 3)
 
         browsers_on_center = self.get_browsers_thru_service('center')
@@ -544,7 +530,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_custom_preloading_event_msg'))
 
-        self.wait_for_assert_equal(len(self.director_ready_mock.messages), 1, self.preloading_grace_time + 10)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 1, self.preloading_grace_time + 10)
 
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
@@ -589,7 +575,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_wrong_url_msg'))
 
-        self.wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time)
+        wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 

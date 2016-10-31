@@ -1,13 +1,4 @@
-import os
-import sys
-import json
-import rospy
-import base64
-import urllib
-import hashlib
-import urlparse
-import random
-import string
+import time
 
 from interactivespaces_msgs.msg import GenericMessage
 
@@ -92,3 +83,16 @@ def gen_scene(windows):
 
 def gen_scene_msg(scene):
     return GenericMessage(type='json', message=scene)
+
+
+def wait_for_assert_equal(val1, val2, timeout):
+    """
+    Waits for two values to become equal within specified timeout
+    """
+    for iteration in xrange(0, timeout):
+        if val1 == val2:
+            return True
+        else:
+            time.sleep(1)
+
+    return False
