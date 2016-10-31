@@ -33,7 +33,7 @@ class MockSubscriber(object):
 class TestAdhocBrowser(unittest.TestCase):
     def setUp(self):
         self.loading_grace_time = 20
-        self.message_emission_grace_time = 10
+        self.message_emission_grace_time = 3
         self.message_factory = InteractiveSpacesMessagesFactory()
         self.subscribers = []
         self.browser_service_mock_center = MockSubscriber(topic_name='/browser_service/center')
@@ -73,6 +73,8 @@ class TestAdhocBrowser(unittest.TestCase):
         """
         self.reinitialize_mock_subscribers()
         self.assertEqual(1, 1)
+        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_2_chrome_extension_initialization(self):
         """
@@ -85,6 +87,10 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].allowed_urls, ['google.com', 'endpoint.com'])
 
+        # cleanup
+        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
+        rospy.sleep(self.message_emission_grace_time)
+
     def test_3_extension_gets_passed_to_chrome_cmdline(self):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_allowed_urls_msg'))
@@ -92,12 +98,16 @@ class TestAdhocBrowser(unittest.TestCase):
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
         browsers_on_center = center_service().state
-        wait_for_assert_equal(len(json.loads(center_service().state)), 1, self.message_emission_grace_time)
+        wait_for_assert_equal(len(json.loads(center_service().state)), 1, self.loading_grace_time)
 
         self.assertEqual(len(browsers_on_center), 1)
         self.assertEqual('monitor_page_urls' in browsers_on_center.items()[0][1]['extensions'][0], True)
         self.assertEqual('allowed_urls=google.com' in browsers_on_center.items()[0][1]['url'], True)
         self.assertEqual('allowed_urls=endpoint.com' in browsers_on_center.items()[0][1]['url'], True)
+
+        # cleanup
+        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
+        rospy.sleep(self.message_emission_grace_time)
 
 
 if __name__ == '__main__':
