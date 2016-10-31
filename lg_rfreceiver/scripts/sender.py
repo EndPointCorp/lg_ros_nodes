@@ -18,9 +18,8 @@ def main():
 
     device_path = rospy.get_param('~device_path')
     baud_rate = rospy.get_param('~baud_rate', 9600)
-    retry_grace_time = rospy.get_param('~retry_grace_time', 5)
-    device_timeout = rospy.get_param('~serial_timeout', 10)
-    retry_attempts = rospy.get_param('~retry_attempts', 20)
+    retry_grace_time = rospy.get_param('~retry_grace_time', 30)
+    retry_attempts = rospy.get_param('~retry_attempts', 5)
 
     ready = False
 
@@ -28,13 +27,15 @@ def main():
 
     while not ready and retry_attempts >= 0:
         try:
-            receiver = serial.Serial(port=device_path, baudrate=baud_rate, timeout=device_timeout)
+            receiver = serial.Serial(port=device_path, baudrate=baud_rate)
             ready = True
         except SerialException:
-            rospy.logerr("Could not open device_path: %s in %s seconds" % (device_path, device_timeout))
+            rospy.logerr("Could not open device_path: %s" % (device_path))
             rospy.logerr("I'm going to try %s times more and will sleep %s seconds between attempts" % (retry_attempts, retry_grace_time))
             time.sleep(retry_grace_time)
             retry_attempts -= 1
+
+    if retry_attempts
 
     buf = ''
 
