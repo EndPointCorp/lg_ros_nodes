@@ -554,8 +554,9 @@ class AdhocBrowserPool():
         return True
 
     def handle_soft_relaunch(self, *args, **kwargs):
-        current_browsers = self.browsers.keys()
-        for browser_id in current_browsers:
-            self._remove_browser(browser_id)
+        # iterate over all browsers and call the handle_soft_relaunch
+        # from the great grand parent ManagedApplication
+        for browser in self.browsers:
+            self.browsers[browser].handle_soft_relaunch()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
