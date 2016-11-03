@@ -10,7 +10,6 @@ from lg_common.msg import BrowserExtension
 from lg_common.helpers import generate_hash
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
-from lg_common.helpers import write_log_to_file
 
 
 class AdhocBrowserDirectorBridge():
@@ -69,7 +68,6 @@ class AdhocBrowserDirectorBridge():
 
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
-        write_log_to_file("adhoc_browsers: %s" % adhoc_browsers)
         self.browser_pool_publisher.publish(adhoc_browsers)
         if adhoc_browsers.browsers:
             self.aggregate_publisher.publish(adhoc_browsers)
