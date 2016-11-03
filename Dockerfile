@@ -105,7 +105,6 @@ RUN \
     cd ${PROJECT_ROOT} && \
     source /opt/ros/indigo/setup.bash && \
     /ros_entrypoint.sh ./scripts/init_workspace -a $HOME/src/appctl && \
-    ./scripts/docker_xvfb_add.sh && \
     cd ${PROJECT_ROOT}/catkin/ && \
     rosdep init &&\
     rosdep update && \
@@ -123,4 +122,5 @@ RUN \
 CMD cd ${PROJECT_ROOT}/catkin && \
     . devel/setup.sh && \
     cd ${PROJECT_ROOT} && \
+    ./scripts/docker_xvfb_add.sh && \
     ./scripts/test_runner.py
