@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.11 (2016-11-03)
+-------------------
 * add support for kiosk mode setting through activity_config
 * remove write_log_to_file call
 * Added initial docker version for lg (`#309 <https://github.com/endpointcorp/lg_ros_nodes/issues/309>`_)
