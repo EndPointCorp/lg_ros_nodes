@@ -14,6 +14,7 @@ DEFAULT_ARGS = [
     '--enable-gpu-rasterization',
     '--no-first-run',
     '--no-sandbox',
+    '--test-type',  # only needed to ignore --no-sandbox's warning message
     '--allow-file-access-from-files',
     '--disable-default-apps',
     '--disable-java',
