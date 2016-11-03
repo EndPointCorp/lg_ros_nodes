@@ -2,6 +2,16 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* hide chrome warning of no-sandbox being insecure
+* set kiosk=True in test file adhocbrowser creation
+  The default should be true, but because this is a message type, we need
+  to manually set it. Inside the adhoc browser we always set kiosk to true
+  or whatever the user passed to the director message. We never rely on
+  the default when creating a new instance of AdhocBrowser()
+* Contributors: Jacob Minshall
+
 1.5.11 (2016-11-03)
 -------------------
 * add support for kiosk mode setting through activity_config
