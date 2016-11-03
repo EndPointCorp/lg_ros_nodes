@@ -334,7 +334,8 @@ class AdhocBrowserPool():
                                                     url=new_browser.url,
                                                     uid=new_browser_pool_id,
                                                     scene_slug=new_browser.scene_slug,
-                                                    preload=new_browser.preload
+                                                    preload=new_browser.preload,
+                                                    kiosk=new_browser.kiosk
                                                     )
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
