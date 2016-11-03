@@ -2,7 +2,6 @@ import sys
 import rospy
 import socket
 import shutil
-import shlex
 import os
 
 from lg_common import ManagedApplication, ManagedWindow
@@ -14,6 +13,7 @@ DEFAULT_BINARY = '/usr/bin/google-chrome'
 DEFAULT_ARGS = [
     '--enable-gpu-rasterization',
     '--no-first-run',
+    '--no-sandbox',
     '--allow-file-access-from-files',
     '--disable-default-apps',
     '--disable-java',
