@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.12 (2016-11-03)
+-------------------
 * hide chrome warning of no-sandbox being insecure
 * set kiosk=True in test file adhocbrowser creation
   The default should be true, but because this is a message type, we need
