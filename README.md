@@ -31,7 +31,26 @@ README.md files
   touch 2201L](http://www.elotouch.com/products/lcds/2201L/) is also a good input device
 - it's also good to manage your stack with [chef](https://www.chef.io/chef/)
 
-## Making it running
+## Running LG
+
+- Pull docker image
+`docker pull endpoint/lg_ros_nodes`
+
+- On linux
+`docker run -i -t lg_ros_nodes /bin/bash`
+
+- On OSX
+ - in Xquartz settings go to Security and check `Authenticate
+   connections` checkbox
+ - get your IP and set `$ip` var
+ `ip=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')`
+ - allow connections to your Xquartz X server
+ `xhost + $ip`
+ - run it!
+ `docker run -i -t lg_ros_nodes /bin/bash`
+
+
+## Making it running old-fashioned way
 
 First, clone the repos (you can replace ~/src if you want).
 
@@ -153,3 +172,4 @@ ignore packges to compile ...
   Valid values are from 0 to 3: INFO = 0, WARNING = 1, LOG_ERROR = 2,
   LOG_FATAL = 3. This is **not** rospy log level but an argument passed
   to applications managed by appctl
+
