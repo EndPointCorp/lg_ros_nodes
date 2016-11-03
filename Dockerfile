@@ -10,24 +10,18 @@ ENV TEST_USER galadmin
 ENV HOME /home/${TEST_USER}
 ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
 ENV APPCTL_TAG 1.1.1
-ENV ROS_NODES \
-  interactivespaces_msgs lg_activity lg_attract_loop \
-  lg_builder lg_cms_director lg_common lg_earth lg_json_config \
-  lg_keyboard lg_media lg_mirror lg_nav_to_device \
-  lg_offliner lg_proximity lg_replay lg_rfreceiver \
-  lg_spacenav_globe lg_stats lg_sv lg_wireless_devices \
-  liquidgalaxy rfid_scanner rosbridge_library rosbridge_server \
-  spacenav_wrapper state_proxy
+ENV NVIDIA_DRIVER_VERSION 352.41
+ENV NVIDIA_DRIVER_URL http://us.download.nvidia.com/XFree86/Linux-x86_64/${NVIDIA_DRIVER_VERSION}/NVIDIA-Linux-x86_64-${NVIDIA_DRIVER_VERSION}.run
 
 # entrypoint for setup.bash
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
 RUN chmod 0755 /ros_entrypoint.sh
 
-apt-get update && apt-get install -y \
 RUN \
+      sudo apt-get update -y && sudo apt-get install -y wget && \
       echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list && \
       echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-      echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list
+      echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
       apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5523BAEEB01FA116 && \
       wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
       apt-get update
@@ -35,23 +29,30 @@ RUN \
 RUN \
       apt-get install -y g++ pep8 cppcheck closure-linter \
       python-pytest wget \
-      google-chrome-stable google-chrome-beta google-chrome-unstable \
       git sudo \
       curl tmux git \
       xvfb x11-apps \
       x-window-system binutils \
       mesa-utils mesa-utils-extra \
       module-init-tools gdebi-core \
-      ros-indigo-rosapi libudev-dev \
-      ros-indigo-ros-base ros-indigo-rosbridge-server \
-      lsb-core tar libfreeimage3 && \
+      lsb-core tar libfreeimage3
+
+RUN \
+      apt-get install -y ros-indigo-rosapi libudev-dev \
+      ros-indigo-ros-base ros-indigo-rosbridge-server
+
+RUN \
+      apt-get install -y google-chrome-stable google-chrome-beta google-chrome-unstable
+
+RUN \
       apt-get install -y --no-install-recommends xdg-utils && \
       rm -rf /var/lib/apt/lists/*
 
+
 #NVIDIA driver
-#ADD 	nvidia-driver.run /tmp/nvidia-driver.run
-#RUN 	sh /tmp/nvidia-driver.run -a -N --ui=none --no-kernel-module ;\
-#      rm /tmp/nvidia-driver.run
+RUN wget ${NVIDIA_DRIVER_URL} -O /tmp/nvidia-driver.run
+RUN sh /tmp/nvidia-driver.run -a -N --ui=none --no-kernel-module ;\
+    rm /tmp/nvidia-driver.run
 
 # Install GE
 # Patch for google earth from amirpli to fix some bugs in google earth qt libs
@@ -83,7 +84,7 @@ RUN \
 	    mkdir -p /home/galadmin/src ;\
       echo "source /opt/ros/indigo/setup.bash" >> /root/.bashrc ;\
       echo "source /opt/ros/indigo/setup.bash" >> /home/galadmin/.bashrc ;\
-      mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh ;\
+      mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh
 
 
 # make dirs and check out repos
@@ -92,15 +93,15 @@ RUN mkdir -p $PROJECT_ROOT/src
 # checkout appctl as a dependency
 RUN rm -fr $HOME/src/appctl ; git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git $HOME/src/appctl
 
+
 # copy all the ros nodes to source dir
-COPY $ROS_NODES $PROJECT_ROOT
+COPY ./ ${PROJECT_ROOT}
 
 #build ROS nodes
 RUN \
     cd ${PROJECT_ROOT} && \
     source /opt/ros/indigo/setup.bash && \
     /ros_entrypoint.sh ./scripts/init_workspace -a $HOME/src/appctl && \
-    sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME} && \
     ./scripts/docker_xvfb_add.sh && \
     cd ${PROJECT_ROOT}/catkin/ && \
     rosdep init &&\
@@ -112,7 +113,8 @@ RUN \
         -y ;\
     catkin_make ;\
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install;\
-    source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash
+    source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash && \
+    sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME}
 
 # by default let's run tests
 CMD cd ${PROJECT_ROOT}/catkin && \
