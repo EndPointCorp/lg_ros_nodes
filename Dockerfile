@@ -12,6 +12,9 @@ ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
 ENV APPCTL_TAG 1.1.1
 ENV NVIDIA_DRIVER_VERSION 352.41
 ENV NVIDIA_DRIVER_URL http://us.download.nvidia.com/XFree86/Linux-x86_64/${NVIDIA_DRIVER_VERSION}/NVIDIA-Linux-x86_64-${NVIDIA_DRIVER_VERSION}.run
+ENV ROS_MASTER_URI http://localhost:11311
+ENV ROS_IP 127.0.0.1
+ENV ROS_LOG_DIR /var/log/ros/
 
 # entrypoint for setup.bash
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
@@ -29,6 +32,7 @@ RUN \
 RUN \
       apt-get install -y g++ pep8 cppcheck closure-linter \
       python-pytest wget \
+      python-gst-1.0 \
       git sudo \
       curl tmux git \
       xvfb x11-apps \
@@ -39,15 +43,14 @@ RUN \
 
 RUN \
       apt-get install -y ros-indigo-rosapi libudev-dev \
-      ros-indigo-ros-base ros-indigo-rosbridge-server
+      ros-indigo-ros-base ros-indigo-rosbridge-server \
+      ros-indigo-spacenav-node spacenavd
 
 RUN \
       apt-get install -y google-chrome-stable google-chrome-beta google-chrome-unstable
 
 RUN \
-      apt-get install -y --no-install-recommends xdg-utils && \
-      rm -rf /var/lib/apt/lists/*
-
+      apt-get install -y --no-install-recommends xdg-utils
 
 #NVIDIA driver
 RUN wget ${NVIDIA_DRIVER_URL} -O /tmp/nvidia-driver.run
@@ -82,8 +85,8 @@ RUN \
       useradd -ms /bin/bash galadmin && \
       echo "galadmin   ALL=NOPASSWD: ALL" >> /etc/sudoers && \
 	    mkdir -p /home/galadmin/src ;\
-      echo "source /opt/ros/indigo/setup.bash" >> /root/.bashrc ;\
-      echo "source /opt/ros/indigo/setup.bash" >> /home/galadmin/.bashrc ;\
+      echo "source /opt/ros/indigo/setup.bash" >> /root/.bash_profile ;\
+      echo "source /opt/ros/indigo/setup.bash" >> /home/galadmin/.bash_profile ;\
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh
 
 
