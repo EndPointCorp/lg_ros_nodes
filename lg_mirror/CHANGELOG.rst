@@ -2,6 +2,12 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Improve viewport capture queue behavior
+  Reduce potential for latency by isolating the slowest element (videoscale) and dropping old buffers.
+* Contributors: Matt Vollrath
+
 1.5.10 (2016-10-31)
 -------------------
 

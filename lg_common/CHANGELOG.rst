@@ -2,6 +2,21 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add support for kiosk mode setting through activity_config
+* remove write_log_to_file call
+* Added initial docker version for lg (`#309 <https://github.com/endpointcorp/lg_ros_nodes/issues/309>`_)
+  * Added initial docker version for lg
+  * PEP8
+  * Converted from ros:indigo to ubuntu
+  * Nvidia
+  * X support for OSX and Linux and other goodies
+  * Run Xvfb during tests
+  * Added no-sandbox to disable debugging
+* fix soft relaunches in adhoc browser
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
 1.5.10 (2016-10-31)
 -------------------
 * Refactored rfreceiver and fixed tests for chrome url monitor
