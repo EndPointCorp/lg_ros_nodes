@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<launch>
+  <!--
+  This roslaunch file should launch LG inside of an Xvfb with resolution of 1920x1080
+  center viewport is a square of 960 by 960
+  -->
+  <param name="/viewport/center" value="960x960+0+0"/>
+  <param name="/viewport/ce" value="960x960+0+960"/>
+  <node name="adhoc_browser_center" pkg="lg_common" type="adhoc_browser.py" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="hide_delay" value="1.5"/>
+    <param name="destroy_delay" value="3"/>
+    <param name="rosbridge_secure" value="true"/>
+    <param name="viewport" value="center"/>
+    <param name="extensions_root" value="/opt/endpoint/chrome/extensions/"/>
+  </node>
+  <node name="lg_activity" pkg="lg_activity" type="tracker" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="activity_sources" value="/spacenav/twist:geometry_msgs/Twist:delta;/lg_replay/touchscreen:interactivespaces_msgs/GenericMessage:activity;/touchscreen/touch:std_msgs/Bool-data:activity;/portal_launcher/message:std_msgs/String:activity"/>
+    <param name="activity_timeout" value="120"/>
+  </node>
+  <node name="lg_keyboard_onboard_manager_center" pkg="lg_keyboard" type="onboard" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="viewport" value="center"/>
+  </node>
+  <node name="lg_mirror_capture_center" pkg="lg_mirror" type="capture_viewport_node" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="viewport" value="center"/>
+    <param name="framerate" value="30"/>
+    <param name="janus_port" value="6000"/>
+  </node>
+  <node name="lg_mirror_touch_receiver_center" pkg="lg_mirror" type="touch_receiver_node" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="viewport" value="center"/>
+    <param name="float_pointer" value="true"/>
+  </node>
+  <node name="lg_mirror_touch_router" pkg="lg_mirror" type="touch_router_node" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="default_viewport" value="center"/>
+  </node>
+  <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="check_every_seconds_delay" value="30"/>
+    <param name="max_num_of_rounds_to_retain" value="100"/>
+    <param name="num_of_last_check_rounds_consider" value="2"/>
+    <param name="socket_timeout" value="1"/>
+    <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile"/>
+    <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline"/>
+    <param name="checks" value="['curl --silent --head --max-time 3 http://www.google.com', 'ping -q -W 3 -c 3 www.yahoo.com', 'ping -q -W 3 -c 3 8.8.8.8', 'ping -q -W 3 -c 3 8.8.4.4', 'nc -z -w 1 news.bbc.co.uk 80', 'curl --silent --head --max-time 3 http://x-max.cz/lgping']"/>
+  </node>
+  <node name="lg_stats" pkg="lg_stats" type="stats.py" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="resolution" value="5"/>
+    <param name="submission_type" value="InfluxTelegraf"/>
+    <param name="host" value="lg-head"/>
+    <param name="port" value="8094"/>
+    <param name="activity_sources" value="/earth/query/search:std_msgs/String-data:default;/lg_replay/touchscreen:interactivespaces_msgs/GenericMessage-message:count;/director/scene:interactivespaces_msgs/GenericMessage-message.slug:default;/appctl/mode:appctl/Mode-mode:default;/activity/active:std_msgs/Bool-data:default;/streetview/panoid:std_msgs/String-data:default;/spacenav/twist:geometry_msgs/Twist-angular:count_nonzero;/proximity/distance:sensor_msgs/Range-range:average;/touchscreen/touch:std_msgs/Bool-data:default;/soft_relaunch:std_msgs/String-data:default"/>
+    <param name="inactivity_resubmission" value="5"/>
+  </node>
+  <node name="readiness_node" pkg="lg_common" type="readiness.py" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="rosapi" pkg="rosapi" type="rosapi_node" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="binary_encoder" value="bson"/>
+  </node>
+  <node name="uscs_service" pkg="lg_common" type="uscs_service.py" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="initial_state_scene_url" value="http://localhost:8008/lg_common/webapps/uscs_messages/initial_state.json"/>
+  </node>
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="webserver" pkg="lg_common" type="dev_webserver.py" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="adhoc_browser_touchscreen" pkg="lg_common" type="adhoc_browser.py" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="hide_delay" value="1.5"/>
+    <param name="destroy_delay" value="3"/>
+    <param name="rosbridge_secure" value="true"/>
+    <param name="viewport" value="touchscreen"/>
+    <param name="extensions_root" value="/opt/endpoint/chrome/extensions/"/>
+  </node>
+  <node name="lg_keyboard_onboard_manager_touchscreen" pkg="lg_keyboard" type="onboard" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="viewport" value="touchscreen"/>
+  </node>
+  <node name="lg_keyboard_onboard_router" pkg="lg_keyboard" type="onboard_router" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="default_viewport" value="touchscreen"/>
+  </node>
+  <node name="lg_mirror_touch_receiver_touchscreen" pkg="lg_mirror" type="touch_receiver_node" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="viewport" value="touchscreen"/>
+  </node>
+  <node name="lg_spacenav_globe" pkg="lg_spacenav_globe" type="lg_spacenav_globe" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="spacenav" pkg="spacenav_node" type="spacenav_node" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="static_count_threshold" value="384"/>
+    <param name="static_trans_deadband" value="24"/>
+    <param name="static_rot_deadband" value="24"/>
+    <param name="full_scale" value="1"/>
+  </node>
+  <node name="spacenav_rezero" pkg="spacenav_wrapper" type="spacenav_rezero" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="webserver" pkg="lg_common" type="dev_webserver.py" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="sqlite_storage" pkg="rfid_scanner" type="sqlite_uscs_storage" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="state_setter" pkg="state_proxy" type="state_setter" clear_params="true" respawn="true" respawn_delay="3"/>
+  <node name="state_tracker" pkg="state_proxy" type="state_tracker" clear_params="true" respawn="true" respawn_delay="3"/>
+</launch>

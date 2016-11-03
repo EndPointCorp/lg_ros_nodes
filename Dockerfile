@@ -14,16 +14,18 @@ RUN \
       wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
       echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list && \
       apt-get update && \
-      apt-get install -y google-chrome-stable && \
+      apt-get install -y google-chrome-stable git sudo && \
       rm -rf /var/lib/apt/lists/*
 
+RUN \
+     apt-get update && \
+     sudo apt-get install -y ros-indigo-rosapi libudev-dev
 
-# entrypoint
+# entrypoint for setup.bash
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
 RUN chmod 0755 /ros_entrypoint.sh
 
-COPY scripts/docker_xvfb_add.sh /docker_xvfb_add.sh
-RUN chmod 0755 /docker_xvfb_add.sh && sync
+# Xvfb support - chrome preloading requires that
 ENV DISPLAY :1
 
 # add test user, being root isn't fun
@@ -31,25 +33,30 @@ ENV TEST_USER test_docker
 ENV HOME /home/test_docker
 RUN useradd -ms /bin/bash -d ${HOME} ${TEST_USER} \
  && echo "${TEST_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
-
 USER $TEST_USER
 
-ENV PROJECT_ROOT $HOME/catkin_ws
-RUN mkdir -p $PROJECT_ROOT/catkin/src \
- && mkdir -p $PROJECT_ROOT/scripts
+# make dirs and check out repos
+ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
+RUN mkdir -p $PROJECT_ROOT/src
+# set up all dirs for catkin and test scripts
+RUN rm -fr $HOME/src/lg_ros_nodes; git clone https://github.com/EndPointCorp/lg_ros_nodes.git $HOME/src/lg_ros_nodes
+RUN rm -fr $HOME/src/appctl ; git clone https://github.com/EndPointCorp/appctl.git $HOME/src/appctl
 
-# test runner script & friends
-COPY scripts/ $PROJECT_ROOT/scripts
-COPY setup.cfg $PROJECT_ROOT/
-
-CMD cd ${HOME}/catkin_ws/catkin && \
-    sudo cp -r /docker_nodes/* src/ && \
-    /docker_xvfb_add.sh && \
+#let's build ros nodes
+RUN cd ${PROJECT_ROOT} && \
+    /ros_entrypoint.sh ./scripts/init_workspace -a $HOME/src/appctl && \
+    chmod +x ./scripts/docker_xvfb_add.sh && \
     sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME} && \
+    ./scripts/docker_xvfb_add.sh && \
+    cd ${PROJECT_ROOT}/catkin/ && \
     sudo apt-get update && \
-    rosdep update && \
-    sudo rosdep install --from-paths src --ignore-src --rosdistro indigo -y && \
-    catkin_make && \
+    rosdep update # && \
+    sudo rosdep install --from-paths src --ignore-src --rosdistro indigo -y
+
+RUN cd ${PROJECT_ROOT}/catkin && /ros_entrypoint.sh catkin_make
+
+# by default let's run tests
+CMD cd ${PROJECT_ROOT}/catkin && \
     . devel/setup.sh && \
-    cd .. && \
+    cd ${PROJECT_ROOT} && \
     ./scripts/test_runner.py
