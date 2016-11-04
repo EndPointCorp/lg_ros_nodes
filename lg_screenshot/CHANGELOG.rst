@@ -2,8 +2,8 @@
 Changelog for package lg_sreenshot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.15 (2016-11-04)
+-------------------
 * Add zoom to the message and pass it tp phantom
 * Fixed test and deploy
 * PEP8 and fixes

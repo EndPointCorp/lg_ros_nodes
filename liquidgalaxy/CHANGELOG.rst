@@ -2,8 +2,8 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.15 (2016-11-04)
+-------------------
 * PEP8
 * Contributors: Wojciech Ziniewicz
 
