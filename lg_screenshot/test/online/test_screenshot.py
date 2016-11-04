@@ -30,15 +30,16 @@ class TestWebScreenshot(unittest.TestCase):
     def test_take_screenshot(self):
         msg = GetScreenshot()
         msg.url = 'http://myhost.me/screenshot?blah=blah'
-        msg.width = 1200
+        msg.page_width = 1200
         self.node.take_screenshot(msg)
 
-        self.assertEqual(1, self.publisher.published_messages.length)
-        self.assertTrue('--script script' in self.publisher.published_messages[0].base64)
+        self.assertEqual(1, len(self.publisher.published_messages))
+        #self.assertEqual(self.publisher.published_messages, 'asdasd')
         self.assertTrue('--url {}'.format(msg.url) in self.publisher.published_messages[0].base64)
         self.assertTrue('--out base64'.format(msg.url) in self.publisher.published_messages[0].base64)
         self.assertTrue('--delay 100' in self.publisher.published_messages[0].base64)
         self.assertTrue('--width 1200' in self.publisher.published_messages[0].base64)
+        self.assertTrue('--silent true' in self.publisher.published_messages[0].base64)
 
 if __name__ == '__main__':
     import rostest

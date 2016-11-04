@@ -4,6 +4,7 @@ import rospy
 
 from lg_screenshot.msg import GetScreenshot
 from lg_screenshot.msg import Screenshot
+import subprocess
 import rospkg
 
 DEFAULT_BINARY = 'phantomjs'
@@ -29,20 +30,23 @@ class WebScreenshot:
 
     def take_screenshot(self, search_screenshot):
         url = search_screenshot.url
-        width = search_screenshot.width
+        width = search_screenshot.page_width
         if search_screenshot.user_agent:
             user_agent = search_screenshot.user_agent
         else:
             user_agent = self.user_agent
 
-        call = [].extend(self.call_tmpl)
-        call.extend(['--ua {}'.format(user_agent)])
+        call = []
+        call.extend(self.call_tmpl)
+        call.extend(['--ua \'{}\''.format(user_agent)])
         call.extend(['--url {}'.format(url)])
+        call.extend(['--silent true'])
         if width:
             call.extend(['--width {}'.format(width)])
 
         base64 = subprocess.check_output(' '.join(call), shell=True)
         msg = Screenshot()
-        msg.search = search
+        msg.url = url
         msg.base64 = base64
         self.publisher.publish(msg)
+        rospy.loginfo("Made screenshot for %s" % url)

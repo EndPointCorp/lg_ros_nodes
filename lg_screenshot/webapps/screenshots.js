@@ -44,14 +44,14 @@ if (argKey) {
 }
 
 if (args.zoom) {
-    console.log('Use zoom', args.zoom);
+    log('Use zoom', args.zoom);
 }
 var zoom = args.zoom || DEFAULT_ZOOM
 page.zoomFactor = zoom;
 
 var width = args.width || DEFAULT_WIDTH;
 if (args.width) {
-    console.log('Use width', args.width);
+    log('Use width', args.width);
 }
 else {
     width = width * zoom;
@@ -61,30 +61,38 @@ page.viewportSize = {
     height: 1000
 };
 
+function log(message) {
+  if (args.silent === 'true') {
+    return;
+  } else {
+    console.log(message);
+  }
+}
+
 if (args.ua) {
-    console.log('Use UA', args.ua);
+    log('Use UA', args.ua);
 }
 page.settings.userAgent = args.ua || DEFAUL_UA;
 
 var search = args.search || args.pos.join(' ');
 
 if (!search && !args.url) {
-    console.log('Search and url not specifyed');
+    log('Search and url not specifyed');
     phantom.exit(1);
 }
 
 var out = args.out || DEFAULT_OUT;
 if (args.out) {
-    console.log('Use out', args.out);
+    log('Use out', args.out);
 }
 
 var delay = args.delay || 0;
 if (args.delay) {
-    console.log('Use delay', delay);
+    log('Use delay', delay);
 }
 
 var url = args.url || ('https://www.google.com/search?q=' + encodeURIComponent(search));
-console.log(url);
+log(url);
 
 function render() {
     if (out == 'base64') {
