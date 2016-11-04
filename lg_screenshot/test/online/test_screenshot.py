@@ -22,7 +22,7 @@ class TestWebScreenshot(unittest.TestCase):
         self.publisher = MockScreenshotPublisher()
         self.node = WebScreenshot(self.publisher,
                                   binary='echo',
-                                  script='script'
+                                  script='script',
                                   delay=100)
 
     def test_take_screenshot(self):
