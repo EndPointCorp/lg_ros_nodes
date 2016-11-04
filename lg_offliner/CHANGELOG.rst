@@ -2,8 +2,8 @@
 Changelog for package lg_offliner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.13 (2016-11-04)
+-------------------
 * Fixed initial state of lg_offliner when configured to run multiple checks and added offliner service dependency to adhoc browser pool
 * Contributors: Wojciech Ziniewicz
 
