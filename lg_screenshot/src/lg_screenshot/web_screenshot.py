@@ -25,7 +25,7 @@ class WebScreenshot:
         if self.delay:
             self.call_tmpl += ' --delay {}'.format(self.delay)
 
-    def take_screenshot:(self, search_screenshot):
+    def take_screenshot(self, search_screenshot):
         url = search_screenshot.url
         width = search_screenshot.width
         call = self.call_tmpl + ' --url {}'.format(url)
