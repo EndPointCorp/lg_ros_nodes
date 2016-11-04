@@ -11,7 +11,6 @@ d = generate_distutils_setup(
             'webapps/*'
         ]
     },
-    scripts=['bin/lg-screenshot'],
     requires=[]
 )
 
