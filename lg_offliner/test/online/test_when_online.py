@@ -53,7 +53,6 @@ class TestLGOfflinerWhenOnline(object):
         assert self.get_offline_status() is False
 
 
-
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
     test_pkg = ROS_NODE_NAME

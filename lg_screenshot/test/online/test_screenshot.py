@@ -10,12 +10,14 @@ from lg_screenshot.msg import GetScreenshot
 from lg_screenshot.msg import Screenshot
 from lg_screenshot import WebScreenshot
 
+
 class MockScreenshotPublisher:
     def __init__(self):
         self.published_messages = []
 
     def publish(self, screenshot):
         self.published_messages.append(screenshot)
+
 
 class TestWebScreenshot(unittest.TestCase):
     def setUp(self):

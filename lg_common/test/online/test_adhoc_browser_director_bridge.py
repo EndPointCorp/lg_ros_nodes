@@ -327,7 +327,7 @@ class TestAdhocBrowserDirectorBridge(unittest.TestCase):
         right_browser_4 = AdhocBrowser(id='adhoc_browser_right_0',
                                        scene_slug='test message',
                                        version='stable',
-                                        kiosk=True,
+                                       kiosk=True,
                                        geometry=WindowGeometry(x=100,
                                                                y=100,
                                                                width=100,

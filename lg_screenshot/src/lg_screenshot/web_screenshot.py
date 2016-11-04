@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 
 import rospy
-import lg_common
 
-from lg_common.msg import GetScreenshot
-from lg_common.msg import Screenshot
+from lg_screenshot.msg import GetScreenshot
+from lg_screenshot.msg import Screenshot
 
 DEFAULT_BINARY = 'phantomjs'
 DEFAULT_SCRIPT = 'screenshots.js'
 
 
-
 class WebScreenshot:
-    def __init__ (self, publisher, binary=DEFAULT_BINARY, script=DEFAULT_SCRIPT,
-                  delay=250, user_agent=None):
+    def __init__(self, publisher, binary=DEFAULT_BINARY, script=DEFAULT_SCRIPT,
+                 delay=250, user_agent=None):
         self.publisher = publisher
         self.binary = binary
         self.delay = delay

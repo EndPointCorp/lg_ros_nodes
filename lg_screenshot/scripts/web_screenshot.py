@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-from lg_common.msg import GetScreenshot
-from lg_common.msg import Screenshot
-
+from lg_screenshot.msg import GetScreenshot
+from lg_screenshot.msg import Screenshot
 
 
 def main():
