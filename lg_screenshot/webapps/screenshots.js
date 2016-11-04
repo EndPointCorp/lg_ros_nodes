@@ -68,8 +68,8 @@ page.settings.userAgent = args.ua || DEFAUL_UA;
 
 var search = args.search || args.pos.join(' ');
 
-if (!search) {
-    console.log('Search not specifyed');
+if (!search && !args.url) {
+    console.log('Search and url not specifyed');
     phantom.exit(1);
 }
 
@@ -83,7 +83,7 @@ if (args.delay) {
     console.log('Use delay', delay);
 }
 
-var url = 'https://www.google.com/search?q=' + encodeURIComponent(search);
+var url = args.url || ('https://www.google.com/search?q=' + encodeURIComponent(search));
 console.log(url);
 
 function render() {
