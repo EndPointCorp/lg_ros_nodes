@@ -2,22 +2,23 @@
 Changelog for package lg_sreenshot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add zoom to the message and pass it tp phantom
+* Fixed test and deploy
+* PEP8 and fixes
+* Contributors: Wojciech Ziniewicz, kiselev-dv
+
 1.5.14 (2016-11-04)
 -------------------
 * Features/screenshots (`#312 <https://github.com/EndPointCorp/lg_ros_nodes/issues/312>`_)
-  * screenshots node
-  * fixed setup.py
+  * Created screenshot node
   * fixed setup.py
   * fixed CMakeList
-  * Add tests
-  * Fix tests
-  * Fix tests
-  * Fix tests
   * Fix access flags
   * Add readme, fix version, fix paths, fix test
   * PEP8
-  * PEP8 and fixes
-  * Fixed test
+  * Tests
 * Contributors: Dmitry Kiselev
 
 1.5.13 (2016-11-04)

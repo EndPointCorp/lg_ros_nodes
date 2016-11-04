@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* PEP8
+* Contributors: Wojciech Ziniewicz
+
+* PEP8
+* Contributors: Wojciech Ziniewicz
+
 1.5.14 (2016-11-04)
 -------------------
 * Features/screenshots (`#312 <https://github.com/EndPointCorp/lg_ros_nodes/issues/312>`_)
