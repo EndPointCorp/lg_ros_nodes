@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added offliner to browser pool tests as a dep
+* Fixed initial state of lg_offliner when configured to run multiple checks and added offliner service dependency to adhoc browser pool
+* Contributors: Wojciech Ziniewicz
+
 1.5.12 (2016-11-03)
 -------------------
 * hide chrome warning of no-sandbox being insecure
