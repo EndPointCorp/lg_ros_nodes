@@ -46,7 +46,7 @@ if (argKey) {
 if (args.zoom) {
     log('Use zoom', args.zoom);
 }
-var zoom = args.zoom || DEFAULT_ZOOM
+var zoom = args.zoom || DEFAULT_ZOOM;
 page.zoomFactor = zoom;
 
 var width = args.width || DEFAULT_WIDTH;
@@ -61,11 +61,11 @@ page.viewportSize = {
     height: 1000
 };
 
-function log(message) {
+function log() {
   if (args.silent === 'true') {
     return;
   } else {
-    console.log(message);
+    console.log.apply(console, arguments);
   }
 }
 
