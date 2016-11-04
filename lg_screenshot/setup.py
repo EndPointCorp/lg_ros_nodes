@@ -4,16 +4,14 @@ from distutils.core import setup
 from catkin_pkg.python_setup import generate_distutils_setup
 
 d = generate_distutils_setup(
-    packages=['lg_common'],
+    packages=['lg_screenshot'],
     package_dir={'': 'src'},
     package_data={
-        'lg_common': [
-            'extensions/ros_window_ready/*',
-            'extensions/monitor_page_urls/*',
-            'extensions/current_url/*'
+        'lg_screenshot': [
+            'webapps/*'
         ]
     },
-    scripts=['bin/lg-code-to-command'],
+    scripts=['bin/lg-screenshot'],
     requires=[]
 )
 
