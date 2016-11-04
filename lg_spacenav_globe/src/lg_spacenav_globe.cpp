@@ -13,7 +13,7 @@
 
 class PortalNavigatorNode {
  public:
-  PortalNavigatorNode(void) {}
+  PortalNavigatorNode(void): joystick_sensitivity_(1.0) {}
 
   // Starts the run loop and does not return until killed.
   void Run(void);

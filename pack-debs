@@ -46,4 +46,6 @@ $BUILD $SRCDIR/lg_stats
 $BUILD $SRCDIR/lg_sv
 $BUILD $SRCDIR/lg_wireless_devices
 $BUILD $SRCDIR/spacenav_wrapper
+$BUILD $SRCDIR/state_proxy
+$BUILD $SRCDIR/rfid_scanner
 $BUILD $SRCDIR/liquidgalaxy

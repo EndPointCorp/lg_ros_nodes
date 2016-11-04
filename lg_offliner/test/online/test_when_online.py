@@ -44,8 +44,14 @@ class TestLGOfflinerWhenOnline(object):
 
     def test_checker(self):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        time.sleep(4)
+        rospy.sleep(1)
+        # first check the initial state - should be False (online) bcoz we assume that
+        # the state after relaunch is online - there are no results yet after 1 second
         assert self.get_offline_status() is False
+        # now all results should return status code of 0 and we still should be online
+        rospy.sleep(10)
+        assert self.get_offline_status() is False
+
 
 
 if __name__ == "__main__":

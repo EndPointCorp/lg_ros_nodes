@@ -3,6 +3,8 @@
 
 <head>
 <script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript" src="js/lib/eventemitter2.min.js"></script>
+<script type="text/javascript" src="js/lib/roslib.min.js"></script>
 <style>
 body {
   background-color: black;
@@ -28,11 +30,28 @@ document.addEventListener('contextmenu', function(e) {
 
 var streamDiv = document.getElementById('stream');
 
+var rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
+var rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
+var rosbridgeSecure = getParameterByName('rosbridge_secure', stringToBoolean, false);
+var rosbridgeUrl = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
+var rosInstanceName = getParameterByName('ros_instance_name', String, null);
 var webVideoServerUri = getParameterByName('web_video_server', String, 'http://localhost:8080');
 var viewport = getParameterByName('played_back_viewport', String);
 if (!viewport) {
   console.error('Must specify viewport param');
 }
+
+var readinessFallbackDuration = getParameterByName('readiness_fallback_duration', Number, 2000);
+var visibilityDelay = getParameterByName('visibility_delay', Number, 1500);
+
+var ros = new ROSLIB.Ros();
+ros.connect(rosbridgeUrl);
+
+var readinessTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/director/ready',
+  messageType: 'lg_common/Ready'
+});
 
 // Must match the form of lg_mirror.utils.get_viewport_base_topic()
 // ros_compressed stream type will append /compressed
@@ -40,7 +59,33 @@ var streamTopic = '/lg_mirror/viewport/' + viewport;
 var streamUrl = webVideoServerUri + '/stream?type=ros_compressed&topic=' + streamTopic;
 
 var img = document.createElement('img');
-streamDiv.appendChild(img);
+img.onload = function(ev) {
+  console.log('(pre-)loaded first frame of stream at', ev.timeStamp, 'ms');
+  window.postMessage({ type: "DIRECTOR_WINDOW_READY" }, "*");
+}
+
+function showStream() {
+  var now = window.performance.now();
+  console.log('showing stream at', now, 'ms');
+  streamDiv.appendChild(img);
+}
+
+function instanceIsReady() {
+  var now = window.performance.now();
+  console.log('instance', rosInstanceName, 'is ready at', now);
+  readinessTopic.unsubscribe(handleSceneReadiness);
+  clearTimeout(readinessFallbackTimeout);
+  setTimeout(showStream, visibilityDelay);
+}
+
+function handleSceneReadiness(msg) {
+  if (msg.instances.indexOf(rosInstanceName) >= 0) {
+    instanceIsReady();
+  }
+}
+readinessTopic.subscribe(handleSceneReadiness);
+var readinessFallbackTimeout = setTimeout(instanceIsReady, readinessFallbackDuration);
+
 img.src = streamUrl;
 
 </script>

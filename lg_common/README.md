@@ -12,8 +12,8 @@ all LG ros nodes.
 
 ## Software requirements
 
-* google-chrome available in PATH `~browser_binary`
 * awesome window manager
+* google chrome
 
 #### Messages
 - AdhocBrowser - contains all information needed to start and fully
@@ -80,7 +80,8 @@ Provides a browser pool for running and managing chrome browser instances with s
   trigger preloading (defined
 [here](https://github.com/EndPointCorp/lg_ros_nodes/tree/master/lg_common/src/lg_common/extensions/ros_window_ready#application-generated-message))
 * string `user_agent` - user agent of the browser
-* string `binary` - browser binary - defaults to google-chrome
+* string `version` - browser version - defaults to 'stable' (available:
+  `beta` and `unstable`)
 * lg_common/WindowGeometry `geometry` - geometry of the window (defined
   below)
 * lg_common/BrowserExtension[] `extensions` - list of extensions' names.

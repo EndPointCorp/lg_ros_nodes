@@ -24,7 +24,7 @@ A node that attaches to a promicro board serially and publishes button pushes.
 
 * `/rfreceiver/buttondown` : `std_msgs/Byte` - A number indicating the button being pushed, where "A" is "1" and so on.
 
-### kill\_browser.py
+### actuator.py
 
 A node that listens for a button press and kills all browser instances if it is the "B" button.
 
@@ -37,5 +37,3 @@ This is mostly hard-coded for Campfire.
 
 * `fallback_mode` - what mode should be broadcasted after reset signal
   is received
-
-* `reset_command` - what command should be executed upon reset signal

@@ -3,8 +3,9 @@ string url
 string scene_slug
 bool preload
 bool custom_preload_event
+bool kiosk
 string user_agent
-string binary
+string version
 string[] allowed_urls
 lg_common/WindowGeometry geometry
 lg_common/BrowserExtension[] extensions

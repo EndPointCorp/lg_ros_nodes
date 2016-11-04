@@ -8,7 +8,7 @@
     "background": {
         "persistent": true,
         "scripts": [
-            "get_args.js",  "eventemitter2.min.js", "roslib.min.js", "current_url.js"
+            "get_args.js",  "lib/eventemitter2.min.js", "lib/roslib.min.js", "current_url.js"
         ]
     },
 

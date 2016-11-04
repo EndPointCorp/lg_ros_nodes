@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_offliner</name>
-  <version>1.4.19</version>
+  <version>1.5.13</version>
   <description>lg offliner internet checker ROS node</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>

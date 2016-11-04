@@ -116,6 +116,7 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 #### Parameters
 
 * `viewport` [str] - The viewport to be managed by this receiver.
+* `float_pointer` [bool] - Float the xinput device pointer. This prevents interference with Chrome when there are multiple receivers on the same DISPLAY. **This may be later deprecated by activity-specific configuration.** Default: `false`
 
 #### Subscribed Topics
 
@@ -131,6 +132,7 @@ For full mirror and touch capability, you will need to configure:
 * A `touch_receiver` for each viewport.
 * A `capture_viewport_node` for each viewport.
 * A `web_video_server::web_video_server` for each host.
+* A `rosbridge_server::rosbridge_websocket.py` for each host (for preloading if `preload` is set to true)
 * An `lg_common::dev_webserver.py` for each host.
 * An `lg_common::adhoc_browser.py` for each viewport.
 
@@ -140,6 +142,15 @@ The playback webapp lives in `/lg_mirror/webapps/playback/index.html` and requir
 
 * `played_back_viewport` : Viewport name for playback. Required.
 * `web_video_server` : URL to the `web_video_server`. Default: `http://localhost:8080`
+* `readiness_fallback_duration` : Assume the scene is ready after N ms. Default: `2000`
+* `visibility_delay` : After scene is ready, wait N ms to show the stream. Default: `1500`
+
+Also, ad hoc browser params are needed for preloading (added implicitly
+by pool on production):
+* `rosbridge_host`
+* `rosbridge_port`
+* `rosbridge_secure`
+* `ros_instance_name`
 
 ## Development/Testing
 

@@ -13,8 +13,7 @@ function setup_files() {
 
 function initialize() {
   # generate a unique image/container id
-  UUID=`mktemp -u XXXXXXXXXXXXXXXXXXXXXXXX`
-  UUID="${UUID,,}"
+  UUID="$( base64 /dev/urandom | tr -d '/+[A-Z]' | dd bs=16 count=1 2>/dev/null )"
   DOCKER_NAME="$(basename $(pwd))-test-${UUID}"
 }
 

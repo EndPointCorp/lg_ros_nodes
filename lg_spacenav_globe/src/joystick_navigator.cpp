@@ -25,7 +25,8 @@ static const timespec kExpectedInterval = {0, 33333333};  // 30 Hz
 JoystickNavigator::JoystickNavigator()
     : under_joy_control_(false),
       kiosk_pub_(NULL),
-      display_pub_(NULL) {
+      display_pub_(NULL),
+      joystick_sensitivity_(1.0) {
   // The sensitivities and gutter are hard-coded here.
   // In this case, linear_sensitivity_ refers to linear scaling
   // (vs. quadratic scaling) not linear motion (vs. angular).

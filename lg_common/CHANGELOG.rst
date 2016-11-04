@@ -2,6 +2,99 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.13 (2016-11-04)
+-------------------
+* Added offliner to browser pool tests as a dep
+* Fixed initial state of lg_offliner when configured to run multiple checks and added offliner service dependency to adhoc browser pool
+* Contributors: Wojciech Ziniewicz
+
+1.5.12 (2016-11-03)
+-------------------
+* hide chrome warning of no-sandbox being insecure
+* set kiosk=True in test file adhocbrowser creation
+  The default should be true, but because this is a message type, we need
+  to manually set it. Inside the adhoc browser we always set kiosk to true
+  or whatever the user passed to the director message. We never rely on
+  the default when creating a new instance of AdhocBrowser()
+* Contributors: Jacob Minshall
+
+1.5.11 (2016-11-03)
+-------------------
+* add support for kiosk mode setting through activity_config
+* remove write_log_to_file call
+* Added initial docker version for lg (`#309 <https://github.com/endpointcorp/lg_ros_nodes/issues/309>`_)
+  * Added initial docker version for lg
+  * PEP8
+  * Converted from ros:indigo to ubuntu
+  * Nvidia
+  * X support for OSX and Linux and other goodies
+  * Run Xvfb during tests
+  * Added no-sandbox to disable debugging
+* fix soft relaunches in adhoc browser
+* Contributors: Jacob Minshall, Wojciech Ziniewicz
+
+1.5.10 (2016-10-31)
+-------------------
+* Refactored rfreceiver and fixed tests for chrome url monitor
+* More tests fixing
+* PEP8 and tests refactoring
+* Contributors: Wojciech Ziniewicz
+
+1.5.9 (2016-10-28)
+------------------
+* add the new lib directories
+* Contributors: Jacob Minshall
+
+1.5.8 (2016-10-27)
+------------------
+
+1.5.7 (2016-10-27)
+------------------
+* Better cleanup in tests
+* Contributors: Wojciech Ziniewicz
+
+1.5.6 (2016-10-26)
+------------------
+* Forgot to sleep
+* Converted dumb waits to something more robust
+* Test fixing
+* Made AdhocBrowser data structure for defining gogoel chrome version compatible with ros cms data
+* Contributors: Wojciech Ziniewicz
+
+1.5.5 (2016-10-26)
+------------------
+* Match Chrome unstable window instance names
+  There are ever-changing variations, but the path to the tmp_dir is always present and unique.
+* Contributors: Matt Vollrath
+
+1.5.4 (2016-10-25)
+------------------
+* Fix adhoc browser test
+* Contributors: Matt Vollrath
+
+1.5.3 (2016-10-25)
+------------------
+* Revamp delays in ad hoc browser pool
+  * Remove bad delays from ManagedApplication
+  * Converge window before setting ProcController goal state
+  * Fix some other cruft
+* Contributors: Jacob Minshall, Matt Vollrath, Wojciech Ziniewicz
+
+1.5.2 (2016-10-19)
+------------------
+* Better readiness logging and forceful activation
+* Contributors: Wojciech Ziniewicz
+
+1.5.1 (2016-10-19)
+------------------
+
+1.5.0 (2016-10-19)
+------------------
+* Fix typo in ros_window_ready extension
+* Remove infinite cycle in ros_window_ready extension logging
+* JS extensions logs cleanup
+* Contributors: kiselev-dv
+
 1.4.19 (2016-10-18)
 -------------------
 * Parametrized hide and destroy delay and PEP8ized

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>liquidgalaxy</name>
-  <version>1.4.19</version>
+  <version>1.5.13</version>
   <description>Liquid Galaxy metapackage</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -30,6 +30,8 @@
   <run_depend>lg_stats</run_depend>
   <run_depend>lg_sv</run_depend>
   <run_depend>lg_wireless_devices</run_depend>
+  <run_depend>state_proxy</run_depend>
+  <run_depend>rfid_scanner</run_depend>
   <run_depend>spacenav_wrapper</run_depend>
 
   <export>

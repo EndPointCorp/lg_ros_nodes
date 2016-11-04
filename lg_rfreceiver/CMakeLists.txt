@@ -15,6 +15,6 @@ include_directories(
 
 install(PROGRAMS
   scripts/sender.py
-  scripts/kill_browser.py
+  scripts/actuator.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

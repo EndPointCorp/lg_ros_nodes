@@ -48,7 +48,7 @@ bool UinputDevice::Init(const lg_mirror::EvdevDeviceInfoResponse& info) {
 
   try {
     InitDevice_(fd, info);
-  } catch (UinputDeviceInitError e) {
+  } catch (UinputDeviceInitError& e) {
     ROS_ERROR_STREAM(e.what());
     close(fd);
     return false;
@@ -180,6 +180,18 @@ bool UinputDevice::WaitForXinput() {
 
     interval = std::max(interval * 2, MAX_INTERVAL);
   }
+}
+
+/**
+ * \brief Floats the xinput device pointer.
+ * \return true if successful.
+ */
+bool UinputDevice::FloatPointer() const {
+  std::ostringstream cmd;
+  cmd << "/usr/bin/xinput float '" << device_name_ << "'";
+
+  int status = system(cmd.str().c_str());
+  return status == 0;
 }
 
 /**

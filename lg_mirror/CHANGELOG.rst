@@ -2,6 +2,68 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.13 (2016-11-04)
+-------------------
+
+1.5.12 (2016-11-03)
+-------------------
+
+1.5.11 (2016-11-03)
+-------------------
+* Improve viewport capture queue behavior
+  Reduce potential for latency by isolating the slowest element (videoscale) and dropping old buffers.
+* Contributors: Matt Vollrath
+
+1.5.10 (2016-10-31)
+-------------------
+
+1.5.9 (2016-10-28)
+------------------
+
+1.5.8 (2016-10-27)
+------------------
+* Add float_pointer param for touch receiver
+  Allows for floating the pointer to prevent interference between multiple pointers in Chrome.
+* Contributors: Matt Vollrath
+
+1.5.7 (2016-10-27)
+------------------
+
+1.5.6 (2016-10-26)
+------------------
+
+1.5.5 (2016-10-26)
+------------------
+
+1.5.4 (2016-10-25)
+------------------
+* Fixed body events
+* Contributors: Wojciech Ziniewicz
+
+1.5.3 (2016-10-25)
+------------------
+* Add visibility delay for mirror playback
+  Prevent showing the previous scene's content by waiting for the scene to be ready (and then some).
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
+1.5.2 (2016-10-19)
+------------------
+* Add preloading support for mirror playback (`#306 <https://github.com/endpointcorp/lg_ros_nodes/issues/306>`_)
+  * Add preloading support for mirror playback
+  * Made things lil bit more simple
+  * Fixed typo
+  * Added small timeout to img readiness
+* Revert "Add preloading support for mirror playback (`#304 <https://github.com/endpointcorp/lg_ros_nodes/issues/304>`_)"
+  This reverts commit 088d96cb4b349d695dfd8bd59a5e37697e68182f.
+* Add preloading support for mirror playback (`#304 <https://github.com/endpointcorp/lg_ros_nodes/issues/304>`_)
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
+1.5.1 (2016-10-19)
+------------------
+
+1.5.0 (2016-10-19)
+------------------
+
 1.4.19 (2016-10-18)
 -------------------
 * Small amendments

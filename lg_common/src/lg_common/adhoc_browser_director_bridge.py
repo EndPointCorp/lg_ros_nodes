@@ -10,7 +10,6 @@ from lg_common.msg import BrowserExtension
 from lg_common.helpers import generate_hash
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
-from lg_common.helpers import write_log_to_file
 
 
 class AdhocBrowserDirectorBridge():
@@ -69,7 +68,6 @@ class AdhocBrowserDirectorBridge():
 
         rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
-        write_log_to_file("adhoc_browsers: %s" % adhoc_browsers)
         self.browser_pool_publisher.publish(adhoc_browsers)
         if adhoc_browsers.browsers:
             self.aggregate_publisher.publish(adhoc_browsers)
@@ -102,14 +100,17 @@ class AdhocBrowserDirectorBridge():
         accepts brower_config (`activity_config` part of USCS/director message)
         and returns adhoc_browser object with detected activity_config attributes
         """
-        binary = browser_config.get('binary_path', '/usr/bin/google-chrome')
+        version = browser_config.get('version', 'stable')
         user_agent = browser_config.get('user_agent', None)
         browser_cmd_args = browser_config.get('command_line_args', None)
         extensions = browser_config.get('extensions', None)
         allowed_urls = browser_config.get('allowed_urls', None)
+        kiosk = browser_config.get('kiosk', True)
 
-        if binary:
-            adhoc_browser.binary = binary
+        adhoc_browser.kiosk = kiosk
+
+        if version:
+            adhoc_browser.version = version
 
         if user_agent:
             adhoc_browser.user_agent = user_agent
@@ -153,12 +154,13 @@ class AdhocBrowserDirectorBridge():
             adhoc_browser = AdhocBrowser()
             adhoc_browser.scene_slug = message['slug'].encode('ascii')
             adhoc_browser.url = browser['path']
-            adhoc_browser.binary = '/usr/bin/google-chrome'
+            adhoc_browser.version = 'stable'
             adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']
             adhoc_browser.geometry.y = browser['y_coord'] + self._get_viewport_offset()['y']
             adhoc_browser.geometry.height = browser['height']
             adhoc_browser.geometry.width = browser['width']
             adhoc_browser.preload = False  # it's a default value
+            adhoc_browser.kiosk = True  # also default
 
             activity_config = browser.get('activity_config', None)
 

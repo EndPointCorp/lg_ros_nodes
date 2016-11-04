@@ -11,12 +11,12 @@ namespace util {
 
 // http://stackoverflow.com/a/478960
 std::string exec(const char* cmd) {
-  char buffer[BUF_SZ];
   std::string result = "";
   FILE* pipe = popen(cmd, "r");
   if (!pipe) throw std::runtime_error("popen() failed!");
   try {
     while (!feof(pipe)) {
+      char buffer[BUF_SZ];
       if (fgets(buffer, BUF_SZ, pipe) != NULL) {
         result += buffer;
       }

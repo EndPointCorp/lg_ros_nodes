@@ -1,21 +1,18 @@
 #!/usr/bin/env python
-
-PKG = 'lg_common'
-NAME = 'test_adhoc_browser_url_monitor'
-
 import rospy
 import unittest
-import tempfile
-import os
 import json
 
-from lg_common.msg import AdhocBrowser
 from lg_common.msg import AdhocBrowsers
 from interactivespaces_msgs.msg import GenericMessage
-from std_msgs.msg import String
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.helpers import write_log_to_file
 from lg_common.srv import BrowserPool
+from lg_common.test_helpers import wait_for_assert_equal
+
+
+PKG = 'lg_common'
+NAME = 'test_adhoc_browser_url_monitor'
 
 
 class MockSubscriber(object):
@@ -76,6 +73,8 @@ class TestAdhocBrowser(unittest.TestCase):
         """
         self.reinitialize_mock_subscribers()
         self.assertEqual(1, 1)
+        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
+        rospy.sleep(self.message_emission_grace_time)
 
     def test_2_chrome_extension_initialization(self):
         """
@@ -88,27 +87,29 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_center.messages), 1)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].allowed_urls, ['google.com', 'endpoint.com'])
 
+        # cleanup
+        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
+        rospy.sleep(self.message_emission_grace_time)
+
     def test_3_extension_gets_passed_to_chrome_cmdline(self):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_allowed_urls_msg'))
-        rospy.sleep(self.message_emission_grace_time)
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
-        browsers_on_center = center_service().state
 
-        try:
-            browsers_on_center = json.loads(browsers_on_center)
-            json_is_valid = True
-        except ValueError:
-            browsers_on_center = {}
-            json_is_valid = False
+        wait_for_assert_equal(len(json.loads(center_service().state)), 1, self.loading_grace_time)
 
-        self.assertEqual(json_is_valid, True)
+        browsers_on_center = json.loads(center_service().state)
+
         self.assertEqual(len(browsers_on_center), 1)
         self.assertEqual('monitor_page_urls' in browsers_on_center.items()[0][1]['extensions'][0], True)
         self.assertEqual('allowed_urls=google.com' in browsers_on_center.items()[0][1]['url'], True)
         self.assertEqual('allowed_urls=endpoint.com' in browsers_on_center.items()[0][1]['url'], True)
+
+        # cleanup
+        self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
+        rospy.sleep(self.message_emission_grace_time)
 
 
 if __name__ == '__main__':

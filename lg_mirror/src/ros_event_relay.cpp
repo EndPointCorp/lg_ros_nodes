@@ -40,7 +40,7 @@ void RosEventRelay::HandleRouterMessage(const StringArrayPtr& msg) {
   ROS_DEBUG("Got router message");
   bool should_route = false;
   std::size_t num_viewports = msg->strings.size();
-  for (std::size_t i; i < num_viewports; i++) {
+  for (std::size_t i = 0; i < num_viewports; i++) {
     ROS_DEBUG_STREAM("Comparing " << viewport_name_ << " to " << msg->strings[i]);
     if (msg->strings[i] == viewport_name_) {
       should_route = true;
@@ -70,10 +70,10 @@ void RosEventRelay::OpenRoute_() {
   }
   try {
     mapper_.Map();
-  } catch(ViewportMapperExecError e) {
+  } catch(ViewportMapperExecError& e) {
     ROS_ERROR_STREAM("Mapping viewport exec error: " << e.what());
     return;
-  } catch(ViewportMapperStringError e) {
+  } catch(ViewportMapperStringError& e) {
     ROS_ERROR_STREAM("Mapping viewport string error: " << e.what());
     return;
   }

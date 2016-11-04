@@ -15,6 +15,15 @@
         <param name="on_inactive_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_inactive.json"/>
     </node>
 
+    <!-- Lg offliner as a dep -->
+    <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py">
+        <param name="check_every_seconds_delay" value="1"/>
+        <param name="socket_timeout" value="1"/>
+        <param name="checks" value="['sleep 1','sleep 1','sleep 1']"/>  <!-- 0 returning command, as if online -->
+        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile;/something/offline:appctl/Mode-mode:value-online_scene"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline;/something/offline:appctl/Mode-mode:value-offline_scene"/>
+    </node>
+
     <!-- three adhoc browser pools -->
     <node name="adhoc_browser_pool_center" pkg="lg_common" type="adhoc_browser.py">
       <param name="viewport" value="center"/>

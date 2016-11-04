@@ -4,6 +4,7 @@
   <param name="/viewport/right_one" value="450x800+960+0" />
 
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" />
+  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket.py" />
   <node name="web_video_server" pkg="web_video_server" type="web_video_server" />
 
   <!-- USCS for initial state -->

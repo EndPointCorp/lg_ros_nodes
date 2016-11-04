@@ -16,7 +16,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
     def __init__(self, geometry=None, log_level=0, command_line_args=[],
                  extensions=[], binary='/usr/bin/google-chrome',
                  user_agent=None, slug=None, url=None, uid=None,
-                 scene_slug=None, preload=False):
+                 scene_slug=None, preload=False, kiosk=True):
 
         self.scene_slug = scene_slug
         self.slug = slug
@@ -41,7 +41,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             extensions=extensions,
             binary=binary,
             log_level=log_level,
-            kiosk=True)
+            kiosk=kiosk)
 
     def __str__(self):
         return json.dumps({
@@ -88,7 +88,5 @@ class ManagedAdhocBrowser(ManagedBrowser):
             return False
 
     def close(self, delay=None):
-        if delay:
-            time.sleep(delay)
         self.set_state(ApplicationState.STOPPED)
         self.clear_tmp_dir()

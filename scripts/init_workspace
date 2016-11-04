@@ -30,6 +30,7 @@ def get_option(config, section, option):
         pass
     return opt
 
+
 def parse_config():
     """
     Sets globals which are better set in a config file
@@ -37,7 +38,7 @@ def parse_config():
     config_file = 'scripts/init.cfg'
     if not os.path.exists(config_file):
         print 'WARNING, no %s found, using possibly outdated configuration' % config_file
-        return # rely on hard coded values... maybe an exception would work
+        return  # rely on hard coded values... maybe an exception would work
     # setting these globals
     global IGNORE_DIRS
     global NEEDED_DIRS
@@ -52,6 +53,7 @@ def parse_config():
     if ignores:
         IGNORE_DIRS = [ignore.strip() for ignore in ignores.split(',')]
 
+
 def setup_catkin():
     """
     Sets up the catkin dir structure, then creates all links
@@ -59,6 +61,7 @@ def setup_catkin():
     make_catkin_dir_structure()
     create_links_in_catkin()
     catkin_init()
+
 
 def make_catkin_dir_structure():
     """
@@ -77,12 +80,14 @@ def check_exists_but_not_dir(location):
         raise Exception('%s exists but is not a directory' % location)
     mkdir(location)
 
+
 def mkdir(location):
     """
     Makes a directory as long as one doesn't exist
     """
     if not os.path.exists(location):
         os.mkdir(location)
+
 
 def create_links_in_catkin():
     """
@@ -92,19 +97,23 @@ def create_links_in_catkin():
     os.chdir("%s/catkin/src" % ROOT_DIR)
     create_links(ros_nodes)
 
+
 def get_ros_nodes():
     """
     Figures out which directories in root_dir + ARGS exist
     returns an array of them
     """
-    nodes = ['%s/%s' % (ROOT_DIR, d) for d in os.listdir(ROOT_DIR)
-            if os.path.isdir('%s/%s' % (ROOT_DIR, d)) and d not in IGNORE_DIRS]
+    nodes = [
+        '%s/%s' % (ROOT_DIR, d) for d in os.listdir(ROOT_DIR)
+        if os.path.isdir('%s/%s' % (ROOT_DIR, d)) and d not in IGNORE_DIRS
+    ]
     global ARGS
     # append any args with paths that exist to our nodes
     append_node(nodes, ARGS.appctl)
     for arg in ARGS.extra:
         append_node(nodes, arg)
     return nodes
+
 
 def append_node(nodes, node):
     if not node:
@@ -116,12 +125,14 @@ def append_node(nodes, node):
         node = node[:-1]
     nodes.append(node)
 
+
 def create_links(nodes):
     """
     Iterates over all nodes to be created, and has a link created for each
     """
     for node in nodes:
         create_link(node)
+
 
 def create_link(node):
     """
@@ -134,6 +145,7 @@ def create_link(node):
     if os.path.islink(path):
         os.unlink(path)
     os.symlink(node, path)
+
 
 def catkin_init():
     """
@@ -153,6 +165,7 @@ def catkin_init():
     except OSError:
         raise Exception("Error running catkin_init_workspace, is it not in your PATH?")
 
+
 def parse_args():
     """
     Simple argument parser
@@ -163,6 +176,7 @@ def parse_args():
     parser.add_argument('-x', '--extra', type=str, nargs='*', default=[],
             help='a list of any extra paths to ros nodes you want linked to')
     return parser.parse_args()
+
 
 def check_validity():
     """
@@ -176,6 +190,7 @@ def check_validity():
             print "############## WARNING catkin/src SHOULD HAVE %s LINK ##############" % needed
     if passed:
         print "Successfully completed workspace initialization"
+
 
 def main():
     global ARGS
