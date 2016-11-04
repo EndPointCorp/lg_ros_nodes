@@ -63,6 +63,9 @@ class ConnectivityResults(object):
 
         """
         # -num_of_last_check_rounds_consider won't raise IndexError when len(self.data) is smaller
+        rospy.logdebug("called am_i_offline and data is: %s" % self.data)
+        if not self.data:
+            return False
         for dict_check_results in self.data[-self.num_of_last_check_rounds_consider:]:
             for res in dict_check_results.values():
                 if res == 0:

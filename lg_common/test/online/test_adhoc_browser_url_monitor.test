@@ -6,6 +6,13 @@
     <!-- Development static file server for the -->
     <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
 
+    <!-- Lg offliner as a dep -->
+    <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py">
+        <param name="check_every_seconds_delay" value="1"/>
+        <param name="socket_timeout" value="1"/>
+        <param name="checks" value="['sleep 1','sleep 1','sleep 1']"/>  <!-- 0 returning command, as if online -->
+    </node>
+
     <!-- USCS for initial state -->
     <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" >
         <param name="initial_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/initial_state.json"/>
