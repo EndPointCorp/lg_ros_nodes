@@ -29,11 +29,6 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
 )
 
-install(
-  DIRECTORY launch/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-)
-
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest(test/online/test_screenshots.test)
