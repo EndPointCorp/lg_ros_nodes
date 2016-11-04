@@ -24,6 +24,7 @@
   <run_depend>lg_nav_to_device</run_depend>
   <run_depend>lg_offliner</run_depend>
   <run_depend>lg_proximity</run_depend>
+  <run_depend>lg_screenshot</run_depend>
   <run_depend>lg_replay</run_depend>
   <run_depend>lg_rfreceiver</run_depend>
   <run_depend>lg_spacenav_globe</run_depend>

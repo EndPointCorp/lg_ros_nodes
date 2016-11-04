@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_screenshot</name>
+  <version>1.5.13</version>
+  <description>Software tools for getting web pages screenshots.</description>
+
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/EndPointCorp/lg_screenshot</url>
+
+  <author email="dmitry@endpoint.com">Dmitry Kiselev</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>appctl</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+  <test_depend>rostest</test_depend>
+  <test_depend>python-pytest</test_depend>
+</package>

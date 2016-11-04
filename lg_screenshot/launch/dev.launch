@@ -1,0 +1,23 @@
+<launch>
+  <arg name="broadcast_addr" />
+
+  <arg name="spnav_path" default="/dev/input/spacenavigator" />
+
+  <param name="/viewport/left_one" value="640x480+0+0" />
+  <param name="/viewport/center" value="640x480+640+0" />
+  <param name="/viewport/touchscreen" value="640x480+640+960" />
+  <param name="/viewport/right_one" value="640x480+1280+0" />
+  <param name="/viewport/pv_left_one" value="640x480+0+480" />
+  <param name="/viewport/pv_center" value="640x480+640+480" />
+  <param name="/viewport/pv_right_one" value="640x480+1280+480" />
+
+  <!-- Development static file server. -->
+  <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+
+  <!-- Local rosbridge and rosapi. -->
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
+  <!-- Device drivers. -->
+  <node name="spacenav" pkg="spacenav_node" type="spacenav_node" clear_params="true" />
+
+</launch>
