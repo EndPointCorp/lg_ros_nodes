@@ -2,6 +2,12 @@
 Changelog for package lg_sreenshot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix lg_screenshot pac_debs build
+
+
+
 1.5.15 (2016-11-04)
 -------------------
 * Add zoom to the message and pass it tp phantom
