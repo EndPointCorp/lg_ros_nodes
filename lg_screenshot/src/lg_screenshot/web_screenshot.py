@@ -44,7 +44,9 @@ class WebScreenshot:
         if width:
             call.extend(['--width {}'.format(width)])
         if search_screenshot.zoom:
-            call.extend(['--zoom {}'.format(search_screenshot.zoom)])   
+            call.extend(['--zoom {}'.format(search_screenshot.zoom)])
+        if search_screenshot.scripts:
+            call.extend(['--scripts {}'.format(' '.join(search_screenshot.scripts))])
 
         base64 = subprocess.check_output(' '.join(call), shell=True)
         msg = Screenshot()

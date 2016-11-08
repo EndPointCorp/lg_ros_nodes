@@ -1,5 +1,4 @@
 var system = require('system');
-var page = require("webpage").create();
 
 var DEFAUL_UA = 'Mozilla/5.0 (X11; Linux x86_64) ' +
     'AppleWebKit/537.36 (KHTML, like Gecko) ' +
@@ -9,131 +8,133 @@ var DEFAULT_WIDTH = 1800;
 var DEFAULT_ZOOM = 1;
 var DEFAULT_OUT = 'screenshot.png';
 
-var args = {
-    'pos': []
-};
-var argKey = null;
-var argVal = null;
-for (var i = 1; i < system.args.length; i++) {
-    if(system.args[i].indexOf('--') == 0) {
-        if (argVal && argKey) {
-            args[argKey] = argVal;
-        }
-        argKey = system.args[i].substring(2);
-        argVal = null;
+var args = require("./argparser.js").parseSysArgs();
+function log() {
+    if (args.silent === 'true') {
+        return;
+    } else {
+        var argsArr = Array.prototype.slice.call(arguments);
+        var strings = argsArr.map(function(o){
+            return typeof o == 'string' ? o : JSON.stringify(o);
+        });
+
+        system.stderr.writeLine(strings.join(' '));
     }
-    else if (argKey) {
-        if (argVal) {
-            if (Array.isArray(argVal)) {
-                argVal.push(system.args[i]);
-            }
-            else {
-                argVal = [argVal, system.args[i]];
-            }
+}
+
+var watchdog = setTimeout(function(){
+    phantom.exit();
+}, 10000);
+
+function Screenshot() {
+    this.page = require("webpage").create();
+    this.args = args;
+
+    if (typeof this.args.scripts == 'string') {
+        this.args.scripts = [this.args.scripts];
+    }
+
+    if (this.args.scripts) {
+        log('Applying scripts');
+        for (var i = 0; i < this.args.scripts.length; i++) {
+            require(this.args.scripts[i]).customize(this, log);
+            log('Applyed', this.args.scripts[i]);
         }
-        else {
-            argVal = system.args[i];
-        }
+    }
+
+    this.initPage();
+    this.initCapture();
+    this.run();
+}
+
+Screenshot.prototype.initPage = function() {
+    if (this.args.zoom) {
+        log('Use zoom', this.args.zoom);
+    }
+    var zoom = this.args.zoom || DEFAULT_ZOOM;
+    this.page.zoomFactor = zoom;
+
+    var width = this.args.width || DEFAULT_WIDTH;
+    if (this.args.width) {
+        log('Use width', this.args.width);
     }
     else {
-        args.pos.push(system.args[i]);
+        width = width * zoom;
     }
-}
-if (argKey) {
-    args[argKey] = argVal;
-}
+    this.page.viewportSize = {
+        width: width,
+        height: 1000
+    };
 
-if (args.zoom) {
-    log('Use zoom', args.zoom);
-}
-var zoom = args.zoom || DEFAULT_ZOOM;
-page.zoomFactor = zoom;
+    if (this.args.ua) {
+        log('Use UA', this.args.ua);
+    }
 
-var width = args.width || DEFAULT_WIDTH;
-if (args.width) {
-    log('Use width', args.width);
-}
-else {
-    width = width * zoom;
-}
-page.viewportSize = {
-    width: width,
-    height: 1000
+    this.page.settings.userAgent = this.args.ua || DEFAUL_UA;
 };
 
-function log() {
-  if (args.silent === 'true') {
-    return;
-  } else {
-    console.log.apply(console, arguments);
-  }
-}
+Screenshot.prototype.initCapture = function() {
+    var search = this.args.search || this.args.pos.join(' ');
 
-if (args.ua) {
-    log('Use UA', args.ua);
-}
-page.settings.userAgent = args.ua || DEFAUL_UA;
+    if (!search && !this.args.url) {
+        log('Search and url not specifyed');
+        phantom.exit(1);
+    }
 
-var search = args.search || args.pos.join(' ');
+    this.out = this.args.out || DEFAULT_OUT;
+    if (this.args.out) {
+        log('Use out', this.args.out);
+    }
 
-if (!search && !args.url) {
-    log('Search and url not specifyed');
-    phantom.exit(1);
-}
+    this.delay = this.args.delay || 0;
+    if (this.args.delay) {
+        log('Use delay', this.delay);
+    }
 
-var out = args.out || DEFAULT_OUT;
-if (args.out) {
-    log('Use out', args.out);
-}
+    this.url = this.args.url || ('https://www.google.com/search?q=' + encodeURIComponent(search));
+    log(this.url);
 
-var delay = args.delay || 0;
-if (args.delay) {
-    log('Use delay', delay);
-}
+};
 
-var url = args.url || ('https://www.google.com/search?q=' + encodeURIComponent(search));
-log(url);
+Screenshot.prototype.render = function() {
 
-function render() {
-    if (out == 'base64') {
-        var base64 = page.renderBase64('PNG');
+    if (this.out == 'base64') {
+        var base64 = this.page.renderBase64('PNG');
         system.stdout.write(base64);
     }
     else {
-        page.render(out);
+        this.page.render(this.out);
     }
     phantom.exit();
-}
+};
 
-function onPageReady() {
-    if (delay) {
+Screenshot.prototype.onPageReady = function() {
+    var self = this;
+    if (this.delay) {
         setTimeout(function(){
-            render();
-        }, delay);
+            self.render.apply(self, []);
+        }, this.delay);
     }
     else {
-        render();
+        this.render();
     }
-}
+};
 
-page.open(url, function (status) {
-    var waitInterval = window.setInterval(function () {
-        var ready = page.evaluate(function() {
-            var logo = document.querySelector('#logo');
-            var img = document.querySelector('#logo > img');
-            if (logo.style.backgroundImage) {
-                logo.style.backgroundImage = logo.style.backgroundImage.replace(/(nav_logo[0-9]+)/g,'$1_hr');
-                return logo.style.backgroundImage;
+Screenshot.prototype.evaluator = function() {
+    return true;
+};
+
+Screenshot.prototype.run = function() {
+    var self = this;
+    this.page.open(this.url, function (status) {
+        var waitInterval = window.setInterval(function () {
+            var ready = self.page.evaluate(self.evaluator);
+            if (ready) {
+                window.clearInterval(waitInterval);
+                self.onPageReady.apply(self, [ready]);
             }
-            else if (img) {
-                img.src = img.src.replace(/(nav_logo[0-9]+)/g,'$1_hr');
-                return img.src;
-            }
-            return false;
-        });
-        if (ready) {
-            window.clearInterval(waitInterval);
-            onPageReady();
-        }
-    }, 100);
-});
+        }, 100);
+    });
+};
+
+new Screenshot();
