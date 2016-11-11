@@ -67,8 +67,10 @@ class StateTracker(object):
             for i in range(len(window.get('assets', []))):
                 if ('maps.google.com' in window['assets'][i] or "google.com/maps" in window['assets'][i]) and \
                         self.tactile_flag not in window['assets'][i]:
-                    flag = self.tactile_flag.split("=")[1]
-                    window['assets'][i] = add_url_params(window['assets'][i], esrch=flag)
+                    # add a param to be sure there is at least one param (HACK)
+                    url = add_url_params(window['assets'][i], foo='bar')
+                    url += '&%s' % self.tactile_flag
+                    window['assets'][i] = url
                 # adding cms_protocol and cms_port for the portal launcher
                 # only needed on the kiosk
                 #if window.get('presentation_viewport', None) == 'kiosk':
