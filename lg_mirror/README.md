@@ -44,6 +44,8 @@ Constantly captures video stream from a V4L2 device.
 * `framerate` [int] - Frame rate of output video stream in frames per second. Default: auto selected by V4L2.
 * `max_quantizer` [int] - Maximum quantization level. Lower is higher quality. Default: `60`
 * `target_bitrate` [int] - Target video bitrate in bits/sec. Default: `768000`
+* `janus_port` [int] - Which port to send the stream to. Required.
+* `/lg_mirror/janus_stream_host` [str] - Hostname of the Janus Gateway. Required.
 
 ### playback\_node
 
