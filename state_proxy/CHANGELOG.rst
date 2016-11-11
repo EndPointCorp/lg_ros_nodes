@@ -2,6 +2,11 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix for not escaping this url flag
+* Contributors: Jacob Minshall
+
 1.5.16 (2016-11-07)
 -------------------
 

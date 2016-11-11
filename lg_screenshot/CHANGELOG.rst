@@ -2,6 +2,11 @@
 Changelog for package lg_sreenshot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Factored out script customizers
+* Contributors: kiselev-dv
+
 1.5.16 (2016-11-07)
 -------------------
 * Fix lg_screenshot pac_debs build
