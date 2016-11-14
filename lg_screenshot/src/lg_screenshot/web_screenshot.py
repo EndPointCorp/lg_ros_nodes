@@ -48,6 +48,7 @@ class WebScreenshot:
         if search_screenshot.scripts:
             call.extend(['--scripts {}'.format(' '.join(search_screenshot.scripts))])
 
+        rospy.loginfo('Call pahntom js for a screenshot with args: {}'.format(call))
         base64 = subprocess.check_output(' '.join(call), shell=True)
         msg = Screenshot()
         msg.url = url
