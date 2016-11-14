@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.18 (2016-11-14)
+-------------------
 * Add missing param docs for capture_webcam_node
 * Contributors: Matt Vollrath
 

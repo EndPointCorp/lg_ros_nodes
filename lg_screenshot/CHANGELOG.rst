@@ -2,8 +2,8 @@
 Changelog for package lg_sreenshot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.18 (2016-11-14)
+-------------------
 * Fixed google search customizer script to handle doodles
 * Contributors: Galaxy Admin
 
