@@ -215,6 +215,7 @@ class TestActivityTracker(unittest.TestCase):
             self.assertTrue(pub.data[-1])
             self.assertEqual(len(pub.data), 1)
             p.publish(msg_a)
+
         # sleep for longer than timeout
         rospy.sleep(timeout + 2)
         tracker.poll_activities()
@@ -225,7 +226,7 @@ class TestActivityTracker(unittest.TestCase):
 
         # publish different message once to set to active
         p.publish(msg_b)
-        rospy.sleep(2)
+        rospy.sleep(4)
         tracker.poll_activities()
         self.assertTrue(tracker.active)
         self.assertTrue(pub.data[-1])
