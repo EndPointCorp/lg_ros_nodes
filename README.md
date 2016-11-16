@@ -172,4 +172,3 @@ ignore packges to compile ...
   Valid values are from 0 to 3: INFO = 0, WARNING = 1, LOG_ERROR = 2,
   LOG_FATAL = 3. This is **not** rospy log level but an argument passed
   to applications managed by appctl
-
