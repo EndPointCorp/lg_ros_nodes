@@ -377,7 +377,7 @@ class ActivityTracker:
                         rospy.logdebug("State of %s didnt change" % topic_name)
                     else:
                         self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-                        rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
+                        rospy.logdebug("Topic name: %s state changed to %s" % (topic_name, state))
                 except KeyError:
                     rospy.loginfo("Initializing topic name state: %s" % topic_name)
                     self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
@@ -388,29 +388,34 @@ class ActivityTracker:
                 rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
                 return False
 
-    def _source_has_been_inactive(self, source):
+    def _source_is_active(self, source):
         """
-        Checks whether source was inactive for more seconds than self.timeout
-        Accepts source state dict eg.:
-        {"state": True, "time": <unix timestamp> }
-        """
-        now = rospy.get_time()
-        if ((now - source['time']) >= self.timeout):
-            return True
-        else:
-            return False
+        Checks whether source was active for last `self.timeout` seconds
+        which basically means that we can consider this source to be active
 
-    def _source_become_active(self, source):
-        """
-        Checks whether source become active less then self.timeout
         Accepts source state dict eg.:
         {"state": True, "time": <unix timestamp> }
+
+        All following constraints need to be met to consider source active:
+        a) source is in True (active) state
+
+        All following constraints need to be to consider source inactive:
+        b) source is in False (inactive) state
+        c) last change of source's state was more than `self.timeout` seconds ago
         """
+
         now = rospy.get_time()
-        if ((now - source['time']) <= self.timeout):
+
+        if source['state'] is True:
+            rospy.logdebug("ActivitySource %s is active" % source)
             return True
-        else:
+
+        if source['state'] is False and ((now - source['time']) >= self.timeout):
+            rospy.logdebug("ActivitySource %s is inactive" % source)
             return False
+        else:
+            rospy.logdebug("ActivitySource %s is still active" % source)
+            return True
 
     def _check_states(self):
         """
@@ -424,7 +429,7 @@ class ActivityTracker:
 
         """
         now = rospy.get_time()
-        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if (now - self.timeout) < state['time']}
+        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if self._source_is_active(state)}
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True
