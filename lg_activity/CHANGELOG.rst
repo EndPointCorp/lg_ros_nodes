@@ -2,6 +2,12 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use method for evaluation of active sources (`#316 <https://github.com/EndPointCorp/lg_ros_nodes/issues/316>`_)
+* Small verbosity and docstring changes
+* Contributors: Wojciech Ziniewicz
+
 1.5.18 (2016-11-14)
 -------------------
 
