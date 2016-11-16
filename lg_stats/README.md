@@ -6,6 +6,18 @@ ROS software follows certain configurable ROS topics and submits
 
 Spec / details EndPointCorp/lg_ros_nodes#126
 
+## Strategies
+
+- `default` - records a value of a message slot
+- `default_session` - records a value of message slot (just like
+  `default`) but adds a unique ID to emulate sessions style events
+- `count` - returns amount of messages on a topic between resubmission
+  periods - useful for touchscreen touches
+- `count_nonzero` - same as `count` but ignores zeroes - useful for
+  topics that constantly emit `0` during idle state e.g.
+  `/spacenav/twist`
+- `average` - calculates and records average value of a slot
+
 ## Software requirements
 
 * InfluxDB Python client library: https://pypi.python.org/pypi/influxdb

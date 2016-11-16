@@ -842,11 +842,16 @@ def browser_eligible_for_reuse(current_browser, future_browser):
         current_browser.command_line_args == future_browser_cmd_args
 
 
-def get_random_string(N=6):
+def get_random_string(N=6, uppercase=True):
     """
     Generate random string.
     """
-    return ''.join(random.choice(string.ascii_uppercase) for _ in range(N))
+    if uppercase:
+        string_range = string.ascii_uppercase
+    else:
+        string_range = string.ascii_letters
+
+    return ''.join(random.choice(string_range) for _ in range(N))
 
 
 def generate_hash(string, length=8, random_suffix=False):

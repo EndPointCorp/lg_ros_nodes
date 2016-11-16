@@ -27,6 +27,7 @@ from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
 from lg_common.helpers import message_is_nonzero
 from lg_common.helpers import SlotUnpackingException
+from lg_common.helpers import get_random_string
 from lg_stats.msg import Event
 import submitters
 
@@ -56,7 +57,7 @@ class Processor(object):
     - debug_pub - publisher for publishing debugging Event.msg
     - resolution - how often we submit the data
     - how long to wait until old values get re-submitted
-    - strategy: default, count, count_nonzero, average (either get attrib from message and write
+    - strategy: default_session, default, count, count_nonzero, average (either get attrib from message and write
      to influx, count messages or calculate average of slot values
     - influxdb_client - instance of influx client
 
@@ -80,7 +81,7 @@ class Processor(object):
             rospy.logerr(msg)
             raise StatsConfigurationError(msg)
         if not measurement:
-            if strategy == 'default':
+            if strategy == 'default' or strategy == 'default_session':
                 self.measurement = 'lg_stats_event'
             else:
                 self.measurement = 'lg_stats_metric'
@@ -108,6 +109,9 @@ class Processor(object):
     def __str__(self):
         return "<Processor instance for topic %s, msg_slot %s, strategy: %s>" % (self.watched_topic, self.msg_slot, self.strategy)
 
+    def __repr__(self):
+        return self.__str__()
+
     def _start_resubmission_thread(self):
         """
         Starts two threads:
@@ -119,8 +123,8 @@ class Processor(object):
           prox sensor range
         """
 
-        if self.strategy == "default":
-            rospy.loginfo("Starting 'default' strategy resubmission thread for %s" % self)
+        if self.strategy == "default" or self.strategy == 'default_session':
+            rospy.loginfo("Starting %s strategy resubmission thread for %s" % (self.strategy, self))
             self.resubmission_thread = threading.Thread(target=self._resubmission_thread)
             self.resubmission_thread.start()
         else:
@@ -245,6 +249,17 @@ class Processor(object):
                             value="1.0")
             return out_msg
 
+        elif self.strategy == 'default_session':
+            self.session_id = get_random_string(N=8, uppercase=False)
+            slot_value = self._get_slot_value(src_msg)  # this may raise EmptyIncomingMessage
+            out_msg = Event(measurement=self.measurement,
+                            src_topic="session:" + self.watched_topic,
+                            field_name=self.msg_slot,
+                            type="event",
+                            metadata=str(slot_value) + "__%s" % self.session_id,
+                            value="1.0")
+            return out_msg
+
         elif self.strategy == 'average':
             """
             calculate average - add value to list and wait for resubmission
@@ -281,7 +296,7 @@ class Processor(object):
         """
         Flushes non-default strategy buffers - calculates rates/counts etc
         """
-        if self.strategy == 'default':
+        if self.strategy == 'default' or self.strategy == 'default_session':
             """
             Do nothing
             """
