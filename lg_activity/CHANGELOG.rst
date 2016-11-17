@@ -2,6 +2,11 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Wait longer for inactivity trigger
+* Contributors: Wojciech Ziniewicz
+
 1.5.19 (2016-11-16)
 -------------------
 * Use method for evaluation of active sources (`#316 <https://github.com/EndPointCorp/lg_ros_nodes/issues/316>`_)

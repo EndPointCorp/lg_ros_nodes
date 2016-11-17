@@ -2,6 +2,11 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added explicit duration to lg_stats
+* Contributors: Wojciech Ziniewicz
+
 1.5.19 (2016-11-16)
 -------------------
 * Issue/end point corp/lg chef`#1031 <https://github.com/EndPointCorp/lg_ros_nodes/issues/1031>`_ (`#317 <https://github.com/EndPointCorp/lg_ros_nodes/issues/317>`_)
