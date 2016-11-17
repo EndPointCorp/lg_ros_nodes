@@ -2,8 +2,8 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.20 (2016-11-17)
+-------------------
 * Wait longer for inactivity trigger
 * Contributors: Wojciech Ziniewicz
 

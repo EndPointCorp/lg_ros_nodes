@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.20 (2016-11-17)
+-------------------
 * Added explicit duration to lg_stats
 * Contributors: Wojciech Ziniewicz
 
