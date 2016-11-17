@@ -187,7 +187,7 @@ class Processor(object):
 
                     # regenerate last message with new timestamp and diminished value
                     self.last_out_msg.value = "0.5"
-                    self.last_out_msg.duration = str(self.resolution)
+                    self.last_out_msg.span = str(self.resolution)
                     self.debug_pub.publish(self.last_out_msg)
                     regenerated_message = self.influxdb_client.get_data_for_influx(self.last_out_msg, self.measurement)
                     self.influxdb_client.write_stats(regenerated_message)
@@ -247,7 +247,7 @@ class Processor(object):
                             field_name=self.msg_slot,
                             type="event",
                             metadata=str(slot_value),
-                            duration=str(self.resolution),
+                            span=str(self.resolution),
                             value="1.0")
             return out_msg
 
@@ -259,7 +259,7 @@ class Processor(object):
                             field_name=self.msg_slot,
                             type="event",
                             metadata=str(slot_value) + "__%s" % self.session_id,
-                            duration=str(self.resolution),
+                            span=str(self.resolution),
                             value="1.0")
             return out_msg
 
@@ -315,7 +315,7 @@ class Processor(object):
                             field_name=self.msg_slot,
                             type="rate",
                             metadata="flush",
-                            duration=str(self.resolution),
+                            span=str(self.resolution),
                             value=str(self.counter))
             self.counter = 0
             rospy.logdebug("Flushing %s with out_msg=%s" % (self, out_msg))
@@ -331,7 +331,7 @@ class Processor(object):
                             field_name=self.msg_slot,
                             type="nonzero_rate",
                             metadata="flush",
-                            duration=str(self.resolution),
+                            span=str(self.resolution),
                             value=str(self.counter))
             self.counter = 0
             rospy.logdebug("Flushing %s with out_msg=%s" % (self, out_msg))
@@ -355,7 +355,7 @@ class Processor(object):
                             field_name=self.msg_slot,
                             type="average",
                             metadata="flush",
-                            duration=str(self.resolution),
+                            span=str(self.resolution),
                             value=str(average))
             rospy.logdebug("Flushing %s with out_msg=%s" % (self, out_msg))
             self._submit_influxdata(out_msg)
