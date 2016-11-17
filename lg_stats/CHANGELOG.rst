@@ -2,6 +2,11 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Renamed duration to span as it's reserved name in influxdb
+* Contributors: Wojciech Ziniewicz
+
 1.5.20 (2016-11-17)
 -------------------
 * Added explicit duration to lg_stats
