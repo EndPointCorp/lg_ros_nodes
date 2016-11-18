@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+
+    "name":           "block_clicks_extension",
+    "version":        "0.1",
+    "description":    "Blocks clicks",
+    "permissions": [
+      "<all_urls>", "tabs", "history"
+      ],
+    "browser_action": {
+    },
+    "content_scripts": [{
+      "matches": ["*://*/*", "*://*/*"],
+      "css": [
+        "block_div.css"
+      ],
+      "pages": [
+        "block_div.html"
+      ],
+      "run_at": "document_start"
+    }],
+    "background": {
+      "persistent": true,
+        "scripts": ["blank.js"]
+    },
+    "web_accessible_resources": [
+      "block_div.html"
+    ]
+}
