@@ -18,7 +18,7 @@ def main():
 
     janus_host = required_param('/lg_mirror/janus_stream_host', str)
     janus_port = required_param('~janus_port', int)
-    device = rospy.get_param('~device', '/dev/video0')
+    device = rospy.get_param('~device', '/dev/capture_cam')
     width = int(rospy.get_param('~width'))
     height = int(rospy.get_param('~height'))
     framerate = int(rospy.get_param('~framerate'))
