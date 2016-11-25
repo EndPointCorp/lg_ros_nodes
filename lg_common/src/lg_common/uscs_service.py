@@ -18,6 +18,7 @@ class USCSService:
                  on_offline_state_scene_url='',
                  on_active_state_scene_url='',
                  on_inactive_state_scene_url='',
+                 on_lock_state_scene_url='',
                  director_scene_publisher=None):
         """
         Accepts different states URLs. If URL is not set,
@@ -27,6 +28,7 @@ class USCSService:
         self.lock = threading.Lock()
         self.active = True
         self.offline = False
+        self.locked = False
 
         self.director_scene_publisher = director_scene_publisher
         self.history = []
@@ -59,6 +61,13 @@ class USCSService:
             rospy.loginfo("Disabling on_inactive_state handling")
             self.on_inactive_state = None
 
+        if on_lock_state_scene_url:
+            rospy.loginfo("Enabling on_lock_state handling")
+            self.on_lock_state = self._grab_scene(on_inactive_state_scene_url)
+        else:
+            rospy.loginfo("Disabling on_lock_state handling")
+            self.on_lock_state = None
+
         self.state = self._grab_state(initial_state_scene_url)
 
         if self.state is None:
@@ -72,6 +81,10 @@ class USCSService:
         If data == True then emit on_online_state message
         If data == False then emit on_offline_state message
         """
+        if self.locked:
+            rospy.loginfo("Portal is locked, skip online/offline state change")
+            return
+
         if self.director_scene_publisher:
             if message.data is True and self.on_online_state:
                 """
@@ -93,6 +106,10 @@ class USCSService:
         """
         rospy.loginfo("Incoming message: %s. Current state: %s" % (message, self.active))
         if self.director_scene_publisher:
+            if self.locked:
+                rospy.loginfo("Portal is locked, skip active/inactive state change")
+                return
+
             if (message.data is True) and (self.active is False):
                 """
                 We became active
@@ -107,6 +124,28 @@ class USCSService:
                 rospy.loginfo("Active True => False")
                 self.idempotently_publish_scene(self.on_inactive_state)
                 self.active = False
+
+    def handle_lock_message(self, message):
+        """
+        Accepts locked/unlocked state message
+        and emits appropriate message from ivars
+        """
+        rospy.loginfo("Incoming message: %s. Currently locked: %s" % (message, self.locked))
+        if self.director_scene_publisher:
+            if (message.data is True) and (self.locked is False):
+                """
+                Locked
+                """
+                rospy.loginfo("Lock False => True")
+                self.idempotently_publish_scene(self.on_lock_state)
+                self.locked = True
+            if (message.data is False) and (self.locked is True):
+                """
+                Release
+                """
+                rospy.loginfo("Active True => False")
+                self.idempotently_publish_scene(self.initial_state)
+                self.locked = False
 
     def idempotently_publish_scene(self, scene):
         """

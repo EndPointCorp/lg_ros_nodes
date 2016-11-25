@@ -24,6 +24,7 @@ ON_OFFLINE_STATE = "http://lg-head:8088/director_api/on_offline_scene"
 ON_ONLINE_STATE = "http://lg-head:8088/director_api/on_online_scene"
 ON_INACTIVE_STATE = "http://lg-head:8088/director_api/on_inactive_scene"
 ON_ACTIVE_STATE = "http://lg-head:8088/director_api/on_active_scene"
+ON_LOCK_STATE = "http://lg-head:8088/director_api/on_lock_scene"
 
 
 def main():
@@ -44,6 +45,7 @@ def main():
     message_topic = rospy.get_param('~message_topic', '/uscs/message')
     connectivity_topic = rospy.get_param('~connectivity_topic', '/lg_offliner/offline')
     activity_topic = rospy.get_param('~activity_topic', '/activity/active')
+    lock_topic = rospy.get_param('~lock_topic', '/portal/lock_mode')
     depend_on_scene_repository = rospy.get_param('~depend_on_scene_repository', True)
     global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
 
@@ -52,6 +54,7 @@ def main():
     on_offline_state_scene_url = set_url('~on_offline_state_scene_url')
     on_active_state_scene_url = set_url('~on_active_state_scene_url')
     on_inactive_state_scene_url = set_url('~on_inactive_state_scene_url')
+    on_lock_state_scene_url = set_url('~on_lock_state_scene_url')
 
     director_scene_publisher = rospy.Publisher(
         director_topic, GenericMessage, queue_size=3)
@@ -62,12 +65,14 @@ def main():
         on_offline_state_scene_url=on_offline_state_scene_url,
         on_active_state_scene_url=on_active_state_scene_url,
         on_inactive_state_scene_url=on_inactive_state_scene_url,
+        on_lock_state_scene_url=on_lock_state_scene_url,
         director_scene_publisher=director_scene_publisher
     )
 
     rospy.Subscriber(director_topic, GenericMessage, us.update_uscs_message)
     rospy.Subscriber(connectivity_topic, Bool, us.handle_connectivity_message)
     rospy.Subscriber(activity_topic, Bool, us.handle_activity_message)
+    rospy.Subscriber(lock_topic, Bool, us.handle_lock_message)
 
     rospy.Service(message_topic, USCSMessage, us.current_uscs_message)
     rospy.Service('/initial_state', InitialUSCS, us.initial_state)
