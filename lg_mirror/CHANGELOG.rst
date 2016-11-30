@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.23 (2016-11-30)
+-------------------
 * Workaround for mirror memory leak
 * Contributors: Matt Vollrath
 
