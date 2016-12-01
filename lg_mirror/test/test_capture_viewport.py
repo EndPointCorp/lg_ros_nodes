@@ -117,8 +117,6 @@ class TestCaptureViewport(unittest.TestCase):
         self.assertEqual(CAPTURE_HEIGHT, first_image_jpeg.size[1])
 
         # Now try a different viewport size.
-        # XXX: Disabled for ce2ef818 workaround
-        """
         self.pub.publish(HALF_SCALE_SCENE)
 
         rospy.sleep(1.0)
@@ -136,7 +134,6 @@ class TestCaptureViewport(unittest.TestCase):
         num_images = len(self.image_capture.msgs)
         rospy.sleep(1.0)
         self.assertEqual(num_images, len(self.image_capture.msgs))
-        """
 
 
 if __name__ == '__main__':
