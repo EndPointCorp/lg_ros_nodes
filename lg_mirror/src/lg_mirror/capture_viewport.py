@@ -1,5 +1,4 @@
 import threading
-import rospy
 
 from lg_common import ManagedWindow
 from lg_common.helpers import load_director_message
@@ -96,10 +95,6 @@ class CaptureViewport:
 
     def _end_capture(self):
         if self._gst is not None:
-            # XXX: force a respawn -- preferable to memory leaks
-            # until we can debug python-gstreamer
-            rospy.signal_shutdown('respawn')
-
             self._gst.stop()
         self._previous_width = None
         self._previous_height = None
