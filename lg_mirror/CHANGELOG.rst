@@ -2,6 +2,16 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix for mirroring memory leak
+  The real culprit was ximagesrc, which leaks when immediately followed by
+  a queue (but not when followed by videoscale, for whatever reason). This
+  puts ximagesrc and videoscale back on the same thread, but it's worth it
+  to avoid the bloat.
+* Revert "Workaround for mirror memory leak"
+* Contributors: Matt Vollrath
+
 1.5.23 (2016-11-30)
 -------------------
 * Workaround for mirror memory leak

@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add block for 'Finding Home' GE popup
+* Contributors: Josh Ausborne
+
 1.5.23 (2016-11-30)
 -------------------
 
