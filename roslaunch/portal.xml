@@ -1,0 +1,14 @@
+<!--
+- local roslaunch file, local browser extension development tool
+        source catkin/devel/setup.bash
+        roslaunch roslaunch/portal.xml dashdash screen
+-->
+
+<launch>
+    <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3">
+        <param name="binary_encoder" value="bson"/>
+    </node>
+    <node name="rosapi" pkg="rosapi" type="rosapi_node" clear_params="true" respawn="true" respawn_delay="3"/>
+    <node name="webserver" pkg="lg_common" type="dev_webserver.py" clear_params="true" respawn="true" respawn_delay="3"/>
+    <node name="lg_spacenav_globe" pkg="lg_spacenav_globe" type="lg_spacenav_globe" clear_params="true" respawn="true" respawn_delay="3"/>
+</launch>
