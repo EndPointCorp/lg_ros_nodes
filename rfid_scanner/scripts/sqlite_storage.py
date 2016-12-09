@@ -2,8 +2,11 @@
 
 import sqlite3
 import json
-from std_msgs.msg import String
 import rospy
+from std_msgs.msg import String
+from lg_helpers import write_influx_point_to_telegraf
+
+NODE_NAME='sqlite_rfid_storage'
 
 
 class MockPub(object):
@@ -126,7 +129,7 @@ class RfidStorage(object):
 
 
 def main():
-    rospy.init_node('sqlite_rfid_storage')
+    rospy.init_node(NODE_NAME)
 
     local_path = rospy.get_param('~remote_database', '/home/lg/rfid/rfid_storage.db')
     scan_topic = rospy.get_param('~scan_topic', '/rfid/scan')
@@ -144,5 +147,12 @@ def main():
 
     rospy.spin()
 
-if __name__ == '__main__':
-    main()
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception, e:
+        data="""ros_respawns ros_node_name="%s",reason="%s",value=1" """ % (NODE_NAME, e)
+        write_influx_point_to_telegraf(data=data)
+        rospy.sleep(1)
+        raise

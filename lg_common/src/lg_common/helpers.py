@@ -972,3 +972,23 @@ def all_actors_connected(actors=[], num_connections=1):
             rospy.logwarn("Actor: %s reached required number of connections: %s" % (actor.name, num_connections))
 
     return True
+
+
+def write_influx_point_to_telegraf(self, data, host='lg-head', port='8094'):
+    """
+    Writes data to influx via telegraf
+    """
+    import socket
+    import rospy
+    rospy.logdebug("Going to write: '%s' to influx" % data)
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = (host, port)
+        sock.connect(server_address)
+        sock.sendall(data)
+        rospy.logdebug("Wrote: '%s' to influx" % data)
+    except Exception, ex:
+        rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
+                     (data, server_address, ex))
+    finally:
+        sock.close()
