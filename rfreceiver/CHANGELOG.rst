@@ -2,8 +2,8 @@
 Changelog for package rfreceiver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.25 (2016-12-14)
+-------------------
 * new rfreceiver node
 * Contributors: Will Plaut
 
