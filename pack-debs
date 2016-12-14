@@ -49,4 +49,5 @@ $BUILD $SRCDIR/lg_screenshot
 $BUILD $SRCDIR/spacenav_wrapper
 $BUILD $SRCDIR/state_proxy
 $BUILD $SRCDIR/rfid_scanner
+$BUILD $SRCDIR/rfreceiver
 $BUILD $SRCDIR/liquidgalaxy

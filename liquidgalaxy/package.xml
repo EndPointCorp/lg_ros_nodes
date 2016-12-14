@@ -33,6 +33,7 @@
   <run_depend>lg_wireless_devices</run_depend>
   <run_depend>state_proxy</run_depend>
   <run_depend>rfid_scanner</run_depend>
+  <run_depend>rfreceiver</run_depend>
   <run_depend>spacenav_wrapper</run_depend>
 
   <export>
