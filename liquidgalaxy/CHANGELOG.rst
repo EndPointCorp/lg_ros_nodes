@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* new rfreceiver node
+* Contributors: Will Plaut
+
 1.5.24 (2016-11-30)
 -------------------
 

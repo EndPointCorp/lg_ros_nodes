@@ -2,6 +2,11 @@
 Changelog for package rfid_scanner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added influx respawn influx handlers
+* Contributors: Wojciech Ziniewicz
+
 1.5.24 (2016-11-30)
 -------------------
 
