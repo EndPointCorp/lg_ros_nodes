@@ -1,14 +1,38 @@
 <!--
-- local roslaunch file, local browser extension development tool
+Minimal local roslaunch file necessary for Earth browsers synchronization.
+
+    usage:
+        cd lg_ros_nodes
         source catkin/devel/setup.bash
-        roslaunch roslaunch/portal.xml dashdash screen
+        roslaunch roslaunch/portal.xml
+        used to set up ROS communication between kiosk, display portal browsers
+
+        assumes that portal is located in ../portal-chrome (crt, key files)
 -->
 
 <launch>
+
     <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3">
+        <param name="certfile" value="$(optenv PWD)/../portal-chrome/ros.crt"/>
+        <param name="keyfile" value="$(optenv PWD)/../portal-chrome/ros.key"/>
         <param name="binary_encoder" value="bson"/>
     </node>
-    <node name="rosapi" pkg="rosapi" type="rosapi_node" clear_params="true" respawn="true" respawn_delay="3"/>
-    <node name="webserver" pkg="lg_common" type="dev_webserver.py" clear_params="true" respawn="true" respawn_delay="3"/>
+
     <node name="lg_spacenav_globe" pkg="lg_spacenav_globe" type="lg_spacenav_globe" clear_params="true" respawn="true" respawn_delay="3"/>
+
+    <node name="lg_offliner" pkg="lg_offliner" type="lg_offliner_starter.py" clear_params="true" respawn="true" respawn_delay="3">
+        <param name="check_every_seconds_delay" value="30"/>
+        <param name="max_num_of_rounds_to_retain" value="100"/>
+        <param name="num_of_last_check_rounds_consider" value="2"/>
+        <param name="socket_timeout" value="1"/>
+        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline"/>
+        <param name="checks" value="['curl --silent --head --max-time 3 http://www.google.com', 'ping -q -W 3 -c 3 www.yahoo.com', 'ping -q -W 3 -c 3 8.8.8.8', 'ping -q -W 3 -c 3 8.8.4.4', 'nc -z -w 1 news.bbc.co.uk 80', 'curl --silent --head --max-time 3 http://x-max.cz/lgping']"/>
+    </node>
+
+    <node name="lg_activity" pkg="lg_activity" type="tracker" clear_params="true" respawn="true" respawn_delay="3">
+        <param name="activity_sources" value="/spacenav/twist:geometry_msgs/Twist:delta;/lg_replay/touchscreen:interactivespaces_msgs/GenericMessage:activity;/touchscreen/touch:std_msgs/Bool-data:activity;/portal_launcher/action:std_msgs/String:activity;/lg_mirror/touch_events:lg_mirror/EvdevEvents:activity"/>
+        <param name="activity_timeout" value="45"/>
+    </node>
+
 </launch>
