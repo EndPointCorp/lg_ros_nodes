@@ -1000,14 +1000,15 @@ def director_listener_state_setter(state_pub, activity_list=None):
     _any_ of the actives in activity_list then we will publish VISIBLE to state_pub, otherwise we
     will publish HIDDEN
     """
+    from lg_common.msg import ApplicationState
     def _do_stuff(director_msg, *args, **kwargs):
         try:
-            msg = json.loads(director_msg.msg)
+            msg = json.loads(director_msg.message)
         except:
             rospy.logerr("Error loading director message, non-json-y format")
         windows = msg.get('windows', [])
         for window in windows:
-            if window.get('acitivy', None) is in activity_list:
+            if window.get('activity', None) in activity_list:
                 state_pub.publish(ApplicationState.VISIBLE)
                 return
         state_pub.publish(ApplicationState.HIDDEN)
