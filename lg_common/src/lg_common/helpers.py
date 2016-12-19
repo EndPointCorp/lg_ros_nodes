@@ -992,3 +992,23 @@ def write_influx_point_to_telegraf(self, data, host='lg-head', port='8094'):
                      (data, server_address, ex))
     finally:
         sock.close()
+
+
+def director_listener_state_setter(state_pub, activity_list=None):
+    """
+    This is a subscriber to /director/scene. If _any_ of the activities in /director/scene match
+    _any_ of the actives in activity_list then we will publish VISIBLE to state_pub, otherwise we
+    will publish HIDDEN
+    """
+    def _do_stuff(director_msg, *args, **kwargs):
+        try:
+            msg = json.loads(director_msg.msg)
+        except:
+            rospy.logerr("Error loading director message, non-json-y format")
+        windows = msg.get('windows', [])
+        for window in windows:
+            if window.get('acitivy', None) is in activity_list:
+                state_pub.publish(ApplicationState.VISIBLE)
+                return
+        state_pub.publish(ApplicationState.HIDDEN)
+    rospy.Subscriber('/director/scene', GenericMessage, _do_stuff)
