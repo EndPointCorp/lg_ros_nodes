@@ -1,25 +1,17 @@
 #!/usr/bin/env python
 
-PKG = 'lg_activity'
-NAME = 'test_lg_activity'
-
 import rospy
 import unittest
-
-
-# ActivitySource - a class that wraps source
-# ActivitySourceDetector returns list of ActivitySources
-# ActivityTracker subscribes to topics from ActivitySources and runs ActivitySources checks on them
-
 from lg_activity import ActivitySource
 from lg_activity import ActivityTracker
 from lg_activity import ActivitySourceDetector
 from lg_activity.activity import ActivitySourceException
-from lg_common.helpers import unpack_activity_sources, build_source_string
+from lg_common.helpers import build_source_string
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
 
-
+PKG = 'lg_activity'
+NAME = 'test_lg_activity'
 ACTIVITY_TRACKER_PARAM = '/spacenav/twist:geometry_msgs/Twist:delta'
 
 
@@ -194,12 +186,17 @@ class TestActivityTracker(unittest.TestCase):
         self.true_state()
 
     def test_activity_tracker(self):
-        debug_sub = rospy.Subscriber('/spacenav/twist', Twist, self.foo_cb)
+        """
+        Test activity tracker using spacenav messages
+        Spacenav uses delta. If all values in the buffer are identical then
+        state is inactive. When one value is odd - state turns to active.
+        """
         spacenav = SpaceNavMockSource()
         sources = ActivitySourceDetector(spacenav.source_string).get_sources()
         pub = MockPublisher()
         timeout = 6
         tracker = ActivityTracker(publisher=pub, timeout=timeout, sources=sources, debug=True)
+        # test if it's active by default
         self.assertTrue(tracker.active)
         self.assertTrue(pub.data[-1])
         self.assertEqual(len(pub.data), 1)
@@ -210,27 +207,27 @@ class TestActivityTracker(unittest.TestCase):
 
         p = rospy.Publisher(spacenav.source['topic'], Twist, queue_size=10)
         rospy.sleep(1)
-        for i in range(ActivitySource.DELTA_MSG_COUNT):
+        # fill the buffer with identical values so it becomes inactive
+        for i in range(ActivitySource.DELTA_MSG_COUNT + 1):
             self.assertTrue(tracker.active)
             self.assertTrue(pub.data[-1])
             self.assertEqual(len(pub.data), 1)
             p.publish(msg_a)
 
-        # sleep for longer than timeout
+        # sleep for longer than timeout - since
+        # all messages are identical - we should be inactive
         rospy.sleep(timeout + 2)
+        tracker.poll_activities()
+        self.assertFalse(tracker.active)
+
+        # publish odd message - we should turn to inactive
+        p.publish(msg_b)
+        rospy.sleep(2)
         tracker.poll_activities()
         # should be inactive
         self.assertFalse(tracker.active)
         self.assertFalse(pub.data[-1])
         self.assertEqual(len(pub.data), 2)
-
-        # publish different message once to set to active
-        p.publish(msg_b)
-        rospy.sleep(4)
-        tracker.poll_activities()
-        self.assertTrue(tracker.active)
-        self.assertTrue(pub.data[-1])
-        self.assertEqual(len(pub.data), 3)
 
     def false_state(self):
         self.assertFalse(self.cb.state)
