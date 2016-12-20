@@ -1,5 +1,5 @@
 import time
-
+import rospy
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -93,6 +93,6 @@ def wait_for_assert_equal(val1, val2, timeout):
         if val1 == val2:
             return True
         else:
+            rospy.loginfo("SLEEPING 1s waiting for val1:%s to become equal val2: %s / %s" % (val1, val2, iteration))
             time.sleep(1)
-
     return False

@@ -575,22 +575,22 @@ class TestAdhocBrowser(unittest.TestCase):
         self.reinitialize_mock_subscribers()
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_wrong_url_msg'))
 
-        wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time)
+        if not wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time):
+            rospy.logerr("self.director_window_ready_mock.messages is empty - exiting")
+            rospy.logerr("self.director_window_ready_mock.messages: %s" % self.director_window_ready_mock.messages)
+            rospy.logerr("self.director_ready_mock.messages: %s" % self.director_ready_mock.messages)
+            rospy.logerr("self.director_scene_mock.messages: %s" % self.director_scene_mock.messages)
+            self.assertEqual(True, False)
+
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
         self.assertEqual(len(self.director_scene_mock.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_left.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_right.messages), 1)
-
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
         self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 1)
 
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
-        self.assertEqual(len(self.director_ready_mock.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)

@@ -285,7 +285,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://asdasdasdaqweqwe.com"
+                "http://asdasdasdaqweqwenonexistentpage.com"
             ],
             "height": 333,
             "presentation_viewport": "center",
