@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import time
 import rospy
 import unittest
 from lg_common.msg import AdhocBrowser
