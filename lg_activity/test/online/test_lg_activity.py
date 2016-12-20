@@ -222,8 +222,8 @@ class TestActivityTracker(unittest.TestCase):
 
         # publish odd message - we should turn to inactive
         p.publish(msg_b)
-        rospy.sleep(2)
-        tracker.poll_activities()
+        tracker.poll_activities()  # here we turn state to inactive
+        rospy.sleep(timeout + 2)  # after timeout + 2 secs inactive makes the state effectively inactive
         # should be inactive
         self.assertFalse(tracker.active)
         self.assertFalse(pub.data[-1])
