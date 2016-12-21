@@ -974,7 +974,7 @@ def all_actors_connected(actors=[], num_connections=1):
     return True
 
 
-def write_influx_point_to_telegraf(self, data, host='lg-head', port='8094'):
+def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
     """
     Writes data to influx via telegraf
     """
