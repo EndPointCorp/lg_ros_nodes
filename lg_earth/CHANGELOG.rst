@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.26 (2016-12-21)
+-------------------
 * Small sleep to let kmlsync state process the request
 * Contributors: Wojciech Ziniewicz
 

@@ -2,8 +2,8 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.26 (2016-12-21)
+-------------------
 * Disabled tests temporarily
 * Contributors: Wojciech Ziniewicz
 

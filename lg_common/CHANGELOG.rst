@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.5.26 (2016-12-21)
+-------------------
 * Disabled tests temporarily
 * Proper extended activity tracker test
 * Poll activities to know their state before assert
