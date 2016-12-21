@@ -83,6 +83,7 @@ class TestLGStatsRealMessageChain(object):
         #   getting the default value (regardless of calling it before or after init_node)
         debug_topic = "%s/%s" % (ROS_NODE_NAME, LG_STATS_DEBUG_TOPIC_DEFAULT)
         rospy.Subscriber(debug_topic, Event, self.callback)
+        rospy.sleep(1)
 
     @staticmethod
     def callback(msg):
@@ -101,7 +102,7 @@ class TestLGStatsRealMessageChain(object):
         init_node results in a lost message sometimes ...
 
         """
-        rospy.sleep(1)
+        rospy.sleep(2)
         publisher.publish(msg_to_send)
         # wait a bit, call back shall set the share mem value accordingly
         for count in range(3):

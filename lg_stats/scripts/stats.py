@@ -2,7 +2,7 @@
 
 import rospy
 from lg_stats import main
-from lg_helpers import write_influx_point_to_telegraf
+from lg_common.helpers import write_influx_point_to_telegraf
 
 if __name__ == "__main__":
     try:

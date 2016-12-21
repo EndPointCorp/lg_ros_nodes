@@ -209,6 +209,8 @@ class ReadinessNode(object):
         with self.lock:
             self.ready = True
             rospy.loginfo("Scene %s is becoming ready (force=%s)" % (self.state['slug'], force))
+            if force:
+                rospy.logwarn("Readiness was forced")
             self._publish_readiness(force=force)
 
     def try_to_become_ready(self, force=False):

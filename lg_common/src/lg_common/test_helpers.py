@@ -90,7 +90,7 @@ def wait_for_assert_equal(val1, val2, timeout):
     Waits for two values to become equal within specified timeout
     """
     for iteration in xrange(0, timeout):
-        if val1 == val2:
+        if (val1) == (val2):
             return True
         else:
             rospy.loginfo("SLEEPING 1s waiting for val1:%s to become equal val2: %s / %s" % (val1, val2, iteration))

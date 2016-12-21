@@ -137,7 +137,7 @@ class TestAdhocBrowser(unittest.TestCase):
             ext2_manifest.write(self.mock_extension_manifest)
 
         self.reinitialize_mock_subscribers()
-        rospy.sleep(1)
+        rospy.sleep(self.message_emission_grace_time)
 
     def tearDown(self):
         """
@@ -171,13 +171,13 @@ class TestAdhocBrowser(unittest.TestCase):
 
         return browsers_on_viewport
 
-    def z_test1_tests_are_working(self):
+    def test1_tests_are_working(self):
         """
         dummy test to see if stuff initializes properly
         """
         self.assertEqual(1, 1)
 
-    def z_test2_chrome_one_extension_initialization(self):
+    def test2_chrome_one_extension_initialization(self):
         """
         emit browser with extension - check if it got passed to --load-extension arg
         """
@@ -193,7 +193,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-    def z_test2a_chrome_extension_initialization_with_two_extensions(self):
+    def test2a_chrome_extension_initialization_with_two_extensions(self):
         """
         emit browser with 2 extensions - test_extension and ros_window_ready
         """
@@ -215,7 +215,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-    def z_test3_chrome_commandline_argument_passing(self):
+    def test3_chrome_commandline_argument_passing(self):
         """
         1. emit browser with custom command line args - verify that they've been added to cmdargs
         """
@@ -239,7 +239,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual('--enable-benchmarking' in browsers_on_center.items()[0][1]['command_line_args'], True)
         self.assertEqual('--enable-crash-reporter' in browsers_on_center.items()[0][1]['command_line_args'], True)
 
-    def z_test4_chrome_user_agent_passing(self):
+    def test4_chrome_user_agent_passing(self):
         """
         1. verify that chrome user agent has been set in commandline args
         """
@@ -261,7 +261,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(browsers_on_center.items()[0][1]['user_agent'], 'loltestlmfaorofl')
 
-    def z_test5_chrome_binary_setting(self):
+    def test5_chrome_binary_setting(self):
         """
         1. verify that chrome has been attempted to run with a custom binary e.g. beta
         """
@@ -278,7 +278,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(browsers_on_center.items()[0][1]['binary'], '/usr/bin/google-chrome-beta')
 
-    def z_test6_chrome_persistence(self):
+    def test6_chrome_persistence(self):
         """
         1. emit one browser without preloading - make service assert
         2. emit the same message again and verify that they havent been updated
@@ -337,7 +337,7 @@ class TestAdhocBrowser(unittest.TestCase):
         browser_timestamp_even_after = browsers_on_center.items()[0][1]['timestamp']
         self.assertEqual(browser_timestamp_before, browser_timestamp_even_after, "Emitting same message with identical browser but different scene slug updated the browser instance")
 
-    def z_test7_adhoc_browser_preloading(self):
+    def test7_adhoc_browser_preloading(self):
         """
          1.preloading:
           a) emit message with preloading - verify readiness message came, make service assert
@@ -396,7 +396,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertNotEqual(browser_timestamp3, browser_timestamp4)
         self.assertGreater(browser_timestamp4, browser_timestamp3)
 
-    def z_test8_adhoc_browser_preloading_mix(self):
+    def test8_adhoc_browser_preloading_mix(self):
         """
          1. emit two browsers on one viewport - one with preloading - the other without preloading - verify readiness and service
          2. emit the same message again - non-preloaded browser needs to stay and preloaded browser needs to get re-created
@@ -483,7 +483,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertNotEqual(preloaded_browser_timestamp2, preloaded_browser_timestamp3)
         self.assertEqual(non_preloaded_browser_timestamp2, non_preloaded_browser_timestamp3)
 
-    def z_test9_adhoc_browser_custom_preload_event(self):
+    def test9_adhoc_browser_custom_preload_event(self):
         """
         Test sending custom event from the extension instead of
         sending readiness message upon standard onDomReady
@@ -533,10 +533,8 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_wrong_url_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        if not wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, self.preloading_grace_time):
-            self.assertEqual(True, False)
+        wait_for_assert_equal(len(self.director_ready_mock.messages) > 0, True, self.preloading_grace_time)
 
-        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
         self.assertEqual(len(self.director_scene_mock.messages), 1)
@@ -560,7 +558,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(json_is_valid, True)
         self.assertEqual(len(browsers_on_center), 1)
 
-    def z_test9a_browser_id_is_predictable(self):
+    def test9a_browser_id_is_predictable(self):
         """
         emit browser message twice. ID of two browsers should be identical
         """
