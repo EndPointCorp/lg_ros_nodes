@@ -168,8 +168,11 @@ class ReadinessNode(object):
             self.state['ready_browsers'] = self.state['browsers']
         ready_msg.instances = self.state['ready_browsers']
         ready_msg.activity_type = 'browser'
-        rospy.loginfo("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
-        self.readiness_publisher.publish(ready_msg)
+        if ready_msg.instances:
+            rospy.loginfo("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
+            self.readiness_publisher.publish(ready_msg)
+        else:
+            rospy.logwarn("Prevented emitting readiness message with empty instances list %s" % ready_msg)
 
     def handle_readiness(self, message):
         """
