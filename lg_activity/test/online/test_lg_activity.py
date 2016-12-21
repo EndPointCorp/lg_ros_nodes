@@ -190,6 +190,12 @@ class TestActivityTracker(unittest.TestCase):
         Test activity tracker using spacenav messages
         Spacenav uses delta. If all values in the buffer are identical then
         state is inactive. When one value is odd - state turns to active.
+
+        Scenario:
+        - assert that initial state is active
+        - emit identical messages aand wait for timeout seconds to become inactive
+        - emit one odd message which should make it active
+        - emit identical messages again to make it inactive after timeout again
         """
         spacenav = SpaceNavMockSource()
         sources = ActivitySourceDetector(spacenav.source_string).get_sources()
@@ -220,15 +226,21 @@ class TestActivityTracker(unittest.TestCase):
         tracker.poll_activities()
         self.assertFalse(tracker.active)
 
-        # publish odd message - we should turn to inactive
+        # publish odd message - we should turn to active
         p.publish(msg_b)
-        tracker.poll_activities()  # here we turn state to inactive
-        rospy.sleep(timeout + 2)  # after timeout + 2 secs inactive makes the state effectively inactive
-        tracker.poll_activities()  # here we turn state to inactive
-        # should be inactive
+        rospy.sleep(1)
+        tracker.poll_activities()
+        self.assertTrue(tracker.active)
+
+        for i in range(ActivitySource.DELTA_MSG_COUNT + 1):
+            self.assertTrue(tracker.active)
+            p.publish(msg_a)
+
+        # sleep for longer than timeout - since
+        # all messages are identical - we should be inactive
+        rospy.sleep(timeout + 2)
+        tracker.poll_activities()
         self.assertFalse(tracker.active)
-        self.assertFalse(pub.data[-1])
-        self.assertEqual(len(pub.data), 2)
 
     def false_state(self):
         self.assertFalse(self.cb.state)
