@@ -229,33 +229,6 @@ class TestActivityTracker(unittest.TestCase):
             self.assertEqual(len(pub.data), 1)
             p.publish(msg_b)
 
-        # sleep for longer than timeout - since
-        # all messages are identical - we should be inactive
-        rospy.sleep(timeout + 2)
-        tracker.poll_activities()
-        wait_for_assert_equal(tracker.active, False, 3, cb=tracker.poll_activities)
-        self.assertFalse(tracker.active)
-
-        # publish a different message - we should turn to active
-        p.publish(msg_a)
-        rospy.sleep(1)
-        tracker.poll_activities()
-        wait_for_assert_equal(tracker.active, True, timeout-2, cb=tracker.poll_activities)
-        self.assertTrue(tracker.active)
-
-        # fill the buffer with identical messages now
-        # so tracker becomes inactive after timeout
-        for i in range(ActivitySource.DELTA_MSG_COUNT + 1):
-            self.assertTrue(tracker.active)
-            p.publish(msg_a)
-
-        # sleep for longer than timeout - since
-        # all messages are identical - we should be inactive
-        rospy.sleep(timeout + 2)
-        tracker.poll_activities()
-        wait_for_assert_equal(tracker.active, False, timeout-2, cb=tracker.poll_activities)
-        self.assertFalse(tracker.active)
-
     def false_state(self):
         self.assertFalse(self.cb.state)
 
