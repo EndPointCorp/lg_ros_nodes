@@ -243,6 +243,7 @@ class TestActivityTracker(unittest.TestCase):
         # all messages are identical - we should be inactive
         rospy.sleep(timeout + 2)
         tracker.poll_activities()
+        wait_for_assert_equal(tracker.active, False, 3, cb=tracker.poll_activities)
         self.assertFalse(tracker.active)
 
     def false_state(self):
