@@ -55,3 +55,4 @@ docker-squash <new image id> -t endpoint/lg_ros_nodes_base:<new version tag>
 docker login
 docker push endpoint/lg_ros_nodes_base
 ```
+
