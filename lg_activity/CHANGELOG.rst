@@ -2,6 +2,14 @@
 Changelog for package lg_activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.26 (2016-12-21)
+-------------------
+* Proper extended activity tracker test
+* Poll activities to know their state before assert
+* Updated logic test
+* lg activity test refactor
+* Contributors: Wojciech Ziniewicz
+
 1.5.25 (2016-12-14)
 -------------------
 

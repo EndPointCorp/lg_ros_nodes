@@ -2,6 +2,17 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.26 (2016-12-21)
+-------------------
+* Disabled tests temporarily
+* Proper extended activity tracker test
+* Poll activities to know their state before assert
+* Add more time for the rosbridge param test
+* More debug for browser preloading breaker test
+* lg_common: helpers: fixing issues in the director listener
+* lg_common: helpers: generic state setter from director messages
+* Contributors: Jacob Minshall, Will Plaut, Wojciech Ziniewicz
+
 1.5.25 (2016-12-14)
 -------------------
 * Added influx respawn influx handlers

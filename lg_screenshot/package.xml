@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_screenshot</name>
-  <version>1.5.25</version>
+  <version>1.5.26</version>
   <description>Software tools for getting web pages screenshots.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>

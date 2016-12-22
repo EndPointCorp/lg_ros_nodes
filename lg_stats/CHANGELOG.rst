@@ -2,6 +2,11 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.26 (2016-12-21)
+-------------------
+* Disabled tests temporarily
+* Contributors: Wojciech Ziniewicz
+
 1.5.25 (2016-12-14)
 -------------------
 * Added influx respawn influx handlers
