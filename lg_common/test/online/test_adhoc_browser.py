@@ -491,9 +491,6 @@ class TestAdhocBrowser(unittest.TestCase):
 
         wait_for_assert_equal(len(self.director_ready_mock.messages), 1, self.preloading_grace_time)
 
-        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
-        self.assertEqual(len(self.director_ready_mock.messages), 1)
-
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
