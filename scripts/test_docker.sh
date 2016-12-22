@@ -40,15 +40,15 @@ function run_tests() {
 function cleanup() {
   echo cleaning up
 
-  if docker ps -a | grep ${DOCKER_NAME} >/dev/null; then
-    docker rm -f ${DOCKER_NAME}
-  fi
+  #if docker ps -a | grep ${DOCKER_NAME} >/dev/null; then
+  #  docker rm -f ${DOCKER_NAME}
+  #fi
 
-  if docker images | grep ${DOCKER_NAME} >/dev/null; then
-    docker rmi ${DOCKER_NAME}
-  fi
+  #if docker images | grep ${DOCKER_NAME} >/dev/null; then
+  #  docker rmi ${DOCKER_NAME}
+  #fi
 
-  sleep 0.5
+  #sleep 0.5
 
   dangling="$(docker images --filter "dangling=true" -q --no-trunc 2>/dev/null)"
   if [ -n "$dangling" ]; then
