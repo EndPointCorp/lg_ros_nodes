@@ -1,6 +1,6 @@
 # Basic docker file for running tests, lives in the root directory because
 # it needs to add the entire project into the container
-FROM endpoint:lg_ros_nodes_base
+FROM endpoint/lg_ros_nodes_base:0.1
 MAINTAINER Jacob Minshall <jacob@endpoint.com>
 
 # make dirs and check out repos
