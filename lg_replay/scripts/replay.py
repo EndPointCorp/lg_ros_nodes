@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 
 import rospy
+import os
+import commands
 from rosnode import ROSNodeIOException
 from interactivespaces_msgs.msg import GenericMessage
 from lg_replay import DevicePublisher, DeviceReplay
 from evdev import InputDevice
-import os
-import commands
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'lg_replay'
 
 
 def main():
@@ -57,4 +61,4 @@ def check_device_path(path, user, group):
     return False, 'No problems with lg_replay device'
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

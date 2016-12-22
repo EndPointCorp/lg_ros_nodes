@@ -168,8 +168,11 @@ class ReadinessNode(object):
             self.state['ready_browsers'] = self.state['browsers']
         ready_msg.instances = self.state['ready_browsers']
         ready_msg.activity_type = 'browser'
-        rospy.loginfo("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
-        self.readiness_publisher.publish(ready_msg)
+        if ready_msg.instances:
+            rospy.loginfo("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
+            self.readiness_publisher.publish(ready_msg)
+        else:
+            rospy.logwarn("Prevented emitting readiness message with empty instances list %s" % ready_msg)
 
     def handle_readiness(self, message):
         """
@@ -206,6 +209,8 @@ class ReadinessNode(object):
         with self.lock:
             self.ready = True
             rospy.loginfo("Scene %s is becoming ready (force=%s)" % (self.state['slug'], force))
+            if force:
+                rospy.logwarn("Readiness was forced")
             self._publish_readiness(force=force)
 
     def try_to_become_ready(self, force=False):

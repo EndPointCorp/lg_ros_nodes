@@ -5,12 +5,15 @@ import rospy
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import check_www_dependency, discover_host_from_url, discover_port_from_url
-
+from lg_common.helpers import run_with_influx_exception_handler
 from std_msgs.msg import String
 
 
-if __name__ == '__main__':
-    rospy.init_node('static_browser')
+NODE_NAME = 'static_browser'
+
+
+def main():
+    rospy.init_node(NODE_NAME)
 
     geometry = ManagedWindow.get_viewport_geometry()
     url = rospy.get_param('~url', None)
@@ -56,4 +59,5 @@ if __name__ == '__main__':
 
     rospy.spin()
 
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+if __name__ == '__main__':
+    run_with_influx_exception_handler(main, NODE_NAME)

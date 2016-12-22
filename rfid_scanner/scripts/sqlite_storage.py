@@ -4,7 +4,7 @@ import sqlite3
 import json
 import rospy
 from std_msgs.msg import String
-from lg_helpers import write_influx_point_to_telegraf
+from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME='sqlite_rfid_storage'
 
@@ -149,10 +149,4 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception, e:
-        data="""ros_respawns ros_node_name="%s",reason="%s",value=1" """ % (NODE_NAME, e)
-        write_influx_point_to_telegraf(data=data)
-        rospy.sleep(1)
-        raise
+    run_with_influx_exception_handler(main, NODE_NAME)

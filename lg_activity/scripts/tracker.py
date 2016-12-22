@@ -8,10 +8,12 @@ from lg_activity import ActivityTracker
 from lg_activity.srv import ActivityStates
 from lg_activity.srv import Active
 from lg_activity import ActivitySourceDetector
+from lg_common.helpers import run_with_influx_exception_handler
 
+NODE_NAME = 'lg_activity'
 
 def main():
-    rospy.init_node('lg_activity', anonymous=False)
+    rospy.init_node(NODE_NAME, anonymous=False)
 
     activity_timeout = rospy.get_param('~activity_timeout', 120)
     activity_topic = rospy.get_param('~activity_publisher_topic', '/activity/active')
@@ -38,6 +40,4 @@ def main():
         rospy.sleep(1)
 
 if __name__ == "__main__":
-    main()
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(main, NODE_NAME)

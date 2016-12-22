@@ -6,7 +6,7 @@ from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
 from lg_common.helpers import wait_for_pub_sub_connections
-from lg_common.helpers import write_influx_point_to_telegraf
+from lg_common.helpers import run_with_influx_exception_handler
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import Ready
 
@@ -88,10 +88,4 @@ def main():
     rospy.spin()
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception, e:
-        data="""ros_respawns ros_node_name="%s",reason="%s",value=1" """ % (NODE_NAME, e)
-        write_influx_point_to_telegraf(data=data)
-        rospy.sleep(1)
-        raise
+    run_with_influx_exception_handler(main, NODE_NAME)

@@ -8,6 +8,7 @@ from lg_json_config.srv import JSONConfig
 from lg_json_config.srv import JSONConfigMore
 from lg_json_config.srv import JSONConfigResponse
 from lg_json_config.srv import JSONConfigMoreResponse
+from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'lg_json_config'
@@ -73,6 +74,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4 smartindent
+    run_with_influx_exception_handler(main, NODE_NAME)

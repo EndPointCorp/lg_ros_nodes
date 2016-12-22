@@ -4,14 +4,16 @@ import os
 import rospy
 import subprocess
 from std_msgs.msg import Byte
+from lg_common.helpers import run_with_influx_exception_handler
+
 
 DEVNULL = open(os.devnull, 'w')
 CLEAR_BUTTON = 2
-
+NODE_NAME = 'rfreceiver_kill_browser'
 
 class RfreceiverAction:
     def __init__(self):
-        rospy.init_node('rfreceiver_kill_browser')
+        rospy.init_node(NODE_NAME)
         self.clear_button_message = rospy.get_param('~clear_button_message', 2)
         self.fallback_mode = rospy.get_param('~fallback_mode', 'tactile')
         self.reset_command = rospy.get_param('~reset_command', 'pkill chrome')
@@ -34,6 +36,4 @@ class RfreceiverAction:
         rospy.spin()
 
 if __name__ == '__main__':
-    RfreceiverAction().main()
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(RfreceiverAction().main, NODE_NAME)

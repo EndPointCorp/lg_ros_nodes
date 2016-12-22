@@ -291,6 +291,7 @@ class TestKMLSync(unittest.TestCase):
             return  # not tesable with small timeout for requests
         t = Thread(target=self._sleep_and_send_director)
         t.start()
+        rospy.sleep(1)
         self._test_director_state()
         t.join()
 

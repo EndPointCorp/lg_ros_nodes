@@ -2,6 +2,9 @@
 
 import rospy
 from lg_mirror.capture_webcam import CaptureWebcam
+from lg_common.helpers import run_with_influx_exception_handler
+
+NODE_NAME = 'mirror_capture_webcam'
 
 
 def required_param(key, coer=None):
@@ -14,7 +17,7 @@ def required_param(key, coer=None):
 
 
 def main():
-    rospy.init_node('mirror_capture_webcam')
+    rospy.init_node(NODE_NAME)
 
     janus_host = required_param('/lg_mirror/janus_stream_host', str)
     janus_port = required_param('~janus_port', int)
@@ -42,7 +45,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(main, NODE_NAME)

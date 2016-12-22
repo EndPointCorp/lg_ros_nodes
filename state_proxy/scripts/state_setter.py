@@ -7,6 +7,10 @@ from state_proxy.srv import DesiredState
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
 from appctl.msg import Mode
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'state_setter'
 
 
 class StateSetter(object):
@@ -152,7 +156,7 @@ class StateSetter(object):
 
 
 def main():
-    rospy.init_node('state_setter')
+    rospy.init_node(NODE_NAME)
     state_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
     runway_pub = rospy.Publisher('/portal_kiosk/runway_change', String, queue_size=10)
     display_pub = rospy.Publisher('/display/switch', String, queue_size=10)
@@ -168,4 +172,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

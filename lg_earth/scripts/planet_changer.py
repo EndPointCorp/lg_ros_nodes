@@ -4,11 +4,13 @@ import json
 import rospy
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import run_with_influx_exception_handler
 
 
 QUERY_PLANET_EARTH = String('earth')
 QUERY_PLANET_MOON = String('moon')
 QUERY_PLANET_MARS = String('mars')
+NODE_NAME = 'planet_changer'
 
 
 class PlanetChanger(object):
@@ -29,8 +31,8 @@ class PlanetChanger(object):
             self.planet_pub.publish(QUERY_PLANET_EARTH)
 
 
-if __name__ == '__main__':
-    rospy.init_node('earth_planet_changer')
+def main():
+    rospy.init_node(NODE_NAME)
 
     moon_presentations = str(
         rospy.get_param('~moon_presentations', 'Moon')
@@ -55,4 +57,5 @@ if __name__ == '__main__':
 
     rospy.spin()
 
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+if __name__ == '__main__':
+    run_with_influx_exception_handler(main, NODE_NAME)

@@ -4,7 +4,9 @@ import rospy
 from spacenav_wrapper import SpacenavRezeroer
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
+from lg_common.helpers import run_with_influx_exception_handler
 
+NODE_NAME = 'spacenav_anti_spin'
 
 def get_fullscale():
     params = rospy.get_param_names()
@@ -19,7 +21,7 @@ def get_fullscale():
 
 
 def main():
-    rospy.init_node('spacenav_anti_spin')
+    rospy.init_node(NODE_NAME)
     topic_root = rospy.get_param('~spacenav_topic', '/spacenav/twist')
     seconds_before_rezero = int(rospy.get_param('~seconds_before_rezero', 30))
     rate = int(rospy.get_param('~rate', 4))
@@ -46,4 +48,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)
