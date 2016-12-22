@@ -6,6 +6,7 @@ from lg_common.msg import StringArray
 from lg_keyboard import ROS_NODE_NAME
 from lg_keyboard import OnboardLauncher
 from lg_keyboard import OnboardViewportException
+from lg_common.helpers import run_with_influx_exception_handler
 
 
 def main():
@@ -28,4 +29,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_with_influx_exception_handler(main, ROS_NODE_NAME)

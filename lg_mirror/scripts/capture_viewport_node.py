@@ -7,6 +7,9 @@ from lg_mirror.utils import get_viewport_image_topic
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state
 from sensor_msgs.msg import CompressedImage
+from lg_common.helpers import run_with_influx_exception_handler
+
+NODE_NAME = 'mirror_capture_viewport'
 
 
 def required_param(key, coer=None):
@@ -19,7 +22,7 @@ def required_param(key, coer=None):
 
 
 def main():
-    rospy.init_node('mirror_capture_viewport')
+    rospy.init_node(NODE_NAME)
 
     viewport = required_param('~viewport')
 
@@ -52,7 +55,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(main, NODE_NAME)

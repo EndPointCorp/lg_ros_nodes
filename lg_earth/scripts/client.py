@@ -12,10 +12,14 @@ from geometry_msgs.msg import PoseStamped
 from lg_common.msg import ApplicationState
 from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
 from lg_earth.srv import ViewsyncState
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'lg_earth'
 
 
 def main():
-    rospy.init_node('lg_earth')
+    rospy.init_node(NODE_NAME)
 
     kmlsync_host = 'localhost'
     kmlsync_port = rospy.get_param('/kmlsync_server/port', 8765)
@@ -73,6 +77,6 @@ def make_viewsync():
     return relay
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

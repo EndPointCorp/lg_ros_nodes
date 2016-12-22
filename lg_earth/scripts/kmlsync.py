@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
 import rospy
-
+import tornado.web
+import tornado.ioloop
 from lg_earth import KmlMasterHandler, KmlUpdateHandler, KmlQueryHandler
 from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
 from lg_common.webapp import ros_tornado_spin
-import tornado.web
-import tornado.ioloop
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'kmlsync_http_server'
 
 
 class PlanetWatcher:
@@ -26,7 +29,7 @@ class PlanetWatcher:
 
 
 def main():
-    rospy.init_node('kmlsync_server')
+    rospy.init_node(NODE_NAME)
     port = rospy.get_param('~port', 8765)
     current_planet = None
 
@@ -65,6 +68,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(main, NODE_NAME)

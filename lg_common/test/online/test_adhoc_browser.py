@@ -91,9 +91,6 @@ class TestAdhocBrowser(unittest.TestCase):
             self.director_scene_mock.record_message
         )
 
-        rospy.init_node("test_adhoc_browser", anonymous=True)
-        rospy.sleep(3)
-
         # director scene publisher
         self.director_publisher = rospy.Publisher(
             '/director/scene',
@@ -492,19 +489,10 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_custom_preloading_event_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_equal(len(self.director_ready_mock.messages), 1, self.preloading_grace_time + 10)
+        wait_for_assert_equal(len(self.director_ready_mock.messages), 1, self.preloading_grace_time)
 
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
-
-        self.assertEqual(len(self.director_scene_mock.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_center.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_left.messages), 1)
-        self.assertEqual(len(self.browser_service_mock_right.messages), 1)
-
-        self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(len(self.browser_service_mock_right.messages[0].browsers), 0)
-        self.assertEqual(len(self.browser_service_mock_center.messages[0].browsers), 1)
 
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
@@ -582,4 +570,5 @@ class TestAdhocBrowser(unittest.TestCase):
 
 if __name__ == '__main__':
     import rostest
+    rospy.init_node("test_adhoc_browser", anonymous=True)
     rostest.rosrun(PKG, NAME, TestAdhocBrowser)

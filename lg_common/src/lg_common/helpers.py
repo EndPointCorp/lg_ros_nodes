@@ -974,6 +974,21 @@ def all_actors_connected(actors=[], num_connections=1):
     return True
 
 
+def run_with_influx_exception_handler(main, node_name, host='lg-head', port=8094):
+    """
+    Runs `fun` with exception catching
+    """
+    try:
+        main()
+    except Exception, e:
+        rospy.logerr("Exception catched in node %s: %s" % (NODE_NAME, e))
+        data="""ros_respawns ros_node_name="%s",reason="%s",value=1" """ % (node_name, e)
+        rospy.logerr("Attempting data point write '%s' to influx database" % data)
+        write_influx_point_to_telegraf(data=data, host=host, port=port)
+        rospy.sleep(1)
+        raise
+
+
 def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
     """
     Writes data to influx via telegraf

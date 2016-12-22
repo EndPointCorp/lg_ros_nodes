@@ -6,8 +6,10 @@ from lg_common import AdhocBrowserPool
 from lg_media.msg import AdhocMedias
 from lg_common.helpers import add_url_params, make_soft_relaunch_callback
 from urllib import url2pathname
+from lg_common.helpers import run_with_influx_exception_handler
 
 VIDEOSYNC_URL = 'http://localhost:8008/lg_sv/webapps/videosync/index.html'
+NODE_NAME = 'lg_media_browser_launcher'
 
 
 class BasicBrowserData:
@@ -64,7 +66,7 @@ class BasicBrowserData:
 
 
 def main():
-    rospy.init_node('browser_launcher')
+    rospy.init_node(NODE_NAME)
 
     viewport_name = rospy.get_param('~viewport', None)
     if not viewport_name:
@@ -106,4 +108,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

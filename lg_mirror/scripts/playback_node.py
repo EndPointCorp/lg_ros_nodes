@@ -5,7 +5,10 @@ import rospy
 from lg_mirror.playback import MirrorPlaybackPool
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state
+from lg_common.helpers import run_with_influx_exception_handler
 
+
+NODE_NAME = 'mirror_playback'
 
 def required_param(key):
     val = rospy.get_param(key)
@@ -15,7 +18,7 @@ def required_param(key):
 
 
 def main():
-    rospy.init_node('mirror_playback')
+    rospy.init_node(NODE_NAME)
 
     viewport = required_param('~viewport')
     janus_url = required_param('/lg_mirror/janus_rest_uri')
@@ -37,6 +40,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(main, NODE_NAME)

@@ -11,6 +11,7 @@ from std_msgs.msg import String, Bool
 from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
 from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
+from lg_common.helpers import run_with_influx_exception_handler
 
 
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
@@ -32,6 +33,7 @@ DEFAULT_ZOOM_MAX = 30
 DEFAULT_NAV_SENSITIVITY = 1.0
 DEFAULT_NAV_INTERVAL = 0.02
 X_THRESHOLD = 0.50
+NODE_NAME = 'pano_viewer_server'
 
 
 def main():
@@ -144,6 +146,4 @@ def get_nearby(n):
 
 
 if __name__ == '__main__':
-    main()
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(main, NODE_NAME)

@@ -10,10 +10,14 @@ from lg_attract_loop import AttractLoop
 from lg_attract_loop import DirectorAPIProxy
 from lg_common.msg import ApplicationState
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'lg_attract_loop'
 
 
 def main():
-    rospy.init_node('lg_attract_loop')
+    rospy.init_node(NODE_NAME)
 
     # get all ros params needed to work
     activity_topic = rospy.get_param('~activity_topic_name', '/activity/active')
@@ -64,6 +68,6 @@ def main():
     rospy.spin()
 
 if __name__ == "__main__":
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

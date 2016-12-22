@@ -4,10 +4,14 @@ from lg_earth import KmlSyncState
 from interactivespaces_msgs.msg import GenericMessage
 from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'kml_state_service'
 
 
 def main():
-    rospy.init_node('kml_service', anonymous=True)
+    rospy.init_node(NODE_NAME, anonymous=True)
 
     topic = rospy.get_param('~director_topic', '/director/scene')
     service_channel = rospy.get_param('~service_channel', 'kmlsync/state')
@@ -24,4 +28,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)
