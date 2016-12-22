@@ -114,6 +114,7 @@ class Builder(object):
         subprocess.check_output(
             args=[
                 'dpkg-buildpackage',
+                '-d',
                 '-uc',
                 '-us'
             ],
