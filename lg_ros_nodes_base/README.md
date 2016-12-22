@@ -10,24 +10,27 @@ https://hub.docker.com/r/endpoint/lg_ros_nodes_base/
 
 ## Creating the image
 
-- create the new untagged docker image:
+- create the new untagged docker image (in this directory:
+NOTE: execute this command withing this directory
 
 ```bash
-docker build -f Dockerfile
+docker build -f Dockerfile ../
 ```
-- tag it with `endpoint/lg_ros_nodes_base`
+
+then:
 
 ```bash
-docker tag 7abd22dfd915 endpoint/lg_ros_nodes_base
+docker images
 ```
 
-where 7abd22dfd915 is the image id taken from `docker images`
+to get you newly built docker image ID
 
 - remove all cruft from the docker image after building
 
 ```bash
-docker run -it endpoint/lg_ros_nodes_base:latest /bin/bash
+docker run -it <docker image id> /bin/bash
 apt-get autoclean clean
+apt-get autoremove
 <other stuffz possibly>
 ```
 
@@ -42,23 +45,13 @@ docker commit b6d0bb7eec3b
   we will use for squashing (usage is defined
   [here](https://github.com/jwilder/docker-squash#usage))
 
-- export the unsquashed image
-
 ```bash
-docker save <top layer id> > ~/tmp/image.tar
+docker-squash <new image id> -t endpoint/lg_ros_nodes_base:<new version tag>
 ```
 
-- squash the image
+- push your docker image
 
 ```bash
-docker-squash -i ~/tmp/image.tar -o ~/tmp/squashed.tar
+docker login
+docker push endpoint/lg_ros_nodes_base
 ```
-
-- load squashed image for pushing
-
-```bash
-cat squashed.tar | docker load
-docker images
-```
-
-- d
