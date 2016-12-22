@@ -493,7 +493,6 @@ class TestAdhocBrowser(unittest.TestCase):
 
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
-        self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
 
         rospy.wait_for_service('/browser_service/center')
         center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
