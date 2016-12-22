@@ -7,6 +7,7 @@ from lg_activity import ActivityTracker
 from lg_activity import ActivitySourceDetector
 from lg_activity.activity import ActivitySourceException
 from lg_common.helpers import build_source_string
+from lg_common.test_helpers import wait_for_assert_equal
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
 
@@ -224,12 +225,14 @@ class TestActivityTracker(unittest.TestCase):
         # all messages are identical - we should be inactive
         rospy.sleep(timeout + 2)
         tracker.poll_activities()
+        wait_for_assert_equal(tracker.active, False, 3, cb=tracker.poll_activities)
         self.assertFalse(tracker.active)
 
         # publish odd message - we should turn to active
         p.publish(msg_b)
-        rospy.sleep(2)
+        rospy.sleep(1)
         tracker.poll_activities()
+        wait_for_assert_equal(tracker.active, True, 3, cb=tracker.poll_activities)
         self.assertTrue(tracker.active)
 
         for i in range(ActivitySource.DELTA_MSG_COUNT + 1):

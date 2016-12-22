@@ -9,6 +9,7 @@ from lg_common.helpers import handle_initial_state
 from sensor_msgs.msg import CompressedImage
 from lg_common.helpers import run_with_influx_exception_handler
 
+
 NODE_NAME = 'mirror_capture_viewport'
 
 

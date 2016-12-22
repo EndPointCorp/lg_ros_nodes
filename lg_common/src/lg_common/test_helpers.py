@@ -85,7 +85,7 @@ def gen_scene_msg(scene):
     return GenericMessage(type='json', message=scene)
 
 
-def wait_for_assert_equal(val1, val2, timeout):
+def wait_for_assert_equal(val1, val2, timeout, cb=None):
     """
     Waits for two values to become equal within specified timeout
     """
@@ -94,5 +94,7 @@ def wait_for_assert_equal(val1, val2, timeout):
             return True
         else:
             rospy.loginfo("SLEEPING 1s waiting for val1:%s to become equal val2: %s / %s" % (val1, val2, iteration))
+            if cb:
+                cb()
             time.sleep(1)
     return False
