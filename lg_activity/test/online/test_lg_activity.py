@@ -228,7 +228,7 @@ class TestActivityTracker(unittest.TestCase):
 
         # publish odd message - we should turn to active
         p.publish(msg_b)
-        rospy.sleep(1)
+        rospy.sleep(2)
         tracker.poll_activities()
         self.assertTrue(tracker.active)
 
