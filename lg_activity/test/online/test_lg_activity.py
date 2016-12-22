@@ -232,7 +232,7 @@ class TestActivityTracker(unittest.TestCase):
         p.publish(msg_b)
         rospy.sleep(1)
         tracker.poll_activities()
-        wait_for_assert_equal(tracker.active, True, 3, cb=tracker.poll_activities)
+        wait_for_assert_equal(tracker.active, True, timeout-2, cb=tracker.poll_activities)
         self.assertTrue(tracker.active)
 
         for i in range(ActivitySource.DELTA_MSG_COUNT + 1):
@@ -243,7 +243,7 @@ class TestActivityTracker(unittest.TestCase):
         # all messages are identical - we should be inactive
         rospy.sleep(timeout + 2)
         tracker.poll_activities()
-        wait_for_assert_equal(tracker.active, False, 3, cb=tracker.poll_activities)
+        wait_for_assert_equal(tracker.active, False, timeout-2, cb=tracker.poll_activities)
         self.assertFalse(tracker.active)
 
     def false_state(self):
