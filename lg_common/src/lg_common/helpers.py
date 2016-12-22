@@ -981,7 +981,7 @@ def run_with_influx_exception_handler(main, node_name, host='lg-head', port=8094
     try:
         main()
     except Exception, e:
-        rospy.logerr("Exception catched in node %s: %s" % (NODE_NAME, e))
+        rospy.logerr("Exception catched in node %s: %s" % (node_name, e))
         data="""ros_respawns ros_node_name="%s",reason="%s",value=1" """ % (node_name, e)
         rospy.logerr("Attempting data point write '%s' to influx database" % data)
         write_influx_point_to_telegraf(data=data, host=host, port=port)

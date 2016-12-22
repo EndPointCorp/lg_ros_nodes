@@ -7,6 +7,7 @@ be getting Python ImportError.
 """
 
 NODE_NAME = 'lg_offliner'
+
 from lg_offliner import main
 from lg_common.helpers import run_with_influx_exception_handler
 
