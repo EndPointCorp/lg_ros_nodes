@@ -2,6 +2,33 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fixing the director state setter
+* now ignoring stop presentations scene
+* Made managed adhoc browser' tests' setUp and tearDown methods great a… (`#319 <https://github.com/endpointcorp/lg_ros_nodes/issues/319>`_)
+  * Made managed adhoc browser' tests' setUp and tearDown methods great again
+  * Probably fixed lg_stats tests
+  * Made all ros nodes voluntarily submit exceptions to influx
+  * Initial version of lg_Ros_nodes base
+  * updated docs for lg_ros_nodes_base
+  * Ping CI
+  * Ping CI
+  * Proper name for dockerfile
+  * Dont clean up stuff - jenkins will do it
+  * Wait 2 secs to turn into active
+  * Made changes to lg_activity tests to be less load susceptible
+  * Poll tracker until becomes inactive
+  * Another try to poll activity status
+  * Even more tests refactoring
+  * Remove unnecessary asserts
+  * Let's just not
+  * Increase message emission grace time
+  * Removed even more unncecessary asserts
+  * Fix wrong var during exception handling
+  * Possible breakage fix
+* Contributors: Jacob Minshall, Will Plaut, Wojciech Ziniewicz
+
 1.5.26 (2016-12-21)
 -------------------
 * Disabled tests temporarily
