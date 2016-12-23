@@ -2,8 +2,8 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.0 (2016-12-23)
+------------------
 * Skip dep checking when dpkg-buildpackage'ing
 * Contributors: Matt Vollrath
 
