@@ -1022,6 +1022,9 @@ def director_listener_state_setter(state_pub, activity_list=None):
         except:
             rospy.logerr("Error loading director message, non-json-y format")
         windows = msg.get('windows', [])
+        if windows.get('slug', None) == "stop-the-presentations"
+          rospy.loginfo("Ignoring 'stop-the-presentations' scene"
+          return
         for window in windows:
             if window.get('activity', None) in activity_list:
                 state_pub.publish(ApplicationState.VISIBLE)
