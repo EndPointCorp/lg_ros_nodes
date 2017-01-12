@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.1 (2017-01-12)
+------------------
 * fix error in director state setter
 * Contributors: Will Plaut
 
