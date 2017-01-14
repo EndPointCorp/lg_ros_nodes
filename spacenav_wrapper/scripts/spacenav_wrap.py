@@ -4,7 +4,6 @@ import rospy
 from spacenav_wrapper import SpacenavWrapper
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
-from std_msgs.msg import String
 from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'spacenav_wrapper'
