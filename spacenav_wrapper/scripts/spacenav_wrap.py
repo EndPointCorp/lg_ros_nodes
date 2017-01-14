@@ -5,6 +5,9 @@ from spacenav_wrapper import SpacenavWrapper
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 from std_msgs.msg import String
+from lg_common.helpers import run_with_influx_exception_handler
+
+NODE_NAME = 'spacenav_wrapper'
 
 
 def get_fullscale():
@@ -18,7 +21,7 @@ def get_fullscale():
 
 
 def main():
-    rospy.init_node('spacenav_wrapper')
+    rospy.init_node(NODE_NAME)
     topic_root = rospy.get_param('~root_topic', '/spacenav_wrapper')
     gutter_val = rospy.get_param('~gutter_value', 0.0)
     if topic_root[0] != '/':
@@ -35,4 +38,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

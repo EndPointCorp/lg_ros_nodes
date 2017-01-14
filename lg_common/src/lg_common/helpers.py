@@ -842,11 +842,16 @@ def browser_eligible_for_reuse(current_browser, future_browser):
         current_browser.command_line_args == future_browser_cmd_args
 
 
-def get_random_string(N=6):
+def get_random_string(N=6, uppercase=True):
     """
     Generate random string.
     """
-    return ''.join(random.choice(string.ascii_uppercase) for _ in range(N))
+    if uppercase:
+        string_range = string.ascii_uppercase
+    else:
+        string_range = string.ascii_letters
+
+    return ''.join(random.choice(string_range) for _ in range(N))
 
 
 def generate_hash(string, length=8, random_suffix=False):
@@ -967,3 +972,62 @@ def all_actors_connected(actors=[], num_connections=1):
             rospy.logwarn("Actor: %s reached required number of connections: %s" % (actor.name, num_connections))
 
     return True
+
+
+def run_with_influx_exception_handler(main, node_name, host='lg-head', port=8094):
+    """
+    Runs `fun` with exception catching
+    """
+    try:
+        main()
+    except Exception, e:
+        rospy.logerr("Exception catched in node %s: %s" % (node_name, e))
+        data="""ros_respawns ros_node_name="%s",reason="%s",value=1" """ % (node_name, e)
+        rospy.logerr("Attempting data point write '%s' to influx database" % data)
+        write_influx_point_to_telegraf(data=data, host=host, port=port)
+        rospy.sleep(1)
+        raise
+
+
+def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
+    """
+    Writes data to influx via telegraf
+    """
+    import socket
+    import rospy
+    rospy.logdebug("Going to write: '%s' to influx" % data)
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = (host, port)
+        sock.connect(server_address)
+        sock.sendall(data)
+        rospy.logdebug("Wrote: '%s' to influx" % data)
+    except Exception, ex:
+        rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
+                     (data, server_address, ex))
+    finally:
+        sock.close()
+
+
+def director_listener_state_setter(state_pub, activity_list=None):
+    """
+    This is a subscriber to /director/scene. If _any_ of the activities in /director/scene match
+    _any_ of the actives in activity_list then we will publish VISIBLE to state_pub, otherwise we
+    will publish HIDDEN
+    """
+    from lg_common.msg import ApplicationState
+    def _do_stuff(director_msg, *args, **kwargs):
+        try:
+            msg = json.loads(director_msg.message)
+        except:
+            rospy.logerr("Error loading director message, non-json-y format")
+        windows = msg.get('windows', [])
+        if msg.get('slug', None) == "stop-the-presentations":
+            rospy.loginfo("Ignoring 'stop-the-presentations' scene")
+            return
+        for window in windows:
+            if window.get('activity', None) in activity_list:
+                state_pub.publish(ApplicationState.VISIBLE)
+                return
+        state_pub.publish(ApplicationState.HIDDEN)
+    rospy.Subscriber('/director/scene', GenericMessage, _do_stuff)

@@ -7,6 +7,7 @@ import rospy
 from lg_wireless_devices.common import get_config, get_and_place_file
 from lg_wireless_devices import WirelessWatcher
 from command_handler.msg import Command
+from lg_common.helpers import run_with_influx_exception_handler
 
 
 def main():
@@ -27,4 +28,4 @@ def main():
     WirelessWatcher(config, command_handler)
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

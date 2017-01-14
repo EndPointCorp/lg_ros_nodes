@@ -28,7 +28,7 @@ class InteractiveSpacesMessagesFactory:
                 }
             },
             "assets": [
-                "https://maps.google.com"
+                "http://127.0.0.1:8008/lg_common/webapps/example/index.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -225,7 +225,7 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
             },
             "assets": [
-                "https://maps.google.com"
+                "http://127.0.0.1:8008/lg_common/webapps/example/index.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -249,7 +249,7 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
             },
             "assets": [
-                "https://maps.google.com"
+                "http://127.0.0.1:8008/lg_common/webapps/example/index.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -285,7 +285,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://asdasdasdaqweqwe.com"
+                "http://asdasdasdaqweqwenonexistentpage.com"
             ],
             "height": 333,
             "presentation_viewport": "center",

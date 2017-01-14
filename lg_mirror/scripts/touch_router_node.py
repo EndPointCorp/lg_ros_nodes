@@ -10,10 +10,13 @@ from lg_common.msg import StringArray
 from lg_common.helpers import handle_initial_state
 from lg_mirror.touch_router import SubscribeListener
 from lg_mirror.srv import TouchRoutes
+from lg_common.helpers import run_with_influx_exception_handler
 
+
+NODE_NAME = 'lg_mirror_touch_router'
 
 def main():
-    rospy.init_node('lg_mirror_touch_router')
+    rospy.init_node(NODE_NAME)
 
     default_viewport = rospy.get_param('~default_viewport', None)
     touch_router = TouchRouter(default_viewport)
@@ -47,4 +50,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

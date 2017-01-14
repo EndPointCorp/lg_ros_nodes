@@ -8,14 +8,17 @@ from lg_common.helpers import add_url_params
 from lg_common.helpers import check_www_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise
 from lg_common.helpers import make_soft_relaunch_callback
+from lg_common.helpers import run_with_influx_exception_handler
+
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
 # FOV for zoom level 3
 DEFAULT_FOV = 28.125
+NODE_NAME = 'panoviewer_browser'
 
 
 def main():
-    rospy.init_node('panoviewer_browser', anonymous=True)
+    rospy.init_node(NODE_NAME, anonymous=True)
 
     geometry = ManagedWindow.get_viewport_geometry()
     server_type = rospy.get_param('~server_type', 'streetview')
@@ -75,4 +78,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

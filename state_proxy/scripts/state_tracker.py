@@ -7,7 +7,10 @@ from lg_common.helpers import add_url_params
 from std_msgs.msg import String
 from appctl.msg import Mode
 from urllib2 import urlopen
+from lg_common.helpers import run_with_influx_exception_handler
 
+
+NODE_NAME = 'state_tracker'
 
 class StateTracker(object):
     def __init__(self, state_publisher, update_rfid_pub, last_uscs_service,
@@ -67,8 +70,10 @@ class StateTracker(object):
             for i in range(len(window.get('assets', []))):
                 if ('maps.google.com' in window['assets'][i] or "google.com/maps" in window['assets'][i]) and \
                         self.tactile_flag not in window['assets'][i]:
-                    flag = self.tactile_flag.split("=")[1]
-                    window['assets'][i] = add_url_params(window['assets'][i], esrch=flag)
+                    # add a param to be sure there is at least one param (HACK)
+                    url = add_url_params(window['assets'][i], foo='bar')
+                    url += '&%s' % self.tactile_flag
+                    window['assets'][i] = url
                 # adding cms_protocol and cms_port for the portal launcher
                 # only needed on the kiosk
                 #if window.get('presentation_viewport', None) == 'kiosk':
@@ -123,7 +128,7 @@ class StateTracker(object):
 
 
 def main():
-    rospy.init_node('state_tracker')
+    rospy.init_node(NODE_NAME)
     current_state_topic = rospy.get_param('~current_state_topic', '/state_tracker/current_state')
     update_rfid_topic = rospy.get_param('~update_rfid_topic', '/rfid/uscs/update')
     tactile_flag = rospy.get_param('~tactile_flag', '')
@@ -150,4 +155,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

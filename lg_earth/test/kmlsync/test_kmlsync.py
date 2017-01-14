@@ -224,6 +224,7 @@ class TestKMLSync(unittest.TestCase):
         expected_list_of_deleted_slugs = []
 
         # start testing...
+        rospy.sleep(1)
         self.assertEqual(expected_cookie, get_cookie_string(r.content))
         self.assertEqual(sorted(expected_list_of_created_slugs), sorted(get_created_elements(r.content)))
         self.assertEqual(expected_list_of_deleted_slugs, get_deleted_elements(r.content))
@@ -258,7 +259,7 @@ class TestKMLSync(unittest.TestCase):
         expected_status = 200
         expected_string = "OK"
 
-        #self.wait_for_pubsub()
+        # self.wait_for_pubsub()
         good1 = self.get_request(KML_ENDPOINT + "/query.html?query=playtour=myworldtour")
         rospy.sleep(1)
         good1_expected_string = "myworldtour"
@@ -290,6 +291,7 @@ class TestKMLSync(unittest.TestCase):
             return  # not tesable with small timeout for requests
         t = Thread(target=self._sleep_and_send_director)
         t.start()
+        rospy.sleep(1)
         self._test_director_state()
         t.join()
 

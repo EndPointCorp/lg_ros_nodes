@@ -6,6 +6,10 @@ import rospy
 import rospkg
 import tornado.web
 import tornado.ioloop
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'lg_dev_webserver'
 
 
 class DevStaticHandler(tornado.web.StaticFileHandler):
@@ -15,9 +19,8 @@ class DevStaticHandler(tornado.web.StaticFileHandler):
     def compute_etag(self):
         return None
 
-
-if __name__ == '__main__':
-    rospy.init_node('lg_dev_webserver')
+def main():
+    rospy.init_node(NODE_NAME)
 
     port = rospy.get_param('~port', 8008)
 
@@ -37,4 +40,6 @@ if __name__ == '__main__':
     rospy.on_shutdown(ioloop.stop)
     ioloop.start()
 
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
+if __name__ == '__main__':
+    run_with_influx_exception_handler(main, NODE_NAME)

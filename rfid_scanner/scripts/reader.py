@@ -6,6 +6,9 @@ import json
 
 from std_msgs.msg import String, Bool
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import run_with_influx_exception_handler
+
+NODE_NAME = 'rfid_reader'
 
 
 class RfidListener(object):
@@ -60,7 +63,7 @@ class RfidListener(object):
 
 
 def main():
-    rospy.init_node('rfid_listener', anonymous=True)
+    rospy.init_node(NODE_NAME, anonymous=True)
 
     port = rospy.get_param('~device_path', '/dev/rfid_scanner')
     baudrate = rospy.get_param('~baudrate', 9600)
@@ -80,4 +83,4 @@ def main():
     rfid_listener.run()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

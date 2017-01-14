@@ -4,6 +4,9 @@ import sqlite3
 import json
 from std_msgs.msg import String
 import rospy
+from lg_common.helpers import run_with_influx_exception_handler
+
+NODE_NAME = 'rfid_sqlite_uscs_storage'
 
 
 class MockPub(object):
@@ -105,7 +108,7 @@ class RfidStorage(object):
 
 
 def main():
-    rospy.init_node('sqlite_rfid_storage')
+    rospy.init_node(NODE_NAME)
 
     local_path = rospy.get_param('~database_path', '/home/lg/rfid/rfid_storage.db')
     scan_topic = rospy.get_param('~scan_topic', '/rfid/uscs/scan')
@@ -124,4 +127,4 @@ def main():
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

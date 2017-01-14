@@ -10,7 +10,6 @@ from lg_common.helpers import list_of_dicts_is_homogenous
 from lg_common.helpers import rewrite_message_to_dict
 from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
-from lg_activity.srv import Active
 from std_msgs.msg import Bool
 
 
@@ -69,6 +68,10 @@ class ActivitySource:
         rospy.loginfo("Initialized ActivitySource: %s" % self)
 
     def _check_init_args(self, topic, message_type, strategy, callback, value_min, value_max, slot):
+        """
+        ActivitySource is v fragile when it comes to initialization and subscriptions
+        This method provides all sanity checks for that
+        """
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
                 (topic, message_type, strategy, callback)
@@ -94,11 +97,17 @@ class ActivitySource:
                 raise ActivitySourceException(msg)
 
     def __str__(self):
+        """
+        String representation of the ActivitySource - needed by pretty logs
+        """
         string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
             (self.slot, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
 
     def __repr__(self):
+        """
+        __repr__ representation of the ActivitySource - needed by pretty logs
+        """
         string_representation = "<ActivitySource: slot: %s, strategy: %s, value_min:%s, value_max:%s on topic %s>" % \
             (self.slot, self.strategy, self.value_min, self.value_max, self.topic)
         return string_representation
@@ -120,7 +129,8 @@ class ActivitySource:
 
     def _aggregate_message(self, message):
         """
-        Check for memory limits, deserialize message to python dict, append message.
+        Check for memory limits, deserialize message to python dict, append message to
+        ActivitySource buffer for later calculations
         """
         while sys.getsizeof(self.messages) >= self.memory_limit:
             rospy.logwarn("%s activity source memory limit reached (%s) - discarding oldest message" % (self.topic, self.memory_limit))
@@ -204,8 +214,12 @@ class ActivitySource:
             rospy.logerr("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
 
     def _is_delta_active(self):
+        """
+        Checks whether all messages (of type dict) stored in the buffer are
+        homogenous. If they are not then this activity source is active
+        """
         if len(self.messages) < self.delta_msg_count:
-            rospy.logdebug("Not enough messages (minimum of 5) for 'delta' strategy")
+            rospy.logdebug("Not enough messages (minimum of %s) for 'delta' strategy" % self.delta_msg_count)
             return
 
         if list_of_dicts_is_homogenous(self.messages):
@@ -218,6 +232,9 @@ class ActivitySource:
             return True  # if list is not homogenous than there was activity
 
     def _is_value_active(self):
+        """
+        If current message meets value constrains then the system is active
+        """
         if self._messages_met_value_constraints():
             self.callback(self.topic, state=False, strategy='value')
             self.messages = []
@@ -228,6 +245,10 @@ class ActivitySource:
             return True  # messages didnt meet the constraints
 
     def _is_activity_active(self):
+        """
+        Here's the place where ActivitySource triggers ActivityTracker, which is its parent
+        to inform it that it's active
+        """
         if len(self.messages) > 0:
             self.messages = []
             self.callback(self.topic, state=True, strategy='activity')
@@ -273,7 +294,7 @@ class ActivitySourceDetector:
             source = [source for source in self.sources if source['topic'] == topic]
             return source[0]
         except KeyError, e:
-            msg = "Could not find source %s" % s
+            msg = "Could not find source %s because %s" % (source, e)
             rospy.logerr(msg)
             raise ActivitySourceNotFound(msg)
 
@@ -336,12 +357,6 @@ class ActivityTracker:
         with self._lock:
             return self.active
 
-    def tick(self, topic_name, state):
-        """
-        Tick should be passed to ActivitySource.
-        """
-        pass
-
     def activity_callback(self, topic_name=None, state=True, strategy=None):
         """
         ActivitySource uses this callback to set it's state in ActivityTracker
@@ -362,7 +377,7 @@ class ActivityTracker:
                         rospy.logdebug("State of %s didnt change" % topic_name)
                     else:
                         self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-                        rospy.loginfo("Topic name: %s state changed to %s" % (topic_name, state))
+                        rospy.logdebug("Topic name: %s state changed to %s" % (topic_name, state))
                 except KeyError:
                     rospy.loginfo("Initializing topic name state: %s" % topic_name)
                     self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
@@ -373,29 +388,34 @@ class ActivityTracker:
                 rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
                 return False
 
-    def _source_has_been_inactive(self, source):
+    def _source_is_active(self, source):
         """
-        Checks whether source was inactive for more seconds than self.timeout
-        Accepts source state dict eg.:
-        {"state": True, "time": <unix timestamp> }
-        """
-        now = rospy.get_time()
-        if ((now - source['time']) >= self.timeout):
-            return True
-        else:
-            return False
+        Checks whether source was active for last `self.timeout` seconds
+        which basically means that we can consider this source to be active
 
-    def _source_become_active(self, source):
-        """
-        Checks whether source become active less then self.timeout
         Accepts source state dict eg.:
         {"state": True, "time": <unix timestamp> }
+
+        All following constraints need to be met to consider source active:
+        a) source is in True (active) state
+
+        All following constraints need to be to consider source inactive:
+        b) source is in False (inactive) state
+        c) last change of source's state was more than `self.timeout` seconds ago
         """
+
         now = rospy.get_time()
-        if ((now - source['time']) <= self.timeout):
+
+        if source['state'] is True:
+            rospy.logdebug("ActivitySource %s is active" % source)
             return True
-        else:
+
+        if source['state'] is False and ((now - source['time']) >= self.timeout):
+            rospy.logdebug("ActivitySource %s is inactive" % source)
             return False
+        else:
+            rospy.logdebug("ActivitySource %s is still active" % source)
+            return True
 
     def _check_states(self):
         """
@@ -409,7 +429,7 @@ class ActivityTracker:
 
         """
         now = rospy.get_time()
-        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if (now - self.timeout) < state['time']}
+        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if self._source_is_active(state)}
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True

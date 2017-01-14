@@ -14,6 +14,7 @@ from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, Initial
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common import USCSService
 from lg_common.helpers import check_www_dependency
+from lg_common.helpers import run_with_influx_exception_handler
 
 
 # TODO implement this in the ros_cms side of things so
@@ -24,7 +25,7 @@ ON_OFFLINE_STATE = "http://lg-head:8088/director_api/on_offline_scene"
 ON_ONLINE_STATE = "http://lg-head:8088/director_api/on_online_scene"
 ON_INACTIVE_STATE = "http://lg-head:8088/director_api/on_inactive_scene"
 ON_ACTIVE_STATE = "http://lg-head:8088/director_api/on_active_scene"
-ON_LOCK_STATE = "http://lg-head:8088/director_api/on_lock_scene"
+NODE_NAME = 'uscs_service'
 
 
 def main():
@@ -39,7 +40,7 @@ def main():
             check_www_dependency(depend_on_scene_repository, scheme.hostname, port, param[1:], global_dependency_timeout)
         return url
 
-    rospy.init_node('lg_uscs', anonymous=False)
+    rospy.init_node(NODE_NAME, anonymous=False)
 
     director_topic = rospy.get_param('~director_topic', '/director/scene')
     message_topic = rospy.get_param('~message_topic', '/uscs/message')
@@ -81,4 +82,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_with_influx_exception_handler(main, NODE_NAME)

@@ -6,10 +6,14 @@ from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import String
 from lg_earth.srv import ViewsyncState
+from lg_common.helpers import run_with_influx_exception_handler
 
 
-if __name__ == '__main__':
-    rospy.init_node('earth_viewsync_relay')
+NODE_NAME = 'earth_viewsync_relay'
+
+
+def main():
+    rospy.init_node(NODE_NAME)
 
     listen_host = rospy.get_param('~listen_host', '127.0.0.1')
     listen_port = rospy.get_param('~listen_port', 42000)
@@ -31,4 +35,6 @@ if __name__ == '__main__':
 
     relay.run()
 
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
+if __name__ == '__main__':
+    run_with_influx_exception_handler(main, NODE_NAME)

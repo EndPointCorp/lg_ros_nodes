@@ -51,6 +51,7 @@ class InfluxDirect(Submitter):
                                      field_name=msg.field_name,
                                      type=msg.type,
                                      metadata=msg.metadata,
+                                     span=msg.span,
                                      value=msg.value),
                            # timestamp may be added here or will be added by the server
                            # "time": "2015-11-10T23:00:00Z",
@@ -95,12 +96,13 @@ class InfluxTelegraf(Submitter):
         Value is always a float
         """
         try:
-            influx_str = ("""%s topic_name="%s",field_name="%s",type="%s",metadata="%s",value=%s %s""" %
+            influx_str = ("""%s topic_name="%s",field_name="%s",type="%s",metadata="%s",span=%s,value=%s %s""" %
                           (measurement_name,
                            msg.src_topic,
                            msg.field_name,
                            msg.type,
                            msg.metadata,
+                           float(msg.span),
                            float(msg.value),
                            InfluxTelegraf.get_timestamp()))
         except TypeError:

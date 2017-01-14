@@ -6,6 +6,10 @@ import rospy
 import serial
 from sensor_msgs.msg import Range
 from std_msgs.msg import Bool
+from lg_common.helpers import run_with_influx_exception_handler
+
+
+NODE_NAME = 'maxbotix_proximity_sensor'
 
 
 def main():
@@ -19,7 +23,7 @@ def main():
         Bool,
         queue_size=5
     )
-    rospy.init_node('maxbotix')
+    rospy.init_node(NODE_NAME)
 
     device_path = rospy.get_param('~device_path', '/dev/maxbotix.0')
     baud_rate = int(rospy.get_param('~baud_rate', 57600))
@@ -64,9 +68,4 @@ def main():
                 buf = ''
 
 if __name__ == '__main__':
-    try:
-        main()
-    except rospy.ROSInterruptException:
-        pass
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+    run_with_influx_exception_handler(main, NODE_NAME)

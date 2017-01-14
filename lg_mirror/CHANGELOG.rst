@@ -2,6 +2,75 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.1 (2017-01-12)
+------------------
+
+1.6.0 (2016-12-23)
+------------------
+* Made managed adhoc browser' tests' setUp and tearDown methods great a… (`#319 <https://github.com/endpointcorp/lg_ros_nodes/issues/319>`_)
+  * Made managed adhoc browser' tests' setUp and tearDown methods great again
+  * Probably fixed lg_stats tests
+  * Made all ros nodes voluntarily submit exceptions to influx
+  * Initial version of lg_Ros_nodes base
+  * updated docs for lg_ros_nodes_base
+  * Ping CI
+  * Ping CI
+  * Proper name for dockerfile
+  * Dont clean up stuff - jenkins will do it
+  * Wait 2 secs to turn into active
+  * Made changes to lg_activity tests to be less load susceptible
+  * Poll tracker until becomes inactive
+  * Another try to poll activity status
+  * Even more tests refactoring
+  * Remove unnecessary asserts
+  * Let's just not
+  * Increase message emission grace time
+  * Removed even more unncecessary asserts
+  * Fix wrong var during exception handling
+  * Possible breakage fix
+* Contributors: Wojciech Ziniewicz
+
+1.5.26 (2016-12-21)
+-------------------
+
+1.5.25 (2016-12-14)
+-------------------
+
+1.5.24 (2016-11-30)
+-------------------
+* Fix for mirroring memory leak
+  The real culprit was ximagesrc, which leaks when immediately followed by
+  a queue (but not when followed by videoscale, for whatever reason). This
+  puts ximagesrc and videoscale back on the same thread, but it's worth it
+  to avoid the bloat.
+* Revert "Workaround for mirror memory leak"
+* Contributors: Matt Vollrath
+
+1.5.23 (2016-11-30)
+-------------------
+* Workaround for mirror memory leak
+* Contributors: Matt Vollrath
+
+1.5.22 (2016-11-21)
+-------------------
+
+1.5.21 (2016-11-17)
+-------------------
+
+1.5.20 (2016-11-17)
+-------------------
+
+1.5.19 (2016-11-16)
+-------------------
+
+1.5.18 (2016-11-14)
+-------------------
+* Add missing param docs for capture_webcam_node
+* Contributors: Matt Vollrath
+
+1.5.17 (2016-11-11)
+-------------------
+
 1.5.16 (2016-11-07)
 -------------------
 

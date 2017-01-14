@@ -10,10 +10,14 @@ from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import x_available_or_raise, check_www_dependency
 from lg_common.helpers import make_soft_relaunch_callback
+from lg_common.helpers import run_with_influx_exception_handler
 
 
-if __name__ == '__main__':
-    rospy.init_node('static_browser')
+NODE_NAME = 'static_browser'
+
+
+def main():
+    rospy.init_node(NODE_NAME)
 
     geometry = ManagedWindow.get_viewport_geometry()
 
@@ -89,4 +93,5 @@ if __name__ == '__main__':
 
     rospy.spin()
 
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+if __name__ == '__main__':
+    run_with_influx_exception_handler(main, NODE_NAME)
