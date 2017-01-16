@@ -35,7 +35,7 @@ class SpacenavRemote(object):
         """
         Activate the server in separate thread
         """
-        thread.start_new_thread(self.serve_forever)
+        thread.start_new_thread(self.serve_forever, ())
 
     def serve_forever(self):
         try:
