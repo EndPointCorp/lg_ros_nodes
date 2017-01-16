@@ -5,19 +5,15 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
 )
 
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES rfid_scanner
-#  CATKIN_DEPENDS rospy
-#  DEPENDS system_lib
-)
+catkin_python_setup()
+
+catkin_package()
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-install(PROGRAMS
+catkin_install_python(PROGRAMS
   scripts/spacenav_remote.py
-  scripts/spacenav_remote
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
