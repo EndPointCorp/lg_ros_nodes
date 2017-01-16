@@ -5,7 +5,7 @@ import rospy
 
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
-from spacenav_remote import SpacenavRemote
+import SpacenavRemote
 
 NODE_NAME = 'spacenav_remote'
 
