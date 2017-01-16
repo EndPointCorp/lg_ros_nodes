@@ -14,6 +14,6 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
-  scripts/spacenav_remote.py
+  scripts/server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
