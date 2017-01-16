@@ -2,6 +2,7 @@
 
 import SocketServer
 import thread
+import socket
 
 def print_handler(data):
     print data
@@ -30,6 +31,7 @@ class SpacenavRemote(object):
         # Create the server, binding to localhost on port 6564
         SocketServer.TCPServer.allow_reuse_address = True
         self.server = SocketServer.TCPServer((HOST, PORT), handler_factory(handler))
+        self.server.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
     def fork_and_run(self):
         """

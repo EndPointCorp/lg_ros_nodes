@@ -24,7 +24,7 @@ def send(msg):
     send_socket = None
     try:
         send_socket = open_scoket()
-        send_socket.sendall(msg.encode())
+        send_socket.send(msg.encode())
         print msg
     except socket.error, err:
         print "Connection error: " + err.strerror
@@ -38,6 +38,7 @@ def asJson(event):
 
 def open_scoket(host="localhost", port=6564):
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    soc.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
     soc.connect((host, port))
     return soc
 
