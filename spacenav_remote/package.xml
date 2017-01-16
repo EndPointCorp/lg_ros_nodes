@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>spacenav_remote</name>
+  <version>1.0.0</version>
+  <description>Emulates spacenav ROS node with data from remote host</description>
+
+  <author email="dmitry@endpoint.com">Dmitry Kiselev</author>
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+
+</package>
