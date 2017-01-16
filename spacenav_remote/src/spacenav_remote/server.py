@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import SocketServer
+import thread
 
 def print_handler(data):
     print data
@@ -30,8 +31,13 @@ class SpacenavRemote(object):
         SocketServer.TCPServer.allow_reuse_address = True
         self.server = SocketServer.TCPServer((HOST, PORT), handler_factory(handler))
 
-        # Activate the server; this will keep running until you
-        # interrupt the program with Ctrl-C
+    def fork_and_run(self):
+        """
+        Activate the server in separate thread
+        """
+        thread.start_new_thread(self.serve_forever)
+
+    def serve_forever(self):
         try:
             self.server.serve_forever()
         except KeyboardInterrupt:

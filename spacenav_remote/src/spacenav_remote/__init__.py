@@ -1,1 +1,1 @@
-from spacenav_remote import SpacenavRemote
+from spacenav_remote.server import SpacenavRemote

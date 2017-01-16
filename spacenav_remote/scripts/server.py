@@ -30,8 +30,14 @@ def main():
         twist_pub.publish(twist)
 
     server = SpacenavRemote(handler=handler, port=port)
+    server.fork_and_run()
 
+    def shutdown_server():
+        server.shutdown()
+
+    rospy.on_shutdown(shutdown_server)
     rospy.spin()
+
 
 if __name__ == "__main__":
     main()
