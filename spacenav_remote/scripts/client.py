@@ -26,7 +26,9 @@ def main():
         socket_close(s)
 
 def send(msg, sock=None):
-    sock.send(msg)
+    data = msg + "\n"
+    sock.send(data)
+    print data
 
 def socket_close(sock):
     sock.close()
