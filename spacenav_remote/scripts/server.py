@@ -28,16 +28,17 @@ def main():
         try:
             recived = byteify(json.loads(data))
 
-            # Send joystic data
-            joy = Joy()
-            joy.axes = (recived.trans + recived.rot)
-            joy_pub.publish(joy)
+            if 'trans' in recived and 'rot' in recived:
+                # Send joystic data
+                joy = Joy()
+                joy.axes = (recived['trans'] + recived['rot'])
+                joy_pub.publish(joy)
 
-            # Send twists data
-            twist = Twist()
-            twist.angular = recived.rot
-            twist.linear = recived.trans
-            twist_pub.publish(twist)
+                # Send twists data
+                twist = Twist()
+                twist.angular = recived['rot']
+                twist.linear = recived['trans']
+                twist_pub.publish(twist)
         except AttributeError, e:
             print e
 
