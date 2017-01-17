@@ -18,7 +18,7 @@ def main():
     twist_pub = rospy.Publisher(topic + '/twist', Twist, queue_size=10)
 
     def handler(data):
-        recived = json.load(data)
+        recived = json.loads(data)
         # Send joystic data
         joy = Joy()
         joy.axes = recived.trans
