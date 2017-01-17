@@ -8,29 +8,28 @@ from spnav import SPNAV_EVENT_MOTION
 
 def main():
     spnav_open()
+    s = open_scoket()
+
     try:
         while True:
             event = spnav_poll_event()
             if event is not None:
                 if event.ev_type == SPNAV_EVENT_MOTION:
                     json_string = asJson(event)
-                    send(json_string)
+                    send(json_string, sock=s)
     except KeyboardInterrupt:
         print '\nQuitting...'
-    finally:
-        spnav_close()
-
-def send(msg):
-    send_socket = None
-    try:
-        send_socket = open_scoket()
-        send_socket.send(msg.encode())
-        print msg
     except socket.error, err:
         print "Connection error: " + err.strerror
     finally:
-        if send_socket:
-            send_socket.close()
+        spnav_close()
+        socket_close(s)
+
+def send(msg, sock=None):
+    sock.send(msg)
+
+def socket_close(sock):
+    sock.close()
 
 def asJson(event):
     result = {'type': 'motion', 'trans': event.translation, 'rot': event.rotation}
