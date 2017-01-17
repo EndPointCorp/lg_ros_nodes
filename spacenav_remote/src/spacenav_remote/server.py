@@ -14,10 +14,10 @@ class MyTCPHandler(SocketServer.StreamRequestHandler):
         SocketServer.StreamRequestHandler.__init__(self, *args, **keys)
 
     def handle(self):
-        # self.rfile is a file-like object created by the handler;
-        # we can now use e.g. readline() instead of raw recv() calls
-        self.data = self.rfile.readline()
-        self.callback(self.data)
+        data = self.rfile.readline().strip()
+        while data:
+            self.callback(data)
+            data = self.rfile.readline().strip()
 
 def handler_factory(callback):
     def createHandler(*args, **keys):
