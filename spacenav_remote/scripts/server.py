@@ -34,7 +34,7 @@ def main():
 
             # Send joystic data
             joy = Joy()
-            joy.axes = recived.trans
+            joy.axes = (recived.trans + recived.rot)
             joy_pub.publish(joy)
 
             # Send twists data
@@ -42,8 +42,9 @@ def main():
             twist.angular = recived.rot
             twist.linear = recived.trans
             twist_pub.publish(twist)
-        except AttributeError:
-            pass
+        except AttributeError, e:
+            if verbose:
+                print e
 
     server = SpacenavRemote(handler=handler, port=port)
     server.fork_and_run()
