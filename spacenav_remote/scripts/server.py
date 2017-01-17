@@ -21,16 +21,22 @@ def main():
     def handler(data):
         if verbose:
             print data
-        recived = json.loads(data)
-        # Send joystic data
-        joy = Joy()
-        joy.axes = recived.trans
-        joy_pub.publish(joy)
-        # Send twists data
-        twist = Twist()
-        twist.angular = recived.rot
-        twist.linear = recived.trans
-        twist_pub.publish(twist)
+
+        try:
+            recived = json.loads(data)
+
+            # Send joystic data
+            joy = Joy()
+            joy.axes = recived.trans
+            joy_pub.publish(joy)
+
+            # Send twists data
+            twist = Twist()
+            twist.angular = recived.rot
+            twist.linear = recived.trans
+            twist_pub.publish(twist)
+        except AttributeError:
+            pass
 
     server = SpacenavRemote(handler=handler, port=port)
     server.fork_and_run()
