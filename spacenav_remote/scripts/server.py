@@ -13,11 +13,16 @@ def main():
     rospy.init_node(NODE_NAME)
     topic = rospy.get_param('~topic', '/spacenav')
     port = rospy.get_param('~listen_port', 6564)
+    verbose = rospy.get_param('~verbose', False)
 
     joy_pub = rospy.Publisher(topic + '/joy', Joy, queue_size=10)
+    joy_pub.advertise()
     twist_pub = rospy.Publisher(topic + '/twist', Twist, queue_size=10)
+    twist_pub.advertise()
 
     def handler(data):
+        if verbose:
+            print data
         recived = json.loads(data)
         # Send joystic data
         joy = Joy()
