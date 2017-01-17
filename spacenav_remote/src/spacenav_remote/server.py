@@ -48,3 +48,8 @@ class SpacenavRemote(object):
     def shutdown(self):
         self.server.shutdown()
         self.server.socket.close()
+
+if __name__ == "__main__":
+    print "Start spacenav remote server"
+    server = SpacenavRemote()
+    server.serve_forever()
