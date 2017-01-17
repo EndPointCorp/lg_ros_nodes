@@ -15,8 +15,15 @@ def main():
     port = rospy.get_param('~listen_port', 6564)
     verbose = rospy.get_param('~verbose', False)
 
-    joy_pub = rospy.Publisher(topic + '/joy', Joy, queue_size=10)
-    twist_pub = rospy.Publisher(topic + '/twist', Twist, queue_size=10)
+    joy_topic = topic + '/joy'
+    twist_topic = topic + '/twist'
+
+    joy_pub = rospy.Publisher(joy_topic, Joy, queue_size=10)
+    twist_pub = rospy.Publisher(twist_topic, Twist, queue_size=10)
+
+    if verbose:
+        print "Publish joy to: " + joy_topic
+        print "Publish twist to: " + twist_topic
 
     def handler(data):
         if verbose:
