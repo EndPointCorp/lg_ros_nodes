@@ -2,9 +2,12 @@
 
 import json
 import socket
+from math import fabs
 
 from spnav import spnav_open, spnav_poll_event, spnav_close
 from spnav import SPNAV_EVENT_MOTION
+
+FULL_SCALE = 512
 
 def main():
     spnav_open()
@@ -34,7 +37,21 @@ def socket_close(sock):
     sock.close()
 
 def asJson(event):
-    result = {'type': 'motion', 'trans': event.translation, 'rot': event.rotation}
+
+    lx = event.trans[2] / FULL_SCALE
+    ly = -event.trans[0] / FULL_SCALE
+    lz = event.trans[1] / FULL_SCALE
+
+    rx = event.rot[2] / FULL_SCALE
+    ry = -event.rot[0] / FULL_SCALE
+    rz = event.rot[1] / FULL_SCALE
+
+    result = {
+        'type': 'motion',
+        'trans': [lx, ly, lz],
+        'rot': [rx, ry, rz]
+    }
+
     return json.dumps(result)
 
 def open_scoket(host="localhost", port=6564):
