@@ -36,8 +36,14 @@ def main():
 
                 # Send twists data
                 twist = Twist()
-                twist.angular = recived['rot']
-                twist.linear = recived['trans']
+                twist.angular.x = recived['rot'][0]
+                twist.angular.y = recived['rot'][1]
+                twist.angular.z = recived['rot'][2]
+
+                twist.linear.x = recived['trans'][0]
+                twist.linear.y = recived['trans'][1]
+                twist.linear.z = recived['trans'][2]
+
                 twist_pub.publish(twist)
         except AttributeError, e:
             print e
