@@ -38,18 +38,18 @@ def socket_close(sock):
 
 def asJson(event):
 
-    lx = event.trans[2] / FULL_SCALE
-    ly = -event.trans[0] / FULL_SCALE
-    lz = event.trans[1] / FULL_SCALE
+    lx = event.translation[2] / FULL_SCALE
+    ly = -event.translation[0] / FULL_SCALE
+    lz = event.translation[1] / FULL_SCALE
 
-    rx = event.rot[2] / FULL_SCALE
-    ry = -event.rot[0] / FULL_SCALE
-    rz = event.rot[1] / FULL_SCALE
+    rx = event.rotation[2] / FULL_SCALE
+    ry = -event.rotation[0] / FULL_SCALE
+    rz = event.rotation[1] / FULL_SCALE
 
     result = {
-        'type': 'motion',
+        'type' : 'motion',
         'trans': [lx, ly, lz],
-        'rot': [rx, ry, rz]
+        'rot'  : [rx, ry, rz]
     }
 
     return json.dumps(result)
