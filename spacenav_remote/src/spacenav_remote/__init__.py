@@ -1,0 +1,1 @@
+from spacenav_remote.server import SpacenavRemote
