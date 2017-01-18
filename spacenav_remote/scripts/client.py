@@ -10,7 +10,7 @@ from spnav import SPNAV_EVENT_MOTION
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--quite", action="store_true", help="Do not print messages")
-parser.add_argument("-p", "--port", default=6564, help="port, default 6564")
+parser.add_argument("-p", "--port", default=6564, help="port, default 6564", type=int)
 parser.add_argument("-s", "--host", default='localhost', help="host, default localhost")
 parser.add_argument("-d", "--diapasone", default=355, help="Full diapasone, default 355")
 
