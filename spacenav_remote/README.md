@@ -3,8 +3,11 @@
 ### Usage
 
 1. Run spcenav_remote ros node on displaynode
-2. Forward port `6564`
-3. Run scrips/client.py on client computer
+2. Open the port 6564 on the remote system by adding the below to /etc/iptables.conf:
+`-A INPUT -p tcp -s 10.42.0.0/16 --dport 6564 -j ACCEPT`
+3. Forward port `6564`
+4. Install the `spnav` package: `pip install spnav`
+5. Run scrips/client.py on client computer
 
 
 ### ROS Nodes
