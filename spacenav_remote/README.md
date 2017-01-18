@@ -2,14 +2,14 @@
 
 ### Pre requirements
 
-On a client side install `spnav` python package
+On a **client** side install `spnav` python package
 
     `pip install spnav`
 
 
 ### Usage
 
-1. Run spcenav_remote ros node on displaynode
+1. Run spcenav_remote ros node on **displaynode**
 
     rosrun spacenav_remote server.py
 
@@ -18,7 +18,7 @@ On a client side install `spnav` python package
     -A INPUT -p tcp -s 10.42.0.0/16 --dport 6564 -j ACCEPT
 
 3. Forward port `6564`
-4. Run scrips/client.py on client computer
+4. Run scrips/client.py on **client** computer
 
 
 ### ROS Nodes
