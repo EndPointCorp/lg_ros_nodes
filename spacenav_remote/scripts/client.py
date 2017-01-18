@@ -3,6 +3,7 @@
 import json
 import socket
 import argparse
+import time
 from math import fabs
 
 from spnav import spnav_open, spnav_poll_event, spnav_close
@@ -11,6 +12,7 @@ from spnav import SPNAV_EVENT_MOTION
 parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--quite", action="store_true", help="Do not print messages")
 parser.add_argument("-p", "--port", default=6564, help="port, default 6564", type=int)
+parser.add_argument("-r", "--reconnect", action="store_true", help="Try to reconnect")
 parser.add_argument("-s", "--host", default='localhost', help="host, default localhost")
 parser.add_argument("-d", "--diapasone", default=355, help="Full diapasone, default 355")
 
@@ -24,6 +26,7 @@ parser.add_argument("--angular-scale", default=1.0, help="Scale factor for linea
 args = parser.parse_args()
 
 QUITE = args.quite
+RECONNECT = args.reconnect
 HOST = args.host
 PORT = args.port
 FULL_SCALE = float(args.diapasone)
@@ -36,8 +39,7 @@ ANGULAR_SCALE = float(args.angular_scale)
 def main():
     spnav_open()
 
-    print "Connecting to {} {}".format(HOST, PORT)
-    s = open_scoket(host=HOST, port=PORT)
+    s = open_scoket(host=HOST, port=PORT, reconnect=RECONNECT)
 
     def process_spnav_evnt(event):
         norm_event = normalize(event)
@@ -100,10 +102,26 @@ def normalize(event):
 
     return result
 
-def open_scoket(host="localhost", port=6564):
+def open_scoket(host="localhost", port=6564, reconnect=True):
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    soc.connect((host, port))
+
+    while True:
+        try:
+            try:
+                print "Connecting to {} {}".format(host, port)
+                soc.connect((host, port))
+                break
+            except IOError, e:
+                if reconnect:
+                    print "Failed to open connection, will retry in 2 seconds"
+                    time.sleep(2)
+                else:
+                    print e
+                    quit()
+        except KeyboardInterrupt:
+            quit()
+
     return soc
 
 if __name__ == '__main__':
