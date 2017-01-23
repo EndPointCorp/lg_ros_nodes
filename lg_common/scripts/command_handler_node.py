@@ -7,6 +7,7 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'command_handler_node'
 
+
 def handle_command(msg):
     code = msg.data
     system('lg-code-to-command -c ~/etc/keywatch.conf %s' % code)

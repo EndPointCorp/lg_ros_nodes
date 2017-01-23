@@ -15,6 +15,7 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'lg_mirror_touch_router'
 
+
 def main():
     rospy.init_node(NODE_NAME)
 

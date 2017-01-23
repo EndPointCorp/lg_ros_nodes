@@ -6,7 +6,7 @@ import rospy
 from std_msgs.msg import String
 from lg_common.helpers import run_with_influx_exception_handler
 
-NODE_NAME='sqlite_rfid_storage'
+NODE_NAME = 'sqlite_rfid_storage'
 
 
 class MockPub(object):

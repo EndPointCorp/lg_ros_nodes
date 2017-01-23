@@ -12,6 +12,7 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'state_tracker'
 
+
 class StateTracker(object):
     def __init__(self, state_publisher, update_rfid_pub, last_uscs_service,
                  tactile_flag='', display_url_service=None, kiosk_url_service=None):

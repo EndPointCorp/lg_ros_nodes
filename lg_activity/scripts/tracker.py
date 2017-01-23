@@ -12,6 +12,7 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'lg_activity'
 
+
 def main():
     rospy.init_node(NODE_NAME, anonymous=False)
 

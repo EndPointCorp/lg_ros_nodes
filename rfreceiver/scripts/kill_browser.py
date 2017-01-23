@@ -11,6 +11,7 @@ DEVNULL = open(os.devnull, 'w')
 CLEAR_BUTTON = 2
 NODE_NAME = 'rfreceiver_kill_browser'
 
+
 class RfreceiverAction:
     def __init__(self):
         rospy.init_node(NODE_NAME)
