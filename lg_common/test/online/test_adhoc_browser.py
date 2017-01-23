@@ -281,12 +281,11 @@ class TestAdhocBrowser(unittest.TestCase):
         2. emit the same message again and verify that they havent been updated
         3. emit same message but with a different slug - verify that they havent been touched
         """
-        # 1
 
+        # 1
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.message_emission_grace_time)
         wait_for_assert_equal(len(self.director_scene_mock.messages), 1, self.preloading_grace_time)
-
 
         # no director window ready should be published
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)

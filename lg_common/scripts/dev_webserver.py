@@ -19,6 +19,7 @@ class DevStaticHandler(tornado.web.StaticFileHandler):
     def compute_etag(self):
         return None
 
+
 def main():
     rospy.init_node(NODE_NAME)
 

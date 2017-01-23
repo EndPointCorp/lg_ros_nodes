@@ -9,6 +9,7 @@ from spacenav_remote import SpacenavRemote
 
 NODE_NAME = 'spacenav_remote'
 
+
 def main():
     rospy.init_node(NODE_NAME)
     topic = rospy.get_param('~topic', '/spacenav')
@@ -56,6 +57,7 @@ def main():
 
     rospy.on_shutdown(shutdown_server)
     rospy.spin()
+
 
 def byteify(input):
     if isinstance(input, dict):

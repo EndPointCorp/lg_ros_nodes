@@ -36,6 +36,7 @@ ANGULAR_DEAD_ZONE = args.angular_threshold if args.angular_threshold else tresho
 LINEAR_SCALE = float(args.linear_scale)
 ANGULAR_SCALE = float(args.angular_scale)
 
+
 def main():
     spnav_open()
 
@@ -64,14 +65,17 @@ def main():
         spnav_close()
         socket_close(s)
 
+
 def send(msg, sock=None):
     data = msg + "\n"
     sock.send(data)
     if not QUITE:
         print msg
 
+
 def socket_close(sock):
     sock.close()
+
 
 def normalize(event):
 
@@ -95,12 +99,13 @@ def normalize(event):
         return None
 
     result = {
-        'type' : 'motion',
+        'type': 'motion',
         'trans': [lx, ly, lz],
-        'rot'  : [rx, ry, rz]
+        'rot': [rx, ry, rz]
     }
 
     return result
+
 
 def open_scoket(host="localhost", port=6564, reconnect=True):
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

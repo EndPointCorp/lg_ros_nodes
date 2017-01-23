@@ -4,8 +4,10 @@ import SocketServer
 import thread
 import socket
 
+
 def print_handler(data):
     print data
+
 
 class MyTCPHandler(SocketServer.StreamRequestHandler):
 
@@ -19,10 +21,12 @@ class MyTCPHandler(SocketServer.StreamRequestHandler):
             self.callback(data)
             data = self.rfile.readline().strip()
 
+
 def handler_factory(callback):
     def createHandler(*args, **keys):
         return MyTCPHandler(callback, *args, **keys)
     return createHandler
+
 
 class SpacenavRemote(object):
     def __init__(self, handler=print_handler, port=6465):

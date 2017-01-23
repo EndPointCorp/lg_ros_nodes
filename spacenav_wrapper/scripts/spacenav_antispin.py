@@ -8,6 +8,7 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'spacenav_anti_spin'
 
+
 def get_fullscale():
     params = rospy.get_param_names()
     for param in params:

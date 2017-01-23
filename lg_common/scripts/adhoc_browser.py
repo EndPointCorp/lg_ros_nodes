@@ -10,7 +10,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import Ready
 
-NODE_NAME='lg_adhoc_browser'
+NODE_NAME = 'lg_adhoc_browser'
+
 
 def main():
     rospy.init_node(NODE_NAME, anonymous=True)
