@@ -1031,3 +1031,39 @@ def director_listener_state_setter(state_pub, activity_list=None):
                 return
         state_pub.publish(ApplicationState.HIDDEN)
     rospy.Subscriber('/director/scene', GenericMessage, _do_stuff)
+
+
+def required_param(key, coercer=None):
+    """
+    Requires a ROS parameter to be set and returns its value, optionally
+    coercing to a specific type.
+
+    This method requires an initialized ROS node (rospy.init_node)
+
+    Args:
+        key (str): ROS parameter key.
+        coercer (type): Optional type to coerce.
+
+    Returns:
+        Parameter value.  The type will be either the type provided as the
+        coercer (if any) or automatically chosen by rospy.
+
+    Raises:
+        KeyError: The key could not be found in ROS params.
+        ValueError: Failed to coerce the value.
+    """
+    value = rospy.get_param(key)
+    if value is None:
+        raise KeyError('"{}" param required but not found'.format(key))
+    if coercer is not None:
+        try:
+            value = coercer(value)
+        except:
+            raise ValueError(
+                'Failed to coerce parameter: "{}" with value: "{}" to: "{}"'.format(
+                    key,
+                    value,
+                    coercer
+                )
+            )
+    return value
