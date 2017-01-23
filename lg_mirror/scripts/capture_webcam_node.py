@@ -3,17 +3,9 @@
 import rospy
 from lg_mirror.capture_webcam import CaptureWebcam
 from lg_common.helpers import run_with_influx_exception_handler
+from lg_common.helpers import required_param
 
 NODE_NAME = 'mirror_capture_webcam'
-
-
-def required_param(key, coer=None):
-    val = rospy.get_param(key)
-    if val is None:
-        raise ValueError('"{}" param required'.format(key))
-    if coer is not None:
-        val = coer(val)
-    return val
 
 
 def main():
