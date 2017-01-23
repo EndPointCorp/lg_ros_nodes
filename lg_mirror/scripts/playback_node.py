@@ -6,15 +6,10 @@ from lg_mirror.playback import MirrorPlaybackPool
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state
 from lg_common.helpers import run_with_influx_exception_handler
+from lg_common.helpers import required_param
 
 
 NODE_NAME = 'mirror_playback'
-
-def required_param(key):
-    val = rospy.get_param(key)
-    if val is None:
-        raise ValueError('"{}" param required'.format(key))
-    return val
 
 
 def main():

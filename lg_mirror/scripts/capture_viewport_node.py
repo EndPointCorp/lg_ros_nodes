@@ -5,21 +5,12 @@ import rospy
 from lg_mirror.capture_viewport import CaptureViewport
 from lg_mirror.utils import get_viewport_image_topic
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.helpers import handle_initial_state
+from lg_common.helpers import handle_initial_state, required_param
 from sensor_msgs.msg import CompressedImage
 from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'mirror_capture_viewport'
-
-
-def required_param(key, coer=None):
-    val = rospy.get_param(key)
-    if val is None:
-        raise ValueError('"{}" param required'.format(key))
-    if coer is not None:
-        val = coer(val)
-    return val
 
 
 def main():
