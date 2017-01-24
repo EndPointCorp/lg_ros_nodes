@@ -66,7 +66,6 @@ catkin/
 # debian building stuff
 ros_metapackage/ns-control
 
-<<<<<<< HEAD
 # dont commit ctags
 tags
 
@@ -76,6 +75,7 @@ tags
 
 # pulsnowflake
 pulsar.log
+
 # personal launch file
 tmp.launch
 
