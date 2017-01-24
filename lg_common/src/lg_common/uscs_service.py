@@ -61,6 +61,13 @@ class USCSService:
 
         self.state = self._grab_state(initial_state_scene_url)
 
+	if not self.on_offline_state:
+            """
+            By default, when offline, go to initial state if there is no offline state
+            explicitly specifyed.
+            """
+            self.on_offline_state = self.state
+
         if self.state is None:
             self.state = USCSMessageResponse()
 
