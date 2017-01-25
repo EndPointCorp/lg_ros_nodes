@@ -2,8 +2,8 @@
 Changelog for package spacenav_remote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.2 (2017-01-25)
+------------------
 * Added missing changelog
 * Fix PEP8 errors
 * Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)

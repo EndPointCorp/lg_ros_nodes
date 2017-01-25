@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.2 (2017-01-25)
+------------------
 * Fixed influx exception writing
 * use inintial state as default state for offline mode
 * Fix PEP8 errors
