@@ -2,6 +2,11 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix PEP8 errors
+* Contributors: Matt Vollrath
+
 1.6.1 (2017-01-12)
 ------------------
 

@@ -4,6 +4,30 @@ Changelog for package spacenav_remote
 
 Forthcoming
 -----------
+* Added missing changelog
+* Fix PEP8 errors
+* Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
+  Add spacenav_remote node and spacenav client script
+  Commits history:
+  * Add spacenav remote node
+  * Fixing build
+  * Fix dependancies
+  * Fix threading locks
+  * chmod +x on scripts
+  * Fix setup.py
+  * Fix thread start
+  * Add socket opt, TCP no delay
+  * Run spacenav remote server standalone without ROS
+  * Refactor client: keep connection open, fix networking
+  * Fix messages parsing
+  * Fix dict values access
+  * Normalize spacenav scale (using the code from original spacenav ros node)
+  * Add arg parsing
+  * Added information for running the client
+  * Set param types to int where needed
+  * More details in readme
+* Contributors: Dmitry Kiselev, Matt Vollrath, Wojciech Ziniewicz
+
 * Fix PEP8 errors
 * Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
   Add spacenav_remote node and spacenav client script
