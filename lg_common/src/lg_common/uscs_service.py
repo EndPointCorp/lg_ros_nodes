@@ -71,27 +71,27 @@ class USCSService:
         if self.state is None:
             self.state = USCSMessageResponse()
 
-    def handle_connectivity_message(self, message):
+    def handle_offline_message(self, message):
         """
         Accepts online/offline state message
         and emits appropriate message from ivars
 
-        If data == True then emit on_online_state message
-        If data == False then emit on_offline_state message
+        If data == True then emit on_offline_state message
+        If data == False then emit on_online_state message
         """
         if self.director_scene_publisher:
-            if message.data is True and self.on_online_state:
+            self.online = not message.data
+            if self.online is True:
                 """
                 We became online
                 """
-                if self.idempotently_publish_scene(self.on_online_state):
-                    self.online = True
-            if message.data is False and self.on_offline_state:
+                self.idempotently_publish_scene(self.on_online_state)
+
+            if self.online is False:
                 """
                 We became offline
                 """
-                if self.idempotently_publish_scene(self.on_offline_state):
-                    self.online = False
+                self.idempotently_publish_scene(self.on_offline_state)
 
     def handle_activity_message(self, message):
         """
