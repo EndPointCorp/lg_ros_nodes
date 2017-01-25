@@ -79,6 +79,7 @@ class USCSService:
         If data == True then emit on_offline_state message
         If data == False then emit on_online_state message
         """
+        rospy.loginfo("Incoming message: %s. Currently offline: %s" % (message, self.offline))
         if self.director_scene_publisher:
             self.offline = message.data
             if self.offline is False:
