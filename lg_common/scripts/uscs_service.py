@@ -37,7 +37,10 @@ def main():
                 port = 80
             else:
                 port = scheme.port
-            check_www_dependency(depend_on_scene_repository, scheme.hostname, port, param[1:], global_dependency_timeout)
+            check_www_dependency(depend_on_scene_repository,
+                                 scheme.hostname,
+                                 port, param[1:],
+                                 global_dependency_timeout)
         return url
 
     rospy.init_node(NODE_NAME, anonymous=False)
