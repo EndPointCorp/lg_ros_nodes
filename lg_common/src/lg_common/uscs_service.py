@@ -61,7 +61,7 @@ class USCSService:
 
         self.state = self._grab_state(initial_state_scene_url)
 
-	if not self.on_offline_state:
+        if not self.on_offline_state:
             """
             By default, when offline, go to initial state if there is no offline state
             explicitly specifyed.
@@ -80,14 +80,14 @@ class USCSService:
         If data == False then emit on_online_state message
         """
         if self.director_scene_publisher:
-            self.online = not message.data
-            if self.online is True:
+            self.offline = message.data
+            if self.offline is False:
                 """
                 We became online
                 """
                 self.idempotently_publish_scene(self.on_online_state)
 
-            if self.online is False:
+            if self.offline is True:
                 """
                 We became offline
                 """
@@ -128,9 +128,11 @@ class USCSService:
             new_state = json.loads(scene.message)
 
             if current_state['slug'] == new_state['slug']:
-                rospy.loginfo("Not publishing scene '%s' as it's already published" % current_state['slug'])
+                rospy.loginfo("Not publishing scene '%s' as it's " \
+                              "already published" % current_state['slug'])
             else:
-                rospy.loginfo("Publishing scene '%s' due to a callback for new state" % new_state['slug'])
+                rospy.loginfo("Publishing scene '%s' due to a callback "\
+                              "for new state" % new_state['slug'])
                 self.director_scene_publisher.publish(scene)
 
             return True
@@ -185,7 +187,7 @@ class USCSService:
                 message = json.loads(message)
             return message
         except ValueError:
-            rospy.logerr("invalid initial_state url: (%s)" % scene_url)
+            rospy.logerr("invalid json: (%s)" % url)
             rospy.sleep(3)
             return None
 
