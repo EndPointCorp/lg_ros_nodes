@@ -33,12 +33,10 @@ def main():
     port = rospy.get_param('~port', 8765)
     current_planet = None
 
-    KmlUpdateHandler.timeout = float(rospy.get_param('~request_timeout', 0))
-    if KmlUpdateHandler.timeout < 0:
-        rospy.logerr('Request timeout must be >= 0')
-        return
-    elif KmlUpdateHandler.timeout > 0:
-        rospy.logwarn('Request timeout (long polling) in kmlsync is experimental')
+    req_timeout_probe = float(rospy.get_param('~request_timeout'))
+    if req_timeout_probe is not None:
+        rospy.logwarn('request_timeout parameter is not active (value is zero, no polling)')
+    KmlUpdateHandler.timeout = 0
 
     kmlsync_server = tornado.web.Application([
         (r'/master.kml', KmlMasterHandler),

@@ -2,6 +2,11 @@
 Changelog for package lg_sreenshot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.2 (2017-01-25)
+------------------
+* Fix tab characters in google-search.js
+* Contributors: Matt Vollrath
+
 1.6.1 (2017-01-12)
 ------------------
 

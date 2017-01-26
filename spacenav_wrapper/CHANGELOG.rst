@@ -2,6 +2,12 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.2 (2017-01-25)
+------------------
+* Fix PEP8 errors
+* Remove unsed import
+* Contributors: Matt Vollrath, kiselev-dv
+
 1.6.1 (2017-01-12)
 ------------------
 
