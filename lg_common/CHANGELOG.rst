@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.2 (2017-01-25)
+------------------
+* Fixed influx exception writing
+* use inintial state as default state for offline mode
+* Fix PEP8 errors
+* Add required_param helper with tests
+* Contributors: Matt Vollrath, Wojciech Ziniewicz, kiselev-dv
+
 1.6.1 (2017-01-12)
 ------------------
 * fix error in director state setter

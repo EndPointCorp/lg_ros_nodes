@@ -1,50 +1,67 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package rfreceiver
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package spacenav_remote
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.6.2 (2017-01-25)
 ------------------
+* Added missing changelog
 * Fix PEP8 errors
-* Contributors: Matt Vollrath
+* Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
+  Add spacenav_remote node and spacenav client script
+  Commits history:
+  * Add spacenav remote node
+  * Fixing build
+  * Fix dependancies
+  * Fix threading locks
+  * chmod +x on scripts
+  * Fix setup.py
+  * Fix thread start
+  * Add socket opt, TCP no delay
+  * Run spacenav remote server standalone without ROS
+  * Refactor client: keep connection open, fix networking
+  * Fix messages parsing
+  * Fix dict values access
+  * Normalize spacenav scale (using the code from original spacenav ros node)
+  * Add arg parsing
+  * Added information for running the client
+  * Set param types to int where needed
+  * More details in readme
+* Contributors: Dmitry Kiselev, Matt Vollrath, Wojciech Ziniewicz
+
+* Fix PEP8 errors
+* Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
+  Add spacenav_remote node and spacenav client script
+  Commits history:
+  * Add spacenav remote node
+  * Fixing build
+  * Fix dependancies
+  * Fix threading locks
+  * chmod +x on scripts
+  * Fix setup.py
+  * Fix thread start
+  * Add socket opt, TCP no delay
+  * Run spacenav remote server standalone without ROS
+  * Refactor client: keep connection open, fix networking
+  * Fix messages parsing
+  * Fix dict values access
+  * Normalize spacenav scale (using the code from original spacenav ros node)
+  * Add arg parsing
+  * Added information for running the client
+  * Set param types to int where needed
+  * More details in readme
+* Contributors: Dmitry Kiselev, Matt Vollrath
 
 1.6.1 (2017-01-12)
 ------------------
 
 1.6.0 (2016-12-23)
 ------------------
-* Made managed adhoc browser' tests' setUp and tearDown methods great a… (`#319 <https://github.com/endpointcorp/lg_ros_nodes/issues/319>`_)
-  * Made managed adhoc browser' tests' setUp and tearDown methods great again
-  * Probably fixed lg_stats tests
-  * Made all ros nodes voluntarily submit exceptions to influx
-  * Initial version of lg_Ros_nodes base
-  * updated docs for lg_ros_nodes_base
-  * Ping CI
-  * Ping CI
-  * Proper name for dockerfile
-  * Dont clean up stuff - jenkins will do it
-  * Wait 2 secs to turn into active
-  * Made changes to lg_activity tests to be less load susceptible
-  * Poll tracker until becomes inactive
-  * Another try to poll activity status
-  * Even more tests refactoring
-  * Remove unnecessary asserts
-  * Let's just not
-  * Increase message emission grace time
-  * Removed even more unncecessary asserts
-  * Fix wrong var during exception handling
-  * Possible breakage fix
-* Contributors: Wojciech Ziniewicz
 
 1.5.26 (2016-12-21)
 -------------------
 
 1.5.25 (2016-12-14)
 -------------------
-* new rfreceiver node
-* Contributors: Will Plaut
-
-* new rfreceiver node
-* Contributors: Will Plaut
 
 1.5.24 (2016-11-30 22:05)
 -------------------------
@@ -409,6 +426,9 @@ Changelog for package rfreceiver
 1.1.21 (2015-10-22)
 -------------------
 
+1.1.20 (2015-10-21)
+-------------------
+
 1.1.19 (2015-10-20 21:30)
 -------------------------
 
@@ -478,6 +498,9 @@ Changelog for package rfreceiver
 1.0.7 (2015-08-12 14:05)
 ------------------------
 
+1.0.6 (2015-08-10)
+------------------
+
 1.0.5 (2015-08-03)
 ------------------
 
@@ -510,3 +533,6 @@ Changelog for package rfreceiver
 
 0.0.2 (2015-07-21 17:11)
 ------------------------
+
+0.0.1 (2015-07-08)
+------------------

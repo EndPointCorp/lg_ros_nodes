@@ -52,7 +52,7 @@ function cleanup() {
 
   dangling="$(docker images --filter "dangling=true" -q --no-trunc 2>/dev/null)"
   if [ -n "$dangling" ]; then
-    docker rmi "$dangling"
+    docker rmi "$dangling" || true
   fi
 
   exit $RETCODE

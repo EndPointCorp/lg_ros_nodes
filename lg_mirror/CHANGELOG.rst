@@ -2,6 +2,12 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.2 (2017-01-25)
+------------------
+* Fix PEP8 errors
+* Use required_param helper in lg_mirror scripts
+* Contributors: Matt Vollrath
+
 1.6.1 (2017-01-12)
 ------------------
 

@@ -47,6 +47,5 @@ if (CATKIN_ENABLE_TESTING)
   catkin_add_nosetests(test/test_query_writer.py)
   catkin_add_nosetests(test/test_query_queue.py)
   add_rostest(test/kmlsync/kmlsync.test)
-  add_rostest(test/kmlsync/kmlsync_polling.test)
 endif()
 
