@@ -19,7 +19,7 @@ class TestUSCSService(unittest.TestCase):
     def setUp(self):
         self.director_scene_publisher = MockPub()
         self.us = USCSService(
-            initial_state_scene_url='',
+            initial_state_scene_url='data:application/json,{"slug":"test"}',
             on_online_state_scene_url='',
             on_offline_state_scene_url='',
             on_active_state_scene_url='',
@@ -30,10 +30,15 @@ class TestUSCSService(unittest.TestCase):
     def test_1_no_messages_published_if_no_urls_specified(self):
         false_message = Bool(data=False)
         true_message = Bool(data=True)
+
         self.us.handle_offline_message(false_message)
         self.assertEqual(len(self.director_scene_publisher.published_messages), 0)
+
+        # Disable this check, because now we publish
+        # initial state on going offline.
         self.us.handle_offline_message(true_message)
-        self.assertEqual(len(self.director_scene_publisher.published_messages), 0)
+        self.assertEqual(len(self.director_scene_publisher.published_messages), 1)
+
         self.us.handle_activity_message(true_message)
         self.assertEqual(len(self.director_scene_publisher.published_messages), 0)
         self.us.handle_activity_message(false_message)
