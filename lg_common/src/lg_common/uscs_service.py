@@ -42,7 +42,7 @@ class USCSService:
             rospy.loginfo("Enabling on_offline_state handling")
             self.on_offline_state = self._grab_scene(on_offline_state_scene_url)
         else:
-            rospy.loginfo("Disabling on_offline_state handling")
+            rospy.loginfo("Will use initial state for on_offline_state")
             self.on_offline_state = None
 
         if on_active_state_scene_url:
@@ -61,15 +61,15 @@ class USCSService:
 
         self.state = self._grab_state(initial_state_scene_url)
 
-        if not self.on_offline_state:
+        if self.state is None:
+            self.state = USCSMessageResponse()
+
+        if self.on_offline_state is None:
             """
             By default, when offline, go to initial state if there is no offline state
             explicitly specifyed.
             """
             self.on_offline_state = self.state
-
-        if self.state is None:
-            self.state = USCSMessageResponse()
 
     def handle_offline_message(self, message):
         """
