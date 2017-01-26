@@ -230,6 +230,8 @@ class TestAdhocBrowser(unittest.TestCase):
                          "--enable-crash-reporter")
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
 
+        wait_for_assert_equal(len(self.get_browsers_thru_service('center').items()), 1, self.preloading_grace_time)
+
         browsers_on_center = self.get_browsers_thru_service('center')
 
         self.assertEqual('--disable-out-of-process-pac' in browsers_on_center.items()[0][1]['command_line_args'], True)
