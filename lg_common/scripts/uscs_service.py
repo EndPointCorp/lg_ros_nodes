@@ -37,14 +37,17 @@ def main():
                 port = 80
             else:
                 port = scheme.port
-            check_www_dependency(depend_on_scene_repository, scheme.hostname, port, param[1:], global_dependency_timeout)
+            check_www_dependency(depend_on_scene_repository,
+                                 scheme.hostname,
+                                 port, param[1:],
+                                 global_dependency_timeout)
         return url
 
     rospy.init_node(NODE_NAME, anonymous=False)
 
     director_topic = rospy.get_param('~director_topic', '/director/scene')
     message_topic = rospy.get_param('~message_topic', '/uscs/message')
-    connectivity_topic = rospy.get_param('~connectivity_topic', '/lg_offliner/offline')
+    offline_topic = rospy.get_param('~offline_topic', '/lg_offliner/offline')
     activity_topic = rospy.get_param('~activity_topic', '/activity/active')
     depend_on_scene_repository = rospy.get_param('~depend_on_scene_repository', True)
     global_dependency_timeout = rospy.get_param('/global_dependency_timeout', 15)
@@ -68,7 +71,7 @@ def main():
     )
 
     rospy.Subscriber(director_topic, GenericMessage, us.update_uscs_message)
-    rospy.Subscriber(connectivity_topic, Bool, us.handle_connectivity_message)
+    rospy.Subscriber(offline_topic, Bool, us.handle_offline_message)
     rospy.Subscriber(activity_topic, Bool, us.handle_activity_message)
 
     rospy.Service(message_topic, USCSMessage, us.current_uscs_message)
