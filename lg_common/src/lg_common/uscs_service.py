@@ -129,10 +129,10 @@ class USCSService:
             new_state = json.loads(scene.message)
 
             if current_state['slug'] == new_state['slug']:
-                rospy.loginfo("Not publishing scene '%s' as it's " \
+                rospy.loginfo("Not publishing scene '%s' as it's "
                               "already published" % current_state['slug'])
             else:
-                rospy.loginfo("Publishing scene '%s' due to a callback "\
+                rospy.loginfo("Publishing scene '%s' due to a callback "
                               "for new state" % new_state['slug'])
                 self.director_scene_publisher.publish(scene)
 
