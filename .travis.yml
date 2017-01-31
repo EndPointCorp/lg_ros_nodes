@@ -1,43 +1,7 @@
-language:
-  - python
-python:
-  - "2.7"
+sudo: required
 
-branches:
-  only:
-    - master
-    - development
+services:
+  - docker
 
-install:
-  - sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
-  - wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-  - sudo apt-get update -qq
-  - sudo apt-get install python-catkin-pkg python-rosdep ros-indigo-catkin -qq
-  - sudo rosdep init
-  - rosdep update
-  - mkdir -p /tmp/ws/src
-  - ln -s `pwd` /tmp/ws/src/package
-  - cd /tmp/ws
-  - rosdep install --from-paths src --ignore-src --rosdistro indigo -y
-before_script:
-  - source /opt/ros/indigo/setup.bash
-  - catkin_make
-  - catkin_make install
-  - sudo apt-get install ros-indigo-rostest
-  - source devel/setup.bash
-  - export ROS_MASTER_URI=http://localhost:11311
-  - export ROS_HOSTNAME=localhost
 script:
-  - catkin_make run_tests
-  git clean -fdx
-  ./scripts/init_workspace -x ~/jobs/portal-ros_for_lg-ros/workspace/catkin/src/appctl/
-  cd catkin/
-  # cleans the workspace
-  rm -rf devel/ build/
-  # builds the project
-  catkin_make
-  # loads the environment
-  source devel/setup.bash
-  cd ../
-  # custom script to lookup and run nosetests and rostests
-  scripts/test_runner.py
+  - scripts/test_docker.sh
