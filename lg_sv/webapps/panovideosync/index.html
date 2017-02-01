@@ -1,0 +1,64 @@
+<html>
+<head>
+<script src="js/lib/three.min.js"></script>
+<script src="js/lib/eventemitter2.min.js"></script>
+<script src="js/lib/roslib.min.js"></script>
+<script src="js/synced_pano_video.js"></script>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+}
+</style>
+</head>
+<body>
+
+<script>
+function getParameterByName(name, type, def) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+                         results = regex.exec(location.search);
+  return (results === null ? def : type(
+          decodeURIComponent(results[1].replace(/\+/g, ' '))));
+}
+
+function isTrue(val) {
+  return val === '1' ||
+    val === 1 ||
+    val === true ||
+    ('' + val).toLowerCase() === 'true';
+}
+
+var videoUrl = getParameterByName('videoUrl', String, null);
+var master = getParameterByName('master', Boolean, false);
+var hFov = getParameterByName('hFov', Number, 35);
+var yawOffsets = getParameterByName('yawOffsets', String, '0');
+yawOffsets = yawOffsets.split(/\s*,\s*/).map(Number);
+var rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
+var rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
+var rosbridgeSecure = getParameterByName('rosbridge_secure', isTrue, false);
+
+var protocol = (rosbridgeSecure ? 'wss' : 'ws') + '://';
+var rosbridgeUrl = protocol + rosbridgeHost + ':' + rosbridgePort;
+
+var ros = new ROSLIB.Ros();
+ros.connect(rosbridgeUrl);
+
+
+var sync = new SyncedPanoVideo({
+    master: master,
+    ros: ros,
+    hFov: hFov,
+    yawOffsets: yawOffsets
+});
+document.body.appendChild(sync.domElement);
+
+if (videoUrl) {
+  sync.loadVideoFromUrl(videoUrl);
+}
+
+sync.animate();
+</script>
+
+</body>
+</html>
