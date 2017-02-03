@@ -3,6 +3,7 @@
 import rospy
 import serial
 import json
+from sys import exit
 
 from std_msgs.msg import String, Bool
 from interactivespaces_msgs.msg import GenericMessage
@@ -24,7 +25,18 @@ class RfidListener(object):
         self._setup_device()
 
     def _setup_device(self):
-        self.device = serial.Serial(port=self.port, baudrate=self.baudrate)
+        for i in range(0, 31, 3):
+            if i == 30:
+                rospy.logerr("Killing self, could not find device or insufficient permissions")
+                exit(1)
+            try:
+                self.device = serial.Serial(port=self.port, baudrate=self.baudrate)
+                rospy.loginfo("%s: We have successfully connected to the serial device" % rospy.get_name())
+                break
+            except serial.SerialException as e:
+                rospy.logwarn("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
+                rospy.logwarn("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
+                rospy.sleep(i)
 
     def send_notification(self, msg):
         rospy.loginfo(msg)
