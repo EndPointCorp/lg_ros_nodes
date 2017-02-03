@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.3 (2017-02-03)
+------------------
 * Emit initial state for on_offline_message  (`#327 <https://github.com/endpointcorp/lg_ros_nodes/issues/327>`_)
   * Renamed connectivity_topic to offline topic
   * Use initial state as defaul on_offline_state state
