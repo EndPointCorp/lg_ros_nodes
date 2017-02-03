@@ -13,6 +13,11 @@ Attaches to a proximity sensor via USB serial port and publishes proximity infor
 
 * `baud_rate` : Baud rate for serial communications.  Defaults to 57600.
 
+* `serial_device_attempts`: The number of attempts the node will make
+  when trying to connect to the serial device. The number will be
+  multiplied by 3 and it will wait 3 seconds, then 6 seconds then... all
+  the way up to 3 * `serial_device_attempts`. Default: `10`
+
 ##### Topics
 
 * `/proximity/distance` : `sensor_msgs/Range` - Distance (in meters) to nearest object in the sensor's field of view.

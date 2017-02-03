@@ -28,13 +28,26 @@ def main():
     device_path = rospy.get_param('~device_path', '/dev/maxbotix.0')
     baud_rate = int(rospy.get_param('~baud_rate', 57600))
     test_mode = rospy.get_param('~test_mode', False)
+    n_attempts = int(rospy.get_param('~serial_device_attempts', 10)) * 3  # 3 is a scale
 
-    if test_mode:
-        master, slave = pty.openpty()
-        serial_name = os.ttyname(slave)
-        sensor = serial.Serial(serial_name)
-    else:
-        sensor = serial.Serial(device_path, baud_rate)
+    for i in range(0, n_attempts + 1, 3):
+        if i == n_attempts:  # last iteration of loop, fail
+            rospy.logerr("Killing self, could not find device or insufficient permissions")
+            os.sys.exit(1)
+        try:
+            if test_mode:
+                master, slave = pty.openpty()
+                serial_name = os.ttyname(slave)
+                sensor = serial.Serial(serial_name)
+            else:
+                sensor = serial.Serial(device_path, baud_rate)
+            # if we are here, we have successfully set sensor so we break
+            rospy.loginfo("%s: We have successfully connected to the serial device" % rospy.get_name())
+            break
+        except serial.SerialException as e:
+            rospy.logwarn("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
+            rospy.logwarn("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
+            rospy.sleep(i)
 
     buf = ''
 
