@@ -2,6 +2,19 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Emit initial state for on_offline_message  (`#327 <https://github.com/endpointcorp/lg_ros_nodes/issues/327>`_)
+  * Renamed connectivity_topic to offline topic
+  * Use initial state as defaul on_offline_state state
+  * Update tests
+  * pep8
+  * Publish state message only on change online/ofline state
+* Wait until browser gets spawned
+* Made proper logic for rc25
+* PEP8 fix
+* Contributors: Dmitry Kiselev, Wojciech Ziniewicz
+
 1.6.2 (2017-01-25)
 ------------------
 * Fixed influx exception writing

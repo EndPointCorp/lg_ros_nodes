@@ -2,6 +2,9 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.6.2 (2017-01-25)
 ------------------
 * Fix PEP8 errors

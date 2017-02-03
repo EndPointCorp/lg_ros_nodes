@@ -2,6 +2,12 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add synchronized panoramic video player
+* Add street view dev launch file
+* Contributors: Matt Vollrath
+
 1.6.2 (2017-01-25)
 ------------------
 

@@ -2,6 +2,12 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Disable kmlsync polling
+  Disable the intermittent test as well.
+* Contributors: Matt Vollrath
+
 1.6.2 (2017-01-25)
 ------------------
 

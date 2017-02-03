@@ -2,6 +2,9 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.6.2 (2017-01-25)
 ------------------
 

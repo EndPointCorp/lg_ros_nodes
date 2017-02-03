@@ -2,6 +2,11 @@
 Changelog for package lg_proximity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* stop dying instantly when the prox sensor isn't found
+* Contributors: Jacob Minshall
+
 1.6.2 (2017-01-25)
 ------------------
 

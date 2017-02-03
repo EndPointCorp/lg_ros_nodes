@@ -2,6 +2,11 @@
 Changelog for package rfid_scanner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* stop dying instantly when the rfid device isn't found
+* Contributors: Jacob Minshall
+
 1.6.2 (2017-01-25)
 ------------------
 * Fix PEP8 errors
