@@ -166,10 +166,35 @@ SyncedPanoVideo.prototype.initCameraSync_ = function() {
   this.pov_ = [0, 0, 0];
   this.poseTopic_ = new ROSLIB.Topic({
     ros: this.ros,
-    name: '/streetview/pov',
+    name: '/panovideo/pov',
     messageType: 'geometry_msgs/Quaternion'
   });
   this.poseTopic_.subscribe(this.handlePovMessage.bind(this));
+  if (this.master) {
+    // XXX: This is backwards.
+    // We need to initialize the camera to zero when a new video is loaded.
+    // This should really come from the backend, which has not been written yet.
+    this.poseTopic_.advertise();
+    this.poseTopic_.publish(new ROSLIB.Message({
+      x: 0,
+      y: 0,
+      z: 0,
+      w: 0
+    }));
+    // XXX: This is backwards.
+    // We need to signal the SpaceNav "server" that the application is visible.
+    // This should really come from the backend, which has not been written yet.
+    // Also, this is racing against a HIDDEN state on the topic from the backend.
+    this.stateTopic = new ROSLIB.Topic({
+      ros: this.ros,
+      name: '/panovideo/state',
+      messageType: 'lg_common/ApplicationState'
+    });
+    this.stateTopic.advertise();
+    this.stateTopic.publish(new ROSLIB.Message({
+      state: 'VISIBLE'
+    }));
+  }
 };
 
 /**
