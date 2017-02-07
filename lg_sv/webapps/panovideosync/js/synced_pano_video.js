@@ -99,6 +99,7 @@ SyncedPanoVideo.prototype.initViewer_ = function() {
 
   var sphereGeometry = new THREE.SphereGeometry(1000, 64, 64);
   sphereGeometry.scale(-1, 1, 1);
+  sphereGeometry.rotateY(Math.PI);
   var texture = new THREE.VideoTexture(
     this.video,
     THREE.UVMapping,
