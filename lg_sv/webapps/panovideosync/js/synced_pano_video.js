@@ -49,7 +49,7 @@ SyncedPanoVideo.prototype.loadVideoFromUrl = function(url) {
  */
 SyncedPanoVideo.prototype.initVideo_ = function() {
   this.video = document.createElement('video');
-  this.video.loop = true;
+  //this.video.loop = true;
   this.video.style.display = 'none';
 
   var self = this;
