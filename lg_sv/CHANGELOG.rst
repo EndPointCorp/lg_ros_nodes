@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.4 (2017-02-07)
+------------------
 * panovideosync: do not loop videos
 * Some contained hacks for panovideosync
   In lieu of real backend, this will work for initial demonstration.
