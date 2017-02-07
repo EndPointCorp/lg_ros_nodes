@@ -2,6 +2,9 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.6.3 (2017-02-03)
 ------------------
 * Disable kmlsync polling

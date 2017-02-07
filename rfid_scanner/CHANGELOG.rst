@@ -2,6 +2,9 @@
 Changelog for package rfid_scanner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.6.3 (2017-02-03)
 ------------------
 * stop dying instantly when the rfid device isn't found

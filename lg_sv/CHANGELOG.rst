@@ -2,6 +2,15 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* panovideosync: do not loop videos
+* Some contained hacks for panovideosync
+  In lieu of real backend, this will work for initial demonstration.
+* Fix zero heading in pano video webapp
+  Use the intended forward direction.
+* Contributors: Matt Vollrath
+
 1.6.3 (2017-02-03)
 ------------------
 * Add synchronized panoramic video player
