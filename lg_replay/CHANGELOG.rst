@@ -2,6 +2,11 @@
 Changelog for package lg_replay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* more fixes for not killing nodes when devices are gone
+* Contributors: Jacob Minshall
+
 1.6.4 (2017-02-07)
 ------------------
 
