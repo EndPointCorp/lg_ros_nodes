@@ -37,5 +37,5 @@ catkin_install_python(PROGRAMS
 
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  add_rostest(test/online/test_tracker.test)
+  #add_rostest(test/online/test_tracker.test)
 endif()
