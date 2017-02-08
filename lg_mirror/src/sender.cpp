@@ -20,6 +20,8 @@ const std::size_t EVENTS_QUEUE_LENGTH = 10;
 
 int main(int argc, char** argv) {
 
+  /* initialize variables */
+  int i = 0;
   /* initialize ros */
 
   ros::init(argc, argv, "lg_mirror_sender");
@@ -39,10 +41,17 @@ int main(int argc, char** argv) {
     exit(EXIT_FAILURE);
   }
 
-  if ((device_fd = open(device_path.c_str(), O_RDONLY | O_NONBLOCK)) < 0) {
-    perror("opening the file you specified");
-    ros::shutdown();
-    exit(EXIT_FAILURE);
+  while (true) {
+    if ((device_fd = open(device_path.c_str(), O_RDONLY | O_NONBLOCK)) < 0) {
+      ROS_ERROR("[%s]: Error while opening the file you specified (%s): %s",
+		ros::this_node::getName().c_str(), device_path.c_str(), strerror(errno));
+      ROS_ERROR("sleeping for %d seconds", i);
+      ros::Duration(i).sleep();
+      if (i < 30)
+        i += 3;
+    } else {
+      break;
+    }
   }
 
   /* set up fd polling */
