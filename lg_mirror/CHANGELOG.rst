@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.5 (2017-02-08)
+------------------
 * more fixes for not killing nodes when devices are gone
 * Contributors: Jacob Minshall
 

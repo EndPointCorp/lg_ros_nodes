@@ -2,8 +2,8 @@
 Changelog for package lg_rfreceiver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.5 (2017-02-08)
+------------------
 * pep8 fix
 * fixed up the lg_rfreceiver device reading technique
 * Contributors: Jacob Minshall, Will Plaut

@@ -2,8 +2,8 @@
 Changelog for package lg_proximity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.6.5 (2017-02-08)
+------------------
 * stop killing ros nodes because of missing device
 * Contributors: Will Plaut
 
