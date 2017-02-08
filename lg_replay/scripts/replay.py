@@ -33,10 +33,16 @@ def main():
     device_publisher = DevicePublisher(publisher)
 
     if device_path:
-        err, msg = check_device_path(device_path, user, group)
-        if err:
-            rospy.logerr('Invalid device path supplied: %s' % msg)
-            return
+        i = 0
+        while True:
+            err, msg = check_device_path(device_path, user, group)
+            if err:
+                rospy.logerr('[%s] Invalid device path supplied, sleeping for %s seconds and trying again: %s' % (rospy.get_name(), i, msg))
+            else:
+                break
+            rospy.sleep(i)
+            if i < 30:
+                i += 3
         device = InputDevice(device_path)
         if not device_name:
             device_name = device.name
