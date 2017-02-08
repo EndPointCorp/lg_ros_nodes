@@ -23,7 +23,6 @@ def main():
     baud_rate = rospy.get_param('~baud_rate', 9600)
     retry_grace_time = rospy.get_param('~retry_grace_time', 30)
 
-
     ready = False
     i = 0
     while not ready:
