@@ -25,6 +25,16 @@
         #wrapper {
             padding: 0;
         }
+        #info {
+            position: absolute;
+            bottom: 0px; width: 100%;
+            color: #bbbbbb;
+            padding: 5px;
+            font-family: 'Product Sans', sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+        }
     </style>
     <script src="../lib/common.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
@@ -34,30 +44,15 @@
     <script src="../lib/math3d.js"></script>
     <script src="../lib/sv_client.js"></script>
     <script src="../lib/sv_pov.js"></script>
+    <script src="js/attribution.js"></script>
     <script src="js/fov_fudge.js"></script>
     <script src="js/main.js"></script>
 </head>
 <body>
-    <div id="titlecard" style="display:none;
-           font-family: Roboto, Arial, sans-serif;
-           position: absolute;
-           font-size: 14px;
-           font-weight: bold;
-           top: 14px;
-           left: 20px;
-           z-index: 10;
-           background-color: rgba(34,34,34,.8);
-           height: 50;
-           width: 240;
-           color: white;
-           line-height: 24px;
-           padding: 20px;">
-    </div>
-
-    <div></div>
     <div id="wrapper">
-    <div id="map-canvas"></div>
+        <div id="map-canvas"></div>
     </div>
+    <div id="info"></div>
 </body>
 </html>
 <!--
