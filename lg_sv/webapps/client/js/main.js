@@ -3,16 +3,18 @@ var showAttribution = getParameterByName('showAttribution', stringToBoolean, fal
 var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 0);
-var shouldTilt = getParameterByName('tilt', stringToBoolean, false);
-var shouldZoom = getParameterByName('zoom', stringToBoolean, false);
-var initialZoom = getParameterByName('initialZoom', Number, 3);
-var scaleX = getParameterByName('scaleX', Number, 1.66);
-var scaleY = getParameterByName('scaleY', Number, 1.66);
-var scaleZ = getParameterByName('scaleZ', Number, 1);
 var initialPano = getParameterByName('panoid', String, '');
 var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
+// Find default scaleFactor (devicePixelRatio) setting in index.html.
+var scaleFactor = getParameterByName('scaleFactor', Number, window.devicePixelRatio);
+var scaleMatrix = [
+  [scaleFactor, 0, 0, 0],
+  [0, scaleFactor, 0, 0],
+  [0, 0, 1, 0],
+  [0, 0, 0, 1]
+];
 var lastPov = null;
 
 var initialize = function() {
@@ -81,41 +83,100 @@ var initializeRes = function(ros) {
   svClient.on('pano_changed', function(panoId) {
     console.log('Changing pano to', panoId);
     sv.setPano(panoId);
-    // TODO(wjp): create zoom function
-    sv.setZoom(initialZoom);
+    var fovFudge = getFovFudge(fieldOfView);
+    var zoomLevel = getZoomLevel(fieldOfView * scaleFactor * fovFudge);
+    sv.setZoom(zoomLevel);
     if (lastPov) {
       lastPov.w = 70;
       svClient.pubPov(lastPov);
     }
   });
 
-  var canvasRatio = 1;
-  var wrapper = $('#wrapper');
-  if (shouldTilt) {
-    wrapper.css('transform', getScaleString());
-    canvasRatio = parseMatrix(wrapper.css('transform'))[0];
+  /**
+   * Get the zoom level at a given horizontal fov.
+   *
+   * This is only correct at scaleFactor 1.0.
+   *
+   * @param {Number} hFov in degrees
+   * @return {Number} zoom level
+   */
+  function getZoomLevel(hFov) {
+    return -Math.log2(Math.tan(Math.PI * hFov / 360)) + 1;
   }
 
+  /**
+   * Multiply two matrices.
+   *
+   * <http://stackoverflow.com/a/27205341>
+   *
+   * @param a left matrix
+   * @param b right matrix
+   * @return result matrix
+   */
+  function multiply(a, b) {
+    var aNumRows = a.length, aNumCols = a[0].length,
+        bNumRows = b.length, bNumCols = b[0].length,
+        m = new Array(aNumRows);  // initialize array of rows
+    for (var r = 0; r < aNumRows; ++r) {
+      m[r] = new Array(bNumCols); // initialize the current row
+      for (var c = 0; c < bNumCols; ++c) {
+        m[r][c] = 0;              // initialize the current cell
+        for (var i = 0; i < aNumCols; ++i) {
+          m[r][c] += a[r][i] * b[i][c];
+        }
+      }
+    }
+    return m;
+  }
+
+  /**
+   * Builds the transform matrix to scale and rotate a canvas.
+   *
+   * @param {Array} scaleMatrix
+   * @param {Number} roll in radians
+   * @return {String} transform matrix CSS
+   */
+  function buildTransformMatrix(scaleMatrix, roll) {
+    var sr = Math.sin(roll);
+    var cr = Math.cos(roll);
+    var rotationMatrix = [
+      [cr, -sr, 0, 0],
+      [sr, cr, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1]
+    ];
+
+    var finalMatrix = multiply(rotationMatrix, scaleMatrix);
+    var flatMatrix = Array.prototype.concat.apply([], finalMatrix);
+
+    var cssTransform = ['matrix3d(', flatMatrix.join(), ')'].join(' ');
+    return cssTransform;
+  };
+
+  var wrapper = document.getElementById('wrapper');
+
+  /**
+   * Handles an incoming pov change.
+   *
+   * @param {Object} povQuaternion with keys {x, y, z, w}
+   **/
   var handleQuaternion = function(povQuaternion) {
     lastPov = povQuaternion;
     // TODO(mv): move quaternion parsing into StreetviewClient library
-    var viewportFOV = fieldOfView / canvasRatio;
-    var radianOffset = toRadians(viewportFOV * yawOffset);
+    var radianOffset = toRadians(fieldOfView * yawOffset);
+
     var htr = [povQuaternion.z, povQuaternion.x, 0];
-    if (! shouldTilt) {
-      htr[1] = 0;
-    }
     var transformedHTR = transformHTR(htr, radianOffset);
-    var roll = -transformedHTR[2];
     var pov = {
       heading: transformedHTR[0],
-      pitch: transformedHTR[1],
-      zoom: get_zoom(povQuaternion.w)
+      pitch: transformedHTR[1]
     };
+
+    var roll = transformedHTR[2];
+    var rollRads = toRadians(roll);
+
+    wrapper.style.transform = buildTransformMatrix(scaleMatrix, rollRads);
     sv.setPov(pov);
-    if (shouldTilt) {
-      canvas.css('transform', 'rotateZ(' + roll + 'deg);');
-    }
   };
   svClient.on('pov_changed', handleQuaternion);
 
@@ -124,32 +185,6 @@ var initializeRes = function(ros) {
   }
 };
 
-function get_zoom(z) {
-  if (!shouldZoom) {
-    return initialZoom;
-  }
-
-  var default_factor = 10;
-  var min_zoom = 0;
-  var max_zoom = 4;
-  var ret = max_zoom - z / default_factor;
-
-    if (ret < min_zoom)
-      ret = min_zoom;
-
-    if (ret > max_zoom)
-      ret = max_zoom;
-
-    return ret;
-}
-
-
 google.maps.event.addDomListener(window, 'load', initialize);
-
-function getScaleString() {
-  var ret = 'scale3d({x}, {y}, {z})';
-
-  return ret.replace('{x}', scaleX).replace('{y}', scaleY).replace('{z}', scaleZ);
-}
 
 // # vim: tabstop=8 expandtab shiftwidth=2 softtabstop=2

@@ -1,6 +1,10 @@
 <html>
 <title>panoviewer</title>
 <head>
+    <script>
+        // Override devicePixelRatio before loading any scripts.
+        window.devicePixelRatio = 2.04;
+    </script>
     <style>
         #map-canvas {
             background-color: black;
@@ -22,7 +26,6 @@
             padding: 0;
         }
     </style>
-              
     <script src="../lib/common.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
@@ -31,6 +34,7 @@
     <script src="../lib/math3d.js"></script>
     <script src="../lib/sv_client.js"></script>
     <script src="../lib/sv_pov.js"></script>
+    <script src="js/fov_fudge.js"></script>
     <script src="js/main.js"></script>
 </head>
 <body>
