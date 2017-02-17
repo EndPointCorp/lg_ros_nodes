@@ -47,7 +47,6 @@ var initializeRes = function(ros) {
   var attributionModule = new Attribution(document.getElementById('info'));
   var handleMetadataMsg = function(msg) {
     var data = JSON.parse(msg.data);
-    console.log(data);
     attributionModule.handleMetadata(data);
   };
 
@@ -79,7 +78,6 @@ var initializeRes = function(ros) {
   var svClient = new StreetviewClient(ros, sv);
 
   svClient.on('pano_changed', function(panoId) {
-    console.log('Changing pano to', panoId);
     sv.setPano(panoId);
     var fovFudge = getFovFudge(fieldOfView);
     var zoomLevel = getZoomLevel(fieldOfView * scaleFactor * fovFudge);

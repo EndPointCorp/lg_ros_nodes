@@ -49,13 +49,11 @@ Attribution.prototype.handleMetadata = function(panoData) {
   */
 
   if (attribs.length == 0) {
-    console.log('clearing');
     this.clear();
     return;
   }
 
   var attribHtml = attribs.join('<br />');
 
-  console.log('setting', attribHtml);
   this.el.innerHTML = attribHtml;
 };
