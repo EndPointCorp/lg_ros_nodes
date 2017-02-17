@@ -45,16 +45,17 @@ var initializeRes = function(ros) {
   });
 
   var attributionModule = new Attribution(document.getElementById('info'));
-  var handleMetadataMsg = function(msg) {
-    var data = JSON.parse(msg.data);
-    attributionModule.handleMetadata(data);
+  var handleMetadataResponse = function(response, stat) {
+    if (stat != google.maps.StreetViewStatus.OK) {
+      throw 'Metadata request status NOT OK: ' + stat;
+    }
+    attributionModule.handleMetadata(response);
   };
 
   var handlePanoIdMsg = function(msg) {
     $("#titlecard").hide();
   };
 
-  metadataTopic.subscribe(handleMetadataMsg);
   panoTopic.subscribe(handlePanoIdMsg);
 
 
@@ -77,6 +78,8 @@ var initializeRes = function(ros) {
 
   var svClient = new StreetviewClient(ros, sv);
 
+  var svService = new google.maps.StreetViewService();
+
   svClient.on('pano_changed', function(panoId) {
     sv.setPano(panoId);
     var fovFudge = getFovFudge(fieldOfView);
@@ -86,6 +89,7 @@ var initializeRes = function(ros) {
       lastPov.w = 70;
       svClient.pubPov(lastPov);
     }
+    svService.getPanorama({ pano: panoId }, handleMetadataResponse);
   });
 
   /**

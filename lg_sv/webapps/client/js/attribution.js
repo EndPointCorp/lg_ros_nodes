@@ -20,33 +20,23 @@ Attribution.prototype.clear = function() {
  */
 Attribution.prototype.handleMetadata = function(panoData) {
   var attribs = [];
-  /*
-  if (panoData.Data && panoData.Data.attribution_name) {
-    attribs.push(panoData.Data.attribution_name);
+
+  if (panoData.hasOwnProperty('copyright')) {
+    attribs.push(panoData.copyright);
   }
-  if (panoData.Data && panoData.Data.copyright) {
-    attribs.push(panoData.Data.copyright);
-  }
-  */
-  if (panoData.location) {
-    if (panoData.location.description) {
+  if (panoData.hasOwnProperty('location')) {
+
+    if (panoData.location.hasOwnProperty('description')) {
       attribs.push(panoData.location.description);
+
+    } else if (panoData.location.hasOwnProperty('shortDescription')) {
+      attribs.push(panoData.location.shortDescription);
     }
-    if (panoData.location.region && panoData.location.country) {
-      attribs.push(panoData.location.region + ', ' + panoData.location.country);
-    }
-    else if (panoData.location.region) {
-      attribs.push(panoData.location.region);
-    }
-    else if (panoData.location.country) {
-      attribs.push(panoData.location.country);
-    }
+
   }
-  /*
-  if (panoData.Data && panoData.Data.image_date) {
-    attribs.push('Image Date: ' + panoData.Data.image_date);
+  if (panoData.hasOwnProperty('imageDate')) {
+    attribs.push(panoData.imageDate);
   }
-  */
 
   if (attribs.length == 0) {
     this.clear();
