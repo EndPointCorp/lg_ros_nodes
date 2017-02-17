@@ -35,16 +35,12 @@ var initializeRes = function(ros) {
   var panoTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview/panoid',
-    messageType: 'std_msgs/String',
-    throttle_rate: 16,
-    queue_length: 1
+    messageType: 'std_msgs/String'
   });
   var metadataTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview/metadata',
-    messageType: 'std_msgs/String',
-    throttle_rate: 16,
-    queue_length: 1
+    messageType: 'std_msgs/String'
   });
 
   var handleMetadataMsg = function(msg) {
