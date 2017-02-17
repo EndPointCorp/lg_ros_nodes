@@ -67,8 +67,7 @@ var initializeRes = function(ros) {
   };
   var svOptions = {
     visible: true,
-    disableDefaultUI: true,
-    linksControl: showLinks
+    disableDefaultUI: true
   };
   var canvas = $('#map-canvas');
   var map = new google.maps.Map(canvas[0], mapOptions);
