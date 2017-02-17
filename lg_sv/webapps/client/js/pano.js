@@ -44,20 +44,20 @@ function init() {
   var metadataTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/panoviewer/metadata',
-    messageType: 'std_msgs/String',                                                                       
+    messageType: 'std_msgs/String',
     throttle_rate: 16,
     queue_length: 1
   });
-  
+
   var handleMetadataMsg = function(msg) {
     if (! showAttribution)
       return;
 
     $("#titlecard").show();
     $("#titlecard").text(JSON.parse(msg.data).location.description);
-  };  
-  
-  var handlePanoIdMsg = function(msg) {                                                                   
+  };
+
+  var handlePanoIdMsg = function(msg) {
     $("#titlecard").hide();
   };
 
