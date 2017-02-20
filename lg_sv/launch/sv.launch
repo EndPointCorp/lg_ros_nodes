@@ -23,7 +23,6 @@
   <node name="sv_left_one" pkg="lg_sv" type="launcher.py">
     <param name="depend_on_webserver" value="true"/>
     <param name="depend_on_rosbridge" value="true"/>
-    <param name="depend_on_webserver" value="true"/>
     <param name="viewport" value="left_one"/>
     <param name="yaw_offset" value="-1"/>
   </node>
