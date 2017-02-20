@@ -11,7 +11,7 @@ function Links(camera, scene) {
   this.scene.add(this.linkGroup);
   this.linkGroup.position.z = -250;
 
-  this.sphereSize = 20;
+  this.sphereSize = 16;
 
   // debug sphere for link positioning
   /*
@@ -104,7 +104,7 @@ Links.prototype.update = function(panoData) {
     var linkAnchor = new THREE.Object3D();
     linkAnchor.add(linkMesh);
 
-    var meshScale = 0.75;
+    var meshScale = 0.6;
     linkMesh.position.x = -8 * meshScale;
     linkMesh.position.y = -2 * meshScale;
     linkMesh.position.y = 0 * meshScale;
