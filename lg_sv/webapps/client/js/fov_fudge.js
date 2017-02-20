@@ -76,6 +76,6 @@ var getFovFudge = (function streetViewFovFudge() {
 
   return (function(hFov) {
     return interpolate(hFov, interpX, interpY);
-  })
+  });
 })();
 

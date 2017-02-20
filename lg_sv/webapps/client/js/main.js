@@ -118,9 +118,9 @@ var initializeRes = function(ros) {
    *
    * <http://stackoverflow.com/a/27205341>
    *
-   * @param a left matrix
-   * @param b right matrix
-   * @return result matrix
+   * @param {Array} a left matrix
+   * @param {Array} b right matrix
+   * @return {Array} result matrix
    */
   function multiply(a, b) {
     var aNumRows = a.length, aNumCols = a[0].length,

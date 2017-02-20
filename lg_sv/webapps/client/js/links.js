@@ -100,7 +100,7 @@ Links.prototype.update = function(panoData) {
       bevelThickness: 0.25
     };
     var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-    var linkMesh = new THREE.Mesh(geometry, linkMaterial); //, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } ) );
+    var linkMesh = new THREE.Mesh(geometry, linkMaterial);
     var linkAnchor = new THREE.Object3D();
     linkAnchor.add(linkMesh);
 
