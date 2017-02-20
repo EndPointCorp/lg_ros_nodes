@@ -5,6 +5,8 @@
         // Override devicePixelRatio before loading any scripts.
         window.devicePixelRatio = 2.04;
     </script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Product+Sans:400,400i,700,700i' rel='stylesheet' type='text/css'>
     <style>
         #map-canvas {
             background-color: black;
@@ -28,13 +30,24 @@
         }
         #info {
             position: absolute;
-            bottom: 0px; width: 100%;
-            color: #bbbbbb;
-            padding: 5px;
-            font-family: 'Product Sans', sans-serif;
-            font-size: 13px;
-            font-weight: bold;
+            bottom: 4px; width: 100%;
+            font-family: 'Roboto', sans-serif;
+            font-size: 9pt;
+            font-weight: 600;
             text-align: center;
+            margin: 0;
+            color: #dddddd;
+        }
+        #logo {
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            font-family: 'Product Sans', sans-serif;
+            font-size: 14pt;
+            font-weight: 600;
+            font-stretch: ultra-expanded;
+            margin: 0;
+            color: #dddddd;
         }
     </style>
     <script src="../lib/common.js"></script>
@@ -57,6 +70,7 @@
         <div id="map-canvas"></div>
     </div>
     <div id="info"></div>
+    <div id="logo">Google</div>
 </body>
 </html>
 <!--
