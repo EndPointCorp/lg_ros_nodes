@@ -1,7 +1,7 @@
 var showLinks = getParameterByName('showLinks', stringToBoolean, false);
 var yawOffset = getParameterByName('yawOffset', Number, 0);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
-var fieldOfView = getParameterByName('fov', Number, 0);
+var fieldOfView = getParameterByName('fov', Number, 29);
 var initialPano = getParameterByName('panoid', String, '');
 var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
@@ -15,6 +15,10 @@ var scaleMatrix = [
   [0, 0, 0, 1]
 ];
 var lastPov = null;
+if (showLinks) {
+  var glEnvironment;
+  var links;
+}
 
 var initialize = function() {
   console.log('initializing Street View');
@@ -30,6 +34,10 @@ var initialize = function() {
   ros.on('error', function() {
     setTimeout(initialize, 2000);
   });
+  if (showLinks) {
+    glEnvironment = new GLEnvironment(fieldOfView);
+    links = new Links(glEnvironment.camera, glEnvironment.scene);
+  }
 };
 
 var initializeRes = function(ros) {
@@ -50,6 +58,9 @@ var initializeRes = function(ros) {
       throw 'Metadata request status NOT OK: ' + stat;
     }
     attributionModule.handleMetadata(response);
+    if (showLinks) {
+      links.update(response);
+    }
   };
 
   var handlePanoIdMsg = function(msg) {
@@ -57,7 +68,6 @@ var initializeRes = function(ros) {
   };
 
   panoTopic.subscribe(handlePanoIdMsg);
-
 
   var mapOptions = {
     disableDefaultUI: true,
@@ -166,21 +176,32 @@ var initializeRes = function(ros) {
 
     var htr = [povQuaternion.z, povQuaternion.x, 0];
     var transformedHTR = transformHTR(htr, radianOffset);
-    var pov = {
-      heading: transformedHTR[0],
-      pitch: transformedHTR[1]
-    };
 
+    var heading = transformedHTR[0];
+    var tilt = transformedHTR[1];
     var roll = transformedHTR[2];
-    var rollRads = toRadians(roll);
 
-    wrapper.style.transform = buildTransformMatrix(scaleMatrix, rollRads);
+    var pov = {
+      heading: heading,
+      pitch: tilt
+    };
     sv.setPov(pov);
+
+    var rollRads = toRadians(roll);
+    wrapper.style.transform = buildTransformMatrix(scaleMatrix, rollRads);
+
+    if (showLinks) {
+      links.handleView(heading, tilt, roll, fieldOfView);
+    }
   };
   svClient.on('pov_changed', handleQuaternion);
 
   if (initialPano !== '') {
     svClient.emit('pano_changed', initialPano);
+  }
+
+  if (showLinks) {
+    glEnvironment.run();
   }
 };
 
