@@ -7,9 +7,7 @@
   <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
   <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" />
   <node name="readiness_node" pkg="lg_common" type="readiness.py"/>
-  <node name="sv_server" pkg="lg_sv" type="server.py" >
-    <param name="inverted" value="true" />
-  </node>
+  <node name="sv_server" pkg="lg_sv" type="server.py" />
   <node name="spacenav" pkg="spacenav_node" type="spacenav_node" />
   <node name="spacenav_wrapper" pkg="spacenav_wrapper" type="spacenav_wrap.py" />
 
