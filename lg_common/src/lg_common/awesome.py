@@ -65,7 +65,7 @@ def get_rule_pattern(window):
     return ', '.join(patternized)
 
 
-def get_properties(window):
+def get_properties(window, chrome_kiosk_workaround=False):
     """Get a properties string to converge the window to its state.
 
     Args:
@@ -78,9 +78,10 @@ def get_properties(window):
         "border_width = 0",
         "size_hints_honor = false",
         "floating = true",
+        # Chrome Kiosk Workaround:
         # Trick Chrome in kiosk mode by setting fullscreen to true here.
         # In the callback we will set it to false.
-        "fullscreen = true",
+        "fullscreen = {}".format('true' if chrome_kiosk_workaround else 'false'),
         "maximized = false",
         "hidden = {}".format('false' if window.is_visible else 'true'),
         "minimized = {}".format('false' if window.is_visible else 'true'),
@@ -112,7 +113,7 @@ def get_callback(window):
         return ""
 
 
-def get_entry(window):
+def get_entry(window, chrome_kiosk_workaround=False):
     """Get the full awesome (awful) rule that will converge the window.
 
     Args:
@@ -122,7 +123,7 @@ def get_entry(window):
         str: awesome rule for the window.
     """
     rule = get_rule_pattern(window)
-    properties = get_properties(window)
+    properties = get_properties(window, chrome_kiosk_workaround)
     callback = get_callback(window)
     return "{ rule = { %s }, properties = { %s }, callback = %s }" % (rule, properties, callback)
 
@@ -147,7 +148,7 @@ def get_subtractive_script(window):
     )
 
 
-def get_additive_script(window):
+def get_additive_script(window, chrome_kiosk_workaround=False):
     """Get a script that will add an awesome (awful) rule for the window.
 
     Args:
@@ -156,7 +157,7 @@ def get_additive_script(window):
     Returns:
         str: Lua code to add the window rule.
     """
-    entry = get_entry(window)
+    entry = get_entry(window, chrome_kiosk_workaround)
     return "table.insert(awful.rules.rules, 1, {entry})".format(entry=entry)
 
 
@@ -174,7 +175,7 @@ def get_apply_script(window):
     return "for k,c in pairs(client.get()) do if awful.rules.match(c, {%s}) then awful.rules.apply(c) end end" % pattern
 
 
-def get_script(window):
+def get_script(window, chrome_kiosk_workaround=False):
     """Combine scripts to form a mega-script that fixes everything.
 
     Args:
@@ -186,7 +187,7 @@ def get_script(window):
     return ' '.join([
         "local awful = require('awful') awful.rules = require('awful.rules')",
         get_subtractive_script(window),
-        get_additive_script(window),
+        get_additive_script(window, chrome_kiosk_workaround),
         get_apply_script(window)
     ])
 
