@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.0 (2017-02-22)
+------------------
 * commenting out flipping tests
 * Contributors: Jacob Minshall
 

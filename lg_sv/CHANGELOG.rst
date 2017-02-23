@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.0 (2017-02-22)
+------------------
 * basic lg_sv doesn't use the inverted option
 * Add lg_sv scene test script
 * Fix lint in lg_sv webapps
