@@ -2,6 +2,37 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* basic lg_sv doesn't use the inverted option
+* Add lg_sv scene test script
+* Fix lint in lg_sv webapps
+* Add Google logo back to SV webapp
+  Make it a more TOS-friendly presentation.
+  Also revamp attribution styling to match.
+* Consolidate lg_sv webapp libs
+  Also upgrades lg_sv's THREE.js to R83.
+* Reduce size of Street View link chevrons
+* Embed libraries for Street View webapp
+* Clean up redundant param in sv.launch
+* Add link visualization to Street View webapp
+* Disable pointer events in Street View webapp
+  Prevent UI artifacts from stray input.
+* Disable Street View default links UI entirely
+  Not useful when oversizing the canvas.
+* Use StreetViewService for attribution in webapp
+* Clean up some console output in SV webapp
+* Add basic Street View attribution module
+  This uses an existing data stream to put the pano description on the screen.
+  Needs better data for names, dates and copyrights.
+* Implement tilt by default in Street View webapp
+  Also remove some conflicting parameters.
+* Cleanup in Street View webapp index
+* Use Maps API 3.27 in Street View
+* Disable throttling in sv webapp
+* Fix whitespace in Street View viewer JS
+* Contributors: Jacob Minshall, Matt Vollrath
+
 1.6.5 (2017-02-08)
 ------------------
 

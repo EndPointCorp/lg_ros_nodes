@@ -2,6 +2,9 @@
 Changelog for package rfid_scanner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.6.5 (2017-02-08)
 ------------------
 * stop killing ros nodes because of missing device
