@@ -115,7 +115,7 @@ class ManagedBrowser(ManagedApplication):
         # Different versions of Chrome use different window instance names.
         # Matching the tmp_dir should work for all of them.
         w_instance = '\\({}\\)'.format(self.tmp_dir)
-        window = ManagedWindow(w_instance=w_instance, geometry=geometry, chrome_kiosk_workaround=True)
+        window = ManagedWindow(w_instance=w_instance, geometry=geometry, chrome_kiosk_workaround=kiosk)
 
         rospy.logdebug("Command {}".format(cmd))
 
