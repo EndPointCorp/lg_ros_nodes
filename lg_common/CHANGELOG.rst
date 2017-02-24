@@ -2,6 +2,9 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.7.1 (2017-02-23)
 ------------------
 * Only apply Chrome kiosk workaround in --kiosk mode

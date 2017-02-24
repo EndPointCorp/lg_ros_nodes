@@ -2,6 +2,13 @@
 Changelog for package lg_proximity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix logic error
+  i needs to be incremented in this loop, instead of being set to 0 on
+  each iteration.
+* Contributors: Jacob Minshall
+
 1.7.1 (2017-02-23)
 ------------------
 
