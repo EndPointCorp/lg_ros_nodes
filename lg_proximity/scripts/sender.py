@@ -29,8 +29,8 @@ def main():
     baud_rate = int(rospy.get_param('~baud_rate', 57600))
     test_mode = rospy.get_param('~test_mode', False)
 
+    i = 0
     while True:
-        i = 0
         try:
             if test_mode:
                 master, slave = pty.openpty()
