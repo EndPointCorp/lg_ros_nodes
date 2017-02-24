@@ -2,6 +2,15 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Only apply Chrome kiosk workaround in --kiosk mode
+  Don't risk breaking non--kiosk Chrome window placement.
+* Add optional support for Chrome --kiosk windows
+  Using this workaround all the time was breaking other apps, so only use
+  it when launching a browser.
+* Contributors: Matt Vollrath
+
 1.7.0 (2017-02-22)
 ------------------
 * commenting out flipping tests
