@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.1 (2017-02-23)
+------------------
 * Only apply Chrome kiosk workaround in --kiosk mode
   Don't risk breaking non--kiosk Chrome window placement.
 * Add optional support for Chrome --kiosk windows
