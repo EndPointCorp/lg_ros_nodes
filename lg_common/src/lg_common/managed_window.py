@@ -9,12 +9,13 @@ import awesome
 
 class ManagedWindow(object):
     def __init__(self, w_name=None, w_class=None, w_instance=None,
-                 geometry=None, visible=True):
+                 geometry=None, visible=True, chrome_kiosk_workaround=False):
         self.w_name = w_name
         self.w_class = w_class
         self.w_instance = w_instance
         self.geometry = geometry
         self.is_visible = visible
+        self.chrome_kiosk_workaround = chrome_kiosk_workaround
         self.lock = threading.RLock()
         self.proc = None
 
@@ -72,7 +73,7 @@ class ManagedWindow(object):
         with self.lock:
             cmd = []
             cmd.append('echo "{}" | /usr/bin/awesome-client'.format(
-                awesome.get_script(self)
+                awesome.get_script(self, chrome_kiosk_workaround=self.chrome_kiosk_workaround)
             ))
         return cmd
 
