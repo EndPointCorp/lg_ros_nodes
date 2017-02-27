@@ -25,9 +25,9 @@ RUN \
         --from-paths /home/galadmin/src/lg_ros_nodes/catkin/src \
         --ignore-src \
         --rosdistro indigo \
-        -y ;\
-    catkin_make ;\
-    catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install;\
+        -y && \
+    catkin_make && \
+    catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install && \
     source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash && \
     sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME}
 
