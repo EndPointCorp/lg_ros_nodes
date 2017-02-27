@@ -1009,11 +1009,11 @@ def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
         sock.close()
 
 
-def director_listener_state_setter(state_pub, activity_list=None):
+def director_listener_state_setter(state_pub, activity_list=None, offline_state=ApplicationState.HIDDEN):
     """
     This is a subscriber to /director/scene. If _any_ of the activities in /director/scene match
     _any_ of the actives in activity_list then we will publish VISIBLE to state_pub, otherwise we
-    will publish HIDDEN
+    will publish offline_state
     """
     from lg_common.msg import ApplicationState
 
@@ -1030,7 +1030,7 @@ def director_listener_state_setter(state_pub, activity_list=None):
             if window.get('activity', None) in activity_list:
                 state_pub.publish(ApplicationState.VISIBLE)
                 return
-        state_pub.publish(ApplicationState.HIDDEN)
+        state_pub.publish(offline_state)
     rospy.Subscriber('/director/scene', GenericMessage, _do_stuff)
 
 
