@@ -3,9 +3,17 @@ project(lg_sv)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  )
+  message_generation
+)
 
 catkin_python_setup()
+
+add_service_files(
+  FILES
+  PanoIdState.srv
+)
+
+generate_messages()
 
 catkin_package()
 

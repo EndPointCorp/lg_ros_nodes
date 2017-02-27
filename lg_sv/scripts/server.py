@@ -12,6 +12,7 @@ from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
 from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
 from lg_common.helpers import run_with_influx_exception_handler
+from lg_sv.srv import PanoIdState
 
 
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
@@ -82,6 +83,7 @@ def main():
                      server.handle_raw_metadata_msg)
     rospy.Subscriber('/spacenav/joy', Joy, server.handle_joy)
     rospy.Subscriber('/%s/tilt_snappy' % server_type, Bool, server.handle_tilt_snappy)
+    rospy.Service('/streetview/panoid_state', PanoIdState, server.get_panoid)
     make_soft_relaunch_callback(server.handle_soft_relaunch, groups=['streetview'])
 
     # This will translate director messages into /<server_type>/panoid messages
