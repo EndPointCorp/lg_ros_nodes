@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_json_config</name>
-  <version>1.7.5</version>
+  <version>1.7.6</version>
   <description>JSON configuration node</description>
 
   <maintainer email="lg-rad@endpoint.com">R&amp;D @ End Point</maintainer>

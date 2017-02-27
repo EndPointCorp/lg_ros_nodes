@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.6 (2017-02-27)
+------------------
 * Load most recent pano at lg_sv webapp startup
   Fixes `#336 <https://github.com/EndPointCorp/lg_ros_nodes/issues/336>`_
 * Make lg_sv webapp pixel ratio adjustable
