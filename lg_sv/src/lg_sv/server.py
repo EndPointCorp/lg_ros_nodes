@@ -220,6 +220,12 @@ class PanoViewerServer:
         """
         return self.nearby_panos.get_metadata()
 
+    def get_panoid(self, *args, **kwargs):
+        """
+        Get the current panoid
+        """
+        return self.panoid
+
     def pub_pov(self, pov):
         """
         Publishes the new pov after setting the instance variable

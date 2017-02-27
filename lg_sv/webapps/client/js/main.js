@@ -145,7 +145,7 @@ var initializeRes = function(ros, yawOffset) {
 
   var svService = new google.maps.StreetViewService();
 
-  svClient.on('pano_changed', function(panoId) {
+  function handlePanoChanged(panoId) {
     sv.setPano(panoId);
     var fovFudge = getFovFudge(fieldOfView);
     var zoomLevel = getZoomLevel(fieldOfView * scaleFactor * fovFudge);
@@ -155,6 +155,15 @@ var initializeRes = function(ros, yawOffset) {
       svClient.pubPov(lastPov);
     }
     svService.getPanorama({ pano: panoId }, handleMetadataResponse);
+  }
+  svClient.on('pano_changed', handlePanoChanged);
+  var panoService = new ROSLIB.Service({
+    ros: ros,
+    name: '/streetview/panoid_state',
+    serviceType: 'lg_sv/PanoIdState'
+  });
+  panoService.callService({}, function(resp) {
+    handlePanoChanged(resp.panoid);
   });
 
   /**
