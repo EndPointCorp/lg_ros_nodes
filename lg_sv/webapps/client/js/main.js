@@ -15,10 +15,6 @@ var scaleMatrix = [
   [0, 0, 0, 1]
 ];
 var lastPov = null;
-if (showLinks) {
-  var glEnvironment;
-  var links;
-}
 
 var viewers = [];
 var initializeViewers = function() {
@@ -37,10 +33,6 @@ var initializeViewers = function() {
   ros.on('error', function() {
     setTimeout(initialize, 2000);
   });
-  if (showLinks) {
-    glEnvironment = new GLEnvironment(fieldOfView);
-    links = new Links(glEnvironment.camera, glEnvironment.scene);
-  }
 };
 
 var initializeRes = function(ros, yawOffset) {
@@ -90,6 +82,11 @@ var initializeRes = function(ros, yawOffset) {
   logo.innerText = 'Google';
   divider.appendChild(logo);
 
+  if (showLinks) {
+    var glEnvironment = new GLEnvironment(divider, fieldOfView, yawOffset);
+    var links = new Links(glEnvironment.camera, glEnvironment.scene);
+  }
+
   function handleResize() {
     var width = window.innerWidth / yawOffsets.length;
     var height = window.innerHeight;
@@ -98,6 +95,9 @@ var initializeRes = function(ros, yawOffset) {
     divider.style.width = width.toString() + 'px';
     divider.style.height = height.toString() + 'px';
     divider.style.left = left.toString() + 'px';
+    if (showLinks) {
+      glEnvironment.handleResize(width, height);
+    }
   }
   window.addEventListener('resize', handleResize, false);
   handleResize();
@@ -244,7 +244,7 @@ var initializeRes = function(ros, yawOffset) {
     wrapper.style.transform = buildTransformMatrix(scaleMatrix, rollRads);
 
     if (showLinks) {
-      links.handleView(heading, tilt, roll, fieldOfView);
+      links.handleView(povQuaternion.z, povQuaternion.x, 0, fieldOfView);
     }
   };
 
