@@ -2,6 +2,17 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Load most recent pano at lg_sv webapp startup
+  Fixes `#336 <https://github.com/EndPointCorp/lg_ros_nodes/issues/336>`_
+* Make lg_sv webapp pixel ratio adjustable
+  Gives us a lever to compromise speed/quality.  Default to 1.0 which
+  gives no compensation for canvas oversizing.
+* Run street view browsers in single window
+  Take advantage of local data sharing and consolidated GPU interaction.
+* Contributors: Matt Vollrath
+
 1.7.5 (2017-02-27)
 ------------------
 
