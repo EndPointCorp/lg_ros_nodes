@@ -7,6 +7,9 @@ var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
 window.devicePixelRatio = getParameterByName('pixelRatio', Number, 1.0);
+// scaleFactor is fixed because it changes fov non-linearly.
+// This value allows for full range of roll at 16:9.
+// See js/fov_fudge.js
 var scaleFactor = 2.04;
 var scaleMatrix = [
   [scaleFactor, 0, 0, 0],
@@ -16,7 +19,6 @@ var scaleMatrix = [
 ];
 var lastPov = null;
 
-var viewers = [];
 var initializeViewers = function() {
   console.log('initializing Street Viewers');
 
