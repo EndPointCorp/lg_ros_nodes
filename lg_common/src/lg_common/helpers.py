@@ -10,6 +10,7 @@ import random
 import string
 
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.msg import ApplicationState
 
 
 class PublisherSubscriberConnectionsException(Exception):
