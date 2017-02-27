@@ -68,7 +68,7 @@ def main():
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
 
     # set to visible
-    state = ApplicationState.HIDDEN
+    state = ApplicationState.STOPPED
     managed_browser.set_state(state)
 
     # listen to state messages

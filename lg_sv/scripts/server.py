@@ -94,7 +94,7 @@ def main():
             return
         if not has_asset:
             rospy.loginfo('hiding self')
-            visibility_publisher.publish(ApplicationState(state='HIDDEN'))
+            visibility_publisher.publish(ApplicationState(state='STOPPED'))
             return
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
