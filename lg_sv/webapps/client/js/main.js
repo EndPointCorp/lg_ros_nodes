@@ -6,8 +6,8 @@ var initialPano = getParameterByName('panoid', String, '');
 var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
-// Find default scaleFactor (devicePixelRatio) setting in index.html.
-var scaleFactor = getParameterByName('scaleFactor', Number, window.devicePixelRatio);
+window.devicePixelRatio = getParameterByName('pixelRatio', Number, 1.0);
+var scaleFactor = 2.04;
 var scaleMatrix = [
   [scaleFactor, 0, 0, 0],
   [0, scaleFactor, 0, 0],
