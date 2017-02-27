@@ -67,7 +67,7 @@ def main():
     slug = server_type + "__" + "_fov-" + str(field_of_view) + "__" + "_yaw-" + str(yaw_offset) + "__" + "_pitch-" + str(pitch_offset)
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
 
-    # set to visible
+    # set initial state
     state = ApplicationState.STOPPED
     managed_browser.set_state(state)
 
