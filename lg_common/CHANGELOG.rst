@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.4 (2017-02-27)
+------------------
 * Add offline_state param to state helper
   We want to be able to keep apps stopped when offline, but keep old
   behavior as default.
