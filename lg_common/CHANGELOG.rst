@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix missing ApplicationState in lg_common helpers
+* Contributors: Matt Vollrath
+
 1.7.4 (2017-02-27)
 ------------------
 * Add offline_state param to state helper
