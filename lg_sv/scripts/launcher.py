@@ -28,6 +28,7 @@ def main():
     show_links = str(rospy.get_param('~show_links', False)).lower()
     show_attribution = str(rospy.get_param('~show_attribution', False)).lower()
     yaw_offset = float(rospy.get_param('~yaw_offset', 0))
+    yaw_offsets = str(rospy.get_param('~yaw_offsets', yaw_offset))
     leader = str(rospy.get_param('~leader', 'false'))
     tilt = str(rospy.get_param('~tilt', 'false'))
     depend_on_webserver = rospy.get_param('~depend_on_webserver', False)
@@ -37,6 +38,7 @@ def main():
     rosbridge_secure = rospy.get_param('~rosbridge_secure', 'false')
     zoom = str(rospy.get_param('~zoom', 'false')).lower()
     initial_zoom = rospy.get_param('~initial_zoom', 3)
+    kiosk = rospy.get_param('~kiosk', True)
 
     # put parameters into one big url
     url = add_url_params(url,
@@ -47,7 +49,7 @@ def main():
                          showLinks=show_links,
                          showAttribution=show_attribution,
                          leader=leader,
-                         yawOffset=yaw_offset,
+                         yawOffsets=yaw_offsets,
                          tilt=tilt,
                          rosbridgeHost=rosbridge_host,
                          rosbridgePort=rosbridge_port,
@@ -65,7 +67,7 @@ def main():
 
     # create the managed browser
     slug = server_type + "__" + "_fov-" + str(field_of_view) + "__" + "_yaw-" + str(yaw_offset) + "__" + "_pitch-" + str(pitch_offset)
-    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug)
+    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk)
 
     # set initial state
     state = ApplicationState.STOPPED

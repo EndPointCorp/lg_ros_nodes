@@ -1,7 +1,7 @@
 <launch>
-  <param name="/viewport/left_one" value="450x800+0+0" />
-  <param name="/viewport/center" value="450x800+460+0" />
-  <param name="/viewport/right_one" value="450x800+920+0" />
+  <arg name="kiosk" default="true" />
+
+  <param name="/viewport/triple" value="1920x800+0+0" />
 
   <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
   <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
@@ -12,22 +12,11 @@
   <node name="spacenav_wrapper" pkg="spacenav_wrapper" type="spacenav_wrap.py" />
 
   <node name="sv_center" pkg="lg_sv" type="launcher.py">
-    <param name="viewport" value="center"/>
+    <param name="kiosk" value="$(arg kiosk)"/>
+    <param name="viewport" value="triple"/>
     <param name="depend_on_rosbridge" value="true"/>
     <param name="depend_on_webserver" value="true"/>
-    <param name="yaw_offset" value="0"/>
+    <param name="yaw_offsets" value="-1,0,1"/>
     <param name="show_links" value="true"/>
-  </node>
-  <node name="sv_left_one" pkg="lg_sv" type="launcher.py">
-    <param name="depend_on_webserver" value="true"/>
-    <param name="depend_on_rosbridge" value="true"/>
-    <param name="viewport" value="left_one"/>
-    <param name="yaw_offset" value="-1"/>
-  </node>
-  <node name="sv_right_one" pkg="lg_sv" type="launcher.py">
-    <param name="depend_on_webserver" value="true"/>
-    <param name="depend_on_rosbridge" value="true"/>
-    <param name="viewport" value="right_one"/>
-    <param name="yaw_offset" value="1"/>
   </node>
 </launch>
