@@ -2,6 +2,12 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Stop lg_sv in the background
+  Need the resources elsewhere.
+* Contributors: Matt Vollrath
+
 1.7.2 (2017-02-24)
 ------------------
 
