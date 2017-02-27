@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.5 (2017-02-27)
+------------------
 * Fix missing ApplicationState in lg_common helpers
 * Contributors: Matt Vollrath
 
