@@ -1,5 +1,5 @@
 var showLinks = getParameterByName('showLinks', stringToBoolean, false);
-var yawOffset = getParameterByName('yawOffset', Number, 0);
+var yawOffsets = getParameterByName('yawOffsets', String, '0').split(/\s*,\s*/).map(Number);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 29);
 var initialPano = getParameterByName('panoid', String, '');
@@ -20,8 +20,9 @@ if (showLinks) {
   var links;
 }
 
-var initialize = function() {
-  console.log('initializing Street View');
+var viewers = [];
+var initializeViewers = function() {
+  console.log('initializing Street Viewers');
 
   var url = getRosbridgeUrl(rosbridgeHost, rosbridgePort, rosbridgeSecure);
   var ros = new ROSLIB.Ros({
@@ -29,7 +30,9 @@ var initialize = function() {
   });
   ros.on('connection', function() {
     console.log('ROSLIB connected');
-    initializeRes(ros);
+    for (var i = 0; i < yawOffsets.length; i++) {
+      initializeRes(ros, yawOffsets[i]);
+    }
   });
   ros.on('error', function() {
     setTimeout(initialize, 2000);
@@ -40,7 +43,65 @@ var initialize = function() {
   }
 };
 
-var initializeRes = function(ros) {
+var initializeRes = function(ros, yawOffset) {
+  var divider = document.createElement('div');
+  divider.style.position = 'absolute';
+  divider.style.overflow = 'hidden';
+  document.body.appendChild(divider);
+
+  var wrapper = document.createElement('div');
+  wrapper.style.backgroundColor = 'black';
+  wrapper.style.height = '100%';
+  wrapper.style.width = '100%';
+  wrapper.style.margin = '0';
+  wrapper.style.padding = '0';
+  divider.appendChild(wrapper);
+
+  var canvas = document.createElement('div');
+  canvas.style.backgroundColor = 'black';
+  canvas.style.height = '100%';
+  canvas.style.width = '100%';
+  canvas.style.margin = '0';
+  canvas.style.padding = '0';
+  wrapper.appendChild(canvas);
+
+  var info = document.createElement('div');
+  info.style.position = 'absolute';
+  info.style.bottom = '4px';
+  info.style.width = '100%';
+  info.style.fontFamily = 'Roboto, sans-serif';
+  info.style.fontWeight = '600';
+  info.style.fontSize = '9pt';
+  info.style.textAlign = 'center';
+  info.style.margin = '0';
+  info.style.color = '#dddddd';
+  divider.appendChild(info);
+
+  var logo = document.createElement('div');
+  logo.style.position = 'absolute';
+  logo.style.bottom = '4px';
+  logo.style.left = '4px';
+  logo.style.fontFamily = 'Product Sans, sans-serif';
+  logo.style.fontSize = '14pt';
+  logo.style.fontWeight = '600';
+  logo.style.fontStretch = 'ultra-expanded';
+  logo.style.margin = '0';
+  logo.style.color = '#dddddd';
+  logo.innerText = 'Google';
+  divider.appendChild(logo);
+
+  function handleResize() {
+    var width = window.innerWidth / yawOffsets.length;
+    var height = window.innerHeight;
+    var index = yawOffsets.indexOf(yawOffset);
+    var left = index * width;
+    divider.style.width = width.toString() + 'px';
+    divider.style.height = height.toString() + 'px';
+    divider.style.left = left.toString() + 'px';
+  }
+  window.addEventListener('resize', handleResize, false);
+  handleResize();
+
   var panoTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview/panoid',
@@ -52,7 +113,7 @@ var initializeRes = function(ros) {
     messageType: 'std_msgs/String'
   });
 
-  var attributionModule = new Attribution(document.getElementById('info'));
+  var attributionModule = new Attribution(info);
   var handleMetadataResponse = function(response, stat) {
     if (stat != google.maps.StreetViewStatus.OK) {
       throw 'Metadata request status NOT OK: ' + stat;
@@ -62,12 +123,6 @@ var initializeRes = function(ros) {
       links.update(response);
     }
   };
-
-  var handlePanoIdMsg = function(msg) {
-    $("#titlecard").hide();
-  };
-
-  panoTopic.subscribe(handlePanoIdMsg);
 
   var mapOptions = {
     disableDefaultUI: true,
@@ -79,9 +134,8 @@ var initializeRes = function(ros) {
     visible: true,
     disableDefaultUI: true
   };
-  var canvas = $('#map-canvas');
-  var map = new google.maps.Map(canvas[0], mapOptions);
-  var sv = new google.maps.StreetViewPanorama(canvas[0], svOptions);
+  var map = new google.maps.Map(canvas, mapOptions);
+  var sv = new google.maps.StreetViewPanorama(canvas, svOptions);
 
   map.setStreetView(sv);
 
@@ -162,15 +216,14 @@ var initializeRes = function(ros) {
     return cssTransform;
   };
 
-  var wrapper = document.getElementById('wrapper');
+  var animate = function() {
+    requestAnimationFrame(animate);
 
-  /**
-   * Handles an incoming pov change.
-   *
-   * @param {Object} povQuaternion with keys {x, y, z, w}
-   **/
-  var handleQuaternion = function(povQuaternion) {
-    lastPov = povQuaternion;
+    var povQuaternion = lastPov;
+    if (!lastPov) {
+      return;
+    }
+
     // TODO(mv): move quaternion parsing into StreetviewClient library
     var radianOffset = toRadians(fieldOfView * yawOffset);
 
@@ -194,6 +247,16 @@ var initializeRes = function(ros) {
       links.handleView(heading, tilt, roll, fieldOfView);
     }
   };
+
+  /**
+   * Handles an incoming pov change.
+   *
+   * @param {Object} povQuaternion with keys {x, y, z, w}
+   **/
+  var handleQuaternion = function(povQuaternion) {
+    lastPov = povQuaternion;
+  };
+
   svClient.on('pov_changed', handleQuaternion);
 
   if (initialPano !== '') {
@@ -203,8 +266,10 @@ var initializeRes = function(ros) {
   if (showLinks) {
     glEnvironment.run();
   }
+
+  animate();
 };
 
-google.maps.event.addDomListener(window, 'load', initialize);
+google.maps.event.addDomListener(window, 'load', initializeViewers);
 
 // # vim: tabstop=8 expandtab shiftwidth=2 softtabstop=2

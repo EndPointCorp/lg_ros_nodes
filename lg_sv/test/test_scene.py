@@ -5,7 +5,7 @@ from interactivespaces_msgs.msg import GenericMessage
 P_SANDIEGO = '1ZPwYtCwgW6bu7gi7n3B4Q'
 P_TEST = 'RJd2HuqmShMAAAQfCa3ulg'
 P_PHOTOSPHERE = 'F:-gVtvWrACv2k/Vnh0Vg8Z8YI/AAAAAAABLWA/a-AT4Wb8MD8'
-PANOID = P_TEST
+PANOID = P_SANDIEGO
 DIRECTOR_MESSAGE = """
 {
   "description": "bogus",
