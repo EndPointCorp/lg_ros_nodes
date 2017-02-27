@@ -19,6 +19,7 @@ RUN \
     source /opt/ros/indigo/setup.bash && \
     /ros_entrypoint.sh ./scripts/init_workspace -a $HOME/src/appctl && \
     cd ${PROJECT_ROOT}/catkin/ && \
+    apt-get update && \
     rosdep init &&\
     rosdep update && \
     sudo rosdep install \
@@ -29,7 +30,8 @@ RUN \
     catkin_make && \
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install && \
     source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash && \
-    sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME}
+    sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME} && \
+    rm -rf /var/lib/apt/lists/*
 
 # by default let's run tests
 CMD cd ${PROJECT_ROOT}/catkin && \
