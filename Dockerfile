@@ -16,6 +16,7 @@ COPY ./ ${PROJECT_ROOT}
 #build ROS nodes
 RUN \
     cd ${PROJECT_ROOT} && \
+    pip install python-coveralls
     source /opt/ros/indigo/setup.bash && \
     /ros_entrypoint.sh ./scripts/init_workspace -a $HOME/src/appctl && \
     cd ${PROJECT_ROOT}/catkin/ && \
