@@ -26,6 +26,7 @@ def main():
     field_of_view = float(rospy.get_param('~fov', DEFAULT_FOV))
     pitch_offset = float(rospy.get_param('~pitch_offset', 0))
     show_links = str(rospy.get_param('~show_links', False)).lower()
+    show_fps = str(rospy.get_param('~show_fps', False)).lower()
     show_attribution = str(rospy.get_param('~show_attribution', False)).lower()
     yaw_offset = float(rospy.get_param('~yaw_offset', 0))
     yaw_offsets = str(rospy.get_param('~yaw_offsets', yaw_offset))
@@ -47,6 +48,7 @@ def main():
                          fov=field_of_view,
                          pitchOffset=pitch_offset,
                          showLinks=show_links,
+                         showFPS=show_fps,
                          showAttribution=show_attribution,
                          leader=leader,
                          yawOffsets=yaw_offsets,

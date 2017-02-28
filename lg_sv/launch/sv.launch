@@ -18,5 +18,6 @@
     <param name="depend_on_webserver" value="true"/>
     <param name="yaw_offsets" value="-1,0,1"/>
     <param name="show_links" value="true"/>
+    <param name="show_fps" value="true"/>
   </node>
 </launch>

@@ -1,4 +1,5 @@
 var showLinks = getParameterByName('showLinks', stringToBoolean, false);
+var showFPS= getParameterByName('showFPS', stringToBoolean, false);
 var yawOffsets = getParameterByName('yawOffsets', String, '0').split(/\s*,\s*/).map(Number);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 29);
@@ -87,6 +88,19 @@ var initializeRes = function(ros, yawOffset) {
   if (showLinks) {
     var glEnvironment = new GLEnvironment(divider, fieldOfView, yawOffset);
     var links = new Links(glEnvironment.camera, glEnvironment.scene);
+  }
+
+  if (showFPS) {
+    var stats = new Stats();
+    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild( stats.dom );
+    function animate() {
+        stats.begin();
+        // monitored code goes here
+        stats.end();
+        requestAnimationFrame( animate );
+    }
+    requestAnimationFrame( animate );
   }
 
   function handleResize() {
