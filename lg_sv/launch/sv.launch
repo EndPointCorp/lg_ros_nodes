@@ -1,5 +1,6 @@
 <launch>
   <arg name="kiosk" default="true" />
+  <arg name="tilt" default="true" />
 
   <param name="/viewport/triple" value="1920x800+0+0" />
 
@@ -13,6 +14,7 @@
 
   <node name="sv_center" pkg="lg_sv" type="launcher.py">
     <param name="kiosk" value="$(arg kiosk)"/>
+    <param name="tilt" value="$(arg tilt)"/>
     <param name="viewport" value="triple"/>
     <param name="depend_on_rosbridge" value="true"/>
     <param name="depend_on_webserver" value="true"/>

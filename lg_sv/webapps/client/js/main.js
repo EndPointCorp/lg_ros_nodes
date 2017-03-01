@@ -1,5 +1,5 @@
 var showLinks = getParameterByName('showLinks', stringToBoolean, false);
-var showFPS= getParameterByName('showFPS', stringToBoolean, false);
+var showFPS = getParameterByName('showFPS', stringToBoolean, false);
 var yawOffsets = getParameterByName('yawOffsets', String, '0').split(/\s*,\s*/).map(Number);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
 var fieldOfView = getParameterByName('fov', Number, 29);
@@ -7,11 +7,12 @@ var initialPano = getParameterByName('panoid', String, '');
 var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
+var shouldTilt = getParameterByName('tilt', stringToBoolean, 'true');
 window.devicePixelRatio = getParameterByName('pixelRatio', Number, 1.0);
 // scaleFactor is fixed because it changes fov non-linearly.
 // This value allows for full range of roll at 16:9.
 // See js/fov_fudge.js
-var scaleFactor = 2.04;
+var scaleFactor = shouldTilt ? 2.04 : 1.0;
 var scaleMatrix = [
   [scaleFactor, 0, 0, 0],
   [0, scaleFactor, 0, 0],
@@ -161,8 +162,12 @@ var initializeRes = function(ros, yawOffset) {
 
   function handlePanoChanged(panoId) {
     sv.setPano(panoId);
-    var fovFudge = getFovFudge(fieldOfView);
-    var zoomLevel = getZoomLevel(fieldOfView * scaleFactor * fovFudge);
+    if (shouldTilt) {
+      var fovFudge = getFovFudge(fieldOfView);
+      var zoomLevel = getZoomLevel(fieldOfView * scaleFactor * fovFudge);
+    } else {
+      var zoomLevel = getZoomLevel(fieldOfView);
+    }
     sv.setZoom(zoomLevel);
     if (lastPov) {
       lastPov.w = 70;
@@ -249,24 +254,29 @@ var initializeRes = function(ros, yawOffset) {
       return;
     }
 
-    // TODO(mv): move quaternion parsing into StreetviewClient library
-    var radianOffset = toRadians(fieldOfView * yawOffset);
+    if (shouldTilt) {
+      var radianOffset = toRadians(fieldOfView * yawOffset);
 
-    var htr = [povQuaternion.z, povQuaternion.x, 0];
-    var transformedHTR = transformHTR(htr, radianOffset);
+      var htr = [povQuaternion.z, povQuaternion.x, 0];
+      var transformedHTR = transformHTR(htr, radianOffset);
 
-    var heading = transformedHTR[0];
-    var tilt = transformedHTR[1];
-    var roll = transformedHTR[2];
+      var heading = transformedHTR[0];
+      var tilt = transformedHTR[1];
+      var roll = transformedHTR[2];
+
+      var rollRads = toRadians(roll);
+      wrapper.style.transform = buildTransformMatrix(scaleMatrix, rollRads);
+    } else {
+      var heading = povQuaternion.z + yawOffset * fieldOfView;
+      var tilt = 0;
+      var roll = 0;
+    }
 
     var pov = {
       heading: heading,
       pitch: tilt
     };
     sv.setPov(pov);
-
-    var rollRads = toRadians(roll);
-    wrapper.style.transform = buildTransformMatrix(scaleMatrix, rollRads);
 
     if (showLinks) {
       links.handleView(povQuaternion.z, povQuaternion.x, 0, fieldOfView);
