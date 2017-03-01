@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added ROS param for showing FPS stats
+* Contributors: Wojciech Ziniewicz
+
 1.7.6 (2017-02-27)
 ------------------
 * Load most recent pano at lg_sv webapp startup

@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* flash is now copied into chrome user data dirs
+* Contributors: Jacob Minshall
+
 1.7.6 (2017-02-27)
 ------------------
 

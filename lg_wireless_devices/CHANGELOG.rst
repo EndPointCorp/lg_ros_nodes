@@ -2,6 +2,9 @@
 Changelog for package lg_wireless_devices
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.7.6 (2017-02-27)
 ------------------
 
