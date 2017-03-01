@@ -34,7 +34,8 @@ class ManagedBrowser(ManagedApplication):
     def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
                  binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
                  shell=True, command_line_args=[], disk_cache_size=314572800,
-                 log_level=0, extensions=[], log_stderr=False, user_agent='', **kwargs):
+                 log_level=0, extensions=[], log_stderr=False, user_agent='',
+                 pepper_flash_dir='/home/lg/inc/PepperFlash', **kwargs):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
@@ -66,6 +67,8 @@ class ManagedBrowser(ManagedApplication):
 
         self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
         self.clear_tmp_dir()
+        self.pepper_flash_dir = pepper_flash_dir
+        self.init_tmp_dir()
 
         cmd.append('--user-data-dir={}'.format(self.tmp_dir))
         cmd.append('--disk-cache-dir={}'.format(self.tmp_dir))
@@ -128,7 +131,27 @@ class ManagedBrowser(ManagedApplication):
         super(ManagedBrowser, self).post_init()
 
         self.add_respawn_handler(self.clear_tmp_dir)
+        self.add_respawn_handler(self.init_tmp_dir)
         self.add_state_handler(self.control_relay)
+
+    def init_tmp_dir(self):
+        """
+        Creates the tmp dir
+        then copies in the hard coded path to PepperFlash
+        then replaces the path in the latest-copmponent-updated-flash file
+        """
+        try:
+            os.mkdir(self.tmp_dir)
+        except:
+            rospy.logerr("Error trying to make the tmp dir, could exist already")
+        try:
+            shutil.copytree(self.pepper_flash_dir, "%s/PepperFlash" % self.tmp_dir)
+            with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "r") as f:
+                out = f.read()
+            with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "w") as f:
+                f.write(out.replace("${TMP_DIR}", self.tmp_dir))
+        except Exception, e:
+            rospy.logerr("Error copying pepper flash into the tmp dir, %s" % e)
 
     def clear_tmp_dir(self):
         """
