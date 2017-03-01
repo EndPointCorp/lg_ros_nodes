@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.9 (2017-03-01)
+------------------
 * using links to the flash directory
 * Contributors: Jacob Minshall
 
