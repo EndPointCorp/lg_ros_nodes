@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_sv</name>
-  <version>1.7.6</version>
+  <version>1.7.7</version>
   <description>Liquid Galaxy Street View module</description>
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
 
