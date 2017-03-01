@@ -137,16 +137,17 @@ class ManagedBrowser(ManagedApplication):
     def init_tmp_dir(self):
         """
         Creates the tmp dir
-        then copies in the hard coded path to PepperFlash
+        then links in the hard coded path to PepperFlash
         then replaces the path in the latest-copmponent-updated-flash file
         """
         try:
             os.mkdir(self.tmp_dir)
+            os.mkdir(self.tmp_dir + '/PepperFlash')
         except:
             rospy.logerr("Error trying to make the tmp dir, could exist already")
         try:
-            shutil.copytree(self.pepper_flash_dir, "%s/PepperFlash" % self.tmp_dir)
-            with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "r") as f:
+            os.symlink(self.pepper_flash_dir + '/flash_dir', "%s/PepperFlash/flash_dir" % self.tmp_dir)
+            with open("%s/latest-component-updated-flash" % self.pepper_flash_dir, "r") as f:
                 out = f.read()
             with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "w") as f:
                 f.write(out.replace("${TMP_DIR}", self.tmp_dir))
