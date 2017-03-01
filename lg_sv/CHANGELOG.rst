@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.8 (2017-03-01)
+------------------
 * Add tilt param back to lg_sv webapp
 * Contributors: Matt Vollrath
 
