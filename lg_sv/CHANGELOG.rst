@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add tilt param back to lg_sv webapp
+* Contributors: Matt Vollrath
+
 1.7.7 (2017-02-28)
 ------------------
 * Added ROS param for showing FPS stats
