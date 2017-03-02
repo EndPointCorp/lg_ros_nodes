@@ -51,6 +51,7 @@ def main():
                          showFPS=show_fps,
                          showAttribution=show_attribution,
                          leader=leader,
+                         yawOffset=yaw_offset,
                          yawOffsets=yaw_offsets,
                          tilt=tilt,
                          rosbridgeHost=rosbridge_host,
