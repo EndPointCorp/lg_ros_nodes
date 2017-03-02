@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Legacy yaw offset support for lg_sv launcher
+* Contributors: Matt Vollrath
+
 1.7.9 (2017-03-01)
 ------------------
 
