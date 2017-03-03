@@ -25,6 +25,8 @@ class TestPanoIdState(unittest.TestCase):
         response = panoid_srv()
         self.assertEqual('', response.panoid)
 
+        rospy.sleep(3.0)
+
         panoid_pub.publish(String(TEST_PANOID))
 
         rospy.sleep(3.0)
