@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.7.11 (2017-03-03)
+-------------------
 * Separate panoid_state Service per server_type
   Fix servers racing to own the streetview panoid service.
 * Test lg_sv PanoId state
