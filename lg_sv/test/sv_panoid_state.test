@@ -1,0 +1,5 @@
+<launch>
+    <node name="sv_server_42_a" pkg="lg_sv" type="server.py" />
+    <test test-name="test_panoid_state" pkg="lg_sv" type="test_panoid_state.py" />
+</launch>
+
