@@ -2,6 +2,13 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Separate panoid_state Service per server_type
+  Fix servers racing to own the streetview panoid service.
+* Test lg_sv PanoId state
+* Contributors: Matt Vollrath
+
 1.7.10 (2017-03-02)
 -------------------
 * Legacy yaw offset support for lg_sv launcher
