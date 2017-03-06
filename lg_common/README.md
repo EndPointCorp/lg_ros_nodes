@@ -124,6 +124,22 @@ If your ROS package has a static webapp you'd like to be served, put files in th
 
 For example, there is an `index.html` located in `lg_common/webapps/example/` which can be accessed at `http://localhost:8008/lg_common/webapps/example/index.html`.
 
+### static\_browser.py
+
+Puts an always-visible browser on the screen.
+
+#### Parameters
+
+* `~viewport` [string] - name of the viewport to run at. This is a mandatory argument.
+* `~url` [string] - the browser will be pointed at this url.
+* `~command_line_args` [string] - the browser will run with these additional args.
+* `~scale_factor` [float] - override `devicePixelRatio` to this value.  Default: `1.0`
+* `~extra_logging` [bool] - enabled additional logging for this instance.  Default: `false`
+* `~user_agent` [string] - override use agent to this value.  The default is to spoof an iPad.
+* `~state` [ApplicationState] - set the browser to this state.  Default: `VISIBLE`
+* `~extensions` [string] - list of extensions.
+* `~depend_on_url` [bool] - wait for the url to be available before launching?  Default: `false`
+
 ----------------------
 
 ### lg\_common module
