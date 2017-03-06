@@ -136,6 +136,7 @@ Puts an always-visible browser on the screen.
 * `~scale_factor` [float] - override `devicePixelRatio` to this value.  Default: `1.0`
 * `~extra_logging` [bool] - enabled additional logging for this instance.  Default: `false`
 * `~user_agent` [string] - override use agent to this value.  The default is to spoof an iPad.
+* `~kiosk` [bool] - run the browser in kiosk mode.  Default: `true`
 * `~state` [ApplicationState] - set the browser to this state.  Default: `VISIBLE`
 * `~extensions` [string] - list of extensions.
 * `~depend_on_url` [bool] - wait for the url to be available before launching?  Default: `false`

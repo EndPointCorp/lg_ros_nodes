@@ -28,6 +28,7 @@ def main():
     )
     state = rospy.get_param('~state', ApplicationState.VISIBLE)
     extensions = rospy.get_param('~extensions', [])
+    kiosk = rospy.get_param('~kiosk', True)
 
     global_dependency_timeout = rospy.get_param("/global_dependency_timeout", 15)
     depend_on_url = rospy.get_param("~depend_on_url", False)
@@ -44,7 +45,8 @@ def main():
         force_device_scale_factor=scale_factor,
         remote_debugging_port=debug_port,
         user_agent=user_agent,
-        extensions=extensions
+        extensions=extensions,
+        kiosk=kiosk
     )
 
     browser.set_state(state)
