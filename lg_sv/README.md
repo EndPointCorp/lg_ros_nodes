@@ -44,6 +44,7 @@ Creates rostopics to communicate/interact with the sv clients. Handles the space
 * `~inverted` [string] - "true" or "false" determining whether or not the pov
   will be inverted. The `lg_sv_nonfree` viewer needs to have an inverted server,
   nothing else does.
+* `~tick_rate` [float] - Frequency of pov updates from the server.  Default: `180.0`
 
 ##### Published Topics
 
