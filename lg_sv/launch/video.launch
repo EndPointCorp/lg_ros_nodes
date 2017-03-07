@@ -1,13 +1,23 @@
 <launch>
+  <param name="/viewport/left" value="800x600+0+0" />
+  <param name="/viewport/right" value="800x600+800+0" />
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" />
   <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
+  <node name="ws_distributor" pkg="lg_sv" type="ws_distributor" />
   <node name="sv_server" pkg="lg_sv" type="server.py" >
+    <param name="server_type" value="panovideo" />
     <param name="inverted" value="true" />
   </node>
   <node name="spacenav" pkg="spacenav_node" type="spacenav_node" />
   <node name="spacenav_wrapper" pkg="spacenav_wrapper" type="spacenav_wrap.py" />
-  <node name="browser" pkg="lg_common" type="static_browser.py">
+  <node name="browser_left" pkg="lg_common" type="static_browser.py">
     <param name="url" value="http://localhost:8008/lg_sv/webapps/panovideosync/index.html?master=true&amp;hFov=65&amp;videoUrl=http://localhost/rangers.mp4" />
     <param name="kiosk" value="false" />
+    <param name="viewport" value="left" />
+  </node>
+  <node name="browser_right" pkg="lg_common" type="static_browser.py">
+    <param name="url" value="http://localhost:8008/lg_sv/webapps/panovideosync/index.html?hFov=65&amp;yawOffsets=65&amp;videoUrl=http://localhost/rangers.mp4" />
+    <param name="kiosk" value="false" />
+    <param name="viewport" value="right" />
   </node>
 </launch>

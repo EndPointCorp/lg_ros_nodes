@@ -9,15 +9,15 @@
  *   ros: ROSLIB.Ros instance
  *   hFov: horizontal field of view in degrees
  *   yawOffsets: array of yaw offsets in degrees
- *   softSyncMin: min time difference for playback rate modulation, in seconds
- *   softSyncMax: max time difference before seeking, in seconds
+ *   softSyncMin: min time difference for playback rate modulation, in seconds.  Default: 1.0 / 30
+ *   softSyncMax: max time difference before seeking, in seconds.  Default: 1.0
  */
 function SyncedPanoVideo(opts) {
   this.master = opts.master;
   this.ros = opts.ros;
   this.hFov = opts.hFov;
   this.yawOffsets = opts.yawOffsets.map(THREE.Math.degToRad);
-  this.softSyncMin = opts.softSyncMin || 0.025;
+  this.softSyncMin = opts.softSyncMin || 1.0 / 30.0;
   this.softSyncMax = opts.softSyncMax || 1.0;
 
   this.initVideo_();
@@ -214,27 +214,15 @@ SyncedPanoVideo.prototype.handlePovMessage = function(msg) {
  * @private
  */
 SyncedPanoVideo.prototype.initClockSync_ = function() {
+  var self = this;
   this.masterTime_ = 0;
-  this.lastSeekTime_ = Date.now() / 1000 - this.softSyncMax * 2;
-  this.clockTopic_ = new ROSLIB.Topic({
-    ros: this.ros,
-    name: '/panovideosync/time',
-    messageType: 'std_msgs/Float64'
-  });
-  if (this.master) {
-    this.clockTopic_.advertise();
-  } else {
-    this.clockTopic_.subscribe(this.handleTimeMessage.bind(this));
-  }
-};
-
-/**
- * Handle a video time message from network.
- *
- * @param {Object} msg
- */
-SyncedPanoVideo.prototype.handleTimeMessage = function(msg) {
-  this.masterTime_ = msg.data;
+  this.lastSeekTime_ = window.performance.now() / 1000 - this.softSyncMax;
+  this.lastClockUpdate_ = window.performance.now();
+  this.clockSocket = new WebSocket('ws://localhost:9091');
+  this.clockSocket.onmessage = function(ev) {
+    self.lastClockUpdate_ = ev.timeStamp / 1000;
+    self.masterTime_ = Number(ev.data);
+  };
 };
 
 /**
@@ -258,23 +246,28 @@ SyncedPanoVideo.prototype.animate = function() {
 SyncedPanoVideo.prototype.animateVideo_ = function() {
   if (this.master) {
     this.masterTime_ = this.video.currentTime;
-    this.clockTopic_.publish(new ROSLIB.Message({ data: this.masterTime_ }));
+    this.clockSocket.send(this.masterTime_.toString());
     return;
   }
 
-  var now = Date.now() / 1000;
-  var diff = this.video.currentTime - this.masterTime_;
+  var now = window.performance.now() / 1000;
+  var interpMasterTime = this.masterTime_ + (now - this.lastClockUpdate_);
+  var diff = this.video.currentTime - interpMasterTime;
   var tSinceSeek = now - this.lastSeekTime_;
   if (Math.abs(diff) > this.softSyncMax && tSinceSeek > this.softSyncMax * 2) {
     this.lastSeekTime_ = now;
-    this.video.currentTime = this.masterTime_;
+    this.video.currentTime = interpMasterTime;
     this.video.playbackRate = 1.0;
+    console.log('seek', diff);
   } else if (diff > this.softSyncMin) {
-    this.video.playbackRate = 0.5;
+    this.video.playbackRate = 0.75;
+    console.log('speed down', diff);
   } else if (diff < -this.softSyncMin) {
-    this.video.playbackRate = 2.0;
+    this.video.playbackRate = 1.5;
+    console.log('speed up', diff);
   } else {
     this.video.playbackRate = 1.0;
+    console.log('level', diff);
   }
 };
 
