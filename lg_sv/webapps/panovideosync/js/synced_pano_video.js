@@ -52,9 +52,8 @@ SyncedPanoVideo.prototype.initVideo_ = function() {
   //this.video.loop = true;
   this.video.style.display = 'none';
 
-  var self = this;
-  this.video.addEventListener('canplaythrough', function() {
-    self.video.play();
+  this.video.addEventListener('canplaythrough', () => {
+    this.video.play();
   });
 };
 
@@ -214,14 +213,13 @@ SyncedPanoVideo.prototype.handlePovMessage = function(msg) {
  * @private
  */
 SyncedPanoVideo.prototype.initClockSync_ = function() {
-  var self = this;
   this.masterTime_ = 0;
   this.lastSeekTime_ = window.performance.now() / 1000 - this.softSyncMax;
   this.lastClockUpdate_ = window.performance.now();
   this.clockSocket = new WebSocket('ws://localhost:9091');
-  this.clockSocket.onmessage = function(ev) {
-    self.lastClockUpdate_ = ev.timeStamp / 1000;
-    self.masterTime_ = Number(ev.data);
+  this.clockSocket.onmessage = (ev) => {
+    this.lastClockUpdate_ = ev.timeStamp / 1000;
+    this.masterTime_ = Number(ev.data);
   };
 };
 
@@ -229,9 +227,8 @@ SyncedPanoVideo.prototype.initClockSync_ = function() {
  * Animate this instance.
  */
 SyncedPanoVideo.prototype.animate = function() {
-  var self = this;
-  requestAnimationFrame(function() {
-    self.animate();
+  requestAnimationFrame(() => {
+    this.animate();
   });
 
   this.animateVideo_();
