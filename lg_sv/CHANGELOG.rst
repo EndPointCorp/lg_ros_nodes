@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.8.0 (2017-03-09)
+------------------
 * Update panovideo .launch
 * Add clockAddr arg to panovideo webapp
 * Add panovideo transform360 script for posterity
