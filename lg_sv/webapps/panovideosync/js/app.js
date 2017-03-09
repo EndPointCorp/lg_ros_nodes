@@ -21,10 +21,12 @@ class SyncedPanoVideoApp {
     this.softSyncMin = opts.softSyncMin || 1.0 / 60.0;
     this.softSyncMax = opts.softSyncMax || 1.0;
 
+    let clockAddr = opts.clockAddr || 'ws://localhost:9091';
+
     this.initVideo_();
     this.initScene_();
     this.initCameraSync_();
-    this.initClockSync_();
+    this.initClockSync_(clockAddr);
   }
 
   /**
@@ -174,12 +176,13 @@ class SyncedPanoVideoApp {
    * Initialize network video clock sync.
    *
    * @private
+   * @param {String} clockAddr address of clock WebSocket distributor
    */
-  initClockSync_() {
+  initClockSync_(clockAddr) {
     let now = performance.now();
     this.lastSeekTime_ = now / 1000 - this.softSyncMax;
 
-    this.clockSocket = new ClockSocket('ws://localhost:9091');
+    this.clockSocket = new ClockSocket(clockAddr);
     this.clockSocket.open();
     this.remoteVideoClock = new RemoteVideoClock(this.clockSocket);
   }
