@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add kiosk param to static_browser.py
+* Add static_browser.py to README
+* Contributors: Matt Vollrath
+
 1.7.11 (2017-03-03)
 -------------------
 

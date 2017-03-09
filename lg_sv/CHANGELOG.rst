@@ -2,6 +2,20 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update panovideo .launch
+* Add clockAddr arg to panovideo webapp
+* Add panovideo transform360 script for posterity
+* Update panovideo webapp
+  * Major refactor with improvements for video synchronization.
+  * Use ES6.
+  * Add support for cubic panoramic videos via transform360.
+* Add tick_rate param for lg_sv server
+* Use uWS sync distributor for panovideo
+  Also, interpolate master time in the webapp.
+* Contributors: Matt Vollrath
+
 1.7.11 (2017-03-03)
 -------------------
 * Separate panoid_state Service per server_type
