@@ -45,6 +45,7 @@ const yawOffsets = getParameterByName('yawOffsets', String, '0')
 const rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
 const rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
 const rosbridgeSecure = getParameterByName('rosbridge_secure', isTrue, false);
+const clockAddr = getParameterByName('clockAddr', String, 'ws://42-a:9091');
 
 const protocol = (rosbridgeSecure ? 'wss' : 'ws') + '://';
 const rosbridgeUrl = protocol + rosbridgeHost + ':' + rosbridgePort;
@@ -55,6 +56,7 @@ ros.connect(rosbridgeUrl);
 var sync = new SyncedPanoVideoApp({
     master: master,
     ros: ros,
+    clockAddr: clockAddr,
     hFov: hFov,
     loop: loop,
     yawOffsets: yawOffsets
