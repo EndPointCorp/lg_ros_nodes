@@ -86,7 +86,7 @@ def pep8_test():
 
 
 def cppcheck_test():
-    ret = os.system("cppcheck --enable=style --error-exitcode=1 --suppress='*:*spacenav_wrapper/src/hid.c' catkin/src")
+    ret = os.system("cppcheck --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt catkin/src")
     return ret
 
 

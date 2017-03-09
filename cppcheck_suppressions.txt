@@ -1,0 +1,5 @@
+// ignore libhid
+*:*spacenav_wrapper/src/hid.c
+
+// ignore uWebSockets
+*:*uWebSockets/*
