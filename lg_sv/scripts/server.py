@@ -98,6 +98,7 @@ def main():
             rospy.loginfo('hiding self')
             visibility_publisher.publish(ApplicationState(state='STOPPED'))
             return
+
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
         asset = get_first_asset_from_activity(scene, server_type)

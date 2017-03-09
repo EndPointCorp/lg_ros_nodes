@@ -18,7 +18,12 @@ else
 fi
 
 echo 'installing libudev-dev'
-lg-sudo 'sudo apt-get update && sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-indigo-web-video-server -q -y'
+if [[ ${SKIP_APT} != "" ]]; then
+  echo "Skipping APT update + install"
+else
+  lg-sudo 'sudo apt-get update -q && sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-indigo-web-video-server -q -y'
+fi
+
 lg-sync --really-sync catkin/src/ /home/lg/catkin_ws/src/
 lg-run-bg 'cd catkin_ws ; \
            source /opt/ros/indigo/setup.bash ; \
