@@ -19,6 +19,7 @@ generate_messages()
 
 catkin_package(
   CATKIN_DEPENDS
+  message_runtime
   std_srvs
 )
 
@@ -38,11 +39,12 @@ add_custom_target(
   ALL
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/uWebSockets/libuWS.so
 )
-set_property(TARGET uWS PROPERTY CXX_STANDARD 11)
+set_target_properties(uWS PROPERTIES COMPILE_FLAGS "--std=c++11")
 
 add_executable(ws_distributor src/ws_distributor.cpp)
 add_dependencies(ws_distributor uWS std_srvs_gencpp)
-set_property(TARGET ws_distributor PROPERTY CXX_STANDARD 11)
+set_target_properties(ws_distributor PROPERTIES COMPILE_FLAGS "--std=c++11")
+
 target_link_libraries(ws_distributor
   ${CMAKE_CURRENT_SOURCE_DIR}/src/uWebSockets/libuWS.so
   ssl
