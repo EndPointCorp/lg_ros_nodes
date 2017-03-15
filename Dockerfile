@@ -108,10 +108,10 @@ RUN rm -fr $HOME/src/appctl ; git clone --branch ${APPCTL_VERSION} https://githu
 # copy all the ros nodes to source dir
 RUN mkdir -p /ssl
 COPY ./ ${PROJECT_ROOT}
-ADD ./bin/ros_entrypoint.sh /ros_entrypoint.sh
-ADD ./bin/run.sh /run.sh
-ADD ./bin/prepare.sh /prepare.sh
-ADD ./bin/generate_ssl.sh /generate_ssl.sh
+ADD ./scripts/ros_entrypoint.sh /ros_entrypoint.sh
+ADD ./scripts/run.sh /run.sh
+ADD ./scripts/prepare.sh /prepare.sh
+ADD ./scripts/generate_ssl.sh /generate_ssl.sh
 ADD ./conf/self_signed_openssl.conf /ssl/
 
 RUN /generate_ssl.sh
@@ -140,5 +140,5 @@ CMD /prepare.sh && \
     cd ${PROJECT_ROOT}/catkin && \
     . devel/setup.sh && \
     cd ${PROJECT_ROOT} && \
-    ./scripts/docker_xvfb_add.sh && \
+    ./scripts/docker_run_xvfb.sh && \
     ./scripts/test_runner.py
