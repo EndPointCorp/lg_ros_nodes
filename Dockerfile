@@ -31,7 +31,9 @@ RUN \
 
 # install X and basic tools
 RUN \
-      apt-get install -y g++ pep8 cppcheck closure-linter \
+      apt-get install -y g++ \
+      pep8 cppcheck closure-linter \
+      nginx \
       python-pytest wget \
       python-pip \
       python-gst-1.0 \
@@ -42,6 +44,9 @@ RUN \
       mesa-utils mesa-utils-extra \
       module-init-tools gdebi-core \
       lsb-core tar libfreeimage3
+
+RUN rm -f /etc/nginx/sites-enabled/default
+COPY conf/ssl_nginx.conf /etc/nginx/sites-enabled/ssl.conf
 
 # add more ros packages
 RUN \
@@ -101,10 +106,15 @@ RUN mkdir -p $HOME/src
 RUN rm -fr $HOME/src/appctl ; git clone --branch ${APPCTL_VERSION} https://github.com/EndPointCorp/appctl.git $HOME/src/appctl
 
 # copy all the ros nodes to source dir
+RUN mkdir -p /ssl
 COPY ./ ${PROJECT_ROOT}
 ADD ./bin/ros_entrypoint.sh /ros_entrypoint.sh
 ADD ./bin/run.sh /run.sh
 ADD ./bin/prepare.sh /prepare.sh
+ADD ./bin/generate_ssl.sh /generate_ssl.sh
+ADD ./conf/self_signed_openssl.conf /ssl/
+
+RUN /generate_ssl.sh
 
 # build ROS nodes
 RUN \
