@@ -21,7 +21,3 @@ else
   APP_DIR=/home/galadmin/src/lg_ros_nodes
   echo "Running image built-in (COPY) version of the APP - running on galadmin(uid=1000)"
 fi
-
-echo "Removing leftovers"
-find $APP_DIR -iname "*.pyc" -delete
-find $APP_DIR -iname "__pycache__" -delete

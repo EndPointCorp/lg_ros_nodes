@@ -31,6 +31,7 @@ RUN \
 
 # install X and basic tools
 RUN \
+      sudo apt-get update -y && \
       apt-get install -y g++ \
       pep8 cppcheck closure-linter \
       nginx \

@@ -2,7 +2,7 @@
 <launch>
   <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3">
     <param name="binary_encoder" value="bson"/>
-    <param name="certfile" value="/ssl/rosbridge.crt"/>
+    <param name="certfile" value="/ssl/cert/rosbridge.crt"/>
     <param name="keyfile" value="/ssl/rosbridge.key"/>
   </node>
 </launch>
