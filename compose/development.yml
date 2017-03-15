@@ -6,17 +6,41 @@ networks:
       config:
        - subnet: 10.1.1.0/24
          gateway: 10.1.1.1
-
 services:
+  backend:
+    build: ../
+    command: "/run.sh"
+    ports:
+      - "8008:8008"
+    depends_on:
+      - roscore
+    environment:
+      - "ROSLAUNCH_TARGET=backend.xml"
+      - "ROS_MASTER_URI=http://10.1.1.10:11311"
+    networks:
+      - the_network
+  rosbridge_secure:
+    build: ../
+    command: "/run.sh"
+    ports:
+      - "9091:9090"
+    depends_on:
+      - roscore
+    environment:
+      - "ROSLAUNCH_TARGET=rosbridge_secure.xml"
+      - "ROS_MASTER_URI=http://10.1.1.10:11311"
+    networks:
+      - the_network
   rosbridge:
     build: ../
     command: "/run.sh"
+    ports:
+      - "9090:9090"
     depends_on:
       - roscore
     environment:
       - "ROSLAUNCH_TARGET=rosbridge.xml"
       - "ROS_MASTER_URI=http://10.1.1.10:11311"
-      - "ROS_IP=10.1.1.10"
     networks:
       - the_network
   roscore:
