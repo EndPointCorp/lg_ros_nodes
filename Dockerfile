@@ -31,7 +31,9 @@ RUN \
 
 # install X and basic tools
 RUN \
-      apt-get install -y g++ pep8 cppcheck closure-linter \
+      apt-get install -y g++ \
+      pep8 cppcheck closure-linter \
+      nginx \
       python-pytest wget \
       python-pip \
       python-gst-1.0 \
@@ -42,6 +44,9 @@ RUN \
       mesa-utils mesa-utils-extra \
       module-init-tools gdebi-core \
       lsb-core tar libfreeimage3
+
+RUN rm -f /etc/nginx/sites-enabled/default
+COPY conf/ssl_nginx.conf /etc/nginx/sites-enabled/ssl.conf
 
 # add more ros packages
 RUN \
