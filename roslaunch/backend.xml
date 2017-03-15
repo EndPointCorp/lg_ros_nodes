@@ -13,7 +13,6 @@
   <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3">
     <param name="binary_encoder" value="bson"/>
   </node>
-  <node name="readiness_node" pkg="lg_common" type="readiness.py" clear_params="true" respawn="true" respawn_delay="3"/>
   <node name="rosapi" pkg="rosapi" type="rosapi_node" clear_params="true" respawn="true" respawn_delay="3"/>
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" clear_params="true" respawn="true" respawn_delay="3"/>
   <node name="uscs_service" pkg="lg_common" type="uscs_service.py" clear_params="true" respawn="true" respawn_delay="3">
@@ -37,19 +36,5 @@
     <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile"/>
     <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline"/>
     <param name="checks" value="['curl --silent --head --max-time 3 http://www.google.com', 'ping -q -W 3 -c 3 www.yahoo.com', 'ping -q -W 3 -c 3 8.8.8.8', 'ping -q -W 3 -c 3 8.8.4.4', 'nc -z -w 1 news.bbc.co.uk 80', 'curl --silent --head --max-time 3 http://x-max.cz/lgping']"/>
-  </node>
-  <node name="adhoc_browser_touchscreen" pkg="lg_common" type="adhoc_browser.py" clear_params="true" respawn="true" respawn_delay="3">
-    <param name="hide_delay" value="1.5"/>
-    <param name="destroy_delay" value="3"/>
-    <param name="rosbridge_secure" value="true"/>
-    <param name="viewport" value="touchscreen"/>
-    <param name="extensions_root" value="/opt/endpoint/chrome/extensions/"/>
-  </node>
-  <node name="adhoc_browser_center" pkg="lg_common" type="adhoc_browser.py" clear_params="true" respawn="true" respawn_delay="3">
-    <param name="hide_delay" value="1.5"/>
-    <param name="destroy_delay" value="3"/>
-    <param name="rosbridge_secure" value="true"/>
-    <param name="viewport" value="center"/>
-    <param name="extensions_root" value="/opt/endpoint/chrome/extensions/"/>
   </node>
 </launch>

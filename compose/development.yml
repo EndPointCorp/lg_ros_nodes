@@ -1,0 +1,24 @@
+version: '2.1'
+services:
+  lg_ros_nodes:
+    ports:
+      - "11311:11311"
+      - "9090:9090"
+      - "9191:9191"
+      - "8088:8088"
+    build: ../
+    volumes:
+      - "${LG_ROS_NODES_PATH}:/home/galadmin/src/lg_ros_nodes_mounted"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    command: "/run.sh"
+    environment:
+      DISPLAY: ":1"
+      ROSLAUNCH_TARGET: "backend.xml"
+      USER: "galadmin"
+      HOME: "/home/${USER}"
+      APPCTL_VERSION: "1.1.1"
+      NVIDIA_DRIVER_VERSION: 375.20
+      ROS_MASTER_URI: "http://localhost:11311"
+      ROS_IP: "127.0.0.1"
+      ROS_LOG_DIR: "/var/log/ros/"
+      ROS_PYTHON_LOG_CONFIG_FILE: "/dev/null"

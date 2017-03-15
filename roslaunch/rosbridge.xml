@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="binary_encoder" value="bson"/>
+  </node>
+</launch>
