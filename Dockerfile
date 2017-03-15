@@ -101,10 +101,15 @@ RUN mkdir -p $HOME/src
 RUN rm -fr $HOME/src/appctl ; git clone --branch ${APPCTL_VERSION} https://github.com/EndPointCorp/appctl.git $HOME/src/appctl
 
 # copy all the ros nodes to source dir
+RUN mkdir -p /ssl
 COPY ./ ${PROJECT_ROOT}
 ADD ./bin/ros_entrypoint.sh /ros_entrypoint.sh
 ADD ./bin/run.sh /run.sh
 ADD ./bin/prepare.sh /prepare.sh
+ADD ./bin/generate_ssl.sh /generate_ssl.sh
+ADD ./conf/self_signed_openssl.conf /ssl/
+
+RUN /generate_ssl.sh
 
 # build ROS nodes
 RUN \
