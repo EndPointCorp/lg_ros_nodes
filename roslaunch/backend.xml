@@ -10,9 +10,6 @@
     <param name="activity_sources" value="/spacenav/twist:geometry_msgs/Twist:delta;/lg_replay/touchscreen:interactivespaces_msgs/GenericMessage:activity;/touchscreen/touch:std_msgs/Bool-data:activity;/portal_launcher/message:std_msgs/String:activity"/>
     <param name="activity_timeout" value="120"/>
   </node>
-  <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3">
-    <param name="binary_encoder" value="bson"/>
-  </node>
   <node name="rosapi" pkg="rosapi" type="rosapi_node" clear_params="true" respawn="true" respawn_delay="3"/>
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" clear_params="true" respawn="true" respawn_delay="3"/>
   <node name="uscs_service" pkg="lg_common" type="uscs_service.py" clear_params="true" respawn="true" respawn_delay="3">
