@@ -7,6 +7,7 @@
 
   <param name="/viewport/left" value="800x600+0+0" />
   <param name="/viewport/right" value="800x600+800+0" />
+  <node name="uscs_service" pkg="lg_common" type="uscs_service.py" />
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" />
   <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
   <node name="ws_distributor" pkg="lg_sv" type="ws_distributor">
