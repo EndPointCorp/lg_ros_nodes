@@ -19,6 +19,7 @@ Ros node that will replay space navigator input events to a
 #### parameters
 
 * `~scale` [int] - space navigator scale
+* `~disable_activities` [str] - comma-separated list of activity types to disable nav on.  Default: `cesium,sketchfab,streetview,panovideo`
 
 #### published topics
 
