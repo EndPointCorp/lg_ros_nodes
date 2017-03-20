@@ -2,8 +2,8 @@
 set -e
 
 if [ -f /home/galadmin/src/lg_ros_nodes_mounted/catkin/devel/setup.bash ]; then
-  echo "LG version found under /home/galadmin/src/lg/catkin/devel/setup.bash"
-  profile_file="/home/galadmin/src/lg/catkin/devel/setup.bash"
+  echo "LG version found under /home/galadmin/src/lg_ros_nodes_mounted/catkin/devel/setup.bash"
+  profile_file="/home/galadmin/src/lg_ros_nodes_mounted/catkin/devel/setup.bash"
 else
   profile_file="/opt/ros/indigo/setup.bash"
 fi

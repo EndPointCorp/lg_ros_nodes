@@ -14,6 +14,8 @@ services:
       - "8008:8008"
     depends_on:
       - roscore
+    volumes:
+      - "${LG_ROS_NODES_PATH}:/home/galadmin/src/lg_ros_nodes_mounted/"
     environment:
       - "ROSLAUNCH_TARGET=backend.xml"
       - "ROS_MASTER_URI=http://10.1.1.10:11311"
