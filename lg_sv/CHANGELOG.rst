@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add Earth background nav disable to panovideosync
+* Contributors: Matt Vollrath
+
 1.8.0 (2017-03-09)
 ------------------
 * Update panovideo .launch
