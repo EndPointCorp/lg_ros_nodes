@@ -20,6 +20,7 @@ Ros node that will replay space navigator input events to a
 
 * `~scale` [int] - space navigator scale
 * `~disable_activities` [str] - comma-separated list of activity types to disable nav on.  Default: `cesium,unity,sketchfab,streetview,panovideo`
+* `~disable_states` [str] - comma-separated list of ApplicationState topics which would occlude Earth.  Workaround for free flight.  Default: `/streetview/state`
 
 #### published topics
 
