@@ -9,7 +9,7 @@ from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
 
 NODE_NAME = 'lg_nav_to_device'
-DEFAULT_DISABLE_ACTIVITIES = 'cesium,sketchfab,streetview,panovideo'
+DEFAULT_DISABLE_ACTIVITIES = 'cesium,unity,sketchfab,streetview,panovideo'
 
 
 def main():
