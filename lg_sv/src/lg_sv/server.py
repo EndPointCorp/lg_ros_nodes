@@ -8,6 +8,8 @@ import requests
 import json
 from collections import deque
 
+from interactivespaces_msgs.msg import GenericMessage
+
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
 # 2. check for movement -> /streetview/panoid
@@ -119,10 +121,12 @@ class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                  nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
                  nearby_panos=NearbyPanos(), metadata_pub=None,
-                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=180):
+                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=180,
+                 director_pub=None):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
+        self.director_pub = director_pub
 
         self.nav_sensitivity = nav_sensitivity
         self.tilt_max = tilt_max
@@ -246,6 +250,7 @@ class PanoViewerServer:
         self.panoid = panoid
         self.nearby_panos.set_panoid(self.panoid)
         self.panoid_pub.publish(panoid)
+        self.generate_director_message(panoid)
 
     def tilt_snappy(self, twist_msg, coefficient):
         now = rospy.get_time()
@@ -279,8 +284,31 @@ class PanoViewerServer:
         """
         Grabs the new panoid from a publisher
         """
+        # Nothing to do here...
+        if self.panoid == panoid.data:
+            return
         self.panoid = panoid.data
         self.nearby_panos.set_panoid(self.panoid)
+        # now sets up director message so we can set the state of the system
+        self.generate_director_message(self.panoid)
+
+    def generate_director_message(self, panoid):
+        msg = GenericMessage()
+        msg.type = 'json'
+        message = {
+            "slug": "auto_generated_sv_scene",
+            "windows": [
+                {
+                    "activity": "streetview",
+                    "activity_config": {
+                        "panoid": panoid
+                    }
+                }
+            ]
+        }
+        msg.message = json.dumps(message)
+        if self.director_pub:
+            self.director_pub.publish(msg)
 
     def handle_state_msg(self, app_state):
         """

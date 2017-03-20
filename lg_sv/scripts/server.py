@@ -4,7 +4,7 @@ import rospy
 import json
 
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
-from lg_common.helpers import get_first_asset_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity, handle_initial_state
+from lg_common.helpers import get_activity_config_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity, handle_initial_state
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.msg import ApplicationState
 from std_msgs.msg import String, Bool
@@ -48,6 +48,7 @@ def main():
                               Quaternion, queue_size=2)
     metadata_pub = rospy.Publisher('/%s/metadata' % server_type,
                                    String, queue_size=10)
+    director_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=1)
 
     tilt_min = rospy.get_param('~tilt_min', DEFAULT_TILT_MIN)
     tilt_max = rospy.get_param('~tilt_max', DEFAULT_TILT_MAX)
@@ -63,7 +64,7 @@ def main():
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                               nav_sensitivity, space_nav_interval, x_threshold,
-                              nearby, metadata_pub, zoom_max, zoom_min)
+                              nearby, metadata_pub, zoom_max, zoom_min, director_pub=director_pub)
 
     visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
 
@@ -101,14 +102,8 @@ def main():
 
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
-        asset = get_first_asset_from_activity(scene, server_type)
-        try:
-            panoid = asset['panoid']
-        except:
-            panoid = asset
-            if server_type == 'streetview':
-                # split in case the panoid comes at the end of a url
-                panoid = panoid.split('/')[-1]
+        asset = get_activity_config_from_activity(scene, server_type)
+        panoid = asset.get('activity_config', {}).get('panoid', '')
 
         pov = server.pov
         try:
@@ -124,7 +119,7 @@ def main():
         pov.w = zoom_max
 
         server.pub_pov(pov)
-        server.pub_panoid(String(panoid))
+        #server.pub_panoid(String(panoid))
 
     def initial_state_handler(uscs_msg):
         try:
