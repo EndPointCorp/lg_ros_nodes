@@ -2,8 +2,8 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.0 (2017-03-20)
+------------------
 * Add SpaceNav disable interfaces for DeviceWriter
 * Contributors: Matt Vollrath
 
