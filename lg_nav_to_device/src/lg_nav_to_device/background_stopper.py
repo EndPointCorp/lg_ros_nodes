@@ -50,3 +50,5 @@ class BackgroundStopper:
 
         self._disabled_scene_slug = slug_req
         self._consider_scene_slugs()
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
