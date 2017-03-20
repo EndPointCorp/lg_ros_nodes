@@ -63,6 +63,15 @@ function init() {
 
   metadataTopic.subscribe(handleMetadataMsg);
 
+  var initialPanoService = new ROSLIB.Service({
+    ros: ros,
+    name: '/panoviewer/panoid_state',
+    serviceType: 'lg_sv/PanoIdState'
+  });
+  initialPanoService.callService({}, function(resp) {
+    var datum = { data: resp.panoid };
+    panoClient.panoHandler(datum);
+  });
 }
 
 function onWindowResize() {
