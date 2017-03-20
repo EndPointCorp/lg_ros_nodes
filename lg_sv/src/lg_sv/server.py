@@ -2,11 +2,10 @@ import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from std_msgs.msg import String
 from lg_common.msg import ApplicationState
-from math import atan2, cos, sin, pi, pow
+from rospy import ROSException
 from lg_sv import NearbyPanos
 import requests
 import json
-from collections import deque
 
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
@@ -174,7 +173,10 @@ class PanoViewerServer:
         dt = (e.current_real - e.last_real).to_sec()
 
         npov = self.project_pov(self.last_twist_msg, dt)
-        self.pub_pov(npov)
+        try:
+            self.pub_pov(npov)
+        except ROSException, error:
+            rospy.logwarn("Could not publish pov during _tick: %s" % error)
 
     def start_timer(self):
         if not hasattr(self, 'tick_timer') or self.tick_timer is None:
