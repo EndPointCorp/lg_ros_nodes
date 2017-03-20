@@ -204,7 +204,7 @@ var initializeRes = function(ros, yawOffset) {
       return;
 
     var panoid = sv_window['activity_config']['panoid'];
-    var pov = lastPov;
+    var pov = lastPov || {};
     if (sv_window['activity_config']['heading'])
       pov.z = sv_window['activity_config']['heading']
     if (sv_window['activity_config']['tilt'])

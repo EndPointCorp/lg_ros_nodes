@@ -118,8 +118,8 @@ def main():
             pov.z = 0
         pov.w = zoom_max
 
-        server.pub_pov(pov)
-        #server.pub_panoid(String(panoid))
+        #server.pub_pov(pov)
+        server.generate_director_message(panoid)
 
     def initial_state_handler(uscs_msg):
         try:

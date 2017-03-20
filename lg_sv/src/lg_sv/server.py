@@ -249,7 +249,7 @@ class PanoViewerServer:
         """
         self.panoid = panoid
         self.nearby_panos.set_panoid(self.panoid)
-        self.panoid_pub.publish(panoid)
+        # self.panoid_pub.publish(panoid)
         self.generate_director_message(panoid)
 
     def tilt_snappy(self, twist_msg, coefficient):
@@ -285,14 +285,18 @@ class PanoViewerServer:
         Grabs the new panoid from a publisher
         """
         # Nothing to do here...
+        rospy.logerr("handling panoid message for %s and self is %s" % (panoid, self.panoid))
         if self.panoid == panoid.data:
+            self.nearby_panos.set_panoid(self.panoid)
             return
+        self.generate_director_message(panoid.data)
         self.panoid = panoid.data
         self.nearby_panos.set_panoid(self.panoid)
         # now sets up director message so we can set the state of the system
-        self.generate_director_message(self.panoid)
 
     def generate_director_message(self, panoid):
+        if panoid == self.panoid:
+            return
         msg = GenericMessage()
         msg.type = 'json'
         message = {
