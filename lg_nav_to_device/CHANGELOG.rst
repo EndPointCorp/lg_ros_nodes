@@ -2,8 +2,8 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.1 (2017-03-20)
+------------------
 * Disable state topics in SpaceNav writer
 * Add unity to device_writer activity stoplist
 * Document device_writer disabled_activities param
