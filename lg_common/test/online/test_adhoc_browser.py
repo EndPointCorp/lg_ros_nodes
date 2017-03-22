@@ -195,7 +195,6 @@ class TestAdhocBrowser(unittest.TestCase):
         emit browser with 2 extensions - test_extension and ros_window_ready
         """
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
-        rospy.sleep(self.message_emission_grace_time)
         wait_for_assert_equal(len(self.director_window_ready_mock.messages) > 0, True, timeout=self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages) > 0, True)
         self.assertEqual(len(self.director_ready_mock.messages), 1)

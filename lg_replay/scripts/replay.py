@@ -2,6 +2,7 @@
 
 import rospy
 import os
+import select
 import commands
 from rosnode import ROSNodeIOException
 from interactivespaces_msgs.msg import GenericMessage
@@ -54,6 +55,9 @@ def main():
         device_replay.run()
     except IOError:
         rospy.logwarn('Device unplugged most likely')
+    except select.error, error:
+        if error[0] == (4, 'Interrupted system call'):
+            rospy.logwarn('Interrupted system call during waiting for event - is system shutting down?')
 
 
 def check_device_path(path, user, group):
