@@ -1,7 +1,6 @@
 <launch>
-  <arg name="video_url" default="http://localhost/rangers.mp4" />
-  <arg name="projection" default="equirectangular" />
-  <arg name="h_fov" default="65" />
+  <arg name="kiosk" value="false" />
+  <arg name="h_fov" default="30" />
   <arg name="clock_port" default="9091" />
   <arg name="clock_addr" default="ws://localhost:$(arg clock_port)" />
 
@@ -10,7 +9,7 @@
   <node name="uscs_service" pkg="lg_common" type="uscs_service.py" />
   <node name="webserver" pkg="lg_common" type="dev_webserver.py" />
   <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" />
-  <node name="ws_distributor" pkg="lg_sv" type="ws_distributor">
+  <node name="ws_distributor" pkg="lg_panovideo" type="ws_distributor">
     <param name="port" value="$(arg clock_port)" />
   </node>
   <node name="sv_server" pkg="lg_sv" type="server.py" >
@@ -19,14 +18,12 @@
   </node>
   <node name="spacenav" pkg="spacenav_node" type="spacenav_node" />
   <node name="spacenav_wrapper" pkg="spacenav_wrapper" type="spacenav_wrap.py" />
-  <node name="browser_left" pkg="lg_common" type="static_browser.py">
-    <param name="url" value="http://localhost:8008/lg_sv/webapps/panovideosync/index.html?master=true&amp;hFov=$(arg h_fov)&amp;videoUrl=$(arg video_url)&amp;projection=$(arg projection)&amp;clockAddr=$(arg clock_addr)" />
-    <param name="kiosk" value="false" />
-    <param name="viewport" value="left" />
-  </node>
-  <node name="browser_right" pkg="lg_common" type="static_browser.py">
-    <param name="url" value="http://localhost:8008/lg_sv/webapps/panovideosync/index.html?hFov=$(arg h_fov)&amp;yawOffsets=$(arg h_fov)&amp;videoUrl=$(arg video_url)&amp;projection=$(arg projection)&amp;clockAddr=$(arg clock_addr)" />
-    <param name="kiosk" value="false" />
-    <param name="viewport" value="right" />
+  <node name="launcher" pkg="lg_panovideo" type="launcher.py">
+    <param name="kiosk" value="$(arg kiosk)" />
+    <param name="fov" value="$(arg h_fov)" />
+    <param name="clock_addr" value="$(arg clock_addr)" />
+    <param name="leader" value="true" />
+    <param name="yaw_offsets" value="-$(arg h_fov),0,$(arg h_fov)" />
+    <param name="viewports" value="left, right" />
   </node>
 </launch>

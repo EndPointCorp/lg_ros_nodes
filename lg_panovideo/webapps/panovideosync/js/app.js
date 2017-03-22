@@ -7,7 +7,6 @@ class SyncedPanoVideoApp {
    *   master: publish clock/transport from this instance?
    *   ros: ROSLIB.Ros instance
    *   hFov: horizontal field of view in degrees
-   *   loop: loop video playback?  Default: false
    *   yawOffsets: array of yaw offsets in degrees
    *   softSyncMin: min time difference for playback rate modulation, in seconds.  Default: 1.0 / 60
    *   softSyncMax: max time difference before seeking, in seconds.  Default: 1.0
@@ -16,7 +15,6 @@ class SyncedPanoVideoApp {
     this.master = opts.master;
     this.ros = opts.ros;
     this.hFov = opts.hFov;
-    this.loop = opts.loop;
     this.yawOffsets = opts.yawOffsets.map(THREE.Math.degToRad);
     this.softSyncMin = opts.softSyncMin || 1.0 / 60.0;
     this.softSyncMax = opts.softSyncMax || 1.0;
@@ -34,12 +32,14 @@ class SyncedPanoVideoApp {
    *
    * @param {String} url
    * @param {Object} projectionOpts
+   * @param {Boolean} loop
    *
    * Opts:
    *   type: projection type. can be 'cube' or 'equirectangular'
    *   expandCoef: for cube projection only. compensate transform360 expand_coef
    */
-  loadVideoFromUrl(url, projectionOpts) {
+  loadVideoFromUrl(url, projectionOpts, loop) {
+    this.video.loop = loop;
     this.syncedVideo.loadFromUrl(url);
     this.scene.setProjection(projectionOpts);
   }
@@ -54,7 +54,6 @@ class SyncedPanoVideoApp {
     this.video.style.display = 'none';
     document.body.appendChild(this.video);
 
-    this.video.loop = this.loop;
     if (!this.master) {
       this.video.muted = true;
       this.animateVideo_ = this.animateVideoSlave_.bind(this);

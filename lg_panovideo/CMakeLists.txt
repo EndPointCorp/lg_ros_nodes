@@ -6,8 +6,11 @@ find_package(catkin REQUIRED COMPONENTS
   std_srvs
 )
 
+catkin_python_setup()
+
 catkin_package(
   CATKIN_DEPENDS
+  roscpp
   std_srvs
 )
 
@@ -39,6 +42,12 @@ target_link_libraries(ws_distributor
   ${catkin_LIBRARIES}
 )
 
+catkin_install_python(PROGRAMS
+  scripts/launcher.py
+  scripts/launcher
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 install(
   FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/uWebSockets/libuWS.so
   DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
@@ -51,3 +60,13 @@ install(
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+install(
+  DIRECTORY webapps/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
+)
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest(test/test_util.test)
+endif()
