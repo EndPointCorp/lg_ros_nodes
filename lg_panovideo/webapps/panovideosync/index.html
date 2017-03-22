@@ -68,10 +68,60 @@ if (videoUrl) {
     type: projection,
     expandCoef: expandCoef
   };
-  sync.loadVideoFromUrl(videoUrl, projectionOpts);
+  sync.loadVideoFromUrl(videoUrl, projectionOpts, loop);
 }
 
 sync.animate();
+
+function handleScene(data) {
+  console.log(data);
+  let projectionOpts = {
+    type: 'equirectangular',
+    expandCoef: 1.025
+  };
+  let loop = false;
+  let w = data['windows'][0];
+  let config = w['activity_config'] || {};
+  if (config.hasOwnProperty('projection')) {
+    projectionOpts['type'] = config['projection'];
+  }
+  if (config.hasOwnProperty('expandCoef')) {
+    projectionOpts['expandCoef'] = config['expandCoef'];
+  }
+  if (config.hasOwnProperty('loop')) {
+    loop = config['loop'];
+  }
+  let videoUrl = w.assets[0];
+  sync.loadVideoFromUrl(videoUrl, projectionOpts, loop);
+}
+
+let sceneService = new ROSLIB.Service({
+  ros: ros,
+  name: '/uscs/message',
+  serviceType: 'lg_common/USCSService'
+});
+let sceneRequest = new ROSLIB.ServiceRequest({});
+sceneService.callService(sceneRequest, (result) => {
+  if (result.type !== 'json') {
+    console.warn('Non-JSON response from USCS service');
+    return;
+  }
+  let sceneData = JSON.parse(result.message);
+  handleScene(sceneData);
+});
+let sceneTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/director/scene',
+  messageType: 'interactivespaces_msgs/GenericMessage'
+});
+sceneTopic.subscribe((msg) => {
+  if (msg.type !== 'json') {
+    console.error('Non-JSON message on USCS topic');
+    return;
+  }
+  let sceneData = JSON.parse(msg.message);
+  handleScene(sceneData);
+});
 </script>
 
 </body>

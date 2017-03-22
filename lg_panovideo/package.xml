@@ -20,4 +20,7 @@
   <run_depend>zlib</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>std_srvs</run_depend>
+  <run_depend>lg_common</run_depend>
+  <run_depend>lg_sv</run_depend>
+  <test_depend>rostest</test_depend>
 </package>
