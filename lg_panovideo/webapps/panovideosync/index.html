@@ -72,33 +72,6 @@ if (videoUrl) {
 }
 
 sync.animate();
-
-// Disable SpaceNav in the background for this scene.
-let disableSlugTopic = new ROSLIB.Topic({
-  ros: ros,
-  name: '/earth/disable_nav_for_scene_slug',
-  messageType: 'std_msgs/String'
-});
-disableSlugTopic.advertise();
-
-let sceneService = new ROSLIB.Service({
-  ros : ros,
-  name : '/uscs/message',
-  serviceType : 'lg_common/USCSService'
-});
-let sceneRequest = new ROSLIB.ServiceRequest({});
-sceneService.callService(sceneRequest, (result) => {
-  console.log(result);
-  if (result.type !== 'json') {
-    console.warn('Non-JSON response from USCS service, can not disable Earth Nav');
-    return;
-  }
-  let sceneData = JSON.parse(result.message);
-  let disableSlugMsg = new ROSLIB.Message({
-    data: sceneData['slug']
-  });
-  disableSlugTopic.publish(disableSlugMsg);
-});
 </script>
 
 </body>
