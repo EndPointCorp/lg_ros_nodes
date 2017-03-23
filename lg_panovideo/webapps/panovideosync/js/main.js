@@ -53,6 +53,15 @@ if (videoUrl) {
 
 sync.animate();
 
+// XXX: Disable SpaceNav in the background for this scene.
+// Only needed for ad hoc launch.
+let disableSlugTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/earth/disable_nav_for_scene_slug',
+  messageType: 'std_msgs/String'
+});
+disableSlugTopic.advertise();
+
 function handleScene(data) {
   if (!data.hasOwnProperty('windows') || data['windows'].length === 0) {
     return;
@@ -84,6 +93,12 @@ function handleScene(data) {
   }
   let videoUrl = panoVideoWindow.assets[0];
   sync.loadVideoFromUrl(videoUrl, projectionOpts, loop);
+
+  // XXX: Only needed for ad hoc launch.
+  let disableSlugMsg = new ROSLIB.Message({
+    data: data['slug']
+  });
+  disableSlugTopic.publish(disableSlugMsg);
 }
 
 let sceneService = new ROSLIB.Service({
