@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>spacenav_remote</name>
-  <version>1.9.1</version>
+  <version>1.10.0</version>
   <description>Emulates spacenav ROS node with data from remote host</description>
 
   <author email="dmitry@endpoint.com">Dmitry Kiselev</author>

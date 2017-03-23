@@ -2,8 +2,8 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.10.0 (2017-03-23)
+-------------------
 * Add lg_panovideo package
 * Contributors: Matt Vollrath
 

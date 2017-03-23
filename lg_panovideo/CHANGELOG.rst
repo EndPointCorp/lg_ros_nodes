@@ -2,8 +2,8 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.10.0 (2017-03-23)
+-------------------
 * Dress up panovideo webapp loading
 * lg_panovideo CMS integration
   * Use new "panovideo" activity type
