@@ -249,7 +249,6 @@ class PanoViewerServer:
         """
         Publishes a new panoid after setting the instance variable
         """
-        rospy.logerr("Publishing panoid... " + panoid)
         self.generate_director_message(panoid, pov)
         self.panoid = panoid
         self.nearby_panos.set_panoid(self.panoid)
@@ -287,7 +286,6 @@ class PanoViewerServer:
         Grabs the new panoid from a publisher
         """
         # Nothing to do here...
-        rospy.logerr("handling panoid message for %s and self is %s" % (panoid, self.panoid))
         if self.panoid == panoid.data:
             self.nearby_panos.set_panoid(self.panoid)
             return
