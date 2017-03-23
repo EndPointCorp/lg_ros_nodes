@@ -18,6 +18,6 @@ catkin_install_python(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-# if (CATKIN_ENABLE_TESTING)
-#   catkin_add_nosetests(test/test_something.py)
-# endif()
+if (CATKIN_ENABLE_TESTING)
+  catkin_add_nosetests(test/test_background_stopper.py)
+endif()

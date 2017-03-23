@@ -141,20 +141,11 @@ var initializeRes = function(ros, yawOffset) {
     }
   };
 
-  var mapOptions = {
-    disableDefaultUI: true,
-    center: new google.maps.LatLng(45, 45),
-    backgroundColor: 'black',
-    zoom: 8
-  };
   var svOptions = {
     visible: true,
     disableDefaultUI: true
   };
-  var map = new google.maps.Map(canvas, mapOptions);
   var sv = new google.maps.StreetViewPanorama(canvas, svOptions);
-
-  map.setStreetView(sv);
 
   var svClient = new StreetviewClient(ros, sv);
 

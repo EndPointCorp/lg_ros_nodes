@@ -86,12 +86,12 @@ def pep8_test():
 
 
 def cppcheck_test():
-    ret = os.system("cppcheck --enable=style --error-exitcode=1 --suppress='*:*spacenav_wrapper/src/hid.c' catkin/src")
+    ret = os.system("cppcheck --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt catkin/src")
     return ret
 
 
 def gjslint_test():
-    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,lg_cms_director' -r .")
+    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,lg_cms_director,panovideosync' -r .")
     return ret
 
 

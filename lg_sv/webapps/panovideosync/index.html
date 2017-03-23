@@ -3,7 +3,11 @@
 <script src="../lib/three.min.js"></script>
 <script src="../lib/eventemitter2.min.js"></script>
 <script src="../lib/roslib.min.js"></script>
-<script src="js/synced_pano_video.js"></script>
+<script src="js/clock_socket.js"></script>
+<script src="js/remote_video_clock.js"></script>
+<script src="js/synced_video.js"></script>
+<script src="js/pano_video_scene.js"></script>
+<script src="js/app.js"></script>
 <style>
 body {
   margin: 0;
@@ -29,35 +33,72 @@ function isTrue(val) {
     ('' + val).toLowerCase() === 'true';
 }
 
-var videoUrl = getParameterByName('videoUrl', String, null);
-var master = getParameterByName('master', Boolean, false);
-var hFov = getParameterByName('hFov', Number, 35);
-var yawOffsets = getParameterByName('yawOffsets', String, '0');
-yawOffsets = yawOffsets.split(/\s*,\s*/).map(Number);
-var rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
-var rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
-var rosbridgeSecure = getParameterByName('rosbridge_secure', isTrue, false);
+const videoUrl = getParameterByName('videoUrl', String, null);
+const projection = getParameterByName('projection', String, 'equirectangular');
+const expandCoef = getParameterByName('expandCoef', Number, 1.0);
+const master = getParameterByName('master', Boolean, false);
+const hFov = getParameterByName('hFov', Number, 35);
+const loop = getParameterByName('loop', isTrue, false);
+const yawOffsets = getParameterByName('yawOffsets', String, '0')
+  .split(/\s*,\s*/)
+  .map(Number);
+const rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
+const rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
+const rosbridgeSecure = getParameterByName('rosbridge_secure', isTrue, false);
+const clockAddr = getParameterByName('clockAddr', String, 'ws://42-a:9091');
 
-var protocol = (rosbridgeSecure ? 'wss' : 'ws') + '://';
-var rosbridgeUrl = protocol + rosbridgeHost + ':' + rosbridgePort;
+const protocol = (rosbridgeSecure ? 'wss' : 'ws') + '://';
+const rosbridgeUrl = protocol + rosbridgeHost + ':' + rosbridgePort;
 
 var ros = new ROSLIB.Ros();
 ros.connect(rosbridgeUrl);
 
-
-var sync = new SyncedPanoVideo({
+var sync = new SyncedPanoVideoApp({
     master: master,
     ros: ros,
+    clockAddr: clockAddr,
     hFov: hFov,
+    loop: loop,
     yawOffsets: yawOffsets
 });
 document.body.appendChild(sync.domElement);
 
 if (videoUrl) {
-  sync.loadVideoFromUrl(videoUrl);
+  let projectionOpts = {
+    type: projection,
+    expandCoef: expandCoef
+  };
+  sync.loadVideoFromUrl(videoUrl, projectionOpts);
 }
 
 sync.animate();
+
+// Disable SpaceNav in the background for this scene.
+let disableSlugTopic = new ROSLIB.Topic({
+  ros: ros,
+  name: '/earth/disable_nav_for_scene_slug',
+  messageType: 'std_msgs/String'
+});
+disableSlugTopic.advertise();
+
+let sceneService = new ROSLIB.Service({
+  ros : ros,
+  name : '/uscs/message',
+  serviceType : 'lg_common/USCSService'
+});
+let sceneRequest = new ROSLIB.ServiceRequest({});
+sceneService.callService(sceneRequest, (result) => {
+  console.log(result);
+  if (result.type !== 'json') {
+    console.warn('Non-JSON response from USCS service, can not disable Earth Nav');
+    return;
+  }
+  let sceneData = JSON.parse(result.message);
+  let disableSlugMsg = new ROSLIB.Message({
+    data: sceneData['slug']
+  });
+  disableSlugTopic.publish(disableSlugMsg);
+});
 </script>
 
 </body>
