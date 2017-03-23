@@ -54,14 +54,25 @@ if (videoUrl) {
 sync.animate();
 
 function handleScene(data) {
-  console.log(data);
+  if (!data.hasOwnProperty('windows') || data['windows'].length === 0) {
+    return;
+  }
+  let panoVideoWindow = data['windows'].find((w) => {
+    return w.hasOwnProperty('activity') && w['activity'] === 'panovideo';
+  });
+  if (!panoVideoWindow) {
+    return;
+  }
+  if (!panoVideoWindow.hasOwnProperty('assets') || panoVideoWindow['assets'].length === 0) {
+    throw 'Got a panovideo activity with no assets';
+  }
+
   let projectionOpts = {
     type: 'equirectangular',
     expandCoef: 1.025
   };
   let loop = false;
-  let w = data['windows'][0];
-  let config = w['activity_config'] || {};
+  let config = panoVideoWindow['activity_config'] || {};
   if (config.hasOwnProperty('projection')) {
     projectionOpts['type'] = config['projection'];
   }
@@ -71,7 +82,7 @@ function handleScene(data) {
   if (config.hasOwnProperty('loop')) {
     loop = config['loop'];
   }
-  let videoUrl = w.assets[0];
+  let videoUrl = panoVideoWindow.assets[0];
   sync.loadVideoFromUrl(videoUrl, projectionOpts, loop);
 }
 
