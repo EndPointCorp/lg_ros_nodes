@@ -2,6 +2,11 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reinstate Earth nav disable slug in panovideo
+* Contributors: Matt Vollrath
+
 1.10.0 (2017-03-23)
 -------------------
 * Dress up panovideo webapp loading

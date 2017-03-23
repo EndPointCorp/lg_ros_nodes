@@ -2,6 +2,9 @@
 Changelog for package lg_replay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.10.0 (2017-03-23)
 -------------------
 * Added exception handling during relaunches for lg_replay and lg_sv (`#345 <https://github.com/EndPointCorp/lg_ros_nodes/issues/345>`_)
