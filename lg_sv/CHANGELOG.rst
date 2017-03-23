@@ -2,6 +2,13 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Move panovideo to its own package
+* Don't create a Map in lg_sv webapp
+* Added exception handling during relaunches for lg_replay and lg_sv (`#345 <https://github.com/EndPointCorp/lg_ros_nodes/issues/345>`_)
+* Contributors: Matt Vollrath, Wojciech Ziniewicz
+
 1.9.1 (2017-03-20)
 ------------------
 
