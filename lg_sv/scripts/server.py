@@ -103,7 +103,7 @@ def main():
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
         asset = get_activity_config_from_activity(scene, server_type)
-        panoid = asset.get('activity_config', {}).get('panoid', '')
+        panoid = asset.get('panoid', '')
 
         pov = server.pov
         try:
@@ -118,8 +118,7 @@ def main():
             pov.z = 0
         pov.w = zoom_max
 
-        #server.pub_pov(pov)
-        server.generate_director_message(panoid)
+        server.pub_panoid(panoid, pov=pov)
 
     def initial_state_handler(uscs_msg):
         try:

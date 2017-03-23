@@ -243,14 +243,14 @@ class PanoViewerServer:
         """
         self.pov = quaternion
 
-    def pub_panoid(self, panoid):
+    def pub_panoid(self, panoid, pov=None):
         """
         Publishes a new panoid after setting the instance variable
         """
+        rospy.logerr("Publishing panoid... " + panoid)
+        self.generate_director_message(panoid, pov)
         self.panoid = panoid
         self.nearby_panos.set_panoid(self.panoid)
-        # self.panoid_pub.publish(panoid)
-        self.generate_director_message(panoid)
 
     def tilt_snappy(self, twist_msg, coefficient):
         now = rospy.get_time()
@@ -294,18 +294,26 @@ class PanoViewerServer:
         self.nearby_panos.set_panoid(self.panoid)
         # now sets up director message so we can set the state of the system
 
-    def generate_director_message(self, panoid):
+    def generate_director_message(self, panoid, pov=None):
         if panoid == self.panoid:
             return
         msg = GenericMessage()
         msg.type = 'json'
+        if pov:
+            heading = pov.z
+            tilt = pov.x
+        else:
+            heading = self.pov.z
+            tilt = self.pov.x
         message = {
             "slug": "auto_generated_sv_scene",
             "windows": [
                 {
                     "activity": "streetview",
                     "activity_config": {
-                        "panoid": panoid
+                        "panoid": panoid,
+                        "heading": heading,
+                        "tilt": tilt
                     }
                 }
             ]
