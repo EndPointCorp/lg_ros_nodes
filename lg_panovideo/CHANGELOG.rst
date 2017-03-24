@@ -2,6 +2,12 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix panovideo background Earth nav disable hack
+  Hack the planet.
+* Contributors: Matt Vollrath
+
 1.10.1 (2017-03-23)
 -------------------
 * Reinstate Earth nav disable slug in panovideo
