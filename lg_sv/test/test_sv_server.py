@@ -30,6 +30,7 @@ class MockDirectorToPanoidPub:
         panoid = json.loads(data.message).get('windows', [{}])[0].get('activity_config', {}).get('panoid', '')
         self.data.append(panoid)
 
+
 class MockPublisher:
     def __init__(self):
         self.data = []
