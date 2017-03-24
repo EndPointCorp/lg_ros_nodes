@@ -63,6 +63,12 @@ let disableSlugTopic = new ROSLIB.Topic({
 disableSlugTopic.advertise();
 
 function handleScene(data) {
+  // XXX: Only needed for ad hoc launch.
+  let disableSlugMsg = new ROSLIB.Message({
+    data: data['slug']
+  });
+  disableSlugTopic.publish(disableSlugMsg);
+
   if (!data.hasOwnProperty('windows') || data['windows'].length === 0) {
     return;
   }
@@ -93,12 +99,6 @@ function handleScene(data) {
   }
   let videoUrl = panoVideoWindow.assets[0];
   sync.loadVideoFromUrl(videoUrl, projectionOpts, loop);
-
-  // XXX: Only needed for ad hoc launch.
-  let disableSlugMsg = new ROSLIB.Message({
-    data: data['slug']
-  });
-  disableSlugTopic.publish(disableSlugMsg);
 }
 
 let sceneService = new ROSLIB.Service({
