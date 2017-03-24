@@ -197,9 +197,9 @@ var initializeRes = function(ros, yawOffset) {
     var panoid = sv_window['activity_config']['panoid'];
     var pov = lastPov || {};
     if (sv_window['activity_config']['heading'])
-      pov.z = sv_window['activity_config']['heading']
+      pov.z = sv_window['activity_config']['heading'];
     if (sv_window['activity_config']['tilt'])
-      pov.x = sv_window['activity_config']['tilt']
+      pov.x = sv_window['activity_config']['tilt'];
 
     console.log("Emitting " + panoid + " with pov " + pov);
     svClient.emit('pano_changed', panoid);
