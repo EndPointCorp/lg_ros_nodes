@@ -53,12 +53,13 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
     messageType : 'std_msgs/String'
   });
 
-  this.panoListener.subscribe(function(msg) {
+  this.panoHandler = function(msg) {
     console.log("Received new pano: " + msg.data);
     this.pano_url = msg.data;
     /* set last_pano to null so duplicate videos start over */
     this.last_pano_url = null;
-  }.bind(this));
+  };
+  this.panoListener.subscribe(this.panoHandler.bind(this));
 
   this.stateTopic = new ROSLIB.Topic({
     ros: ros,
