@@ -7,6 +7,8 @@ from lg_sv import NearbyPanos
 import requests
 import json
 
+from interactivespaces_msgs.msg import GenericMessage
+
 # spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
 # 2. check for movement -> /streetview/panoid
@@ -118,10 +120,12 @@ class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                  nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
                  nearby_panos=NearbyPanos(), metadata_pub=None,
-                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=180):
+                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=180,
+                 director_pub=None):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
+        self.director_pub = director_pub
 
         self.nav_sensitivity = nav_sensitivity
         self.tilt_max = tilt_max
@@ -241,13 +245,13 @@ class PanoViewerServer:
         """
         self.pov = quaternion
 
-    def pub_panoid(self, panoid):
+    def pub_panoid(self, panoid, pov=None):
         """
         Publishes a new panoid after setting the instance variable
         """
+        self.generate_director_message(panoid, pov)
         self.panoid = panoid
         self.nearby_panos.set_panoid(self.panoid)
-        self.panoid_pub.publish(panoid)
 
     def tilt_snappy(self, twist_msg, coefficient):
         now = rospy.get_time()
@@ -281,8 +285,42 @@ class PanoViewerServer:
         """
         Grabs the new panoid from a publisher
         """
+        # Nothing to do here...
+        if self.panoid == panoid.data:
+            self.nearby_panos.set_panoid(self.panoid)
+            return
+        self.generate_director_message(panoid.data)
         self.panoid = panoid.data
         self.nearby_panos.set_panoid(self.panoid)
+        # now sets up director message so we can set the state of the system
+
+    def generate_director_message(self, panoid, pov=None):
+        if panoid == self.panoid:
+            return
+        msg = GenericMessage()
+        msg.type = 'json'
+        if pov:
+            heading = pov.z
+            tilt = pov.x
+        else:
+            heading = self.pov.z
+            tilt = self.pov.x
+        message = {
+            "slug": "auto_generated_sv_scene",
+            "windows": [
+                {
+                    "activity": "streetview",
+                    "activity_config": {
+                        "panoid": panoid,
+                        "heading": heading,
+                        "tilt": tilt
+                    }
+                }
+            ]
+        }
+        msg.message = json.dumps(message)
+        if self.director_pub:
+            self.director_pub.publish(msg)
 
     def handle_state_msg(self, app_state):
         """

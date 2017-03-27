@@ -22,6 +22,15 @@ from lg_common.helpers import get_first_asset_from_activity, load_director_messa
 from interactivespaces_msgs.msg import GenericMessage
 
 
+class MockDirectorToPanoidPub:
+    def __init__(self):
+        self.data = []
+
+    def publish(self, data):
+        panoid = json.loads(data.message).get('windows', [{}])[0].get('activity_config', {}).get('panoid', '')
+        self.data.append(panoid)
+
+
 class MockPublisher:
     def __init__(self):
         self.data = []
@@ -33,12 +42,13 @@ class MockPublisher:
 class TestSVServer(unittest.TestCase):
     def setUp(self):
         self.location_pub = MockPublisher()
-        self.pano_pub = MockPublisher()
+        self.old_pano_pub = MockPublisher()
+        self.pano_pub = MockDirectorToPanoidPub()
         self.pov_pub = MockPublisher()
         self.server = PanoViewerServer(
-            self.location_pub, self.pano_pub, self.pov_pub, TILT_MAX,
+            self.location_pub, self.old_pano_pub, self.pov_pub, TILT_MAX,
             TILT_MIN, NAV_SENSITIVITY, NAV_INTERVAL,
-            nearby_panos=NearbyStreetviewPanos())
+            nearby_panos=NearbyStreetviewPanos(), director_pub=self.pano_pub)
 
     def tearDown(self):
         pass

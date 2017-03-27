@@ -29,7 +29,8 @@ function StreetviewClient(ros, streetView) {
 
   // Linkage
   this.povTopic.subscribe(this.handlePovMsg.bind(this));
-  this.panoTopic.subscribe(this.handlePanoMsg.bind(this));
+  //this.panoTopic.subscribe(this.handlePanoMsg.bind(this));
+  this.init_last_view(ros);
   this.metadataTopic.advertise();
   this.streetView.addListener('links_changed', this.sendMetadata.bind(this));
 }
@@ -97,6 +98,34 @@ StreetviewClient.prototype.sendMetadata = function() {
  */
 StreetviewClient.prototype.pubPov = function(pov) {
   this.povTopic.publish(pov);
+};
+
+/**
+ * Initialize this instance of streetview with the last known
+ * streetview image, found by director message
+ */
+StreetviewClient.prototype.init_last_view = function(ros) {
+  var director = new ROSLIB.Service({
+    ros: ros,
+    name: '/uscs/message',
+    serviceType: 'lg_common/USCSMessage'
+  });
+
+  var directorTopic = new ROSLIB.Topic({
+    ros: ros,
+    name: '/director/scene',
+    serviceType: 'interactivespaces_msgs/GenericMessage'
+  });
+
+  function handleDirector(msg) {
+    console.log("message is " + msg);
+    scene = JSON.parse(msg.message);
+    console.log("scene is " + scene);
+    console.log("message.msg is " + msg.message);
+    this.emit('director_message', scene);
+  };
+  director.callService({}, handleDirector.bind(this));
+  directorTopic.subscribe(handleDirector.bind(this));
 };
 
 // # vim: tabstop=8 expandtab shiftwidth=2 softtabstop=2

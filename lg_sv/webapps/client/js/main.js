@@ -173,9 +173,39 @@ var initializeRes = function(ros, yawOffset) {
     serviceType: 'lg_sv/PanoIdState'
   });
   panoService.callService({}, function(resp) {
-    handlePanoChanged(resp.panoid);
+    //handlePanoChanged(resp.panoid);
   });
 
+  /**
+   * handling director scenes here
+   */
+  function handleDirectorMessage(scene) {
+    var is_streetview = false;
+    var sv_window;
+    //for (_window in scene["windows"]) {
+    for (var i = 0; i < scene.windows.length; i+= 1) {
+      _window = scene.windows[i];
+      if (_window["activity"] == "streetview") {
+        is_streetview = true;
+        sv_window = _window;
+        break;
+      }
+    }
+    if (is_streetview == false)
+      return;
+
+    var panoid = sv_window['activity_config']['panoid'];
+    var pov = lastPov || {};
+    if (sv_window['activity_config']['heading'])
+      pov.z = sv_window['activity_config']['heading'];
+    if (sv_window['activity_config']['tilt'])
+      pov.x = sv_window['activity_config']['tilt'];
+
+    console.log("Emitting " + panoid + " with pov " + pov);
+    svClient.emit('pano_changed', panoid);
+    svClient.emit('pov_changed', pov);
+  }
+  svClient.on('director_message', handleDirectorMessage);
   /**
    * Get the zoom level at a given horizontal fov.
    *
