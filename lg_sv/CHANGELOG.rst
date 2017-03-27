@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.11.0 (2017-03-27)
+-------------------
 * gjslint fixes
 * pep8 fix
 * lg_sv: removing un-needed logerrs
