@@ -2,6 +2,22 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* gjslint fixes
+* pep8 fix
+* lg_sv: removing un-needed logerrs
+* lg_sv: new publisher for tests to translate director->panoid
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into topic/sv_on_director
+  Conflicts:
+  lg_sv/scripts/server.py
+* fixed nearbypanos for director messages
+* initial panos are now found via /panoviewer/panoid_state
+* attempt to fix nearby panos
+* initial sv on director message
+  Nearby panos broken when a director scene is published
+* Contributors: Jacob Minshall
+
 1.10.2 (2017-03-24)
 -------------------
 

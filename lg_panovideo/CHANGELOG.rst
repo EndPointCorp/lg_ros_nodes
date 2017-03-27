@@ -2,6 +2,9 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.10.2 (2017-03-24)
 -------------------
 * Fix panovideo background Earth nav disable hack

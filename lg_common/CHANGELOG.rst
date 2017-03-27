@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* initial sv on director message
+  Nearby panos broken when a director scene is published
+* Contributors: Jacob Minshall
+
 1.10.2 (2017-03-24)
 -------------------
 
