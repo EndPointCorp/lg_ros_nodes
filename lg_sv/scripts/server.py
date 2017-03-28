@@ -104,8 +104,11 @@ def main():
 
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
-        asset = get_activity_config_from_activity(scene, server_type)
-        panoid = asset.get('panoid', '')
+        if server_type == 'panoviewer':
+            panoid = scene['windows'][0]['assets'][0]
+        else:
+            asset = get_activity_config_from_activity(scene, server_type)
+            panoid = asset.get('panoid', '')
 
         pov = server.pov
         try:
