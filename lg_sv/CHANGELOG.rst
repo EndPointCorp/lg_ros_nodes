@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.11.1 (2017-03-28)
+-------------------
 * fix for panoviewer
   The panoviewer currently uses a different schema for storing the assets.
   They live in the assets array still.
