@@ -2,6 +2,13 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix for panoviewer
+  The panoviewer currently uses a different schema for storing the assets.
+  They live in the assets array still.
+* Contributors: Jacob Minshall
+
 1.11.0 (2017-03-27)
 -------------------
 * gjslint fixes
