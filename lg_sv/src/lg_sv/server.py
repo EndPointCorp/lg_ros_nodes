@@ -121,10 +121,11 @@ class PanoViewerServer:
                  nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
                  nearby_panos=NearbyPanos(), metadata_pub=None,
                  zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=180,
-                 director_pub=None):
+                 director_pub=None, server_type=""):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
+        self.server_type = server_type
         self.director_pub = director_pub
 
         self.nav_sensitivity = nav_sensitivity
@@ -309,7 +310,10 @@ class PanoViewerServer:
             "slug": "auto_generated_sv_scene",
             "windows": [
                 {
-                    "activity": "streetview",
+                    "activity": self.server_type,
+                    "assets": [
+                        panoid
+                    ],
                     "activity_config": {
                         "panoid": panoid,
                         "heading": heading,

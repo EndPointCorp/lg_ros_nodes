@@ -66,7 +66,8 @@ def main():
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
                               nav_sensitivity, space_nav_interval, x_threshold,
-                              nearby, metadata_pub, zoom_max, zoom_min, tick_rate, director_pub=director_pub)
+                              nearby, metadata_pub, zoom_max, zoom_min, tick_rate, director_pub=director_pub,
+                              server_type=server_type)
 
     visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
 
@@ -104,11 +105,11 @@ def main():
 
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
-        if server_type == 'panoviewer':
-            panoid = scene['windows'][0]['assets'][0]
-        else:
+        if server_type == 'streetview':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
+        else:
+            panoid = scene['windows'][0]['assets'][0]
 
         pov = server.pov
         try:
