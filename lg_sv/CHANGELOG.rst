@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.11.3 (2017-03-31)
+-------------------
 * panoviewer now listens in on director messages
 * Contributors: Jacob Minshall
 
