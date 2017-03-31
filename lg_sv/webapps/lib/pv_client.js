@@ -61,6 +61,39 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
   };
   this.panoListener.subscribe(this.panoHandler.bind(this));
 
+  this.directorListener = new ROSLIB.Topic({
+    ros: ros,
+    name: '/director/scene',
+    throttle_rate: 33,
+    queue_length: 1,
+    messageType: 'interactivespaces_msgs/GenericMessage'
+  });
+
+  this.handleDirectorMessage = function(msg) {
+    var scene = JSON.parse(msg.message);
+    var is_panoview = false;
+    var pv_window;
+    for (var i = 0; i < scene.windows.length; i+=1) {
+      var _window = scene.windows[i];
+      if (_window["activity"] == "panoviewer") {
+        is_panoview = true;
+        pv_window = _window;
+        break;
+      }
+    }
+    if (is_panoview == false)
+      return false;
+
+    /*
+     * TODO: when we start using the activity_config for panoids for the
+     * panoviewer we should change pv_window['assets'][0] to
+     * pv_window['activity_config']['panoid'] and also grab the POV section if
+     * it exists as we do in the sv_client.js
+     */
+    var panoid = pv_window['assets'][0];
+    this.panoHandler({ data: panoid });
+  };
+  this.directorListener.subscribe(this.handleDirectorMessage.bind(this));
   this.stateTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/panoviewer/state',
