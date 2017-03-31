@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fixes for non-streetview issues
+* Contributors: Jacob Minshall
+
 1.11.1 (2017-03-28)
 -------------------
 * fix for panoviewer
