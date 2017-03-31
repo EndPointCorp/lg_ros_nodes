@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.11.2 (2017-03-31)
+-------------------
 * fixes for non-streetview issues
 * Contributors: Jacob Minshall
 
