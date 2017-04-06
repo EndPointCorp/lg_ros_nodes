@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* proper setting of the inverted POV for
+* Contributors: Jacob Minshall
+
 1.11.3 (2017-03-31)
 -------------------
 * panoviewer now listens in on director messages
