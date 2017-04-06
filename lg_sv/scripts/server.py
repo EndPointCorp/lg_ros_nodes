@@ -102,6 +102,9 @@ def main():
             rospy.loginfo('hiding self')
             visibility_publisher.publish(ApplicationState(state='STOPPED'))
             return
+        if scene.get('slug', '') == 'auto_generated_sv_scene':
+            rospy.loginfo("Ignoring my own generated message")
+            return
 
         visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
@@ -118,7 +121,8 @@ def main():
             pov.x = 0
         try:
             pov.z = float(asset['heading'])
-            if inverted:
+            # we don't want to flip the auto generated ones, or the non_inverted
+            if scene.get('slug', '') != 'auto_generated_sv_scene' and inverted:
                 pov.z = (pov.z + 180) % 360
         except:
             pov.z = 0

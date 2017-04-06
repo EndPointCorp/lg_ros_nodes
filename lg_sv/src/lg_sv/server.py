@@ -251,6 +251,8 @@ class PanoViewerServer:
         Publishes a new panoid after setting the instance variable
         """
         self.generate_director_message(panoid, pov)
+        if pov:
+            self.pub_pov(pov)
         self.panoid = panoid
         self.nearby_panos.set_panoid(self.panoid)
 
