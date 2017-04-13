@@ -6,13 +6,14 @@ class MockPub:
     def publish(self, *args, **kwargs):
         pass
 
+
 class VolumeControl:
     def __init__(self, level_change_pub=MockPub(), default_sink='0', default=50, scale=5):
         self.scale = scale
         self.default = default
         self.current_volume = -1
         self.sink = default_sink
-        volume = self.clamp(self.grab_current_volume(), default/2, default)
+        volume = self.clamp(self.grab_current_volume(), default / 2, default)
         self.level_change_pub = level_change_pub
 
         self.set_volume(volume)
@@ -36,7 +37,6 @@ class VolumeControl:
 
         self.current_volume = volume
         self.level_change_pub.publish(volume)
-
 
     def clamp(self, value, _min=0, _max=100):
         # clamps value between _max and _min
