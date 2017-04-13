@@ -23,17 +23,15 @@ class VolumeControl:
 
     def grab_current_volume(self):
         volume = int(commands.getoutput("pactl list sinks | grep '^[[:space:]]Volume:'").split('\n')[int(self.sink)].split(' ')[-1].split('%')[0])
-        print("current volume is %s" % volume)
+        rospy.loginfo("current volume is %s" % volume)
         return volume
 
     def set_volume(self, volume):
-        print("setting volume to %s" % volume)
         volume = self.clamp(volume)
-        print("setting volume to %s" % volume)
         if volume == self.current_volume:
             return
 
-        print("running command: pactl set-sink-volume %s %s%%" % (self.sink, volume))
+        rospy.loginfo("running command: pactl set-sink-volume %s %s%%" % (self.sink, volume))
         commands.getstatusoutput("pactl set-sink-volume %s %s%%" % (self.sink, volume))
 
         self.current_volume = volume
