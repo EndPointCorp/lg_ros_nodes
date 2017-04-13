@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_volume_control</name>
+  <version>1.11.4</version>
+  <description>The lg_volume_control package</description>
+
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+  <author email="lg@endpoint.com">End Point Liquid Galaxy Team</author>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+
+  <license>TODO</license>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>rospy</run_depend>
+
+</package>
