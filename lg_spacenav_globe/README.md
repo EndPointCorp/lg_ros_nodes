@@ -11,7 +11,9 @@ Coordinates touchscreen (kiosk) navigation and SpaceNav joystick input into auth
 
 ##### Parameters
 
-* `joystick_sensitivity` : `float` - Coefficient for the overall SpaceNav movement sensitivity.  Default is 1.0.
+* `joystick_sensitivity` : `float` - Coefficient for the overall SpaceNav movement sensitivity.  Default is `1.0`.
+
+* `spacenav_scale` : `float` - Compatibility for ROS SpaceNav driver full\_scale param.  Use 350.0 for legacy full\_scale of 1.0, or 0.7 for new full\_scale of 512.0.  Default: `350.0`
 
 ##### Topics
 
