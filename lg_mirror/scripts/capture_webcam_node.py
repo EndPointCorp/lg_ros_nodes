@@ -19,7 +19,7 @@ def main():
     framerate = int(rospy.get_param('~framerate'))
     max_quantizer = int(rospy.get_param('~max_quantizer', 60))
     target_bitrate = int(rospy.get_param('~target_bitrate', 768000))
-    flip = bool(rospy.get_param('~flip', False))
+    flip = rospy.get_param('~flip', False) in ['true', 'True', 't', 'yes', 'flipped', True]
 
     capture = CaptureWebcam(
         janus_host,
