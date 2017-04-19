@@ -13,7 +13,7 @@
 
 class PortalNavigatorNode {
  public:
-  PortalNavigatorNode(void): joystick_sensitivity_(1.0) {}
+  PortalNavigatorNode(void): joystick_sensitivity_(1.0), spacenav_scale_(350.0) {}
 
   // Starts the run loop and does not return until killed.
   void Run(void);
@@ -31,6 +31,7 @@ class PortalNavigatorNode {
   ros::Publisher kiosk_pub_;
   ros::Publisher display_pub_;
 
+  double spacenav_scale_;
   double joystick_sensitivity_;
 
   JoystickNavigator kiosk_joystick_navigator_;
@@ -41,6 +42,15 @@ void PortalNavigatorNode::Run(void) {
       "/lg_spacenav_globe/kiosk_goto_pose", 1);
   display_pub_ = n_.advertise<geometry_msgs::PoseStamped>(
       "/lg_spacenav_globe/display_goto_pose", 1);
+
+  // The joystick code expects values in the range [-1.0, 1.0],
+  // but output from the ROS SpaceNav driver may vary based on its
+  // full_scale param.  Compensate by setting spacenav_scale to
+  // 350.0 for legacy full_scale of 1.0, or 0.7 for new full_scale of 512.0.
+  ros::param::param<double>(
+      "~spacenav_scale",
+      spacenav_scale_,
+      350.0);
 
   ros::param::param<double>(
       "~joystick_sensitivity",
@@ -68,9 +78,6 @@ void PortalNavigatorNode::Run(void) {
 
 void PortalNavigatorNode::HandleSpaceNav(
     const geometry_msgs::Twist::ConstPtr& twist) {
-  // The SpaceNav twist values range [-350, 350], so it must be
-  // normalized for the joystick code, which expects [-1.0, 1.0].
-  static const double kSpaceNavScale = 350.0;
 
   // Our JoystickNavigator expects a right-hand-rule twist, where
   // X is right/left, Y is forward/backward, and Z is up/down.
@@ -78,12 +85,12 @@ void PortalNavigatorNode::HandleSpaceNav(
   // It also sign-flips the y for both linear and angular.
   // We correct that here:
   geometry_msgs::Twist normalized_joy;
-  normalized_joy.linear.x = twist->linear.y / kSpaceNavScale * -1.0;
-  normalized_joy.linear.y = twist->linear.x / kSpaceNavScale;
-  normalized_joy.linear.z = twist->linear.z / kSpaceNavScale;
-  normalized_joy.angular.x = twist->angular.y / kSpaceNavScale * -1.0;
-  normalized_joy.angular.y = twist->angular.x / kSpaceNavScale;
-  normalized_joy.angular.z = twist->angular.z / kSpaceNavScale;
+  normalized_joy.linear.x = twist->linear.y / spacenav_scale_ * -1.0;
+  normalized_joy.linear.y = twist->linear.x / spacenav_scale_;
+  normalized_joy.linear.z = twist->linear.z / spacenav_scale_;
+  normalized_joy.angular.x = twist->angular.y / spacenav_scale_ * -1.0;
+  normalized_joy.angular.y = twist->angular.x / spacenav_scale_;
+  normalized_joy.angular.z = twist->angular.z / spacenav_scale_;
 
   kiosk_joystick_navigator_.ProcessJoy(normalized_joy);
   joystick_pub_.publish(normalized_joy);

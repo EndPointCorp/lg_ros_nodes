@@ -10,6 +10,9 @@ CAPTURE_ARGS = [
     '!',
     'videoscale',
     '!',
+    'videoflip',
+    'method={flip_method}',
+    '!',
     'capsfilter',
     'caps={caps}',
     '!',
@@ -31,7 +34,7 @@ CAPTURE_ARGS = [
 
 
 class CaptureWebcam:
-    def __init__(self, janus_host, janus_port, device, width, height, framerate, max_quantizer, target_bitrate):
+    def __init__(self, janus_host, janus_port, device, width, height, framerate, max_quantizer, target_bitrate, flip=False):
         self.janus_host = janus_host
         self.janus_port = janus_port
         self.device = device
@@ -43,6 +46,11 @@ class CaptureWebcam:
 
         self.proc = None
         self.lock = threading.Lock()
+
+        if flip:
+            self.flip_method = 'rotate-180'
+        else:
+            self.flip_method = 'none'
 
         self.cmd = self._get_cmd()
 
@@ -62,6 +70,7 @@ class CaptureWebcam:
             target_bitrate=self.target_bitrate,
             addr=self.janus_host,
             port=self.janus_port,
+            flip_method=self.flip_method,
         ), CAPTURE_ARGS)
 
         cmd = [CAPTURE_CMD]
