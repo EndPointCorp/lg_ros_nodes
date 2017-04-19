@@ -46,6 +46,7 @@ Constantly captures video stream from a V4L2 device.
 * `target_bitrate` [int] - Target video bitrate in bits/sec. Default: `768000`
 * `janus_port` [int] - Which port to send the stream to. Required.
 * `/lg_mirror/janus_stream_host` [str] - Hostname of the Janus Gateway. Required.
+* `flip` [bool] - Flip the comera 180 degrees. For cameras installed upside down. Default: `False`
 
 ### playback\_node
 
