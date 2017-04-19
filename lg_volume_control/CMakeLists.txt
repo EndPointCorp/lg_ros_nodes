@@ -18,3 +18,8 @@ catkin_install_python(PROGRAMS
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  catkin_add_nosetests(test/test_volume_control.py)
+endif()
