@@ -23,7 +23,11 @@ class VolumeControl:
         self.set_volume(self.current_volume + increment)
 
     def grab_current_volume(self):
-        volume = int(commands.getoutput("pactl list sinks | grep '^[[:space:]]Volume:'").split('\n')[int(self.sink)].split(' ')[-1].split('%')[0])
+        try:
+            volume = int(commands.getoutput("pactl list sinks | grep '^[[:space:]]Volume:'").split('\n')[int(self.sink)].split(' ')[-1].split('%')[0])
+        except:
+            rospy.logerr("Error while grabbing the current volume. Pulse audio might not be supported. Try running 'pactl list sinks' on this machine")
+            volume = self.default
         rospy.loginfo("current volume is %s" % volume)
         return volume
 
@@ -33,7 +37,10 @@ class VolumeControl:
             return
 
         rospy.loginfo("running command: pactl set-sink-volume %s %s%%" % (self.sink, volume))
-        commands.getstatusoutput("pactl set-sink-volume %s %s%%" % (self.sink, volume))
+        try:
+            commands.getstatusoutput("pactl set-sink-volume %s %s%%" % (self.sink, volume))
+        except:
+            rospy.logerr("Error while setting the volume. Pulse audio might not be supported. Try running 'pactl list sinks' on this machine")
 
         self.current_volume = volume
         self.level_change_pub.publish(volume)
