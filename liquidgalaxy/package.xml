@@ -36,6 +36,7 @@
   <run_depend>rfid_scanner</run_depend>
   <run_depend>rfreceiver</run_depend>
   <run_depend>spacenav_wrapper</run_depend>
+  <run_depend>lg_volume_control</run_depend>
 
   <export>
     <metapackage/>

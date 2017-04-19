@@ -51,4 +51,5 @@ $BUILD $SRCDIR/spacenav_wrapper
 $BUILD $SRCDIR/state_proxy
 $BUILD $SRCDIR/rfid_scanner
 $BUILD $SRCDIR/rfreceiver
+$BUILD $SRCDIR/lg_volume_control
 $BUILD $SRCDIR/liquidgalaxy
