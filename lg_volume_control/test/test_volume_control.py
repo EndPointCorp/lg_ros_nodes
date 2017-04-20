@@ -10,12 +10,14 @@ from std_msgs.msg import UInt8, Int8
 
 from lg_common.helpers import write_log_to_file
 
+
 class MockPub:
     def __init__(self):
         self.data = []
 
     def publish(self, msg):
         self.data.append(msg)
+
 
 class TestVolumeControl(unittest.TestCase):
     def setUp(self):
