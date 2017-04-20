@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-PKG = 'lg_earth'
-NAME = 'test_query_writer'
+PKG = 'lg_volume_control'
+NAME = 'test_volume_control'
 
 import unittest
 import os
