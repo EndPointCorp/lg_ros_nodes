@@ -85,6 +85,6 @@ class TestVolumeControl(unittest.TestCase):
 
 if __name__ == '__main__':
     import rostest
-    rostest.rosrun(PKG, NAME, TestQueryWriter)
+    rostest.rosrun(PKG, NAME, TestVolumeControl)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
