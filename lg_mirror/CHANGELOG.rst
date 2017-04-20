@@ -2,6 +2,12 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* better bool handling and documentation
+* capture cam can now be flipped via ros param
+* Contributors: Jacob Minshall
+
 1.11.4 (2017-04-06)
 -------------------
 

@@ -2,6 +2,9 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.11.4 (2017-04-06)
 -------------------
 * proper setting of the inverted POV for

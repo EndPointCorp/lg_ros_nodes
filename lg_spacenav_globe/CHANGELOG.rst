@@ -2,6 +2,13 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add spacenav_scale compatibility param
+  This is needed for compatibility with different SpaceNav driver
+  full_scale configurations.
+* Contributors: Matt Vollrath
+
 1.11.4 (2017-04-06)
 -------------------
 

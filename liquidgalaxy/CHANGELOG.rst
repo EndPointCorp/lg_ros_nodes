@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add lg_volume_control to needed spots to build
+* Contributors: Jacob Minshall
+
 1.11.4 (2017-04-06)
 -------------------
 

@@ -1,18 +1,49 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package spacenav_remote
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package lg_volume_control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
+* lg_volume_control: fix copy pasta mistake
+* lg_volume_control: actually run the tests
+* fix the name of the tests
+* pep8 fixes
+* lg_volume_control: fixed the build/run/test dependencies
+* lg_volume_control: use @DEFAULT_SINK@ as the default sink
+* lg_volume_control: new tests
+* first test for volume control
+* catch exceptions when running pactl commands
+  This is needed for some tests to work.
+* pep8 fixes
+* remove debugging statements
+* moved VolumeControl to its own source file
+* initial volume control node
+* Contributors: Jacob Minshall
+
+* lg_volume_control: fix copy pasta mistake
+* lg_volume_control: actually run the tests
+* fix the name of the tests
+* pep8 fixes
+* lg_volume_control: fixed the build/run/test dependencies
+* lg_volume_control: use @DEFAULT_SINK@ as the default sink
+* lg_volume_control: new tests
+* first test for volume control
+* catch exceptions when running pactl commands
+  This is needed for some tests to work.
+* pep8 fixes
+* remove debugging statements
+* moved VolumeControl to its own source file
+* initial volume control node
+* Contributors: Jacob Minshall
 
 1.11.4 (2017-04-06)
 -------------------
 
-1.11.3 (2017-03-31)
--------------------
+1.11.3 (2017-03-31 19:48)
+-------------------------
 
-1.11.2 (2017-03-31)
--------------------
+1.11.2 (2017-03-31 09:15)
+-------------------------
 
 1.11.1 (2017-03-28)
 -------------------
@@ -23,17 +54,17 @@ Forthcoming
 1.10.2 (2017-03-24)
 -------------------
 
-1.10.1 (2017-03-23)
--------------------
+1.10.1 (2017-03-23 16:28)
+-------------------------
 
-1.10.0 (2017-03-23)
--------------------
+1.10.0 (2017-03-23 12:27)
+-------------------------
 
-1.9.1 (2017-03-20)
-------------------
+1.9.1 (2017-03-20 15:59)
+------------------------
 
-1.9.0 (2017-03-20)
-------------------
+1.9.0 (2017-03-20 09:41)
+------------------------
 
 1.8.0 (2017-03-09)
 ------------------
@@ -44,23 +75,23 @@ Forthcoming
 1.7.10 (2017-03-02)
 -------------------
 
-1.7.9 (2017-03-01)
-------------------
+1.7.9 (2017-03-01 18:26)
+------------------------
 
-1.7.8 (2017-03-01)
-------------------
+1.7.8 (2017-03-01 10:51)
+------------------------
 
 1.7.7 (2017-02-28)
 ------------------
 
-1.7.6 (2017-02-27)
-------------------
+1.7.6 (2017-02-27 18:59)
+------------------------
 
-1.7.5 (2017-02-27)
-------------------
+1.7.5 (2017-02-27 10:09)
+------------------------
 
-1.7.4 (2017-02-27)
-------------------
+1.7.4 (2017-02-27 00:04)
+------------------------
 
 1.7.3 (2017-02-26)
 ------------------
@@ -85,52 +116,6 @@ Forthcoming
 
 1.6.2 (2017-01-25)
 ------------------
-* Added missing changelog
-* Fix PEP8 errors
-* Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
-  Add spacenav_remote node and spacenav client script
-  Commits history:
-  * Add spacenav remote node
-  * Fixing build
-  * Fix dependancies
-  * Fix threading locks
-  * chmod +x on scripts
-  * Fix setup.py
-  * Fix thread start
-  * Add socket opt, TCP no delay
-  * Run spacenav remote server standalone without ROS
-  * Refactor client: keep connection open, fix networking
-  * Fix messages parsing
-  * Fix dict values access
-  * Normalize spacenav scale (using the code from original spacenav ros node)
-  * Add arg parsing
-  * Added information for running the client
-  * Set param types to int where needed
-  * More details in readme
-* Contributors: Dmitry Kiselev, Matt Vollrath, Wojciech Ziniewicz
-
-* Fix PEP8 errors
-* Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
-  Add spacenav_remote node and spacenav client script
-  Commits history:
-  * Add spacenav remote node
-  * Fixing build
-  * Fix dependancies
-  * Fix threading locks
-  * chmod +x on scripts
-  * Fix setup.py
-  * Fix thread start
-  * Add socket opt, TCP no delay
-  * Run spacenav remote server standalone without ROS
-  * Refactor client: keep connection open, fix networking
-  * Fix messages parsing
-  * Fix dict values access
-  * Normalize spacenav scale (using the code from original spacenav ros node)
-  * Add arg parsing
-  * Added information for running the client
-  * Set param types to int where needed
-  * More details in readme
-* Contributors: Dmitry Kiselev, Matt Vollrath
 
 1.6.1 (2017-01-12)
 ------------------
@@ -507,9 +492,6 @@ Forthcoming
 1.1.21 (2015-10-22)
 -------------------
 
-1.1.20 (2015-10-21)
--------------------
-
 1.1.19 (2015-10-20 21:30)
 -------------------------
 
@@ -579,9 +561,6 @@ Forthcoming
 1.0.7 (2015-08-12 14:05)
 ------------------------
 
-1.0.6 (2015-08-10)
-------------------
-
 1.0.5 (2015-08-03)
 ------------------
 
@@ -614,6 +593,3 @@ Forthcoming
 
 0.0.2 (2015-07-21 17:11)
 ------------------------
-
-0.0.1 (2015-07-08)
-------------------
