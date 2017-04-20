@@ -2,8 +2,8 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.12.0 (2017-04-20)
+-------------------
 * lg_volume_control: fix copy pasta mistake
 * lg_volume_control: actually run the tests
 * fix the name of the tests
