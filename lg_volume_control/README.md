@@ -19,7 +19,7 @@ Volume control over ROS
 ##### params
 
 * `~default_sink`: The numbered sink that this node will work on.
-  Default: `'1'`
+  Default: `'@DEFAULT_SINK@'`
 
 #### Publishers
 

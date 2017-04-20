@@ -9,7 +9,7 @@ def main():
     rospy.init_node('volume_control')
 
     level_change = rospy.Publisher('/volume/level', UInt8, latch=True, queue_size=1)
-    default_sink = rospy.get_param('~default_sink', '0')
+    default_sink = rospy.get_param('~default_sink', '@DEFAULT_SINK@')
 
     volume_controller = VolumeControl(level_change_pub=level_change, default_sink=default_sink)
 
