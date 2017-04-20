@@ -81,3 +81,10 @@ class TestVolumeControl(unittest.TestCase):
 
         # check that we are _still_ 0 (we should never go below 0 volume)
         self.assertEqual(self.mock_pub.data[-1], 0)
+
+
+if __name__ == '__main__':
+    import rostest
+    rostest.rosrun(PKG, NAME, TestQueryWriter)
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
