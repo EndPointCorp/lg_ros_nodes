@@ -395,6 +395,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         r'http%3A__kh.google.com%3A80_\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\The%20new%20Google%20Earth': False,
         r'http%3A__kh.google.com%3A80_\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Gain%20a%20new%20perspective': False,
         r'http%3A__kh.google.com%3A80_\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Gain%20a%20new%20perspective.': False,
+        r'http%3A__kh.google.com%3A80_\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-ja.kmz\%U8868%U793A%U3092%U5207%U308A%U66FF%U3048%U3066%U307F%U3088%U3046': False,
         r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_teaser-en.kmz': False,
         r'http%3A__kh.google.com%3A80_\https%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Happy%2010th%20Birthday%2C%20Google%20Earth%21': False,
         r'http%3A__kh.google.com%3A80_\http%3A__mw1.google.com_mw-earth-vectordb_voyager_root_voyager-en.kmz\Satellite%20imagery%20updates': False,
