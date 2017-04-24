@@ -2,6 +2,12 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add popup block for Earth when running in Japanese
+* hiding new earth promos
+* Contributors: Jacob Minshall, Josh Ausborne
+
 1.12.0 (2017-04-20)
 -------------------
 

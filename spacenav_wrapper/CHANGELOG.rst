@@ -2,6 +2,9 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.12.0 (2017-04-20)
 -------------------
 

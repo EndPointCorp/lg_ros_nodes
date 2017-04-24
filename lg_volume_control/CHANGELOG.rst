@@ -2,6 +2,9 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.12.0 (2017-04-20)
 -------------------
 * lg_volume_control: fix copy pasta mistake
