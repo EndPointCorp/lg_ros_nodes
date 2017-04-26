@@ -16,7 +16,7 @@ function isTrue(val) {
 const videoUrl = getParameterByName('videoUrl', String, null);
 const projection = getParameterByName('projection', String, 'equirectangular');
 const expandCoef = getParameterByName('expandCoef', Number, 1.0);
-const master = getParameterByName('master', Boolean, false);
+const master = getParameterByName('master', isTrue, false);
 const hFov = getParameterByName('hFov', Number, 35);
 const loop = getParameterByName('loop', isTrue, false);
 const yawOffsets = getParameterByName('yawOffsets', String, '0')
