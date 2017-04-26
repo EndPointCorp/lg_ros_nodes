@@ -2,6 +2,11 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* change Boolean to isTrue
+* Contributors: joshuanorman
+
 1.12.1 (2017-04-24)
 -------------------
 
