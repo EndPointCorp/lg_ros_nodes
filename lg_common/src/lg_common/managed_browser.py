@@ -83,6 +83,7 @@ class ManagedBrowser(ManagedApplication):
         self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
         self.clear_tmp_dir()
         self.pepper_flash_dir = pepper_flash_dir
+        self.pnacl_dir = pnacl_dir #357
         self.init_tmp_dir()
 
         cmd.append('--user-data-dir={}'.format(self.tmp_dir))
@@ -165,7 +166,7 @@ class ManagedBrowser(ManagedApplication):
         # Link NaCl component. https://github.com/EndPointCorp/lg_ros_nodes/issues/357
         try:
             os.symlink(self.pnacl_dir, os.path.join(self.tmp_dir, 'pnacl'))
-            rospy.loginfo("Linked `pnacl` directory %" % self.pnacl_dir)
+            rospy.loginfo("Linked `pnacl` directory %s" % self.pnacl_dir)
         except Exception, e:
             rospy.logerr("Error linking pNaCl, %s" % e)
 
