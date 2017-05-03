@@ -48,6 +48,7 @@ class ManagedBrowser(ManagedApplication):
         log_stderr=False,
         user_agent='',
         pepper_flash_dir='/home/lg/inc/PepperFlash',
+        pnacl_dir='/home/lg/inc/pnacl',
         **kwargs
     ):
 
@@ -151,14 +152,23 @@ class ManagedBrowser(ManagedApplication):
     def init_tmp_dir(self):
         """
         Creates the tmp dir
-        then links in the hard coded path to PepperFlash
+        then links in the path to Chrome components like PepperFlash
         then replaces the path in the latest-copmponent-updated-flash file
         """
+
         try:
             os.mkdir(self.tmp_dir)
             os.mkdir(self.tmp_dir + '/PepperFlash')
         except:
             rospy.logerr("Error trying to make the tmp dir, could exist already")
+
+        # Link NaCl component. https://github.com/EndPointCorp/lg_ros_nodes/issues/357
+        try:
+            os.symlink(self.pnacl_dir, os.path.join(self.tmp_dir, 'pnacl'))
+            rospy.loginfo("Linked `pnacl` directory %" % self.pnacl_dir)
+        except Exception, e:
+            rospy.logerr("Error linking pNaCl, %s" % e)
+
         try:
             os.symlink(self.pepper_flash_dir + '/flash_dir', "%s/PepperFlash/flash_dir" % self.tmp_dir)
             with open("%s/latest-component-updated-flash" % self.pepper_flash_dir, "r") as f:
