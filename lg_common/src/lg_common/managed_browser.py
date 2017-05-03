@@ -31,11 +31,25 @@ DEFAULT_ARGS = [
 
 
 class ManagedBrowser(ManagedApplication):
-    def __init__(self, url=None, slug=None, kiosk=True, geometry=None,
-                 binary=DEFAULT_BINARY, remote_debugging_port=None, app=False,
-                 shell=True, command_line_args=[], disk_cache_size=314572800,
-                 log_level=0, extensions=[], log_stderr=False, user_agent='',
-                 pepper_flash_dir='/home/lg/inc/PepperFlash', **kwargs):
+    def __init__(
+        self,
+        url=None,
+        slug=None,
+        kiosk=True,
+        geometry=None,
+        binary=DEFAULT_BINARY,
+        remote_debugging_port=None,
+        app=False,
+        shell=True,
+        command_line_args=[],
+        disk_cache_size=314572800,
+        log_level=0,
+        extensions=[],
+        log_stderr=False,
+        user_agent='',
+        pepper_flash_dir='/home/lg/inc/PepperFlash',
+        **kwargs
+    ):
 
         # If no slug provided, attempt to use the node name.
         if slug is None:
