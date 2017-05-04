@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.12.3 (2017-05-03)
+-------------------
 * Copy PNaCl Chrome component before browser launch. `#357 <https://github.com/EndPointCorp/lg_ros_nodes/issues/357>`_
 * Contributors: Adam Vollrath
 
