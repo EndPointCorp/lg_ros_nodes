@@ -83,7 +83,7 @@ class ManagedBrowser(ManagedApplication):
         self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
         self.clear_tmp_dir()
         self.pepper_flash_dir = pepper_flash_dir
-        self.pnacl_dir = pnacl_dir #357
+        self.pnacl_dir = pnacl_dir
         self.init_tmp_dir()
 
         cmd.append('--user-data-dir={}'.format(self.tmp_dir))
