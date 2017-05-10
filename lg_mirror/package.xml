@@ -36,5 +36,6 @@
   <run_depend>gstreamer1.0-plugins-good</run_depend>
   <run_depend>gstreamer1.0-x</run_depend>
   <run_depend>python-gst-1.0</run_depend>
+  <run_depend>python-evdev</run_depend>
   <run_depend>web_video_server</run_depend>
 </package>

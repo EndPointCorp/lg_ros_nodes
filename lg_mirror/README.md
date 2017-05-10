@@ -126,6 +126,16 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 * `/lg_mirror/touch_events`
 * `/lg_mirror/active_touch_routes`
 
+### touchscreen\_emulator
+
+#### Overview
+
+Creates a virtual touchscreen that writes events directly from a topic.
+
+#### Subscribed Topics
+
+* `/lg_mirror/fake_touch` [ScreenCoordinate]
+
 ## Configuration
 
 For full mirror and touch capability, you will need to configure:
