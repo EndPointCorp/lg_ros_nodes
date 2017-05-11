@@ -1,2 +1,0 @@
-from single_touch_adapter import SingleTouchAdapter
-from single_touch_transformer import SingleTouchTransformer
