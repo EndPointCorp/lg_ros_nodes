@@ -11,7 +11,6 @@ add_message_files(
   FILES
   EvdevEvent.msg
   EvdevEvents.msg
-  ScreenCoordinate.msg
 )
 
 add_service_files(
@@ -117,13 +116,11 @@ catkin_install_python(PROGRAMS
   scripts/capture_webcam_node.py
   scripts/playback_node.py
   scripts/touch_router_node.py
-  scripts/touchscreen_emulator.py
   scripts/single_touch_sender.py
   scripts/capture_viewport_node
   scripts/capture_webcam_node
   scripts/playback_node
   scripts/touch_router_node
-  scripts/touchscreen_emulator
   scripts/single_touch_sender
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
