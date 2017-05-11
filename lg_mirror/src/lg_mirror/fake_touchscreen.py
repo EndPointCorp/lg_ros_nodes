@@ -2,6 +2,12 @@ from threading import Lock
 
 from evdev import UInput, ecodes
 
+# We are emulating an ELO touchscreen with the following min/max values.
+MIN_X = 0
+MAX_X = 4095
+MIN_Y = 0
+MAX_Y = 4095
+
 
 class FakeTouchscreen:
     """
