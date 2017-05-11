@@ -26,9 +26,10 @@ const char* UinputDeviceInitError::what() const throw() {
  * \brief Constructor
  * \param device_name Human-readable name for the virtual device.
  */
-UinputDevice::UinputDevice(const std::string& device_name):
+UinputDevice::UinputDevice(const std::string& device_name, bool translate_to_touch):
   fd_(-1),
-  device_name_(device_name)
+  device_name_(device_name),
+  translate_to_touch_(translate_to_touch)
 {}
 
 /**
@@ -84,7 +85,13 @@ void UinputDevice::InitDevice_(int fd, const lg_mirror::EvdevDeviceInfoResponse&
 
   sz = info.key_codes.size();
   for (i = 0; i < sz; i++) {
-    EnableCode_(fd, UI_SET_KEYBIT, info.key_codes[i]);
+    __u16 code = info.key_codes[i];
+
+    if (translate_to_touch_ && code == BTN_LEFT) {
+      code = BTN_TOUCH;
+    }
+
+    EnableCode_(fd, UI_SET_KEYBIT, code);
   }
 
   sz = info.rel_codes.size();
@@ -244,6 +251,10 @@ bool UinputDevice::WriteEvent_(__u16 type, __u16 code, __s32 value) {
   ev.type = type;
   ev.code = code;
   ev.value = value;
+
+  if (translate_to_touch_ && ev.type == EV_KEY && ev.code == BTN_LEFT) {
+    ev.code = BTN_TOUCH;
+  }
 
   int num_wrote = write(fd_, &ev, sizeof(ev));
 
