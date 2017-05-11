@@ -116,12 +116,10 @@ catkin_install_python(PROGRAMS
   scripts/capture_webcam_node.py
   scripts/playback_node.py
   scripts/touch_router_node.py
-  scripts/single_touch_sender.py
   scripts/capture_viewport_node
   scripts/capture_webcam_node
   scripts/playback_node
   scripts/touch_router_node
-  scripts/single_touch_sender
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -136,7 +134,6 @@ if (CATKIN_ENABLE_TESTING)
   add_rostest(test/capture_viewport.test)
   add_rostest(test/touch_router.test)
   add_rostest(test/touch_router_no_default.test)
-  add_rostest(test/single_touch_sender.test)
   catkin_add_gtest(test_${PROJECT_NAME}_viewport_mapper test/test_viewport_mapper.cpp)
   target_link_libraries(test_${PROJECT_NAME}_viewport_mapper
     ${catkin_LIBRARIES}
