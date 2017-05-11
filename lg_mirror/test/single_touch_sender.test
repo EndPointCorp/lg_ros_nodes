@@ -1,4 +1,0 @@
-<launch>
-  <node name="single_touch_sender" pkg="lg_mirror" type="single_touch_sender.py" />
-  <test test-name="test_single_touch_sender" pkg="lg_mirror" type="test_single_touch_sender.py" />
-</launch>
