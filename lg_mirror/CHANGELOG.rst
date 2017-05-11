@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.12.4 (2017-05-11)
+-------------------
 * Workaround for weird touchscreens
   Translate BTN_LEFT to BTN_TOUCH.
 * Contributors: Matt Vollrath

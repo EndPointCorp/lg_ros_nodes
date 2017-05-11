@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.12.4 (2017-05-11)
+-------------------
 * Fix PEP8
 * Contributors: Matt Vollrath
 
