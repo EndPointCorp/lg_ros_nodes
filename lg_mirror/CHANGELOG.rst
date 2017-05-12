@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.12.5 (2017-05-11)
+-------------------
 * Clean up touch emulation cruft
 * Flesh out multi-touch emulation
   Default it to false since it is now destructive to actual multi-touch
