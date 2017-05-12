@@ -120,7 +120,7 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 
 * `viewport` [str] - The viewport to be managed by this receiver.
 * `float_pointer` [bool] - Float the xinput device pointer. This prevents interference with Chrome when there are multiple receivers on the same DISPLAY. **This may be later deprecated by activity-specific configuration.** Default: `false`
-* `translate_to_touch` [bool] - Translate `BTN_LEFT` to `BTN_TOUCH`.  Workaround for weird touchscreens.  Default: `true`
+* `translate_to_multitouch` [bool] - Attempt to turn a single touch device into a multi-touch device.  Works better with Chrome.  Default: `false`
 
 #### Subscribed Topics
 

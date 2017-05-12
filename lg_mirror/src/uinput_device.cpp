@@ -15,6 +15,12 @@
 #include "lg_mirror/EvdevEvents.h"
 #include "lg_mirror/EvdevDeviceInfo.h"
 
+// emulate a typical ELO touchscreen
+const __s32 MIN_TRACKING_ID = 0;
+const __s32 MAX_TRACKING_ID = 65535;
+const __s32 MIN_SLOT = 0;
+const __s32 MAX_SLOT = 7;
+
 UinputDeviceInitError::UinputDeviceInitError(const char* msg): msg_(msg) {}
 UinputDeviceInitError::UinputDeviceInitError(const std::string& msg): msg_(msg) {}
 UinputDeviceInitError::~UinputDeviceInitError() throw() {}
@@ -26,10 +32,10 @@ const char* UinputDeviceInitError::what() const throw() {
  * \brief Constructor
  * \param device_name Human-readable name for the virtual device.
  */
-UinputDevice::UinputDevice(const std::string& device_name, bool translate_to_touch):
+UinputDevice::UinputDevice(const std::string& device_name, bool translate_to_multitouch):
   fd_(-1),
   device_name_(device_name),
-  translate_to_touch_(translate_to_touch)
+  translate_to_multitouch_(translate_to_multitouch)
 {}
 
 /**
@@ -87,7 +93,7 @@ void UinputDevice::InitDevice_(int fd, const lg_mirror::EvdevDeviceInfoResponse&
   for (i = 0; i < sz; i++) {
     __u16 code = info.key_codes[i];
 
-    if (translate_to_touch_ && code == BTN_LEFT) {
+    if (translate_to_multitouch_ && code == BTN_LEFT) {
       code = BTN_TOUCH;
     }
 
@@ -101,7 +107,9 @@ void UinputDevice::InitDevice_(int fd, const lg_mirror::EvdevDeviceInfoResponse&
 
   sz = info.abs_codes.size();
   for (i = 0; i < sz; i++) {
-    int code = info.abs_codes[i];
+    __u16 code = info.abs_codes[i];
+
+
     if (i > info.abs_min.size() || i > info.abs_max.size()) {
       std::ostringstream error_msg;
       error_msg << "Device info missing abs_min or abs_max for abs code " << code << " at index " << i;
@@ -110,6 +118,27 @@ void UinputDevice::InitDevice_(int fd, const lg_mirror::EvdevDeviceInfoResponse&
     EnableCode_(fd, UI_SET_ABSBIT, code);
     uidev.absmax[code] = info.abs_max[i];
     uidev.absmin[code] = info.abs_min[i];
+
+    if (translate_to_multitouch_) {
+      if (code == ABS_X) {
+        EnableCode_(fd, UI_SET_ABSBIT, ABS_MT_POSITION_X);
+        uidev.absmax[ABS_MT_POSITION_X] = info.abs_max[i];
+        uidev.absmin[ABS_MT_POSITION_X] = info.abs_min[i];
+      } else if (code == ABS_Y) {
+        EnableCode_(fd, UI_SET_ABSBIT, ABS_MT_POSITION_Y);
+        uidev.absmax[ABS_MT_POSITION_Y] = info.abs_max[i];
+        uidev.absmin[ABS_MT_POSITION_Y] = info.abs_min[i];
+      }
+    }
+  }
+
+  if (translate_to_multitouch_) {
+    EnableCode_(fd, UI_SET_ABSBIT, ABS_MT_TRACKING_ID);
+    uidev.absmax[ABS_MT_TRACKING_ID] = MAX_TRACKING_ID;
+    uidev.absmin[ABS_MT_TRACKING_ID] = MIN_TRACKING_ID;
+    EnableCode_(fd, UI_SET_ABSBIT, ABS_MT_SLOT);
+    uidev.absmax[ABS_MT_TRACKING_ID] = MAX_SLOT;
+    uidev.absmin[ABS_MT_TRACKING_ID] = MIN_SLOT;
   }
 
   // set the device name
@@ -218,14 +247,71 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
   }
 
   std::size_t num_events = msg->events.size();
+
+  if (translate_to_multitouch_) {
+    for (int i = 0; i < num_events; i++) {
+      lg_mirror::EvdevEvent ev = msg->events[i];
+
+      __u16 type = ev.type;
+      __u16 code = ev.code;
+      __s32 value = ev.value;
+
+      if (type == EV_KEY) {
+        if (code == BTN_LEFT) {
+          if (value == 1) {
+            if (!WriteEvent_(EV_ABS, ABS_MT_TRACKING_ID, 1)) {
+              ROS_ERROR("Error while writing an event to the device");
+              ros::shutdown();
+              return;
+            }
+          } else if (value == 0) {
+            if (!WriteEvent_(EV_ABS, ABS_MT_TRACKING_ID, -1)) {
+              ROS_ERROR("Error while writing an event to the device");
+              ros::shutdown();
+              return;
+            }
+          }
+        }
+      }
+      else if (type == EV_ABS) {
+        if (code == ABS_X) {
+          if (!WriteEvent_(EV_ABS, ABS_MT_POSITION_X, value)) {
+            ROS_ERROR("Error while writing an event to the device");
+            ros::shutdown();
+            return;
+          }
+        }
+        else if (code == ABS_Y) {
+          if (!WriteEvent_(EV_ABS, ABS_MT_POSITION_Y, value)) {
+            ROS_ERROR("Error while writing an event to the device");
+            ros::shutdown();
+            return;
+          }
+        }
+      }
+    }
+  }
+
   for (int i = 0; i < num_events; i++) {
     lg_mirror::EvdevEvent ev = msg->events[i];
 
-    if (!WriteEvent_(ev.type, ev.code, ev.value)) {
+    __u16 type = ev.type;
+    __u16 code = ev.code;
+    __s32 value = ev.value;
+
+
+    if (translate_to_multitouch_) {
+      if (type == EV_KEY && code == BTN_LEFT) {
+        code = BTN_TOUCH;
+      }
+    }
+
+    if (!WriteEvent_(type, code, value)) {
       ROS_ERROR("Error while writing an event to the device");
       ros::shutdown();
       return;
     }
+
   }
 
   // force an EV_SYN after each message
@@ -251,10 +337,6 @@ bool UinputDevice::WriteEvent_(__u16 type, __u16 code, __s32 value) {
   ev.type = type;
   ev.code = code;
   ev.value = value;
-
-  if (translate_to_touch_ && ev.type == EV_KEY && ev.code == BTN_LEFT) {
-    ev.code = BTN_TOUCH;
-  }
 
   int num_wrote = write(fd_, &ev, sizeof(ev));
 
