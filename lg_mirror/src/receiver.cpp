@@ -11,7 +11,7 @@
 const char* DEVICE_NAME_BASE = "Virtual Touchscreen (%s)";
 const char* VIEWPORT_PARAM = "viewport";
 const char* FLOAT_POINTER_PARAM = "float_pointer";
-const char* TRANSLATE_TO_TOUCH_PARAM = "translate_to_touch";
+const char* TRANSLATE_TO_MULTITOUCH_PARAM = "translate_to_multitouch";
 
 using lg_mirror::DEVICE_INFO_SERVICE;
 using lg_mirror::TOUCH_ROUTE_TOPIC;
@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle n("~");
 
   bool float_pointer = false;
-  bool translate_to_touch = true;
+  bool translate_to_multitouch = false;
   std::string viewport_name;
   std::string device_name;
   std::string viewport_geometry;
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
   /* grab parameters */
 
   n.param<bool>(FLOAT_POINTER_PARAM, float_pointer, false);
-  n.param<bool>(TRANSLATE_TO_TOUCH_PARAM, translate_to_touch, true);
+  n.param<bool>(TRANSLATE_TO_MULTITOUCH_PARAM, translate_to_multitouch, false);
   if (!n.getParam(VIEWPORT_PARAM, viewport_name)) {
     ROS_ERROR("'viewport' parameter is required");
     fail();
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
   /* spin up the uinput device */
 
-  UinputDevice uinput_device(device_name, translate_to_touch);
+  UinputDevice uinput_device(device_name, translate_to_multitouch);
   ROS_DEBUG_STREAM("Creating device: " << device_name << " for viewport " << viewport_name);
   if (!uinput_device.Init(srv.response)) {
     ROS_ERROR("Failed to create uinput device");

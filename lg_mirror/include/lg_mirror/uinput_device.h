@@ -24,7 +24,7 @@ class UinputDeviceInitError : public std::exception {
 
 class UinputDevice {
   public:
-    UinputDevice(const std::string& device_name, bool translate_to_touch);
+    UinputDevice(const std::string& device_name, bool translate_to_multitouch);
 
     bool Init(const lg_mirror::EvdevDeviceInfoResponse& info);
     bool WaitForXinput();
@@ -39,7 +39,7 @@ class UinputDevice {
 
     int fd_;
     std::string device_name_;
-    bool translate_to_touch_;
+    bool translate_to_multitouch_;
 };
 
 #endif // _UINPUT_DEVICE_H_
