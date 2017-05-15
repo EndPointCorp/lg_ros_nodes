@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 
   device_info_service << "/lg_mirror/" << device_id << "/device_info";
   events_topic << "/lg_mirror/" << device_id << "/events";
-  route_topic << "/lg_mirror/" << device_id << "/active_route";
+  route_topic << "/lg_mirror/" << device_id << "/active_routes";
 
   /* discover viewport geometry */
 
