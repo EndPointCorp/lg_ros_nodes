@@ -31,6 +31,7 @@
   <run_depend>lg_spacenav_globe</run_depend>
   <run_depend>lg_stats</run_depend>
   <run_depend>lg_sv</run_depend>
+  <run_depend>lg_twister</run_depend>
   <run_depend>lg_wireless_devices</run_depend>
   <run_depend>state_proxy</run_depend>
   <run_depend>rfid_scanner</run_depend>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_twister</name>
+  <version>0.0.0</version>
+  <description>Joystick-like input muxer</description>
+
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+  <author email="matt@endpoint.com">Matt Vollrath</author>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+
+</package>
