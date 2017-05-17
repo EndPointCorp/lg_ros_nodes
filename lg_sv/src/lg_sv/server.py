@@ -9,7 +9,7 @@ import json
 
 from interactivespaces_msgs.msg import GenericMessage
 
-# spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
+# spacenav_node -> mux_twists -> /lg_twister/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
 # 2. check for movement -> /streetview/panoid
 

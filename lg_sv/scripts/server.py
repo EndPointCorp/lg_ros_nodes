@@ -15,7 +15,7 @@ from lg_common.helpers import run_with_influx_exception_handler
 from lg_sv.srv import PanoIdState
 
 
-# spacenav_node -> /spacenav/twist -> handle_spacenav_msg:
+# spacenav_node -> mux_twists -> /lg_twister/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /<server_type>/pov
 # 2. check for movement -> /<server_type>/panoid
 
@@ -79,7 +79,7 @@ def main():
                      server.handle_panoid_msg)
     rospy.Subscriber('/%s/pov' % server_type, Quaternion,
                      server.handle_pov_msg)
-    rospy.Subscriber('/spacenav_wrapper/twist', Twist,
+    rospy.Subscriber('/lg_twister/twist', Twist,
                      server.handle_spacenav_msg)
     rospy.Subscriber('/%s/state' % server_type, ApplicationState,
                      server.handle_state_msg)
