@@ -45,6 +45,7 @@ $BUILD $SRCDIR/lg_rfreceiver
 $BUILD $SRCDIR/lg_spacenav_globe
 $BUILD $SRCDIR/lg_stats
 $BUILD $SRCDIR/lg_sv
+$BUILD $SRCDIR/lg_twister
 $BUILD $SRCDIR/lg_wireless_devices
 $BUILD $SRCDIR/lg_screenshot
 $BUILD $SRCDIR/spacenav_wrapper
