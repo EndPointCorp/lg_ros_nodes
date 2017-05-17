@@ -28,5 +28,5 @@ None
 
 #### subscribed topics
 
-* `/spacenav/twist` - this script needs to subscribe to space navigator
+* `/lg_twister/twist` - this script needs to subscribe to joystick
   data flowing on this topic
