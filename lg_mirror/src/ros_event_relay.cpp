@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 
-#include "constants.h"
 #include "lg_common/StringArray.h"
 #include "ros_event_relay.h"
 #include "uinput_device.h"
@@ -10,24 +9,26 @@
 
 using lg_common::StringArray;
 using lg_common::StringArrayPtr;
-using lg_mirror::TOUCH_EVENTS_TOPIC;
 
 /**
  * \brief Constructor
  * \param node_handle ROS node handle.
  * \param viewport_name Name of the viewport we are handling.
  * \param device Uinput device awaiting event messages.
+ * \param events_topic Topic name for event routing.
  * \param mapper Xinput mapper for viewport.
  */
 RosEventRelay::RosEventRelay(
     ros::NodeHandle node_handle,
     const std::string& viewport_name,
     UinputDevice device,
+    const std::string& events_topic,
     ViewportMapper mapper
 ):
   n_(node_handle),
   viewport_name_(viewport_name),
   device_(device),
+  events_topic_(events_topic),
   mapper_(mapper),
   routing_(false)
 {}
@@ -78,7 +79,7 @@ void RosEventRelay::OpenRoute_() {
     return;
   }
   routing_ = true;
-  s_ = n_.subscribe(TOUCH_EVENTS_TOPIC, 10, &UinputDevice::HandleEventMessage, &device_);
+  s_ = n_.subscribe(events_topic_, 10, &UinputDevice::HandleEventMessage, &device_);
 }
 
 /**

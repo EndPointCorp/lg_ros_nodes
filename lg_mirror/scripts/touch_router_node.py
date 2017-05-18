@@ -13,22 +13,24 @@ from lg_mirror.srv import TouchRoutes
 from lg_common.helpers import run_with_influx_exception_handler
 
 
-NODE_NAME = 'lg_mirror_touch_router'
+NODE_NAME = 'lg_mirror_router'
 
 
 def main():
     rospy.init_node(NODE_NAME)
 
     default_viewport = rospy.get_param('~default_viewport', None)
-    touch_router = TouchRouter(default_viewport)
+    device_id = rospy.get_param('~device_id', 'default')
+    router = TouchRouter(default_viewport)
+    route_topic = '/lg_mirror/{}/active_routes'.format(device_id)
 
-    def publish_active_touch_routes(routes):
+    def publish_active_routes(routes):
         routes_pub.publish(StringArray(routes))
 
-    new_listener_cb = partial(touch_router.handle_new_listener, publish_active_touch_routes)
+    new_listener_cb = partial(router.handle_new_listener, publish_active_routes)
 
     routes_pub = rospy.Publisher(
-        '/lg_mirror/active_touch_routes',
+        route_topic,
         StringArray,
         queue_size=10,
         subscriber_listener=SubscribeListener(new_listener_cb)
@@ -37,13 +39,13 @@ def main():
     # Hacky callback to parse the initial scene.
     def handle_initial_scene_msg(msg):
         d = load_director_message(msg)
-        touch_router.handle_scene(publish_active_touch_routes, d)
+        router.handle_scene(publish_active_routes, d)
 
     handle_initial_state(handle_initial_scene_msg)
 
-    rospy.Service('/lg_mirror/active_touch_routes', TouchRoutes, touch_router.handle_service_request)
+    rospy.Service(route_topic, TouchRoutes, router.handle_service_request)
 
-    scene_cb = partial(touch_router.handle_scene, publish_active_touch_routes)
+    scene_cb = partial(router.handle_scene, publish_active_routes)
 
     on_new_scene(scene_cb)
 
