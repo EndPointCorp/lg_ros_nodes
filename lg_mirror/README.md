@@ -83,6 +83,7 @@ The purpose of this is to mirror an application from main screens to the touchsc
 #### Parameters
 
 * `default_viewport` [str] - An optional default viewport for touch routing. Touches will be routed to this viewport's receiver unless otherwise requested by a scene.
+* `device_id` [str] - Name ID of the device this router controls.  Default: `default`
 
 #### Subscribed Topics
 
@@ -90,7 +91,7 @@ The purpose of this is to mirror an application from main screens to the touchsc
 
 #### Published Topics
 
-* `/lg_mirror/active_touch_routes` [lg\_common/StringArray] - A list of viewports which should be receiving touch events.
+* `/lg_mirror/<device_id>/active_routes` [lg\_common/StringArray] - A list of viewports which should be receiving touch events.
 
 ### touch\_sender
 
@@ -101,14 +102,15 @@ Reads touch events from a touchscreen and publishes them.
 #### Parameters
 
 * `device_path` [str] - Path to the event device for the touchscreen. This will typically be a device or symlink under `/dev/input`. Required.
+* `device_id` [str] - Name ID of the device this sender is reading.  Default: `default`
 
 #### Published Topics
 
-* `/lg_mirror/touch_events` [EvdevEvents] - Touch events.
+* `/lg_mirror/<device_id>/events` [EvdevEvents] - Touch events.
 
 #### Services
 
-* `/lg_mirror/device_info` [EvdevDeviceInfo] - Profile of the device's evdev properties, used for accurate cloning.
+* `/lg_mirror/<device_id>/device_info` [EvdevDeviceInfo] - Profile of the device's evdev properties, used for accurate cloning.
 
 ### touch\_receiver
 
@@ -121,11 +123,12 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 * `viewport` [str] - The viewport to be managed by this receiver.
 * `float_pointer` [bool] - Float the xinput device pointer. This prevents interference with Chrome when there are multiple receivers on the same DISPLAY. **This may be later deprecated by activity-specific configuration.** Default: `false`
 * `translate_to_multitouch` [bool] - Attempt to turn a single touch device into a multi-touch device.  Works better with Chrome.  Default: `false`
+* `device_id` [str] - Name ID of the device this receiver is emulating.  Default: `default`
 
 #### Subscribed Topics
 
-* `/lg_mirror/touch_events`
-* `/lg_mirror/active_touch_routes`
+* `/lg_mirror/<device_id>/events`
+* `/lg_mirror/<device_id>/active_routes`
 
 ## Configuration
 

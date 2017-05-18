@@ -5,17 +5,15 @@
 #include <signal.h>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include "lg_mirror/EvdevEvent.h"
 #include "lg_mirror/EvdevEvents.h"
-#include "constants.h"
 #include "device_service.h"
 
-using lg_mirror::TOUCH_EVENTS_TOPIC;
-using lg_mirror::DEVICE_INFO_SERVICE;
-
-const char* DEVICE_PATH_PARAM = "~device_path";
+const char* DEVICE_PATH_PARAM = "device_path";
+const char* DEVICE_ID_PARAM = "device_id";
 const std::size_t EVENTS_QUEUE_LENGTH = 10;
 
 int main(int argc, char** argv) {
@@ -26,20 +24,28 @@ int main(int argc, char** argv) {
 
   ros::init(argc, argv, "lg_mirror_sender");
 
-  ros::NodeHandle n;
+  ros::NodeHandle n("~");
 
   /* open the device */
 
   std::string device_path;
+  std::string device_id;
+  std::stringstream device_info_service;
+  std::stringstream events_topic;
   int device_fd;
 
-  if (ros::param::get(DEVICE_PATH_PARAM, device_path)) {
+  if (n.getParam(DEVICE_PATH_PARAM, device_path)) {
     ROS_INFO("Using device: %s", device_path.c_str());
   } else {
     ROS_ERROR("Private parameter 'device_path' must be set");
     ros::shutdown();
     exit(EXIT_FAILURE);
   }
+
+  n.param<std::string>(DEVICE_ID_PARAM, device_id, "default");
+
+  device_info_service << "/lg_mirror/" << device_id << "/device_info";
+  events_topic << "/lg_mirror/" << device_id << "/events";
 
   while (true) {
     if ((device_fd = open(device_path.c_str(), O_RDONLY | O_NONBLOCK)) < 0) {
@@ -64,7 +70,7 @@ int main(int argc, char** argv) {
   /* advertise the topic */
 
   ros::Publisher evdev_pub =
-    n.advertise<lg_mirror::EvdevEvents>(TOUCH_EVENTS_TOPIC,
+    n.advertise<lg_mirror::EvdevEvents>(events_topic.str(),
                                         EVENTS_QUEUE_LENGTH);
 
   /* begin relaying from the device to the topic */
@@ -72,7 +78,7 @@ int main(int argc, char** argv) {
   lg_mirror::EvdevEvents events_msg;
 
   DeviceServicer ds(device_fd);
-  ros::ServiceServer service = n.advertiseService(DEVICE_INFO_SERVICE,
+  ros::ServiceServer service = n.advertiseService(device_info_service.str(),
 		  &DeviceServicer::get_device_info, &ds);
   ros::AsyncSpinner as(1);
   as.start();

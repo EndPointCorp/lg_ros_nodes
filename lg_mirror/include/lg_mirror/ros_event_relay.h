@@ -14,6 +14,7 @@ class RosEventRelay {
       ros::NodeHandle node_handle,
       const std::string& viewport_name,
       UinputDevice device,
+      const std::string& events_topic,
       ViewportMapper mapper
     );
     void HandleRouterMessage(const lg_common::StringArrayPtr& msg);
@@ -26,6 +27,7 @@ class RosEventRelay {
     ros::Subscriber s_;
     ros::NodeHandle n_;
     std::string viewport_name_;
+    std::string events_topic_;
     UinputDevice device_;
     ViewportMapper mapper_;
 };

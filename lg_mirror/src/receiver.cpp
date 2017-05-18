@@ -2,7 +2,6 @@
 #include <string>
 #include <boost/format.hpp>
 
-#include "constants.h"
 #include "uinput_device.h"
 #include "viewport_mapper.h"
 #include "ros_event_relay.h"
@@ -11,10 +10,8 @@
 const char* DEVICE_NAME_BASE = "Virtual Touchscreen (%s)";
 const char* VIEWPORT_PARAM = "viewport";
 const char* FLOAT_POINTER_PARAM = "float_pointer";
+const char* DEVICE_ID_PARAM = "device_id";
 const char* TRANSLATE_TO_MULTITOUCH_PARAM = "translate_to_multitouch";
-
-using lg_mirror::DEVICE_INFO_SERVICE;
-using lg_mirror::TOUCH_ROUTE_TOPIC;
 
 void fail() {
   ros::shutdown();
@@ -33,8 +30,13 @@ int main(int argc, char** argv) {
   bool translate_to_multitouch = false;
   std::string viewport_name;
   std::string device_name;
+  std::string device_id;
   std::string viewport_geometry;
   ViewportMapper *viewport_mapper = NULL;
+
+  std::stringstream device_info_service;
+  std::stringstream events_topic;
+  std::stringstream route_topic;
 
   /* grab parameters */
 
@@ -45,6 +47,12 @@ int main(int argc, char** argv) {
     fail();
   }
   device_name = str(boost::format(DEVICE_NAME_BASE) % viewport_name);
+
+  n.param<std::string>(DEVICE_ID_PARAM, device_id, "default");
+
+  device_info_service << "/lg_mirror/" << device_id << "/device_info";
+  events_topic << "/lg_mirror/" << device_id << "/events";
+  route_topic << "/lg_mirror/" << device_id << "/active_route";
 
   /* discover viewport geometry */
 
@@ -66,7 +74,7 @@ int main(int argc, char** argv) {
 
   /* call the device_info service before creating the device */
 
-  ros::ServiceClient client = n.serviceClient<lg_mirror::EvdevDeviceInfo>(DEVICE_INFO_SERVICE);
+  ros::ServiceClient client = n.serviceClient<lg_mirror::EvdevDeviceInfo>(device_info_service.str());
   lg_mirror::EvdevDeviceInfo srv;
 
   client.waitForExistence();
@@ -102,8 +110,8 @@ int main(int argc, char** argv) {
 
   /* instantiate an event relay */
 
-  RosEventRelay relay(n, viewport_name, uinput_device, *viewport_mapper);
-  ros::Subscriber relay_sub = n.subscribe(TOUCH_ROUTE_TOPIC, 10, &RosEventRelay::HandleRouterMessage, &relay);
+  RosEventRelay relay(n, viewport_name, uinput_device, events_topic.str(), *viewport_mapper);
+  ros::Subscriber relay_sub = n.subscribe(route_topic.str(), 10, &RosEventRelay::HandleRouterMessage, &relay);
 
   /* react until termination */
 

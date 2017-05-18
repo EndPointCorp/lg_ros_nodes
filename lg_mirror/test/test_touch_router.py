@@ -33,7 +33,7 @@ class TestTouchRouter(unittest.TestCase):
         self.receiver = RouteReceiver()
         self.director_receiver = RouteReceiver()
         rospy.Subscriber(
-            '/lg_mirror/active_touch_routes',
+            '/lg_mirror/default/active_routes',
             StringArray,
             self.receiver.handle_msg
         )
