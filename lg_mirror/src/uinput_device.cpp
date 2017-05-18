@@ -322,6 +322,15 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
   }
 }
 
+/**
+ * \brief Zeroes the ABS position to clear the cursor.
+ */
+void UinputDevice::Zero() {
+  WriteEvent_(EV_ABS, ABS_X, 0);
+  WriteEvent_(EV_ABS, ABS_Y, 0);
+  WriteEvent_(EV_SYN, SYN_REPORT, 0);
+}
+
 /*
  * \brief Writes an event to the virtual device.
  * \param type Event type.

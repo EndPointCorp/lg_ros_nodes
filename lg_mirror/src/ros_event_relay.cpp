@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include <string>
 #include <vector>
+#include <linux/input.h>
 
 #include "lg_common/StringArray.h"
 #include "ros_event_relay.h"
@@ -23,13 +24,15 @@ RosEventRelay::RosEventRelay(
     const std::string& viewport_name,
     UinputDevice device,
     const std::string& events_topic,
-    ViewportMapper mapper
+    ViewportMapper mapper,
+    bool auto_zero
 ):
   n_(node_handle),
   viewport_name_(viewport_name),
   device_(device),
   events_topic_(events_topic),
   mapper_(mapper),
+  auto_zero_(auto_zero),
   routing_(false)
 {}
 
@@ -93,4 +96,8 @@ void RosEventRelay::CloseRoute_() {
   }
   routing_ = false;
   s_.shutdown();
+
+  if (auto_zero_) {
+    device_.Zero();
+  }
 }

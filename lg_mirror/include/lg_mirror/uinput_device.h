@@ -29,6 +29,7 @@ class UinputDevice {
     bool Init(const lg_mirror::EvdevDeviceInfoResponse& info);
     bool WaitForXinput();
     bool FloatPointer() const;
+    void Zero();
 
     void HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg);
 

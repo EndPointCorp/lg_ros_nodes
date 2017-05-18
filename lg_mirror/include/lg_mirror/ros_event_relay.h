@@ -15,13 +15,15 @@ class RosEventRelay {
       const std::string& viewport_name,
       UinputDevice device,
       const std::string& events_topic,
-      ViewportMapper mapper
+      ViewportMapper mapper,
+      bool auto_zero
     );
     void HandleRouterMessage(const lg_common::StringArrayPtr& msg);
 
   private:
     void OpenRoute_();
     void CloseRoute_();
+    void ZeroDevice_();
 
     bool routing_;
     ros::Subscriber s_;
@@ -30,6 +32,7 @@ class RosEventRelay {
     std::string events_topic_;
     UinputDevice device_;
     ViewportMapper mapper_;
+    bool auto_zero_;
 };
 
 #endif // _ROS_EVENT_RELAY_H_
