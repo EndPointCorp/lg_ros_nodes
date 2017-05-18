@@ -31,7 +31,7 @@ Minimal local roslaunch file necessary for Earth browsers synchronization.
     </node>
 
     <node name="lg_activity" pkg="lg_activity" type="tracker" clear_params="true" respawn="true" respawn_delay="3">
-        <param name="activity_sources" value="/spacenav/twist:geometry_msgs/Twist:delta;/lg_replay/touchscreen:interactivespaces_msgs/GenericMessage:activity;/touchscreen/touch:std_msgs/Bool-data:activity;/portal_launcher/action:std_msgs/String:activity;/lg_mirror/touch_events:lg_mirror/EvdevEvents:activity"/>
+	    <param name="activity_sources" value="/spacenav/twist:geometry_msgs/Twist:delta;/lg_replay/touchscreen:interactivespaces_msgs/GenericMessage:activity;/touchscreen/touch:std_msgs/Bool-data:activity;/portal_launcher/action:std_msgs/String:activity;/lg_mirror/default/events:lg_mirror/EvdevEvents:activity"/>
         <param name="activity_timeout" value="45"/>
     </node>
 
