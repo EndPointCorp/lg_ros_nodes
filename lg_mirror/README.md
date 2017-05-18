@@ -124,6 +124,7 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 * `float_pointer` [bool] - Float the xinput device pointer. This prevents interference with Chrome when there are multiple receivers on the same DISPLAY. **This may be later deprecated by activity-specific configuration.** Default: `false`
 * `translate_to_multitouch` [bool] - Attempt to turn a single touch device into a multi-touch device.  Works better with Chrome.  Default: `false`
 * `device_id` [str] - Name ID of the device this receiver is emulating.  Default: `default`
+* `auto_zero` [bool] - Write ABS zero when device is un-routed.  This should clear the cursor.  Default: `false`
 
 #### Subscribed Topics
 

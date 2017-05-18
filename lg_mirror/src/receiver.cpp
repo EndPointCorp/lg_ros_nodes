@@ -12,6 +12,7 @@ const char* VIEWPORT_PARAM = "viewport";
 const char* FLOAT_POINTER_PARAM = "float_pointer";
 const char* DEVICE_ID_PARAM = "device_id";
 const char* TRANSLATE_TO_MULTITOUCH_PARAM = "translate_to_multitouch";
+const char* AUTO_ZERO_PARAM = "auto_zero";
 
 void fail() {
   ros::shutdown();
@@ -28,6 +29,7 @@ int main(int argc, char** argv) {
 
   bool float_pointer = false;
   bool translate_to_multitouch = false;
+  bool auto_zero = false;
   std::string viewport_name;
   std::string device_name;
   std::string device_id;
@@ -41,6 +43,7 @@ int main(int argc, char** argv) {
   /* grab parameters */
 
   n.param<bool>(FLOAT_POINTER_PARAM, float_pointer, false);
+  n.param<bool>(AUTO_ZERO_PARAM, auto_zero, false);
   n.param<bool>(TRANSLATE_TO_MULTITOUCH_PARAM, translate_to_multitouch, false);
   if (!n.getParam(VIEWPORT_PARAM, viewport_name)) {
     ROS_ERROR("'viewport' parameter is required");
@@ -110,7 +113,7 @@ int main(int argc, char** argv) {
 
   /* instantiate an event relay */
 
-  RosEventRelay relay(n, viewport_name, uinput_device, events_topic.str(), *viewport_mapper);
+  RosEventRelay relay(n, viewport_name, uinput_device, events_topic.str(), *viewport_mapper, auto_zero);
   ros::Subscriber relay_sub = n.subscribe(route_topic.str(), 10, &RosEventRelay::HandleRouterMessage, &relay);
 
   /* react until termination */
