@@ -6,7 +6,7 @@ from threading import Lock
 
 import rospy
 from geometry_msgs.msg import Twist
-from lg_common import run_with_influx_exception_handler
+from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'mux_twists'
 
@@ -97,4 +97,4 @@ def main():
 
 
 if __name__ == '__main__':
-    run_with_influx_exception_handler(main)
+    run_with_influx_exception_handler(main, NODE_NAME)
