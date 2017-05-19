@@ -2,6 +2,18 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Zero uinput device to bottom right corner
+  If ABS_X and/or ABS_Y are used.
+* WiiMote controller initial commit
+* Auto-zero feature for lg_mirror receiver
+  Makes it easier to point across viewports without pointer clutter.
+* Multiple lg_mirror devices
+  Defaults preserve configuration compatibility with possibility for
+  alternate devices.
+* Contributors: Matt Vollrath
+
 1.12.5 (2017-05-11)
 -------------------
 * Clean up touch emulation cruft
