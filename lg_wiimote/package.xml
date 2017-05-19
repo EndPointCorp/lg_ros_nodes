@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_wiimote</name>
-  <version>0.0.0</version>
+  <version>1.12.5</version>
   <description>WiiMote for Liquid Galaxy</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
