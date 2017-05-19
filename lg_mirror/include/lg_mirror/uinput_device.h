@@ -41,6 +41,8 @@ class UinputDevice {
     int fd_;
     std::string device_name_;
     bool translate_to_multitouch_;
+    __s32 offscreen_x_;
+    __s32 offscreen_y_;
 };
 
 #endif // _UINPUT_DEVICE_H_
