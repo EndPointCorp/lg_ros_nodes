@@ -2,6 +2,9 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.13.0 (2017-05-19)
 -------------------
 * Zero uinput device to bottom right corner

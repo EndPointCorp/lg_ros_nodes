@@ -2,6 +2,11 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use lg_twister in lg_nav_to_device
+* Contributors: Matt Vollrath
+
 1.13.0 (2017-05-19)
 -------------------
 * Use lg_twister for Earth and Street View
