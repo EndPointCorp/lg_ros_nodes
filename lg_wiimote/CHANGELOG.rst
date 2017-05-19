@@ -2,8 +2,8 @@
 Changelog for package lg_wiimote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.13.1 (2017-05-19)
+-------------------
 * Allow wiimote heading twist
 * Contributors: Matt Vollrath
 
