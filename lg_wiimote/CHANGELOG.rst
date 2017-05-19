@@ -2,8 +2,8 @@
 Changelog for package lg_wiimote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.13.0 (2017-05-19)
+-------------------
 * WiiMote controller initial commit
 * Contributors: Matt Vollrath
 

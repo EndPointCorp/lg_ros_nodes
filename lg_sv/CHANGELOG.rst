@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.13.0 (2017-05-19)
+-------------------
 * Use lg_twister for Earth and Street View
 * Contributors: Matt Vollrath
 

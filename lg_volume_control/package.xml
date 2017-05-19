@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_volume_control</name>
-  <version>1.12.5</version>
+  <version>1.13.0</version>
   <description>The lg_volume_control package</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>

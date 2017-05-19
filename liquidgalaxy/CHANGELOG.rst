@@ -2,8 +2,8 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.13.0 (2017-05-19)
+-------------------
 * Add lg_twister package
 * Contributors: Matt Vollrath
 
