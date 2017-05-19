@@ -24,7 +24,7 @@ def main():
     scale = rospy.get_param('~scale', 512.0)
 
     device_writer = DeviceWriter(scale)
-    rospy.Subscriber('/spacenav_wrapper/twist', Twist, device_writer.make_event)
+    rospy.Subscriber('/lg_twister/twist', Twist, device_writer.make_event)
     rospy.Subscriber('/earth/state', ApplicationState, device_writer.set_state)
 
     background_stopper = BackgroundStopper(disable_activities, device_writer)
