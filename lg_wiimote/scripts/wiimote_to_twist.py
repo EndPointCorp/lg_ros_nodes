@@ -36,8 +36,7 @@ class WiiMoteToTwist:
 
             twist.linear.x = -self.angular_velocity.x
             twist.linear.y = self.angular_velocity.z
-            # this will allow heading change
-            #twist.angular.z = self.angular_velocity.y
+            twist.angular.z = self.angular_velocity.y
         else:
             self.angular_velocity.x = 0
             self.angular_velocity.y = 0
