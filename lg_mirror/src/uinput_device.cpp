@@ -35,7 +35,9 @@ const char* UinputDeviceInitError::what() const throw() {
 UinputDevice::UinputDevice(const std::string& device_name, bool translate_to_multitouch):
   fd_(-1),
   device_name_(device_name),
-  translate_to_multitouch_(translate_to_multitouch)
+  translate_to_multitouch_(translate_to_multitouch),
+  offscreen_x_(0),
+  offscreen_y_(0)
 {}
 
 /**
@@ -118,6 +120,13 @@ void UinputDevice::InitDevice_(int fd, const lg_mirror::EvdevDeviceInfoResponse&
     EnableCode_(fd, UI_SET_ABSBIT, code);
     uidev.absmax[code] = info.abs_max[i];
     uidev.absmin[code] = info.abs_min[i];
+
+    // set offscreen coords to maximums
+    if (code == ABS_X) {
+      offscreen_x_ = info.abs_max[i];
+    } else if (code == ABS_Y) {
+      offscreen_y_ = info.abs_max[i];
+    }
 
     if (translate_to_multitouch_) {
       if (code == ABS_X) {
@@ -326,8 +335,8 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
  * \brief Zeroes the ABS position to clear the cursor.
  */
 void UinputDevice::Zero() {
-  WriteEvent_(EV_ABS, ABS_X, 0);
-  WriteEvent_(EV_ABS, ABS_Y, 0);
+  WriteEvent_(EV_ABS, ABS_X, offscreen_x_);
+  WriteEvent_(EV_ABS, ABS_Y, offscreen_y_);
   WriteEvent_(EV_SYN, SYN_REPORT, 0);
 }
 
