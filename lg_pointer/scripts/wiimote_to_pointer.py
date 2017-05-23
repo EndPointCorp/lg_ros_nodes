@@ -52,7 +52,7 @@ class WiiMoteToPointer:
         self.vx = 0
         self.vy = 0
 
-        self.touch_down = False
+        self.was_clicking = False
 
         self._lock = Lock()
 
@@ -70,37 +70,34 @@ class WiiMoteToPointer:
 
         msg = self.last_state
 
-        if msg.buttons[10]:
+        clicking = msg.buttons[4]
+        moving = msg.buttons[5]
+
+        if moving:
+            self.y = self.y + self.vy * dt * TICK_RATE
+            sy = math.sin(self.y)
+            cy = math.cos(self.y)
+            self.z = self.z + (self.vz * cy - self.vx * sy) * dt * TICK_RATE
+            self.x = self.x + (self.vx * cy + self.vz * sy) * dt * TICK_RATE
+        else:
             self.z = 0
             self.x = 0
             self.y = 0
-            self.imu_calibrate()
-            return
-
-        self.y = self.y + self.vy * dt * TICK_RATE
-        # something like this, but not this
-        #sy = math.sin(self.y)
-        #cy = math.cos(self.y)
-        #self.z = self.z + (self.vz * cy - self.vx * sy) * dt * TICK_RATE
-        #self.x = self.x + (self.vx * cy + self.vz * sy) * dt * TICK_RATE
-        self.z = self.z + self.vz * dt * TICK_RATE
-        self.x = self.x + self.vx * dt * TICK_RATE
 
         vp, vpx, vpy = self.mvp.orientation_to_coords(self.z, self.x)
-        #print 'z: {} x: {} vp: {} vpx: {} vpy: {}'.format(self.z, self.x, vp, vpx, vpy)
 
-        if vp != self.last_vp:
+        if moving and vp != self.last_vp:
             routes_msg = StringArray(strings=[vp])
             self.routes_pub.publish(routes_msg)
             self.last_vp = vp
 
-        # bypass coords if no viewport
+        # bypass event if no viewport -- it would not be routed anyway
         if vp == '':
             return
 
         events_msg = EvdevEvents()
 
-        if not self.touch_down:
+        if moving and not self.was_clicking:
             events_msg.events.append(EvdevEvent(
                 type=ecodes.EV_ABS,
                 code=ecodes.ABS_X,
@@ -112,20 +109,20 @@ class WiiMoteToPointer:
                 value=vpy * DEV_HEIGHT
             ))
 
-        if msg.buttons[4] and not self.touch_down:
-            self.touch_down = True
+        if clicking and not self.was_clicking:
             events_msg.events.append(EvdevEvent(
                 type=ecodes.EV_KEY,
                 code=ecodes.BTN_LEFT,
                 value=1
             ))
-        elif not msg.buttons[4] and self.touch_down:
-            self.touch_down = False
+        elif not clicking and self.was_clicking:
             events_msg.events.append(EvdevEvent(
                 type=ecodes.EV_KEY,
                 code=ecodes.BTN_LEFT,
                 value=0
             ))
+
+        self.was_clicking = clicking
 
         if len(events_msg.events) > 0:
             self.events_pub.publish(events_msg)
