@@ -14,6 +14,7 @@ catkin_package(
   lg_common
   std_srvs
   geometry_msgs
+  sensor_msgs
 )
 
 catkin_install_python(PROGRAMS

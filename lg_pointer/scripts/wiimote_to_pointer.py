@@ -6,6 +6,7 @@ from evdev import ecodes
 
 import rospy
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import JoyFeedback, JoyFeedbackArray
 from wiimote.msg import State
 from lg_mirror.msg import EvdevEvent, EvdevEvents
 from lg_mirror.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
@@ -36,9 +37,10 @@ def handle_device_info(req):
 
 
 class WiiMoteToPointer:
-    def __init__(self, events_pub, routes_pub, imu_calibrate, mvp):
+    def __init__(self, events_pub, routes_pub, feedback_pub, imu_calibrate, mvp):
         self.events_pub = events_pub
         self.routes_pub = routes_pub
+        self.feedback_pub = feedback_pub
         self.imu_calibrate = imu_calibrate
         self.mvp = mvp
         self.last_state = State()
@@ -134,6 +136,13 @@ class WiiMoteToPointer:
             self.vy = -msg.angular_velocity_zeroed.y
             self.last_state = msg
 
+            if not msg.LEDs[0]:
+                feedback_array_msg = JoyFeedbackArray()
+                feedback_msg = JoyFeedback()
+                feedback_msg.intensity = 1.0
+                feedback_array_msg.array.append(feedback_msg)
+                self.feedback_pub.publish(feedback_array_msg)
+
 
 def main():
     rospy.init_node(NODE_NAME)
@@ -152,11 +161,13 @@ def main():
                                  EvdevEvents, queue_size=10)
     routes_pub = rospy.Publisher(routes_topic,
                                  StringArray, queue_size=10)
+    feedback_pub = rospy.Publisher('/joy/set_feedback',
+                                   JoyFeedbackArray, queue_size=10)
     imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=True)
 
     mvp = MegaViewport(viewports, arc_width)
 
-    wmtp = WiiMoteToPointer(events_pub, routes_pub, imu_calibrate, mvp)
+    wmtp = WiiMoteToPointer(events_pub, routes_pub, feedback_pub, imu_calibrate, mvp)
 
     rospy.Subscriber('/wiimote/state', State, wmtp.handle_wiimote_state)
 
