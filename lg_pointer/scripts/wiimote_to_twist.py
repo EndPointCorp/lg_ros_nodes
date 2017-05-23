@@ -8,7 +8,8 @@ from wiimote.msg import State
 NODE_NAME = 'wiimote_to_twist'
 MAX_AXIS_VAL = 1 / math.sqrt(2.0)
 ZOOM_BUTTON_VEL = 8.0
-PAN_BUTTON_VEL = 4.0
+PAN_BUTTON_VEL = 8.0
+TILT_BUTTON_VEL = 8.0
 TICK_RATE = 65.0  # Hz
 
 
@@ -20,28 +21,16 @@ class WiiMoteToTwist:
     def __init__(self, twist_pub, scale):
         self.twist_pub = twist_pub
         self.scale = scale
-        self.angular_velocity = Vector3()
 
     def handle_wiimote_state(self, msg):
         twist = Twist()
 
-        if msg.buttons[5]:
-            self.angular_velocity.x += msg.angular_velocity_zeroed.x * self.scale
-            self.angular_velocity.y += msg.angular_velocity_zeroed.y * self.scale
-            self.angular_velocity.z += msg.angular_velocity_zeroed.z * self.scale
-
-            self.angular_velocity.x = clamp(self.angular_velocity.x, -MAX_AXIS_VAL, MAX_AXIS_VAL)
-            self.angular_velocity.y = clamp(self.angular_velocity.y, -MAX_AXIS_VAL, MAX_AXIS_VAL)
-            self.angular_velocity.z = clamp(self.angular_velocity.z, -MAX_AXIS_VAL, MAX_AXIS_VAL)
-
-            twist.linear.x = -self.angular_velocity.x
-            twist.linear.y = self.angular_velocity.z
-            twist.angular.z = self.angular_velocity.y
-        else:
-            self.angular_velocity.x = 0
-            self.angular_velocity.y = 0
-            self.angular_velocity.z = 0
-
+        if msg.buttons[0]:
+            # 1
+            twist.angular.y -= TILT_BUTTON_VEL * self.scale
+        if msg.buttons[1]:
+            # 2
+            twist.angular.y += TILT_BUTTON_VEL * self.scale
         if msg.buttons[2]:
             # plus
             twist.linear.z -= ZOOM_BUTTON_VEL * self.scale
