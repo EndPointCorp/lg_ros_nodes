@@ -2,6 +2,9 @@
 Changelog for package lg_twister
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.13.1 (2017-05-19)
 -------------------
 * Fix influx exception handlers in mux_twists

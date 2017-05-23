@@ -2,6 +2,19 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add handler for resetting a stale wiimote
+* Set LED when WiiMote is paired
+* Revise wiimote pointing
+  * Must hold down trigger to move cursor.
+  * Cursor is zeroed at the point where the trigger was held down.
+  * Disable home button calibration.
+  * Compensate for y axis (roll).
+* WiiMote: Disable trigger panning, add button tilt
+* Rename lg_wiimote package to lg_pointer
+* Contributors: Matt Vollrath
+
 1.13.1 (2017-05-19)
 -------------------
 * Allow wiimote heading twist

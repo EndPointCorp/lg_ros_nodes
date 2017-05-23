@@ -2,6 +2,11 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Rename lg_wiimote package to lg_pointer
+* Contributors: Matt Vollrath
+
 1.13.1 (2017-05-19)
 -------------------
 

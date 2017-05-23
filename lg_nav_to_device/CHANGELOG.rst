@@ -2,6 +2,9 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.13.1 (2017-05-19)
 -------------------
 * Use lg_twister in lg_nav_to_device
