@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>lg_wiimote</name>
+  <name>lg_pointer</name>
   <version>1.13.1</version>
-  <description>WiiMote for Liquid Galaxy</description>
+  <description>Pointing device integration for Liquid Galaxy</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
 

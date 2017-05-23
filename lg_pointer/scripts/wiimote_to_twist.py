@@ -76,7 +76,7 @@ def main():
 
     scale = float(rospy.get_param('~scale', 0.05))
 
-    twist_pub = rospy.Publisher('/lg_wiimote/twist', Twist, queue_size=10)
+    twist_pub = rospy.Publisher('/lg_pointer/twist', Twist, queue_size=10)
 
     wmtt = WiiMoteToTwist(twist_pub, scale)
 

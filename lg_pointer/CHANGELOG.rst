@@ -1,5 +1,5 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package lg_wiimote
+Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.13.1 (2017-05-19)
