@@ -9,9 +9,9 @@ from geometry_msgs.msg import Twist
 from wiimote.msg import State
 from lg_mirror.msg import EvdevEvent, EvdevEvents
 from lg_mirror.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
-from lg_common import ManagedWindow
 from lg_common.msg import StringArray
 from std_srvs.srv import Empty
+from lg_pointer import MegaViewport
 
 NODE_NAME = 'wiimote_to_pointer'
 TICK_RATE = 65  # Hz
@@ -33,51 +33,6 @@ def handle_device_info(req):
     res.abs_min = [0, 0]
     res.abs_max = [DEV_WIDTH, DEV_HEIGHT]
     return res
-
-
-class MegaViewport:
-    def __init__(self, viewports, arc_width):
-        if not len(viewports) > 0:
-            raise Exception(
-                'Must provide at least one viewport for MegaViewport!'
-            )
-        self.viewports = viewports
-
-        x_min = 16384
-        y_min = 16384
-        x_max = 0
-        y_max = 0
-
-        for viewport in viewports:
-            geometry = ManagedWindow.lookup_viewport_geometry(viewport)
-            x_min = min(geometry.x, x_min)
-            y_min = min(geometry.y, y_min)
-            x_max = max(geometry.x + geometry.width, x_max)
-            y_max = max(geometry.y + geometry.height, y_max)
-
-        self.num_viewports = len(viewports)
-        self.overall_width = x_max - x_min
-        self.overall_height = y_max - y_min
-        aspect_ratio = self.overall_width / self.overall_height
-
-        self.arc_width = arc_width
-        self.viewport_width = self.arc_width / self.num_viewports
-        self.arc_height = arc_width / aspect_ratio
-
-    def orientation_to_coords(self, ang_z, ang_x):
-        half_arc_width = self.arc_width / 2
-        half_arc_height = self.arc_height / 2
-        nz = ang_z + half_arc_width
-        nx = ang_x + half_arc_height
-        if 0 > nz or nz > self.arc_width or 0 > nx or nx > self.arc_height:
-            return ('', 0, 0)
-
-        viewport_index = int(math.floor(nz / self.viewport_width))
-        viewport_x = nz % self.viewport_width / self.viewport_width * DEV_WIDTH
-        viewport_y = nx / self.arc_height * DEV_HEIGHT
-
-        viewport = self.viewports[viewport_index]
-        return (viewport, viewport_x, viewport_y)
 
 
 class WiiMoteToPointer:
@@ -149,12 +104,12 @@ class WiiMoteToPointer:
             events_msg.events.append(EvdevEvent(
                 type=ecodes.EV_ABS,
                 code=ecodes.ABS_X,
-                value=vpx
+                value=vpx * DEV_WIDTH
             ))
             events_msg.events.append(EvdevEvent(
                 type=ecodes.EV_ABS,
                 code=ecodes.ABS_Y,
-                value=vpy
+                value=vpy * DEV_HEIGHT
             ))
 
         if msg.buttons[4] and not self.touch_down:
