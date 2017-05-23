@@ -2,8 +2,8 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.13.2 (2017-05-23)
+-------------------
 * Add handler for resetting a stale wiimote
 * Set LED when WiiMote is paired
 * Revise wiimote pointing
