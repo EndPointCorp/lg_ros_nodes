@@ -3,6 +3,7 @@
 from threading import Lock
 import math
 from evdev import ecodes
+import subprocess
 
 import rospy
 from geometry_msgs.msg import Twist
@@ -18,6 +19,7 @@ NODE_NAME = 'wiimote_to_pointer'
 TICK_RATE = 65  # Hz
 DEV_WIDTH = 8192
 DEV_HEIGHT = 8192
+MAX_STALE_COUNT = 30
 
 
 def clamp(val, lo, hi):
@@ -36,15 +38,27 @@ def handle_device_info(req):
     return res
 
 
+def handle_stale_device():
+    """
+    When the angular velocity data hasn't changed for a while, we know that
+    the controller is no longer paired, but wiimote_node doesn't.
+
+    By killing wiimote_node we allow it to respawn and pairing can happen again.
+    """
+    subprocess.check_call(['pkill', '-f', '/opt/ros/[a-z]+/lib/wiimote/wiimote_node'])
+
+
 class WiiMoteToPointer:
-    def __init__(self, events_pub, routes_pub, feedback_pub, imu_calibrate, mvp):
+    def __init__(self, events_pub, routes_pub, feedback_pub, imu_calibrate, stale_handler, mvp):
         self.events_pub = events_pub
         self.routes_pub = routes_pub
         self.feedback_pub = feedback_pub
         self.imu_calibrate = imu_calibrate
+        self.stale_handler = stale_handler
         self.mvp = mvp
         self.last_state = State()
         self.last_vp = ''
+        self.stale_count = 0
 
         self.z = 0
         self.x = 0
@@ -131,6 +145,18 @@ class WiiMoteToPointer:
 
     def handle_wiimote_state(self, msg):
         with self._lock:
+            if self.vz == -msg.angular_velocity_zeroed.z and \
+               self.vx == msg.angular_velocity_zeroed.x and \
+               self.vy == -msg.angular_velocity_zeroed.y:
+                self.stale_count += 1
+            else:
+                self.stale_count = 0
+
+            if self.stale_count == MAX_STALE_COUNT:
+                rospy.logwarn('Attempting to reset a stale device')
+                self.stale_handler()
+                return
+
             self.vz = -msg.angular_velocity_zeroed.z
             self.vx = msg.angular_velocity_zeroed.x
             self.vy = -msg.angular_velocity_zeroed.y
@@ -167,7 +193,8 @@ def main():
 
     mvp = MegaViewport(viewports, arc_width)
 
-    wmtp = WiiMoteToPointer(events_pub, routes_pub, feedback_pub, imu_calibrate, mvp)
+    wmtp = WiiMoteToPointer(events_pub, routes_pub, feedback_pub,
+                            imu_calibrate, handle_stale_device, mvp)
 
     rospy.Subscriber('/wiimote/state', State, wmtp.handle_wiimote_state)
 
