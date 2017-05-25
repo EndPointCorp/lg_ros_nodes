@@ -1,0 +1,6 @@
+<launch>
+  <param name="/viewport/left" value="1080x1920+1920+0" />
+  <param name="/viewport/center" value="1080x1920+3000+0" />
+  <param name="/viewport/right" value="1080x1920+4080+0" />
+  <test test-name="test_megaviewport" pkg="lg_pointer" type="test_megaviewport.py" />
+</launch>

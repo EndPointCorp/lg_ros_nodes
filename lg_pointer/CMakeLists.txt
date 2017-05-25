@@ -22,3 +22,8 @@ catkin_install_python(PROGRAMS
   scripts/wiimote_to_pointer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest(test/megaviewport.test)
+endif()

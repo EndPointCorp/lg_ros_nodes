@@ -13,7 +13,12 @@
   <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
 
   <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>rospy</build_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>rosunit</test_depend>
+
   <run_depend>rospy</run_depend>
   <run_depend>wiimote</run_depend>
   <run_depend>lg_common</run_depend>
