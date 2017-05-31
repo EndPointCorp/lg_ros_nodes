@@ -1,3 +1,7 @@
+# Fork
+
+This package was temporarily forked from <https://github.com/ros-drivers/joystick_drivers> to include fixes in our distribution.  See <https://github.com/ros-drivers/joystick_drivers/pull/101>
+
 # Wiimote Nodes
 
 See http://wiki.ros.org/wiimote for details.
