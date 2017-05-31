@@ -81,12 +81,12 @@ def get_tests():
 
 
 def pep8_test():
-    ret = os.system('pep8 --exclude=rosbridge*,appctl,rosout_logger,lg_cms_director,docker_nodes --config=./setup.cfg catkin/src/*/')
+    ret = os.system('pep8 --exclude=rosbridge*,appctl,wiimote,rosout_logger,lg_cms_director,docker_nodes --config=./setup.cfg catkin/src/*/')
     return ret
 
 
 def cppcheck_test():
-    ret = os.system("cppcheck --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt catkin/src")
+    ret = os.system("cppcheck -icatkin/src/wiimote --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt catkin/src")
     return ret
 
 
