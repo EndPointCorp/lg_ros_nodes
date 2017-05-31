@@ -2,6 +2,13 @@
 Changelog for package wiimote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add downstream wiimote with pairing params
+  Applied https://github.com/ros-drivers/joystick_drivers/pull/101
+  Included here for build convenience.
+* Contributors: Matt Vollrath
+
 1.11.0 (2017-02-10)
 -------------------
 * Sample Teleop Implementation for Wiimote

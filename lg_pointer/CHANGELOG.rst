@@ -2,6 +2,12 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_pointer MegaViewport test
+* Add README for lg_pointer
+* Contributors: Matt Vollrath
+
 1.13.2 (2017-05-23)
 -------------------
 * Add handler for resetting a stale wiimote
