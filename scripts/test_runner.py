@@ -81,7 +81,7 @@ def get_tests():
 
 
 def pep8_test():
-    ret = os.system('pep8 --exclude=rosbridge*,appctl,wiimote,rosout_logger,lg_cms_director,docker_nodes --config=./setup.cfg catkin/src/*/')
+    ret = os.system('pep8 --exclude=rosbridge*,appctl,wiimote,rosout_logger,docker_nodes --config=./setup.cfg catkin/src/*/')
     return ret
 
 
@@ -91,7 +91,7 @@ def cppcheck_test():
 
 
 def gjslint_test():
-    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,lg_cms_director,panovideosync' -r .")
+    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,panovideosync' -r .")
     return ret
 
 
