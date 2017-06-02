@@ -12,6 +12,47 @@ from lg_common.msg import Ready
 
 NODE_NAME = 'lg_adhoc_browser'
 
+# TODO: put in helpers.py
+def get_all_params_matching(match):
+    ret = {}
+    params = [param for param in rospy.get_param_names() if param.startswith(match)]
+    for param in params:
+        p = rospy.get_param(param, None)
+        if p is None:
+            continue
+        ret[param] = p
+    return ret
+
+def download_list_of_urls(urls, dest="/tmp/"):
+    import os
+    import uuid
+    import urllib
+    # storing all filenames to return and check that
+    # we don't use duplicate names
+    filenames = []
+    for url in urls:
+        # default name is the basename of the url http://www.foo.bar/baz/key.pem => key.pem
+        base = os.path.basename(url)
+        if "%s/%s" % (dest, base) in filenames:
+            # adding on a uuid since we already encountered ${base}
+            base = "%s_%s" % (uuid.uuid1(), base)
+        # apply the full path to the filename
+        filenames.append("%s/%s" % (dest, base))
+        # curl the url and write it into filenames[-1]
+        r = urllib.urlopen(url)
+        with open(filenames[-1], "w") as f:
+            f.write(r.read())
+    return filenames
+
+def trust_certificate(cert_path):
+    import os
+    os.system('certutil -d sql:${HOME}/.pki/nssdb -A -t "P,," -n %s -i %s' % (cert_path, cert_path))
+
+## TODO leave this here and uncomment line below
+#from lg_common.helpers import get_all_params_matching, download_list_of_urls, trust_certificate
+def trust_all_certs():
+    for cert in download_list_of_urls(get_all_params_matching('%s/ssl_keys' % rospy.get_name()).values()):
+        trust_certificate(cert)
 
 def main():
     rospy.init_node(NODE_NAME, anonymous=True)
