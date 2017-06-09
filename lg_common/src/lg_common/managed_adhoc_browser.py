@@ -14,6 +14,7 @@ from lg_common.msg import AdhocBrowser, AdhocBrowsers
 
 class ManagedAdhocBrowser(ManagedBrowser):
     def __init__(self, geometry=None, log_level=0, command_line_args=[],
+                 default_args_removal=[],
                  extensions=[], binary='/usr/bin/google-chrome',
                  user_agent=None, slug=None, url=None, uid=None,
                  scene_slug=None, preload=False, kiosk=True):
@@ -28,6 +29,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
         self.user_agent = user_agent
         self.binary = binary
         self.command_line_args = command_line_args
+        self.default_args_removal = default_args_removal
         self.extensions = extensions
         self.timestamp = int(time.time())
 
@@ -38,6 +40,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             geometry=geometry,
             user_agent=user_agent,
             command_line_args=command_line_args,
+            default_args_removal=default_args_removal,
             extensions=extensions,
             binary=binary,
             log_level=log_level,
@@ -56,6 +59,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             "binary": self.binary,
             "user_agent": self.user_agent,
             "command_line_args": self.command_line_args,
+            "default_args_removal": self.default_args_removal,
             "timestamp": self.timestamp
         })
 

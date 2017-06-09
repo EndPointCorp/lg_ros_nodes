@@ -10,3 +10,4 @@ string[] allowed_urls
 lg_common/WindowGeometry geometry
 lg_common/BrowserExtension[] extensions
 lg_common/BrowserCmdArg[] command_line_args
+lg_common/BrowserCmdArg[] default_args_removal

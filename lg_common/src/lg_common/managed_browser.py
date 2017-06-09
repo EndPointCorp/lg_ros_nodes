@@ -42,6 +42,7 @@ class ManagedBrowser(ManagedApplication):
         app=False,
         shell=True,
         command_line_args=[],
+        default_args_removal=[],
         disk_cache_size=314572800,
         log_level=0,
         extensions=[],
@@ -97,6 +98,10 @@ class ManagedBrowser(ManagedApplication):
                     rospy.logwarn("Could not load extension from %s because dir does not exist" % extension)
             if extensions:
                 cmd.append('--load-extension={}'.format(','.join(extensions)))
+
+        for _cmd in default_args_removal:
+            if _cmd in DEFAULT_ARGS:
+                DEFAULT_ARGS.remove(_cmd)
 
         cmd.extend(DEFAULT_ARGS)
         if command_line_args != []:
