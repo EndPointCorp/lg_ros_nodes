@@ -282,7 +282,6 @@ class AdhocBrowserPool():
         geometry = self._get_browser_window_geometry(new_browser)
         extensions = self._get_browser_extensions(new_browser, additional_extensions)
         command_line_args = self._get_browser_command_line_args(new_browser)
-        # TODO get default_args_removal
         default_args_removal = [cmd_arg.argument for cmd_arg in new_browser.default_args_removal]
         binary = self._get_browser_binary(new_browser)
 
