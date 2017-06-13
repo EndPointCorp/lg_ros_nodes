@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_earth</name>
-  <version>1.13.3</version>
+  <version>1.13.4</version>
   <description>ROS software for running and interfacing with the Google Earth desktop client.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
