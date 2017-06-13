@@ -2,6 +2,9 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.13.3 (2017-05-31)
 -------------------
 * lg_pointer MegaViewport test

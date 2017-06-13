@@ -2,6 +2,9 @@
 Changelog for package wiimote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.13.3 (2017-05-31)
 -------------------
 * Add downstream wiimote with pairing params

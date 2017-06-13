@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix the generated hash (new field means new hash)
+* remove un-needed todo
+* ability to remove default arguments
+* Contributors: Jacob Minshall
+
 1.13.3 (2017-05-31)
 -------------------
 
