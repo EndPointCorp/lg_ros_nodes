@@ -103,6 +103,7 @@ class AdhocBrowserDirectorBridge():
         version = browser_config.get('version', 'stable')
         user_agent = browser_config.get('user_agent', None)
         browser_cmd_args = browser_config.get('command_line_args', None)
+        default_args_removal = browser_config.get('default_args_removal', None)
         extensions = browser_config.get('extensions', None)
         allowed_urls = browser_config.get('allowed_urls', None)
         kiosk = browser_config.get('kiosk', True)
@@ -120,6 +121,14 @@ class AdhocBrowserDirectorBridge():
                 browser_arg = BrowserCmdArg()
                 browser_arg.argument = str(cmd_arg)
                 adhoc_browser.command_line_args.append(browser_arg)
+
+        if default_args_removal:
+            rospy.logerr("there were args to remove")
+            for cmd_arg in default_args_removal:
+                rospy.logerr("One arg was..")
+                browser_arg = BrowserCmdArg()
+                browser_arg.argument = str(cmd_arg)
+                adhoc_browser.default_args_removal.append(browser_arg)
 
         if extensions:
             for extension in extensions:

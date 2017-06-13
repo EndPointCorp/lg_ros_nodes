@@ -282,6 +282,7 @@ class AdhocBrowserPool():
         geometry = self._get_browser_window_geometry(new_browser)
         extensions = self._get_browser_extensions(new_browser, additional_extensions)
         command_line_args = self._get_browser_command_line_args(new_browser)
+        default_args_removal = [cmd_arg.argument for cmd_arg in new_browser.default_args_removal]
         binary = self._get_browser_binary(new_browser)
 
         if new_browser.custom_preload_event:
@@ -330,6 +331,7 @@ class AdhocBrowserPool():
                                                     user_agent=new_browser.user_agent,
                                                     extensions=extensions,
                                                     command_line_args=command_line_args,
+                                                    default_args_removal=default_args_removal,
                                                     binary=binary,
                                                     url=new_browser.url,
                                                     uid=new_browser_pool_id,
