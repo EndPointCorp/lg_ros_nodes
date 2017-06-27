@@ -14,7 +14,7 @@ class VolumeControl:
         self.current_volume = -1
         self.sink = default_sink
         volume = self.clamp(default, 0, 100)
-        rospy.logerr("default is {} and volume is {}".format(default, volume))
+        rospy.info("default is {} and volume is {}".format(default, volume))
         self.level_change_pub = level_change_pub
 
         self.set_volume(volume)
