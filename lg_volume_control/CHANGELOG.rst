@@ -2,8 +2,8 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.13.5 (2017-06-29)
+-------------------
 * change logerr to info
 * add documentation to setting the default volume
 * clamp default volume between 0 and 100
