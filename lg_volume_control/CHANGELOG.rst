@@ -2,8 +2,8 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.14.0 (2017-07-14)
+-------------------
 * fix log statement
 * Contributors: Jacob Minshall
 

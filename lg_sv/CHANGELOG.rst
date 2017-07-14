@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.14.0 (2017-07-14)
+-------------------
 * pep8 fixes
 * liten in on the streetview_old topics
 * remove the version constraint for the api version
