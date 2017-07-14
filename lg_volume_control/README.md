@@ -20,6 +20,8 @@ Volume control over ROS
 
 * `~default_sink`: The numbered sink that this node will work on.
   Default: `'@DEFAULT_SINK@'`
+* `~default_volume`: The default volume to start at (clamped between 0
+  and 100) Default: `50`
 
 #### Publishers
 

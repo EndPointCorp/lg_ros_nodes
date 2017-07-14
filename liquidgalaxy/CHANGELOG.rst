@@ -2,6 +2,9 @@
 Changelog for package liquidgalaxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.13.5 (2017-06-29)
+-------------------
+
 1.13.4 (2017-06-13)
 -------------------
 * Remove lg_cms_director (`#370 <https://github.com/EndPointCorp/lg_ros_nodes/issues/370>`_)

@@ -2,6 +2,15 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.13.5 (2017-06-29)
+-------------------
+* change logerr to info
+* add documentation to setting the default volume
+* clamp default volume between 0 and 100
+* Add default_volume param to initialization script (`#374 <https://github.com/EndPointCorp/lg_ros_nodes/issues/374>`_)
+  * Add default_volume param to initialization script
+* Contributors: Jacob Minshall, nelliott
+
 1.13.4 (2017-06-13)
 -------------------
 
