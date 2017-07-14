@@ -2,6 +2,17 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* pep8 fixes
+* liten in on the streetview_old topics
+* remove the version constraint for the api version
+* just an if statement...
+  This will require both of our streetview viewers to be on any system.
+  Also, I'm not sure our streetview viewer actually works with long form
+  panoids anymore.
+* Contributors: Jacob Minshall
+
 1.13.5 (2017-06-29)
 -------------------
 

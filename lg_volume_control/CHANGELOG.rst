@@ -2,6 +2,11 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix log statement
+* Contributors: Jacob Minshall
+
 1.13.5 (2017-06-29)
 -------------------
 * change logerr to info
