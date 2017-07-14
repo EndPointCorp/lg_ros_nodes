@@ -122,7 +122,6 @@ def main():
             visibility_publisher.publish(ApplicationState(state='STOPPED'))
             return
 
-
         if server_type == 'streetview' or server_type == 'streetview_old':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
