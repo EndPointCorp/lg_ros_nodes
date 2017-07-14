@@ -300,6 +300,12 @@ class PanoViewerServer:
     def generate_director_message(self, panoid, pov=None):
         if panoid == self.panoid:
             return
+        server_type = self.server_type
+        if server_type == 'streetview' or server_type == 'streetview_old':
+            if panoid[0:2] == 'F:':
+                server_type = 'streetview_old'
+            else:
+                server_type = 'streetview'
         msg = GenericMessage()
         msg.type = 'json'
         if pov:

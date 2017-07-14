@@ -93,7 +93,10 @@ def main():
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
         rospy.loginfo('running handle director w/ scene: %s' % scene)
-        has_asset = has_activity(scene, server_type)
+        _server_type = server_type
+        if _server_type == 'streetview_old':
+            _server_type = 'streetview'
+        has_asset = has_activity(scene, _server_type)
         has_no_activity = has_activity(scene, 'no_activity')
         if has_no_activity:
             rospy.loginfo('ignoring scene due to no_activity')
@@ -104,15 +107,34 @@ def main():
             return
         if scene.get('slug', '') == 'auto_generated_sv_scene':
             rospy.loginfo("Ignoring my own generated message")
+            asset = get_activity_config_from_activity(scene, _server_type)
+            panoid = asset.get('panoid', '')
+            rospy.logerr("length of panoid is %s server type %s" % (len(panoid), server_type))
+            rospy.logerr("panoid is %s" % panoid)
+            if server_type == 'streetview' and (panoid[0:2] != 'F:' and len(panoid) < 60):
+                visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+                rospy.logerr("publishing visible for {}".format(server_type))
+                return
+            elif server_type == 'streetview_old' and (panoid[0:2] == 'F:' or len(panoid) >= 60):
+                rospy.logerr("publishing visible for {}".format(server_type))
+                visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+                return
+            visibility_publisher.publish(ApplicationState(state='STOPPED'))
             return
 
-        visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-
-        if server_type == 'streetview':
+        if server_type == 'streetview' or server_type == 'streetview_old':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
+            if server_type == 'streetview' and panoid[0:2] == 'F:':
+                rospy.logerr("leaving early for {}".format(server_type))
+                return
+            elif server_type == 'streetview_old' and panoid[0:2] != 'F':
+                rospy.logerr("leaving early for {}".format(server_type))
+                return
         else:
             panoid = scene['windows'][0]['assets'][0]
+
+        visibility_publisher.publish(ApplicationState(state='VISIBLE'))
 
         pov = server.pov
         try:
