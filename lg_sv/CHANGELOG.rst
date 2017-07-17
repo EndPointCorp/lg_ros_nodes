@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix up panoid by prepending F: in certain conditions
+* Contributors: Jacob Minshall
+
 1.14.0 (2017-07-14)
 -------------------
 * pep8 fixes
