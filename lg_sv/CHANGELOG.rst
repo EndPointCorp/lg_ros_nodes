@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.14.1 (2017-07-17)
+-------------------
 * fix up panoid by prepending F: in certain conditions
 * Contributors: Jacob Minshall
 
