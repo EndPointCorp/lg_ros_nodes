@@ -201,6 +201,10 @@ var initializeRes = function(ros, yawOffset) {
     if (sv_window['activity_config']['tilt'])
       pov.x = sv_window['activity_config']['tilt'];
 
+
+    if (panoid[0] == '-' && panoid.search("%2F") > -1)
+      panoid = "F:" + panoid;
+
     console.log("Emitting " + panoid + " with pov " + pov);
     svClient.emit('pano_changed', panoid);
     svClient.emit('pov_changed', pov);
