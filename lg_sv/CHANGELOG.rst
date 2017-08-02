@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* condition for panovideos / panoimages
+* Contributors: Jacob Minshall
+
 1.14.1 (2017-07-17)
 -------------------
 * fix up panoid by prepending F: in certain conditions
