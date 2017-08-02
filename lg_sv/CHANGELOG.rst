@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.14.2 (2017-08-02)
+-------------------
 * condition for panovideos / panoimages
 * Contributors: Jacob Minshall
 
