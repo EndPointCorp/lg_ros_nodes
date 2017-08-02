@@ -119,6 +119,9 @@ def main():
                 rospy.logerr("publishing visible for {}".format(server_type))
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 return
+            elif server_type == 'panoviewer' or server_type == 'panovideo':
+                visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+                return
             visibility_publisher.publish(ApplicationState(state='STOPPED'))
             return
 
