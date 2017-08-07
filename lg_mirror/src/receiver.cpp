@@ -13,6 +13,9 @@ const char* FLOAT_POINTER_PARAM = "float_pointer";
 const char* DEVICE_ID_PARAM = "device_id";
 const char* TRANSLATE_TO_MULTITOUCH_PARAM = "translate_to_multitouch";
 const char* AUTO_ZERO_PARAM = "auto_zero";
+const char* SHOULD_FLIP_AXIS_PARAM = "should_flip_axis";
+const char* X_FLIP_PARAM = "x_flip";
+const char* Y_FLIP_PARAM = "y_flip";
 
 void fail() {
   ros::shutdown();
@@ -30,6 +33,8 @@ int main(int argc, char** argv) {
   bool float_pointer = false;
   bool translate_to_multitouch = false;
   bool auto_zero = false;
+  int x_flip_param = 0;
+  int y_flip_param = 0;
   std::string viewport_name;
   std::string device_name;
   std::string device_id;
@@ -45,6 +50,9 @@ int main(int argc, char** argv) {
   n.param<bool>(FLOAT_POINTER_PARAM, float_pointer, false);
   n.param<bool>(AUTO_ZERO_PARAM, auto_zero, false);
   n.param<bool>(TRANSLATE_TO_MULTITOUCH_PARAM, translate_to_multitouch, false);
+  n.param<bool>(SHOULD_FLIP_AXIS_PARAM, should_flip_axis, false);
+  n.param<int>(X_FLIP_PARAM, x_flip_param, 0);
+  n.param<int>(Y_FLIP_PARAM, y_flip_param, 0);
   if (!n.getParam(VIEWPORT_PARAM, viewport_name)) {
     ROS_ERROR("'viewport' parameter is required");
     fail();
@@ -69,7 +77,7 @@ int main(int argc, char** argv) {
   /* create viewport mapper */
 
   try {
-    viewport_mapper = new ViewportMapper(device_name, viewport_geometry);
+    viewport_mapper = new ViewportMapper(device_name, viewport_geometry, should_flip_axis, x_flip_param, y_flip_param);
   } catch(ViewportMapperStringError& e) {
     ROS_ERROR_STREAM("ViewportMapper: " << e.what());
     fail();
