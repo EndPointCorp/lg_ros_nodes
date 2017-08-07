@@ -125,6 +125,12 @@ Creates a uinput clone of the sending device, maps it to a viewport, and conditi
 * `translate_to_multitouch` [bool] - Attempt to turn a single touch device into a multi-touch device.  Works better with Chrome.  Default: `false`
 * `device_id` [str] - Name ID of the device this receiver is emulating.  Default: `default`
 * `auto_zero` [bool] - Write ABS zero when device is un-routed.  This should clear the cursor.  Default: `false`
+* `should_flip_axis` [bool] - Whether or not we should run the flip axis
+  command. Default: `false`
+* `x_flip` [int] - The amount we should flip the x axis (usually 1 or 0
+  I believe). Only matters if `should_flip_axis` is set. Default: `0`
+* `y_flip` [int] - The amount we should flip the y axis (usually 1 or 0
+  I believe). Only matters if `should_flip_axis` is set. Default: `0`
 
 #### Subscribed Topics
 
