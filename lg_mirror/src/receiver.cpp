@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
   bool float_pointer = false;
   bool translate_to_multitouch = false;
   bool auto_zero = false;
+  bool should_flip_axis = false;
   int x_flip_param = 0;
   int y_flip_param = 0;
   std::string viewport_name;

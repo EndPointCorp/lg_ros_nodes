@@ -42,8 +42,8 @@ const char* ViewportMapperExecError::what() const throw() {
  * \param device_name Name of the xinput device.
  * \param viewport_geometry Xorg geometry string for target viewport.
  */
-ViewportMapper::ViewportMapper(const std::string& device_name, const std::string& viewport_geometry, const bool should_flip_axis, const int x_flip, const in y_flip):
-  device_name_(device_name), should_flip_axis(should_flip_axis), x_flip(x_flip), y_flip(y_flip)
+ViewportMapper::ViewportMapper(const std::string& device_name, const std::string& viewport_geometry, const bool should_flip_axis, const int x_flip, const int y_flip):
+  device_name_(device_name), should_flip_axis_(should_flip_axis), x_flip_(x_flip), y_flip_(y_flip)
 {
   viewport_geometry_ = GeometryFromString(viewport_geometry);
 }
@@ -59,7 +59,7 @@ void ViewportMapper::Map() const {
   std::ostringstream cmd;
   std::ostringstream cmd2;
   cmd << "/usr/bin/xinput set-prop '" << device_name_ << "' 'Coordinate Transformation Matrix'";
-  cmd << "/usr/bin/xinput set-prop '" << device_name << "' 'Evdev Axis Inversion' " << x_flip << " " << y_flip;
+  cmd2 << "/usr/bin/xinput set-prop '" << device_name_ << "' 'Evdev Axis Inversion' " << x_flip_ << " " << y_flip_;
 
   TransformMatrixPtr m_ptr = TransformGeometry(viewport_geometry_, root_geometry);
   TransformMatrix& m = *m_ptr;
@@ -69,12 +69,14 @@ void ViewportMapper::Map() const {
       cmd << " " << (float)m(i, j);
 
   int stat = system(cmd.str().c_str());
-  int stat2 = system(cmd2.str().c_str());
   if (stat != 0) {
     throw ViewportMapperExecError("xinput command to transform matrix returned non-zero");
   }
-  if (stat2 != 0) {
-    thorw ViewportMapperExecError("xinput command to invert axis returned non-zero");
+  if (should_flip_axis_) {
+    int stat2 = system(cmd2.str().c_str());
+    if (stat2 != 0) {
+      throw ViewportMapperExecError("xinput command to invert axis returned non-zero");
+    }
   }
 }
 

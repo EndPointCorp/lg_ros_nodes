@@ -36,7 +36,8 @@ class ViewportMapperExecError : public std::exception {
 
 class ViewportMapper {
   public:
-    ViewportMapper(const std::string& device_name, const std::string& viewport_geometry);
+    ViewportMapper(const std::string& device_name, const std::string& viewport_geometry,
+        bool should_flip_axis, int x_flip, int y_flip);
     void Map() const;
     static lg_common::WindowGeometryPtr GeometryFromString(const std::string& source);
     static lg_common::WindowGeometryPtr GetRootGeometry();
@@ -47,6 +48,9 @@ class ViewportMapper {
 
   private:
     std::string device_name_;
+    bool should_flip_axis_;
+    int x_flip_;
+    int y_flip_;
     lg_common::WindowGeometryPtr viewport_geometry_;
 };
 
