@@ -2,6 +2,13 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* documentation for new feature
+* fixed up axis inverting
+* axis inversion
+* Contributors: Jacob Minshall, Will Plaut
+
 1.14.2 (2017-08-02)
 -------------------
 
