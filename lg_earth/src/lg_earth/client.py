@@ -66,13 +66,16 @@ class Client:
         os.mkdir(self._get_tempdir() + '/.config/Google')
 
         self._render_config(geplus_config,
-                            '.config/Google/GoogleEarthPlus.conf')
+                            '.config/Google/GoogleEarthEC.conf')
         self._render_config(layers_config,
                             '.config/Google/GECommonSettings.conf')
         self._render_file(kml_content,
                           '.googleearth/myplaces.kml')
         self._render_file(view_content,
                           '.googleearth/cached_default_view.kml')
+
+        os.symlink(self._get_tempdir() + '/.config/Google/GoogleEarthEC.conf',
+                   self._get_tempdir() + '/.config/Google/GoogleEarthPlus.conf')
 
         # Check whether a non-standard GECommonSettings file exists
         # and replace if so
