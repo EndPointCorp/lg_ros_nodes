@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix error upon closing a ManagedApplication
+  We never stored the env value.
+* Contributors: Matt Vollrath
+
 1.16.0 (2017-08-17)
 -------------------
 * Add env arg to ManagedApplication
