@@ -50,7 +50,6 @@ class ManagedApplication(object):
         del self.state
         del self.proc
         del self.window
-        del self.env
         del self._respawn_handlers[:]
         del self._state_handlers[:]
 
