@@ -22,6 +22,28 @@ class Client:
         self.tmpdir = tmpdir
         self.instance = instance
 
+        # See whether we are running EC or Free.
+        use_dir = None
+        maybe_dirs = [
+            '/opt/google/earth/ec',
+            '/opt/google/earth/free',
+        ]
+        for maybe_dir in maybe_dirs:
+            if os.path.isdir(maybe_dir):
+                use_dir = maybe_dir
+        if use_dir is None:
+            raise Exception('Could not find Earth install dir in {}'.format(maybe_dirs))
+
+        # Window placement support for the different versions.
+        window_names = {
+            '/opt/google/earth/ec': 'Google Earth EC',
+            '/opt/google/earth/free': 'Google Earth',
+        }
+        window_classes = {
+            '/opt/google/earth/ec': 'Google Earth EC',
+            '/opt/google/earth/free': 'Googleearth-bin',
+        }
+
         # Skip window management if this window is hidden.
         if '--hidegui' in args:
             earth_window = None
@@ -33,21 +55,10 @@ class Client:
 
             earth_window = ManagedWindow(
                 geometry=geometry,
-                w_class='Googleearth-bin',
-                w_name='Google Earth',
+                w_class=window_classes[use_dir],
+                w_name=window_names[use_dir],
                 w_instance=self._get_instance()
             )
-
-        use_dir = None
-        maybe_dirs = [
-            '/opt/google/earth/ec',
-            '/opt/google/earth/free',
-        ]
-        for maybe_dir in maybe_dirs:
-            if os.path.isdir(maybe_dir):
-                use_dir = maybe_dir
-        if use_dir is None:
-            raise Exception('Could not find Earth install dir in {}'.format(maybe_dirs))
 
         cmd = [use_dir + '/googleearth-bin']
 
