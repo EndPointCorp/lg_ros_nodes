@@ -52,7 +52,7 @@ To set the language locale for Google Earth set the `LG_LANG` enviromental varia
 
 Runs the Earth client.
 
-A hack is required to move some of the configuration files out of the user's home directory. Earth will read /etc/passwd to find the current user's home directory instead of respecting the HOME environment variable. We can work around this by changing the string "/etc/passwd" to a void path in the library that does this lookup.
+When using the "free" Earth client (as opposed to the Enterprise Client), a hack is required to move some of the configuration files out of the user's home directory. Earth will read /etc/passwd to find the current user's home directory instead of respecting the HOME environment variable. We can work around this by changing the string "/etc/passwd" to a void path in the library that does this lookup.
 
 A script to achieve this:
 
