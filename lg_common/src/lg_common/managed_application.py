@@ -12,7 +12,7 @@ SIG_RETRY_DELAY = 0.05
 
 
 class ManagedApplication(object):
-    def __init__(self, cmd, shell=False, window=None, initial_state=None, respawn=True):
+    def __init__(self, cmd, shell=False, window=None, initial_state=None, respawn=True, env=None):
         """
         respawn handles whether or not the application shall be automatically
                 respawned at all, default is True.
@@ -24,7 +24,8 @@ class ManagedApplication(object):
         self.proc = ProcController(cmd,
                                    spawn_hooks=[self._handle_respawn],
                                    shell=shell,
-                                   respawn=respawn)
+                                   respawn=respawn,
+                                   env=env)
 
         self._respawn_handlers = []
         self._state_handlers = []
@@ -49,6 +50,7 @@ class ManagedApplication(object):
         del self.state
         del self.proc
         del self.window
+        del self.env
         del self._respawn_handlers[:]
         del self._state_handlers[:]
 
