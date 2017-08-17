@@ -38,7 +38,18 @@ class Client:
                 w_instance=self._get_instance()
             )
 
-        cmd = ['/opt/google/earth/free/googleearth-bin']
+        use_dir = None
+        maybe_dirs = [
+            '/opt/google/earth/ec',
+            '/opt/google/earth/free',
+        ]
+        for maybe_dir in maybe_dirs:
+            if os.path.isdir(maybe_dir):
+                use_dir = maybe_dir
+        if use_dir is None:
+            raise Exception('Could not find Earth install dir in {}'.format(maybe_dirs))
+
+        cmd = [use_dir + '/googleearth-bin']
 
         cmd.extend(args)
         self.earth_proc = ManagedApplication(cmd, window=earth_window,
@@ -96,7 +107,7 @@ class Client:
         # Google Earth has its own copies of some libraries normally found on
         # the system, so we need to tell the loader to look there. This is
         # normally done in the google-earth wrapper script.
-        os.environ['LD_LIBRARY_PATH'] += ':/opt/google/earth/free'
+        os.environ['LD_LIBRARY_PATH'] += use_dir
 
     def _touch_file(self, fname):
         """Touch a file, updating its access time.
