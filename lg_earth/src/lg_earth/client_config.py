@@ -126,7 +126,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     show_visualization = rospy.get_param('~show_visualization', True)
 
     geplus_config['General'] = {
-        '3DControllerEnabled': False,
+        '3DControllerEnabled': True,
         'adsDisabled': True,
         'allowUnsafeBalloons': False,
         'AlwaysUseExternalBrowser': True,
