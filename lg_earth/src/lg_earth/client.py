@@ -1,3 +1,4 @@
+import copy
 import os
 import shutil
 import threading
@@ -60,11 +61,31 @@ class Client:
                 w_instance=self._get_instance()
             )
 
+        env = copy.copy(os.environ)
+
+        # Override the HOME location. This requires a hack to the Earth
+        # libraries. See the lg_earth README.
+        env['OLDHOME'] = env['HOME']
+        env['HOME'] = self._get_tempdir()
+
+        # Prevent external browser launch.
+        env['BROWSER'] = '/dev/null'
+
+        # If the Xorg DISPLAY is not in our environment, assume :0
+        if os.getenv('DISPLAY') is None:
+            env['DISPLAY'] = ':0'
+
+        # Google Earth has its own copies of some libraries normally found on
+        # the system, so we need to tell the loader to look there. This is
+        # normally done in the google-earth wrapper script.
+        env['LD_LIBRARY_PATH'] += use_dir
+
         cmd = [use_dir + '/googleearth-bin']
 
         cmd.extend(args)
         self.earth_proc = ManagedApplication(cmd, window=earth_window,
-                                             initial_state=initial_state)
+                                             initial_state=initial_state,
+                                             env=env)
 
         self._make_tempdir()
 
@@ -102,23 +123,6 @@ class Client:
         # Check whether a non-standard GECommonSettings file exists
         # and replace if so
         #self._check_for_custom_config('./config/Google/GECommonSettings.conf')
-
-        # Override the HOME location. This requires a hack to the Earth
-        # libraries. See the lg_earth README.
-        os.environ['OLDHOME'] = os.environ['HOME']
-        os.environ['HOME'] = self._get_tempdir()
-
-        # Prevent external browser launch.
-        os.environ['BROWSER'] = '/dev/null'
-
-        # If the Xorg DISPLAY is not in our environment, assume :0
-        if os.getenv('DISPLAY') is None:
-            os.environ['DISPLAY'] = ':0'
-
-        # Google Earth has its own copies of some libraries normally found on
-        # the system, so we need to tell the loader to look there. This is
-        # normally done in the google-earth wrapper script.
-        os.environ['LD_LIBRARY_PATH'] += use_dir
 
     def _touch_file(self, fname):
         """Touch a file, updating its access time.
