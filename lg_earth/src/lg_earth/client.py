@@ -64,7 +64,7 @@ class Client:
         env = copy.copy(os.environ)
 
         # Override the HOME location. This requires a hack to the Earth
-        # libraries. See the lg_earth README.
+        # libraries if we are not using Enterprise Client. See the lg_earth README.
         env['OLDHOME'] = env['HOME']
         env['HOME'] = self._get_tempdir()
 
