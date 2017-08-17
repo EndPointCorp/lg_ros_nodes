@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add env arg to ManagedApplication
+* Contributors: Matt Vollrath
+
 1.15.0 (2017-08-07)
 -------------------
 

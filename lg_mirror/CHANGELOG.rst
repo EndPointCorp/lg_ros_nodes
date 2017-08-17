@@ -2,6 +2,9 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.15.0 (2017-08-07)
 -------------------
 * documentation for new feature

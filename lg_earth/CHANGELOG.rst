@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support for Google Earth Enterprise Client
+* Contributors: Matt Vollrath
+
 1.15.0 (2017-08-07)
 -------------------
 
