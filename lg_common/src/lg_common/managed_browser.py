@@ -23,6 +23,7 @@ DEFAULT_ARGS = [
     '--touch-events=enabled',
     '--disable-pinch',
     '--overscroll-history-navigation=0',
+    '--allow-running-insecure-content',
     '--disable-touch-editing',
     '--v=1',
     '--enable-webgl',
