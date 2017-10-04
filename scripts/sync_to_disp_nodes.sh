@@ -17,6 +17,39 @@ else
   exit 1
 fi
 
+flag=false
+for d in `ls catkin/src/`; do
+  loc="$(readlink -f catkin/src/${d})"
+  test -d ${loc} || continue  # ignoring non directories
+  if [[ ${loc} =~ ${PWD} ]]; then
+    continue
+  fi
+  if [ -d ${loc}/.git ] && [ -d ${loc}/../.git ]; then
+    echo "Non standard repo (.git isn't in current or ../ dir): ${loc}"
+    flag=true
+    continue
+  fi
+  cd "${loc}"
+  git remote update 1>/dev/null
+  if [ "$?" != "0" ]; then
+    flag=true
+  fi
+  dff=$(git diff origin/master | wc -l)
+  if [ "${dff}" != "0" ]; then
+    echo "WARNING: ${loc} is not pointing to the latest master..."
+    flag=true
+  fi
+  cd - 2>/dev/null 1>/dev/null
+done
+if [ "${flag}" != "false" ]; then
+  echo "there were non-updated repos in your catkin/src"
+  read -rp "would you like to continue? (y/n) " abort
+  if [ "${abort}" != "Yes" ] && [ "${abort}" != "y" ] && [ "${abort}" != "Y" ] && [ "${abort}" != "yes" ]; then
+    echo "Goodbye!"
+    exit 0
+  fi
+fi
+
 echo 'installing libudev-dev'
 if [[ ${SKIP_APT} != "" ]]; then
   echo "Skipping APT update + install"
