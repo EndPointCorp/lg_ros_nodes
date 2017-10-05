@@ -108,17 +108,26 @@ class Client:
         os.mkdir(self._get_tempdir() + '/.config')
         os.mkdir(self._get_tempdir() + '/.config/Google')
 
-        self._render_config(geplus_config,
-                            '.config/Google/GoogleEarthEC.conf')
-        self._render_config(layers_config,
-                            '.config/Google/GECommonSettings.conf')
-        self._render_file(kml_content,
-                          '.googleearth/myplaces.kml')
-        self._render_file(view_content,
-                          '.googleearth/cached_default_view.kml')
+        # config rendering values
+        self.geplus_config = geplus_config
+        self.layers_config = layers_config
+        self.kml_content = kml_content
+        self.view_content = view_content
 
+        self._render_configs()
         os.symlink(self._get_tempdir() + '/.config/Google/GoogleEarthEC.conf',
                    self._get_tempdir() + '/.config/Google/GoogleEarthPlus.conf')
+
+    def _render_configs(self):
+        self._render_config(self.geplus_config,
+                            '.config/Google/GoogleEarthEC.conf')
+        self._render_config(self.layers_config,
+                            '.config/Google/GECommonSettings.conf')
+        self._render_file(self.kml_content,
+                          '.googleearth/myplaces.kml')
+        self._render_file(self.view_content,
+                          '.googleearth/cached_default_view.kml')
+
 
         # Check whether a non-standard GECommonSettings file exists
         # and replace if so
@@ -246,6 +255,7 @@ class Client:
             os.mkdir(earth_dir)
         except Exception, e:
             rospy.logerr('found error while removing earth cache: %s' % e.message)
+        self._render_configs()
         self.earth_proc.handle_soft_relaunch()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
