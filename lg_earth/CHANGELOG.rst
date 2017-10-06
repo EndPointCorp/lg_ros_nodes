@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.17.0 (2017-10-06)
+-------------------
 * Merge pull request `#378 <https://github.com/EndPointCorp/lg_ros_nodes/issues/378>`_ from EndPointCorp/topic/new_earth_soft_relaunch_fix
   Topic/new earth soft relaunch fix
 * pep8
