@@ -116,7 +116,6 @@ class Client:
         os.mkdir(self._get_tempdir() + '/.config')
         os.mkdir(self._get_tempdir() + '/.config/Google')
 
-
         self._render_config(self.geplus_config,
                             '.config/Google/GoogleEarthEC.conf')
         self._render_config(self.layers_config,
@@ -128,7 +127,6 @@ class Client:
         if not os.path.exists(self._get_tempdir() + '/.config/Google/GoogleEarthPlus.conf'):
             os.symlink(self._get_tempdir() + '/.config/Google/GoogleEarthEC.conf',
                        self._get_tempdir() + '/.config/Google/GoogleEarthPlus.conf')
-
 
         # Check whether a non-standard GECommonSettings file exists
         # and replace if so
