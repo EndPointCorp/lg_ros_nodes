@@ -2,6 +2,15 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#376 <https://github.com/endpointcorp/lg_ros_nodes/issues/376>`_ from EndPointCorp/topic/insecure_content
+  allow insecure content
+* allow insecure content
+  This will help us show pages where our extension is using either http
+  or https, and the page its on is using the opposite.
+* Contributors: Jacob Minshall
+
 1.17.0 (2017-10-06)
 -------------------
 
