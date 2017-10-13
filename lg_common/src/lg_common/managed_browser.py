@@ -16,6 +16,7 @@ DEFAULT_ARGS = [
     '--no-sandbox',
     '--test-type',  # only needed to ignore --no-sandbox's warning message
     '--allow-file-access-from-files',
+    '--ignore-certificate-errors',
     '--disable-default-apps',
     '--disable-java',
     '--disable-session-storage',
