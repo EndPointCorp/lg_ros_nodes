@@ -24,7 +24,6 @@ class RosBuilder:
         ]
         subprocess.check_output(rosdep_cmd)
 
-
     def rosdep_sanity_check(self):
         """Make sure rosdep is working."""
         rosdep_cmd = [
@@ -42,7 +41,6 @@ class RosBuilder:
             return False
         return True
 
-
     def rosdep_install_deps(self, package_path):
         """Install all dependencies for the package at the given path."""
         rosdep_cmd = [
@@ -55,7 +53,6 @@ class RosBuilder:
             '-y'
         ]
         subprocess.check_output(rosdep_cmd)
-
 
     def resolve_rosdep(self, catkin_name):
         """Resolve a catkin package name to an APT package name.
@@ -88,7 +85,6 @@ class RosBuilder:
             deb_names = [self.catkin_to_apt_name(catkin_name)]
         return set(deb_names)
 
-
     def catkin_to_apt_name(self, catkin_name):
         """Format a package name as if it were part of the distro.
 
@@ -102,7 +98,6 @@ class RosBuilder:
             distro=self.ros_distro,
             name=str(catkin_name).replace('_', '-')
         )
-
 
     def get_build_depends(self, package):
         """Get list of deb package build depends.
@@ -123,7 +118,6 @@ class RosBuilder:
 
         return build_depends
 
-
     def get_run_depends(self, package):
         """Get list of deb package run depends.
 
@@ -142,7 +136,6 @@ class RosBuilder:
         run_depends.insert(0, '${shlibs:Depends}, ${misc:Depends}')
 
         return run_depends
-
 
     def generate_control(self, package):
         """Generate Debian control file for a catkin package.
@@ -204,7 +197,6 @@ class RosBuilder:
 
         return '\n'.join(control)
 
-
     def generate_changelog(self, package):
         """Generate a Debian changelog for the catkin package.
 
@@ -257,7 +249,6 @@ class RosBuilder:
 
         return debian_changelog
 
-
     def get_package_path(self, package, sub_path=None):
         """Get the package path, or a path relative to it.
 
@@ -272,7 +263,6 @@ class RosBuilder:
         if sub_path is not None:
             path = os.path.join(path, sub_path)
         return path
-
 
     def _datetime_to_rfc2822(self, dt):
         """Convert a datetime to an RFC 2822 date.
