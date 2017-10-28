@@ -1,20 +1,25 @@
 #!/usr/bin/env python
 
+import argparse
 import glob
 import os
 import shutil
 import subprocess
-import sys
 import tarfile
 import tempfile
 
 import rospkg
 from catkin_pkg.package import parse_package
-import lg_builder
+from lg_builder import RosBuilder
 
 
 class Builder(object):
-    def __init__(self):
+    def __init__(self, ros_distro, ros_os, ros_os_version):
+        self._builder = RosBuilder(
+            ros_distro=ros_distro,
+            ros_os=ros_os,
+            ros_os_version=ros_os_version,
+        )
         self.tempdir = None
 
     def build(self, package_path):
@@ -27,7 +32,7 @@ class Builder(object):
         return os.path.join(self.tempdir, 'build')
 
     def _write_debfiles(self, package):
-        package_name = lg_builder.catkin_to_apt_name(package.name)
+        package_name = self._builder.catkin_to_apt_name(package.name)
 
         builddir = self._get_builddir()
 
@@ -38,11 +43,11 @@ class Builder(object):
 
         os.mkdir(debdir, 0755)
 
-        control = lg_builder.generate_control(package)
+        control = self._builder.generate_control(package)
         with open(os.path.join(debdir, 'control'), 'w') as f:
             f.write(control)
 
-        changelog = lg_builder.generate_changelog(package)
+        changelog = self._builder.generate_changelog(package)
         with open(os.path.join(debdir, 'changelog'), 'w') as f:
             changelog.write_to_open_file(f)
 
@@ -64,13 +69,16 @@ class Builder(object):
         with open(os.path.join(template_dir, 'rules'), 'r') as f:
             rules_template = f.read()
 
-        rules = rules_template.format(package_name=package_name)
+        rules = rules_template.format(
+            package_name=package_name,
+            ros_distro=self._builder.ros_distro,
+        )
         with open(os.path.join(debdir, 'rules'), 'w') as f:
             f.write(rules)
 
     def _build(self, package_path):
         package = parse_package(package_path)
-        package_dir = lg_builder.get_package_path(package)
+        package_dir = self._builder.get_package_path(package)
 
         print "Building {} version {}".format(package.name, package.version)
 
@@ -78,14 +86,14 @@ class Builder(object):
         package.validate()
 
         print "Updating rosdep"
-        lg_builder.rosdep_update()
+        self._builder.rosdep_update()
 
         print "Checking rosdep sanity"
-        lg_builder.rosdep_sanity_check()
+        self._builder.rosdep_sanity_check()
 
         # XXX: rosdep only resolves public dependencies
         # print "Installing dependencies"
-        # lg_builder.rosdep_install_deps(package_dir)
+        # self._builder.rosdep_install_deps(package_dir)
 
         print "Creating tempdir"
         self.tempdir = tempfile.mkdtemp()
@@ -102,7 +110,7 @@ class Builder(object):
         self._write_debfiles(package)
 
         print "Creating upstream tarball"
-        debian_name = lg_builder.catkin_to_apt_name(package.name)
+        debian_name = self._builder.catkin_to_apt_name(package.name)
         upstream_filename = os.path.join(
             self.tempdir,
             '{}_{}.orig.tar.gz'.format(debian_name, package.version)
@@ -134,8 +142,23 @@ class Builder(object):
 
 
 if __name__ == '__main__':
-    package_path = sys.argv[1]
-    builder = Builder()
+    parser = argparse.ArgumentParser(description='Build a ROS package.')
+    parser.add_argument('package_path')
+    parser.add_argument('--ros_distro', default='indigo')
+    parser.add_argument('--os', default='ubuntu')
+    parser.add_argument('--os_version', default='trusty')
+    args = parser.parse_args()
+
+    package_path = args.package_path
+    ros_distro = args.ros_distro
+    ros_os = args.os
+    ros_os_version = args.os_version
+
+    builder = Builder(
+        ros_distro=ros_distro,
+        ros_os=ros_os,
+        ros_os_version=ros_os_version,
+    )
     builder.build(package_path)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

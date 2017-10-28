@@ -2,6 +2,18 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.17.1 (2017-10-12)
+-------------------
+
+1.17.0 (2017-10-06)
+-------------------
+* Merge pull request `#378 <https://github.com/EndPointCorp/lg_ros_nodes/issues/378>`_ from EndPointCorp/topic/new_earth_soft_relaunch_fix
+  Topic/new earth soft relaunch fix
+* pep8
+* more config rendering happening in render_configs
+* re-writing cache on soft relaunch fixes earth bug
+* Contributors: Jacob Minshall
+
 1.16.1 (2017-08-17)
 -------------------
 
