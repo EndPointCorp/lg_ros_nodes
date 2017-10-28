@@ -91,7 +91,7 @@ def cppcheck_test():
 
 
 def gjslint_test():
-    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,panovideosync' -r .")
+    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,panovideosync,devel' -r .")
     return ret
 
 
