@@ -7,7 +7,6 @@ import requests
 
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
-from rosapi import params
 
 
 class DirectorAPIProxy:
@@ -135,7 +134,7 @@ class AttractLoop:
         """
         rospy.loginfo("Playing blank scene")
 
-        viewports = [viewport.split('/')[2] for viewport in params.get_param_names() if '/viewport/' in viewport]
+        viewports = [viewport.split('/')[2] for viewport in rospy.get_param_names() if '/viewport/' in viewport]
 
         scene = {
             "description": "attract loop blank scene",
