@@ -42,7 +42,7 @@ RUN \
       lsb-core tar libfreeimage3
 
 RUN \
-      apt-get install -y ros-indigo-rosapi libudev-dev \
+      apt-get install -y libudev-dev \
       ros-indigo-ros-base ros-indigo-rosbridge-server \
       ros-indigo-spacenav-node spacenavd
 
