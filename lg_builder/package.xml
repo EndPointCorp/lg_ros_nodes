@@ -13,7 +13,7 @@
   <author email="matt@endpoint.com">Matt Vollrath</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>python-debian</run_depend>
+  <!--<run_depend>python-debian</run_depend>-->
   <run_depend>python-catkin-pkg</run_depend>
   <run_depend>python-rospkg</run_depend>
 </package>
