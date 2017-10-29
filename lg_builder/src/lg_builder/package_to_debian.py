@@ -1,8 +1,9 @@
 import datetime
-import os.path
+import os
 import subprocess
 import time
 
+from rosdep2.sources_list import CACHE_INDEX, get_sources_cache_dir
 from catkin_pkg.package import parse_package
 from catkin_pkg import changelog as catkin_changelog
 from debian.changelog import Changelog, Version
@@ -17,7 +18,17 @@ class RosBuilder:
         self.ros_os_version = ros_os_version
 
     def rosdep_update(self):
-        """Update the rosdep database."""
+        """Update the rosdep database if needed."""
+        try:
+            index_file = os.path.join(get_sources_cache_dir(), CACHE_INDEX)
+            index_stat = os.stat(index_file)
+            index_mtime = index_stat.st_mtime
+            age_s = time.time() - index_mtime
+            assert age_s < 86400
+            return
+        except:
+            pass
+
         rosdep_cmd = [
             'rosdep',
             'update'
