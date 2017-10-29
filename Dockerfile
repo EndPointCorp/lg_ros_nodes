@@ -1,7 +1,10 @@
 # Basic docker file for running tests, lives in the root directory because
 # it needs to add the entire project into the container
-FROM endpoint/lg_ros_nodes_base:0.1
+ARG build_ros_distro=indigo
+FROM lg_ros_nodes_base:${build_ros_distro}
 MAINTAINER Jacob Minshall <jacob@endpoint.com>
+
+ARG build_ros_distro
 
 # make dirs and check out repos
 RUN mkdir -p $PROJECT_ROOT/src
@@ -16,7 +19,7 @@ COPY ./ ${PROJECT_ROOT}
 #build ROS nodes
 RUN \
     cd ${PROJECT_ROOT} && \
-    source /opt/ros/indigo/setup.bash && \
+    source /opt/ros/${build_ros_distro}/setup.bash && \
     /ros_entrypoint.sh ./scripts/init_workspace -a $HOME/src/appctl && \
     cd ${PROJECT_ROOT}/catkin/ && \
     apt-get update && \
@@ -27,10 +30,10 @@ RUN \
     sudo rosdep install \
         --from-paths /home/galadmin/src/lg_ros_nodes/catkin/src \
         --ignore-src \
-        --rosdistro indigo \
+        --rosdistro ${build_ros_distro} \
         -y && \
     catkin_make && \
-    catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install && \
+    catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/${build_ros_distro} install && \
     source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash && \
     sudo chown -R ${TEST_USER}:${TEST_USER} ${HOME} && \
     rm -rf /var/lib/apt/lists/*

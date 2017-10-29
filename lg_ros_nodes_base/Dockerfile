@@ -1,7 +1,12 @@
 # Basic docker file for running tests, lives in the root directory because
 # it needs to add the entire project into the container
-FROM ubuntu:14.04.3
+ARG build_os_version=trusty
+ARG build_ros_distro=indigo
+FROM ubuntu:${build_os_version}
 MAINTAINER Jacob Minshall <jacob@endpoint.com>
+
+ARG build_os_version
+ARG build_ros_distro
 
 # ENV vars to override for build or test
 # Xvfb -> :1, native Xorg -> :0
@@ -9,20 +14,22 @@ ENV DISPLAY :1
 ENV TEST_USER galadmin
 ENV HOME /home/${TEST_USER}
 ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
-ENV APPCTL_TAG 1.1.1
+ENV APPCTL_TAG 1.2.1
 ENV NVIDIA_DRIVER_VERSION 352.41
 ENV NVIDIA_DRIVER_URL http://us.download.nvidia.com/XFree86/Linux-x86_64/${NVIDIA_DRIVER_VERSION}/NVIDIA-Linux-x86_64-${NVIDIA_DRIVER_VERSION}.run
 ENV ROS_MASTER_URI http://localhost:11311
 ENV ROS_IP 127.0.0.1
 ENV ROS_LOG_DIR /var/log/ros/
+ENV DEBIAN_FRONTEND=noninteractive
 
 # entrypoint for setup.bash
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
-RUN chmod 0755 /ros_entrypoint.sh
+RUN sed -i "s/indigo/${build_ros_distro}/g" /ros_entrypoint.sh \
+ && chmod 0755 /ros_entrypoint.sh
 
 RUN \
-      sudo apt-get update -y && sudo apt-get install -y wget && \
-      echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list && \
+      apt-get update -y && apt-get install -y wget && \
+      echo "deb http://packages.ros.org/ros/ubuntu ${build_os_version} main" > /etc/apt/sources.list.d/ros-latest.list && \
       echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
       echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
       apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5523BAEEB01FA116 && \
@@ -43,8 +50,8 @@ RUN \
 
 RUN \
       apt-get install -y libudev-dev \
-      ros-indigo-ros-base ros-indigo-rosbridge-server \
-      ros-indigo-spacenav-node spacenavd
+      ros-${build_ros_distro}-ros-base ros-${build_ros_distro}-rosbridge-server \
+      ros-${build_ros_distro}-spacenav-node spacenavd
 
 RUN \
       apt-get install -y google-chrome-stable google-chrome-beta google-chrome-unstable
@@ -85,6 +92,6 @@ RUN \
       useradd -ms /bin/bash galadmin && \
       echo "galadmin   ALL=NOPASSWD: ALL" >> /etc/sudoers && \
 	    mkdir -p /home/galadmin/src ;\
-      echo "source /opt/ros/indigo/setup.bash" >> /root/.bash_profile ;\
-      echo "source /opt/ros/indigo/setup.bash" >> /home/galadmin/.bash_profile ;\
+      echo "source /opt/ros/${build_ros_distro}/setup.bash" >> /root/.bash_profile ;\
+      echo "source /opt/ros/${build_ros_distro}/setup.bash" >> /home/galadmin/.bash_profile ;\
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh

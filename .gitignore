@@ -8,6 +8,7 @@ appctl
 workspace_copy/
 
 build/
+.build/
 bin/
 msg_gen/
 srv_gen/
