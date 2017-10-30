@@ -23,7 +23,7 @@ RUN \
     /ros_entrypoint.sh ./scripts/init_workspace -a $HOME/src/appctl && \
     cd ${PROJECT_ROOT}/catkin/ && \
     apt-get update && \
-    apt-get install --yes python-pip python-debian && \
+    apt-get install --yes python-pip && \
     pip install python-coveralls && \
     rosdep init &&\
     rosdep update && \
