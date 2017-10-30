@@ -6,6 +6,15 @@ function initialize() {
   DOCKER_NAME="${PROJECT_NAME}-build-${UUID}"
 }
 
+function build_base() {
+  echo "building base image for ${ROS_DISTRO} on ${OS_VERSION}"
+  docker build -f lg_ros_nodes_base/Dockerfile \
+    --pull --rm=true --force-rm \
+    --build-arg build_os_version="${OS_VERSION}" \
+    --build-arg build_ros_distro="${ROS_DISTRO}" \
+    -t "lg_ros_nodes_base:${ROS_DISTRO}" .
+}
+
 # builds the docker image, naming it <project-name>-test depending
 # on the dirname of the project, e.g. lg_ros_nodes-test
 function build_docker() {
@@ -72,6 +81,7 @@ initialize
 set +e
 trap cleanup EXIT
 
+build_base || exit 1
 build_docker || exit 1
 run_tests || exit 1
 build_debs
