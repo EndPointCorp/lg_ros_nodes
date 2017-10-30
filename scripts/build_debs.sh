@@ -3,7 +3,6 @@
 function initialize() {
   # generate a unique image/container id
   UUID="$( base64 /dev/urandom | tr -d '/+[A-Z]' | dd bs=16 count=1 2>/dev/null )"
-  PROJECT_NAME=$(basename "$DIR")
   DOCKER_NAME="${PROJECT_NAME}-build-${UUID}"
 }
 
@@ -62,6 +61,7 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "${DIR}/.."
+PROJECT_NAME=$(basename "$(pwd)")
 DOCKER_NAME=
 RETCODE=1
 OS_VERSION="${BUILD_OS_VERSION:-trusty}"
