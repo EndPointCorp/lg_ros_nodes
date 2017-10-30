@@ -86,3 +86,6 @@ build_base || exit 1
 build_docker || exit 1
 run_tests || exit 1
 build_debs
+if [ "$RETCODE" -eq 0 ]; then
+  echo "done! .deb files should be in .build/"
+fi
