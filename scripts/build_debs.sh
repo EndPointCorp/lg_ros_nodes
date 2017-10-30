@@ -46,6 +46,7 @@ function build_debs() {
 cd /home/galadmin/src/lg_ros_nodes
 source /opt/ros/${ROS_DISTRO}/setup.bash
 find . -name package.xml -print0 | xargs -0 bash -ec 'for filename; do lg-ros-build \$(dirname \$filename) --ros_distro=${ROS_DISTRO} --os_version=${OS_VERSION}; done' bash
+chown $(id -u):$(id -g) *.deb
 mv *.deb /output/
 "
   RETCODE=$?
