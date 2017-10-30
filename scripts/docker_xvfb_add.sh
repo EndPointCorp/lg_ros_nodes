@@ -1,3 +1,5 @@
+#!/bin/bash
+
 start_xvfb() {
     #/etc/init.d/xvfb start
     #export DISPLAY=:1.0
@@ -22,7 +24,7 @@ start_xvfb() {
     export DISPLAY=:1
 
     msg="$msg, DISPLAY=$DISPLAY"
-    echo $msg
+    echo "$msg"
 }
 
 start_xvfb
