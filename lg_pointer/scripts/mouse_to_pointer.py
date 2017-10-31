@@ -122,33 +122,5 @@ def main():
         events_pub.publish(events_msg)
 
 
-        """
-        val = 0
-        rospy.logerr("x: {}, y: {}, vpx: {}, vpy: {}".format(
-            x, y, vpx, vpy
-        ))
-        if ev.code == ecodes.REL_X:
-            rospy.logerr("tis rel_x")
-            val = x
-        elif ev.code == ecodes.REL_Y:
-            rospy.logerr("tis rel_y")
-            val = y
-
-        if new_vp != vp:
-            vp = new_vp
-            routes_pub.publish(StringArray(strings=['center']))
-
-        events_msg = EvdevEvents()
-        events_msg.events.append(EvdevEvent(
-            type=ev.type,
-            code=ev.code,
-            value=val
-        ))
-        events_pub.publish(events_msg)
-        """
-
-    #rospy.spin()
-
-
 if __name__ == '__main__':
     main()
