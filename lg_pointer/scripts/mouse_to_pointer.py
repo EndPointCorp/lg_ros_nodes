@@ -86,6 +86,14 @@ def main():
             if ev_code == ecodes.KEY_INSERT and ev_value != 0:
                 x = 0
                 y = 0
+                continue
+            events_msg = EvdevEvents()
+            events_msg.events.append(EvdevEvent(
+                type=ev_type,
+                code=ev_code,
+                value=ev_value
+            ))
+            events_pub.publish(events_msg)
             continue
         elif ev_type == ecodes.EV_REL:
             if ev_code == ecodes.REL_X:

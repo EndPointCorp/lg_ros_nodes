@@ -20,6 +20,7 @@ catkin_package(
 catkin_install_python(PROGRAMS
   scripts/wiimote_to_twist.py
   scripts/wiimote_to_pointer.py
+  scripts/mouse_to_pointer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
