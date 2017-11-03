@@ -4,7 +4,10 @@ from threading import Lock
 import math
 from evdev import ecodes
 import evdev
+import os
+import urllib2
 import subprocess
+from tempfile import mktemp
 
 import rospy
 from geometry_msgs.msg import Twist
@@ -38,10 +41,23 @@ def handle_device_info(req):
     res.abs_max = [DEV_WIDTH, DEV_HEIGHT]
     return res
 
+def grabCustomUdev(udev_location, rules_dest):
+    tmp_rules = mktemp()
+    with open(tmp_rules, 'w') as f:
+        resp = urllib2.urlopen(udev_location)
+        if resp.code != 200:
+            rospy.logerr("Could not curl the udev rules... continuing without them")
+            return
+        f.write(resp.read())
+    os.system('sudo mv {} {}'.format(tmp_rules, rules_dest))
+    os.system('sudo udevadm control --reload-rules; sudo udevadm trigger')
 
 def main():
     rospy.init_node(NODE_NAME)
 
+    udev_location = rospy.get_param('~udev_location',
+            'http://lg-head/lg/external_devices/97-logitech-spotlight.rules')
+    grabCustomUdev(udev_location, '/etc/udev/rules.d/97-logitech-spotlight.rules')
     device_id = rospy.get_param('~device_id', 'default')
     device_path = rospy.get_param('~device_path', 'default')
     viewports = [
