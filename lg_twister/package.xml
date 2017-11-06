@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_twister</name>
-  <version>1.17.1</version>
+  <version>1.17.2</version>
   <description>Joystick-like input muxer</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
