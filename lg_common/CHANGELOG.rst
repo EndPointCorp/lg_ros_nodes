@@ -2,6 +2,11 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* super security (long live the wojo)
+* Contributors: Jacob Minshall
+
 1.17.1 (2017-10-12)
 -------------------
 * Merge pull request `#376 <https://github.com/endpointcorp/lg_ros_nodes/issues/376>`_ from EndPointCorp/topic/insecure_content

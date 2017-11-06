@@ -2,6 +2,16 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_pointer: add udev fetching in mouse2pointer
+* logitech_spotlight: add click functionality
+* Docstrings and cleanup of MegaViewport
+* PEP8
+* initial logitech code
+  No mouse clicking yet
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
 1.17.1 (2017-10-12)
 -------------------
 
