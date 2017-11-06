@@ -41,6 +41,7 @@ def handle_device_info(req):
     res.abs_max = [DEV_WIDTH, DEV_HEIGHT]
     return res
 
+
 def grabCustomUdev(udev_location, rules_dest):
     tmp_rules = mktemp()
     with open(tmp_rules, 'w') as f:
@@ -52,11 +53,13 @@ def grabCustomUdev(udev_location, rules_dest):
     os.system('sudo mv {} {}'.format(tmp_rules, rules_dest))
     os.system('sudo udevadm control --reload-rules; sudo udevadm trigger')
 
+
 def main():
     rospy.init_node(NODE_NAME)
 
-    udev_location = rospy.get_param('~udev_location',
-            'http://lg-head/lg/external_devices/97-logitech-spotlight.rules')
+    udev_location = rospy.get_param(
+        '~udev_location',
+        'http://lg-head/lg/external_devices/97-logitech-spotlight.rules')
     grabCustomUdev(udev_location, '/etc/udev/rules.d/97-logitech-spotlight.rules')
     device_id = rospy.get_param('~device_id', 'default')
     device_path = rospy.get_param('~device_path', 'default')
