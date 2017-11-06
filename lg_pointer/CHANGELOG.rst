@@ -2,8 +2,8 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.17.2 (2017-11-06)
+-------------------
 * lg_pointer: add udev fetching in mouse2pointer
 * logitech_spotlight: add click functionality
 * Docstrings and cleanup of MegaViewport
