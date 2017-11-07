@@ -70,8 +70,8 @@ RUN \
 # add non-root user for tests and production
 RUN \
       useradd -ms /bin/bash $RUN_USER && \
-      echo "$RUN_USER   ALL=NOPASSWD: ALL" >> /etc/sudoers && \
-	    mkdir -p $HOME/src ;\
+      usermod -a -G sudo,plugdev,audio,video $RUN_USER && \
+      mkdir -p $HOME/src ;\
       echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /root/.bash_profile ;\
       echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> $HOME/.bash_profile ;\
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh && \
