@@ -8,6 +8,14 @@ Changelog for package lg_builder
 * lg_builder: un-hardcode target distro/platform
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* 1.17.2
+* updated changeslogs for new release
+* Fix PEP8 in lg_builder
+* lg_builder: un-hardcode target distro/platform
+* Contributors: Matt Vollrath, Will Plaut
+
 1.17.1 (2017-10-12)
 -------------------
 

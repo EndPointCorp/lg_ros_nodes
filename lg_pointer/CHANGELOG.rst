@@ -12,6 +12,20 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+* smoothed up the logitech mouse and fixed touchscreen mapping issue
+* pep8 fixes
+* 1.17.2
+* updated changeslogs for new release
+* lg_pointer: add udev fetching in mouse2pointer
+* logitech_spotlight: add click functionality
+* Docstrings and cleanup of MegaViewport
+* PEP8
+* initial logitech code
+  No mouse clicking yet
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
 1.17.1 (2017-10-12)
 -------------------
 

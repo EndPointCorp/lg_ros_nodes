@@ -5,6 +5,12 @@ Changelog for package lg_proximity
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* 1.17.2
+* updated changeslogs for new release
+* Contributors: Will Plaut
+
 1.17.1 (2017-10-12)
 -------------------
 

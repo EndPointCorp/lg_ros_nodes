@@ -5,6 +5,13 @@ Changelog for package lg_mirror
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* smoothed up the logitech mouse and fixed touchscreen mapping issue
+* 1.17.2
+* updated changeslogs for new release
+* Contributors: Jacob Minshall, Will Plaut
+
 1.17.1 (2017-10-12)
 -------------------
 
