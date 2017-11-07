@@ -34,6 +34,7 @@ RUN \
     curl tmux git \
     xvfb x11-apps \
     x-window-system binutils \
+    pulseaudio \
     mesa-utils mesa-utils-extra \
     module-init-tools gdebi-core \
     lsb-core tar libfreeimage3 \
