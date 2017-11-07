@@ -1,4 +1,6 @@
-FROM ubuntu:trusty
+FROM ubuntu:xenial
+
+ENV DEBIAN_FRONTEND noninteractive
 
 # nvidia-docker hooks
 LABEL com.nvidia.volumes.needed="nvidia_driver"
@@ -10,7 +12,8 @@ ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 ENV RUN_USER galadmin
 ENV HOME /home/${RUN_USER}
 ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
-ENV ROS_DISTRO indigo
+ENV ROS_DISTRO kinetic
+ENV OS_VERSION xenial
 
 # entrypoint for setup.bash
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
@@ -19,7 +22,7 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 
 RUN \
   apt-get update -y && apt-get install -y ca-certificates wget && \
-  echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list && \
+  echo "deb http://packages.ros.org/ros/ubuntu $OS_VERSION main" > /etc/apt/sources.list.d/ros-latest.list && \
   echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
   echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 && \
