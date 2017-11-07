@@ -69,9 +69,6 @@ void RosEventRelay::HandleRouterMessage(const StringArrayPtr& msg) {
  * Otherwise, this method idempotently sets the state of this relay.
  */
 void RosEventRelay::OpenRoute_() {
-  if (routing_) {
-    return;
-  }
   try {
     mapper_.Map();
   } catch(ViewportMapperExecError& e) {
@@ -79,6 +76,10 @@ void RosEventRelay::OpenRoute_() {
     return;
   } catch(ViewportMapperStringError& e) {
     ROS_ERROR_STREAM("Mapping viewport string error: " << e.what());
+    return;
+  }
+
+  if (routing_) {
     return;
   }
   routing_ = true;

@@ -79,6 +79,8 @@ def main():
     feedback_pub = rospy.Publisher('/joy/set_feedback',
                                    JoyFeedbackArray, queue_size=10)
     imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=True)
+    mouse_timeout = int(rospy.get_param('~mouse_timeout', 10))
+    sleep_time = 0.01  # ooo magic, pretty
 
     mvp = MegaViewport(viewports, arc_width)
 
@@ -89,17 +91,25 @@ def main():
 
     x, y = 0, 0
     vp = 'center'
-    #for ev in dev.read_loop():
+
+    n = 0
     while not rospy.is_shutdown():
         try:
             ev = dev.read_one()
         except IOError:
-            rospy.sleep(0.1)
+            rospy.sleep(sleep_time)
+            n += 1
+            # if idle for long enough, reset position to center
+            if n >= mouse_timeout / sleep_time:
+                x = 0
+                y = 0
+                n = 0
             continue
+        n = 0
+
         ev_type = ev.type
         ev_code = ev.code
         ev_value = ev.value
-        print ev
 
         if ev_type == ecodes.EV_KEY:
             if ev_code == ecodes.KEY_INSERT and ev_value != 0:
@@ -124,9 +134,7 @@ def main():
 
         ang_x = math.radians(x / 80.0)
         ang_y = math.radians(y / 80.0)
-        print 'x: {:.4f} y: {:.4f}'.format(ang_x, ang_y)
         new_vp, vpx, vpy = mvp.orientation_to_coords(ang_x, ang_y)
-        print 'vp: {} x: {} y: {}'.format(new_vp, vpx, vpy)
 
         if vp != new_vp:
             routes_msg = StringArray(strings=[new_vp])
