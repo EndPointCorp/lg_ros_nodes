@@ -5,8 +5,8 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.17.4 (2017-11-10)
+-------------------
 * using local version of libs
 * Contributors: Jacob Minshall
 
