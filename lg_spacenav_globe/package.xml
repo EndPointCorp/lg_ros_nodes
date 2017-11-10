@@ -18,4 +18,5 @@
   <run_depend>message_runtime</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>roscpp</run_depend>
+  <test_depend>rostest</test_depend>
 </package>
