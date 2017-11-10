@@ -12,6 +12,9 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+
 1.17.3 (2017-11-07)
 -------------------
 * smoothed up the logitech mouse and fixed touchscreen mapping issue
