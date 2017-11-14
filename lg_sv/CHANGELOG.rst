@@ -5,8 +5,8 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.17.5 (2017-11-14)
+-------------------
 * changing these that no one uses...
 * Contributors: Jacob Minshall
 
