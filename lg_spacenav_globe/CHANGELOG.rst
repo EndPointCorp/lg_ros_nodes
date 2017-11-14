@@ -5,6 +5,12 @@ Changelog for package lg_spacenav_globe
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* Initial rostest for lg_spacenav_globe
+* Correct some errors in lg_spacenav_globe README
+* Contributors: Matt Vollrath
+
 1.17.4 (2017-11-10)
 -------------------
 
