@@ -12,6 +12,11 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+* sleep and wait for the device
+* Contributors: Jacob Minshall
+
 1.17.5 (2017-11-14)
 -------------------
 
