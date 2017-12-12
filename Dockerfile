@@ -53,24 +53,14 @@ RUN \
  && pip install --no-cache-dir python-coveralls
 
 # Install GE
-# Patch for google earth from amirpli to fix some bugs in google earth qt libs
-# Without this patch, google earth can suddenly crash without a helpful error message.
-# See https://productforums.google.com/forum/?fromgroups=#!category-topic/earth/linux/_h4t6SpY_II%5B1-25-false%5D
-# and Readme-file https://docs.google.com/file/d/0B2F__nkihfiNMDlaQVoxNVVlaUk/edit?pli=1 for details
-#WORKDIR /tmp
-#RUN  \
-#      wget -q https://dl.google.com/dl/earth/client/current/google-earth-stable_current_amd64.deb ;\
-#      gdebi -n google-earth-stable_current_amd64.deb ;\
-#      rm google-earth-stable_current_amd64.deb && \
-#      mkdir -p /opt/google/earth/free ;\
-#      touch /usr/bin/google-earth ;\
-#      cd /opt/google/earth ;\
-#      cp -a /opt/google/earth/free /opt/google/earth/free.newlibs ;\
-#      wget -q -P /opt/google/earth/free.newlibs \
-#        https://github.com/mviereck/dockerfile-x11docker-google-earth/releases/download/v0.3.0-alpha/ge7.1.1.1580-0.x86_64-new-qt-libs-debian7-ubuntu12.tar.xz ;\
-#      tar xvf /opt/google/earth/free.newlibs/ge7.1.1.1580-0.x86_64-new-qt-libs-debian7-ubuntu12.tar.xz ;\
-#      mv /usr/bin/google-earth /usr/bin/google-earth.old ;\
-#      ln -s /opt/google/earth/free.newlibs/googleearth /usr/bin/google-earth
+ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
+ENV EARTH_PKG_URL https://roscoe-assets.galaxy.endpoint.com:443/google-earth/google-earth-stable_${GOOGLE_EARTH_VERSION}.deb
+RUN mkdir -p /tmp/GE \
+ && cd /tmp/GE \
+ && wget $EARTH_PKG_URL \
+ && dpkg -i $( basename $EARTH_PKG_URL ) \
+ && rm $( basename $EARTH_PKG_URL ) \
+ && if [ -f "/opt/google/earth/free/libfreebl3.so" ]; then sed -i "s_/etc/passwd_/not/anywhr_g" "/opt/google/earth/free/libfreebl3.so"; fi
 
 # add non-root user for tests and production
 ENV RUN_USER galadmin
