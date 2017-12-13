@@ -7,6 +7,9 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+
 1.17.7 (2017-12-12)
 -------------------
 * removing un-needed flag
