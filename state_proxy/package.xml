@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>state_proxy</name>
-  <version>1.17.7</version>
+  <version>1.17.8</version>
   <description>The state_proxy package</description>
 
   <author email="jacob@endpoint.com">Jacob Minshall</author>
