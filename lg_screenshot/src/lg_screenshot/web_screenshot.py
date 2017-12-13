@@ -21,6 +21,7 @@ class WebScreenshot:
 
         self.user_agent = user_agent
         self.call_tmpl = [self.binary]
+        self.call_tmpl.extend(['--ignore-ssl-errors=true'])
         self.call_tmpl.extend([self.script])
         self.call_tmpl.extend(['--out base64'])
         if self.delay:
