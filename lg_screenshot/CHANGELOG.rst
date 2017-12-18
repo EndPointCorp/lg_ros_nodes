@@ -5,6 +5,9 @@ Changelog for package lg_sreenshot
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.17.8 (2017-12-13)
 -------------------
 * saving the world, one error ignored at a time
