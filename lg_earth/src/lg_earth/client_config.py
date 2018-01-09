@@ -32,6 +32,9 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         '-name', instance_name
     ])
 
+    no_crash_detect = rospy.get_param('~no_crash_detect', True)
+    if no_crash_detect:
+        args.append('--nocrashdetect')
     viewsync_send = rospy.get_param('~viewsync_send', False)
     viewsync_recv = not viewsync_send
     # default for sending should be different for receiving
