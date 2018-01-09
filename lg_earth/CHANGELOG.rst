@@ -5,6 +5,11 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* no crash detect flag for earth
+* Contributors: Will Plaut
+
 1.17.11 (2017-12-26)
 --------------------
 
