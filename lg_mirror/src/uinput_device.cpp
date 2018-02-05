@@ -249,6 +249,7 @@ bool UinputDevice::FloatPointer() const {
  * \param msg A message describing one or more evdev events.
  */
 void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
+  ROS_ERROR_STREAM("handling message..." << msg);
   if (fd_ < 0) {
     ROS_ERROR("Tried to handle an event message, but UinputDevice was not initialized");
     ros::shutdown();
@@ -296,7 +297,9 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
             ros::shutdown();
             return;
           }
-        }
+        } else {
+          ROS_ERROR_STREAM("ignoring message I guess?");
+      }
       }
     }
   }
@@ -315,6 +318,7 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
       }
     }
 
+    ROS_ERROR_STREAM("writing event? " << type << code << value);
     if (!WriteEvent_(type, code, value)) {
       ROS_ERROR("Error while writing an event to the device");
       ros::shutdown();
@@ -362,7 +366,7 @@ bool UinputDevice::WriteEvent_(__u16 type, __u16 code, __s32 value) {
     return false;
   }
 
-  ROS_DEBUG(
+  ROS_ERROR(
     "Wrote type: %d code: %d value: %d",
     ev.type, ev.code, ev.value
   );

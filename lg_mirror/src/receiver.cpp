@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
 
   n.param<std::string>(DEVICE_ID_PARAM, device_id, "default");
 
+  ROS_ERROR_STREAM("starting up device..." << device_id);
   device_info_service << "/lg_mirror/" << device_id << "/device_info";
   events_topic << "/lg_mirror/" << device_id << "/events";
   route_topic << "/lg_mirror/" << device_id << "/active_routes";

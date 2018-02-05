@@ -10,6 +10,7 @@ import subprocess
 from tempfile import mktemp
 
 import rospy
+import time
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JoyFeedback, JoyFeedbackArray
 from wiimote.msg import State
@@ -33,9 +34,9 @@ def clamp(val, lo, hi):
 def handle_device_info(req):
     res = EvdevDeviceInfoResponse()
     res.bustype = 3
-    res.types = [ecodes.EV_ABS, ecodes.EV_KEY]
+    res.types = [ecodes.EV_ABS, ecodes.EV_KEY, ecodes.EV_REL]
     res.abs_codes = [ecodes.ABS_X, ecodes.ABS_Y]
-    res.rel_codes = []
+    res.rel_codes = [ecodes.REL_HWHEEL, ecodes.REL_WHEEL, ecodes.REL_X, ecodes.REL_Y]
     res.key_codes = [ecodes.BTN_LEFT]
     res.abs_min = [0, 0]
     res.abs_max = [DEV_WIDTH, DEV_HEIGHT]
@@ -96,24 +97,101 @@ def main():
     vp = 'center'
 
     n = 0
-    while not rospy.is_shutdown():
-        try:
-            ev = dev.read_one()
-        except IOError:
-            rospy.sleep(sleep_time)
-            n += 1
+    _old_time = time.time() - 10
+    for ev in dev.read_loop():
+        if rospy.is_shutdown():
+            break
+        _now_time = time.time()
+        #try:
+        #    ev = dev.read_one()
+        #    if ev is None:
+        #        rospy.logerr("ev was none...")
+        #        continue
+        #except IOError:
             # if idle for long enough, reset position to center
-            if n >= mouse_timeout / sleep_time:
-                x = 0
-                y = 0
-                n = 0
-            continue
-        n = 0
+        if _now_time - _old_time > 10:
+            x = 0
+            y = 0
+            n = 0
+        _old_time = _now_time
 
         ev_type = ev.type
         ev_code = ev.code
         ev_value = ev.value
 
+        if ev_type == 2 and ev_code == 8:
+            rospy.logerr("this looks like a scroll...")
+
+        if ev_type == 1 and ev_code == 106:
+            ev_type = 2
+            ev_code = 8
+            
+            if ev_value == 0:
+                continue
+            #events_msg = EvdevEvents()
+            #events_msg.events.append(EvdevEvent(
+            #    type=ecodes.EV_REL,
+            #    code=ecodes.REL_WHEEL,
+            #    value=1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    type=ecodes.EV_REL,
+            #    code=ecodes.REL_WHEEL,
+            #    value=1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    type=ecodes.EV_REL,
+            #    code=ecodes.REL_WHEEL,
+            #    value=1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    type=ecodes.EV_REL,
+            #    code=ecodes.REL_WHEEL,
+            #    value=1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    type=0,
+            #    code=0,
+            #    value=0
+            #))
+            #events_pub.publish(events_msg)
+            #continue
+        elif ev_type == 1 and ev_code == 105:
+            ev_type = 2
+            ev_code = 8
+            if ev_value == 0:
+                continue
+            #events_msg = EvdevEvents()
+            #events_msg.events.append(EvdevEvent(
+            #    type=2,
+            #    code=ecodes.REL_WHEEL,
+            #    value=-1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    #type=ecodes.EV_REL,
+            #    type=3,
+            #    code=ecodes.REL_WHEEL,
+            #    value=-1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    #type=ecodes.EV_REL,
+            #    type=3,
+            #    code=ecodes.REL_WHEEL,
+            #    value=-1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    #type=ecodes.EV_REL,
+            #    type=3,
+            #    code=ecodes.REL_WHEEL,
+            #    value=-1
+            #))
+            #events_msg.events.append(EvdevEvent(
+            #    type=0,
+            #    code=0,
+            #    value=0
+            #))
+            #events_pub.publish(events_msg)
+            #continue
         if ev_type == ecodes.EV_KEY:
             if ev_code == ecodes.KEY_INSERT and ev_value != 0:
                 x = 0
@@ -146,6 +224,14 @@ def main():
 
         events_msg = EvdevEvents()
 
+        if ev_type == 2 and ev_code == 8:
+            rospy.logerr("appending message...")
+            events_msg.events.append(EvdevEvent(
+                type=ecodes.EV_REL,
+                code=ecodes.REL_HWHEEL,
+                value=ev_value
+            ))
+            rospy.logerr("appended message: %s" % events_msg)
         events_msg.events.append(EvdevEvent(
             type=ecodes.EV_ABS,
             code=ecodes.ABS_X,
@@ -157,6 +243,10 @@ def main():
             value=vpy * DEV_HEIGHT,
         ))
 
+        if ev_type == 2 and ev_code == 8:
+            events_msg.events.append(EvdevEvent(
+                type=0, code=0, value=0
+            ))
         events_pub.publish(events_msg)
 
 
