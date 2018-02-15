@@ -16,8 +16,11 @@ class VolumeControlMaster:
     def set_volume(self, volume):
         volume = self.clamp(volume)
         if volume == self.current_volume:
+            rospy.loginfo("VolumeControlMaster: No change to volume level")
             return
         self.current_volume = volume
+        rospy.loginfo(
+                "VolumeControlMaster: Setting volume on VolumeControlSlaves to {}%".format(volume))
         self.level_change_pub.publish(volume)
 
     def clamp(self, value, _min=0, _max=100):
@@ -39,9 +42,9 @@ class VolumeControlSlave:
         self.set_volume(msg.data)
 
     def set_volume(self, volume):
-        rospy.logerr("about to grab the lock...")
+        rospy.loginfo("about to grab the lock...")
         cmd = "pactl set-sink-volume {} {}%".format(self.sink, volume)
         with self._lock:
-            rospy.logerr("running command: {}".format(cmd))
+            rospy.loginfo("running command: {}".format(cmd))
             status, output = commands.getstatusoutput(cmd)
-            rospy.logerr("output {} status {}".format(output, status))
+            rospy.loginfo("output {} status {}".format(output, status))

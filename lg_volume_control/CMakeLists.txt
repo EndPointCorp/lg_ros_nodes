@@ -25,6 +25,8 @@ catkin_package(
 catkin_install_python(PROGRAMS
   scripts/volume_control_master.py
   scripts/volume_control_slave.py
+  scripts/volume_control_master
+  scripts/volume_control_slave
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
