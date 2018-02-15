@@ -5,6 +5,7 @@ from lg_volume_control.srv import Volume
 from lg_volume_control import VolumeControlMaster
 from std_msgs.msg import Int8
 
+
 def main():
     rospy.init_node('volume_control_master')
 

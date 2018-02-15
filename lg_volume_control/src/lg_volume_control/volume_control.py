@@ -4,6 +4,7 @@ import threading
 import rospy
 import commands
 
+
 class VolumeControlMaster:
     def __init__(self, level_change_pub, default_volume=50, scale=5):
         self.scale = scale
@@ -20,7 +21,7 @@ class VolumeControlMaster:
             return
         self.current_volume = volume
         rospy.loginfo(
-                "VolumeControlMaster: Setting volume on VolumeControlSlaves to {}%".format(volume))
+            "VolumeControlMaster: Setting volume on VolumeControlSlaves to {}%".format(volume))
         self.level_change_pub.publish(volume)
 
     def clamp(self, value, _min=0, _max=100):
@@ -32,6 +33,7 @@ class VolumeControlMaster:
 
     def show_volume(self, *args, **kwargs):
         return self.current_volume
+
 
 class VolumeControlSlave:
     def __init__(self, sink='0'):

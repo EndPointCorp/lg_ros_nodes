@@ -23,7 +23,6 @@ def main():
     rospy.spin()
 
 
-
 def grab_master_volume():
     try:
         master_node_volume = rospy.ServiceProxy('volume', Volume)
