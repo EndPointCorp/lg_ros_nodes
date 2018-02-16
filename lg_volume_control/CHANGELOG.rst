@@ -5,8 +5,8 @@ Changelog for package lg_volume_control
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.17.13 (2018-02-16)
+--------------------
 * pep8
 * volume: changes to logging
 * volume works
