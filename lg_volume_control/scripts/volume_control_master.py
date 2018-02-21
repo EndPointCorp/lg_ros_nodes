@@ -3,13 +3,13 @@
 import rospy
 from lg_volume_control.srv import Volume
 from lg_volume_control import VolumeControlMaster
-from std_msgs.msg import Int8
+from std_msgs.msg import Int8, UInt8
 
 
 def main():
     rospy.init_node('volume_control_master')
 
-    level_change = rospy.Publisher('/volume/level', Int8, latch=True, queue_size=1)
+    level_change = rospy.Publisher('/volume/level', UInt8, latch=True, queue_size=1)
     default_volume = rospy.get_param('~default_volume', 50)
 
     volume_controller = VolumeControlMaster(level_change, default_volume)
