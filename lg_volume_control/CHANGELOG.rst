@@ -5,8 +5,8 @@ Changelog for package lg_volume_control
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.17.14 (2018-02-21)
+--------------------
 * volume: use UInt8 for TS's sake
 * Contributors: Will Plaut
 
