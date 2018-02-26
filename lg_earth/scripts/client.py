@@ -43,9 +43,9 @@ def main():
         viewsync_port = viewsync.listen_port
     random_stagger = rospy.get_param('~staggered', False)
     if random_stagger:
-         random_sleep_length = randint(1, 10)
-         rospy.logerr("Random sleep length: {}".format(random_sleep_length))
-         sleep(random_sleep_length)
+        random_sleep_length = randint(1, 10)
+        rospy.logerr("Random sleep length: {}".format(random_sleep_length))
+        sleep(random_sleep_length)
 
     instance = '_earth_instance_' + rospy.get_name().strip('/')
     tmpdir = os.path.normpath(systmp() + '/' + instance)
@@ -57,9 +57,9 @@ def main():
     rospy.Subscriber(state_topic, ApplicationState,
                      client.earth_proc.handle_state_msg)
     if random_stagger:
-       make_soft_relaunch_callback(client._handle_staggered_soft_relaunch, groups=["earth"])
+        make_soft_relaunch_callback(client._handle_staggered_soft_relaunch, groups=["earth"])
     else:
-       make_soft_relaunch_callback(client._handle_soft_relaunch, groups=["earth"])
+        make_soft_relaunch_callback(client._handle_soft_relaunch, groups=["earth"])
     rospy.spin()
 
 
