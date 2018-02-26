@@ -264,17 +264,8 @@ class Client:
         """
         Clearing up logs is pretty important for soft relaunches
         """
-        rospy.logdebug('removing cache for google earth')
-        try:
-            # deleting out of OLDHOME because that's where the cache is stored
-            earth_dir = '%s/.googleearth' % os.environ['OLDHOME']
-            shutil.rmtree(earth_dir)
-            os.mkdir(earth_dir)
-        except Exception, e:
-            rospy.logwarn('found error while removing earth cache: %s, could be normal operation though' % e.message)
-        self._render_configs()
         random_sleep_stagger = randint(1,10)
         rospy.logerr("Sleep Stagger: {} seconds".format(random_sleep_stagger))
         sleep(random_sleep_stagger)
-        self.earth_proc.handle_soft_relaunch()
+        self._handle_soft_relaunch(msg)
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

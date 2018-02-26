@@ -43,7 +43,7 @@ def main():
         viewsync_port = viewsync.listen_port
     random_stagger = rospy.get_param('~staggered', False)
     if random_stagger:
-         random_sleep_length = randint(0, 10)
+         random_sleep_length = randint(1, 10)
          rospy.logerr("Random sleep length: {}".format(random_sleep_length))
          sleep(random_sleep_length)
 
