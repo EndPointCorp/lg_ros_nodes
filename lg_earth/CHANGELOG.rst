@@ -5,6 +5,13 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* pep8 those changes
+* code cleanup
+* staggered relaunch of earth
+* Contributors: Will Plaut
+
 1.17.14 (2018-02-21)
 --------------------
 
