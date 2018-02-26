@@ -5,6 +5,8 @@ import threading
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from tempfile import gettempdir as systmp
+from time import sleep
+from random import randint
 
 import rospy
 from lg_common.msg import ApplicationState, WindowGeometry
@@ -258,4 +260,21 @@ class Client:
         self._render_configs()
         self.earth_proc.handle_soft_relaunch()
 
+    def _handle_staggered_soft_relaunch(self, msg):
+        """
+        Clearing up logs is pretty important for soft relaunches
+        """
+        rospy.logdebug('removing cache for google earth')
+        try:
+            # deleting out of OLDHOME because that's where the cache is stored
+            earth_dir = '%s/.googleearth' % os.environ['OLDHOME']
+            shutil.rmtree(earth_dir)
+            os.mkdir(earth_dir)
+        except Exception, e:
+            rospy.logwarn('found error while removing earth cache: %s, could be normal operation though' % e.message)
+        self._render_configs()
+        random_sleep_stagger = randint(1,10)
+        rospy.logerr("Sleep Stagger: {} seconds".format(random_sleep_stagger))
+        sleep(random_sleep_stagger)
+        self.earth_proc.handle_soft_relaunch()
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
