@@ -27,7 +27,10 @@ DEFAULT_ARGS = [
     '--disable-touch-editing',
     '--v=1',
     '--enable-webgl',
-    '--ignore-gpu-blacklist'
+    '--ignore-gpu-blacklist',
+    '--touch-events=enabled',
+    '--disable-pinch',
+    '--overscroll-history-navigation=0'
 ]
 
 
