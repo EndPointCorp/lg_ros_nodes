@@ -5,8 +5,8 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.18.1 (2018-03-09)
+-------------------
 * add variable for MeasurementUnits
 * Contributors: Josh Ausborne
 
