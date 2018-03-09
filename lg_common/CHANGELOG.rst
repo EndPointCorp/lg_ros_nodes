@@ -7,6 +7,11 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* Add default flags for chrome to get touch propperly working with TS
+* Contributors: Dmitry Kiselev
+
 1.18.0 (2018-02-26)
 -------------------
 
