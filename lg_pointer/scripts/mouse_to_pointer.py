@@ -87,7 +87,7 @@ def main():
     rospy.Service(info_srv, EvdevDeviceInfo, handle_device_info)
 
     while not os.path.exists(device_path):
-        rospy.logwarn("No device %s found, sleeping")
+        rospy.logwarn("No device %s found, sleeping" % device_path)
         rospy.sleep(5)
     dev = evdev.InputDevice(device_path)
     dev.grab()
@@ -99,6 +99,8 @@ def main():
     while not rospy.is_shutdown():
         try:
             ev = dev.read_one()
+            if ev is None:
+                raise IOError
         except IOError:
             rospy.sleep(sleep_time)
             n += 1
