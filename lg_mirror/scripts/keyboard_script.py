@@ -16,12 +16,13 @@ class KeyboardThing:
         self.ui = evdev.UInput()
 
     def handle_event(self, msg):
-        if not self.active:
-            return
         for event in msg.events:
-            if event.type != 1:
+            if event.type == 3:
                 continue
-            self.ui.write(event.type, event.code, event.value)
+            if self.active or event.value == 0:  # always publishing key-ups hopefully this doesn't come back to haunt us because honestly it definitely could but thats not something im going to worry about now...
+                self.ui.write(event.type, event.code, event.value)
+
+        self.ui.syn()
 
     def handle_route_change(self, msg):
         self.current_routes = msg.strings
