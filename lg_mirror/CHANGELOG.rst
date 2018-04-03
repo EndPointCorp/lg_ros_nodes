@@ -5,6 +5,12 @@ Changelog for package lg_mirror
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* better working keyboard
+* fixing up logerrs
+* Contributors: Jacob Minshall
+
 1.18.2 (2018-04-02)
 -------------------
 * keyboard script and improvments for upgraded evdev

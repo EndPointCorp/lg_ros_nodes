@@ -5,6 +5,9 @@ Changelog for package spacenav_wrapper
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.18.2 (2018-04-02)
 -------------------
 

@@ -12,6 +12,9 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+
 1.18.2 (2018-04-02)
 -------------------
 * keyboard script and improvments for upgraded evdev
