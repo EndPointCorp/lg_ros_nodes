@@ -5,6 +5,11 @@ Changelog for package lg_mirror
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* using new keyboard event topic
+* Contributors: Jacob Minshall
+
 1.18.3 (2018-04-03)
 -------------------
 * better working keyboard
