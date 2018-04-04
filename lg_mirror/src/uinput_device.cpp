@@ -240,6 +240,15 @@ bool UinputDevice::FloatPointer() const {
 }
 
 /**
+ * replay last event on new screen
+ */
+void UinputDevice::ReplayLast(const lg_mirror::EvdevEvents::Ptr& _last_msg) {
+ ROS_ERROR("publishing last thing");
+ if (_last_msg != 0)
+   UinputDevice::HandleEventMessage(_last_msg);
+}
+
+/**
  * \brief Handles a ROS message containing a vector of events.
  *
  * Implicitly writes a SYN event after the incoming events.
@@ -254,6 +263,7 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
     ros::shutdown();
     return;
   }
+  last_msg = msg;
 
   std::size_t num_events = msg->events.size();
 

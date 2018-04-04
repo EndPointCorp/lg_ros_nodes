@@ -84,6 +84,7 @@ void RosEventRelay::OpenRoute_() {
   }
   routing_ = true;
   s_ = n_.subscribe(events_topic_, 10, &UinputDevice::HandleEventMessage, &device_);
+  device_.ReplayLast(device_.last_msg);
 }
 
 /**

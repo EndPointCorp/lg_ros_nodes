@@ -30,6 +30,8 @@ class UinputDevice {
     bool WaitForXinput();
     bool FloatPointer() const;
     void Zero();
+    lg_mirror::EvdevEvents::Ptr last_msg;
+    void ReplayLast(const lg_mirror::EvdevEvents::Ptr& _last_msg);
 
     void HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg);
 
