@@ -41,9 +41,9 @@ def main():
 
     kb = KeyboardThing(routes)
 
-    rospy.logdebug("subscribing to %s and %s with routes %s" % (event_topic + 'active_routes', event_topic + 'events', routes))
+    rospy.logdebug("subscribing to %s and %s with routes %s" % (event_topic + 'active_routes', event_topic + 'kbd_events', routes))
     rospy.Subscriber(event_topic + 'active_routes', StringArray, kb.handle_route_change)
-    rospy.Subscriber(event_topic + 'events', EvdevEvents, kb.handle_event)
+    rospy.Subscriber(event_topic + 'kbd_events', EvdevEvents, kb.handle_event)
 
     rospy.spin()
 
