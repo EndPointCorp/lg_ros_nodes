@@ -335,6 +335,7 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
  * \brief Zeroes the ABS position to clear the cursor.
  */
 void UinputDevice::Zero() {
+  return;
   WriteEvent_(EV_ABS, ABS_X, offscreen_x_);
   WriteEvent_(EV_ABS, ABS_Y, offscreen_y_);
   WriteEvent_(EV_SYN, SYN_REPORT, 0);
