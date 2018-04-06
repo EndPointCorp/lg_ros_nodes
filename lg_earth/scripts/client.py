@@ -13,6 +13,8 @@ from lg_common.msg import ApplicationState
 from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
 from lg_earth.srv import ViewsyncState
 from lg_common.helpers import run_with_influx_exception_handler
+from time import sleep
+from random import randint
 
 
 NODE_NAME = 'lg_earth'
@@ -39,6 +41,11 @@ def main():
     if rospy.get_param('~viewsync_send', False):
         viewsync = make_viewsync()
         viewsync_port = viewsync.listen_port
+    random_stagger = rospy.get_param('~staggered', False)
+    if random_stagger:
+        random_sleep_length = randint(1, 10)
+        rospy.logerr("Random sleep length: {}".format(random_sleep_length))
+        sleep(random_sleep_length)
 
     instance = '_earth_instance_' + rospy.get_name().strip('/')
     tmpdir = os.path.normpath(systmp() + '/' + instance)
@@ -49,8 +56,10 @@ def main():
 
     rospy.Subscriber(state_topic, ApplicationState,
                      client.earth_proc.handle_state_msg)
-    make_soft_relaunch_callback(client._handle_soft_relaunch, groups=["earth"])
-
+    if random_stagger:
+        make_soft_relaunch_callback(client._handle_staggered_soft_relaunch, groups=["earth"])
+    else:
+        make_soft_relaunch_callback(client._handle_soft_relaunch, groups=["earth"])
     rospy.spin()
 
 

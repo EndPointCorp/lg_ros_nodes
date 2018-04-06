@@ -16,7 +16,6 @@ DEFAULT_ARGS = [
     '--no-sandbox',
     '--test-type',  # only needed to ignore --no-sandbox's warning message
     '--allow-file-access-from-files',
-    '--ignore-certificate-errors',
     '--disable-default-apps',
     '--disable-java',
     '--disable-session-storage',
@@ -28,7 +27,10 @@ DEFAULT_ARGS = [
     '--disable-touch-editing',
     '--v=1',
     '--enable-webgl',
-    '--ignore-gpu-blacklist'
+    '--ignore-gpu-blacklist',
+    '--touch-events=enabled',
+    '--disable-pinch',
+    '--overscroll-history-navigation=0'
 ]
 
 

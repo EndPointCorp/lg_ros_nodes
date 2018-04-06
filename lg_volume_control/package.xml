@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_volume_control</name>
-  <version>1.17.1</version>
+  <version>1.18.4</version>
   <description>The lg_volume_control package</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -14,6 +14,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>
+  <build_depend>message_generation</build_depend>
+  <run_depend>message_runtime</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
   <test_depend>rostest</test_depend>

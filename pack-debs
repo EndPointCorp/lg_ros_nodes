@@ -6,7 +6,11 @@ DIR=$( dirname "${BASH_SOURCE[0]}" )
 cd $DIR
 DIR=`pwd`
 
-BUILD=$DIR/lg_builder/scripts/lg-ros-build
+BUILD_ROS_DISTRO="${BUILD_ROS_DISTRO:-indigo}"
+BUILD_OS="${BUILD_OS:-ubuntu}"
+BUILD_OS_VERSION="${BUILD_OS_VERSION:-trusty}"
+
+BUILD="$DIR/lg_builder/scripts/lg-ros-build --ros_distro=${BUILD_ROS_DISTRO} --os=${BUILD_OS} --os_version=${BUILD_OS_VERSION}"
 SRCDIR=$DIR/catkin/src
 DEBDIR=$DIR/catkin/debs
 
@@ -17,16 +21,16 @@ cd $DEBDIR
 sudo rosdep init || /bin/true
 rosdep update
 sudo rosdep install -y --from-paths $SRCDIR --ignore-src \
-    --rosdistro=indigo --os=ubuntu:trusty
+    --rosdistro="${BUILD_ROS_DISTRO}" --os="${BUILD_OS}:${BUILD_OS_VERSION}"
 
 if [ -e $SRCDIR/appctl ]; then
     $BUILD $SRCDIR/appctl
-    sudo dpkg --force-overwrite -i ros-indigo-appctl_*.deb
+    sudo dpkg --force-overwrite -i ros-${BUILD_ROS_DISTRO}-appctl_*${BUILD_OS_VERSION}_*.deb
 fi
 $BUILD $SRCDIR/interactivespaces_msgs
-sudo dpkg --force-overwrite -i ros-indigo-interactivespaces-msgs_*.deb
+sudo dpkg --force-overwrite -i ros-${BUILD_ROS_DISTRO}-interactivespaces-msgs_*${BUILD_OS_VERSION}_*.deb
 $BUILD $SRCDIR/lg_common
-sudo dpkg -i ros-indigo-lg-common_*.deb
+sudo dpkg -i ros-${BUILD_ROS_DISTRO}-lg-common_*${BUILD_OS_VERSION}_*.deb
 $BUILD $SRCDIR/lg_activity
 $BUILD $SRCDIR/lg_attract_loop
 $BUILD $SRCDIR/lg_builder

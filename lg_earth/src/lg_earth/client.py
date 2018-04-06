@@ -5,6 +5,8 @@ import threading
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from tempfile import gettempdir as systmp
+from time import sleep
+from random import randint
 
 import rospy
 from lg_common.msg import ApplicationState, WindowGeometry
@@ -266,4 +268,12 @@ class Client:
         if msg is not None:
             self.earth_proc.handle_soft_relaunch()
 
+    def _handle_staggered_soft_relaunch(self, msg):
+        """
+        Clearing up logs is pretty important for soft relaunches
+        """
+        random_sleep_stagger = randint(1, 10)
+        rospy.logerr("Sleep Stagger: {} seconds".format(random_sleep_stagger))
+        sleep(random_sleep_stagger)
+        self._handle_soft_relaunch(msg)
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

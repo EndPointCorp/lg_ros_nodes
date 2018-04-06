@@ -1,0 +1,5 @@
+<launch>
+  <node name="lg_spacenav_globe" pkg="lg_spacenav_globe" type="lg_spacenav_globe">
+  </node>
+  <test test-name="test_lg_spacenav_globe" pkg="lg_spacenav_globe" type="test_lg_spacenav_globe.py" />
+</launch>

@@ -162,6 +162,21 @@ git commit -am "updated changelogs for new release"
 ```shell
 $ catkin_prepare_release
 ```
+NOTE, catkin_prepare_relase ight be a bit broken, so patch
+/opt/ros/indigo/lib/python2.7/dist-packages/catkin/package_version.py with the below
+```diff
+@@ -127,8 +127,8 @@ def update_changelog_sections(changelogs, new_version):
+         new_changelog_data[changelog_path] = data
+ 
+     for changelog_path, data in new_changelog_data.items():
+-        with open(changelog_path, 'w') as f:
+-            f.write(data)
++        with open(changelog_path, 'wb') as f:
++            f.write(data.encode('utf-8'))
+ 
+ 
+ def rename_section(data, old_label, new_label):
+```
 
 - remove the `CATKIN_IGNORE` file, otherwise e.g. `catkin_make` will
 ignore packges to compile ...
@@ -172,3 +187,5 @@ ignore packges to compile ...
   Valid values are from 0 to 3: INFO = 0, WARNING = 1, LOG_ERROR = 2,
   LOG_FATAL = 3. This is **not** rospy log level but an argument passed
   to applications managed by appctl
+
+bump for final reason?...

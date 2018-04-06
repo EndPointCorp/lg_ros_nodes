@@ -3,15 +3,30 @@ project(lg_volume_control)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  message_generation
 )
 
 catkin_python_setup()
 
-catkin_package()
+add_service_files(
+  FILES
+  Volume.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+)
+
+
+catkin_package(
+  CATKIN_DEPENDS rospy message_runtime
+)
 
 catkin_install_python(PROGRAMS
-  scripts/volume_control.py
-  scripts/volume_control
+  scripts/volume_control_master.py
+  scripts/volume_control_slave.py
+  scripts/volume_control_master
+  scripts/volume_control_slave
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

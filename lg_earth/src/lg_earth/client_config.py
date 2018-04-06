@@ -32,6 +32,9 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         '-name', instance_name
     ])
 
+    no_crash_detect = rospy.get_param('~no_crash_detect', True)
+    if no_crash_detect:
+        args.append('--nocrashdetect')
     viewsync_send = rospy.get_param('~viewsync_send', False)
     viewsync_recv = not viewsync_send
     # default for sending should be different for receiving
@@ -187,6 +190,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     }
 
     use_3d_imagery = rospy.get_param('~use_3d_imagery', True)
+    measurement_units = rospy.get_param('~measurement_units', 2)
     anisotropic_filtering = rospy.get_param('~anisotropic_filtering', 2)
     high_quality_terrain = rospy.get_param('~high_quality_terrain', True)
     texture_compression = rospy.get_param('~texture_compression', True)
@@ -204,7 +208,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         'GridReference': 1,
         'HighQualityTerrain': high_quality_terrain,
         'IconSize': 1,
-        'MeasurementUnits': 2,
+        'MeasurementUnits': measurement_units,
         'OverviewSize': 34,
         'OverviewZoom': 99,
         'PrimaryFontVersion3Family': 'Arial',
