@@ -28,7 +28,11 @@ function init() {
 
   vertFov = getConfig('fov', 75) * 1.0;
   aspectRatio = window.innerWidth / window.innerHeight;
-  yawRads = aspectRatio * toRad(vertFov * getConfig('yawOffset', 0));
+
+  var vertFovRads = toRad(vertFov);
+  var horizFovRads = 2.0 * Math.atan(aspectRatio * Math.tan(vertFovRads / 2.0));
+
+  yawRads = horizFovRads * getConfig('yawOffset', 0);
   pitchRads = toRad(getConfig('pitchOffset', 0) * 1.0);
   rollRads = toRad(getConfig('rollOffset', 0) * 1.0);
   isLeader = getConfig('leader', 'false').toLowerCase() == "true";
@@ -85,6 +89,10 @@ function animate(nowMsec) {
 
 function toRad(deg) {
   return THREE.Math.degToRad(deg);
+}
+
+function toDeg(rad) {
+  return THREE.Math.radToDeg(rad);
 }
 
 window.onload = panoRunner;
