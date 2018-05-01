@@ -18,12 +18,10 @@ class KeyboardThing:
 
     def handle_event(self, msg):
         for event in msg.events:
-            rospy.logerr("handling button {}".format(event))
             if event.type == 3:
                 continue
             if self.active or event.value == 0:  # always publishing key-ups hopefully this doesn't come back to haunt us because honestly it definitely could but thats not something im going to worry about now...
                 if event.code == self.double_click and event.value == 1:
-                    rospy.logerr("foo ZZZ")
                     self.ui.write(1,272,1)
                     self.ui.write(1,272,0)
                     self.ui.write(1,272,1)
