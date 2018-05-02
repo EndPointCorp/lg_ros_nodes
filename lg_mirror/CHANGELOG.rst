@@ -5,8 +5,8 @@ Changelog for package lg_mirror
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.18.5 (2018-05-02)
+-------------------
 * removing logs
 * killing self when unable to find xinput device
 * double clicks
