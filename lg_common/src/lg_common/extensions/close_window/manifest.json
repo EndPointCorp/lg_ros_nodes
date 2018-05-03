@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+
+    "name":           "close_window",
+    "version":        "0.1",
+    "description":    "Closes the browser window on page click",
+
+    "background": {
+        "scripts": ["background.js"]
+    },
+
+    "permissions": [
+        "tabs"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["click-listener.js"],
+            "run_at": "document_end"
+        }
+    ]
+
+}
