@@ -7,6 +7,11 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* Add close window extension
+* Contributors: Dmitry Kiselev
+
 1.18.5 (2018-05-02)
 -------------------
 
