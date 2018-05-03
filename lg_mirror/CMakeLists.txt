@@ -121,6 +121,7 @@ catkin_install_python(PROGRAMS
   scripts/capture_webcam_node
   scripts/playback_node
   scripts/touch_router_node
+  scripts/keyboard_script.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

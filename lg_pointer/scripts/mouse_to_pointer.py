@@ -69,10 +69,13 @@ def main():
     arc_width = float(rospy.get_param('~arc_width', math.pi / 2))
 
     events_topic = '/lg_mirror/{}/events'.format(device_id)
+    kbd_events_topic = '/lg_mirror/{}/kbd_events'.format(device_id)
     routes_topic = '/lg_mirror/{}/active_routes'.format(device_id)
     info_srv = '/lg_mirror/{}/device_info'.format(device_id)
 
     events_pub = rospy.Publisher(events_topic,
+                                 EvdevEvents, queue_size=10)
+    kbd_events_pub = rospy.Publisher(kbd_events_topic,
                                  EvdevEvents, queue_size=10)
     routes_pub = rospy.Publisher(routes_topic,
                                  StringArray, queue_size=10)
@@ -87,7 +90,7 @@ def main():
     rospy.Service(info_srv, EvdevDeviceInfo, handle_device_info)
 
     while not os.path.exists(device_path):
-        rospy.logwarn("No device %s found, sleeping")
+        rospy.logwarn("No device %s found, sleeping" % device_path)
         rospy.sleep(5)
     dev = evdev.InputDevice(device_path)
     dev.grab()
@@ -99,6 +102,8 @@ def main():
     while not rospy.is_shutdown():
         try:
             ev = dev.read_one()
+            if ev is None:
+                raise IOError
         except IOError:
             rospy.sleep(sleep_time)
             n += 1
@@ -125,7 +130,7 @@ def main():
                 code=ev_code,
                 value=ev_value
             ))
-            events_pub.publish(events_msg)
+            kbd_events_pub.publish(events_msg)
             continue
         elif ev_type == ecodes.EV_REL:
             if ev_code == ecodes.REL_X:

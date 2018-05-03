@@ -205,14 +205,14 @@ void UinputDevice::EnableCode_(int fd, int codeBits, int code) {
 bool UinputDevice::WaitForXinput() {
   using util::exec;
 
-  const unsigned int MAX_INTERVAL = 1000000;// usec
+  const unsigned int MAX_INTERVAL = 999999;// usec
   unsigned int interval = 10000; // usec
 
   std::ostringstream cmd;
   cmd << "xinput query-state '" << device_name_ << "'";
 
   while (true) {
-    usleep(interval);
+    usleep(std::min(interval, MAX_INTERVAL));
 
     if (!ros::ok()) {
       return false;
@@ -223,7 +223,11 @@ bool UinputDevice::WaitForXinput() {
       return true;
     }
 
-    interval = std::max(interval * 2, MAX_INTERVAL);
+    interval *= 2;
+    if (interval > (MAX_INTERVAL*5)) {
+      ROS_ERROR("Couldn't find device after many attempts... shutting down");
+      ros::shutdown();
+    }
   }
 }
 
