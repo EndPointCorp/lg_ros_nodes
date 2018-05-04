@@ -11,6 +11,7 @@ d = generate_distutils_setup(
             'extensions/ros_window_ready/*',
             'extensions/monitor_page_urls/*',
             'extensions/current_url/*',
+            'extensions/close_window/*',
             'extensions/ros_window_ready/*/*',
             'extensions/monitor_page_urls/*/*',
             'extensions/current_url/*/*'
