@@ -7,8 +7,8 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
-Forthcoming
------------
+1.18.8 (2018-05-07)
+-------------------
 * Hide adhoc browser overlay via ros
 * Contributors: Dmitry Kiselev
 
