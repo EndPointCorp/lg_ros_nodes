@@ -352,6 +352,12 @@ class AdhocBrowserPool():
 
         return True
 
+    def minimize_browsers(self, ids):
+        """
+        For now, just hide the browserts
+        """
+        self._hide_browsers_ids(ids)
+
     def _hide_browsers_ids(self, ids):
         """
         Accepts a list of browser pool ids to hide

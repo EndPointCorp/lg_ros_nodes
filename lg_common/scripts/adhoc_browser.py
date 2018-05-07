@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+import re
 import rospy
+from std_msgs.msg import String
 from lg_common import AdhocBrowserPool
 from lg_common.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
@@ -82,6 +84,19 @@ def main():
     wait_for_pub_sub_connections(actors)
 
     handle_initial_state(adhocbrowser_director_bridge.translate_director)
+
+    """
+    Initialize overlay hiding listener
+    """
+    def getBrowserIds(msg):
+        s = msg.data
+        if '[' in s and ']' in s:
+            ids = [sp for sp in re.split('\[\]\, ', s) if len(sp) > 0]
+            adhocbrowser_pool.minimize_browsers(ids)
+        else:
+            adhocbrowser_pool.minimize_browsers([s])
+
+    rospy.Subscriber('/director/minimize', String, getBrowserIds)
 
     """
     Spin FTW

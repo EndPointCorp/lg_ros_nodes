@@ -11,10 +11,11 @@ d = generate_distutils_setup(
             'extensions/ros_window_ready/*',
             'extensions/monitor_page_urls/*',
             'extensions/current_url/*',
-            'extensions/close_window/*',
+            'extensions/minimize_adhoc_browser/*',
             'extensions/ros_window_ready/*/*',
             'extensions/monitor_page_urls/*/*',
-            'extensions/current_url/*/*'
+            'extensions/current_url/*/*',
+            'extensions/minimize_adhoc_browser/*/*'
         ]
     },
     scripts=['bin/lg-code-to-command'],

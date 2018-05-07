@@ -1,16 +1,21 @@
 {
     "manifest_version": 2,
 
-    "name":           "close_window",
+    "name":           "minimize_adhoc_browser",
     "version":        "0.1",
     "description":    "Closes the browser window on page click",
 
     "background": {
-        "scripts": ["background.js"]
+        "scripts": [
+            "lib/eventemitter2.min.js",
+            "lib/roslib.min.js",
+            "lib/rosurl.js",
+            "background.js"
+        ]
     },
 
     "permissions": [
-        "tabs"
+        "webNavigation", "<all_urls>", "tabs", "history"
     ],
 
     "content_scripts": [
