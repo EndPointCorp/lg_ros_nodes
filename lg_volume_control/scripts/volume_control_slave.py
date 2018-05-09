@@ -4,7 +4,7 @@ import sys
 import rospy
 from lg_volume_control import VolumeControlSlave
 from lg_volume_control.srv import Volume
-from std_msgs.msg import UInt8
+from std_msgs.msg import Int8
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     volume_slave = VolumeControlSlave(audio_sink)
     volume_slave.set_volume(volume_to_set)
 
-    rospy.Subscriber('/volume/level', UInt8, volume_slave.set_volume_topic_handler)
+    rospy.Subscriber('/volume/level', Int8, volume_slave.set_volume_topic_handler)
 
     rospy.spin()
 
