@@ -297,7 +297,7 @@ Forthcoming
 ------------------
 * fixing the director state setter
 * now ignoring stop presentations scene
-* Made managed adhoc browser' tests' setUp and tearDown methods great a… (`#319 <https://github.com/endpointcorp/lg_ros_nodes/issues/319>`_)
+* Made managed adhoc browser' tests' setUp and tearDown methods great a (`#319 <https://github.com/endpointcorp/lg_ros_nodes/issues/319>`_)
   * Made managed adhoc browser' tests' setUp and tearDown methods great again
   * Probably fixed lg_stats tests
   * Made all ros nodes voluntarily submit exceptions to influx
