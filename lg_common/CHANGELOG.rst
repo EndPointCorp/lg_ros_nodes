@@ -919,7 +919,7 @@ Forthcoming
 1.3.21 (2016-08-03)
 -------------------
 * Add last_uscs service to lg_common
-* Contributors: Szymon Lipiński
+* Contributors: Szymon Lipinski
 
 1.3.20 (2016-07-29)
 -------------------
