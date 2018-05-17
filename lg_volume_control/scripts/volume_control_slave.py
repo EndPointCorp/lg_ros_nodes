@@ -13,7 +13,7 @@ def main():
     rospy.wait_for_service('volume')
     volume_to_set = grab_master_volume()
 
-    audio_sink = rospy.get_param('~default_sink', 0)
+    audio_sink = rospy.get_param('~default_sink', "@DEFAULT_SINK@")
 
     volume_slave = VolumeControlSlave(audio_sink)
     volume_slave.set_volume(volume_to_set)
