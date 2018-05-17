@@ -5,8 +5,8 @@ Changelog for package lg_volume_control
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.18.10 (2018-05-17)
+--------------------
 * fix default sink
 * Contributors: Jacob Minshall
 
