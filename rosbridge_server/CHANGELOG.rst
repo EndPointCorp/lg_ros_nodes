@@ -5,6 +5,9 @@ Changelog for package rosbridge_server
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.18.10 (2018-05-17)
 --------------------
 

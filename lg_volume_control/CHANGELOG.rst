@@ -5,6 +5,12 @@ Changelog for package lg_volume_control
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* Revert "using ints to make live easier"
+  This reverts commit c000d807e360d3712c2e0292bcd125eb8db429e6.
+* Contributors: Galaxy Admin
+
 1.18.10 (2018-05-17)
 --------------------
 * fix default sink
