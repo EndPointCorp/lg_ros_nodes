@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_wireless_devices</name>
-  <version>1.18.10</version>
+  <version>1.18.11</version>
   <description>The wireless_devices package</description>
 
   <author email="jacob@endpoint.com">Jacob Minshall</author>
