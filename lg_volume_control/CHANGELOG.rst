@@ -5,6 +5,9 @@ Changelog for package lg_volume_control
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.18.11 (2018-05-22)
 --------------------
 * Revert "using ints to make live easier"

@@ -12,6 +12,11 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+* fix up spinning earth
+* Contributors: Matt Vollrath
+
 1.18.11 (2018-05-22)
 --------------------
 
