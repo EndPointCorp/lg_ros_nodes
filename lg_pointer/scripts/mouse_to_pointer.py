@@ -36,7 +36,7 @@ def handle_device_info(req):
     res.types = [ecodes.EV_ABS, ecodes.EV_KEY]
     res.abs_codes = [ecodes.ABS_X, ecodes.ABS_Y]
     res.rel_codes = []
-    res.key_codes = [ecodes.BTN_LEFT]
+    res.key_codes = [ecodes.BTN_TOUCH]
     res.abs_min = [0, 0]
     res.abs_max = [DEV_WIDTH, DEV_HEIGHT]
     return res
