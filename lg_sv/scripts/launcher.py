@@ -40,6 +40,7 @@ def main():
     zoom = str(rospy.get_param('~zoom', 'false')).lower()
     initial_zoom = rospy.get_param('~initial_zoom', 3)
     kiosk = rospy.get_param('~kiosk', True)
+    map_api_key = rospy.get_param('~map_api_key', None)
 
     # put parameters into one big url
     url = add_url_params(url,
@@ -57,6 +58,9 @@ def main():
                          rosbridgeHost=rosbridge_host,
                          rosbridgePort=rosbridge_port,
                          rosbridgeSecure=rosbridge_secure)
+
+    if map_api_key:
+        url = add_url_params(url, map_api_key=map_api_key)
 
     # check if server is already there
     host = discover_host_from_url(url)

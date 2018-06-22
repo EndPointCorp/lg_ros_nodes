@@ -4,7 +4,7 @@
 // <script src="js/main.js"></script>
 
 (function() {
-    var map_key = getParameterByName('map_key', String, '');
+    var map_key = getParameterByName('map_api_key', String, '');
     var src = 'http://maps.googleapis.com/maps/api/js?key=' + map_key;
 
     load(src, function() {
