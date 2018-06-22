@@ -5,8 +5,8 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.18.13 (2018-06-22)
+--------------------
 * Log map api key
 * Add map_api_key to launcher script
 * Load google maps API dynamically
