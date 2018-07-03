@@ -134,6 +134,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         'allowUnsafeBalloons': False,
         'AlwaysUseExternalBrowser': True,
         'buildingHighlight': False,
+        'clientSubType': 'endpoint-lg',
         'CachePath': cache_path,
         'ControllerEnabled': True,
         'ControllerMode': 2,
