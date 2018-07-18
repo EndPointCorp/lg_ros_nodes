@@ -5,8 +5,8 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.18.14 (2018-07-18)
+--------------------
 * Earth_config: Add clientSubType
 * Contributors: Will Plaut
 
