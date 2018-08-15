@@ -82,8 +82,12 @@ def main():
     state = ApplicationState.STOPPED
     managed_browser.set_state(state)
 
+    def state_proxy(msg):
+        if not msg.state == ApplicationState.VISIBLE:
+            managed_browser.set_state(ApplicationState.HIDDEN)
+
     # listen to state messages
-    rospy.Subscriber('/%s/state' % server_type, ApplicationState, managed_browser.handle_state_msg)
+    rospy.Subscriber('/%s/state' % server_type, ApplicationState, state_proxy)
     make_soft_relaunch_callback(managed_browser.handle_soft_relaunch, groups=['streetview'])
 
     rospy.spin()
