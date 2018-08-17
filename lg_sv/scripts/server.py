@@ -103,7 +103,7 @@ def main():
             return
         if not has_asset:
             rospy.loginfo('hiding self')
-            visibility_publisher.publish(ApplicationState(state='STOPPED'))
+            visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         if scene.get('slug', '') == 'auto_generated_sv_scene':
             rospy.loginfo("Ignoring my own generated message")
@@ -122,7 +122,7 @@ def main():
             elif server_type == 'panoviewer' or server_type == 'panovideo':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 return
-            visibility_publisher.publish(ApplicationState(state='STOPPED'))
+            visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
 
         if server_type == 'streetview' or server_type == 'streetview_old':
