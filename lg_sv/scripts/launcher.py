@@ -85,6 +85,8 @@ def main():
     def state_proxy(msg):
         if not msg.state == ApplicationState.VISIBLE:
             managed_browser.set_state(ApplicationState.HIDDEN)
+        else:
+            managed_browser.set_state(ApplicationState.VISIBLE)
 
     # listen to state messages
     rospy.Subscriber('/%s/state' % server_type, ApplicationState, state_proxy)
