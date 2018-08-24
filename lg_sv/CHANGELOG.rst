@@ -5,8 +5,8 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.18.15 (2018-08-24)
+--------------------
 * Hide Street View Windows instead of closing.
 * Don't kill old browser for SV
 * Contributors: Adam Vollrath, Dmitry Kiselev

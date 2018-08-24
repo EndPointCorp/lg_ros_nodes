@@ -7,8 +7,8 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
-Forthcoming
------------
+1.18.15 (2018-08-24)
+--------------------
 
 1.18.14 (2018-07-18)
 --------------------
