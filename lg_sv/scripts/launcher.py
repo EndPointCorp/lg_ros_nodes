@@ -40,7 +40,7 @@ def main():
     zoom = str(rospy.get_param('~zoom', 'false')).lower()
     initial_zoom = rospy.get_param('~initial_zoom', 3)
     kiosk = rospy.get_param('~kiosk', True)
-    map_api_key = rospy.get_param('~map_api_key', None)
+    map_api_key = rospy.get_param('/google/maps_api_key', None)
 
     # put parameters into one big url
     url = add_url_params(url,
