@@ -5,6 +5,9 @@ Changelog for package rosbridge_library
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.18.15 (2018-08-24)
 --------------------
 
