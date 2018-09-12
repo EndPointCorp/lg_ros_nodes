@@ -5,8 +5,8 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.18.16 (2018-09-12)
+--------------------
 * Use new global ROS param from chef node definition.
 * Contributors: Adam Vollrath
 
