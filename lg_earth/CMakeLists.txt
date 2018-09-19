@@ -27,6 +27,8 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
+  scripts/add_kml.py
+  scripts/add_kml
   scripts/client
   scripts/client.py
   scripts/query
