@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from std_msgs.msg import String
 from lg_common.srv import USCSMessage
 from interactivespaces_msgs.msg import GenericMessage
 
@@ -9,6 +10,7 @@ import threading
 import tempfile
 import rospy
 import json
+import copy
 import os
 
 DEFAULT_VIEWPORTS = ['left_three', 'left_two', 'left_one', 'center',
@@ -77,7 +79,7 @@ class KMLAdder():
             # we add one and give it our viewport
             if flag is False:
                 print('appending to viewport {}'.format(viewport))
-                scene['windows'].append(DEFAULT_EARTH_INSTANCE)
+                scene['windows'].append(copy.deepcopy(DEFAULT_EARTH_INSTANCE))
                 scene['windows'][-1]['presentation_viewport'] = viewport
 
     def shutdown(self):
@@ -93,6 +95,8 @@ def main():
     port = rospy.get_param('~port', 18111)
 
     k = KMLAdder(uscs_service, director_pub, port)
+
+    rospy.Subscriber('/lg_earth/add_kml', String, k.handle_kml)
 
     rospy.on_shutdown(k.shutdown)
     rospy.spin()
