@@ -27,7 +27,7 @@ DEFAULT_EARTH_INSTANCE = {u'activity': u'earth',
 
 
 class KMLAdder():
-    def __init__(self, uscs_service, director_pub, port, viewports=None):
+    def __init__(self, uscs_service, director_pub, port, hostname='localhost', viewports=None):
         self.serve_dir = tempfile.mktemp()
         self.uscs_service = uscs_service
         self.director_pub = director_pub
@@ -53,7 +53,7 @@ class KMLAdder():
         for window in current_scene['windows']:
             if window['activity'] != 'earth':
                 continue
-            window['assets'].append('http://localhost:{}/{}'.format(self.port, os.path.basename(filename)))
+            window['assets'].append('http://{}:{}/{}'.format(self.hostname, self.port, os.path.basename(filename)))
             print 'adding ("http://localhost:{}/{}" to viewport {}'.format(self.port, os.path.basename(filename), window['presentation_viewport'])
         new_msg = GenericMessage()
         new_msg.type = 'json'
@@ -92,9 +92,10 @@ def main():
     director_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
     uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
 
+    hostname = rospy.get_param('~hostname', 'localhost')
     port = rospy.get_param('~port', 18111)
 
-    k = KMLAdder(uscs_service, director_pub, port)
+    k = KMLAdder(uscs_service, director_pub, port, hostname)
 
     rospy.Subscriber('/lg_earth/add_kml', String, k.handle_kml)
 
