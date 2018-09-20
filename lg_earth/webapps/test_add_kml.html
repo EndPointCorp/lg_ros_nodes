@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<!-- grabbing these and storing locally would probably be better, but leaving like this for the example -->
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+
+  var ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+  // Publishing a Topic
+  // ------------------
+  var addKml = new ROSLIB.Topic({
+    ros: ros,
+    name: '/lg_earth/add_kml',
+    messageType: 'std_msgs/String'
+  });
+
+  var doAddKml = function() {
+    var kml = document.forms[0].kml.value;
+    var msg = new ROSLIB.Message({
+      data: kml
+    });
+
+    addKml.publish(msg);
+  };
+</script>
+</head>
+
+<body>
+  <form onsubmit="doAddKml(); return false">
+  Enter kml: <input id="kml" type="text" size="20">
+  <input type="submit">
+</body>
+</html>
