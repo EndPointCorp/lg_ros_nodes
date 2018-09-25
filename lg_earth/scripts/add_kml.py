@@ -31,6 +31,7 @@ class KMLAdder():
         self.serve_dir = tempfile.mktemp()
         self.uscs_service = uscs_service
         self.director_pub = director_pub
+        self.hostname = hostname
         self.viewports = viewports
         if self.viewports is None:
             self.viewports = DEFAULT_VIEWPORTS
