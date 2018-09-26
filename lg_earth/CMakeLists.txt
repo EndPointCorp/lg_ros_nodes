@@ -27,6 +27,8 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
+  scripts/add_kml.py
+  scripts/add_kml
   scripts/client
   scripts/client.py
   scripts/query
@@ -40,6 +42,11 @@ catkin_install_python(PROGRAMS
   scripts/planet_changer
   scripts/planet_changer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(
+  DIRECTORY webapps/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
 )
 
 if (CATKIN_ENABLE_TESTING)
