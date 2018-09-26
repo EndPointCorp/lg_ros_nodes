@@ -15,15 +15,17 @@ import os
 
 DEFAULT_VIEWPORTS = ['left_three', 'left_two', 'left_one', 'center',
                      'right_one', 'right_two', 'right_three']
-DEFAULT_EARTH_INSTANCE = {u'activity': u'earth',
-   u'activity_config': {},
-   u'assets': [],
-   u'height': 1920,
-   u'presentation_viewport': u'CHANGE_ME',
-   u'slug': -1875729098,
-   u'width': 1080,
-   u'x_coord': 0,
-   u'y_coord': 0}
+DEFAULT_EARTH_INSTANCE = {
+    u'activity': u'earth',
+    u'activity_config': {},
+    u'assets': [],
+    u'height': 1920,
+    u'presentation_viewport': u'CHANGE_ME',
+    u'slug': -1875729098,
+    u'width': 1080,
+    u'x_coord': 0,
+    u'y_coord': 0
+}
 
 
 class KMLAdder():
@@ -55,7 +57,6 @@ class KMLAdder():
             if window['activity'] != 'earth':
                 continue
             window['assets'].append('http://{}:{}/{}'.format(self.hostname, self.port, os.path.basename(filename)))
-            print 'adding ("http://localhost:{}/{}" to viewport {}'.format(self.port, os.path.basename(filename), window['presentation_viewport'])
         new_msg = GenericMessage()
         new_msg.type = 'json'
         new_msg.message = json.dumps(current_scene)
@@ -67,7 +68,6 @@ class KMLAdder():
 
         self.httpd = SocketServer.TCPServer(("", self.port), Handler)
 
-        print "serving at port", self.port
         self.httpd.serve_forever()
 
     def add_earths(self, scene):
@@ -79,13 +79,13 @@ class KMLAdder():
             # if no instance of earth w/ our current viewport is found
             # we add one and give it our viewport
             if flag is False:
-                print('appending to viewport {}'.format(viewport))
                 scene['windows'].append(copy.deepcopy(DEFAULT_EARTH_INSTANCE))
                 scene['windows'][-1]['presentation_viewport'] = viewport
 
     def shutdown(self):
         self.httpd.shutdown()
         self.server.join()
+
 
 def main():
     rospy.init_node('add_kml')
