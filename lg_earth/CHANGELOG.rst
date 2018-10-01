@@ -5,6 +5,18 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#387 <https://github.com/EndPointCorp/lg_ros_nodes/issues/387>`_ from EndPointCorp/add_kml
+  Add kml
+* formatting / pep8 / removed prints
+* set hostnmae
+* add ability to set hostname
+* adding in an example webapp
+* adding rostopic and fixing shallow vs deep copy bug
+* new rosnode to add running kml
+* Contributors: Jacob Minshall
+
 1.18.16 (2018-09-12)
 --------------------
 
