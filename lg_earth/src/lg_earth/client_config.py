@@ -126,7 +126,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     kml_path = os.path.normpath(base_path + '/.googleearth')
     flyto_speed = rospy.get_param('~flyto_speed', 0.17)
     show_compass = rospy.get_param('~show_compass', False)
-    show_visualization = rospy.get_param('~show_visualization', True)
+    show_visualization = rospy.get_param('~show_visualization', viewsync_send)
 
     geplus_config['General'] = {
         '3DControllerEnabled': True,
