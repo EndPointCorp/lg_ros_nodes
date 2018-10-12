@@ -5,6 +5,11 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* only show HUD on viewsync sender (usually center)
+* Contributors: Jacob Minshall
+
 1.18.17 (2018-10-01)
 --------------------
 * Merge pull request `#387 <https://github.com/EndPointCorp/lg_ros_nodes/issues/387>`_ from EndPointCorp/add_kml
