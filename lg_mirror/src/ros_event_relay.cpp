@@ -4,6 +4,7 @@
 #include <linux/input.h>
 
 #include "lg_common/StringArray.h"
+#include "lg_mirror/EvdevEvents.h"
 #include "ros_event_relay.h"
 #include "uinput_device.h"
 #include "viewport_mapper.h"
@@ -33,7 +34,8 @@ RosEventRelay::RosEventRelay(
   events_topic_(events_topic),
   mapper_(mapper),
   auto_zero_(auto_zero),
-  routing_(false)
+  routing_(false),
+  should_idle_remap_(true)
 {}
 
 /**
@@ -83,7 +85,28 @@ void RosEventRelay::OpenRoute_() {
     return;
   }
   routing_ = true;
-  s_ = n_.subscribe(events_topic_, 10, &UinputDevice::HandleEventMessage, &device_);
+  router_sub_ = n_.subscribe(events_topic_, 10, &RosEventRelay::HandleEventMessage, this);
+}
+
+void RosEventRelay::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
+  if (should_idle_remap_) {
+    ROS_DEBUG("idle remapping");
+    should_idle_remap_ = false;
+    try {
+      mapper_.Map();
+    } catch(ViewportMapperExecError& e) {
+      ROS_ERROR_STREAM("Mapping viewport exec error: " << e.what());
+    } catch(ViewportMapperStringError& e) {
+      ROS_ERROR_STREAM("Mapping viewport string error: " << e.what());
+    }
+  }
+  device_.HandleEventMessage(msg);
+  idle_remap_timer_ = n_.createTimer(ros::Duration(1.0), &RosEventRelay::ResetIdleRemap, this, true);
+}
+
+void RosEventRelay::ResetIdleRemap(const ros::TimerEvent& tev) {
+  ROS_DEBUG("reset idle remap");
+  should_idle_remap_ = true;
 }
 
 /**
@@ -96,7 +119,7 @@ void RosEventRelay::CloseRoute_() {
     return;
   }
   routing_ = false;
-  s_.shutdown();
+  router_sub_.shutdown();
 
   if (auto_zero_) {
     device_.Zero();
