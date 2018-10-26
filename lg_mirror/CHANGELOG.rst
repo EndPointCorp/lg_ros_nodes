@@ -5,6 +5,14 @@ Changelog for package lg_mirror
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#388 <https://github.com/EndPointCorp/lg_ros_nodes/issues/388>`_ from EndPointCorp/touch_matrix_idle_remap
+  Reset touch receiver matrix on fresh input
+* Reset touch receiver matrix on fresh input
+  Workaround for Xorg mysteriously resetting the coordinate transformation matrix to identity.
+* Contributors: Jacob Minshall, Matt Vollrath
+
 1.18.18 (2018-10-12)
 --------------------
 
