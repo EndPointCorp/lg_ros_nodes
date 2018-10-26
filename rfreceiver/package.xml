@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>rfreceiver</name>
-  <version>1.18.18</version>
+  <version>1.18.19</version>
   <description>Driver for clear button receiver</description>
 
   <maintainer email="lg@endpoint.com">End Point Corp</maintainer>
