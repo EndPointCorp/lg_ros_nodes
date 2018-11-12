@@ -8,12 +8,9 @@ ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
 ENV ROS_DISTRO kinetic
 ENV OS_VERSION xenial
 
-# nvidia-docker hooks
-LABEL com.nvidia.volumes.needed="nvidia_driver"
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
-ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
+# Env for nvidia-docker2/nvidia container runtime
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES all
 
 # entrypoint for ROS setup.bash
 COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
@@ -30,6 +27,7 @@ RUN \
   wget --no-check-certificate -q -O /tmp/key.pub https://dl-ssl.google.com/linux/linux_signing_key.pub && apt-key add /tmp/key.pub && rm /tmp/key.pub && \
   apt-get update && \
   apt-get install -y --no-install-recommends \
+    automake autoconf libtool \
     g++ pep8 cppcheck closure-linter \
     python-pytest wget \
     python-gst-1.0 \
@@ -135,6 +133,23 @@ RUN \
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO install && \
     source $PROJECT_ROOT/catkin/devel/setup.bash && \
     chown -R ${RUN_USER}:${RUN_USER} ${HOME}
+
+
+# Massage libglvnd so opengl plays nicely with nvidia-docker2
+ARG LIBGLVND_VERSION='v1.1.0'
+
+RUN mkdir /opt/libglvnd && \
+    cd /opt/libglvnd && \
+    git clone --branch="${LIBGLVND_VERSION}" https://github.com/NVIDIA/libglvnd.git . && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local --libdir=/usr/local/lib/x86_64-linux-gnu && \
+    make -j"$(nproc)" install-strip && \
+    find /usr/local/lib/x86_64-linux-gnu -type f -name 'lib*.la' -delete
+
+RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
+
+ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
 
 USER $RUN_USER
 
