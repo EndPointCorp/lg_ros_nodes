@@ -100,7 +100,8 @@ class WiiMoteToPointer:
             self.x = 0
             self.y = 0
 
-        vp, vpx, vpy = self.mvp.orientation_to_coords(self.z, self.x)
+        if not self.mvp.clamp(self.z, self.x):
+            vp, vpx, vpy = self.mvp.orientation_to_coords(self.z, self.x)
 
         if moving and vp != self.last_vp:
             routes_msg = StringArray(strings=[vp])
