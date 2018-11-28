@@ -142,7 +142,8 @@ def main():
 
         ang_x = math.radians(x / 80.0)
         ang_y = math.radians(y / 80.0)
-        new_vp, vpx, vpy = mvp.orientation_to_coords(ang_x, ang_y)
+        if not mvp.clamp(ang_x, ang_y):
+          new_vp, vpx, vpy = mvp.orientation_to_coords(ang_x, ang_y)
 
         if vp != new_vp:
             routes_msg = StringArray(strings=[new_vp])
