@@ -12,6 +12,14 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+* Merge pull request `#391 <https://github.com/EndPointCorp/lg_ros_nodes/issues/391>`_ from EndPointCorp/topic/mouse_boundry
+  lg_pointer: contain the cursor with a clamp method todo: add to wiimote
+* wiimote change for posterity
+* lg_pointer: contain the cursor with a clamp method todo: add to wiimote
+* Contributors: Will Plaut
+
 1.18.19 (2018-10-26)
 --------------------
 
