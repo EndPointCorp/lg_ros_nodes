@@ -7,6 +7,7 @@ bool kiosk
 string user_agent
 string version
 string[] allowed_urls
+string user_data_dir
 lg_common/WindowGeometry geometry
 lg_common/BrowserExtension[] extensions
 lg_common/BrowserCmdArg[] command_line_args

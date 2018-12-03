@@ -40,6 +40,7 @@ class ManagedBrowser(ManagedApplication):
         url=None,
         slug=None,
         kiosk=True,
+        user_data_dir=None,
         geometry=None,
         binary=DEFAULT_BINARY,
         remote_debugging_port=None,
