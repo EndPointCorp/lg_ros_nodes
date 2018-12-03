@@ -1082,3 +1082,14 @@ def required_param(key, coercer=None):
                 )
             )
     return value
+
+def get_server_param(key, default_value = '', server_url="https://localhost:1337/get"):
+    import requests
+    r = requests.get(server_url, params = key)
+    if r.status_code == 200:
+        return r.text
+    elif default_value != '':
+        return default_value
+    else:
+        return rospy.get_param(key)
+
