@@ -107,6 +107,7 @@ class AdhocBrowserDirectorBridge():
         extensions = browser_config.get('extensions', None)
         allowed_urls = browser_config.get('allowed_urls', None)
         kiosk = browser_config.get('kiosk', True)
+        user_data_dir = browser_config.get('user_data_dir', None)
 
         adhoc_browser.kiosk = kiosk
 
@@ -142,6 +143,9 @@ class AdhocBrowserDirectorBridge():
         if allowed_urls:
             for aurl in allowed_urls:
                 adhoc_browser.allowed_urls.append(str(aurl))
+
+        if user_data_dir:
+            adhoc_browser.user_data_dir = user_data_dir
 
         return adhoc_browser
 

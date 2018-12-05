@@ -337,6 +337,7 @@ class AdhocBrowserPool():
                                                     uid=new_browser_pool_id,
                                                     scene_slug=new_browser.scene_slug,
                                                     preload=new_browser.preload,
+                                                    user_data_dir=new_browser.user_data_dir,
                                                     kiosk=new_browser.kiosk
                                                     )
 

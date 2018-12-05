@@ -40,6 +40,7 @@ class ManagedBrowser(ManagedApplication):
         url=None,
         slug=None,
         kiosk=True,
+        user_data_dir=None,
         geometry=None,
         binary=DEFAULT_BINARY,
         remote_debugging_port=None,
@@ -85,7 +86,14 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--remote-debugging-port={}'.format(self.debug_port))
         cmd.append('--log-level={}'.format(log_level))
 
-        self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
+        self.user_data_dir = user_data_dir
+
+        if self.user_data_dir:
+            rospy.logdebug('using data dir {}'.format(self.user_data_dir))
+            self.tmp_dir = '/tmp/user_data_dirs/{}'.format(self.user_data_dir)
+        else:
+            self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
+            rospy.logdebug('clearing tmp dir {}'.format(self.tmp_dir))
         self.clear_tmp_dir()
         self.pepper_flash_dir = pepper_flash_dir
         self.pnacl_dir = pnacl_dir
@@ -155,7 +163,8 @@ class ManagedBrowser(ManagedApplication):
     def post_init(self):
         super(ManagedBrowser, self).post_init()
 
-        self.add_respawn_handler(self.clear_tmp_dir)
+        if not self.user_data_dir:
+            self.add_respawn_handler(self.clear_tmp_dir)
         self.add_respawn_handler(self.init_tmp_dir)
         self.add_state_handler(self.control_relay)
 
@@ -166,6 +175,11 @@ class ManagedBrowser(ManagedApplication):
         then replaces the path in the latest-copmponent-updated-flash file
         """
 
+        if os.path.exists(self.tmp_dir):
+            if self.user_data_dir:
+                return  # this is fine
+            else:
+                rospy.logerr("Temp dir exists for chrome already")
         try:
             os.mkdir(self.tmp_dir)
             os.mkdir(self.tmp_dir + '/PepperFlash')
@@ -192,8 +206,11 @@ class ManagedBrowser(ManagedApplication):
         """
         Clears out all temporary files and disk cache for this instance.
         """
+        if self.user_data_dir:
+            rospy.logerr('not clearing, because user data dir')
+            return
         try:
-            rospy.logdebug("Purging ManagedBrowser directory: %s" % self.tmp_dir)
+            rospy.logerr("Purging ManagedBrowser directory: %s" % self.tmp_dir)
             shutil.rmtree(self.tmp_dir)
         except OSError, e:
             rospy.logdebug("Could not purge the %s directory because %s" % (self.tmp_dir, e))
