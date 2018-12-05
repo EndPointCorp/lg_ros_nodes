@@ -7,6 +7,14 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* Merge pull request `#392 <https://github.com/EndPointCorp/lg_ros_nodes/issues/392>`_ from EndPointCorp/topic/user_data_dirrrr
+  Topic/user data dirrrr
+* user_data_dir: working so far
+* initial commit for user_data_dir stuffz
+* Contributors: Will Plaut
+
 1.18.20 (2018-11-28)
 --------------------
 

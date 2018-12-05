@@ -12,6 +12,9 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+
 1.18.20 (2018-11-28)
 --------------------
 * Merge pull request `#391 <https://github.com/EndPointCorp/lg_ros_nodes/issues/391>`_ from EndPointCorp/topic/mouse_boundry
