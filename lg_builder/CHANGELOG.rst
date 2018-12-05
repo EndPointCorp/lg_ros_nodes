@@ -8,8 +8,8 @@ Changelog for package lg_builder
 * lg_builder: un-hardcode target distro/platform
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+1.18.21 (2018-12-05)
+--------------------
 
 1.18.20 (2018-11-28)
 --------------------

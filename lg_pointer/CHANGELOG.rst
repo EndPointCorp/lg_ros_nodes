@@ -12,8 +12,8 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
-Forthcoming
------------
+1.18.21 (2018-12-05)
+--------------------
 
 1.18.20 (2018-11-28)
 --------------------
