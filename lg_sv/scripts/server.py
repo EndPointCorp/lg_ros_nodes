@@ -34,6 +34,7 @@ DEFAULT_ZOOM_MAX = 30
 DEFAULT_NAV_SENSITIVITY = 1.0
 DEFAULT_NAV_INTERVAL = 0.02
 DEFAULT_TICK_RATE = 180
+DEFAULT_IDLE_TIME_UNTIL_SNAP = 1.25
 X_THRESHOLD = 0.50
 NODE_NAME = 'pano_viewer_server'
 
@@ -63,9 +64,10 @@ def main():
     inverted = str(rospy.get_param('~inverted', "false")).lower() == "true"
     nearby.invert(inverted)
     tick_rate = rospy.get_param('~tick_rate', DEFAULT_TICK_RATE)
+    idle_time_until_snap = rospy.get_param('~idle_time_until_snap', DEFAULT_IDLE_TIME_UNTIL_SNAP)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                              nav_sensitivity, space_nav_interval, x_threshold,
+                              nav_sensitivity, space_nav_interval, idle_time_until_snap, x_threshold,
                               nearby, metadata_pub, zoom_max, zoom_min, tick_rate, director_pub=director_pub,
                               server_type=server_type)
 
