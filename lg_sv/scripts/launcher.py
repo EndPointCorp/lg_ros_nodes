@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import rospy
+import uuid
 
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_common.msg import ApplicationState
@@ -75,7 +76,10 @@ def main():
     x_available_or_raise(timeout)
 
     # create the managed browser
-    slug = server_type + "__" + "_fov-" + str(field_of_view) + "__" + "_yaw-" + str(yaw_offset) + "__" + "_pitch-" + str(pitch_offset)
+
+    slug = (server_type + "__" + "fov-" + str(field_of_view) + "__" + "yaw-" +
+            str(yaw_offset) + "__" + "pitch-" + str(pitch_offset) +
+            "__" + str(uuid.uuid4()))
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk)
 
     # set initial state
