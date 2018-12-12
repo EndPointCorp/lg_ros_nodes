@@ -35,7 +35,7 @@ DEFAULT_NAV_SENSITIVITY = 1.0
 DEFAULT_NAV_INTERVAL = 0.02
 DEFAULT_TICK_RATE = 180
 DEFAULT_IDLE_TIME_UNTIL_SNAP = 1.25
-DEFAULT_FILTER_FUNCTION= "new_sv"
+DEFAULT_FILTER_FUNCTION= "new_sv_filter"
 X_THRESHOLD = 0.50
 NODE_NAME = 'pano_viewer_server'
 
@@ -88,9 +88,9 @@ def main():
     idle_time_until_snap = rospy.get_param('~idle_time_until_snap', DEFAULT_IDLE_TIME_UNTIL_SNAP)
 
     filter_functions = {
-            "old_sv": old_sv_filter,
-            "new_sv": new_sv_filter,
-            "both_sv": both_sv_filter
+            "old_sv_filter": old_sv_filter,
+            "new_sv_filter": new_sv_filter,
+            "both_sv_filter": both_sv_filter
             }
     sv_filter = rospy.get_param('~sv_filter', DEFAULT_FILTER_FUNCTION)
     filter_function = filter_functions.get(sv_filter, new_sv_filter)
@@ -148,17 +148,6 @@ def main():
             if filter_function(panoid):
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 return
-            #if server_type == 'streetview' and (panoid[0:2] != 'F:' and len(panoid) < 60):
-            #    visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-            #    rospy.logerr("publishing visible for {}".format(server_type))
-            #    return
-            #elif server_type == 'streetview_old' and (panoid[0:2] == 'F:' or len(panoid) >= 60):
-            #    rospy.logerr("publishing visible for {}".format(server_type))
-            #    visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-            #    return
-            #elif server_type == 'panoviewer' or server_type == 'panovideo':
-            #    visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-            #    return
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
 
@@ -168,12 +157,6 @@ def main():
             if not filter_function(panoid):
                 # TODO maybe hide?
                 return
-            #if server_type == 'streetview' and panoid[0:2] == 'F:':
-            #    rospy.logerr("leaving early for {}".format(server_type))
-            #    return
-            #elif server_type == 'streetview_old' and panoid[0:2] != 'F':
-            #    rospy.logerr("leaving early for {}".format(server_type))
-            #    return
         else:
             panoid = scene['windows'][0]['assets'][0]
 

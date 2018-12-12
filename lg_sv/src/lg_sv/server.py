@@ -291,9 +291,9 @@ class PanoViewerServer:
         Grabs the new panoid from a publisher
         """
         # Nothing to do here...
-        rospy.logerr('handling panoid for {}'.format(self.server_type))
+        rospy.logdebug('handling panoid for {}'.format(self.server_type))
         if self.panoid == panoid.data:
-            rospy.logerr('self.panoid was equal to panoid.data {}'.format(self.server_type))
+            rospy.logdebug('self.panoid was equal to panoid.data {}'.format(self.server_type))
             self.nearby_panos.set_panoid(self.panoid)
             return
         self.generate_director_message(panoid.data)
@@ -305,7 +305,7 @@ class PanoViewerServer:
         if panoid == self.panoid:
             return
         server_type = self.server_type
-        rospy.logerr('about to filter for {}'.format(server_type))
+        rospy.logdebug('about to filter for {}'.format(server_type))
         if not self.filter_function(panoid):
             rospy.logerr('error in filter function... returning {}'.format(server_type))
             return
