@@ -41,19 +41,19 @@ NODE_NAME = 'pano_viewer_server'
 
 
 def old_sv_filter(panoid):
-    rospy.logerr('doing old_sv function')
+    rospy.logdebug('doing old_sv function')
     if panoid[0:2] == 'F:' or len(panoid) >= 60:
-        rospy.logerr('returning true for old_sv')
+        rospy.logdebug('returning true for old_sv')
         return True
-    rospy.logerr('returning false for old_sv')
+    rospy.logdebug('returning false for old_sv')
     return False
 
 def new_sv_filter(panoid):
-    rospy.logerr('doing new_sv function')
+    rospy.logdebug('doing new_sv function')
     if panoid[0:2] != 'F:' and len(panoid) < 60:
         rospy.logerr('returning true for new_sv')
         return True
-    rospy.logerr('returning false for new_sv')
+    rospy.logdebug('returning false for new_sv')
     return False
 
 def both_sv_filter(panoid):
