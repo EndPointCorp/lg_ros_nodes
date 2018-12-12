@@ -35,8 +35,29 @@ DEFAULT_NAV_SENSITIVITY = 1.0
 DEFAULT_NAV_INTERVAL = 0.02
 DEFAULT_TICK_RATE = 180
 DEFAULT_IDLE_TIME_UNTIL_SNAP = 1.25
+DEFAULT_FILTER_FUNCTION= "new_sv"
 X_THRESHOLD = 0.50
 NODE_NAME = 'pano_viewer_server'
+
+
+def old_sv_filter(panoid):
+    rospy.logerr('doing old_sv function')
+    if panoid[0:2] == 'F:' or len(panoid) >= 60:
+        rospy.logerr('returning true for old_sv')
+        return True
+    rospy.logerr('returning false for old_sv')
+    return False
+
+def new_sv_filter(panoid):
+    rospy.logerr('doing new_sv function')
+    if panoid[0:2] != 'F:' and len(panoid) < 60:
+        rospy.logerr('returning true for new_sv')
+        return True
+    rospy.logerr('returning false for new_sv')
+    return False
+
+def both_sv_filter(panoid):
+    return True
 
 
 def main():
@@ -66,8 +87,16 @@ def main():
     tick_rate = rospy.get_param('~tick_rate', DEFAULT_TICK_RATE)
     idle_time_until_snap = rospy.get_param('~idle_time_until_snap', DEFAULT_IDLE_TIME_UNTIL_SNAP)
 
+    filter_functions = {
+            "old_sv": old_sv_filter,
+            "new_sv": new_sv_filter,
+            "both_sv": both_sv_filter
+            }
+    sv_filter = rospy.get_param('~sv_filter', DEFAULT_FILTER_FUNCTION)
+    filter_function = filter_functions.get(sv_filter, new_sv_filter)
+
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                              nav_sensitivity, space_nav_interval, idle_time_until_snap, x_threshold,
+                              nav_sensitivity, space_nav_interval, idle_time_until_snap, filter_function, x_threshold,
                               nearby, metadata_pub, zoom_max, zoom_min, tick_rate, director_pub=director_pub,
                               server_type=server_type)
 
@@ -77,7 +106,7 @@ def main():
                      server.handle_location_msg)
     rospy.Subscriber('/%s/metadata' % server_type, String,
                      server.handle_metadata_msg)
-    rospy.Subscriber('/%s/panoid' % server_type, String,
+    rospy.Subscriber('/%s/panoid' % server_type.replace('_old', ''), String,
                      server.handle_panoid_msg)
     rospy.Subscriber('/%s/pov' % server_type, Quaternion,
                      server.handle_pov_msg)
@@ -96,8 +125,10 @@ def main():
     def handle_director_message(scene):
         rospy.loginfo('running handle director w/ scene: %s' % scene)
         _server_type = server_type
+        # streetview_old isn't an activity type, so check for "streetview" instead
         if _server_type == 'streetview_old':
             _server_type = 'streetview'
+        # check that director emssage has our activity _server_type or return
         has_asset = has_activity(scene, _server_type)
         has_no_activity = has_activity(scene, 'no_activity')
         if has_no_activity:
@@ -107,35 +138,42 @@ def main():
             rospy.loginfo('hiding self')
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
+
         if scene.get('slug', '') == 'auto_generated_sv_scene':
             rospy.loginfo("Ignoring my own generated message")
             asset = get_activity_config_from_activity(scene, _server_type)
             panoid = asset.get('panoid', '')
-            rospy.logerr("length of panoid is %s server type %s" % (len(panoid), server_type))
-            rospy.logerr("panoid is %s" % panoid)
-            if server_type == 'streetview' and (panoid[0:2] != 'F:' and len(panoid) < 60):
-                visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-                rospy.logerr("publishing visible for {}".format(server_type))
-                return
-            elif server_type == 'streetview_old' and (panoid[0:2] == 'F:' or len(panoid) >= 60):
-                rospy.logerr("publishing visible for {}".format(server_type))
+            rospy.logdebug("length of panoid is %s server type %s" % (len(panoid), server_type))
+            rospy.logdebug("panoid is %s" % panoid)
+            if filter_function(panoid):
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 return
-            elif server_type == 'panoviewer' or server_type == 'panovideo':
-                visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-                return
+            #if server_type == 'streetview' and (panoid[0:2] != 'F:' and len(panoid) < 60):
+            #    visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+            #    rospy.logerr("publishing visible for {}".format(server_type))
+            #    return
+            #elif server_type == 'streetview_old' and (panoid[0:2] == 'F:' or len(panoid) >= 60):
+            #    rospy.logerr("publishing visible for {}".format(server_type))
+            #    visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+            #    return
+            #elif server_type == 'panoviewer' or server_type == 'panovideo':
+            #    visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+            #    return
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
 
         if server_type == 'streetview' or server_type == 'streetview_old':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
-            if server_type == 'streetview' and panoid[0:2] == 'F:':
-                rospy.logerr("leaving early for {}".format(server_type))
+            if not filter_function(panoid):
+                # TODO maybe hide?
                 return
-            elif server_type == 'streetview_old' and panoid[0:2] != 'F':
-                rospy.logerr("leaving early for {}".format(server_type))
-                return
+            #if server_type == 'streetview' and panoid[0:2] == 'F:':
+            #    rospy.logerr("leaving early for {}".format(server_type))
+            #    return
+            #elif server_type == 'streetview_old' and panoid[0:2] != 'F':
+            #    rospy.logerr("leaving early for {}".format(server_type))
+            #    return
         else:
             panoid = scene['windows'][0]['assets'][0]
 
