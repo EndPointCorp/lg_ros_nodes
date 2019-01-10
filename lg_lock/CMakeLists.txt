@@ -3,10 +3,8 @@ project(lg_lock)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-)
-
-find_package(catkin REQUIRED COMPONENTS
   message_generation
+  lg_common
 )
 
 catkin_python_setup()
