@@ -2,8 +2,8 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.19.0 (2019-01-10)
+-------------------
 * changelog for lg_lock
 * initial lg_lock
 * Contributors: Will Plaut

@@ -5,8 +5,8 @@ Changelog for package liquidgalaxy
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.0 (2019-01-10)
+-------------------
 * initial lg_lock
 * Contributors: Will Plaut
 
