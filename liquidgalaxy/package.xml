@@ -21,6 +21,7 @@
   <run_depend>lg_media</run_depend>
   <run_depend>lg_mirror</run_depend>
   <run_depend>lg_nav_to_device</run_depend>
+  <run_depend>lg_lock</run_depend>
   <run_depend>lg_offliner</run_depend>
   <run_depend>lg_panovideo</run_depend>
   <run_depend>lg_proximity</run_depend>
