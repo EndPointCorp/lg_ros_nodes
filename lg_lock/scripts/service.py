@@ -2,6 +2,7 @@
 
  from lg_lock.srv import IsLocked, Lock, UnLock
  import rospy
+ from lg_common.helpers import run_with_influx_exception_handler
 
  NODE_NAME = 'lg_lock'
 
@@ -54,4 +55,4 @@ class Locker(object):
     
 
 if __name__ == "__main__":
-    init()
+    run_with_influx_exception_handler(init, NODE_NAME)
