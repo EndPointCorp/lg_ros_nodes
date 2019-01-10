@@ -1,4 +1,4 @@
 string password
 string username
 ---
-bool state
+bool locked
