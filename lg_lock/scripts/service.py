@@ -31,7 +31,7 @@ class Locker(object):
 
     def _unlock(self):
         self.state = False
-
+    
     def _lock(self):
         # Notify topic later
         self.state = True
@@ -51,7 +51,7 @@ class Locker(object):
     rospy.Service('is_locked', IsLocked, service.get_state)
     rospy.Service('lock', Lock, activity_tracker.lock)
     rospy.Service('unlock', UnLock, activity_tracker.unlock)
-
+    
 
 if __name__ == "__main__":
     init()

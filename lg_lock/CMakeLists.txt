@@ -5,7 +5,28 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
 )
 
-catkin_package()
+catkin_python_setup()
+
+add_service_files(
+  FILES
+  IsLocked.srv
+  Lock.srv
+  UnLock.srv
+)
+
+add_msg_files(
+  FILES
+  State.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  lg_common
+)
+
+catkin_package(
+  CATKIN_DEPENDS rospy std_msgs lg_common message_runtime
+)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
