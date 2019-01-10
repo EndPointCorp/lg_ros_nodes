@@ -5,6 +5,9 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.18.22 (2018-12-06)
 --------------------
 * lg_sv: make idle_time_until_snap a rosparam

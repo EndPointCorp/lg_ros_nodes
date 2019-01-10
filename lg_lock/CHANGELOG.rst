@@ -4,6 +4,10 @@ Changelog for package lg_lock
 
 Forthcoming
 -----------
+* changelog for lg_lock
+* initial lg_lock
+* Contributors: Will Plaut
+
 * initial lg_lock
 * Contributors: Will Plaut
 
