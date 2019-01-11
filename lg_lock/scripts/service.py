@@ -20,7 +20,7 @@
 
     if not password:
         rospy.logerr('No or blank password provided, exiting...')
-        print "foob ar"
+        print "No or blank password provided, exiting..."
         return
 
     service = LockerService(statePublisher, password, locked)
