@@ -2,8 +2,8 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.19.2 (2019-01-11)
+-------------------
 * fix locker service and topic names
 * remove leading space
 * Err messages

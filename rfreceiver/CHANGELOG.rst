@@ -5,8 +5,8 @@ Changelog for package rfreceiver
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.2 (2019-01-11)
+-------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
 * Contributors: Dmitry Kiselev
 
