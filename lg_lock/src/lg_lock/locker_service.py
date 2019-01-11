@@ -1,3 +1,5 @@
+from lg_lock.msg import State
+
 class LockerService(object):
     """
     Lock/Unlock LG
@@ -16,9 +18,8 @@ class LockerService(object):
         return self.state
 
     def unlock(self, msg):
-        if (self.password == msg.password) {
+        if (self.password == msg.password):
             self._unlock()
-        }
         return self.state
 
     def get_state(self, msg):

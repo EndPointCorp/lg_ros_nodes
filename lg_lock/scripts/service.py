@@ -18,16 +18,18 @@
     
     statePublisher = rospy.Publisher('/lg_lock/locked', State, queue_size=1, latch=True)
 
-    if not sources_string:
+    if not password:
         rospy.logerr('No or blank password provided, exiting...')
+        print "foob ar"
         return
 
     service = LockerService(statePublisher, password, locked)
 
     rospy.Service('is_locked', IsLocked, service.get_state)
-    rospy.Service('lock', Lock, activity_tracker.lock)
-    rospy.Service('unlock', UnLock, activity_tracker.unlock)
-    
+    rospy.Service('lock', Lock, service.lock)
+    rospy.Service('unlock', UnLock, service.unlock)
+    rospy.spin()
+   
 
 if __name__ == "__main__":
     run_with_influx_exception_handler(init, NODE_NAME)
