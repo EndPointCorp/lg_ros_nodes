@@ -1,16 +1,16 @@
- #!/usr/bin/env python
- import rospy
+#!/usr/bin/env python
+import rospy
 
- from lg_lock import LockerService
+from lg_lock import LockerService
  
- from lg_lock.srv import IsLocked, Lock, UnLock
- from lg_lock.msg import State
+from lg_lock.srv import IsLocked, Lock, UnLock
+from lg_lock.msg import State
  
- from lg_common.helpers import run_with_influx_exception_handler
+from lg_common.helpers import run_with_influx_exception_handler
 
- NODE_NAME = 'lg_lock'
+NODE_NAME = 'lg_lock'
 
- def init():
+def init():
     rospy.init_node(NODE_NAME, anonymous=False)
 
     password = rospy.get_param('~password', None)
