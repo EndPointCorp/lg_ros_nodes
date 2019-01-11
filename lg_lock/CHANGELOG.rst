@@ -2,6 +2,17 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix locker service and topic names
+* remove leading space
+* Err messages
+* fix
+* chmod on service
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* imports reorganize
+* Contributors: Dmitry Kiselev
+
 1.19.1 (2019-01-11)
 -------------------
 * Move Locker service to src
