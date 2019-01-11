@@ -2,8 +2,8 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.19.1 (2019-01-11)
+-------------------
 * Move Locker service to src
 * add state publish on update
 * Cmake
