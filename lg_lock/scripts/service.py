@@ -1,6 +1,7 @@
  #!/usr/bin/env python
 
  from lg_lock.srv import IsLocked, Lock, UnLock
+ from lg_lock.msg import State
  import rospy
  from lg_common.helpers import run_with_influx_exception_handler
 
@@ -13,9 +14,11 @@ class Locker(object):
     param password - password to unlock LG
     param state - Bool initial state
     """
-    def __init__(self, password, state):
+    def __init__(self, statePublisher, password, state):
         self.password = password
         self.state = state
+        self.publisher = statePublisher
+        self.publishState()
 
     def lock(self, msg):
         self._lock()
@@ -32,22 +35,28 @@ class Locker(object):
 
     def _unlock(self):
         self.state = False
+        self.publishState()
     
     def _lock(self):
-        # Notify topic later
-        self.state = True
+        self.state = True   
+        self.publishState()
+
+    def publishState(self):
+        self.publisher.publish(State(self.state))
 
  def init():
     rospy.init_node(NODE_NAME, anonymous=False)
 
     password = rospy.get_param('~password', None)
     locked = rospy.get_param('~locked', False)
+    
+    statePublisher = rospy.Publisher('/lg_lock/locked', State, queue_size=1, latch=True)
 
     if not sources_string:
         rospy.logerr('No or blank password provided, exiting...')
         return
 
-    service = Locker(password, locked)
+    service = Locker(statePublisher, password, locked)
 
     rospy.Service('is_locked', IsLocked, service.get_state)
     rospy.Service('lock', Lock, activity_tracker.lock)
