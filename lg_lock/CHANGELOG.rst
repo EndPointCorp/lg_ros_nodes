@@ -2,6 +2,21 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Move Locker service to src
+* add state publish on update
+* Cmake
+* Cmake
+* Fix cmake
+* missed packages
+* fix build fr lg_lock
+* add setup py
+* add launch example, add influx handler
+* rename state to locked in messages
+* Fix CMakeLists
+* Contributors: Dmitry Kiselev
+
 1.19.0 (2019-01-10)
 -------------------
 * changelog for lg_lock
