@@ -1,9 +1,11 @@
  #!/usr/bin/env python
+ import rospy
 
+ from lg_lock import LockerService
+ 
  from lg_lock.srv import IsLocked, Lock, UnLock
  from lg_lock.msg import State
- from lg_lock import LockerService
- import rospy
+ 
  from lg_common.helpers import run_with_influx_exception_handler
 
  NODE_NAME = 'lg_lock'
