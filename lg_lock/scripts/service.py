@@ -25,9 +25,9 @@ def init():
 
     service = LockerService(statePublisher, password, locked)
 
-    rospy.Service('is_locked', IsLocked, service.get_state)
-    rospy.Service('lock', Lock, service.lock)
-    rospy.Service('unlock', UnLock, service.unlock)
+    rospy.Service('/lg_lock/is_locked', IsLocked, service.get_state)
+    rospy.Service('/lg_lock/lock', Lock, service.lock)
+    rospy.Service('/lg_lock/unlock', UnLock, service.unlock)
     rospy.spin()
    
 
