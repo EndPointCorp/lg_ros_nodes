@@ -133,12 +133,18 @@ class SpacenavWrapper(object):
         self.joy = joy
         self.gutter_val = gutter_val
         self.translate_twist = translate_twist
+        self.suppressed = False
+
+    def suppress(self, suppressed):
+        self.suppressed = suppressed
 
     def handle_twist(self, msg):
         """
         Gets twist message, and publishes it or a cleaned up version
         of it
         """
+        if self.suppressed:
+            return
         if self._is_in_gutter(msg):
             msg = Twist()
         self.translate_twist(msg)

@@ -7,9 +7,12 @@ class LockerService(object):
     param password - password to unlock LG
     param state - Bool initial state
     """
-    def __init__(self, statePublisher, password, state):
+    def __init__(self, statePublisher, password, state, onChange):
         self.password = password
         self.state = state
+        
+        self.onChange = onChange
+        
         self.publisher = statePublisher
         self.publishState()
 
@@ -27,10 +30,12 @@ class LockerService(object):
 
     def _unlock(self):
         self.state = False
+        self.onChange(self.state)
         self.publishState()
     
     def _lock(self):
-        self.state = True   
+        self.state = True 
+        self.onChange(self.state)
         self.publishState()
 
     def publishState(self):

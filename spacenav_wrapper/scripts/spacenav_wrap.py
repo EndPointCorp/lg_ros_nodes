@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+from std_srvs import SetBool
 from spacenav_wrapper import SpacenavWrapper
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
@@ -30,6 +31,9 @@ def main():
     full_scale = get_fullscale()
 
     s = SpacenavWrapper(twist=twist, joy=joy, gutter_val=gutter_val)
+    def suppress(msg):
+        s.suppress(msg.data)
+    rospy.Service('/spacenav_wrapper/suppress', SetBool, suppress)
 
     rospy.Subscriber('/spacenav/twist', Twist, s.handle_twist)
     rospy.Subscriber('/spacenav/joy', Joy, s.handle_joy)
