@@ -5,6 +5,11 @@ Changelog for package lg_json_config
 1.17.2 (2017-11-06)
 -------------------
 
+1.19.2 (2019-01-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
 1.19.1 (2019-01-11)
 -------------------
 
