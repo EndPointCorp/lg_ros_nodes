@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 
-from std_srvs import SetBool
+from std_srvs.srv import SetBool
 from lg_lock import LockerService
  
 from lg_lock.srv import IsLocked, Lock, UnLock

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-from std_srvs import SetBool
-from std_srvs import SetBoolResponse
+from std_srvs.srv import SetBool
+from std_srvs.srv import SetBoolResponse
 from spacenav_wrapper import SpacenavWrapper
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
