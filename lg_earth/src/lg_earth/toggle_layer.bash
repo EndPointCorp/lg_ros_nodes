@@ -1,11 +1,17 @@
 #!/bin/bash
 
-
+# exit if no arguments
+if [[ $# -eq 0 ]] ; then
+	exit 0
+fi
 
 # Starting Positions for Validation
 A_START_X_VAL=1933
 B_START_X_VAL=13
-START_Y=1126
+
+#desired layer state
+BUILDING_LAYER="$1"
+
 # Error Tracking
 A_ERROR=()
 B_ERROR=()
@@ -14,19 +20,14 @@ errors_present=false
 declare -A toggle_button=( ["42-a-0"]="1958 1151" ["42-a-1"]="3038 1151" ["42-a-2"]="4118 1151" ["42-b-0"]="40 1150" ["42-b-1"]="1120 1150" ["42-b-2"]="2200 1150" ["42-b-3"]="3280 1150" )
 
 
-A_START_X=2460;
-A_START_Y=960;
-B_START_X=1600;
-B_START_Y=960;
-
 toggleMenus ()
 {
 	# Open Menus 42-a
-        ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-a 'export DISPLAY=:0; xdotool mousemove '+$A_START_X+' '+$A_START_Y+' ; xdotool click 1; xdotool key ctrl+alt+b ; xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b' &
+        ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-a 'export DISPLAY=:0; xdotool mousemove 2460 960 ; xdotool click 1; xdotool key ctrl+alt+b ; xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b' &
 
 
         # Open Menus 42-b
-        ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-b 'export DISPLAY=:0; xdotool mousemove '+$B_START_X+' '+$B_START_Y+';  xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 0420 1169;  xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 2580 1169; xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 3660 1169; xdotool click 1; xdotool key ctrl+alt+b '&
+        ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-b 'export DISPLAY=:0; xdotool mousemove 1600 960 ;  xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 0420 1169;  xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 2580 1169; xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 3660 1169; xdotool click 1; xdotool key ctrl+alt+b '&
 	wait
 
 }
@@ -88,37 +89,6 @@ capture_current_state ()
 	done
 }
 
-state_validation ()
-{
-	# check 42-a state
-	for i in 0 1 2
-	do
-		cmp --silent ~/tmp/initial_state ~/tmp/42-a_"$i"
-		result=$?
-		if [ $result == 0 ]
-		then
-			#add i to array	
-			A_ERROR[$i]="42-a-$i"
-			errors_present=true
-
-		fi
-	done
-
-	# check 42-b state
-	for i in 0 1 2 3
-	do
-		cmp --silent ~/tmp/initial_state ~/tmp/42-b_"$i"
-		result=$?
-		if [ $result == 0 ]
-		then
-			# add i to error array
-			B_ERROR[$i]="42-b-$i"
-			errors_present=true
-		fi
-	done
-
-}
-
 
 fix_errors ()
 {
@@ -140,22 +110,99 @@ fix_errors ()
                 unset B_ERROR
 		B_ERROR=()
 	fi
-	echo "$errors_present"
 	errors_present=false
 	capture_current_state
-	state_validation
+	validate_"$BUILDING_LAYER"
 }
 
-# run
+validate_on ()
+{
+	# check 42-a state
+	for i in 0 1 2
+	do 
+		cmp --silent ~/tmp/3d_layer_off ~/tmp/42-a_"$i"
+		result=$?
+		if [ $result == 0 ]
+		then
+			A_ERROR[$i]="42-a-$i"
+			errors_present=true
+		fi
+	done
+
+	# check 42-b state
+	for i in 0 1 2 3
+	do
+		cmp --silent ~/tmp/3d_layer_off ~/tmp/42-b_"$i"
+		result=$?
+		if [ $result == 0 ]
+		then
+			B_ERROR[$i]="42-b-$i"
+			errors_present=true
+		fi
+	done
+}
+
+validate_off ()
+{
+	# check 42-a state	
+	for i in 0 1 2
+	do 
+		cmp --silent ~/tmp/3d_layer_on_1 ~/tmp/42-a_"$i"
+		result1=$?
+		cmp --silent ~/tmp/3d_layer_on_2 ~/tmp/42-a_"$i"
+		result2=$?
+		if [ $result1 == 0 ] || [ $result2 == 0 ]
+		then
+				A_ERROR[$i]="42-a-$i"
+				errors_present=true
+		fi
+	done
+
+	# check 42-b state
+	for i in 0 1 2 3
+	do
+		cmp --silent ~/tmp/3d_layer_on_1 ~/tmp/42-b_"$i"
+		result1=$?
+		cmp --silent ~/tmp/3d_layer_on_2 ~/tmp/42-b_"$i"
+		result2=$?
+		if [ $result1 == 0 ] || [ $result2 == 0 ]
+		then
+				B_ERROR[$i]="42-b-$i"
+				errors_present=true
+		fi
+	done
+
+}
+
+toggle_off ()
+{
+	#toggle_layer
+	capture_current_state
+	validate_off	
+	while [ "$errors_present" = true ]
+	do
+		fix_errors "$BUILDING_LAYER"
+	done	
+}
+
+toggle_on ()
+{
+	#toggle_layer
+	capture_current_state
+	validate_on
+	while [ "$errors_present" = true ]
+	do
+		fix_errors "$BUILDING_LAYER"
+	done
+}
+
 toggleMenus
 capture_initial_state
-toggle_layer
-capture_current_state
-state_validation
-wait
-while [ "$errors_present" = true ]
-do
-	fix_errors
-done
-echo "$errors_present"
+if [ "$BUILDING_LAYER" == on ]
+then
+	toggle_on
+else
+	toggle_off
+fi
 toggleMenus
+
