@@ -53,7 +53,7 @@ install(
 )
 
 install(
-  DIRECTORY bin/
+  DIRECTORY bash_scripts/
   DESTINATION /usr/bin/bash_scripts
 )
 
