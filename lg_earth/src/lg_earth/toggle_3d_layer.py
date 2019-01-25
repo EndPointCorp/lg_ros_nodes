@@ -12,4 +12,4 @@ class Toggle3d:
         return self.layer_is_on
 
     def sync_state_to_earth(self, state):
-        subprocess.call(['toggle_layer.bash', 'on' if state else 'off'])
+        subprocess.call(['/usr/bin/bash_scripts/toggle_layer.bash', 'on' if state else 'off'])

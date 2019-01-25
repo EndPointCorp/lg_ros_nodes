@@ -52,6 +52,11 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
 )
 
+install(
+  DIRECTORY bin/
+  DESTINATION /usr/bin/bash_scripts
+)
+
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_query_writer.py)
