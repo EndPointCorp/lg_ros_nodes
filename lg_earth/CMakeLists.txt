@@ -14,6 +14,8 @@ add_service_files(
   PlaytourQuery.srv
   PlanetQuery.srv
   ViewsyncState.srv
+  Toggle3dState.srv
+  Toggle3dSet.srv
 )
 
 generate_messages()
@@ -41,6 +43,7 @@ catkin_install_python(PROGRAMS
   scripts/kmlsync_state.py
   scripts/planet_changer
   scripts/planet_changer.py
+  scripts/toggle_layer_service.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
