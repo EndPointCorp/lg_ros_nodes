@@ -5,9 +5,11 @@ if [[ $# -eq 0 ]] ; then
 	exit 0
 fi
 
+#HOST
+host=$(hostname)
 # Starting Positions for Validation
-A_START_X_VAL=1933
-B_START_X_VAL=13
+A_START_X_VAL=1946
+B_START_X_VAL=26
 
 #desired layer state
 BUILDING_LAYER="$1"
@@ -22,93 +24,104 @@ declare -A toggle_button=( ["42-a-0"]="1958 1151" ["42-a-1"]="3038 1151" ["42-a-
 
 toggleMenus ()
 {
-	# Open Menus 42-a
-        ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-a 'export DISPLAY=:0; xdotool mousemove 2460 960 ; xdotool click 1; xdotool key ctrl+alt+b ; xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b' &
+   	if [ "$host" == "42-a" ]
+	then
 
-
-        # Open Menus 42-b
-        ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-b 'export DISPLAY=:0; xdotool mousemove 1600 960 ;  xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 0420 1169;  xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 2580 1169; xdotool click 1; xdotool key ctrl+alt+b; xdotool mousemove 3660 1169; xdotool click 1; xdotool key ctrl+alt+b '&
-	wait
-
+	 	# Open Menus 42-a
+        export DISPLAY=:0;
+		 xdotool mousemove 2460 960 ; xdotool click 1; xdotool key ctrl+alt+b ; sleep .2;
+		 xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b; sleep .2;
+		 xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b; 
+	else
+		# Open Menus 42-b
+        export DISPLAY=:0;xdotool mousemove 1600 960 ;  xdotool click 1; xdotool key ctrl+alt+b; sleep .2
+		xdotool mousemove 0420 1169;  xdotool click 1; xdotool key ctrl+alt+b; sleep .2 
+		xdotool mousemove 2580 1169; xdotool click 1; xdotool key ctrl+alt+b; sleep .2
+		xdotool mousemove 3660 1169; xdotool click 1; xdotool key ctrl+alt+b;
+	fi	
 }
 
 
 
 toggle_layer ()
 {
-	# Toggle 42-a 3D Imagery
-	ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-a 'export DISPLAY=:0; xdotool mousemove 1958 1151;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0; xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0; xdotool click 1; sleep .1; xdotool mousemove_relative 540 0; xdotool click 1 ' &
-
-
-	# Toggle 42-b 3D Imagery
-	ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-b 'export DISPLAY=:0; xdotool mousemove 40 1150;   xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1' &
-
-	# wait for toggles to complete
-	wait
+	if [ "$host" == "42-a" ]
+	then
+		# Toggle 42-a 3D Imagery
+		export DISPLAY=:0; xdotool mousemove 1958 1151;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0; xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0; xdotool click 1; sleep .1; xdotool mousemove_relative 540 0; xdotool click 1 
+	else
+		# Toggle 42-b 3D Imagery
+		export DISPLAY=:0; xdotool mousemove 40 1150;   xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1
+	fi
 }
 
 capture_initial_state ()
 {
-	#screenshot 42-a
-	ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-a 'xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-a_initial.png'
-	#copy to head
-        scp -q 42-a:/home/lg/tmp/42-a_initial.png ~/tmp
-        # crop for current state 
-	convert ~/tmp/42-a_initial.png -crop 50x50+"$((A_START_X_VAL))"+1126 ~/tmp/initial_layer_state.png
-	# convert to text for comparisson
-        img2txt ~/tmp/initial_layer_state.png > ~/tmp/initial_state
+	if [ "$host" == "42-a" ]
+	then
+		#screenshot 42-a
+		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-a_initial.png
+		# crop for current state 
+		convert ~/tmp/42-a_initial.png -crop 25x25+"$((A_START_X_VAL))"+1139 ~/tmp/initial_layer_state.png
+		img2png ~/tmp/initial_layer_state.png &>/dev/null
+		# convert to text for comparisson
+	else
+		# screenshot 42-b
+ 		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-b_initial.png
+		#crop for current state	
+		convert ~/tmp/42-b_toggle.png -crop 25x25+"$((B_START_X_VAL))"+1139 ~/tmp/42-b_"$i".png
+		img2png ~/tmp/initial_layer_state.png &>/dev/null
+	fi
 }
 
 capture_current_state ()
-{
-	# screenshot 
-	ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-a 'xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-a_toggle.png' &
-	ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-b 'xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-b_toggle.png' &
-	wait
-
-	#copy to head
-	scp -q 42-a:/home/lg/tmp/42-a_toggle.png ~/tmp &
-	scp -q 42-b:/home/lg/tmp/42-b_toggle.png ~/tmp & 
-	wait
-
-	#crop for each screen in 42-a 
-	for i in 0 1 2
-	do 
-		convert ~/tmp/42-a_toggle.png -crop 50x50+"$((A_START_X_VAL+(1080*$i)))"+1126 ~/tmp/42-a_"$i".png
-		img2txt ~/tmp/42-a_"$i".png > ~/tmp/42-a_"$i"
-	done
-
-
-	# screenshot 42-b
-	ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-b 'xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-b_toggle.png'
-	# crop for each screen in 42-b
-	for i in 0 1 2 3
-	do
-		convert ~/tmp/42-b_toggle.png -crop 50x50+"$((B_START_X_VAL+(1080*$i)))"+1126 ~/tmp/42-b_"$i".png
-		img2txt ~/tmp/42-b_"$i".png > ~/tmp/42-b_"$i"
-	done
+{ 
+	if [ "$host" == "42-a" ]
+	then
+		# screenshot 
+		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-a_toggle.png
+		#crop for each screen in 42-a
+		for i in 0 1 2
+		do
+			convert ~/tmp/42-a_toggle.png -crop 25x25+"$((A_START_X_VAL+(1080*$i)))"+1139 ~/tmp/42-a_"$i".png
+			img2png ~/tmp/42-a_"$i".png &>/dev/null
+			#img2txt ~/tmp/42-a_"$i".png > ~/tmp/42-a_"$i"
+		done
+	else
+		# screenshot 42-b
+		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-b_toggle.png
+		# crop for each screen in 42-b
+		for i in 0 1 2 3
+		do
+			convert ~/tmp/42-b_toggle.png -crop 25x25+"$((B_START_X_VAL+(1080*$i)))"+1139 ~/tmp/42-b_"$i".png
+			img2png ~/tmp/42-b_"$i".png &>/dev/null
+			#img2txt ~/tmp/42-b_"$i".png > ~/tmp/42-b_"$i"
+		done
+	fi
 }
 
 
 fix_errors ()
 {
-	if [ ${#A_ERROR[@]} -ne 0 ]; then
-
-		for i in  "${A_ERROR[@]}"
-		do
-			ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-a bash -c "'export DISPLAY=:0; xdotool mousemove ${toggle_button[$i]};  xdotool click 1'"
-		done
-		unset A_ERROR
-		A_ERROR=()
-	fi
-
-	if [ ${#B_ERROR[@]} -ne 0 ]; then
-		for i in "${B_ERROR[@]}"
-		do
-			ssh -o ConnectTimeout=1 -o BatchMode=yes -o ConnectionAttempts=1 42-b bash -c "'export DISPLAY=:0; xdotool mousemove ${toggle_button[$i]};  xdotool click 1'"
-		done
-                unset B_ERROR
-		B_ERROR=()
+	if [ "$host" == "42-a" ]
+	then
+		if [ ${#A_ERROR[@]} -ne 0 ]; then
+			for i in  "${A_ERROR[@]}"
+			do
+				export DISPLAY=:0; xdotool mousemove ${toggle_button[$i]};  xdotool click 1; sleep .3
+			done
+			unset A_ERROR
+			A_ERROR=()
+		fi
+	else
+		if [ ${#B_ERROR[@]} -ne 0 ]; then
+			for i in "${B_ERROR[@]}"
+			do
+				export DISPLAY=:0; xdotool mousemove ${toggle_button[$i]};  xdotool click 1; sleep .3
+			done
+			unset B_ERROR
+			B_ERROR=()
+		fi
 	fi
 	errors_present=false
 	capture_current_state
@@ -117,60 +130,66 @@ fix_errors ()
 
 validate_on ()
 {
-	# check 42-a state
-	for i in 0 1 2
-	do 
-		cmp --silent ~/tmp/3d_layer_off ~/tmp/42-a_"$i"
-		result=$?
-		if [ $result == 0 ]
-		then
-			A_ERROR[$i]="42-a-$i"
-			errors_present=true
-		fi
-	done
-
-	# check 42-b state
-	for i in 0 1 2 3
-	do
-		cmp --silent ~/tmp/3d_layer_off ~/tmp/42-b_"$i"
-		result=$?
-		if [ $result == 0 ]
-		then
-			B_ERROR[$i]="42-b-$i"
-			errors_present=true
-		fi
-	done
+	if [ "$host" == "42-a" ]
+	then
+		# check 42-a state
+		for i in 0 1 2
+		do 
+			cmp --silent ~/tmp/3d_layer_off.png ~/tmp/42-a_"$i".png
+			result=$?
+			if [ $result == 0 ]
+			then
+				A_ERROR[$i]="42-a-$i"
+				errors_present=true
+			fi
+		done
+	else
+		# check 42-b state
+		for i in 0 1 2 3
+		do
+			cmp --silent ~/tmp/3d_layer_off.png ~/tmp/42-b_"$i".png
+			result=$?
+			if [ $result == 0 ]
+			then
+				B_ERROR[$i]="42-b-$i"
+				errors_present=true
+			fi
+		done
+	fi
 }
 
 validate_off ()
 {
-	# check 42-a state	
-	for i in 0 1 2
-	do 
-		cmp --silent ~/tmp/3d_layer_on_1 ~/tmp/42-a_"$i"
-		result1=$?
-		cmp --silent ~/tmp/3d_layer_on_2 ~/tmp/42-a_"$i"
-		result2=$?
-		if [ $result1 == 0 ] || [ $result2 == 0 ]
-		then
-				A_ERROR[$i]="42-a-$i"
-				errors_present=true
-		fi
-	done
-
-	# check 42-b state
-	for i in 0 1 2 3
-	do
-		cmp --silent ~/tmp/3d_layer_on_1 ~/tmp/42-b_"$i"
-		result1=$?
-		cmp --silent ~/tmp/3d_layer_on_2 ~/tmp/42-b_"$i"
-		result2=$?
-		if [ $result1 == 0 ] || [ $result2 == 0 ]
-		then
-				B_ERROR[$i]="42-b-$i"
-				errors_present=true
-		fi
-	done
+	if [ "$host" == "42-a" ] 
+	then
+		# check 42-a state	
+		for i in 0 1 2
+		do 
+			cmp --silent  ~/tmp/3d_layer_on_1.png ~/tmp/42-a_"$i".png
+			result1=$?
+			cmp --silent  ~/tmp/3d_layer_on_2.png ~/tmp/42-a_"$i".png
+			result2=$?
+			if [ $result1 == 0 ] || [ $result2 == 0 ]
+			then
+					A_ERROR[$i]="42-a-$i"
+					errors_present=true
+			fi
+		done
+	else
+		# check 42-b state
+		for i in 0 1 2 3
+		do
+			cmp --silent ~/tmp/3d_layer_on_1.png ~/tmp/42-b_"$i".png
+			result1=$?
+			cmp --silent ~/tmp/3d_layer_on_2.png ~/tmp/42-b_"$i".png
+			result2=$?
+			if [ $result1 == 0 ] || [ $result2 == 0 ]
+			then
+					B_ERROR[$i]="42-b-$i"
+					errors_present=true
+			fi
+		done
+	fi
 
 }
 
