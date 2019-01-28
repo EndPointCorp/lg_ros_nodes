@@ -15,6 +15,7 @@ def main():
     s = Toggle3d()
     def set_service_handler(msg):
         s.set_layer_state(msg.state)
+        return msg.state
     
     def state_service_handler(msg):
         return s.get_state
