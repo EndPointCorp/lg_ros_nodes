@@ -54,7 +54,7 @@ install(
 
 install(
   DIRECTORY bash_scripts/
-  DESTINATION /usr/bin/bash_scripts
+  DESTINATION /home/lg/bash_scripts
 )
 
 if (CATKIN_ENABLE_TESTING)
