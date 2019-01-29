@@ -4,7 +4,6 @@ import rospy
 from std_msgs.msg import Bool
 
 from lg_earth import Toggle3d
-from lg_earth.srv import Toggle3dSet
 
 from lg_common.helpers import run_with_influx_exception_handler
 
@@ -14,15 +13,14 @@ def main():
     # We need that on 42-a as well as on 42-b
     rospy.init_node(NODE_NAME, anonymous=True)
 
-
     s = Toggle3d()
 
     pub = rospy.Publisher('/earth/3d_layer/state', Bool, queue_size=1, latch=True)
     s.set_on_change_listener(lambda state: pub.publish(state))
     
-    rospy.Service('/earth/3d_layer/set', 
-                  Toggle3dSet, 
-                  lambda msg: s.set_layer_state(msg.state))
+    rospy.Subscriber('/earth/3d_layer/set', 
+                     Bool, 
+                     lambda msg: s.set_layer_state(msg.data))
 
     rospy.spin()
 
