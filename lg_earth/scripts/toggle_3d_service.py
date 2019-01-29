@@ -4,7 +4,7 @@ import rospy
 from std_msgs.msg import Bool
 
 from lg_earth import Toggle3d
-from lg_earth.srv import Set3dLayerState
+from lg_earth.srv import Toggle3dSet
 
 from lg_common.helpers import run_with_influx_exception_handler
 
@@ -21,7 +21,7 @@ def main():
     s.set_on_change_listener(lambda state: pub.publish(state))
     
     rospy.Service('/earth/3d_layer/set', 
-                  Set3dLayerState, 
+                  Toggle3dSet, 
                   lambda msg: s.set_layer_state(msg.state))
 
     rospy.spin()
