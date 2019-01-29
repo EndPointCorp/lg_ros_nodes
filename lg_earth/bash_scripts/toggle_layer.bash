@@ -63,14 +63,15 @@ capture_initial_state ()
 		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-a_initial.png
 		# crop for current state 
 		convert ~/tmp/42-a_initial.png -crop 25x25+"$((A_START_X_VAL))"+1139 ~/tmp/initial_layer_state.png
-		img2png ~/tmp/initial_layer_state.png &>/dev/null
+		convert ~/tmp/initial_layer_state.png txt:- > ~/tmp/initial_layer_state
+		#img2png ~/tmp/initial_layer_state.png &>/dev/null
 		# convert to text for comparisson
 	else
 		# screenshot 42-b
  		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-b_initial.png
 		#crop for current state	
 		convert ~/tmp/42-b_toggle.png -crop 25x25+"$((B_START_X_VAL))"+1139 ~/tmp/42-b_"$i".png
-		img2png ~/tmp/initial_layer_state.png &>/dev/null
+		#img2png ~/tmp/initial_layer_state.png &>/dev/null
 	fi
 }
 
@@ -84,7 +85,8 @@ capture_current_state ()
 		for i in 0 1 2
 		do
 			convert ~/tmp/42-a_toggle.png -crop 25x25+"$((A_START_X_VAL+(1080*$i)))"+1139 ~/tmp/42-a_"$i".png
-			img2png ~/tmp/42-a_"$i".png &>/dev/null
+			convert ~/tmp/42-a_"$i".png  txt:- > ~/tmp/42-a_"$i"
+			#img2png ~/tmp/42-a_"$i".png &>/dev/null
 			#img2txt ~/tmp/42-a_"$i".png > ~/tmp/42-a_"$i"
 		done
 	else
@@ -94,7 +96,8 @@ capture_current_state ()
 		for i in 0 1 2 3
 		do
 			convert ~/tmp/42-b_toggle.png -crop 25x25+"$((B_START_X_VAL+(1080*$i)))"+1139 ~/tmp/42-b_"$i".png
-			img2png ~/tmp/42-b_"$i".png &>/dev/null
+			convert ~/tmp/42-b_"$i".png txt:- > ~/tmp/42-b_"$i"
+			#img2png ~/tmp/42-b_"$i".png &>/dev/null
 			#img2txt ~/tmp/42-b_"$i".png > ~/tmp/42-b_"$i"
 		done
 	fi
@@ -135,7 +138,7 @@ validate_on ()
 		# check 42-a state
 		for i in 0 1 2
 		do 
-			cmp --silent ~/tmp/3d_layer_off.png ~/tmp/42-a_"$i".png
+			cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
 			result=$?
 			if [ $result == 0 ]
 			then
@@ -147,7 +150,7 @@ validate_on ()
 		# check 42-b state
 		for i in 0 1 2 3
 		do
-			cmp --silent ~/tmp/3d_layer_off.png ~/tmp/42-b_"$i".png
+			cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-b_"$i"
 			result=$?
 			if [ $result == 0 ]
 			then
@@ -165,9 +168,9 @@ validate_off ()
 		# check 42-a state	
 		for i in 0 1 2
 		do 
-			cmp --silent  ~/tmp/3d_layer_on_1.png ~/tmp/42-a_"$i".png
+			cmp --silent  /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
 			result1=$?
-			cmp --silent  ~/tmp/3d_layer_on_2.png ~/tmp/42-a_"$i".png
+			cmp --silent  /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
 			result2=$?
 			if [ $result1 == 0 ] || [ $result2 == 0 ]
 			then
@@ -179,9 +182,9 @@ validate_off ()
 		# check 42-b state
 		for i in 0 1 2 3
 		do
-			cmp --silent ~/tmp/3d_layer_on_1.png ~/tmp/42-b_"$i".png
+			cmp --silent /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-b_"$i"
 			result1=$?
-			cmp --silent ~/tmp/3d_layer_on_2.png ~/tmp/42-b_"$i".png
+			cmp --silent /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-b_"$i"
 			result2=$?
 			if [ $result1 == 0 ] || [ $result2 == 0 ]
 			then
