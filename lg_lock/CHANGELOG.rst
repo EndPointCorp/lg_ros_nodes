@@ -2,6 +2,13 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fixed std_srvs import
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Add spacenav suppression
+* Contributors: Dmitry Kiselev
+
 1.19.2 (2019-01-11)
 -------------------
 * fix locker service and topic names
