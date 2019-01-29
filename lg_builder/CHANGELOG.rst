@@ -8,8 +8,8 @@ Changelog for package lg_builder
 * lg_builder: un-hardcode target distro/platform
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+1.19.3 (2019-01-29)
+-------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
 * Contributors: Dmitry Kiselev
 

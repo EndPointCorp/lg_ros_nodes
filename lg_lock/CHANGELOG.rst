@@ -2,8 +2,8 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.19.3 (2019-01-29)
+-------------------
 * fixed std_srvs import
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
 * Add spacenav suppression

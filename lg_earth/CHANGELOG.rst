@@ -5,8 +5,8 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.3 (2019-01-29)
+-------------------
 * Use topics for 3d layer state switch
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
 * Change executable script path

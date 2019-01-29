@@ -5,8 +5,8 @@ Changelog for package spacenav_wrapper
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.3 (2019-01-29)
+-------------------
 * add some debug output
 * fixed std_srvs import
 * add spacenav suppression
