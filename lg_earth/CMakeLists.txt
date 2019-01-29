@@ -42,7 +42,7 @@ catkin_install_python(PROGRAMS
   scripts/kmlsync_state.py
   scripts/planet_changer
   scripts/planet_changer.py
-  scripts/toggle_layer_service.py
+  scripts/toggle_3d_service.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
