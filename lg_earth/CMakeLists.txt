@@ -14,8 +14,7 @@ add_service_files(
   PlaytourQuery.srv
   PlanetQuery.srv
   ViewsyncState.srv
-  Toggle3dState.srv
-  Toggle3dSet.srv
+  Set3dLayerState.srv
 )
 
 generate_messages()
