@@ -5,6 +5,31 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+1.19.3 (2019-01-29)
+-------------------
+* Use topics for 3d layer state switch
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Change executable script path
+* Toggle Earth Layer: Fix for image comparison
+* changed names
+* renamed script
+* fixed cmake
+* Refactored 3d layer set service
+* move scripts folder deployment destination to avoid access issues
+* add service call return
+* Fix stuff for toggling
+* add files for layer state checking
+* deploy bash scripts
+* Deploy bash scripts
+* Changed srv declaration
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Add service for 3d layer state changing
+* Update toggle layer
+* rename layer toggle script
+* Toggle Layer
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev, Jarred
+
 1.19.2 (2019-01-11)
 -------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes

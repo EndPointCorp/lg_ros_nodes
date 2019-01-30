@@ -7,6 +7,11 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
+1.19.3 (2019-01-29)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
 1.19.2 (2019-01-11)
 -------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
