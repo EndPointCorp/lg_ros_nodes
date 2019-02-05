@@ -148,6 +148,13 @@ class USCSService:
         if self.state:
             return self.state
         return USCSMessageResponse()
+    
+    def republish(self, *args, **kwargs):
+        """
+        Repeat last scene, without idempotentlity check
+        """
+        state = self.current_uscs_message()
+        self.director_scene_publisher.publish(state.message)
 
     def initial_state(self, *req, **kwargs):
         """
