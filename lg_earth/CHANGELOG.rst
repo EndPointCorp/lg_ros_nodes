@@ -5,6 +5,12 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+1.19.4 (2019-01-30)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* force chmod +x on earth layer toggle script
+* Contributors: Dmitry Kiselev
+
 1.19.3 (2019-01-29)
 -------------------
 * Use topics for 3d layer state switch
