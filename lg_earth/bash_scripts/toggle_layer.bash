@@ -1,230 +1,141 @@
 #!/bin/bash
-
 # exit if no arguments
 if [[ $# -eq 0 ]] ; then
-	exit 0
+    exit 0
 fi
 
-#HOST
-host=$(hostname)
-# Starting Positions for Validation
-A_START_X_VAL=1946
-B_START_X_VAL=26
-
-#desired layer state
+# Desired layer state
 BUILDING_LAYER="$1"
+# Earth Instance IDs
+EARTH_INSTANCES=$(export DISPLAY=:0 ; xdotool search --name "Earth")
+# Track if Errors Present
+ERRORS_PRESENT=false
 
-# Error Tracking
-A_ERROR=()
-B_ERROR=()
-errors_present=false
-# Coordinates for toggle
-declare -A toggle_button=( ["42-a-0"]="1958 1151" ["42-a-1"]="3038 1151" ["42-a-2"]="4118 1151" ["42-b-0"]="40 1150" ["42-b-1"]="1120 1150" ["42-b-2"]="2200 1150" ["42-b-3"]="3280 1150" )
-
-
-toggleMenus ()
-{
-   	if [ "$host" == "42-a" ]
-	then
-
-	 	# Open Menus 42-a
-        export DISPLAY=:0;
-		 xdotool mousemove 2460 960 ; xdotool click 1; xdotool key ctrl+alt+b ; sleep .2;
-		 xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b; sleep .2;
-		 xdotool mousemove_relative 1080 0; xdotool click 1; xdotool key ctrl+alt+b; 
-	else
-		# Open Menus 42-b
-        export DISPLAY=:0;xdotool mousemove 1600 960 ;  xdotool click 1; xdotool key ctrl+alt+b; sleep .2
-		xdotool mousemove 0420 1169;  xdotool click 1; xdotool key ctrl+alt+b; sleep .2 
-		xdotool mousemove 2580 1169; xdotool click 1; xdotool key ctrl+alt+b; sleep .2
-		xdotool mousemove 3660 1169; xdotool click 1; xdotool key ctrl+alt+b;
-	fi	
+# Toggle Left Side Menu
+toggle_menus () {
+    for i in $EARTH_INSTANCES
+    do
+        export DISPLAY=:0
+        xdotool windowactivate $i
+        xdotool key --window $i ctrl+alt+b
+    done
 }
 
-
-
-toggle_layer ()
-{
-	if [ "$host" == "42-a" ]
-	then
-		# Toggle 42-a 3D Imagery
-		export DISPLAY=:0; xdotool mousemove 1958 1151;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0; xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0; xdotool click 1; sleep .1; xdotool mousemove_relative 540 0; xdotool click 1 
-	else
-		# Toggle 42-b 3D Imagery
-		export DISPLAY=:0; xdotool mousemove 40 1150;   xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1; sleep .1; xdotool mousemove_relative 1080 0;  xdotool click 1
-	fi
+# Toggle 3D Building Layer
+toggle_layer () {
+    echo "TOGGLING LAYER"
+    for i in $EARTH_INSTANCES
+        do
+            export DISPLAY=:0
+            xdotool windowactivate $i
+            xdotool mousemove --window $i 38 1175
+            sleep .2
+            xdotool click --window $i 1
+        done
 }
 
-capture_initial_state ()
-{
-	if [ "$host" == "42-a" ]
-	then
-		#screenshot 42-a
-		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-a_initial.png
-		# crop for current state 
-		convert ~/tmp/42-a_initial.png -crop 25x25+"$((A_START_X_VAL))"+1139 ~/tmp/initial_layer_state.png
-		convert ~/tmp/initial_layer_state.png txt:- > ~/tmp/initial_layer_state
-		#img2png ~/tmp/initial_layer_state.png &>/dev/null
-		# convert to text for comparisson
-	else
-		# screenshot 42-b
- 		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-b_initial.png
-		#crop for current state	
-		convert ~/tmp/42-b_toggle.png -crop 25x25+"$((B_START_X_VAL))"+1139 ~/tmp/42-b_"$i".png
-		#img2png ~/tmp/initial_layer_state.png &>/dev/null
-	fi
-}
-
+# Capture Current Layer State
 capture_current_state ()
-{ 
-	if [ "$host" == "42-a" ]
-	then
-		# screenshot 
-		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-a_toggle.png
-		#crop for each screen in 42-a
-		for i in 0 1 2
-		do
-			convert ~/tmp/42-a_toggle.png -crop 25x25+"$((A_START_X_VAL+(1080*$i)))"+1139 ~/tmp/42-a_"$i".png
-			convert ~/tmp/42-a_"$i".png  txt:- > ~/tmp/42-a_"$i"
-			#img2png ~/tmp/42-a_"$i".png &>/dev/null
-			#img2txt ~/tmp/42-a_"$i".png > ~/tmp/42-a_"$i"
-		done
-	else
-		# screenshot 42-b
-		xwd -display :0 -root | convert xwd:- png:- > ~/tmp/42-b_toggle.png
-		# crop for each screen in 42-b
-		for i in 0 1 2 3
-		do
-			convert ~/tmp/42-b_toggle.png -crop 25x25+"$((B_START_X_VAL+(1080*$i)))"+1139 ~/tmp/42-b_"$i".png
-			convert ~/tmp/42-b_"$i".png txt:- > ~/tmp/42-b_"$i"
-			#img2png ~/tmp/42-b_"$i".png &>/dev/null
-			#img2txt ~/tmp/42-b_"$i".png > ~/tmp/42-b_"$i"
-		done
-	fi
-}
-
-
-fix_errors ()
 {
-	if [ "$host" == "42-a" ]
-	then
-		if [ ${#A_ERROR[@]} -ne 0 ]; then
-			for i in  "${A_ERROR[@]}"
-			do
-				export DISPLAY=:0; xdotool mousemove ${toggle_button[$i]};  xdotool click 1; sleep .3
-			done
-			unset A_ERROR
-			A_ERROR=()
-		fi
-	else
-		if [ ${#B_ERROR[@]} -ne 0 ]; then
-			for i in "${B_ERROR[@]}"
-			do
-				export DISPLAY=:0; xdotool mousemove ${toggle_button[$i]};  xdotool click 1; sleep .3
-			done
-			unset B_ERROR
-			B_ERROR=()
-		fi
-	fi
-	errors_present=false
-	capture_current_state
-	validate_"$BUILDING_LAYER"
+    echo "CAPTURING CURRENT"
+    for i in $EARTH_INSTANCES
+    do
+        export DISPLAY=:0
+        xwd -display :0 -id $i | convert xwd:- png:- > ~/tmp/42-a_"$i".png
+        convert ~/tmp/42-a_"$i".png -crop 5x5+33+1151 ~/tmp/42-a_"$i".png
+        convert ~/tmp/42-a_"$i".png txt:- > ~/tmp/42-a_"$i"
+    done
 }
 
-validate_on ()
-{
-	if [ "$host" == "42-a" ]
-	then
-		# check 42-a state
-		for i in 0 1 2
-		do 
-			cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
-			result=$?
-			if [ $result == 0 ]
-			then
-				A_ERROR[$i]="42-a-$i"
-				errors_present=true
-			fi
-		done
-	else
-		# check 42-b state
-		for i in 0 1 2 3
-		do
-			cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-b_"$i"
-			result=$?
-			if [ $result == 0 ]
-			then
-				B_ERROR[$i]="42-b-$i"
-				errors_present=true
-			fi
-		done
-	fi
+# Validate 3D Layer On
+validate_on () {
+
+    echo "VALIDATING ON"
+    for i in $EARTH_INSTANCES
+    do
+        cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
+        result=$?
+        if [ $result == 0 ]
+            then
+                EARTH_ERROR[$i]="$i"
+                ERRORS_PRESENT=true
+        fi
+    done
 }
 
-validate_off ()
-{
-	if [ "$host" == "42-a" ] 
-	then
-		# check 42-a state	
-		for i in 0 1 2
-		do 
-			cmp --silent  /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
-			result1=$?
-			cmp --silent  /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
-			result2=$?
-			if [ $result1 == 0 ] || [ $result2 == 0 ]
-			then
-					A_ERROR[$i]="42-a-$i"
-					errors_present=true
-			fi
-		done
-	else
-		# check 42-b state
-		for i in 0 1 2 3
-		do
-			cmp --silent /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-b_"$i"
-			result1=$?
-			cmp --silent /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-b_"$i"
-			result2=$?
-			if [ $result1 == 0 ] || [ $result2 == 0 ]
-			then
-					B_ERROR[$i]="42-b-$i"
-					errors_present=true
-			fi
-		done
-	fi
-
+# Validate 3D Layer Off
+validate_off () {
+    echo "VALIDATING OFF"
+    for i in $EARTH_INSTANCES
+    do
+        cmp --silent  /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
+        result1=$?
+        cmp --silent  /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
+        result2=$?
+        if [ $result1 == 0 ] || [ $result2 == 0 ]
+            then
+                EARTH_ERROR[$i]="$i"
+                ERRORS_PRESENT=true
+            fi
+    done
 }
 
-toggle_off ()
-{
-	#toggle_layer
-	capture_current_state
-	validate_off	
-	while [ "$errors_present" = true ]
-	do
-		fix_errors "$BUILDING_LAYER"
-	done	
+# Toggle 3D Layer Off
+toggle_off () {
+    #toggle_layer
+    capture_current_state
+    validate_off
+    while [ "$ERRORS_PRESENT" = true ]
+    do
+        fix_errors "$BUILDING_LAYER"
+    done
 }
 
+# Toggle 3D Layer On
 toggle_on ()
 {
-	#toggle_layer
-	capture_current_state
-	validate_on
-	while [ "$errors_present" = true ]
-	do
-		fix_errors "$BUILDING_LAYER"
-	done
+    #toggle_layer
+    capture_current_state
+    validate_on
+    while [ "$ERRORS_PRESENT" = true ]
+    do
+        fix_errors "$BUILDING_LAYER"
+    done
 }
 
-toggleMenus
-capture_initial_state
+# Fix Errors if Present
+fix_errors() {
+    echo "FIXING ERRORS"
+    echo "${EARTH_ERROR[@]}"
+    if [ ${#EARTH_ERROR[@]} -ne 0 ]; then
+        for i in "${EARTH_ERROR[@]}"
+        do
+            export DISPLAY=:0
+            xdotool windowactivate $i
+            xdotool mousemove --window $i 38 1175
+            sleep .2
+            xdotool click --window $i 1
+        done
+    fi
+    unset EARTH_ERROR
+    EARTH_ERROR=()
+    ERRORS_PRESENT=false
+    capture_current_state
+    validate_"$BUILDING_LAYER"
+}
+
+toggle_menus
 if [ "$BUILDING_LAYER" == on ]
 then
-	toggle_on
+    toggle_on
 else
-	toggle_off
+    toggle_off
 fi
-toggleMenus
+toggle_menus
+sleep 1
+if [ $HOSTNAME == "42-a" ]
+then
+	python /home/lg/bash_scripts/repub.py
+fi
+rm ~/tmp/42-a*
 
