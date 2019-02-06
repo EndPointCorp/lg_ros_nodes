@@ -8,6 +8,7 @@ import sys
 
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
+from std_srvs.srv import EmptyResponse
 
 
 class USCSService:
@@ -155,6 +156,7 @@ class USCSService:
         """
         state = self.current_uscs_message()
         self.director_scene_publisher.publish(state)
+        return EmptyResponse()
 
     def initial_state(self, *req, **kwargs):
         """
