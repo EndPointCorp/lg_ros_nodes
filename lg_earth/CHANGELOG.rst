@@ -5,6 +5,12 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* EARTH_TOGGLE: new scripts
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev, Jarred
+
 1.19.4 (2019-01-30)
 -------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
