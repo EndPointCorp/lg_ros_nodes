@@ -7,8 +7,8 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
-Forthcoming
------------
+1.19.5 (2019-02-06)
+-------------------
 * add empty response return for service call
 * fix message republishing
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
