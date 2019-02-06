@@ -154,7 +154,7 @@ class USCSService:
         Repeat last scene, without idempotentlity check
         """
         state = self.current_uscs_message()
-        self.director_scene_publisher.publish(state.message)
+        self.director_scene_publisher.publish(state)
 
     def initial_state(self, *req, **kwargs):
         """
