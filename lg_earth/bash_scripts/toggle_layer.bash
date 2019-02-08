@@ -11,33 +11,50 @@ EARTH_INSTANCES=$(export DISPLAY=:0 ; xdotool search --name "Earth")
 # Track if Errors Present
 ERRORS_PRESENT=false
 
+# disable logitech keyboard to prevent errors
+disable_keyboard () {
+	# find keyboard devices
+	KEYBOARD=$(grep c52b /sys/bus/usb/devices/*/idProduct)
+	for i in $KEYBOARD
+	do
+		DEVICE=$(echo $i | awk -F/ '{print $(NF-1)}')
+		echo "$DEVICE" | sudo tee /sys/bus/usb/drivers/usb/"$1"
+
+	done
+}
+
 # Toggle Left Side Menu
-toggle_menus () {
-    for i in $EARTH_INSTANCES
-    do
+toggle_menu () {
         export DISPLAY=:0
-        xdotool windowactivate $i
-        xdotool key --window $i ctrl+alt+b
-    done
+        xdotool windowactivate $1
+        xdotool key  ctrl+alt+b
 }
 
 # Toggle 3D Building Layer
 toggle_layer () {
-    echo "TOGGLING LAYER"
     for i in $EARTH_INSTANCES
         do
             export DISPLAY=:0
             xdotool windowactivate $i
-            xdotool mousemove --window $i 38 1175
-            sleep .2
-            xdotool click --window $i 1
+			for i in {1..6}
+			do
+				xdotool key --window $i Tab
+			done
+			for i in {1..6}
+			do 
+				xdotool key --window $i Down
+			done
+			xdotool key --window $i space
+			for i in {1..6}
+			do 
+				xdotool key --window $i Up
+			done
         done
 }
 
 # Capture Current Layer State
 capture_current_state ()
 {
-    echo "CAPTURING CURRENT"
     for i in $EARTH_INSTANCES
     do
         export DISPLAY=:0
@@ -50,7 +67,6 @@ capture_current_state ()
 # Validate 3D Layer On
 validate_on () {
 
-    echo "VALIDATING ON"
     for i in $EARTH_INSTANCES
     do
         cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
@@ -65,7 +81,6 @@ validate_on () {
 
 # Validate 3D Layer Off
 validate_off () {
-    echo "VALIDATING OFF"
     for i in $EARTH_INSTANCES
     do
         cmp --silent  /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
@@ -105,16 +120,29 @@ toggle_on ()
 
 # Fix Errors if Present
 fix_errors() {
-    echo "FIXING ERRORS"
     echo "${EARTH_ERROR[@]}"
     if [ ${#EARTH_ERROR[@]} -ne 0 ]; then
         for i in "${EARTH_ERROR[@]}"
         do
             export DISPLAY=:0
             xdotool windowactivate $i
-            xdotool mousemove --window $i 38 1175
-            sleep .2
-            xdotool click --window $i 1
+            sleep .1
+            for i in {1..6}
+            do
+                xdotool key Tab
+            done
+			sleep .1
+			for i in {1..6}
+            do
+                xdotool key Down
+            done
+			sleep .1
+            xdotool key space
+			sleep .1
+            for i in {1..6}
+            do
+                xdotool key Up
+            done
         done
     fi
     unset EARTH_ERROR
@@ -124,18 +152,43 @@ fix_errors() {
     validate_"$BUILDING_LAYER"
 }
 
-toggle_menus
+validate_closed () {
+
+	capture_current_state	
+	for i in EARTH_INSTANCES
+	do
+		cmp --silent  /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
+        result1=$?
+        cmp --silent  /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
+        result2=$?	
+		cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
+		result3=$?
+		if [ $result1 == 0 ] || [ $result2 == 0 ] || [ $result3 == 0 ]; then
+			toggle_menu $i
+		fi
+	done
+}
+
+disable_keyboard "unbind"
+for i in $EARTH_INSTANCES
+do
+	toggle_menu $i
+done
 if [ "$BUILDING_LAYER" == on ]
 then
     toggle_on
 else
     toggle_off
 fi
-toggle_menus
-sleep 1
+for i in $EARTH_INSTANCES
+do
+    toggle_menu $i
+done
+validate_closed
 if [ $HOSTNAME == "42-a" ]
 then
+	sleep .5
 	python /home/lg/bash_scripts/repub.py
 fi
 rm ~/tmp/42-a*
-
+disable_keyboard "bind"
