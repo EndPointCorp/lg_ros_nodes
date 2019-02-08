@@ -5,6 +5,11 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* Disable Keyboard when Toggling 3d layer
+* Contributors: Jarred
+
 1.19.5 (2019-02-06)
 -------------------
 * EARTH_TOGGLE: new scripts

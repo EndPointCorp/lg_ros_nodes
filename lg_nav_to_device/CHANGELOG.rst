@@ -5,6 +5,9 @@ Changelog for package lg_nav_to_device
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.19.5 (2019-02-06)
 -------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
