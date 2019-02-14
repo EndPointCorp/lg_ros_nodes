@@ -5,6 +5,11 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* TOGGLE: adjusted script
+* Contributors: Galaxy Admin
+
 1.19.6 (2019-02-08)
 -------------------
 * Disable Keyboard when Toggling 3d layer
