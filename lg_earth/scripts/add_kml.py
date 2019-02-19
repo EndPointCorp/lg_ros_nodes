@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from std_msgs.msg import String
+from std_msgs.msg import String, Empty
 from lg_common.srv import USCSMessage
 from interactivespaces_msgs.msg import GenericMessage
 
@@ -62,6 +62,20 @@ class KMLAdder():
         new_msg.message = json.dumps(current_scene)
         self.director_pub.publish(new_msg)
 
+    def clear_kmls(self):
+        current_scene = self.uscs_service.call().message
+        current_scene = json.loads(current_scene)
+
+        url_base = 'http://{}:{}/{}'.format(self.hostname, self.port, os.path.basename(self.serve_dir))
+        for window in current_scene['windows']:
+            if window['activity'] == 'earth':
+                window['assets'] = [a for a in window['assets'] if not a.startswith(url_base)] 
+        
+        new_msg = GenericMessage()
+        new_msg.type = 'json'
+        new_msg.message = json.dumps(current_scene)
+        self.director_pub.publish(new_msg)
+
     def _serve(self):
         os.chdir(self.serve_dir)
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
@@ -99,6 +113,7 @@ def main():
     k = KMLAdder(uscs_service, director_pub, port, hostname)
 
     rospy.Subscriber('/lg_earth/add_kml', String, k.handle_kml)
+    rospy.Subscriber('/lg_earth/clear_kml', Empty, k.clear_kmls)
 
     rospy.on_shutdown(k.shutdown)
     rospy.spin()
