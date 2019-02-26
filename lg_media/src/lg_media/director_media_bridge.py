@@ -58,6 +58,7 @@ class DirectorMediaBridge():
         """
         adhoc_medias = []
         media_id = 0
+        for media in media_list:
             media_name = 'adhoc_media_' + media_type + '_' + self.viewport_name + '_' + str(media_id)
             adhoc_media = AdhocMedia()
             adhoc_media.id = media_name
