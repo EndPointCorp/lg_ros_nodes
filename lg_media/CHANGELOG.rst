@@ -5,8 +5,8 @@ Changelog for package lg_media
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.8 (2019-02-26)
+-------------------
 * Fix Change: re-add line
 * VIDEO-SYNC Ros node changes
 * Contributors: Galaxy Admin
