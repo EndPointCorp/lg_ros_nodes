@@ -58,7 +58,6 @@ class DirectorMediaBridge():
         """
         adhoc_medias = []
         media_id = 0
-        for media in media_list:
             media_name = 'adhoc_media_' + media_type + '_' + self.viewport_name + '_' + str(media_id)
             adhoc_media = AdhocMedia()
             adhoc_media.id = media_name
@@ -68,7 +67,9 @@ class DirectorMediaBridge():
             adhoc_media.geometry.width = media['width']
             adhoc_media.geometry.height = media['height']
             adhoc_media.media_type = media_type
+            # TODO figure out if media['on_finish'] or media['activity_config']['onFinish'] is better
             adhoc_media.on_finish = media['on_finish']
+            adhoc_media.extra_args = media.get('activity_config', {}).get('args', '')
             adhoc_medias.append(adhoc_media)
             media_id += 1
 
