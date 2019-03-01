@@ -38,8 +38,7 @@ def get_kml_id(kml):
     if <kml> tag has id attribute returns it value
     othervise return unsigned crc32 of kml string
     """
-
-    id_match = kml_id_pattern.search(, kml, re.IGNORECASE)
+    id_match = kml_id_pattern.search(kml, re.IGNORECASE)
     if id_match:
         return id_match.group(1)
 
