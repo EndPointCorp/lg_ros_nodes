@@ -80,7 +80,7 @@ class KMLAdder():
             f.write(kml)
         
         kml_id = get_kml_id(kml)
-        if not kml_id self.id_to_file:
+        if kml_id not in self.id_to_file:
             self.id_to_file[kml_id] = list()
         
         # Keep track of files for easier remove by id
@@ -159,7 +159,7 @@ def main():
     rospy.init_node('add_kml')
 
     director_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
-    added_kml_pub = rospy.Publisher('/lg_earth/added_kml', StringArray, latch=True)
+    added_kml_pub = rospy.Publisher('/lg_earth/added_kml', StringArray, latch=True, queue_size=1)
     
     uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
 
