@@ -5,6 +5,14 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+1.19.9 (2019-03-06)
+-------------------
+* Fix 3d Toggle
+* fix typos
+* fixed typo
+* Remove kmls by ids
+* Contributors: Dmitry Kiselev, Galaxy Admin
+
 1.19.8 (2019-02-26)
 -------------------
 * Add clear kml for lg_earth
