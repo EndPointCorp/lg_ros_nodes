@@ -108,11 +108,17 @@ class KMLAdder():
 
         ids = msg.strings if msg.strings else None
 
-        matcher = None
         if ids:
-            files = [name for name in names for names in self.id_to_file]
+            files = []
             for id in ids:
-                self.id_to_file.pop(id)
+                if id in self.id_to_file:
+                    for names in self.id_to_file.pop(id):
+                        if type(names) == list:
+                            for name in names:
+                                files.append(name)
+                        else:
+                            files.append(names)
+            
             urls_to_remove = [self.formatURL(filename) for filename in files]
             matcher = get_match_any_starts_with(urls_to_remove)
         else:
