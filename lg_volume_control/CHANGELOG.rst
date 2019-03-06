@@ -5,6 +5,9 @@ Changelog for package lg_volume_control
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+
 1.19.8 (2019-02-26)
 -------------------
 
