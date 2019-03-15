@@ -5,6 +5,13 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* add snippet for addkml
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* fix filtering
+* Contributors: Dmitry Kiselev
+
 1.19.9 (2019-03-06)
 -------------------
 * Fix 3d Toggle

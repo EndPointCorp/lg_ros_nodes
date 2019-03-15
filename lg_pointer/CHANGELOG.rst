@@ -12,6 +12,11 @@ Changelog for package lg_pointer
   No mouse clicking yet
 * Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
 1.19.9 (2019-03-06)
 -------------------
 

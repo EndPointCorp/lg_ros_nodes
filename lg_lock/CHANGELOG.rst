@@ -2,6 +2,11 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
 1.19.9 (2019-03-06)
 -------------------
 
