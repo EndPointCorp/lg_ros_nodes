@@ -1,0 +1,91 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    
+    <script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+    
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+        .main {
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+        .topic-log {
+            flex: 1 0 auto;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        
+    </div>
+
+    <script>
+        
+        function Logger(container, topic, type) {
+            this.container = container;
+            this.topic = new ROSLIB.Topic({
+                ros: ros,
+                name: topic,
+                messageType: type,
+            });
+            this.topic.subscribe(this.onMessage.bind(this));
+            
+            var h = document.createElement('h3');
+            h.innerText = topic;
+            this.container.appendChild(h);
+        }
+        
+        Logger.prototype.onMessage = function(msg) {
+            console.log(msg);
+
+            var msgDiv = document.createElement('div');
+            msgDiv.className = 'msg';
+            msgDiv.innerText = JSON.stringify(msg);
+            this.container.appendChild(msgDiv);
+        }
+        
+        function addLoggerDiv(parent) {
+            var div = document.createElement('div');
+            div.className = 'topic-log';
+            parent.appendChild(div);
+            
+            return div;
+        }
+
+        var params = new URLSearchParams(document.location.search.substring(1));
+
+        ros = new ROSLIB.Ros({
+            url : 'ws://' + 
+                (params.get('host') || 'localhost') + ':' +
+                (params.get('port') || '9090')
+        });
+
+        ros.on('connection', function() {
+            console.log('Connected to websocket server.');
+        });
+
+        ros.on('error', function(error) {
+            console.log('Error connecting to websocket server: ', error);
+            alert('Error connecting to websocket server');
+        });
+
+        ros.on('close', function() {
+            console.log('Connection to websocket server closed.');
+        });
+
+        var main = document.querySelector('.main');
+        new Logger(addLoggerDiv(main), '/lg_earth/add_kml', 'std_msgs/String');
+        new Logger(addLoggerDiv(main), '/lg_earth/added_kml', 'lg_common/StringArray');
+        new Logger(addLoggerDiv(main), '/lg_earth/clear_kml', 'lg_common/StringArray');
+
+    </script>
+</body>
+</html>
