@@ -7,8 +7,8 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
-Forthcoming
------------
+1.19.11 (2019-03-20)
+--------------------
 * Fix awesome copmatibility
   In newer versions of awesome, rules may not have a 'rule' field.
   We know ours do, so check for rules field as a pre-condition.
