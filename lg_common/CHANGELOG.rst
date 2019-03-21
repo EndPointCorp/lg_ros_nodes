@@ -7,6 +7,13 @@ Changelog for package lg_common
 * super security (long live the wojo)
 * Contributors: Jacob Minshall
 
+Forthcoming
+-----------
+* Fix awesome copmatibility
+  In newer versions of awesome, rules may not have a 'rule' field.
+  We know ours do, so check for rules field as a pre-condition.
+* Contributors: Matt Vollrath
+
 1.19.10 (2019-03-15)
 --------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes

@@ -5,6 +5,11 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* application to listen on add_kml topics
+* Contributors: Dmitry Kiselev
+
 1.19.10 (2019-03-15)
 --------------------
 * add snippet for addkml
