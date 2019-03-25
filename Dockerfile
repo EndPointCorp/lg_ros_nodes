@@ -1,12 +1,13 @@
-FROM ubuntu:xenial
+ARG UBUNTU_RELEASE=bionic
+FROM ubuntu:${UBUNTU_RELEASE}
+ARG UBUNTU_RELEASE
 
 # prevent interactive prompts during build
 ENV DEBIAN_FRONTEND noninteractive
 
 # project settings
 ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
-ENV ROS_DISTRO kinetic
-ENV OS_VERSION xenial
+ENV ROS_DISTRO melodic
 
 # Env for nvidia-docker2/nvidia container runtime
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -19,8 +20,8 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 
 # install system dependencies and tools not tracked in rosdep
 RUN \
-  apt-get update -y && apt-get install -y ca-certificates wget && \
-  echo "deb http://packages.ros.org/ros/ubuntu $OS_VERSION main" > /etc/apt/sources.list.d/ros-latest.list && \
+  apt-get update -y && apt-get install -y ca-certificates gnupg wget && \
+  echo "deb http://packages.ros.org/ros/ubuntu ${UBUNTU_RELEASE} main" > /etc/apt/sources.list.d/ros-latest.list && \
   echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
   echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 && \
@@ -29,8 +30,10 @@ RUN \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
     g++ pep8 cppcheck closure-linter \
+    python-evdev \
     python-pytest wget \
     python-gst-1.0 \
+    python-pip \
     python-setuptools \
     git sudo \
     curl tmux git \
@@ -39,6 +42,7 @@ RUN \
     pulseaudio \
     mesa-utils mesa-utils-extra \
     module-init-tools gdebi-core \
+    libxext-dev \
     lsb-core tar libfreeimage3 \
     ros-$ROS_DISTRO-rosapi libudev-dev \
     ros-$ROS_DISTRO-ros-base ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-web-video-server \
@@ -46,8 +50,6 @@ RUN \
     google-chrome-stable google-chrome-beta google-chrome-unstable \
     awesome xdg-utils \
  && rm -rf /var/lib/apt/lists/* \
- && easy_install pip \
- && pip install -U --no-cache-dir pip \
  && pip install --no-cache-dir python-coveralls
 
 # Install GE

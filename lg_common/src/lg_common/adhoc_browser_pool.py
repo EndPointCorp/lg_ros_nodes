@@ -62,7 +62,7 @@ class AdhocBrowserPool():
     def _get_lg_common_extensions_root(self):
         """
         Gets path to a directory with extensions for lg_common
-        e.g. '/opt/ros/indigo/lib/python2.7/dist-packages/lg_common' for
+        e.g. '/opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages/lg_common' for
         deb distributed extensions or '/home/lg/catkin_ws/src/lg_common/src/lg_common'
         for lg_common built with catkin.
 

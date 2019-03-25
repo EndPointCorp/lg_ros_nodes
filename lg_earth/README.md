@@ -14,10 +14,10 @@ ROS software for running and interfacing with the Google Earth desktop client.
 
 ### System setup
 
-Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-indigo-ros-base`, installed, and your `rosdep` updated.
+Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-melodic-ros-base`, installed, and your `rosdep` updated.
 
 * <https://dl.google.com/earth/client/current/google-earth-stable_current_i386.deb>
-* <http://wiki.ros.org/indigo/Installation/Ubuntu>
+* <http://wiki.ros.org/melodic/Installation/Ubuntu>
 
 Also, you'll need to patch Earth for the homedir fix as described in the lg\_earth README, otherwise its configuration will be unmanaged.
 
