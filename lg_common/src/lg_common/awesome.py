@@ -211,8 +211,8 @@ def get_awesome_pid():
     return awesome_pid
 
 
-def setup_environ():
-    """Attempt to copy the environment of the window manager."""
+def get_environ():
+    """Attempt to copy relevant environment of the window manager."""
     awesome_pid = get_awesome_pid()
     if awesome_pid is None:
         raise Exception('Could not find awesome pid')
@@ -225,12 +225,15 @@ def setup_environ():
         return pair[0], pair[1]
     pairs = map(split_environ, awesome_environ_raw.split('\0'))
     awesome_environ = dict((p[0], p[1]) for p in pairs)
-    # TODO(mv): return environment for Popen instead of messing with parent environment
+
+    env = os.environ.copy()
 
     def copy_environ(k):
-        os.environ[k] = awesome_environ[k]
+        env[k] = awesome_environ[k]
     copy_environ('DISPLAY')
     copy_environ('DBUS_SESSION_BUS_ADDRESS')
     copy_environ('XAUTHORITY')
+
+    return env
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
