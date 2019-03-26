@@ -143,7 +143,7 @@ def get_subtractive_script(window):
     def rule(r):
         return "rule['rule']['%s'] == '%s'" % r
     checks = ' and '.join(map(rule, rules.iteritems()))
-    return "for key,rule in pairs(awful.rules.rules) do if if rule['rule'] ~= nil and {checks} then table.remove(awful.rules.rules, key) end end".format(
+    return "for key,rule in pairs(awful.rules.rules) do if rule['rule'] ~= nil and {checks} then table.remove(awful.rules.rules, key) end end".format(
         checks=checks
     )
 
