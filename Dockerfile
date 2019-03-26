@@ -74,6 +74,21 @@ RUN \
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh && \
       mkdir -p $PROJECT_ROOT/src
 
+# Massage libglvnd so opengl plays nicely with nvidia-docker2
+ARG LIBGLVND_VERSION='v1.1.0'
+
+RUN mkdir /opt/libglvnd && \
+    cd /opt/libglvnd && \
+    git clone --branch="${LIBGLVND_VERSION}" https://github.com/NVIDIA/libglvnd.git . && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local --libdir=/usr/local/lib/x86_64-linux-gnu && \
+    make -j"$(nproc)" install-strip && \
+    find /usr/local/lib/x86_64-linux-gnu -type f -name 'lib*.la' -delete
+
+RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
+
+ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
 # clone appctl
 ARG APPCTL_TAG=1.2.1
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git $PROJECT_ROOT/appctl
@@ -136,23 +151,6 @@ RUN \
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO install && \
     source $PROJECT_ROOT/catkin/devel/setup.bash && \
     chown -R ${RUN_USER}:${RUN_USER} ${HOME}
-
-
-# Massage libglvnd so opengl plays nicely with nvidia-docker2
-ARG LIBGLVND_VERSION='v1.1.0'
-
-RUN mkdir /opt/libglvnd && \
-    cd /opt/libglvnd && \
-    git clone --branch="${LIBGLVND_VERSION}" https://github.com/NVIDIA/libglvnd.git . && \
-    ./autogen.sh && \
-    ./configure --prefix=/usr/local --libdir=/usr/local/lib/x86_64-linux-gnu && \
-    make -j"$(nproc)" install-strip && \
-    find /usr/local/lib/x86_64-linux-gnu -type f -name 'lib*.la' -delete
-
-RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
-
-ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-
 
 USER $RUN_USER
 
