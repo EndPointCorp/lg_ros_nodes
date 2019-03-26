@@ -63,7 +63,7 @@ RUN mkdir -p /tmp/GE \
  && if [ -f "/opt/google/earth/free/libfreebl3.so" ]; then sed -i "s_/etc/passwd_/not/anywhr_g" "/opt/google/earth/free/libfreebl3.so"; fi
 
 # add non-root user for tests and production
-ENV RUN_USER galadmin
+ENV RUN_USER lg
 ENV HOME /home/${RUN_USER}
 RUN \
       useradd -ms /bin/bash $RUN_USER && \
