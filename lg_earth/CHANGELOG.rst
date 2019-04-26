@@ -5,8 +5,8 @@ Changelog for package lg_earth
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.14 (2019-04-26)
+--------------------
 * Fix clear all kmls
 * Contributors: Dmitry Kiselev
 
