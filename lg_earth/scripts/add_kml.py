@@ -102,6 +102,9 @@ class KMLAdder():
     def formatURL(self, filename):
         return 'http://{}:{}/{}'.format(self.hostname, self.port, os.path.basename(filename))
 
+    def formatURLPrefix(self):
+        return 'http://{}:{}/tmp'.format(self.hostname, self.port)
+
     def clear_kmls(self, msg):
         current_scene = self.uscs_service.call().message
         current_scene = json.loads(current_scene)
@@ -124,7 +127,7 @@ class KMLAdder():
         else:
             # Remove all additional kmls
             self.id_to_file = dict()
-            matcher = get_match_any_starts_with([self.formatURL(self.serve_dir)])
+            matcher = get_match_any_starts_with([self.formatURLPrefix()])
         
         for window in current_scene['windows']:
             if window['activity'] == 'earth':
