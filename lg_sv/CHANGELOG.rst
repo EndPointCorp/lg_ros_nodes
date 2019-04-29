@@ -5,6 +5,11 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* Reload sv panoviewer if ros connection lost
+* Contributors: Dmitry Kiselev
+
 1.19.14 (2019-04-26)
 --------------------
 
