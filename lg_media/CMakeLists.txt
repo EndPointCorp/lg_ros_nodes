@@ -13,6 +13,8 @@ add_message_files(
   FILES
   AdhocMedia.msg
   AdhocMedias.msg
+  ImageViews.msg
+  ImageView.msg
 )
 
 add_service_files(
@@ -40,6 +42,7 @@ catkin_install_python(PROGRAMS
   scripts/browser_launcher.py
   scripts/browser_player
   scripts/browser_player.py
+  scripts/image_viewer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
