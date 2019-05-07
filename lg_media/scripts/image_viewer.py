@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import rospy
+from threading import Lock
 import uuid
 from lg_media.msg import ImageViews, ImageView
 from interactivespaces_msgs.msg import GenericMessage
@@ -19,6 +20,7 @@ class ImageViewer():
         self.image_view_pub = image_view_pub
         self.viewports = viewports
         self.master = master
+        self.lock = Lock()
 
     def director_translator(self, data):
         if not self.master:
@@ -35,7 +37,7 @@ class ImageViewer():
         except TypeError:
             rospy.logwarn("Director message did not contai valid type. Type was %s, and content was: %s" % (type(message), message))
             return
-        rospy.logerr("we are here...")
+        # rospy.logerr("we are here...")
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
                 image = ImageView()
@@ -53,49 +55,47 @@ class ImageViewer():
                 windows_to_add.images.append(image)
         self.image_view_pub.publish(windows_to_add)
 
-    #def _compare_images(self, created_image, window):
-    #    return created_image.geometry.width == window['width'] and \
-    #           created_image.geometry.height == window['height'] and \
-    #           created_image.geometry.x == window['x'] and \
-    #           created_image.geometry.y == window['y'] and \
-    #           created_image.path == window['assets'][0]
+    def is_in_current_images(self, current_images, image):
+        for _image, _image_obj in current_images.items():
+            if _image.url == image.url and \
+                    _image.geometry == image.geometry:
+                return _image_obj
+        return None
 
     def handle_image_views(self, msg):
+        with self.lock:
+            self._handle_image_views(msg)
+
+    def _handle_image_views(self, msg):
         # current_images =  {ImageView.msg: Image() }
         # print "we are here..."
         new_current_images = {}
         images_to_remove = self.current_images.values()
         images_to_add = []
         for image in msg.images:
-            rospy.logdebug("CURRENT IMAGES: {}\n\n".format(self.current_images))
+            rospy.logerr("CURRENT IMAGES: {}\n\n".format(self.current_images))
             if image.viewport not in self.viewports:
+                rospy.logerr("Not my problem")
                 continue
-            if image in self.current_images.keys() and image in images_to_remove:
-                images_to_remove.remove(self.current_images[image])
-                new_current_images[image] = self.current_images[image]
+            rospy.logerr("Current image keys: {}\n\n".format(self.current_images))
+            rospy.logerr("Images to REMOVE: {}\n\n".format(images_to_remove))
+            rospy.logerr("checking to see if {} is in current images".format(image))
+            duplicate_image = self.is_in_current_images(self.current_images, image)
+            if duplicate_image:
+                rospy.logerr("Keeping image: {}\n\n".format(image))
+                images_to_remove.remove(duplicate_image)
+                new_current_images[image] = duplicate_image
                 continue
+            rospy.logerr("Appending IMAGE: {}\n\n".format(image))
             images_to_add.append(image)
 
-        for image in images_to_add:
-            new_current_images[image] = self._create_image(image)
         for image_obj in images_to_remove:
             image_obj.set_state(ApplicationState.STOPPED)
+        for image in images_to_add:
+            new_current_images[image] = self._create_image(image)
 
         self.current_images = new_current_images
         print "current images {}".format(self.current_images)
-
-
-
-
-
-        #for window in self.windows_to_add:
-        #    for image in self.current_images:
-        #        if _compare_images(image, window):
-        #            self.current_images.remove(image)
-        #            self.images_to_remove.remove(image)
-        #        else:
-        #            self.images_to_add.append(_create_image(window))
-        #views = ImageViews(self.images_to_add)
 
 
     def _create_image(self, image):
