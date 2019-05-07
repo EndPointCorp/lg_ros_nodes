@@ -62,15 +62,15 @@ class ImageViewer():
 
     def handle_image_views(self, msg):
         # current_images =  {ImageView.msg: Image() }
-        print "we are here..."
+        # print "we are here..."
         new_current_images = {}
         images_to_remove = self.current_images.values()
         images_to_add = []
         for image in msg.images:
-            rospy.logerr("CURRENT IMAGES: {}\n\n".format(self.current_images))
+            rospy.logdebug("CURRENT IMAGES: {}\n\n".format(self.current_images))
             if image.viewport not in self.viewports:
                 continue
-            if image in self.current_images.keys() and self.current_images[image] in images_to_remove:
+            if image in self.current_images.keys() and image in images_to_remove:
                 images_to_remove.remove(self.current_images[image])
                 new_current_images[image] = self.current_images[image]
                 continue
