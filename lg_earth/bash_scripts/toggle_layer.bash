@@ -46,16 +46,19 @@ toggle_menu () {
 # Capture Current Layer State
 capture_current_state ()
 {
+	echo "CAPPING CURRENT STATE"
     for i in $EARTH_INSTANCES
     do
         export DISPLAY=:0
         xwd -display :0 -id $i | convert xwd:- png:- > ~/tmp/42-a_"$i".png
-        convert ~/tmp/42-a_"$i".png -crop 20x20+25+1120 ~/tmp/42-a_"$i".png
+        convert ~/tmp/42-a_"$i".png -crop 5x5+35+1114 ~/tmp/42-a_"$i".png
         convert ~/tmp/42-a_"$i".png txt:- > ~/tmp/42-a_"$i"
     done
 }
- Validate 3D Layer On
+
+# Validate 3D Layer On
 validate_on () {
+	echo "VALIDATING ON"
     for i in $EARTH_INSTANCES
     do
         cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
@@ -70,6 +73,7 @@ validate_on () {
 
 # Validate 3D Layer Off
 validate_off () {
+	echo "VALIDATING OFF"
     for i in $EARTH_INSTANCES
     do
         cmp --silent  /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
@@ -122,14 +126,14 @@ fix_errors() {
 				sleep .1
 			done
 			sleep .1
-			for i in {1..8}
+			for i in {1..7}
             do
                 xdotool key Down
             done
 			sleep .1
             xdotool key space
 			sleep .1
-            for i in {1..8}
+            for i in {1..7}
             do
                 xdotool key Up
             done
@@ -147,7 +151,7 @@ fix_errors() {
 validate_closed () {
 	export DISPLAY=:0
 	# Capture point on menu that is white and compare
-	for i in $EARTH_INSTANCES
+	for i in EARTH_INSTANCES
 	do
 		xdotool windowactivate $i
 		xwd -display :0 -id $i | convert xwd:- png:- > ~/tmp/42-a_blank.png
@@ -184,6 +188,6 @@ if [ $HOSTNAME == "42-b" ]
 then
 	python /home/lg/bash_scripts/repub.py
 fi
-#rm ~/tmp/42-a*
+rm ~/tmp/42-a*
 disable_keyboard "bind"
 

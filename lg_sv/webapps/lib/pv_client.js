@@ -33,6 +33,7 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
 
   ros.on('close', function() {
     console.log("Disconnected from rosbridge");
+    window.location.href = window.location.href;
   });
 
   this.povListener = new ROSLIB.Topic({
