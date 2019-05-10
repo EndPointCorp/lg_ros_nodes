@@ -1,3 +1,6 @@
+// the purpose of this header should be to provide SSL and networking wrapped in a common interface
+// it should allow cross-platform networking and SSL and also easy usage of mTCP and similar tech
+
 #ifndef NETWORKING_UWS_H
 #define NETWORKING_UWS_H
 
@@ -23,12 +26,19 @@
 #define NOMINMAX
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
 #define SHUT_WR SD_SEND
+#ifdef __MINGW32__
+// Windows has always been tied to LE
+#define htobe64(x) __builtin_bswap64(x)
+#define be64toh(x) __builtin_bswap64(x)
+#else
+#define __thread __declspec(thread)
 #define htobe64(x) htonll(x)
 #define be64toh(x) ntohll(x)
-#define __thread __declspec(thread)
 #define pthread_t DWORD
 #define pthread_self GetCurrentThreadId
+#endif
 #define WIN32_EXPORT __declspec(dllexport)
 
 inline void close(SOCKET fd) {closesocket(fd);}
@@ -67,6 +77,83 @@ inline SOCKET dup(SOCKET socket) {
 
 namespace uS {
 
+// todo: mark sockets nonblocking in these functions
+// todo: probably merge this Context with the TLS::Context for same interface for SSL and non-SSL!
+struct Context {
+
+#ifdef USE_MTCP
+    mtcp_context *mctx;
+#endif
+
+    Context() {
+        // mtcp_create_context
+#ifdef USE_MTCP
+        mctx = mtcp_create_context(0); // cpu index?
+#endif
+    }
+
+    ~Context() {
+#ifdef USE_MTCP
+        mtcp_destroy_context(mctx);
+#endif
+    }
+
+    // returns INVALID_SOCKET on error
+    uv_os_sock_t acceptSocket(uv_os_sock_t fd) {
+        uv_os_sock_t acceptedFd;
+#if defined(SOCK_CLOEXEC) && defined(SOCK_NONBLOCK)
+        // Linux, FreeBSD
+        acceptedFd = accept4(fd, nullptr, nullptr, SOCK_CLOEXEC | SOCK_NONBLOCK);
+#else
+        // Windows, OS X
+        acceptedFd = accept(fd, nullptr, nullptr);
+#endif
+
+#ifdef __APPLE__
+        if (acceptedFd != INVALID_SOCKET) {
+            int noSigpipe = 1;
+            setsockopt(acceptedFd, SOL_SOCKET, SO_NOSIGPIPE, &noSigpipe, sizeof(int));
+        }
+#endif
+        return acceptedFd;
+    }
+
+    // returns INVALID_SOCKET on error
+    uv_os_sock_t createSocket(int domain, int type, int protocol) {
+        int flags = 0;
+#if defined(SOCK_CLOEXEC) && defined(SOCK_NONBLOCK)
+        flags = SOCK_CLOEXEC | SOCK_NONBLOCK;
+#endif
+
+        uv_os_sock_t createdFd = socket(domain, type | flags, protocol);
+
+#ifdef __APPLE__
+        if (createdFd != INVALID_SOCKET) {
+            int noSigpipe = 1;
+            setsockopt(createdFd, SOL_SOCKET, SO_NOSIGPIPE, &noSigpipe, sizeof(int));
+        }
+#endif
+
+        return createdFd;
+    }
+
+    void closeSocket(uv_os_sock_t fd) {
+#ifdef _WIN32
+        closesocket(fd);
+#else
+        close(fd);
+#endif
+    }
+
+    bool wouldBlock() {
+#ifdef _WIN32
+        return WSAGetLastError() == WSAEWOULDBLOCK;
+#else
+        return errno == EWOULDBLOCK;// || errno == EAGAIN;
+#endif
+    }
+};
+
 namespace TLS {
 
 class WIN32_EXPORT Context {
@@ -84,7 +171,7 @@ private:
     }
 
 public:
-    friend Context createContext(std::string certChainFileName, std::string keyFileName, std::string keyFilePassword);
+    friend Context WIN32_EXPORT createContext(std::string certChainFileName, std::string keyFileName, std::string keyFilePassword);
     Context(SSL_CTX *context) : context(context) {
 
     }
@@ -102,17 +189,19 @@ public:
     }
 };
 
-Context createContext(std::string certChainFileName, std::string keyFileName, std::string keyFilePassword = std::string());
+Context WIN32_EXPORT createContext(std::string certChainFileName, std::string keyFileName, std::string keyFilePassword = std::string());
 
 }
 
-struct SocketData;
+struct Socket;
 
+// NodeData is like a Context, maybe merge them?
 struct WIN32_EXPORT NodeData {
     char *recvBufferMemoryBlock;
     char *recvBuffer;
     int recvLength;
     Loop *loop;
+    uS::Context *netContext;
     void *user = nullptr;
     static const int preAllocMaxSize = 1024;
     char **preAlloc;
@@ -121,22 +210,8 @@ struct WIN32_EXPORT NodeData {
     Async *async = nullptr;
     pthread_t tid;
 
-    struct TransferData {
-        Poll *p;
-        uv_os_sock_t fd;
-        SocketData *socketData;
-        void (*pollCb)(Poll *, int, int);
-        void (*cb)(Poll *);
-    };
-
-    void addAsync() {
-        async = new Async(loop);
-        async->setData(this);
-        async->start(NodeData::asyncCallback);
-    }
-
-    std::mutex *asyncMutex;
-    std::vector<TransferData> transferQueue;
+    std::recursive_mutex *asyncMutex;
+    std::vector<Poll *> transferQueue;
     std::vector<Poll *> changePollQueue;
     static void asyncCallback(Async *async);
 
@@ -161,78 +236,13 @@ struct WIN32_EXPORT NodeData {
             delete [] memory;
         }
     }
-};
 
-struct SocketData {
-    NodeData *nodeData;
-    SSL *ssl;
-    void *user = nullptr;
-
-    // combine these two! state!
-    int poll;
-    bool shuttingDown = false;
-
-    SocketData(NodeData *nodeData) : nodeData(nodeData) {
-
+public:
+    void addAsync() {
+        async = new Async(loop);
+        async->setData(this);
+        async->start(NodeData::asyncCallback);
     }
-
-    struct Queue {
-        struct Message {
-            const char *data;
-            size_t length;
-            Message *nextMessage = nullptr;
-            void (*callback)(void *socket, void *data, bool cancelled, void *reserved) = nullptr;
-            void *callbackData = nullptr, *reserved = nullptr;
-        };
-
-        Message *head = nullptr, *tail = nullptr;
-        void pop()
-        {
-            Message *nextMessage;
-            if ((nextMessage = head->nextMessage)) {
-                delete [] (char *) head;
-                head = nextMessage;
-            } else {
-                delete [] (char *) head;
-                head = tail = nullptr;
-            }
-        }
-
-        bool empty() {return head == nullptr;}
-        Message *front() {return head;}
-
-        void push(Message *message)
-        {
-            message->nextMessage = nullptr;
-            if (tail) {
-                tail->nextMessage = message;
-                tail = message;
-            } else {
-                head = message;
-                tail = message;
-            }
-        }
-    } messageQueue;
-
-    Poll *next = nullptr, *prev = nullptr;
-};
-
-struct ListenData : SocketData {
-
-    ListenData(NodeData *nodeData) : SocketData(nodeData) {
-
-    }
-
-    Poll *listenPoll = nullptr;
-    Timer *listenTimer = nullptr;
-    uv_os_sock_t sock;
-    uS::TLS::Context sslContext;
-};
-
-enum SocketState : unsigned char {
-    CLOSED,
-    POLL_READ,
-    POLL_WRITE
 };
 
 }
