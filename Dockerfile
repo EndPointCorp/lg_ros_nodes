@@ -30,7 +30,6 @@ RUN \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
     g++ pep8 cppcheck closure-linter \
-    python-evdev \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
