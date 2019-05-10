@@ -97,7 +97,7 @@ class ImageViewer():
             new_current_images[image] = self._create_image(image)
 
         self.current_images = new_current_images
-        print 'current images {}'.format(self.current_images)
+        # print 'current images {}'.format(self.current_images)
 
     def _create_image(self, image):
         image_path = self.save_path + '/{}'.format(image.uuid)
