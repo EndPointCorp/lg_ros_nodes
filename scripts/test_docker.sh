@@ -32,7 +32,14 @@ function run_tests() {
     --name ${DOCKER_NAME} \
     --rm \
     --volume="$(pwd)/docker_nodes:/docker_nodes:ro" \
-    ${DOCKER_NAME}
+    ${DOCKER_NAME} \
+    /bin/bash -c '
+      cd ${PROJECT_ROOT}/catkin && \
+      . devel/setup.sh && \
+      cd ${PROJECT_ROOT} && \
+      ./scripts/docker_xvfb_add.sh && \
+      ./scripts/test_runner.py
+    '
   RETCODE=$?
 }
 
