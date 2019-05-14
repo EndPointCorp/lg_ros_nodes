@@ -5,8 +5,8 @@ Changelog for package lg_sv
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.16 (2019-05-14)
+--------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/transparent_images
 * reinitialize on ros close
 * Contributors: Dmitry Kiselev, Galaxy Admin
