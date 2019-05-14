@@ -5,6 +5,20 @@ Changelog for package lg_media
 1.17.2 (2017-11-06)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#396 <https://github.com/EndPointCorp/lg_ros_nodes/issues/396>`_ from EndPointCorp/topic/transparent_images
+  Topic/transparent images
+* lg_media: fix package.xml
+* image_viewer: cleanup
+* image_viewer: simplified a bit
+* image_viewer: syntax
+* image_viewer: moved to pqiv and cleanup
+* image_viewer: fix image comparison
+* more working image_viewer.py
+* mostly working image viewer
+* Contributors: Will Plaut
+
 1.19.15 (2019-04-29)
 --------------------
 
