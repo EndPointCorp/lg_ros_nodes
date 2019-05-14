@@ -1,27 +1,12 @@
 #!/usr/bin/env python
 
-"""
-lg offliner online scenarios ...
+PKG = 'lg_offliner'
+NAME = 'test_lg_offliner_when_offline'
 
-starting roslaunch for development:
-    roslaunch --screen lg_offliner/test/online/test_when_offline.test
-    could do:
-    py.test -s -v lg_offliner/test/online/test_when_offline.py
-
-running tests manually:
-    rostest lg_offliner/test/online/test_when_offline.test
-        (as long as it contains <test> tag, it's the same as launch file)
-
-"""
-
-
-import os
-import time
+import unittest
 from multiprocessing import Array
 
-import pytest
 import rospy
-import rospkg
 from std_msgs.msg import Bool
 
 from lg_offliner import ROS_NODE_NAME
@@ -35,9 +20,9 @@ RESULT_1 = Array('c', 100)  # size
 RESULT_2 = Array('c', 100)  # size
 
 
-class TestLGOfflinerWhenOffline(object):
+class TestLGOfflinerWhenOffline(unittest.TestCase):
 
-    def setup_method(self, method):
+    def setUp(self):
         RESULT_0.value = "UNDEFINED"
         RESULT_1.value = "UNDEFINED"
         RESULT_2.value = "UNDEFINED"
@@ -74,8 +59,7 @@ class TestLGOfflinerWhenOffline(object):
         return res
 
     def test_checker(self):
-        rospy.init_node(ROS_NODE_NAME, anonymous=True)
-        time.sleep(4)
+        rospy.sleep(4)
         assert self.get_offline_status() is True
         # corresponding (as configured in the .test file) on offline messages should have
         # been received by now, check:
@@ -86,13 +70,6 @@ class TestLGOfflinerWhenOffline(object):
 
 
 if __name__ == "__main__":
-    # pytest must provide result XML file just as rostest.rosrun would do
-    test_pkg = ROS_NODE_NAME
-    test_name = "test_when_offline"
-    test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
-    pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
-    # run only itself
-    test_path = os.path.abspath(os.path.abspath(__file__))
-    # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
-    #pytest.main("-vv -rfsX -s --junit-xml=%s --cov=. --cov-report term-missing %s" % (pytest_result_path, test_path))
-    pytest.main("-vv -rfsX -s --junit-xml=%s %s" % (pytest_result_path, test_path))
+    import rostest
+    rospy.init_node(NAME)
+    rostest.rosrun(PKG, NAME, TestLGOfflinerWhenOffline)
