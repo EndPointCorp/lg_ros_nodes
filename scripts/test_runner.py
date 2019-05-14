@@ -86,7 +86,7 @@ def pep8_test():
 
 
 def cppcheck_test():
-    ret = os.system("cppcheck -icatkin/src/wiimote --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt catkin/src")
+    ret = os.system('cppcheck -icatkin -iwiimote -iuWebSockets --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt .')
     return ret
 
 
