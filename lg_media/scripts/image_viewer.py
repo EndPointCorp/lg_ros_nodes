@@ -18,17 +18,13 @@ class Image(ManagedApplication):
 
 
 class ImageViewer():
-    def __init__(self, image_view_pub, viewports, save_path, master=False):
+    def __init__(self, viewports, save_path):
         self.current_images = {}
-        self.image_view_pub = image_view_pub
         self.viewports = viewports
         self.save_path = save_path
-        self.master = master
         self.lock = Lock()
 
     def director_translator(self, data):
-        if not self.master:
-            return
         windows_to_add = ImageViews()
         try:
             message = json.loads(data.message)
@@ -52,12 +48,14 @@ class ImageViewer():
                     y=window['y_coord']
                 )
                 image.viewport = window['presentation_viewport']
+                if image.viewport not in self.viewports:
+                    continue
                 offset_geometry = ManagedWindow.lookup_viewport_geometry(image.viewport)
                 image.geometry.x = image.geometry.x + offset_geometry.x
                 image.geometry.y = image.geometry.y + offset_geometry.y
                 image.uuid = str(uuid.uuid4())
                 windows_to_add.images.append(image)
-        self.image_view_pub.publish(windows_to_add)
+        self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
         for _image, _image_obj in current_images.items():
@@ -76,8 +74,6 @@ class ImageViewer():
         images_to_add = []
         for image in msg.images:
             # rospy.logerr('CURRENT IMAGES: {}\n\n'.format(self.current_images))
-            if image.viewport not in self.viewports:
-                continue
             duplicate_image = self.is_in_current_images(self.current_images, image)
             if duplicate_image:
                 # rospy.logerr('Keeping image: {}\n\n'.format(image))
@@ -97,7 +93,6 @@ class ImageViewer():
             new_current_images[image] = self._create_image(image)
 
         self.current_images = new_current_images
-        # print 'current images {}'.format(self.current_images)
 
     def _create_image(self, image):
         image_path = self.save_path + '/{}'.format(image.uuid)
@@ -129,15 +124,13 @@ def main():
     rospy.init_node('image_viewer')
 
     # rospy.logerr('starting outputin...')
-    image_view_pub = rospy.Publisher('/image/views', ImageViews, queue_size=10)
     viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
-    master = rospy.get_param('~master', False)
     save_dir = rospy.get_param('~save_dir', 'images')
     save_path = '/tmp/{}'.format(save_dir)
     if not os.path.isdir(save_path):
         os.mkdir(save_path)
 
-    viewer = ImageViewer(image_view_pub, viewports, save_path, master)
+    viewer = ImageViewer(viewports, save_path)
 
     rospy.Subscriber('/director/scene', GenericMessage, viewer.director_translator)
     rospy.Subscriber('/image/views', ImageViews, viewer.handle_image_views)
