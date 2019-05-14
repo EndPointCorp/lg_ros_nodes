@@ -22,7 +22,7 @@ function sendMinimizeMsg(params) {
         });
         topic.advertise();
 
-        topic.publish({'data': wndid})
+        topic.publish({'data': wndid});
     });
 
     ros.connect(rosurl);
