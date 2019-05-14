@@ -5,8 +5,8 @@ Changelog for package lg_media
 1.17.2 (2017-11-06)
 -------------------
 
-Forthcoming
------------
+1.19.16 (2019-05-14)
+--------------------
 * Merge pull request `#396 <https://github.com/EndPointCorp/lg_ros_nodes/issues/396>`_ from EndPointCorp/topic/transparent_images
   Topic/transparent images
 * lg_media: fix package.xml
