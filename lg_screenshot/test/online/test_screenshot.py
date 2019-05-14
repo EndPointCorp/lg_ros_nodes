@@ -41,6 +41,7 @@ class TestWebScreenshot(unittest.TestCase):
         self.assertTrue('--width 1200' in self.publisher.published_messages[0].base64)
         self.assertTrue('--silent true' in self.publisher.published_messages[0].base64)
 
+
 if __name__ == '__main__':
     import rostest
     rostest.rosrun(PKG, NAME, TestWebScreenshot)

@@ -31,6 +31,7 @@ class AdhocBrowserPool():
       old browsers and show new
 
     """
+
     def __init__(
         self,
         viewport_name,
@@ -131,7 +132,7 @@ class AdhocBrowserPool():
             try:
                 options = json.loads(req.options)
                 self._filter_service_response(options, response)
-            except:
+            except Exception:
                 pass
 
             return response

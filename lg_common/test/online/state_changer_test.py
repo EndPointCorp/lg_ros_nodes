@@ -147,6 +147,7 @@ class TestStateChanger(unittest.TestCase):
     def get_name_for_index(self, index):
         return self.subs[index][SUB].name
 
+
 if __name__ == '__main__':
     rospy.init_node(NAME)
     import rostest

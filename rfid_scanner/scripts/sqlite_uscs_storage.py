@@ -47,7 +47,7 @@ class RfidStorage(object):
         try:
             data = json.loads(msg.data)
             rfid = data.get('rfid', None)
-        except:
+        except Exception:
             rospy.logerr('Error with json passed')
             return
 
@@ -93,7 +93,7 @@ class RfidStorage(object):
 
         try:
             return json.loads(row[1])
-        except:
+        except Exception:
             self.error('Cant parse json for stored uscs message. rfid: %s, message: %s' % (rfid, row[1]))
 
         return None
@@ -125,6 +125,7 @@ def main():
     rospy.Subscriber(update_topic, String, d.handle_set)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

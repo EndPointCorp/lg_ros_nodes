@@ -62,6 +62,7 @@ def _make_twist(i=0):
     t.linear.z = i
     return t
 
+
 if __name__ == '__main__':
     rospy.init_node('test_spacenav_wrap')
     rostest.rosrun(PKG, NAME, TestSpacenavWrapper)

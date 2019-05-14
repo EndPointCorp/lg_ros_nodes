@@ -22,10 +22,10 @@ class KeyboardThing:
                 continue
             if self.active or event.value == 0:  # always publishing key-ups hopefully this doesn't come back to haunt us because honestly it definitely could but thats not something im going to worry about now...
                 if event.code == self.double_click and event.value == 1:
-                    self.ui.write(1,272,1)
-                    self.ui.write(1,272,0)
-                    self.ui.write(1,272,1)
-                    self.ui.write(1,272,0)
+                    self.ui.write(1, 272, 1)
+                    self.ui.write(1, 272, 0)
+                    self.ui.write(1, 272, 1)
+                    self.ui.write(1, 272, 0)
                 else:
                     self.ui.write(event.type, event.code, event.value)
 
@@ -38,6 +38,7 @@ class KeyboardThing:
                 self.active = True
                 return
         self.active = False
+
 
 def main():
     rospy.init_node('keyboard')
@@ -54,6 +55,7 @@ def main():
     rospy.Subscriber(event_topic + 'kbd_events', EvdevEvents, kb.handle_event)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     main()

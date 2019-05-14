@@ -197,15 +197,15 @@ def get_awesome_pid():
 
     try:
         awesome_pid = int(subprocess.check_output(['pidof', 'x-window-manager']))
-    except:
+    except Exception:
         pass
     try:
         awesome_pid = int(subprocess.check_output(['pidof', 'awesome']))
-    except:
+    except Exception:
         pass
     try:
         awesome_pid = int(subprocess.check_output(['pidof', '/usr/bin/awesome']))
-    except:
+    except Exception:
         pass
 
     return awesome_pid

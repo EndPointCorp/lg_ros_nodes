@@ -349,6 +349,7 @@ def get_deleted_elements(x):
     except AttributeError:
         return []
 
+
 if __name__ == '__main__':
     rospy.init_node('test_director')
     timeout_for_requests = rospy.get_param('~timeout_requests_session', 1)

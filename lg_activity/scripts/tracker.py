@@ -40,5 +40,6 @@ def main():
         activity_tracker.poll_activities()
         rospy.sleep(1)
 
+
 if __name__ == "__main__":
     run_with_influx_exception_handler(main, NODE_NAME)

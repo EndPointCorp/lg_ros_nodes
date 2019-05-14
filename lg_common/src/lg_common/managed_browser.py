@@ -183,7 +183,7 @@ class ManagedBrowser(ManagedApplication):
         try:
             os.mkdir(self.tmp_dir)
             os.mkdir(self.tmp_dir + '/PepperFlash')
-        except:
+        except Exception:
             rospy.logerr("Error trying to make the tmp dir, could exist already")
 
         # Link NaCl component. https://github.com/EndPointCorp/lg_ros_nodes/issues/357

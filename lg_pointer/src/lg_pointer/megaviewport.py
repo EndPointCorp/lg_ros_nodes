@@ -12,6 +12,7 @@ class MegaViewport:
     * All given viewports have the same dimensions.
     * The pointing device is located roughly at the center of the cylinder.
     """
+
     def __init__(self, viewports, arc_width):
         """
         Args:
@@ -91,4 +92,3 @@ class MegaViewport:
         if 0 > nz or nz > self.arc_width or 0 > nx or nx > self.arc_height:
             return True
         return False
-

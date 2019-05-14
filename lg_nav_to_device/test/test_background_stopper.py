@@ -233,6 +233,7 @@ class TestBackgroundStopper(unittest.TestCase):
         self.stopper.handle_disabled_state('/foo', self.hidden_msg)
         self.assertFalse(self.writer.state)
 
+
 if __name__ == '__main__':
     rostest.rosrun(PKG, NAME, TestBackgroundStopper, sys.argv)
 

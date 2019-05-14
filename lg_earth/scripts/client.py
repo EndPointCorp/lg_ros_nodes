@@ -85,6 +85,7 @@ def make_viewsync():
     start_new_thread(relay.run, ())
     return relay
 
+
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)
 

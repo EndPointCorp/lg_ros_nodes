@@ -32,6 +32,7 @@ class TestUSCSService(unittest.TestCase):
      - publish active, inactive, offline and online messages
      - make asserts that after each message, director scene was published
     """
+
     def setUp(self):
         self.initial_state_url = 'http://127.0.0.1:8008/lg_common/webapps/uscs_messages/initial_state.json'
         self.on_online_state_url = 'http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_online.json'
@@ -122,6 +123,7 @@ class TestUSCSService(unittest.TestCase):
         self.assertEqual(len(self.connectivity_mock_subscriber.state), 0)
         self.assertEqual(len(self.activity_mock_subscriber.state), 1)
         self.assertEqual(len(self.director_mock_subscriber.state), 1)
+
 
 if __name__ == '__main__':
     import rostest

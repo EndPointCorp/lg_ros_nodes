@@ -47,6 +47,7 @@ def main():
 
         buttondown_pub.publish(Byte(button))
 
+
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)
 

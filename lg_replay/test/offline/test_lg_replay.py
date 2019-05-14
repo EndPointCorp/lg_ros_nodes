@@ -58,6 +58,7 @@ class TestReplay(unittest.TestCase):
         self.assertEqual(message['code'], 330)
         self.assertEqual(message['value'], 0)
 
+
 if __name__ == '__main__':
     import rostest
     rostest.rosrun(PKG, NAME, TestReplay)

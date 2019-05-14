@@ -286,6 +286,7 @@ def make_twist_messages(value):
     msg.linear.z = value
     return msg
 
+
 if __name__ == '__main__':
     import rostest
     rospy.init_node("%s_%s" % (PKG, NAME))

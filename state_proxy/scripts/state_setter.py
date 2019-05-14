@@ -28,7 +28,7 @@ class StateSetter(object):
         state = self.last_uscs_service().message
         try:
             return json.loads(state)
-        except:
+        except Exception:
             rospy.logerr("Last state from /uscs/message service returned non-json parsable (%s)" % state)
             return {}
 
@@ -109,7 +109,7 @@ class StateSetter(object):
         ret.type = 'json'
         try:
             ret.message = json.dumps(uscs_message)
-        except:
+        except Exception:
             rospy.logerr('Could not dump state message into json...')
             ret.message = ''
         return ret
@@ -170,6 +170,7 @@ def main():
     rospy.Service('/state_setter/desired_state', DesiredState, state_setter.desired_state)
     rospy.Subscriber('/state_setter/set_state', String, state_setter.handle_state_setting)
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)
