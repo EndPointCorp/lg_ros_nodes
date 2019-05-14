@@ -1,15 +1,19 @@
 #!/usr/bin/env python
-import json
-import rospy
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 from threading import Lock
-import uuid
-import requests
+import json
 import os
-from lg_media.msg import ImageViews, ImageView
-from interactivespaces_msgs.msg import GenericMessage
+import requests
+import rospy
+import uuid
 from lg_common.msg import WindowGeometry, ApplicationState
 from lg_common import ManagedApplication
 from lg_common import ManagedWindow
+from lg_media.msg import ImageViews, ImageView
+from interactivespaces_msgs.msg import GenericMessage
 
 
 class Image(ManagedApplication):
