@@ -2,8 +2,8 @@
 Changelog for package lg_attract_loop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.0 (2019-05-15)
+-------------------
 * Fix attract loop rosapi compatibility
   Required glob arg was added to this method.  Use the glob.
 * PEP8 sweep

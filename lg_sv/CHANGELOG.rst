@@ -2,8 +2,8 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.0 (2019-05-15)
+-------------------
 * Fix missing arg in SV server test
 * PEP8 sweep
 * Fix jslint errors

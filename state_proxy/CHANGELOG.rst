@@ -2,8 +2,8 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.0 (2019-05-15)
+-------------------
 * PEP8 sweep
 * Contributors: Matt Vollrath
 

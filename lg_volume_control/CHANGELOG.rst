@@ -2,8 +2,8 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.0 (2019-05-15)
+-------------------
 * lg_volume_control: more test fixn
 * lg_volume_control: fix tests
 * PEP8 sweep

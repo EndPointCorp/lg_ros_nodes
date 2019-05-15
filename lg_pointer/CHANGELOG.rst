@@ -2,8 +2,8 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.0 (2019-05-15)
+-------------------
 * Fix offscreen return values for megaviewport
   Keep it consistent.
 * PEP8 sweep

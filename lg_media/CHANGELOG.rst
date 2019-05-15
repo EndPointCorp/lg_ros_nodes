@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.0 (2019-05-15)
+-------------------
 * PEP8 sweep
 * lg_media: fix package.xml
 * Add image viewer node with transparent image display
