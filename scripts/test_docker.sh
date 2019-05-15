@@ -32,6 +32,7 @@ function run_tests() {
     --name ${DOCKER_NAME} \
     --rm \
     --volume="$(pwd)/docker_nodes:/docker_nodes:ro" \
+    --env="DISPLAY=:1" \
     ${DOCKER_NAME} \
     /bin/bash -c '
       cd ${PROJECT_ROOT}/catkin && \
