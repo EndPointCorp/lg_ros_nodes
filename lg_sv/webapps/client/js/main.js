@@ -39,7 +39,7 @@ var initializeViewers = function() {
   });
   ros.on('close', function() {
     console.error('Lost ROS connection');
-    setTimeout(initialize, 1000);
+    window.location.href = window.location.href;
   });
 };
 
