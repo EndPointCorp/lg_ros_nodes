@@ -2,8 +2,12 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
--------------------
+Forthcoming
+-----------
+* lg_volume_control: more test fixn
+* lg_volume_control: fix tests
+* PEP8 sweep
+* Contributors: Matt Vollrath, Will Plaut
 
 1.19.16 (2019-05-14)
 --------------------
@@ -184,9 +188,9 @@ Changelog for package lg_volume_control
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
-* Contributors: Will Plaut
+
+1.17.2 (2017-11-06)
+-------------------
 
 1.17.1 (2017-10-12)
 -------------------

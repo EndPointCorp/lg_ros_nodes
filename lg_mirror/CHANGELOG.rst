@@ -2,8 +2,11 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
--------------------
+Forthcoming
+-----------
+* Expect at least one latched touch router message
+* PEP8 sweep
+* Contributors: Matt Vollrath
 
 1.19.16 (2019-05-14)
 --------------------
@@ -187,9 +190,10 @@ Changelog for package lg_mirror
 1.17.3 (2017-11-07)
 -------------------
 * smoothed up the logitech mouse and fixed touchscreen mapping issue
-* 1.17.2
-* updated changeslogs for new release
 * Contributors: Jacob Minshall, Will Plaut
+
+1.17.2 (2017-11-06)
+-------------------
 
 1.17.1 (2017-10-12)
 -------------------

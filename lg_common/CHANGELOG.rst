@@ -2,10 +2,23 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
--------------------
-* super security (long live the wojo)
-* Contributors: Jacob Minshall
+Forthcoming
+-----------
+* PEP8 sweep
+* Fix jslint errors
+* String form for ManagedWindow
+  A little treat for debugging.
+* Extra fullscreen signal fix for Chrome kiosk
+  Had an issue with new awesome where Chrome in kiosk mode would switch
+  back to fullscreen after the callback had run.  This should prevent any
+  managed client from unwanted fullscreening.
+* Remove backslashes from Chrome instance match
+  Breaks in new awesome.
+* Isolate awesome environment
+  Don't muck with the parent process environment.
+* Set fullscreen attribute in rule
+  Compatibility with new awesome.
+* Contributors: Matt Vollrath
 
 1.19.16 (2019-05-14)
 --------------------
@@ -196,10 +209,11 @@ Changelog for package lg_common
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
+
+1.17.2 (2017-11-06)
+-------------------
 * super security (long live the wojo)
-* Contributors: Jacob Minshall, Will Plaut
+* Contributors: Jacob Minshall
 
 1.17.1 (2017-10-12)
 -------------------

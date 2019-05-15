@@ -2,6 +2,11 @@
 Changelog for package lg_lock
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* PEP8 sweep
+* Contributors: Matt Vollrath
+
 1.19.16 (2019-05-14)
 --------------------
 
