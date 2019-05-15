@@ -66,7 +66,10 @@ class MegaViewport:
 
         Returns:
             str, int, int: Tuple with viewport name and x/y coordinates.
+                If the coordinate is outside all viewports, returns (None, 0, 0)
         """
+        if clamp(ang_z, ang_x):
+            return (None, 0, 0)
         nz = ang_z + self.half_arc_width
         nx = ang_x + self.half_arc_height
         viewport_index = int(math.floor(nz / self.viewport_width))
