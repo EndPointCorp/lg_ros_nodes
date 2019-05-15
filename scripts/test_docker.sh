@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 function setup_files() {
-  ORIG_UMASK=`umask`
+  ORIG_UMASK="$(umask)"
   umask 0022
   # make a destination for the files
   mkdir -p docker_nodes/
@@ -27,7 +27,7 @@ function build_docker() {
 
 # runs tests and returns the return value
 function run_tests() {
-  echo running "${DOCKER_NAME}" in `pwd`
+  echo running "${DOCKER_NAME}" in "$(pwd)"
   docker run \
     --name "${DOCKER_NAME}" \
     --rm \
