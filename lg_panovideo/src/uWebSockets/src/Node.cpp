@@ -2,23 +2,31 @@
 
 namespace uS {
 
+// this should be Node
 void NodeData::asyncCallback(Async *async)
 {
     NodeData *nodeData = (NodeData *) async->getData();
 
     nodeData->asyncMutex->lock();
-    for (TransferData transferData : nodeData->transferQueue) {
-        transferData.p->init(nodeData->loop, transferData.fd);
-        transferData.p->setCb(transferData.pollCb);
-        transferData.p->start(transferData.socketData->poll);
-        transferData.p->setData(transferData.socketData);
-        transferData.socketData->nodeData = nodeData;
-        transferData.cb(transferData.p);
+    for (Poll *p : nodeData->transferQueue) {
+        Socket *s = (Socket *) p;
+        TransferData *transferData = (TransferData *) s->getUserData();
+
+        s->reInit(nodeData->loop, transferData->fd);
+        s->setCb(transferData->pollCb);
+        s->start(nodeData->loop, s, s->setPoll(transferData->pollEvents));
+
+        s->nodeData = transferData->destination;
+        s->setUserData(transferData->userData);
+        auto *transferCb = transferData->transferCb;
+
+        delete transferData;
+        transferCb(s);
     }
 
     for (Poll *p : nodeData->changePollQueue) {
-        SocketData *socketData = (SocketData *) p->getData();
-        p->change(socketData->poll);
+        Socket *s = (Socket *) p;
+        s->change(s->nodeData->loop, s, s->getPoll());
     }
 
     nodeData->changePollQueue.clear();
@@ -34,6 +42,9 @@ Node::Node(int recvLength, int prePadding, int postPadding, bool useDefaultLoop)
 
     nodeData->tid = pthread_self();
     loop = Loop::createLoop(useDefaultLoop);
+
+    // each node has a context
+    nodeData->netContext = new Context();
 
     nodeData->loop = loop;
     nodeData->asyncMutex = &asyncMutex;
@@ -64,6 +75,7 @@ Node::~Node() {
         }
     }
     delete [] nodeData->preAlloc;
+    delete nodeData->netContext;
     delete nodeData;
     loop->destroy();
 }

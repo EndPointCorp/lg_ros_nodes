@@ -135,7 +135,7 @@ class AttractLoop:
         """
         rospy.loginfo("Playing blank scene")
 
-        viewports = [viewport.split('/')[2] for viewport in params.get_param_names() if '/viewport/' in viewport]
+        viewports = [viewport.split('/')[2] for viewport in params.get_param_names(['/viewport/*'])]
 
         scene = {
             "description": "attract loop blank scene",

@@ -27,5 +27,6 @@ def main():
     command_handler = rospy.Publisher('/command', Command, queue_size=10)
     WirelessWatcher(config, command_handler)
 
+
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

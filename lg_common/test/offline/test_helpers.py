@@ -303,6 +303,7 @@ class TestHelpers(object):
                    "value": "online_scene"}]
         assert result == unpack_activity_sources(source_string)
 
+
 if __name__ == "__main__":
     test_pkg = "lg_common"
     test_name = "test_helpers"

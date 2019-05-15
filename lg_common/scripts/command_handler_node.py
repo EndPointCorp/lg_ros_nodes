@@ -19,5 +19,6 @@ def main():
 
     rospy.spin()
 
+
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

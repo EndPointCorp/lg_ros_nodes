@@ -107,7 +107,7 @@ If you ran `catkin_make` and sourced `devel/setup.bash`, it will serve the `src/
 
 If you ran `catkin_make install` and sourced `install/setup.bash`, it will serve the `install/share` path of your Catkin workspace. This is good for automated testing, since it verifies that `CMakeLists.txt` is complete.
 
-If you installed `lg_common` from a `.deb` package and sourced the default `/opt/ros/indigo/setup.bash`, it will serve the system `/opt/ros/indigo/share` path. This is good for production (for now).
+If you installed `lg_common` from a `.deb` package and sourced the default `/opt/ros/melodic/setup.bash`, it will serve the system `/opt/ros/melodic/share` path. This is good for production (for now).
 
 #### Parameters
 

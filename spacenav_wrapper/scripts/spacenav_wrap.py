@@ -32,6 +32,7 @@ def main():
     full_scale = get_fullscale()
 
     s = SpacenavWrapper(twist=twist, joy=joy, gutter_val=gutter_val)
+
     def suppress(msg):
         rospy.loginfo('Suppress spacenav output: {}'.format(msg.data))
         s.suppress(msg.data)
@@ -42,6 +43,7 @@ def main():
     rospy.Subscriber('/spacenav/joy', Joy, s.handle_joy)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

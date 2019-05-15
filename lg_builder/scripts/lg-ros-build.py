@@ -144,9 +144,9 @@ class Builder(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Build a ROS package.')
     parser.add_argument('package_path')
-    parser.add_argument('--ros_distro', default='indigo')
+    parser.add_argument('--ros_distro', default='melodic')
     parser.add_argument('--os', default='ubuntu')
-    parser.add_argument('--os_version', default='trusty')
+    parser.add_argument('--os_version', default='bionic')
     args = parser.parse_args()
 
     package_path = args.package_path

@@ -169,6 +169,7 @@ class TestLGStatsRealMessageChain(object):
         rospy.init_node(ROS_NODE_NAME, anonymous=True)
         self.checker(pub, msg, "x-12394u8rthjekwqh")
 
+
 if __name__ == "__main__":
     # pytest must provide result XML file just as rostest.rosrun would do
     # otherwise: FAILURE: test [test_lg_media_basic] did not generate test results

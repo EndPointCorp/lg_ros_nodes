@@ -144,14 +144,14 @@ def main():
         pov = server.pov
         try:
             pov.x = float(asset['tilt'])
-        except:
+        except Exception:
             pov.x = 0
         try:
             pov.z = float(asset['heading'])
             # we don't want to flip the auto generated ones, or the non_inverted
             if scene.get('slug', '') != 'auto_generated_sv_scene' and inverted:
                 pov.z = (pov.z + 180) % 360
-        except:
+        except Exception:
             pov.z = 0
         pov.w = zoom_max
 
@@ -161,7 +161,7 @@ def main():
         try:
             rospy.loginfo("about to load json: %s" % uscs_msg.message)
             scene = json.loads(uscs_msg.message)
-        except:
+        except Exception:
             return
         handle_director_message(scene)
 

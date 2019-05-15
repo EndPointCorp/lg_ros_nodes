@@ -105,7 +105,7 @@ def get_callback(window):
         str: awesome callback for window geometry.
     """
     if window.geometry is not None:
-        return "function(c) awful.client.property.set(c, 'fullscreen', false) c:geometry({x=%d, y=%d}) end" % (
+        return "function(c) awful.client.property.set(c, 'fullscreen', false) c.fullscreen = false c:geometry({x=%d, y=%d}) c:connect_signal('property::fullscreen', function() if c.fullscreen then c.fullscreen = false end end) end" % (
             window.geometry.x,
             window.geometry.y,
         )
@@ -197,22 +197,22 @@ def get_awesome_pid():
 
     try:
         awesome_pid = int(subprocess.check_output(['pidof', 'x-window-manager']))
-    except:
+    except Exception:
         pass
     try:
         awesome_pid = int(subprocess.check_output(['pidof', 'awesome']))
-    except:
+    except Exception:
         pass
     try:
         awesome_pid = int(subprocess.check_output(['pidof', '/usr/bin/awesome']))
-    except:
+    except Exception:
         pass
 
     return awesome_pid
 
 
-def setup_environ():
-    """Attempt to copy the environment of the window manager."""
+def get_environ():
+    """Attempt to copy relevant environment of the window manager."""
     awesome_pid = get_awesome_pid()
     if awesome_pid is None:
         raise Exception('Could not find awesome pid')
@@ -225,12 +225,15 @@ def setup_environ():
         return pair[0], pair[1]
     pairs = map(split_environ, awesome_environ_raw.split('\0'))
     awesome_environ = dict((p[0], p[1]) for p in pairs)
-    # TODO(mv): return environment for Popen instead of messing with parent environment
+
+    env = os.environ.copy()
 
     def copy_environ(k):
-        os.environ[k] = awesome_environ[k]
+        env[k] = awesome_environ[k]
     copy_environ('DISPLAY')
     copy_environ('DBUS_SESSION_BUS_ADDRESS')
     copy_environ('XAUTHORITY')
+
+    return env
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

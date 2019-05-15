@@ -149,7 +149,7 @@ class USCSService:
         if self.state:
             return self.state
         return USCSMessageResponse()
-    
+
     def republish(self, *args, **kwargs):
         """
         Repeat last scene, without idempotentlity check

@@ -1,12 +1,13 @@
-FROM ubuntu:xenial
+ARG UBUNTU_RELEASE=bionic
+FROM ubuntu:${UBUNTU_RELEASE}
+ARG UBUNTU_RELEASE
 
 # prevent interactive prompts during build
 ENV DEBIAN_FRONTEND noninteractive
 
 # project settings
 ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
-ENV ROS_DISTRO kinetic
-ENV OS_VERSION xenial
+ENV ROS_DISTRO melodic
 
 # Env for nvidia-docker2/nvidia container runtime
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -19,8 +20,8 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 
 # install system dependencies and tools not tracked in rosdep
 RUN \
-  apt-get update -y && apt-get install -y ca-certificates wget && \
-  echo "deb http://packages.ros.org/ros/ubuntu $OS_VERSION main" > /etc/apt/sources.list.d/ros-latest.list && \
+  apt-get update -y && apt-get install -y ca-certificates gnupg wget && \
+  echo "deb http://packages.ros.org/ros/ubuntu ${UBUNTU_RELEASE} main" > /etc/apt/sources.list.d/ros-latest.list && \
   echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
   echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 && \
@@ -31,6 +32,7 @@ RUN \
     g++ pep8 cppcheck closure-linter \
     python-pytest wget \
     python-gst-1.0 \
+    python-pip \
     python-setuptools \
     git sudo \
     curl tmux git \
@@ -39,6 +41,7 @@ RUN \
     pulseaudio \
     mesa-utils mesa-utils-extra \
     module-init-tools gdebi-core \
+    libxext-dev \
     lsb-core tar libfreeimage3 \
     ros-$ROS_DISTRO-rosapi libudev-dev \
     ros-$ROS_DISTRO-ros-base ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-web-video-server \
@@ -46,8 +49,6 @@ RUN \
     google-chrome-stable google-chrome-beta google-chrome-unstable \
     awesome xdg-utils \
  && rm -rf /var/lib/apt/lists/* \
- && easy_install pip \
- && pip install -U --no-cache-dir pip \
  && pip install --no-cache-dir python-coveralls
 
 # Install GE
@@ -61,7 +62,7 @@ RUN mkdir -p /tmp/GE \
  && if [ -f "/opt/google/earth/free/libfreebl3.so" ]; then sed -i "s_/etc/passwd_/not/anywhr_g" "/opt/google/earth/free/libfreebl3.so"; fi
 
 # add non-root user for tests and production
-ENV RUN_USER galadmin
+ENV RUN_USER lg
 ENV HOME /home/${RUN_USER}
 RUN \
       useradd -ms /bin/bash $RUN_USER && \
@@ -71,6 +72,21 @@ RUN \
       echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> $HOME/.bash_profile ;\
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh && \
       mkdir -p $PROJECT_ROOT/src
+
+# Massage libglvnd so opengl plays nicely with nvidia-docker2
+ARG LIBGLVND_VERSION='v1.1.0'
+
+RUN mkdir /opt/libglvnd && \
+    cd /opt/libglvnd && \
+    git clone --branch="${LIBGLVND_VERSION}" https://github.com/NVIDIA/libglvnd.git . && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local --libdir=/usr/local/lib/x86_64-linux-gnu && \
+    make -j"$(nproc)" install-strip && \
+    find /usr/local/lib/x86_64-linux-gnu -type f -name 'lib*.la' -delete
+
+RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
+
+ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
 # clone appctl
 ARG APPCTL_TAG=1.2.1
@@ -133,24 +149,8 @@ RUN \
     catkin_make && \
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO install && \
     source $PROJECT_ROOT/catkin/devel/setup.bash && \
+    chown -R ${RUN_USER}:${RUN_USER} ${PROJECT_ROOT} && \
     chown -R ${RUN_USER}:${RUN_USER} ${HOME}
-
-
-# Massage libglvnd so opengl plays nicely with nvidia-docker2
-ARG LIBGLVND_VERSION='v1.1.0'
-
-RUN mkdir /opt/libglvnd && \
-    cd /opt/libglvnd && \
-    git clone --branch="${LIBGLVND_VERSION}" https://github.com/NVIDIA/libglvnd.git . && \
-    ./autogen.sh && \
-    ./configure --prefix=/usr/local --libdir=/usr/local/lib/x86_64-linux-gnu && \
-    make -j"$(nproc)" install-strip && \
-    find /usr/local/lib/x86_64-linux-gnu -type f -name 'lib*.la' -delete
-
-RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
-
-ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-
 
 USER $RUN_USER
 

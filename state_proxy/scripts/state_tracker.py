@@ -40,7 +40,7 @@ class StateTracker(object):
         current_state = self.last_uscs_service().message
         try:
             current_state = json.loads(current_state)
-        except:
+        except Exception:
             rospy.logerr("Error parsing last uscs message as json")
             return
 
@@ -111,7 +111,7 @@ class StateTracker(object):
         state = url_service.call().state
         try:
             state = json.loads(state)
-        except:
+        except Exception:
             rospy.logwarn("Unable to parse state (%s)" % state)
             raise
 
@@ -154,6 +154,7 @@ def main():
     rospy.Subscriber('/rfid/set', String, state_tracker.handle_nfc)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

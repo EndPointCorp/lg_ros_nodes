@@ -70,5 +70,6 @@ def check_device_path(path, user, group):
             rospy.logerr("Could not attach to device: %s - insufficient permissions" % path)
     return False, 'No problems with lg_replay device'
 
+
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

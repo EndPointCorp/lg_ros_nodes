@@ -60,6 +60,7 @@ class TestManagedAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.fifo_path, self.mam.fifo_path)
         self.assertEqual(ApplicationState.STOPPED, self.mam.state)
 
+
 if __name__ == '__main__':
     import rostest
     rostest.rosrun(PKG, NAME, TestManagedAdhocBrowser)

@@ -51,7 +51,7 @@ def get_match_any_starts_with(prefixes):
             if test_string.startswith(prefix):
                 return True
         return False
-    
+
     return matcher
 
 
@@ -78,11 +78,11 @@ class KMLAdder():
         filename = tempfile.mktemp(dir=self.serve_dir)
         with open(filename, 'w') as f:
             f.write(kml)
-        
+
         kml_id = get_kml_id(kml)
         if kml_id not in self.id_to_file:
             self.id_to_file[kml_id] = list()
-        
+
         # Keep track of files for easier remove by id
         self.id_to_file[kml_id].append(os.path.basename(filename))
 
@@ -121,18 +121,18 @@ class KMLAdder():
                                 files.append(name)
                         else:
                             files.append(names)
-            
+
             urls_to_remove = [self.formatURL(filename) for filename in files]
             matcher = get_match_any_starts_with(urls_to_remove)
         else:
             # Remove all additional kmls
             self.id_to_file = dict()
             matcher = get_match_any_starts_with([self.formatURLPrefix()])
-        
+
         for window in current_scene['windows']:
             if window['activity'] == 'earth':
                 window['assets'] = [a for a in window['assets'] if not matcher(a)]
-        
+
         new_msg = GenericMessage()
         new_msg.type = 'json'
         new_msg.message = json.dumps(current_scene)
@@ -169,7 +169,7 @@ def main():
 
     director_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
     added_kml_pub = rospy.Publisher('/lg_earth/added_kml', StringArray, latch=True, queue_size=1)
-    
+
     uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
 
     hostname = rospy.get_param('~hostname', 'localhost')
@@ -182,6 +182,7 @@ def main():
 
     rospy.on_shutdown(k.shutdown)
     rospy.spin()
+
 
 if __name__ == '__main__':
     main()

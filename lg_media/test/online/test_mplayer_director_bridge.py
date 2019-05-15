@@ -322,6 +322,7 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
         self.assertEqual(AdhocMedias, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocMedias, type(self.mock_publisher_right.published_messages[0]))
 
+
 if __name__ == '__main__':
     import rostest
     rostest.rosrun(PKG, NAME, TestAdhocMediaDirectorBridge)

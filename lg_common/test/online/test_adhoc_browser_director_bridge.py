@@ -349,6 +349,7 @@ def zero_id(d):
         browser.id = '0'
     return d
 
+
 if __name__ == '__main__':
     import rostest
     rostest.rosrun(PKG, NAME, TestAdhocBrowserDirectorBridge)

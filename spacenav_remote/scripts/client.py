@@ -129,5 +129,6 @@ def open_scoket(host="localhost", port=6564, reconnect=True):
 
     return soc
 
+
 if __name__ == '__main__':
     main()
