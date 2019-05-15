@@ -149,6 +149,7 @@ RUN \
     catkin_make && \
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO install && \
     source $PROJECT_ROOT/catkin/devel/setup.bash && \
+    chown -R ${RUN_USER}:${RUN_USER} ${PROJECT_ROOT} && \
     chown -R ${RUN_USER}:${RUN_USER} ${HOME}
 
 USER $RUN_USER
