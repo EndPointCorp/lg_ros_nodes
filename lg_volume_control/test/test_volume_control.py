@@ -31,8 +31,8 @@ class TestVolumeControl(unittest.TestCase):
         """
         self.assertEqual(len(self.mock_pub.data), 1)
         write_log_to_file("%s" % self.mock_pub.data[0])
-        self.assertGreaterEqual(self.mock_pub.data[0], self.volume_controller.default / 2)
-        self.assertLessEqual(self.mock_pub.data[0], self.volume_controller.default)
+        self.assertGreaterEqual(self.mock_pub.data[0], self.volume_controller.default_volume / 2)
+        self.assertLessEqual(self.mock_pub.data[0], self.volume_controller.default_volume)
 
     def test_max_volume(self):
         """
