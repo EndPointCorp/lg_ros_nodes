@@ -17,7 +17,9 @@ from interactivespaces_msgs.msg import GenericMessage
 
 
 class Image(ManagedApplication):
-    def __init__(self, cmd, window, respawn=True):
+    def __init__(self, cmd, window, img_application, img_path, respawn=True):
+        self.img_application = img_application
+        self.img_path = img_path
         super(Image, self).__init__(cmd, window=window, respawn=respawn)
 
 
@@ -51,6 +53,7 @@ class ImageViewer():
                     x=window['x_coord'],
                     y=window['y_coord']
                 )
+                image.transparent = window.get('transparent', False)
                 image.viewport = window['presentation_viewport']
                 if image.viewport not in self.viewports:
                     continue
@@ -84,14 +87,13 @@ class ImageViewer():
                 images_to_remove.remove(duplicate_image)
                 new_current_images[image] = duplicate_image
                 continue
-            rospy.logwarn('Appending IMAGE: {}\n\n'.format(image))
+            rospy.logdebug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
 
         for image_obj in images_to_remove:
             image_obj.set_state(ApplicationState.STOPPED)
-            file_to_remove = image_obj.cmd[-1]
-            if os.path.exists(file_to_remove):
-                os.remove(file_to_remove)
+            if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
+                os.remove(image_obj.img_path)
         #images_to_remove = []
         for image in images_to_add:
             new_current_images[image] = self._create_image(image)
@@ -99,6 +101,12 @@ class ImageViewer():
         self.current_images = new_current_images
 
     def _create_image(self, image):
+        if image.transparent:
+            return self._create_pqiv(image)
+        else:
+            return self._create_feh(image)
+
+    def _create_pqiv(self, image):
         image_path = self.save_path + '/{}'.format(image.uuid)
         r = requests.get(image.url)
         with open(image_path, 'wb') as f:
@@ -109,16 +117,23 @@ class ImageViewer():
             image.geometry.y,
             image_path
         ).split()
-        #command = '/usr/bin/feh --bg trans -x --title {} --geometry {}x{}+{}+{} {}'.format(
-        #    u,
-        #    image.geometry.width,
-        #    image.geometry.height,
-        #    image.geometry.x,
-        #    image.geometry.y,
-        #    image.url
-        #).split()
-        rospy.logwarn('command is {}'.format(command))
-        image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry))
+        rospy.logdebug('command is {}'.format(command))
+        image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path = image_path)
+        image.set_state(ApplicationState.STARTED)
+        image.set_state(ApplicationState.VISIBLE)
+        return image
+
+    def _create_feh(self, image):
+        command = '/usr/bin/feh --image-bg black --no-screen-clip -x --title {} --geometry {}x{}+{}+{} {}'.format(
+            image.uuid,
+            image.geometry.width,
+            image.geometry.height,
+            image.geometry.x,
+            image.geometry.y,
+            image.url
+        ).split()
+        rospy.logdebug('command is {}'.format(command))
+        image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='feh', img_path = None)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
         return image
