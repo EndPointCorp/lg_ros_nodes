@@ -54,22 +54,22 @@ echo 'installing libudev-dev'
 if [[ ${SKIP_APT} != "" ]]; then
   echo "Skipping APT update + install"
 else
-  lg-sudo-bg -w 'sudo apt-get update -q && sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-melodic-web-video-server -q -y'
+  lg-sudo-bg -w "sudo apt-get update -q && sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-${ROS_DISTRO}-web-video-server -q -y"
   echo hi
 fi
 
 lg-sync --really-sync catkin/src/ /home/lg/catkin_ws/src/
-lg-run-bg -w 'cd catkin_ws ; \
-           source /opt/ros/melodic/setup.bash ; \
+lg-run-bg -w "cd catkin_ws ; \
+           source /opt/ros/${ROS_DISTRO}/setup.bash ; \
            if [ ! -e /tmp/rosdep_updated ]; then
              echo "updating rosdep, please wait"
              rosdep update;
              touch /tmp/rosdep_updated;
            fi
-           rosdep install --from-paths src --ignore-src --rosdistro melodic -y;
+           rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y;
            catkin_make clean;\
            catkin_make install;\
-           find /home/lg/catkin_ws/src/ -iname "*.pyc" -delete '
+           find /home/lg/catkin_ws/src/ -iname '*.pyc' -delete "
 
 echo 'linking extensions to /opt/google/chrome/extensions/'
 lg-sudo-bg -w 'sudo mkdir -p /opt/google/chrome/extensions/; sudo ln -sf /home/lg/catkin_ws/src/lg_common/src/lg_common/extensions/* /opt/google/chrome/extensions/'
