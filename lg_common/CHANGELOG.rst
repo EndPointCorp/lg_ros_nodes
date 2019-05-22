@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.2 (2019-05-22)
+-------------------
 * Revert "Revert "Extra fullscreen signal fix for Chrome kiosk""
   Turns out this wasn't the problem.
 * Include width and height in window callback
