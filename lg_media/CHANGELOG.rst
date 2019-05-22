@@ -2,6 +2,15 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#398 <https://github.com/EndPointCorp/lg_ros_nodes/issues/398>`_ from EndPointCorp/topic/image_viewer_two
+  image_viewer: pqiv and feh
+* image_viewer: better loggin levels
+* image_viewer: pqiv and feh
+  Our powers combined!
+* Contributors: Will Plaut
+
 1.20.2 (2019-05-22)
 -------------------
 
