@@ -2,6 +2,9 @@
 Changelog for package lg_offliner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.20.0 (2019-05-15)
 -------------------
 * Fix goofiness in lg_offliner tests

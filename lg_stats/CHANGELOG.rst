@@ -2,6 +2,9 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.20.0 (2019-05-15)
 -------------------
 * PEP8 sweep
