@@ -105,9 +105,11 @@ def get_callback(window):
         str: awesome callback for window geometry.
     """
     if window.geometry is not None:
-        return "function(c) awful.client.property.set(c, 'fullscreen', false) c.fullscreen = false c:geometry({x=%d, y=%d}) end" % (
+        return "function(c) awful.client.property.set(c, 'fullscreen', false) c.fullscreen = false c:geometry({x=%d, y=%d, width=%d, height=%d}) end" % (
             window.geometry.x,
             window.geometry.y,
+            window.geometry.width,
+            window.geometry.height,
         )
     else:
         return ""
