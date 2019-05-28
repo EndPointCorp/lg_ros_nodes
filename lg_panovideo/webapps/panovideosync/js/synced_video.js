@@ -17,8 +17,12 @@ class SyncedVideo extends EventEmitter2 {
 
   loadFromUrl(url) {
     this.video.setAttribute('crossorigin', 'anonymous');
-    this.video.src = url;
-    this.video.load();
+    this.hls = new Hls();
+    this.hls.loadSource(url);
+    this.hls.attachMedia(this.video);
+    this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
+      this.video.play();
+    });
   }
 
   syncTo(t) {
