@@ -80,7 +80,7 @@ class Client:
         # Google Earth has its own copies of some libraries normally found on
         # the system, so we need to tell the loader to look there. This is
         # normally done in the google-earth wrapper script.
-    env['LD_LIBRARY_PATH'] += use_dir
+        env['LD_LIBRARY_PATH'] += use_dir
 
         cmd = [use_dir + '/googleearth-bin']
 
