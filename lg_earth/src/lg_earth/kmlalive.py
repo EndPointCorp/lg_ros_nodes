@@ -16,6 +16,7 @@ class KmlAlive:
                     pid = self.earth_proc.proc.watcher.proc.pid
                 except AttributeError:
                     rospy.sleep(loop_timeout)
+                    continue
                 if '/kmlsync/state' in rosservice.get_service_list():
                     cmd = "lsof -Pn -p {} -a -i @127.0.0.1:8765".format(pid).split(' ')
                         ret_value = subprocess.call(
