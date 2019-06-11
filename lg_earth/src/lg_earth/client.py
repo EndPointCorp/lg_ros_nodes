@@ -80,7 +80,7 @@ class Client:
         # Google Earth has its own copies of some libraries normally found on
         # the system, so we need to tell the loader to look there. This is
         # normally done in the google-earth wrapper script.
-        env['LD_LIBRARY_PATH'] += use_dir
+    env['LD_LIBRARY_PATH'] += use_dir
 
         cmd = [use_dir + '/googleearth-bin']
 
@@ -88,6 +88,7 @@ class Client:
         self.earth_proc = ManagedApplication(cmd, window=earth_window,
                                              initial_state=initial_state,
                                              env=env)
+        KkmlAlive(self.earth_proc)
         # config rendering values
         self.geplus_config = geplus_config
         self.layers_config = layers_config
