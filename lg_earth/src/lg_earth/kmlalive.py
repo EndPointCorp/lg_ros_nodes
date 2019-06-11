@@ -6,16 +6,18 @@ import rosservice
 class KmlAlive:
     def __init__(self, earth_proc):
         self.earth_proc = earth_proc
-        rospy.sleep(5)
-        self.keep_alive()
+        rospy.Timer(rospy.Duration(10), self.keep_alive, oneshot=True)
 
-    def keep_alive(self):
-        loop_timeout = 0.2
+    def keep_alive(self, *args, **kwargs):
+        loop_timeout = 1
+        counter = 0
         with open('/dev/null', 'w') as dev_null:
             while not rospy.is_shutdown():
                 try:
                     pid = self.earth_proc.proc.watcher.proc.pid
-                except AttributeError:
+                except AttributeError as e:
+                    counter = 0
+                    rospy.logerr("Earth proc doesn't exist {}".format(e))
                     rospy.sleep(loop_timeout)
                     continue
                 if '/kmlsync/state' in rosservice.get_service_list():
@@ -27,5 +29,13 @@ class KmlAlive:
                         close_fds=True
                     )
                     if ret_value != 0:
-                        self.earth_proc.handle_soft_relaunch()
+                        counter += 1
+                        rospy.logerr("XXX found non zero value for {}".format(pid))
+                        if counter > 20:
+                            rospy.logerr("XXX RELAUNCHING")
+                            #self.earth_proc.handle_soft_relaunch()
+                    else:
+                        counter = 0
+                else:
+                    rospy.logerr("no kml sync state found")
                 rospy.sleep(loop_timeout)
