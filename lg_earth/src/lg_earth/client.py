@@ -11,6 +11,7 @@ from random import randint
 import rospy
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
+from kmlalive import KmlAlive
 
 TOOLBAR_HEIGHT = 22
 
@@ -88,6 +89,7 @@ class Client:
         self.earth_proc = ManagedApplication(cmd, window=earth_window,
                                              initial_state=initial_state,
                                              env=env)
+        KmlAlive(self.earth_proc)
         # config rendering values
         self.geplus_config = geplus_config
         self.layers_config = layers_config
