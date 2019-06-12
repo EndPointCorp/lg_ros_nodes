@@ -69,6 +69,7 @@ class TestAspectScale(unittest.TestCase):
         # Should never scale larger than source geometry.
         self.check_dimensions(sg, dg, 1920, 1080)
 
+
 if __name__ == '__main__':
     import rostest
     rostest.rosrun(PKG, NAME, TestAspectScale)

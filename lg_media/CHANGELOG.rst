@@ -2,8 +2,81 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
+1.20.3 (2019-05-22)
 -------------------
+* Merge pull request `#398 <https://github.com/EndPointCorp/lg_ros_nodes/issues/398>`_ from EndPointCorp/topic/image_viewer_two
+  image_viewer: pqiv and feh
+* image_viewer: better loggin levels
+* image_viewer: pqiv and feh
+  Our powers combined!
+* Contributors: Will Plaut
+
+1.20.2 (2019-05-22)
+-------------------
+
+1.20.1 (2019-05-21)
+-------------------
+
+1.20.0 (2019-05-15)
+-------------------
+* PEP8 sweep
+* lg_media: fix package.xml
+* Add image viewer node with transparent image display
+* Contributors: Matt Vollrath, Will Plaut
+
+1.19.16 (2019-05-14)
+--------------------
+* Merge pull request `#396 <https://github.com/EndPointCorp/lg_ros_nodes/issues/396>`_ from EndPointCorp/topic/transparent_images
+  Topic/transparent images
+* lg_media: fix package.xml
+* image_viewer: cleanup
+* image_viewer: simplified a bit
+* image_viewer: syntax
+* image_viewer: moved to pqiv and cleanup
+* image_viewer: fix image comparison
+* more working image_viewer.py
+* mostly working image viewer
+* Contributors: Will Plaut
+
+1.19.15 (2019-04-29)
+--------------------
+
+1.19.14 (2019-04-26)
+--------------------
+
+1.19.13 (2019-04-25)
+--------------------
+
+1.19.12 (2019-03-25)
+--------------------
+
+1.19.11 (2019-03-20)
+--------------------
+
+1.19.10 (2019-03-15)
+--------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.9 (2019-03-06)
+-------------------
+
+1.19.8 (2019-02-26)
+-------------------
+* Fix Change: re-add line
+* VIDEO-SYNC Ros node changes
+* Contributors: Galaxy Admin
+
+1.19.7 (2019-02-14)
+-------------------
+
+1.19.6 (2019-02-08)
+-------------------
+
+1.19.5 (2019-02-06)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
 
 1.19.4 (2019-01-30)
 -------------------
@@ -130,9 +203,9 @@ Changelog for package lg_media
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
-* Contributors: Will Plaut
+
+1.17.2 (2017-11-06)
+-------------------
 
 1.17.1 (2017-10-12)
 -------------------

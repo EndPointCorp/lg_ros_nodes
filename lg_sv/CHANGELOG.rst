@@ -2,8 +2,68 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
+1.20.3 (2019-05-22)
 -------------------
+
+1.20.2 (2019-05-22)
+-------------------
+
+1.20.1 (2019-05-21)
+-------------------
+
+1.20.0 (2019-05-15)
+-------------------
+* Fix missing arg in SV server test
+* PEP8 sweep
+* Fix jslint errors
+* reload sv_old on ros connection lost
+* reinitialize on ros close
+* Contributors: Dmitry Kiselev, Matt Vollrath
+
+1.19.16 (2019-05-14)
+--------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/transparent_images
+* reinitialize on ros close
+* Contributors: Dmitry Kiselev, Galaxy Admin
+
+1.19.15 (2019-04-29)
+--------------------
+* Reload sv panoviewer if ros connection lost
+* Contributors: Dmitry Kiselev
+
+1.19.14 (2019-04-26)
+--------------------
+
+1.19.13 (2019-04-25)
+--------------------
+
+1.19.12 (2019-03-25)
+--------------------
+
+1.19.11 (2019-03-20)
+--------------------
+
+1.19.10 (2019-03-15)
+--------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.9 (2019-03-06)
+-------------------
+
+1.19.8 (2019-02-26)
+-------------------
+
+1.19.7 (2019-02-14)
+-------------------
+
+1.19.6 (2019-02-08)
+-------------------
+
+1.19.5 (2019-02-06)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
 
 1.19.4 (2019-01-30)
 -------------------
@@ -145,9 +205,9 @@ Changelog for package lg_sv
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
-* Contributors: Will Plaut
+
+1.17.2 (2017-11-06)
+-------------------
 
 1.17.1 (2017-10-12)
 -------------------

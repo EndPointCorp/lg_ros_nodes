@@ -34,5 +34,6 @@ class RfreceiverAction:
 
         rospy.spin()
 
+
 if __name__ == '__main__':
     run_with_influx_exception_handler(RfreceiverAction().main, NODE_NAME)

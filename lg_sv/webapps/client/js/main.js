@@ -37,6 +37,10 @@ var initializeViewers = function() {
   ros.on('error', function() {
     setTimeout(initialize, 2000);
   });
+  ros.on('close', function() {
+    console.error('Lost ROS connection');
+    window.location.href = window.location.href;
+  });
 };
 
 var initializeRes = function(ros, yawOffset) {

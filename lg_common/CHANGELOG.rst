@@ -2,10 +2,88 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
+1.20.3 (2019-05-22)
 -------------------
-* super security (long live the wojo)
-* Contributors: Jacob Minshall
+
+1.20.2 (2019-05-22)
+-------------------
+* Revert "Revert "Extra fullscreen signal fix for Chrome kiosk""
+  Turns out this wasn't the problem.
+* Include width and height in window callback
+* Contributors: Matt Vollrath
+
+1.20.1 (2019-05-21)
+-------------------
+* Revert "Extra fullscreen signal fix for Chrome kiosk"
+  This fix turned out to not be backwards compatible.
+* Contributors: Matt Vollrath
+
+1.20.0 (2019-05-15)
+-------------------
+* PEP8 sweep
+* Fix jslint errors
+* String form for ManagedWindow
+  A little treat for debugging.
+* Extra fullscreen signal fix for Chrome kiosk
+  Had an issue with new awesome where Chrome in kiosk mode would switch
+  back to fullscreen after the callback had run.  This should prevent any
+  managed client from unwanted fullscreening.
+* Remove backslashes from Chrome instance match
+  Breaks in new awesome.
+* Isolate awesome environment
+  Don't muck with the parent process environment.
+* Set fullscreen attribute in rule
+  Compatibility with new awesome.
+* Contributors: Matt Vollrath
+
+1.19.16 (2019-05-14)
+--------------------
+
+1.19.15 (2019-04-29)
+--------------------
+
+1.19.14 (2019-04-26)
+--------------------
+
+1.19.13 (2019-04-25)
+--------------------
+
+1.19.12 (2019-03-25)
+--------------------
+* Fix awesome rule check
+* Contributors: Matt Vollrath
+
+1.19.11 (2019-03-20)
+--------------------
+* Fix awesome copmatibility
+  In newer versions of awesome, rules may not have a 'rule' field.
+  We know ours do, so check for rules field as a pre-condition.
+* Contributors: Matt Vollrath
+
+1.19.10 (2019-03-15)
+--------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.9 (2019-03-06)
+-------------------
+
+1.19.8 (2019-02-26)
+-------------------
+
+1.19.7 (2019-02-14)
+-------------------
+
+1.19.6 (2019-02-08)
+-------------------
+
+1.19.5 (2019-02-06)
+-------------------
+* add empty response return for service call
+* fix message republishing
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Add /uscs/republish service
+* Contributors: Dmitry Kiselev
 
 1.19.4 (2019-01-30)
 -------------------
@@ -147,10 +225,11 @@ Changelog for package lg_common
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
+
+1.17.2 (2017-11-06)
+-------------------
 * super security (long live the wojo)
-* Contributors: Jacob Minshall, Will Plaut
+* Contributors: Jacob Minshall
 
 1.17.1 (2017-10-12)
 -------------------

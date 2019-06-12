@@ -2,9 +2,11 @@ import os
 import stat
 import subprocess
 
+
 def chmod_x(path):
     st = os.stat(path)
     os.chmod(path, st.st_mode | stat.S_IEXEC)
+
 
 class Toggle3d:
     def __init__(self):
@@ -14,11 +16,10 @@ class Toggle3d:
         self.script = '/home/lg/bash_scripts/toggle_layer.bash'
         chmod_x(self.script)
 
-    
     def set_layer_state(self, state):
         self.sync_state_to_earth(state)
         self.layer_is_on = state
-        
+
         if self.state_listener:
             self.state_listener(self.layer_is_on)
 

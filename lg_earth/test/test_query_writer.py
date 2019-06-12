@@ -46,7 +46,7 @@ class TestQueryWriter(unittest.TestCase):
     def tearDown(self):
         try:
             os.remove(TEST_FILE)
-        except:
+        except Exception:
             pass
 
         self.writer.shutdown()

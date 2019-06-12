@@ -81,17 +81,17 @@ def get_tests():
 
 
 def pep8_test():
-    ret = os.system('pep8 --exclude=rosbridge*,appctl,wiimote,rosout_logger,docker_nodes --config=./setup.cfg catkin/src/*/')
+    ret = os.system('pep8 --config=./setup.cfg .')
     return ret
 
 
 def cppcheck_test():
-    ret = os.system("cppcheck -icatkin/src/wiimote --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt catkin/src")
+    ret = os.system('cppcheck -icatkin -iwiimote -iuWebSockets --enable=style --error-exitcode=1 --suppressions-list=cppcheck_suppressions.txt .')
     return ret
 
 
 def gjslint_test():
-    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,panovideosync' -r .")
+    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,panovideosync,gennodejs' -r .")
     return ret
 
 

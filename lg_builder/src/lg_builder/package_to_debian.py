@@ -37,7 +37,7 @@ class RosBuilder:
             subprocess.check_output(
                 rosdep_cmd
             )
-        except:
+        except Exception:
             return False
         return True
 
@@ -81,7 +81,7 @@ class RosBuilder:
 
             assert rosdep_output.splitlines()[0] == '#apt'
             deb_names = rosdep_output.splitlines()[1].split()
-        except:
+        except Exception:
             deb_names = [self.catkin_to_apt_name(catkin_name)]
         return set(deb_names)
 

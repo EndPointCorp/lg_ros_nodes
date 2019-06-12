@@ -895,7 +895,7 @@ def handle_initial_state(call_back):
     # commenting out for now
     try:
         rospy.wait_for_service('/initial_state', 15)
-    except:
+    except Exception:
         rospy.logerr("This system does not support initial state setting")
         return
 
@@ -1034,7 +1034,7 @@ def director_listener_state_setter(state_pub, activity_list=None, offline_state=
     def _do_stuff(director_msg, *args, **kwargs):
         try:
             msg = json.loads(director_msg.message)
-        except:
+        except Exception:
             rospy.logerr("Error loading director message, non-json-y format")
         windows = msg.get('windows', [])
         if msg.get('slug', None) == "stop-the-presentations":
@@ -1073,7 +1073,7 @@ def required_param(key, coercer=None):
     if coercer is not None:
         try:
             value = coercer(value)
-        except:
+        except Exception:
             raise ValueError(
                 'Failed to coerce parameter: "{}" with value: "{}" to: "{}"'.format(
                     key,

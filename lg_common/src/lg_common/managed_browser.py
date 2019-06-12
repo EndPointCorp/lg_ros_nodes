@@ -150,7 +150,7 @@ class ManagedBrowser(ManagedApplication):
 
         # Different versions of Chrome use different window instance names.
         # Matching the tmp_dir should work for all of them.
-        w_instance = '\\({}\\)'.format(self.tmp_dir)
+        w_instance = '({})'.format(self.tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry, chrome_kiosk_workaround=kiosk)
 
         rospy.logdebug("Command {}".format(cmd))
@@ -183,7 +183,7 @@ class ManagedBrowser(ManagedApplication):
         try:
             os.mkdir(self.tmp_dir)
             os.mkdir(self.tmp_dir + '/PepperFlash')
-        except:
+        except Exception:
             rospy.logerr("Error trying to make the tmp dir, could exist already")
 
         # Link NaCl component. https://github.com/EndPointCorp/lg_ros_nodes/issues/357

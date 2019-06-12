@@ -2,15 +2,61 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
+1.20.3 (2019-05-22)
 -------------------
-* lg_pointer: add udev fetching in mouse2pointer
-* logitech_spotlight: add click functionality
-* Docstrings and cleanup of MegaViewport
-* PEP8
-* initial logitech code
-  No mouse clicking yet
-* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+1.20.2 (2019-05-22)
+-------------------
+
+1.20.1 (2019-05-21)
+-------------------
+
+1.20.0 (2019-05-15)
+-------------------
+* Fix offscreen return values for megaviewport
+  Keep it consistent.
+* PEP8 sweep
+* Contributors: Matt Vollrath
+
+1.19.16 (2019-05-14)
+--------------------
+
+1.19.15 (2019-04-29)
+--------------------
+
+1.19.14 (2019-04-26)
+--------------------
+
+1.19.13 (2019-04-25)
+--------------------
+
+1.19.12 (2019-03-25)
+--------------------
+
+1.19.11 (2019-03-20)
+--------------------
+
+1.19.10 (2019-03-15)
+--------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.9 (2019-03-06)
+-------------------
+
+1.19.8 (2019-02-26)
+-------------------
+
+1.19.7 (2019-02-14)
+-------------------
+
+1.19.6 (2019-02-08)
+-------------------
+
+1.19.5 (2019-02-06)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
 
 1.19.4 (2019-01-30)
 -------------------
@@ -152,8 +198,10 @@ Changelog for package lg_pointer
 -------------------
 * smoothed up the logitech mouse and fixed touchscreen mapping issue
 * pep8 fixes
-* 1.17.2
-* updated changeslogs for new release
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+1.17.2 (2017-11-06)
+-------------------
 * lg_pointer: add udev fetching in mouse2pointer
 * logitech_spotlight: add click functionality
 * Docstrings and cleanup of MegaViewport
