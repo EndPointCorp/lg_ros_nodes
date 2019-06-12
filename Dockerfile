@@ -131,7 +131,7 @@ RUN \
     source /opt/ros/$ROS_DISTRO/setup.bash && \
     apt-get update && \
     rosdep init && \
-    rosdep update && \
+    rosdep update --include-eol-distros && \
     rosdep install \
         --from-paths $PROJECT_ROOT \
         --ignore-src \
