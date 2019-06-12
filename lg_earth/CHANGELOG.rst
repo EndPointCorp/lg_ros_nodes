@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.20.4 (2019-06-12)
+-------------------
 * Merge pull request `#400 <https://github.com/EndPointCorp/lg_ros_nodes/issues/400>`_ from EndPointCorp/topic/kml_alive
   Topic/kml alive
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
