@@ -2,6 +2,11 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
+* Contributors: Galaxy Admin
+
 1.20.3 (2019-05-22)
 -------------------
 * Merge pull request `#398 <https://github.com/EndPointCorp/lg_ros_nodes/issues/398>`_ from EndPointCorp/topic/image_viewer_two

@@ -2,6 +2,11 @@
 Changelog for package spacenav_remote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
+* Contributors: Galaxy Admin
+
 1.20.3 (2019-05-22)
 -------------------
 

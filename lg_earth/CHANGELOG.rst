@@ -2,6 +2,21 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#400 <https://github.com/EndPointCorp/lg_ros_nodes/issues/400>`_ from EndPointCorp/topic/kml_alive
+  Topic/kml alive
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
+* clean up errors and only reset counter when relaunching or no proc
+* debugging and fixes
+* client.py import
+* fix formatting
+* fixes
+* more changes
+* fix format mistake
+* initial kmlalive stuff
+* Contributors: Galaxy Admin, Jacob Minshall, Will Plaut
+
 1.20.3 (2019-05-22)
 -------------------
 
