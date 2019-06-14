@@ -29,7 +29,7 @@ RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
-    g++ pep8 cppcheck closure-linter \
+    g++ pycodestyle cppcheck closure-linter \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
