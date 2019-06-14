@@ -24,12 +24,13 @@ RUN \
   echo "deb http://packages.ros.org/ros/ubuntu ${UBUNTU_RELEASE} main" > /etc/apt/sources.list.d/ros-latest.list && \
   echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
   echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
-  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
+  apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
   wget --no-check-certificate -q -O /tmp/key.pub https://dl-ssl.google.com/linux/linux_signing_key.pub && apt-key add /tmp/key.pub && rm /tmp/key.pub && \
+  apt-key update && \
   apt-get update && \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
-    g++ pep8 cppcheck closure-linter \
+    g++ pycodestyle cppcheck closure-linter \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \

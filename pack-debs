@@ -6,9 +6,9 @@ DIR=$( dirname "${BASH_SOURCE[0]}" )
 cd $DIR
 DIR=`pwd`
 
-BUILD_ROS_DISTRO="${BUILD_ROS_DISTRO:-indigo}"
+BUILD_ROS_DISTRO="${BUILD_ROS_DISTRO:-melodic}"
 BUILD_OS="${BUILD_OS:-ubuntu}"
-BUILD_OS_VERSION="${BUILD_OS_VERSION:-trusty}"
+BUILD_OS_VERSION="${BUILD_OS_VERSION:-bionic}"
 
 BUILD="$DIR/lg_builder/scripts/lg-ros-build --ros_distro=${BUILD_ROS_DISTRO} --os=${BUILD_OS} --os_version=${BUILD_OS_VERSION}"
 SRCDIR=$DIR/catkin/src
