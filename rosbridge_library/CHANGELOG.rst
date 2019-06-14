@@ -2,6 +2,9 @@
 Changelog for package rosbridge_library
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.20.4 (2019-06-12)
 -------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
