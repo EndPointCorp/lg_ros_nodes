@@ -6,9 +6,19 @@ import rosservice
 class KmlAlive:
     def __init__(self, earth_proc):
         self.earth_proc = earth_proc
+        rospy.loginfo("XXX starting KMLALIVE process")
         rospy.Timer(rospy.Duration(10), self.keep_alive, oneshot=True)
 
     def keep_alive(self, *args, **kwargs):
+        try:
+            self._keep_alive(args, kwargs)
+        except Exception as e:
+            rospy.logerr("exception was {}".format(e))
+            rospy.sleep(1)
+            self.keep_alive(args, kwargs)
+
+    def _keep_alive(self, *args, **kwargs):
+        rospy.logerr("XXX in first keep_alive")
         loop_timeout = 1
         counter = 0
         with open('/dev/null', 'w') as dev_null:
