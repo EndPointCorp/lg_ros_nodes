@@ -2,6 +2,12 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* only relaunch if it has worked before
+* wrap kmlalive in exception
+* Contributors: Jacob Minshall
+
 2.0.0 (2019-06-14)
 ------------------
 
