@@ -18,6 +18,9 @@ class KmlAlive:
             self.keep_alive(args, kwargs)
 
     def _keep_alive(self, *args, **kwargs):
+        # only restart when worked is true, otherwise
+        # it may have never worked
+        worked = False
         rospy.logerr("XXX in first keep_alive")
         loop_timeout = 1
         counter = 0
@@ -38,13 +41,17 @@ class KmlAlive:
                         stderr=dev_null,
                         close_fds=True
                     )
-                    if ret_value != 0:
+                    if ret_value == 0:
+                        worked = True
+                        counter = 0
+                    else:
                         counter += 1
                         rospy.logerr("XXX found non zero value for {} counter at {}".format(pid, counter))
-                        if counter > 10:
+                        if counter > 5 and worked:
                             rospy.logerr("XXX RELAUNCHING")
                             self.earth_proc.handle_soft_relaunch()
                             counter = 0
+                            worked = False
                 else:
                     rospy.logerr("no kml sync state found")
                 rospy.sleep(loop_timeout)
