@@ -35,6 +35,21 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/_always_build
+  COMMAND ./build_gst_video_sync.sh
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/
+)
+add_custom_target(
+  gst_video_sync
+  ALL
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/_always_build
+)
+install(
+  PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/gst_video_sync
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)
+
 catkin_install_python(PROGRAMS
   scripts/mplayer
   scripts/mplayer.py
