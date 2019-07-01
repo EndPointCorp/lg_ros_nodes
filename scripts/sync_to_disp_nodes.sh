@@ -63,10 +63,10 @@ lg-run-bg -w "cd catkin_ws ; \
            source /opt/ros/${ROS_DISTRO}/setup.bash ; \
            if [ ! -e /tmp/rosdep_updated ]; then
              echo "updating rosdep, please wait"
-             rosdep update;
+             rosdep update --include-eol-distros;
              touch /tmp/rosdep_updated;
            fi
-           rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y;
+           rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y -r;
            catkin_make clean;\
            catkin_make install;\
            find /home/lg/catkin_ws/src/ -iname '*.pyc' -delete "

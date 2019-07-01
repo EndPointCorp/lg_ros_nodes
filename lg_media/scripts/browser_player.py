@@ -9,7 +9,6 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 DEFAULT_VIEWPORT = 'center'
 MEDIA_TYPE = 'browser_video'
-VIDEOSYNC_URL = 'http://lg-head/lg_sv/webapps/videosync'
 NODE_NAME = 'lg_media_service_browser_player'
 
 

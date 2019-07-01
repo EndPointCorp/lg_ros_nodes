@@ -14,7 +14,7 @@ class SyncedVideoApp {
     this.master = opts.master;
     this.ros = opts.ros;
     this.sync = opts.sync;
-    this.softSyncMin = opts.softSyncMin || 1.0 / 90.0;
+    this.softSyncMin = opts.softSyncMin || 1.0 / 60.0;
     this.softSyncMax = opts.softSyncMax || 1.0;
 
     let clockAddr = opts.clockAddr || 'ws://localhost:9091';

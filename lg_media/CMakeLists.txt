@@ -46,6 +46,11 @@ catkin_install_python(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+install(
+  DIRECTORY webapps/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
+)
+
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest(test/online/test_mplayer_adhoc_media.test)

@@ -44,7 +44,7 @@ class BasicBrowserData:
                 self.url,
                 videoUrl=media.url,
                 master=self.leader,
-                loop=media.loop,
+                loop=True,
                 sync=True,
             )
             url = url2pathname(url)
@@ -53,6 +53,7 @@ class BasicBrowserData:
             new_browser.id = 'adhoc_media_browser_%s' % self.viewport_name
             new_browser.geometry = media.geometry
             new_browser.url = url
+            new_browser.kiosk = True
             msg.browsers.append(new_browser)
             rospy.loginfo("New browser URL: %s" % url)
 
@@ -67,6 +68,9 @@ def main():
         msg = "Viewport not configured for lg_media browser_launcher - exiting"
         rospy.logerr(msg)
         exit(1)
+    extensions_root = rospy.get_param('~extensions_root', '/opt/endpoint/chrome/extensions/')
+    hide_delay = rospy.get_param('~hide_delay', 0)
+    destroy_delay = rospy.get_param('~destroy_delay', 2)
 
     browser_pool_publisher = rospy.Publisher('/media_service/launch_browser/%s' % viewport_name,
                                              AdhocBrowsers, queue_size=10)
@@ -90,7 +94,7 @@ def main():
                                           max_playbackrate, autoplay,
                                           show_controls, viewport_name)
 
-    browser_pool = AdhocBrowserPool(viewport_name)
+    browser_pool = AdhocBrowserPool(viewport_name, extensions_root, hide_delay, destroy_delay)
     make_soft_relaunch_callback(browser_pool.handle_soft_relaunch, groups=["media"])
 
     rospy.Subscriber('/media_service/browser/%s' % viewport_name, AdhocMedias,
