@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 #include <unistd.h>
 #include <inttypes.h>
@@ -197,8 +198,13 @@ int SyncVideoApp::init() {
 
   if (this->master || this->slave) {
     if ((this->sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-      g_printerr("Failed to create socket\n");
+      g_printerr("Failed to create socket, errno %d\n", errno);
       return -1;
+    }
+
+    int broadcast = 1;
+    if (setsockopt(this->sockfd, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0) {
+      g_warning("Failed to set socket broadcast flag, errno %d\n", errno);
     }
   }
 
