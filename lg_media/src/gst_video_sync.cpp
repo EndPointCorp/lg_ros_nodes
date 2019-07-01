@@ -245,6 +245,17 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
       }
 
       break;
+    case GST_MESSAGE_BUFFERING: {
+      gint percent = 0;
+      gst_message_parse_buffering(msg, &percent);
+      g_debug("buffering at %u percent\n", percent);
+      if (percent < 100) {
+        gst_element_set_state(this->player, GST_STATE_PAUSED);
+      } else {
+        gst_element_set_state(this->player, GST_STATE_PLAYING);
+      }
+      break;
+    }
     default:
       break;
   }
