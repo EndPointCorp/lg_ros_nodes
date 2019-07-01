@@ -1,6 +1,8 @@
 import subprocess
 import rospy
 import rosservice
+import traceback
+import sys
 
 
 class KmlAlive:
@@ -8,19 +10,19 @@ class KmlAlive:
         self.earth_proc = earth_proc
         rospy.loginfo("XXX starting KMLALIVE process")
         rospy.Timer(rospy.Duration(10), self.keep_alive, oneshot=True)
+        # only restart when worked is true, otherwise
+        # it may have never worked
+        self.worked = False
 
     def keep_alive(self, *args, **kwargs):
         try:
             self._keep_alive(args, kwargs)
         except Exception as e:
-            rospy.logerr("exception was {}".format(e))
+            rospy.logerr("exception was {} {} {}".format(e, traceback.format_exc(), sys.exc_info()[0]))
             rospy.sleep(1)
             self.keep_alive(args, kwargs)
 
     def _keep_alive(self, *args, **kwargs):
-        # only restart when worked is true, otherwise
-        # it may have never worked
-        worked = False
         rospy.logerr("XXX in first keep_alive")
         loop_timeout = 1
         counter = 0
@@ -42,16 +44,16 @@ class KmlAlive:
                         close_fds=True
                     )
                     if ret_value == 0:
-                        worked = True
+                        self.worked = True
                         counter = 0
                     else:
                         counter += 1
                         rospy.logerr("XXX found non zero value for {} counter at {}".format(pid, counter))
-                        if counter > 5 and worked:
+                        if (counter > 5 and self.worked) or counter > 60:
                             rospy.logerr("XXX RELAUNCHING")
                             self.earth_proc.handle_soft_relaunch()
                             counter = 0
-                            worked = False
+                            self.worked = False
                 else:
                     rospy.logerr("no kml sync state found")
                 rospy.sleep(loop_timeout)
