@@ -329,9 +329,9 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
 
     } else if(master_offset > SOFT_SYNC_THRESHOLD) {
       // Soft sync is stepping forwards to the position.
-      g_debug("stepping by one buffer\n");
+      g_debug("stepping forward by %ld\n", master_offset);
 
-      if (!this->step(GST_FORMAT_BUFFERS, 1)) {
+      if (!this->step(GST_FORMAT_TIME, master_offset)) {
         g_printerr("step failed!\n");
       }
 
