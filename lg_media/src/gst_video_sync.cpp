@@ -202,9 +202,12 @@ int SyncVideoApp::init() {
       return -1;
     }
 
-    int broadcast = 1;
-    if (setsockopt(this->sockfd, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0) {
+    int one = 1;
+    if (setsockopt(this->sockfd, SOL_SOCKET, SO_BROADCAST, &one, sizeof(one)) < 0) {
       g_warning("Failed to set socket broadcast flag, errno %d\n", errno);
+    }
+    if (setsockopt(this->sockfd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one)) < 0) {
+      g_warning("Failed to set socket reuseaddr flag, errno %d\n", errno);
     }
   }
 
