@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* storing worked as instance variable and stack trace
+* Contributors: Jacob Minshall
+
 2.0.1 (2019-06-28)
 ------------------
 * only relaunch if it has worked before
