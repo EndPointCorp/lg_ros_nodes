@@ -77,7 +77,6 @@ class SyncVideoApp {
     std::mutex lock;
     gint64 duration;
     GMainLoop *loop;
-    GstElement *pipeline;
     GstElement *player;
     guint64 mypos;
     guint64 remotepos;
@@ -95,7 +94,6 @@ SyncVideoApp::SyncVideoApp
   this->duration = 0;
 
   this->loop = NULL;
-  this->pipeline = NULL;
   this->player = NULL;
 
   this->mypos = 0;
@@ -133,10 +131,9 @@ int SyncVideoApp::init() {
 
   this->window = new QWidget();
   this->loop = g_main_loop_new(NULL, false);
-  this->pipeline = gst_pipeline_new("sync_pipeline");
   this->player = gst_element_factory_make("playbin", "sync_player");
-  if (!this->pipeline || !this->player) {
-    g_printerr("Failed to create pipeline or playbin!\n");
+  if (!this->player) {
+    g_printerr("Failed to create playbin!\n");
     return -1;
   }
 
@@ -153,8 +150,6 @@ int SyncVideoApp::init() {
   g_object_set(this->player, "flags", playbin_flags, NULL);
 
   g_object_set(this->player, "uri", this->uri, NULL);
-
-  gst_bin_add(GST_BIN(this->pipeline), this->player);
 
   gst_element_set_state(this->player, GST_STATE_PAUSED);
   gst_element_get_state(this->player, &state, NULL, GST_SECOND * 3);  // Wait for state change.
@@ -183,7 +178,7 @@ int SyncVideoApp::init() {
   gst_element_set_state(this->player, GST_STATE_NULL);
   g_object_unref(pad);
 
-  bus = gst_pipeline_get_bus(GST_PIPELINE(this->pipeline));
+  bus = gst_pipeline_get_bus(GST_PIPELINE(this->player));
   gst_bus_add_watch(bus, bus_callback_, this);
   gst_object_unref(bus);
 
@@ -284,9 +279,9 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
   GstStateChangeReturn sret;
   gint64 mypos = 0;
 
-  sret = gst_element_get_state(this->pipeline, &state, NULL, 0);
+  sret = gst_element_get_state(this->player, &state, NULL, 0);
   if (sret != GST_STATE_CHANGE_SUCCESS || state != GST_STATE_PLAYING) {
-    g_debug("pipeline is not playing, pass\n");
+    g_debug("player is not playing, pass\n");
     return GST_PAD_PROBE_PASS;
   }
 
@@ -352,7 +347,7 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
 
 void SyncVideoApp::pause_for_sync_() {
   this->holding = true;
-  GstStateChangeReturn sret = gst_element_set_state(this->pipeline, GST_STATE_PAUSED);
+  GstStateChangeReturn sret = gst_element_set_state(this->player, GST_STATE_PAUSED);
   if (sret == GST_STATE_CHANGE_FAILURE) {
     g_printerr("failed to pause for sync\n");
   }
@@ -360,14 +355,14 @@ void SyncVideoApp::pause_for_sync_() {
 
 void SyncVideoApp::resume_() {
   this->holding = false;
-  GstStateChangeReturn sret = gst_element_set_state(this->pipeline, GST_STATE_PLAYING);
+  GstStateChangeReturn sret = gst_element_set_state(this->player, GST_STATE_PLAYING);
   if (sret == GST_STATE_CHANGE_FAILURE) {
     g_printerr("failed to resume sync\n");
   }
 }
 
 void SyncVideoApp::play() {
-  GstStateChangeReturn sret = gst_element_set_state(this->pipeline, GST_STATE_PLAYING);
+  GstStateChangeReturn sret = gst_element_set_state(this->player, GST_STATE_PLAYING);
   if (sret == GST_STATE_CHANGE_FAILURE) {
     g_printerr("failed to start playing in play()\n");
     this->quit();
@@ -378,10 +373,10 @@ void SyncVideoApp::play() {
 
 void SyncVideoApp::quit() {
   this->window->hide();
-  gst_element_set_state(this->pipeline, GST_STATE_NULL);
+  gst_element_set_state(this->player, GST_STATE_NULL);
   g_main_loop_quit(this->loop);
 
-  gst_object_unref(this->pipeline);
+  gst_object_unref(this->player);
   g_main_loop_unref(this->loop);
 }
 
