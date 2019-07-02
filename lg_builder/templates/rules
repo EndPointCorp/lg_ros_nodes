@@ -19,6 +19,11 @@ export PKG_CONFIG_PATH="/opt/ros/{ros_distro}/lib/pkgconfig"
 %:
 	dh  $@
 
+override_dh_fixperms:
+	# Debhelper started making javascripts non-executable, correct this.
+	dh_fixperms
+	/usr/bin/find debian -iname "*.js" -type f -print0 | xargs -0 -n1 chmod a+x
+
 override_dh_auto_configure:
 	# In case we're installing to a non-standard location, look for a setup.sh
 	# in the install tree that was dropped by catkin, and source it.  It will
