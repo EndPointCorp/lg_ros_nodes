@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.4 (2019-07-02)
+------------------
 * Add lg_media gstreamer_pool
   For launching gst_video_sync.
   A mostly drop-in replacement for mplayer_pool.
