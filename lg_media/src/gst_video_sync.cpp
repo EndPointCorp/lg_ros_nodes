@@ -143,7 +143,9 @@ int SyncVideoApp::init() {
 
   GstPlayFlags playbin_flags = (GstPlayFlags)(
     GST_PLAY_FLAG_VIDEO |
+    GST_PLAY_FLAG_VIS |
     GST_PLAY_FLAG_DOWNLOAD |
+    GST_PLAY_FLAG_BUFFERING |
     GST_PLAY_FLAG_DEINTERLACE |
     GST_PLAY_FLAG_SOFT_VOLUME |
     GST_PLAY_FLAG_SOFT_COLORBALANCE
