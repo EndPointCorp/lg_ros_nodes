@@ -2,6 +2,17 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add lg_media gstreamer_pool
+  For launching gst_video_sync.
+  A mostly drop-in replacement for mplayer_pool.
+  Custom mplayer args in scenes will need to be ported.
+* GStreamer-based sync video player
+* Update browser video app
+  Stripped down version of the lg_panovideo player with optional sync.
+* Contributors: Matt Vollrath
+
 2.0.3 (2019-07-02)
 ------------------
 
