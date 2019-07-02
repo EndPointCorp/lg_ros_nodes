@@ -2,6 +2,12 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* gst_video_sync: slaves won't wait for master
+* gst_video_sync: Hide init, use vaapi and vdpau
+* Contributors: Matt Vollrath
+
 2.0.5 (2019-07-02)
 ------------------
 * gst_video_sync: use xvimagesink
