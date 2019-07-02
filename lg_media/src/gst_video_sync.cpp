@@ -361,8 +361,9 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
 
       return GST_PAD_PROBE_DROP;
 
-    } else if(master_offset < -SOFT_SYNC_THRESHOLD) {
+    } else if(master_offset < -SOFT_SYNC_THRESHOLD && mypos < this->duration - HARD_SYNC_THRESHOLD) {
       // Slave is ahead, pause until master catches up.
+      // If we are near the end, do not hold.
       g_debug("holding pattern\n");
       this->pause_for_sync_();
     }
