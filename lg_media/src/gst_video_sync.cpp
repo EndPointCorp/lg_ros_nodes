@@ -295,14 +295,7 @@ void SyncVideoApp::video_changed(GstElement *element) {
 GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *info) {
   std::lock_guard<std::mutex> lock(this->lock);
   GstState state = GST_STATE_NULL;
-  GstStateChangeReturn sret;
   gint64 mypos = 0;
-
-  sret = gst_element_get_state(this->player, &state, NULL, 0);
-  if (sret != GST_STATE_CHANGE_SUCCESS || state != GST_STATE_PLAYING) {
-    g_debug("player is not playing, pass\n");
-    return GST_PAD_PROBE_PASS;
-  }
 
   gst_element_query_position(this->player, GST_FORMAT_TIME, &mypos);
 
@@ -310,8 +303,17 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
 
   if (this->master) {
     this->send_pos_(mypos);
-  } else if (this->slave && this->remotepos != GST_CLOCK_TIME_NONE) {
+    return GST_PAD_PROBE_PASS;
+  }
+
+  if (this->slave && this->remotepos != GST_CLOCK_TIME_NONE) {
     // Slaves sync to the master clock.
+    GstStateChangeReturn sret = gst_element_get_state(this->player, &state, NULL, 0);
+    if (sret != GST_STATE_CHANGE_SUCCESS || state != GST_STATE_PLAYING) {
+      g_debug("player is not playing, pass\n");
+      return GST_PAD_PROBE_PASS;
+    }
+
     gint64 remote_age;
     gint64 master_offset;
     gint64 now = g_get_monotonic_time();
