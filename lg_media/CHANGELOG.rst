@@ -2,6 +2,11 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* gst_video_sync: use xvimagesink
+* Contributors: Matt Vollrath
+
 2.0.4 (2019-07-02)
 ------------------
 * Add lg_media gstreamer_pool
