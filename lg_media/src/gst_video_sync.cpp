@@ -143,7 +143,7 @@ int SyncVideoApp::init() {
     return -1;
   }
 
-  sink = gst_element_factory_make("glimagesink", "glsink");
+  sink = gst_element_factory_make("xvimagesink", "sync_sink");
   g_object_set(this->player, "video-sink", sink, NULL);
 
   GstPlayFlags playbin_flags = (GstPlayFlags)(
