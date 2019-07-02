@@ -49,6 +49,7 @@ RUN \
     ros-$ROS_DISTRO-spacenav-node spacenavd \
     google-chrome-stable google-chrome-beta google-chrome-unstable \
     awesome xdg-utils \
+    libqt5gstreamer-dev \
  && rm -rf /var/lib/apt/lists/* \
  && pip install --no-cache-dir python-coveralls
 

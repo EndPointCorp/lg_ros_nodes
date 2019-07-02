@@ -8,7 +8,7 @@ from lg_common.helpers import add_url_params, make_soft_relaunch_callback
 from urllib import url2pathname
 from lg_common.helpers import run_with_influx_exception_handler
 
-VIDEOSYNC_URL = 'http://localhost:8008/lg_sv/webapps/videosync/index.html'
+VIDEOSYNC_URL = 'http://localhost:8008/lg_media/webapps/videosync/index.html'
 NODE_NAME = 'lg_media_browser_launcher'
 
 
@@ -41,18 +41,12 @@ class BasicBrowserData:
         msg = AdhocBrowsers()
         for media in data.medias:
             url = add_url_params(
-                self.url, src=media.url,
-                leader=self.leader,
-                autoplay=self.autoplay,
-                show_controls=self.show_controls,
-                rosbridge_port=self.ros_port,
-                rosbridge_host=self.ros_host,
-                syncRate=self.sync_rate,
-                frameLatency=self.frame_latency,
-                pingInterval=self.ping_interval,
-                hardSyncDiff=self.hard_sync_diff,
-                minPlaybackRate=self.min_playbackrate,
-                maxPlaybackRate=self.max_playbackrate)
+                self.url,
+                videoUrl=media.url,
+                master=self.leader,
+                loop=media.loop,
+                sync=True,
+            )
             url = url2pathname(url)
             rospy.logdebug('url for media: %s' % url)
             new_browser = AdhocBrowser()
