@@ -217,9 +217,8 @@ int SyncVideoApp::init() {
   if (this->slave) {
     this->udp_thread = std::thread(&SyncVideoApp::run_udp_thread_, this);
     this->udp_thread.detach();
-  } else {
-    this->play();
   }
+  this->play();
 
   return 0;
 }
@@ -449,7 +448,6 @@ bool SyncVideoApp::send_pos_(guint64 pos) {
 void SyncVideoApp::run_udp_thread_() {
   bind(this->sockfd, (struct sockaddr*)&this->sockaddr, sizeof(this->sockaddr));
 
-  gboolean first_sync = true;
   guint64 pos;
   gint64 stamp;
   unsigned char buffer[8];
@@ -482,11 +480,6 @@ void SyncVideoApp::run_udp_thread_() {
         g_debug("done holding\n");
         this->resume_();
       }
-    }
-
-    if (first_sync) {
-      first_sync = false;
-      this->play();
     }
   }
 }
