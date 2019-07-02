@@ -131,6 +131,11 @@ int SyncVideoApp::init() {
   gint height = 0;
 
   this->window = new QWidget();
+  this->window->hide();
+  if (this->wname) {
+    this->window->setWindowTitle(wname);
+  }
+
   this->loop = g_main_loop_new(NULL, false);
   this->player = gst_element_factory_make("playbin", "sync_player");
   if (!this->player) {
@@ -193,9 +198,6 @@ int SyncVideoApp::init() {
   gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(this->player), this->window->winId());
 
   this->window->resize(width, height);
-  if (this->wname) {
-    this->window->setWindowTitle(wname);
-  }
 
   if (this->master || this->slave) {
     if ((this->sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -213,7 +215,6 @@ int SyncVideoApp::init() {
   }
 
   if (this->slave) {
-    this->window->hide();
     this->udp_thread = std::thread(&SyncVideoApp::run_udp_thread_, this);
     this->udp_thread.detach();
   } else {
@@ -301,6 +302,10 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
 
   this->mypos = mypos;
 
+  if (this->window->isHidden()) {
+    this->window->show();
+  }
+
   if (this->master) {
     this->send_pos_(mypos);
     return GST_PAD_PROBE_PASS;
@@ -387,8 +392,6 @@ void SyncVideoApp::play() {
   if (sret == GST_STATE_CHANGE_FAILURE) {
     g_printerr("failed to start playing in play()\n");
     this->quit();
-  } else {
-    this->window->show();
   }
 }
 
