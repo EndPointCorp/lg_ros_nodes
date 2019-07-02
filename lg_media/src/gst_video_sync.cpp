@@ -143,7 +143,9 @@ int SyncVideoApp::init() {
     return -1;
   }
 
-  sink = gst_element_factory_make("xvimagesink", "sync_sink");
+  gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(this->player), this->window->winId());
+
+  sink = gst_element_factory_make("vaapisink", "sync_sink");
   g_object_set(this->player, "video-sink", sink, NULL);
 
   GstPlayFlags playbin_flags = (GstPlayFlags)(
@@ -172,6 +174,7 @@ int SyncVideoApp::init() {
 
   caps = gst_pad_get_current_caps(pad);
   structure = gst_caps_get_structure(caps, 0);
+  g_object_unref(pad);
 
   if (!gst_structure_get_int(structure, "width", &width)) {
     g_printerr("Could not query media width!\n");
@@ -187,15 +190,12 @@ int SyncVideoApp::init() {
   }
 
   gst_element_set_state(this->player, GST_STATE_NULL);
-  g_object_unref(pad);
 
   bus = gst_pipeline_get_bus(GST_PIPELINE(this->player));
   gst_bus_add_watch(bus, bus_callback_, this);
   gst_object_unref(bus);
 
   g_signal_connect(this->player, "video-changed", (GCallback)video_changed_, this);
-
-  gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(this->player), this->window->winId());
 
   this->window->resize(width, height);
 
@@ -539,6 +539,8 @@ int main (int argc, char **argv) {
   uint16_t argport = DEFAULT_PORT;
   bool argsoftware = false;
 
+  // vdpau+vaapi is not officially supported, but we want to use it.
+  putenv("GST_VAAPI_ALL_DRIVERS=1");
   gst_init (&argc, &argv);
 
   opterr = 0;
@@ -605,6 +607,10 @@ int main (int argc, char **argv) {
     set_factory("vaapidecodebin", false);
     set_factory("vaapipostproc", false);
     set_factory("vaapisink", false);
+  } else {
+    set_factory("vaapidecodebin", true);
+    set_factory("vaapipostproc", true);
+    set_factory("vaapisink", true);
   }
 
   memset(&sockaddr, 0, sizeof(sockaddr));
