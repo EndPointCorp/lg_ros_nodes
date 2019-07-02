@@ -2,8 +2,8 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.5 (2019-07-02)
+------------------
 * Fix xargs emptiness in debian rules
 * Contributors: Matt Vollrath
 

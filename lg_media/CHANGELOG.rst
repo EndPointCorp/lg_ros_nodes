@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.5 (2019-07-02)
+------------------
 * gst_video_sync: use xvimagesink
 * Contributors: Matt Vollrath
 
