@@ -2,6 +2,9 @@
 Changelog for package spacenav_remote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.2 (2019-07-01)
 ------------------
 

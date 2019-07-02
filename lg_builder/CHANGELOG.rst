@@ -2,6 +2,11 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Executable javascripts in debian build
+* Contributors: Matt Vollrath
+
 2.0.2 (2019-07-01)
 ------------------
 
