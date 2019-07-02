@@ -123,6 +123,7 @@ static GstPadProbeReturn buffer_callback_(GstPad *pad, GstPadProbeInfo *info, gp
 int SyncVideoApp::init() {
   GstState state = GST_STATE_NULL;
   GstBus *bus = NULL;
+  GstElement *sink = NULL;
   GstCaps *caps = NULL;
   GstPad *pad = NULL;
   GstStructure *structure = NULL;
@@ -136,6 +137,9 @@ int SyncVideoApp::init() {
     g_printerr("Failed to create playbin!\n");
     return -1;
   }
+
+  sink = gst_element_factory_make("glimagesink", "glsink");
+  g_object_set(this->player, "video-sink", sink, NULL);
 
   GstPlayFlags playbin_flags = (GstPlayFlags)(
     GST_PLAY_FLAG_VIDEO |
