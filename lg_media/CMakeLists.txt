@@ -51,6 +51,8 @@ install(
 )
 
 catkin_install_python(PROGRAMS
+  scripts/gstreamer
+  scripts/gstreamer.py
   scripts/mplayer
   scripts/mplayer.py
   scripts/browser_launcher
