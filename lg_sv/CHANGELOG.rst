@@ -2,6 +2,11 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Normalize roslib topic throttle and queues
+* Contributors: Matt Vollrath
+
 2.0.6 (2019-07-02)
 ------------------
 
