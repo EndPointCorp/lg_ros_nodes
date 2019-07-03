@@ -58,9 +58,9 @@ def main():
     rospy.init_node(NODE_NAME)
 
     udev_location = rospy.get_param(
-        '~udev_location',
-        'http://lg-head/lg/external_devices/97-logitech-spotlight.rules')
-    grabCustomUdev(udev_location, '/etc/udev/rules.d/97-logitech-spotlight.rules')
+        '~udev_location', None)
+    if udev_location is not None:
+        grabCustomUdev(udev_location, '/etc/udev/rules.d/99-mouse_to_pointer.rules')
     device_id = rospy.get_param('~device_id', 'default')
     device_path = rospy.get_param('~device_path', 'default')
     viewports = [
