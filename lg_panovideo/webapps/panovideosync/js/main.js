@@ -58,7 +58,9 @@ sync.animate();
 let disableSlugTopic = new ROSLIB.Topic({
   ros: ros,
   name: '/earth/disable_nav_for_scene_slug',
-  messageType: 'std_msgs/String'
+  messageType: 'std_msgs/String',
+  throttle_rate: 16,
+  queue_length: 1,
 });
 disableSlugTopic.advertise();
 
@@ -118,7 +120,9 @@ sceneService.callService(sceneRequest, (result) => {
 let sceneTopic = new ROSLIB.Topic({
   ros: ros,
   name: '/director/scene',
-  messageType: 'interactivespaces_msgs/GenericMessage'
+  messageType: 'interactivespaces_msgs/GenericMessage',
+  throttle_rate: 16,
+  queue_length: 1,
 });
 sceneTopic.subscribe((msg) => {
   if (msg.type !== 'json') {

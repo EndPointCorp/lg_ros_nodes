@@ -150,7 +150,8 @@ WindowReadyExt.prototype.initRos = function() {
             ros: extension.ros,
             name: '/director/window/ready',
             messageType: 'std_msgs/String',
-            throttle_rate: 33
+            throttle_rate: 33,
+            queue_length: 1,
         });
         extension.readyTopic.advertise();
         console.log("Advertised on the topic /director/window/ready");

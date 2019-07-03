@@ -132,7 +132,9 @@ class SyncedPanoVideoApp {
     this.poseTopic_ = new ROSLIB.Topic({
       ros: this.ros,
       name: '/panovideo/pov',
-      messageType: 'geometry_msgs/Quaternion'
+      messageType: 'geometry_msgs/Quaternion',
+      throttle_rate: 16,
+      queue_length: 1,
     });
     this.poseTopic_.subscribe(this.handlePovMessage.bind(this));
     if (this.master) {
@@ -153,7 +155,9 @@ class SyncedPanoVideoApp {
       this.stateTopic = new ROSLIB.Topic({
         ros: this.ros,
         name: '/panovideo/state',
-        messageType: 'lg_common/ApplicationState'
+        messageType: 'lg_common/ApplicationState',
+        throttle_rate: 16,
+        queue_length: 1,
       });
       this.stateTopic.advertise();
       this.stateTopic.publish(new ROSLIB.Message({

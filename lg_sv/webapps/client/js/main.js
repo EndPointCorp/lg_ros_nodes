@@ -126,12 +126,16 @@ var initializeRes = function(ros, yawOffset) {
   var panoTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview/panoid',
-    messageType: 'std_msgs/String'
+    messageType: 'std_msgs/String',
+    throttle_rate: 16,
+    queue_length: 1,
   });
   var metadataTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview/metadata',
-    messageType: 'std_msgs/String'
+    messageType: 'std_msgs/String',
+    throttle_rate: 16,
+    queue_length: 1,
   });
 
   var attributionModule = new Attribution(info);

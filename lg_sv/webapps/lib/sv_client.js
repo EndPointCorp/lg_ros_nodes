@@ -14,17 +14,23 @@ function StreetviewClient(ros, streetView) {
   this.povTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview_old/pov',
-    messageType: 'geometry_msgs/Quaternion'
+    messageType: 'geometry_msgs/Quaternion',
+    throttle_rate: 16,
+    queue_length: 1,
   });
   this.panoTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview_old/panoid',
-    messageType: 'std_msgs/String'
+    messageType: 'std_msgs/String',
+    throttle_rate: 16,
+    queue_length: 1,
   });
   this.metadataTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/streetview_old/metadata',
-    messageType: 'std_msgs/String'
+    messageType: 'std_msgs/String',
+    throttle_rate: 16,
+    queue_length: 1,
   });
 
   // Linkage
@@ -114,7 +120,9 @@ StreetviewClient.prototype.init_last_view = function(ros) {
   var directorTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/director/scene',
-    serviceType: 'interactivespaces_msgs/GenericMessage'
+    serviceType: 'interactivespaces_msgs/GenericMessage',
+    throttle_rate: 16,
+    queue_length: 1,
   });
 
   function handleDirector(msg) {

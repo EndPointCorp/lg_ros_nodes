@@ -71,7 +71,8 @@ CurrentUrlExt.prototype.onRosConneted = function(error) {
         ros: this.ros,
         name: topicName,
         messageType: 'lg_common/BrowserURL',
-        throttle_rate: 33
+        throttle_rate: 33,
+        queue_length: 1,
     });
 
     this.topic.advertise();

@@ -35,6 +35,8 @@
                 ros: ros,
                 name: topic,
                 messageType: type,
+                throttle_rate: 16,
+                queue_length: 1,
             });
             this.topic.subscribe(this.onMessage.bind(this));
             
