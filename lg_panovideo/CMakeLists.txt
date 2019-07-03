@@ -66,7 +66,6 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
 )
 
-if (CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  add_rostest(test/test_util.test)
-endif()
+#if (CATKIN_ENABLE_TESTING)
+#  find_package(rostest REQUIRED)
+#endif()

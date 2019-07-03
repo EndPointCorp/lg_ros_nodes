@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-PKG = 'lg_panovideo'
-NAME = 'test_util'
+PKG = 'lg_common'
+NAME = 'test_combine_viewport_geometries'
 
 import rospy
 import unittest
@@ -8,7 +8,7 @@ from lg_panovideo import util
 from lg_common import ManagedWindow
 
 
-class TestUtil(unittest.TestCase):
+class TestCombineViewportGeometries(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -41,6 +41,6 @@ class TestUtil(unittest.TestCase):
 if __name__ == '__main__':
     import rostest
     rospy.init_node(NAME)
-    rostest.rosrun(PKG, NAME, TestUtil)
+    rostest.rosrun(PKG, NAME, TestCombineViewportGeometries)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

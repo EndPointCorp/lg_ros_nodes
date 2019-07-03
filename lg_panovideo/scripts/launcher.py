@@ -10,7 +10,7 @@ from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_
 from lg_common.helpers import make_soft_relaunch_callback
 from lg_common.helpers import run_with_influx_exception_handler
 from lg_common.helpers import has_activity, on_new_scene
-from lg_panovideo import util
+from lg_common.helpers import combine_viewport_geometries
 
 
 DEFAULT_URL = 'http://localhost:8008/lg_panovideo/webapps/panovideosync/index.html'
@@ -23,7 +23,7 @@ def main():
 
     viewports = str(rospy.get_param('~viewports'))
     viewports = [x.strip() for x in viewports.split(',')]
-    geometry = util.combine_viewport_geometries(viewports)
+    geometry = combine_viewport_geometries(viewports)
     url = str(rospy.get_param('~url', DEFAULT_URL))
     field_of_view = float(rospy.get_param('~fov', DEFAULT_FOV))
     yaw_offset = float(rospy.get_param('~yaw_offset', 0))
