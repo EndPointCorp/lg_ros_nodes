@@ -123,21 +123,6 @@ var initializeRes = function(ros, yawOffset) {
   window.addEventListener('resize', handleResize, false);
   handleResize();
 
-  var panoTopic = new ROSLIB.Topic({
-    ros: ros,
-    name: '/streetview/panoid',
-    messageType: 'std_msgs/String',
-    throttle_rate: 16,
-    queue_length: 1,
-  });
-  var metadataTopic = new ROSLIB.Topic({
-    ros: ros,
-    name: '/streetview/metadata',
-    messageType: 'std_msgs/String',
-    throttle_rate: 16,
-    queue_length: 1,
-  });
-
   var attributionModule = new Attribution(info);
   var handleMetadataResponse = function(response, stat) {
     if (stat != google.maps.StreetViewStatus.OK) {
@@ -175,14 +160,6 @@ var initializeRes = function(ros, yawOffset) {
     svService.getPanorama({ pano: panoId }, handleMetadataResponse);
   }
   svClient.on('pano_changed', handlePanoChanged);
-  var panoService = new ROSLIB.Service({
-    ros: ros,
-    name: '/streetview/panoid_state',
-    serviceType: 'lg_sv/PanoIdState'
-  });
-  panoService.callService({}, function(resp) {
-    //handlePanoChanged(resp.panoid);
-  });
 
   /**
    * handling director scenes here
