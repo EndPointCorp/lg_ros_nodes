@@ -23,6 +23,7 @@
 
 const char* DEFAULT_ADDR = "127.0.0.1";
 const uint16_t DEFAULT_PORT = 9999;
+const char* VAAPI_ENV = "GST_VAAPI_ALL_DRIVERS=1";
 
 // Buffer size when buffering network streams.
 const gint64 BUFFER_SIZE = 2048;
@@ -536,7 +537,7 @@ int main (int argc, char **argv) {
   bool argsoftware = false;
 
   // vdpau+vaapi is not officially supported, but we want to use it.
-  putenv("GST_VAAPI_ALL_DRIVERS=1");
+  putenv((char*)VAAPI_ENV);
   gst_init (&argc, &argv);
 
   opterr = 0;
