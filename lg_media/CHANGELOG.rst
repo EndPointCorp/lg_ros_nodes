@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.7 (2019-07-03)
+------------------
 * gst_video_sync: specify buffer size
 * Normalize roslib topic throttle and queues
 * Contributors: Matt Vollrath

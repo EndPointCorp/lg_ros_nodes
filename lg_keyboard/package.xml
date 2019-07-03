@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_keyboard</name>
-  <version>2.0.6</version>
+  <version>2.0.7</version>
   <description>ROS node handling onboard keyboard</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>

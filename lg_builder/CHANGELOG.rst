@@ -2,8 +2,8 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.7 (2019-07-03)
+------------------
 * changing the find command around
 * Contributors: Jacob Minshall
 
