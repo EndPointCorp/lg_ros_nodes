@@ -2,8 +2,8 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.8 (2019-07-08)
+------------------
 * Move combine_viewport_geometries to lg_common
 * Contributors: Matt Vollrath
 
