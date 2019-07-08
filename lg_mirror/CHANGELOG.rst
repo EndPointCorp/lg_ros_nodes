@@ -2,6 +2,9 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.7 (2019-07-03)
 ------------------
 * Normalize roslib topic throttle and queues

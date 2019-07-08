@@ -2,6 +2,11 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Move combine_viewport_geometries to lg_common
+* Contributors: Matt Vollrath
+
 2.0.7 (2019-07-03)
 ------------------
 * Normalize roslib topic throttle and queues

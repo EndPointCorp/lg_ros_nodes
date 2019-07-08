@@ -2,6 +2,9 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.7 (2019-07-03)
 ------------------
 * Disable fetching udev rules by default
