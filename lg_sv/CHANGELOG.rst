@@ -2,6 +2,9 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.8 (2019-07-08)
 ------------------
 * Clean up some lg_sv client topic subs

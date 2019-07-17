@@ -2,6 +2,19 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#403 <https://github.com/EndPointCorp/lg_ros_nodes/issues/403>`_ from EndPointCorp/fix_bionic_kmlsync
+  kmlsync: Encode outgoing text
+* _finish_text for query handler too
+* Merge pull request `#404 <https://github.com/EndPointCorp/lg_ros_nodes/issues/404>`_ from EndPointCorp/topic/kml_still_alive
+  kmlalive: improve logging and add ros params
+* fix syntax errs
+* kmlalive: improve logging and add ros params
+* kmlsync: Encode outgoing text
+  New Tornado does not accept strings. Encode UTF-8.
+* Contributors: Matt Vollrath, Will Plaut
+
 2.0.8 (2019-07-08)
 ------------------
 
