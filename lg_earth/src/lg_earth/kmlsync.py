@@ -77,7 +77,7 @@ class KmlMasterHandler(tornado.web.RequestHandler):
         kml_document.attrib['id'] = 'master'
         kml_reparsed = minidom.parseString(ET.tostring(kml_root))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
-        self.finish(kml_content)
+        self.finish(kml_content.encode('utf8'))
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
@@ -141,7 +141,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         if not window_slug:
             self.set_status(400, "No window slug provided")
-            self.finish("400 Bad Request: No window slug provided")
+            self._finish_text("400 Bad Request: No window slug provided")
             return
 
         try:
@@ -152,12 +152,12 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 e.message
             ))
             # Always return a valid KML or Earth will stop requesting updates
-            self.finish(get_kml_root())
+            self._finish_text(get_kml_root())
             return
 
         assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
         if (assets_to_delete or assets_to_create) or no_defer:
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            self._finish_text(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             return
 
         self.unique_id = KmlUpdateHandler.get_unique_id()
@@ -176,7 +176,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 e.message
             ))
             # Always return a valid KML or Earth will stop requesting updates
-            self.finish(get_kml_root())
+            self._finish_text(get_kml_root())
             return
 
         with KmlUpdateHandler.defer_lock:
@@ -185,7 +185,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             del KmlUpdateHandler.deferred_requests[self.unique_id]
 
             assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            self._finish_text(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
@@ -221,6 +221,13 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             self._get_assets_to_create(incoming_cookie_string, assets),
             self._get_assets_to_delete(incoming_cookie_string, assets),
         )
+
+    def _finish_text(self, text):
+        """Encode and finish request with provided text.
+        param text: str
+            text to send
+        """
+        self.finish(text.encode('utf8'))
 
     def _get_assets_to_delete(self, incoming_cookie_string, assets):
         """
@@ -353,7 +360,7 @@ class KmlQueryHandler(tornado.web.RequestHandler):
 
         if rospy.is_shutdown():
             self.set_status(503, "Server shutting down")
-            self.finish("Server shutting down")
+            self._finish_text("Server shutting down")
             return
 
         try:
@@ -383,12 +390,12 @@ class KmlQueryHandler(tornado.web.RequestHandler):
                 else:
                     rospy.logerr("unknown query command: %s" % command)
 
-            self.finish("OK")
+            self._finish_text("OK")
 
         except (IndexError, ValueError) as e:
             rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
             self.set_status(400, "Got a bad query string")
-            self.finish("Bad Request: Got a bad query string")
+            self._finish_text("Bad Request: Got a bad query string")
             return
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
