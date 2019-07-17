@@ -9,8 +9,8 @@ class KmlAlive:
     def __init__(self, earth_proc):
         self.earth_proc = earth_proc
         rospy.loginfo("XXX starting KMLALIVE process")
-        self.timeout_period = rospy.get_param(~timeout_period, 5)
-        self.initial_timeout = rospy.get_param(~initial_timeout, 60)
+        self.timeout_period = rospy.get_param('~timeout_period', 5)
+        self.initial_timeout = rospy.get_param('~initial_timeout', 60)
         rospy.Timer(rospy.Duration(10), self.keep_alive, oneshot=True)
         # only restart when worked is true, otherwise
         # it may have never worked
