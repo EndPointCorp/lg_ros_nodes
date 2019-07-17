@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.9 (2019-07-17)
+------------------
 * Merge pull request `#403 <https://github.com/EndPointCorp/lg_ros_nodes/issues/403>`_ from EndPointCorp/fix_bionic_kmlsync
   kmlsync: Encode outgoing text
 * Fix combine_viewport_geometries test
