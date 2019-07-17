@@ -4,8 +4,8 @@ NAME = 'test_combine_viewport_geometries'
 
 import rospy
 import unittest
-from lg_panovideo import util
 from lg_common import ManagedWindow
+from lg_common.helpers import combine_viewport_geometries
 
 
 class TestCombineViewportGeometries(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestCombineViewportGeometries(unittest.TestCase):
 
     def test_combine_all_geometries(self):
         geometry_names = ['touchscreen', 'left_one', 'center', 'right_one']
-        combined_geometry = util.combine_viewport_geometries(geometry_names)
+        combined_geometry = combine_viewport_geometries(geometry_names)
 
         expected_geometry = ManagedWindow.lookup_viewport_geometry('expected_all')
 
@@ -31,7 +31,7 @@ class TestCombineViewportGeometries(unittest.TestCase):
 
     def test_combine_portrait_geometries(self):
         geometry_names = ['left_one', 'center', 'right_one']
-        combined_geometry = util.combine_viewport_geometries(geometry_names)
+        combined_geometry = combine_viewport_geometries(geometry_names)
 
         expected_geometry = ManagedWindow.lookup_viewport_geometry('expected_portraits')
 
