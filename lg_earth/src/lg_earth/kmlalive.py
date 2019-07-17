@@ -9,6 +9,8 @@ class KmlAlive:
     def __init__(self, earth_proc):
         self.earth_proc = earth_proc
         rospy.loginfo("XXX starting KMLALIVE process")
+        self.timeout_period = rospy.get_param(~timeout_period, 5)
+        self.initial_timeout = rospy.get_param(~initial_timeout, 60)
         rospy.Timer(rospy.Duration(10), self.keep_alive, oneshot=True)
         # only restart when worked is true, otherwise
         # it may have never worked
@@ -49,8 +51,8 @@ class KmlAlive:
                     else:
                         counter += 1
                         rospy.logerr("XXX found non zero value for {} counter at {}".format(pid, counter))
-                        if (counter > 5 and self.worked) or counter > 60:
-                            rospy.logerr("XXX RELAUNCHING")
+                        if (counter > self.timeout_period and self.worked) or counter > self.initial_timeout:
+                            rospy.logerr("XXX RELAUNCHING worked: {}  counter: {}".format(self.worked, counter))
                             self.earth_proc.handle_soft_relaunch()
                             counter = 0
                             self.worked = False
