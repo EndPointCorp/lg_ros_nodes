@@ -398,4 +398,11 @@ class KmlQueryHandler(tornado.web.RequestHandler):
             self._finish_text("Bad Request: Got a bad query string")
             return
 
+    def _finish_text(self, text):
+        """Encode and finish request with provided text.
+        param text: str
+            text to send
+        """
+        self.finish(text.encode('utf8'))
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
