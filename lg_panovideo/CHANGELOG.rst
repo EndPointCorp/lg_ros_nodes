@@ -2,8 +2,8 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.10 (2019-07-18)
+-------------------
 * Fix panovideo promise handling
   For compatibility with newer Chromes.
 * Contributors: Matt Vollrath

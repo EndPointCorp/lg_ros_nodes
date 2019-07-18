@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_builder</name>
-  <version>2.0.9</version>
+  <version>2.0.10</version>
   <description>Liquid Galaxy debian package build scripts</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
