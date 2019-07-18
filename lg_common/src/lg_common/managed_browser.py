@@ -30,7 +30,8 @@ DEFAULT_ARGS = [
     '--ignore-gpu-blacklist',
     '--touch-events=enabled',
     '--disable-pinch',
-    '--overscroll-history-navigation=0'
+    '--overscroll-history-navigation=0',
+    '--autoplay-policy=no-user-gesture-required',
 ]
 
 
