@@ -3,11 +3,6 @@ class SyncedVideo extends EventEmitter2 {
     super();
 
     this.video = video;
-    this.video.addEventListener('canplaythrough', () => {
-      if (this.video.loop || this.video.currentTime !== this.video.duration) {
-        this.video.play();
-      }
-    });
 
     this.softSyncMin = softSyncMin;
     this.softSyncMax = softSyncMax;
@@ -17,8 +12,18 @@ class SyncedVideo extends EventEmitter2 {
 
   loadFromUrl(url) {
     this.video.setAttribute('crossorigin', 'anonymous');
-    this.video.src = url;
-    this.video.load();
+    this.video.autoplay = true;
+
+    const source = document.createElement('source');
+    source.src = url;
+    this.video.appendChild(source);
+
+    const playPromise = this.video.play();
+    playPromise.then(_ => {
+    })
+    .catch(err => {
+      console.error(err);
+    });
   }
 
   syncTo(t) {
