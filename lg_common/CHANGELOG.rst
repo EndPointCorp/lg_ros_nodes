@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Bypass new Chrome autoplay policy
+  Appreciated when browsing, annoying for kiosk apps.
+  This should fix panovideo master and any other broken media pages.
+* Contributors: Matt Vollrath
+
 2.0.9 (2019-07-17)
 ------------------
 * Merge pull request `#403 <https://github.com/EndPointCorp/lg_ros_nodes/issues/403>`_ from EndPointCorp/fix_bionic_kmlsync
