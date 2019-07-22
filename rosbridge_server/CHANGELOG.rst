@@ -2,6 +2,11 @@
 Changelog for package rosbridge_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rosbridge_server: use updated websocket handling
+* Contributors: Will Plaut
+
 2.0.10 (2019-07-18)
 -------------------
 

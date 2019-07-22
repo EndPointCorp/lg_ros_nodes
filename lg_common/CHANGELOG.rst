@@ -2,6 +2,9 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.10 (2019-07-18)
 -------------------
 * Bypass new Chrome autoplay policy
