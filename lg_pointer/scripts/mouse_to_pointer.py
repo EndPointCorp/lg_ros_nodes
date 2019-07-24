@@ -59,7 +59,7 @@ def main():
 
     udev_location = rospy.get_param(
         '~udev_location', None)
-    if udev_location is not None:
+    if udev_location is not None and udev_location != "":
         grabCustomUdev(udev_location, '/etc/udev/rules.d/99-mouse_to_pointer.rules')
     device_id = rospy.get_param('~device_id', 'default')
     device_path = rospy.get_param('~device_path', 'default')
