@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>rosbridge_server</name>
-  <version>2.0.11</version>
+  <version>0.11.2</version>
   <description>A WebSocket interface to rosbridge.</description>
 
   <license>BSD</license>
@@ -15,12 +15,12 @@
   <maintainer email="jihoonlee.in@gmail.com">Jihoon Lee</maintainer>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rosbridge_library</build_depend>
-  <build_depend>rosapi</build_depend>
-  <build_depend>rospy</build_depend>
-  <run_depend>python-twisted-core</run_depend>
-  <run_depend>rosbridge_library</run_depend>
-  <run_depend>rosapi</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>rosauth</run_depend>
+  <exec_depend>python-backports.ssl-match-hostname</exec_depend>
+  <exec_depend>python-tornado</exec_depend>
+  <exec_depend>python-twisted-core</exec_depend>
+  <exec_depend>rosbridge_library</exec_depend>
+  <exec_depend>rosbridge_msgs</exec_depend>
+  <exec_depend>rosapi</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rosauth</exec_depend>
 </package>
