@@ -2,6 +2,11 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_pointer: short circuit udev fetching on empty string
+* Contributors: Will Plaut
+
 2.0.11 (2019-07-22)
 -------------------
 
