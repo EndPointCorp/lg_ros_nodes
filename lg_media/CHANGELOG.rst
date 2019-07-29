@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.13 (2019-07-29)
+-------------------
 * gst_video_sync: Args for window geometry
   Awesome WM was having trouble setting x and y, so do it in the app.
 * Contributors: Matt Vollrath
