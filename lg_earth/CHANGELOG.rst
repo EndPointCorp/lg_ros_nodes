@@ -2,6 +2,9 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.12 (2019-07-24)
 -------------------
 * earth cache: clear the correct cache

@@ -2,6 +2,9 @@
 Changelog for package rosbridge_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.12 (2019-07-24)
 -------------------
 * rosbridge_server: use correct version num
