@@ -53,9 +53,22 @@ typedef enum
 } GstPlayFlags;
 
 
+class WindowData {
+  public:
+    WindowData();
+    const char* name;
+    int16_t width;
+    int16_t height;
+    int16_t x;
+    int16_t y;
+};
+
+WindowData::WindowData() : name(NULL), width(0), height(0), x(0), y(0) {}
+
+
 class SyncVideoApp {
   public:
-    SyncVideoApp(char* uri, char* wname, bool master, bool slave, struct sockaddr_in addr);
+    SyncVideoApp(char* uri, WindowData* wdata, bool master, bool slave, struct sockaddr_in addr);
     int init();
     void quit();
     void play();
@@ -72,7 +85,7 @@ class SyncVideoApp {
     bool send_pos_(guint64 pos);
 
     char* uri;
-    char* wname;
+    WindowData* wdata;
     bool master;
     bool slave;
     struct sockaddr_in sockaddr;
@@ -91,8 +104,8 @@ class SyncVideoApp {
 };
 
 SyncVideoApp::SyncVideoApp
-(char* uri, char* wname, bool master, bool slave, struct sockaddr_in addr)
-  : uri(uri), wname(wname), master(master), slave(slave), sockaddr(addr)
+(char* uri, WindowData* wdata, bool master, bool slave, struct sockaddr_in addr)
+  : uri(uri), wdata(wdata), master(master), slave(slave), sockaddr(addr)
 {
   this->duration = 0;
 
@@ -127,17 +140,8 @@ int SyncVideoApp::init() {
   GstState state = GST_STATE_NULL;
   GstBus *bus = NULL;
   GstElement *sink = NULL;
-  GstCaps *caps = NULL;
-  GstPad *pad = NULL;
-  GstStructure *structure = NULL;
-  gint width = 0;
-  gint height = 0;
 
   this->window = new QWidget();
-  this->window->hide();
-  if (this->wname) {
-    this->window->setWindowTitle(wname);
-  }
 
   this->loop = g_main_loop_new(NULL, false);
   this->player = gst_element_factory_make("playbin", "sync_player");
@@ -170,24 +174,7 @@ int SyncVideoApp::init() {
 
   gst_element_set_state(this->player, GST_STATE_PAUSED);
   gst_element_get_state(this->player, &state, NULL, GST_SECOND * 3);  // Wait for state change.
-  g_signal_emit_by_name(this->player, "get-video-pad", 0, &pad, NULL);
-  if (!pad) {
-    g_printerr("Could not get a video pad!\n");
-    return -1;
-  }
 
-  caps = gst_pad_get_current_caps(pad);
-  structure = gst_caps_get_structure(caps, 0);
-  g_object_unref(pad);
-
-  if (!gst_structure_get_int(structure, "width", &width)) {
-    g_printerr("Could not query media width!\n");
-    return -1;
-  }
-  if (!gst_structure_get_int(structure, "height", &height)) {
-    g_printerr("Could not query media height!\n");
-    return -1;
-  }
   if (!gst_element_query_duration(this->player, GST_FORMAT_TIME, &this->duration)) {
     g_printerr("Could not query media duration!\n");
     return -1;
@@ -200,8 +187,6 @@ int SyncVideoApp::init() {
   gst_object_unref(bus);
 
   g_signal_connect(this->player, "video-changed", (GCallback)video_changed_, this);
-
-  this->window->resize(width, height);
 
   if (this->master || this->slave) {
     if ((this->sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -307,6 +292,13 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
 
   if (this->window->isHidden()) {
     this->window->show();
+    this->window->move(this->wdata->x, this->wdata->y);
+    if (this->wdata->width > 0 && this->wdata->height > 0) {
+      this->window->resize(this->wdata->width, this->wdata->height);
+    }
+    if (this->wdata->name != NULL) {
+      this->window->setWindowTitle(this->wdata->name);
+    }
   }
 
   if (this->master) {
@@ -525,14 +517,25 @@ static bool str_to_uint16(const char *str, uint16_t *res) {
   return true;
 }
 
+static bool str_to_int16(const char *str, int16_t *res) {
+  char *end;
+  errno = 0;
+  intmax_t val = strtoimax(str, &end, 10);
+  if (errno == ERANGE || val < INT16_MIN || val > INT16_MAX || end == str || *end != '\0')
+    return false;
+  *res = (int16_t) val;
+  return true;
+}
+
+
 int main (int argc, char **argv) {
   int ret = -1;
+  WindowData *wdata = new WindowData();
   struct sockaddr_in sockaddr;
   bool argmaster = false;
   bool argslave = false;
   char *argaddr = NULL;
   char *arguri = NULL;
-  char *argwname = NULL;
   uint16_t argport = DEFAULT_PORT;
   bool argsoftware = false;
 
@@ -542,7 +545,7 @@ int main (int argc, char **argv) {
 
   opterr = 0;
   int c = 0;
-  while ((c = getopt (argc, argv, "msda:p:u:w:")) != -1) {
+  while ((c = getopt (argc, argv, "msda:p:u:n:w:h:x:y:")) != -1) {
     switch (c)
       {
       case 'm':
@@ -572,9 +575,37 @@ int main (int argc, char **argv) {
         g_debug("Using url %s\n", optarg);
         arguri = optarg;
         break;
-      case 'w':
+      case 'n':
         g_debug("Setting window name to %s\n", optarg);
-        argwname = optarg;
+        wdata->name = optarg;
+        break;
+      case 'w':
+        g_debug("Setting window width to %s\n", optarg);
+        if (!str_to_int16(optarg, &wdata->width)) {
+          g_printerr("Could not parse window width\n");
+          return -1;
+        }
+        break;
+      case 'h':
+        g_debug("Setting window height to %s\n", optarg);
+        if (!str_to_int16(optarg, &wdata->height)) {
+          g_printerr("Could not parse window height\n");
+          return -1;
+        }
+        break;
+      case 'x':
+        g_debug("Setting window x to %s\n", optarg);
+        if (!str_to_int16(optarg, &wdata->x)) {
+          g_printerr("Could not parse window x\n");
+          return -1;
+        }
+        break;
+      case 'y':
+        g_debug("Setting window y to %s\n", optarg);
+        if (!str_to_int16(optarg, &wdata->y)) {
+          g_printerr("Could not parse window y\n");
+          return -1;
+        }
         break;
       case '?':
         if (optopt == 'a' || optopt == 'p' || optopt == 'u')
@@ -624,7 +655,7 @@ int main (int argc, char **argv) {
 
   SyncVideoApp sync(
     arguri,
-    argwname,
+    wdata,
     argmaster,
     argslave,
     sockaddr

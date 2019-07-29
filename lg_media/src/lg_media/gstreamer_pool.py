@@ -57,8 +57,13 @@ class ManagedGstreamer(ManagedApplication):
         if self.extra_args != '':
             cmd.extend(self.extra_args.split())
 
-        cmd.extend(["-w", str(self.slug)])
+        cmd.extend(["-n", str(self.slug)])
         cmd.extend(["-u", self.url])
+        if self.window:
+            cmd.extend(["-x", str(self.window.geometry.x)])
+            cmd.extend(["-y", str(self.window.geometry.y)])
+            cmd.extend(["-w", str(self.window.geometry.width)])
+            cmd.extend(["-h", str(self.window.geometry.height)])
         #if self.respawn:
         #    cmd.extend(["-loop", "0"])
         rospy.logdebug("GStreamer POOL: gst_video_sync cmd: %s" % cmd)
