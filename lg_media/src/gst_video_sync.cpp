@@ -152,7 +152,7 @@ int SyncVideoApp::init() {
 
   gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(this->player), this->window->winId());
 
-  sink = gst_element_factory_make("vaapisink", "sync_sink");
+  sink = gst_element_factory_make("autovideosink", "sync_sink");
   g_object_set(this->player, "video-sink", sink, NULL);
 
   GstPlayFlags playbin_flags = (GstPlayFlags)(
