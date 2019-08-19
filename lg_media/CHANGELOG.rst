@@ -2,6 +2,15 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Disable hardware decoding for gst_video_sync
+  Known to be broken when combining vaapi<->vdpau
+* gst_video_sync: Check state changes
+* gst_video_sync: Use autovideosink
+  Disabling hardware decoding was not working because we specified vaapisink.
+* Contributors: Jacob Minshall, Matt Vollrath
+
 2.0.13 (2019-07-29)
 -------------------
 * gst_video_sync: Args for window geometry
