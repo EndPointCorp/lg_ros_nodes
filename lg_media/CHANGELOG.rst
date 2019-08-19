@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.14 (2019-08-19)
+-------------------
 * Disable hardware decoding for gst_video_sync
   Known to be broken when combining vaapi<->vdpau
 * gst_video_sync: Check state changes
