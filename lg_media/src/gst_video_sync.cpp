@@ -140,6 +140,7 @@ int SyncVideoApp::init() {
   GstState state = GST_STATE_NULL;
   GstBus *bus = NULL;
   GstElement *sink = NULL;
+  GstStateChangeReturn sret;
 
   this->window = new QWidget();
 
@@ -172,15 +173,24 @@ int SyncVideoApp::init() {
 
   g_object_set(this->player, "uri", this->uri, NULL);
 
-  gst_element_set_state(this->player, GST_STATE_PAUSED);
-  gst_element_get_state(this->player, &state, NULL, GST_SECOND * 3);  // Wait for state change.
+  sret = gst_element_set_state(this->player, GST_STATE_PAUSED);
+  if (sret == GST_STATE_CHANGE_FAILURE) {
+    g_printerr("failed to set state to paused\n");
+  }
+  sret = gst_element_get_state(this->player, &state, NULL, GST_SECOND * 3);  // Wait for state change.
+  if (sret == GST_STATE_CHANGE_FAILURE) {
+    g_printerr("failed to get state\n");
+  }
 
   if (!gst_element_query_duration(this->player, GST_FORMAT_TIME, &this->duration)) {
     g_printerr("Could not query media duration!\n");
     return -1;
   }
 
-  gst_element_set_state(this->player, GST_STATE_NULL);
+  sret = gst_element_set_state(this->player, GST_STATE_NULL);
+  if (sret == GST_STATE_CHANGE_FAILURE) {
+    g_printerr("failed to set state to null)\n");
+  }
 
   bus = gst_pipeline_get_bus(GST_PIPELINE(this->player));
   gst_bus_add_watch(bus, bus_callback_, this);
