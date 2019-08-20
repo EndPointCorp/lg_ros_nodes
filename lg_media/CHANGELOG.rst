@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.15 (2019-08-20)
+-------------------
 * Manage libqt5gstreamer build dep properly
   This was merged into rosdistro.
 * gst_video_sync: Don't mess with buffer size
