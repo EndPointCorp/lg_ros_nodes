@@ -2,6 +2,14 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Manage libqt5gstreamer build dep properly
+  This was merged into rosdistro.
+* gst_video_sync: Don't mess with buffer size
+  The small buffer was causing audio issues for some videos.
+* Contributors: Matt Vollrath
+
 2.0.14 (2019-08-19)
 -------------------
 * Disable hardware decoding for gst_video_sync
