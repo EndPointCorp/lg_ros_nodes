@@ -25,8 +25,6 @@ const char* DEFAULT_ADDR = "127.0.0.1";
 const uint16_t DEFAULT_PORT = 9999;
 const char* VAAPI_ENV = "GST_VAAPI_ALL_DRIVERS=1";
 
-// Buffer size when buffering network streams.
-const gint64 BUFFER_SIZE = 2048;
 // If the difference is above the hard threshold, seek.
 const gint64 HARD_SYNC_THRESHOLD = GST_SECOND / 1.0;
 // If the difference is above the soft threshold, step.
@@ -169,7 +167,6 @@ int SyncVideoApp::init() {
     playbin_flags = (GstPlayFlags)(playbin_flags | GST_PLAY_FLAG_AUDIO | GST_PLAY_FLAG_TEXT);
   }
   g_object_set(this->player, "flags", playbin_flags, NULL);
-  g_object_set(this->player, "buffer-size", BUFFER_SIZE, NULL);
 
   g_object_set(this->player, "uri", this->uri, NULL);
 
