@@ -19,7 +19,7 @@
   <build_depend>libgstreamer1.0-dev</build_depend>
   <build_depend>libgstreamer-plugins-base1.0-dev</build_depend>
   <build_depend>libqt5-core</build_depend>
-  <!--<build_depend>libqt5-gstreamer-dev</build_depend>-->
+  <build_depend>libqt5-gstreamer-dev</build_depend>
   <build_depend>libqt5-gui</build_depend>
   <build_depend>libqt5-widgets</build_depend>
   <build_depend>qtbase5-dev</build_depend>
