@@ -2,6 +2,12 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* gst_video_sync: disable aggressive downloading
+  Don't fill up the disk with this cruft.
+* Contributors: Matt Vollrath
+
 2.0.15 (2019-08-20)
 -------------------
 * Manage libqt5gstreamer build dep properly
