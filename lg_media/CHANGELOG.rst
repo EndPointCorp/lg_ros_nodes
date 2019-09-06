@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.16 (2019-09-06)
+-------------------
 * gst_video_sync: disable aggressive downloading
   Don't fill up the disk with this cruft.
 * Contributors: Matt Vollrath
