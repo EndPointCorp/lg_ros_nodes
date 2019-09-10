@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Custom script to run nosetests and rostests as defined in CMakeLists.txt
 files.

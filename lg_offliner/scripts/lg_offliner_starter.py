@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Just a ROS node load script.
 Note that it can't be named 'lg_offliner', would

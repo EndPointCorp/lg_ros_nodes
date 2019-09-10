@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_common'
 NAME = 'test_state_changer'

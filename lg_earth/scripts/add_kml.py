@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from std_msgs.msg import String, Empty
 from lg_common.srv import USCSMessage

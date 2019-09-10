@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Support classes for automated testing.
 
 * `AsyncTestCase` and `AsyncHTTPTestCase`:  Subclasses of unittest.TestCase

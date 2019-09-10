@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 from rospy import init_node, get_param, loginfo, logerr, on_shutdown, Publisher

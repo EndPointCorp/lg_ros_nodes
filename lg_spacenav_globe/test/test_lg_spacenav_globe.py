@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_spacenav_globe'
 NAME = 'test_lg_spacenav_globe'

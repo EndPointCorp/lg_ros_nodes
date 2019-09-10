@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_nav_to_device'
 NAME = 'test_background_stopper'

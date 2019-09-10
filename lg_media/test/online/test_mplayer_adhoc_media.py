@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_media'
 NAME = 'test_mplayer_adhoc_media'

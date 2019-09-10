@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_offliner'
 NAME = 'test_lg_offliner_when_offline'

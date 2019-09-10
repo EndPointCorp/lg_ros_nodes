@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 lg stats basic offline (not requiring the ROS node itself to run) tests.

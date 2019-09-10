@@ -30,7 +30,7 @@
 #  Removed LED and Rumble Feedback
 #  Added support for sensor_msgs/JoyFeedbackArray
 ################################################################################
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """The wiimote_node broadcasts four topics, and listens to messages that control
 the Wiimote stick's rumble (vibration) and LEDs. Transmitted topics (@100Hz):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_attract_loop'
 NAME = 'test_lg_attract_loop'
