@@ -54,7 +54,7 @@ echo 'installing libudev-dev'
 if [[ ${SKIP_APT} != "" ]]; then
   echo "Skipping APT update + install"
 else
-  lg-sudo-bg -w "sudo apt-get update -q && sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-${ROS_DISTRO}-web-video-server -q -y"
+  lg-sudo-bg -w "sudo apt-get update -q && sudo apt-get install build-essential gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-${ROS_DISTRO}-web-video-server -q -y"
   echo hi
 fi
 
