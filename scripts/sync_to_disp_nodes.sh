@@ -74,7 +74,7 @@ lg-run-bg -w "cd catkin_ws ; \
 # Matt changes
 lg-sudo-bg -w "cd /home/lg/catkin_ws ; \
         source /opt/ros/${ROS_DISTRO}/setup.bash ; \
-        catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/${ROS_DISTRO} "
+        catkin_make -e install -DCMAKE_INSTALL_PREFIX=/opt/ros/${ROS_DISTRO} "
 
 
 echo 'linking extensions to /opt/google/chrome/extensions/'
