@@ -65,7 +65,7 @@ class ViewsyncRelay:
         Args:
             data (str): Data to write to the repeat address.
         """
-        self.repeat_sock.sendto(data, self.repeat_addr)
+        self.repeat_sock.sendto(data.encode('utf-8'), self.repeat_addr)
 
     def _publish_pose_msg(self, pose_msg, planet):
         """Publish a Pose and keep the state of it for monitoring purposes

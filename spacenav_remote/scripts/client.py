@@ -68,7 +68,7 @@ def main():
 
 def send(msg, sock=None):
     data = msg + "\n"
-    sock.send(data)
+    sock.send(data.encode('utf-8'))
     if not QUITE:
         print msg
 
