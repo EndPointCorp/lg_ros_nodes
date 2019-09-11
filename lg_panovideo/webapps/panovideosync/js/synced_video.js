@@ -12,11 +12,7 @@ class SyncedVideo extends EventEmitter2 {
 
   loadFromUrl(url) {
     this.video.setAttribute('crossorigin', 'anonymous');
-    this.video.autoplay = true;
-
-    const source = document.createElement('source');
-    source.src = url;
-    this.video.appendChild(source);
+    this.video.src = url;
 
     const playPromise = this.video.play();
     playPromise.then(_ => {
