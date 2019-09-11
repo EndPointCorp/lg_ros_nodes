@@ -1015,7 +1015,7 @@ def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_address = (host, port)
         sock.connect(server_address)
-        sock.sendall(data)
+        sock.sendall(data.encode('utf-8'))
         rospy.logdebug("Wrote: '%s' to influx" % data)
     except Exception, ex:
         rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %

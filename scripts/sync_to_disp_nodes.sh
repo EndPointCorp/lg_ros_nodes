@@ -71,6 +71,12 @@ lg-run-bg -w "cd catkin_ws ; \
            catkin_make install;\
            find /home/lg/catkin_ws/src/ -iname '*.pyc' -delete "
 
+# Matt changes
+lg-sudo-bg -w "cd /home/lg/catkin_ws ; \
+        source /opt/ros/${ROS_DISTRO}/setup.bash ; \
+        catkin_make -e install -DCMAKE_INSTALL_PREFIX=/opt/ros/${ROS_DISTRO} "
+
+
 echo 'linking extensions to /opt/google/chrome/extensions/'
 lg-sudo-bg -w 'sudo mkdir -p /opt/google/chrome/extensions/; sudo ln -sf /home/lg/catkin_ws/src/lg_common/src/lg_common/extensions/* /opt/google/chrome/extensions/'
 
