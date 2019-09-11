@@ -2,6 +2,12 @@
 Changelog for package lg_panovideo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix changing panovideo content
+  Simplest ever video loading fixes not being able to change videos.
+* Contributors: Matt Vollrath
+
 2.0.16 (2019-09-06)
 -------------------
 

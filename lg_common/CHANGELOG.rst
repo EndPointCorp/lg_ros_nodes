@@ -2,6 +2,12 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Increase Chrome update check interval
+  This should give us a few weeks.
+* Contributors: Matt Vollrath
+
 2.0.16 (2019-09-06)
 -------------------
 
