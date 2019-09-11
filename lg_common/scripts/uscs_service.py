@@ -4,9 +4,9 @@ import roslib
 roslib.load_manifest('lg_common')
 
 import rospy
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import json
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from std_msgs.msg import String
 from std_msgs.msg import Bool

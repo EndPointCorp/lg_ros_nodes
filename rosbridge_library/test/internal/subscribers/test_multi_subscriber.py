@@ -20,7 +20,7 @@ class TestMultiSubscriber(unittest.TestCase):
         rospy.init_node("test_multi_subscriber")
 
     def is_topic_published(self, topicname):
-        return topicname in dict(rospy.get_published_topics()).keys()
+        return topicname in list(dict(rospy.get_published_topics()).keys())
 
     def is_topic_subscribed(self, topicname):
         return topicname in dict(Master("test_multi_subscriber").getSystemState()[1])
@@ -106,7 +106,7 @@ class TestMultiSubscriber(unittest.TestCase):
         msg_type = "std_msgs/Int32"
         client = "client_test_subscribe_receive_json_multiple"
 
-        numbers = range(100)
+        numbers = list(range(100))
 
         pub = rospy.Publisher(topic, Int32)
         multi = MultiSubscriber(topic, msg_type)

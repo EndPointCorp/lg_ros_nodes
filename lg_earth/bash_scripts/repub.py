@@ -29,5 +29,5 @@ try:
     rospy.Publisher('/director/scene', GenericMessage, queue_size=10, latch=True).publish(msg)
     rospy.sleep(1)
 except KeyboardInterrupt:
-    print "Exiting cleanly"
+    print("Exiting cleanly")
     rospy.signal_shutdown("Ctrl+c used on send_director.py")

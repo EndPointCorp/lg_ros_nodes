@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import datetime
 import os
@@ -9,7 +9,7 @@ from tornado.util import basestring_type
 from tornado.test.util import unittest
 
 try:
-    from cStringIO import StringIO  # python 2
+    from io import StringIO  # python 2
 except ImportError:
     from io import StringIO  # python 3
 
@@ -192,7 +192,7 @@ class OptionsTest(unittest.TestCase):
                                     '--datetime=2013-04-28 05:16',
                                     '--timedelta=45s'])
         self.assertEqual(options.str, 'asdf')
-        self.assertEqual(options.basestring, 'qwer')
+        self.assertEqual(options.str, 'qwer')
         self.assertEqual(options.int, 42)
         self.assertEqual(options.float, 1.5)
         self.assertEqual(options.datetime,

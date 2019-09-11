@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import json
 import threading
 import sys
@@ -179,7 +179,7 @@ class USCSService:
         """
         Accepts a URL and returns json parsed version of it
         """
-        response = urllib.urlopen(url)
+        response = urllib.request.urlopen(url)
         if response.code != 200:
             rospy.logerr("Got non-200 error status (%s) from url: %s" % (response.code, url))
             rospy.sleep(3)
@@ -223,7 +223,7 @@ class USCSService:
         try:
             message = self._get_json_from_url(scene_url, to_json=False)
             message = self._create_message(message)
-        except Exception, e:
+        except Exception as e:
             message = None
             rospy.logwarn("Could not get scene for url: %s because %s" % (scene_url, e))
             rospy.logwarn("sleeping for 3 seconds")

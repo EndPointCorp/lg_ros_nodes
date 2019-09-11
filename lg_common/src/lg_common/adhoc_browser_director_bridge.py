@@ -134,7 +134,7 @@ class AdhocBrowserDirectorBridge():
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
-                if isinstance(extension, basestring):
+                if isinstance(extension, str):
                     browser_extension.name = str(extension)
                 else:
                     browser_extension.name = str(extension['name'])

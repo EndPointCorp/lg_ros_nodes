@@ -4,7 +4,7 @@
 # python 3)
 
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 from tornado.auth import OpenIdMixin, OAuthMixin, OAuth2Mixin, TwitterMixin, GoogleMixin, AuthError
 from tornado.concurrent import Future
 from tornado.escape import json_decode

@@ -83,7 +83,7 @@ class Defragment(Capability, threading.Thread):
         now = datetime.now()
 
         if self.received_fragments != None:
-            for id in self.received_fragments.keys() :
+            for id in list(self.received_fragments.keys()) :
                 time_diff = now - self.received_fragments[id]["timestamp_last_append"]
                 if (time_diff.total_seconds() > self.fragment_timeout and
                     not self.received_fragments[id]["is_reconstructing"]):
@@ -116,7 +116,7 @@ class Defragment(Capability, threading.Thread):
         self.protocol.log("debug", log_msg)
 
         # Create fragment container if none exists yet
-        if msg_id not in self.received_fragments.keys():
+        if msg_id not in list(self.received_fragments.keys()):
             self.received_fragments[msg_id] = {
                 "is_reconstructing": False,
                 "total": message["total"],
@@ -129,7 +129,7 @@ class Defragment(Capability, threading.Thread):
         #print "received fragments:", len(self.received_fragments[msg_id]["fragment_list"].keys())
 
         # Add fragment to fragment container's list if not already in list
-        if ((msg_num not in self.received_fragments[msg_id]["fragment_list"].keys() ) and
+        if ((msg_num not in list(self.received_fragments[msg_id]["fragment_list"].keys()) ) and
              msg_num <= self.received_fragments[msg_id]["total"] and
              msg_total == self.received_fragments[msg_id]["total"]
             ):

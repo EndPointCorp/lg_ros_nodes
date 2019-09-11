@@ -5,7 +5,7 @@ import rostest
 import unittest
 from json import loads, dumps
 
-from StringIO import StringIO
+from io import StringIO
 
 from rosbridge_library.internal import message_conversion as c
 from rosbridge_library.internal import ros_loader
@@ -29,7 +29,7 @@ class TestMessageConversion(unittest.TestCase):
         inst2._check_types()
 
     def msgs_equal(self, msg1, msg2):
-        if type(msg1) in [str, unicode] and type(msg2) in [str, unicode]:
+        if type(msg1) in [str, str] and type(msg2) in [str, str]:
             pass
         else:
             self.assertEqual(type(msg1), type(msg2))
@@ -99,7 +99,7 @@ class TestMessageConversion(unittest.TestCase):
                 self.assertEqual(dumps({"data":c._from_inst(msg, rostype)}), "{\"data\": null}")
 
     def test_signed_int_base_msgs(self):
-        int8s = range(-127, 128)
+        int8s = list(range(-127, 128))
         for int8 in int8s:
             self.do_primitive_test(int8, "std_msgs/Byte")
             self.do_primitive_test(int8, "std_msgs/Int8")
@@ -132,7 +132,7 @@ class TestMessageConversion(unittest.TestCase):
             self.assertRaises(Exception, self.do_primitive_test, int64, "std_msgs/Int32")
 
     def test_unsigned_int_base_msgs(self):
-        int8s = range(0, 256)
+        int8s = list(range(0, 256))
         for int8 in int8s:
             self.do_primitive_test(int8, "std_msgs/Char")
             self.do_primitive_test(int8, "std_msgs/UInt8")
@@ -189,7 +189,7 @@ class TestMessageConversion(unittest.TestCase):
         currenttime = rospy.get_rostime()
         self.validate_instance(inst)
         extracted = c.extract_values(inst)
-        print extracted
+        print(extracted)
         self.assertIn("data", extracted)
         self.assertIn("secs", extracted["data"])
         self.assertIn("nsecs", extracted["data"])
@@ -244,7 +244,7 @@ class TestMessageConversion(unittest.TestCase):
         for msgtype in ["TestChar", "TestUInt8"]:
             rostype = "rosbridge_library/" + msgtype
 
-            int8s = range(0, 256)
+            int8s = list(range(0, 256))
             ret = test_int8_msg(rostype, int8s)
             self.assertEqual(ret, str(bytearray(int8s)))
 
@@ -257,7 +257,7 @@ class TestMessageConversion(unittest.TestCase):
         for msgtype in ["TestUInt8FixedSizeArray16"]:
             rostype = "rosbridge_library/" + msgtype
 
-            int8s = range(0, 16)
+            int8s = list(range(0, 16))
             ret = test_int8_msg(rostype, int8s)
             self.assertEqual(ret, str(bytearray(int8s)))
 

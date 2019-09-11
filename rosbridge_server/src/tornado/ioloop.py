@@ -26,7 +26,7 @@ In addition to I/O events, the `IOLoop` can also schedule time-based events.
 `IOLoop.add_timeout` is a non-blocking alternative to `time.sleep`.
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import datetime
 import errno
@@ -53,7 +53,7 @@ except ImportError:
     signal = None
 
 try:
-    import thread  # py2
+    import _thread  # py2
 except ImportError:
     import _thread as thread  # py3
 
@@ -664,7 +664,7 @@ class PollIOLoop(IOLoop):
             self._closing = True
         self.remove_handler(self._waker.fileno())
         if all_fds:
-            for fd, handler in self._handlers.values():
+            for fd, handler in list(self._handlers.values()):
                 self.close_fd(fd)
         self._waker.close()
         self._impl.close()
@@ -708,7 +708,7 @@ class PollIOLoop(IOLoop):
             return
         old_current = getattr(IOLoop._current, "instance", None)
         IOLoop._current.instance = self
-        self._thread_ident = thread.get_ident()
+        self._thread_ident = _thread.get_ident()
         self._running = True
 
         # signal.set_wakeup_fd closes a race condition in event loops:
@@ -886,7 +886,7 @@ class PollIOLoop(IOLoop):
             list_empty = not self._callbacks
             self._callbacks.append(functools.partial(
                 stack_context.wrap(callback), *args, **kwargs))
-            if list_empty and thread.get_ident() != self._thread_ident:
+            if list_empty and _thread.get_ident() != self._thread_ident:
                 # If we're in the IOLoop's thread, we know it's not currently
                 # polling.  If we're not, and we added the first callback to an
                 # empty list, we may need to wake it up (it may wake up on its
@@ -897,7 +897,7 @@ class PollIOLoop(IOLoop):
 
     def add_callback_from_signal(self, callback, *args, **kwargs):
         with stack_context.NullContext():
-            if thread.get_ident() != self._thread_ident:
+            if _thread.get_ident() != self._thread_ident:
                 # if the signal is handled on another thread, we can add
                 # it normally (modulo the NullContext)
                 self.add_callback(callback, *args, **kwargs)

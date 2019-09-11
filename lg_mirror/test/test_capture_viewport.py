@@ -6,7 +6,7 @@ NAME = 'test_capture_viewport'
 import os
 import unittest
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 
 import rospy
 from lg_common import ManagedWindow

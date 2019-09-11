@@ -52,7 +52,7 @@ def has_binary(d):
     if type(d)==bson.Binary:
         return True
     if type(d)==dict:
-        for k,v in d.iteritems():
+        for k,v in d.items():
             if has_binary(v):
                 return True
     return False                
@@ -121,7 +121,7 @@ class Protocol:
 
         # if loading whole object fails try to load part of it (from first opening bracket "{" to next closing bracket "}"
         # .. this causes Exceptions on "inner" closing brackets --> so I suppressed logging of deserialization errors
-        except Exception, e:
+        except Exception as e:
 
             # TODO: handling of partial/multiple/broken json data in incoming buffer
             # this way is problematic when json contains nested json-objects ( e.g. { ... { "config": [0,1,2,3] } ...  } )
@@ -147,7 +147,7 @@ class Protocol:
                             self.buffer = self.buffer[end+1:len(self.buffer)]
                             # jump out of inner loop if json-decode succeeded
                             break
-                    except Exception,e:
+                    except Exception as e:
                         # debug json-decode errors with this line
                         #print e
                         pass
@@ -167,20 +167,20 @@ class Protocol:
             if "receiver" in msg:
                 self.log("error", "Received a rosbridge v1.0 message.  Please refer to rosbridge.org for the correct format of rosbridge v2.0 messages.  Original message was: %s" % message_string)
             else:
-                self.log("error", "Received a message without an op.  All messages require 'op' field with value one of: %s.  Original message was: %s" % (self.operations.keys(), message_string), mid)
+                self.log("error", "Received a message without an op.  All messages require 'op' field with value one of: %s.  Original message was: %s" % (list(self.operations.keys()), message_string), mid)
             return
         op = msg["op"]
         if op not in self.operations:
-            self.log("error", "Unknown operation: %s.  Allowed operations: %s" % (op, self.operations.keys()), mid)
+            self.log("error", "Unknown operation: %s.  Allowed operations: %s" % (op, list(self.operations.keys())), mid)
             return
         # this way a client can change/overwrite it's active values anytime by just including parameter field in any message sent to rosbridge
         #  maybe need to be improved to bind parameter values to specific operation..
-        if "fragment_size" in msg.keys():
+        if "fragment_size" in list(msg.keys()):
             self.fragment_size = msg["fragment_size"]
             #print "fragment size set to:", self.fragment_size
-        if "message_intervall" in msg.keys() and is_number(msg["message_intervall"]):
+        if "message_intervall" in list(msg.keys()) and is_number(msg["message_intervall"]):
             self.delay_between_messages = msg["message_intervall"]
-        if "png" in msg.keys():
+        if "png" in list(msg.keys()):
             self.png = msg["msg"]
 
         # now try to pass message to according operation
@@ -295,7 +295,7 @@ class Protocol:
         """
         try:
             return json.loads(msg)
-        except Exception, e:
+        except Exception as e:
             # if we did try to deserialize whole buffer .. first try to let self.incoming check for multiple/partial json-decodes before logging error
             # .. this means, if buffer is not == msg --> we tried to decode part of buffer
 

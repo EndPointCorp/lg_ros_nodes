@@ -160,7 +160,7 @@ class Subscription():
             return
 
         def f(fieldname):
-            return [x[fieldname] for x in self.clients.values()]
+            return [x[fieldname] for x in list(self.clients.values())]
 
         self.throttle_rate = min(f("throttle_rate"))
         self.queue_length = min(f("queue_length"))
@@ -178,10 +178,10 @@ class Subscription():
 
 class Subscribe(Capability):
 
-    subscribe_msg_fields = [(True, "topic", (str, unicode)), (False, "type", (str, unicode)),
+    subscribe_msg_fields = [(True, "topic", (str, str)), (False, "type", (str, str)),
         (False, "throttle_rate", int), (False, "fragment_size", int),
-        (False, "queue_length", int), (False, "compression", (str, unicode))]
-    unsubscribe_msg_fields = [(True, "topic", (str, unicode))]
+        (False, "queue_length", int), (False, "compression", (str, str))]
+    unsubscribe_msg_fields = [(True, "topic", (str, str))]
 
     def __init__(self, protocol):
         # Call superclass constructor
@@ -258,7 +258,7 @@ class Subscribe(Capability):
         self.protocol.send(outgoing_msg)
 
     def finish(self):
-        for subscription in self._subscriptions.values():
+        for subscription in list(self._subscriptions.values()):
             subscription.unregister()
         self._subscriptions.clear()
         self.protocol.unregister_operation("subscribe")

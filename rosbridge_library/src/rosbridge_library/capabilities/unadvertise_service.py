@@ -17,7 +17,7 @@ class UnadvertiseService(Capability):
         service_name = message["service"]
 
         # unregister service in ROS
-        if service_name in self.protocol.external_service_list.keys():
+        if service_name in list(self.protocol.external_service_list.keys()):
             self.protocol.external_service_list[service_name].service_handle.shutdown("Unadvertise request.")
             del self.protocol.external_service_list[service_name]
             self.protocol.log("info", "Unadvertised service %s." % service_name)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 from tornado import gen, ioloop
 from tornado.testing import AsyncTestCase, gen_test

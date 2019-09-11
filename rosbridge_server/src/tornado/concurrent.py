@@ -22,7 +22,7 @@ been backported to older versions of Python and can be installed with
 it is available; otherwise it will use a compatible class defined in this
 module.
 """
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import functools
 import sys

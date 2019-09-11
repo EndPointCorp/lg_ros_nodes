@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 import gc
 import locale  # system locale module, not tornado.locale
 import logging

@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 from contextlib import closing
 import os
@@ -162,7 +162,7 @@ class ConnectorTest(AsyncTestCase):
     def tearDown(self):
         # Unless explicitly checked (and popped) in the test, we shouldn't
         # be closing any streams
-        for stream in self.streams.values():
+        for stream in list(self.streams.values()):
             self.assertFalse(stream.closed)
         super(ConnectorTest, self).tearDown()
 

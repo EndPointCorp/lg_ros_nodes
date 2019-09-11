@@ -37,7 +37,7 @@ from rosbridge_library.internal.publishers import manager
 
 class Publish(Capability):
 
-    publish_msg_fields = [(True, "topic", (str, unicode))]
+    publish_msg_fields = [(True, "topic", (str, str))]
 
     def __init__(self, protocol):
         # Call superclas constructor

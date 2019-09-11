@@ -134,7 +134,7 @@ class ManagedBrowser(ManagedApplication):
                 arg += '=' + str(value)
             return arg
 
-        args = map(consume_kwarg, kwargs.iteritems())
+        args = list(map(consume_kwarg, iter(kwargs.items())))
         cmd.extend(args)
 
         if app:
@@ -191,7 +191,7 @@ class ManagedBrowser(ManagedApplication):
         try:
             os.symlink(self.pnacl_dir, os.path.join(self.tmp_dir, 'pnacl'))
             rospy.loginfo("Linked `pnacl` directory %s" % self.pnacl_dir)
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("Error linking pNaCl, %s" % e)
 
         try:
@@ -200,7 +200,7 @@ class ManagedBrowser(ManagedApplication):
                 out = f.read()
             with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "w") as f:
                 f.write(out.replace("${TMP_DIR}", self.tmp_dir))
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("Error copying pepper flash into the tmp dir, %s" % e)
 
     def clear_tmp_dir(self):
@@ -213,7 +213,7 @@ class ManagedBrowser(ManagedApplication):
         try:
             rospy.logerr("Purging ManagedBrowser directory: %s" % self.tmp_dir)
             shutil.rmtree(self.tmp_dir)
-        except OSError, e:
+        except OSError as e:
             rospy.logdebug("Could not purge the %s directory because %s" % (self.tmp_dir, e))
 
     @staticmethod

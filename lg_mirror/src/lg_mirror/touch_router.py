@@ -2,8 +2,8 @@ import re
 import rospy
 import threading
 
-from constants import MIRROR_ACTIVITY_TYPE
-from constants import MIRROR_TOUCH_CONFIG_KEY
+from .constants import MIRROR_ACTIVITY_TYPE
+from .constants import MIRROR_TOUCH_CONFIG_KEY
 from lg_common.helpers import route_touch_to_viewports
 
 

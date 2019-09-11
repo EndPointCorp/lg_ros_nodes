@@ -4,7 +4,7 @@ import threading
 import re
 
 from lg_common.msg import WindowGeometry
-import awesome
+from . import awesome
 
 
 class ManagedWindow(object):
@@ -45,7 +45,7 @@ class ManagedWindow(object):
             raise ValueError(
                 'Invalid window geometry: {}'.format(geometry))
 
-        dims = map(int, m.groups())
+        dims = list(map(int, m.groups()))
         return WindowGeometry(width=dims[0], height=dims[1],
                               x=dims[2], y=dims[3])
 

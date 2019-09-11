@@ -16,7 +16,7 @@ the protocol (known as "draft 76") and are not compatible with this module.
    Removed support for the draft 76 protocol version.
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 # Author: Jacob Kristhammar, 2010
 
 import base64
@@ -40,7 +40,7 @@ from tornado.util import bytes_type, _websocket_mask
 try:
     from urllib.parse import urlparse # py2
 except ImportError:
-    from urlparse import urlparse # py3
+    from urllib.parse import urlparse # py3
 
 try:
     xrange  # py2
@@ -143,7 +143,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
         # Connection header should be upgrade. Some proxy servers/load balancers
         # might mess with it.
         headers = self.request.headers
-        connection = map(lambda s: s.strip().lower(), headers.get("Connection", "").split(","))
+        connection = [s.strip().lower() for s in headers.get("Connection", "").split(",")]
         if 'upgrade' not in connection:
             self.set_status(400)
             self.finish("\"Connection\" must be \"Upgrade\".")
@@ -417,7 +417,7 @@ class WebSocketProtocol13(WebSocketProtocol):
         raised
         """
         fields = ("Host", "Sec-Websocket-Key", "Sec-Websocket-Version")
-        if not all(map(lambda f: self.request.headers.get(f), fields)):
+        if not all([self.request.headers.get(f) for f in fields]):
             raise ValueError("Missing/Invalid WebSocket headers")
 
     @staticmethod

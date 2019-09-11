@@ -49,7 +49,7 @@ class TestMessageHandlers(unittest.TestCase):
         def cb(msg):
             received["msgs"].append(msg)
 
-        msgs = range(1000)
+        msgs = list(range(1000))
 
         handler = subscribe.MessageHandler(None, cb)
 
@@ -73,7 +73,7 @@ class TestMessageHandlers(unittest.TestCase):
         time.sleep(0.1)
 
         try:
-            self.assertEqual(["hello"] + range(990, 1000), received["msgs"])
+            self.assertEqual(["hello"] + list(range(990, 1000)), received["msgs"])
         except:
             handler.finish()
             raise
@@ -113,7 +113,7 @@ class TestMessageHandlers(unittest.TestCase):
         def cb(msg):
             received["msgs"].append(msg)
         handler.publish = cb
-        xs = range(10000)
+        xs = list(range(10000))
         for x in xs:
             handler.handle_message(x)
 
@@ -174,7 +174,7 @@ class TestMessageHandlers(unittest.TestCase):
 
         handler.publish = cb
 
-        msgs = range(queue_length)
+        msgs = list(range(queue_length))
         for x in msgs:
             handler.handle_message(x)
 

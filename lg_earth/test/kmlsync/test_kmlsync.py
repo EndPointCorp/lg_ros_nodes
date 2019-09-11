@@ -220,7 +220,7 @@ class TestKMLSync(unittest.TestCase):
         asset_urls = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
 
         expected_cookie = 'asset_slug=' + generate_cookie(asset_urls)
-        expected_list_of_created_slugs = map(escape_asset_url, asset_urls)
+        expected_list_of_created_slugs = list(map(escape_asset_url, asset_urls))
         expected_list_of_deleted_slugs = []
 
         # start testing...
@@ -236,7 +236,7 @@ class TestKMLSync(unittest.TestCase):
         cookie = 'asset_slug=' + generate_cookie([assets[0], delete_slug])
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center&%s' % cookie)
 
-        expected_list_of_created_slugs = map(escape_asset_url, assets[1:])
+        expected_list_of_created_slugs = list(map(escape_asset_url, assets[1:]))
         expected_list_of_deleted_slugs = [delete_slug]
         self.assertEqual(sorted(expected_list_of_created_slugs), sorted(get_created_elements(r.content)))
         self.assertEqual(expected_list_of_deleted_slugs, get_deleted_elements(r.content))

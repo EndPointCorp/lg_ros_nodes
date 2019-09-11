@@ -52,8 +52,8 @@ type_map = {
    "unicode": ["string"],
    "long":    ["uint64"]
 }
-primitive_types = [bool, int, long, float]
-string_types = [str, unicode]
+primitive_types = [bool, int, int, float]
+string_types = [str, str]
 list_types = [list, tuple]
 ros_time_types = ["time", "duration"]
 ros_primitive_types = ["bool", "byte", "char", "int8", "uint8", "int16",
@@ -76,7 +76,7 @@ def get_encoder():
         elif binary_encoder_type == 'bson':
             binary_encoder = bson.Binary   
         else:
-            print "Unknown encoder type '%s'"%binary_encoder_type
+            print("Unknown encoder type '%s'"%binary_encoder_type)
             exit(0)
     return binary_encoder        
 
@@ -259,7 +259,7 @@ def _to_object_inst(msg, rostype, roottype, inst, stack):
     if rostype in ros_header_types:
         inst.stamp = rospy.get_rostime()
 
-    inst_fields = dict(zip(inst.__slots__, inst._slot_types))
+    inst_fields = dict(list(zip(inst.__slots__, inst._slot_types)))
 
     for field_name in msg:
         # Add this field to the field stack

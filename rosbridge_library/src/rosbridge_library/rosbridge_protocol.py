@@ -48,9 +48,9 @@ class RosbridgeProtocol(Protocol):
     """ Adds the handlers for the rosbridge opcodes """
     rosbridge_capabilities = [CallService, Advertise, Publish, Subscribe, Defragment, AdvertiseService, ServiceResponse, UnadvertiseService]
 
-    print "registered capabilities (classes):"
+    print("registered capabilities (classes):")
     for cap in rosbridge_capabilities:
-        print " -", str(cap)
+        print(" -", str(cap))
 
     parameters = None
 

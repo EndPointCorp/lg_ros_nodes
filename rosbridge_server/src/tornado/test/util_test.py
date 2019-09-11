@@ -1,5 +1,5 @@
 # coding: utf-8
-from __future__ import absolute_import, division, print_function, with_statement
+
 import sys
 
 from tornado.escape import utf8
@@ -7,7 +7,7 @@ from tornado.util import raise_exc_info, Configurable, u, exec_in, ArgReplacer
 from tornado.test.util import unittest
 
 try:
-    from cStringIO import StringIO  # py2
+    from io import StringIO  # py2
 except ImportError:
     from io import StringIO  # py3
 
@@ -127,7 +127,7 @@ class ConfigurableTest(unittest.TestCase):
 
 class UnicodeLiteralTest(unittest.TestCase):
     def test_unicode_escapes(self):
-        self.assertEqual(utf8(u('\u00e9')), b'\xc3\xa9')
+        self.assertEqual(utf8(u('\\u00e9')), b'\xc3\xa9')
 
 
 class ExecInTest(unittest.TestCase):

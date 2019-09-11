@@ -56,4 +56,4 @@ def format_kml(data):
 
 if __name__ == "__main__":
     msg = parse(sys.stdin)
-    print format_kml(msg)
+    print(format_kml(msg))

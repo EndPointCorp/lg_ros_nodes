@@ -21,8 +21,8 @@ def populate_random_args(d):
         return d
     elif isinstance(d, str):
         return str(random.random())
-    elif isinstance(d, unicode):
-        return unicode(random.random())
+    elif isinstance(d, str):
+        return str(random.random())
     elif isinstance(d, bool):
         return True
     elif isinstance(d, int):
@@ -56,10 +56,10 @@ class ServiceTester:
         try:
             rsp = c.populate_instance(gen, rsp)
         except:
-            print "populating instance"
-            print rsp
-            print "populating with"
-            print gen
+            print("populating instance")
+            print(rsp)
+            print("populating with")
+            print(gen)
             raise
         self.output = gen
         return rsp
@@ -72,8 +72,8 @@ class ServiceTester:
 
     def validate(self, equality_function):
         if hasattr(self, "exc"):
-            print self.exc
-            print self.exc.message
+            print(self.exc)
+            print(self.exc.message)
             raise self.exc
         equality_function(self.input, c.extract_values(self.req))
         equality_function(self.output, self.rsp)
@@ -85,7 +85,7 @@ class TestServices(unittest.TestCase):
         rospy.init_node("test_services")
 
     def msgs_equal(self, msg1, msg2):
-        if type(msg1) in [str, unicode] and type(msg2) in [str, unicode]:
+        if type(msg1) in [str, str] and type(msg2) in [str, str]:
             pass
         else:
             self.assertEqual(type(msg1), type(msg2))

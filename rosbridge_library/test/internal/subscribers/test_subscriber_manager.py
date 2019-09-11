@@ -19,7 +19,7 @@ class TestSubscriberManager(unittest.TestCase):
         rospy.init_node("test_subscriber_manager")
 
     def is_topic_published(self, topicname):
-        return topicname in dict(rospy.get_published_topics()).keys()
+        return topicname in list(dict(rospy.get_published_topics()).keys())
 
     def is_topic_subscribed(self, topicname):
         return topicname in dict(Master("test_subscriber_manager").getSystemState()[1])

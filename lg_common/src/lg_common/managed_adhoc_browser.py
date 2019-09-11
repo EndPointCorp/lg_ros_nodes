@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
-import commands
+import subprocess
 import time
 import json
 
@@ -80,7 +80,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
         """
         try:
             cmd = 'chromium-remote.py --page-retries=10 --debug-host=localhost --debug-port={} --page-url="{}"'.format(self.debug_port, url)
-            status, output = commands.getstatusoutput(cmd)
+            status, output = subprocess.getstatusoutput(cmd)
             if status == 0:
                 self.url = url
                 rospy.loginfo("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
@@ -88,7 +88,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             else:
                 rospy.logerr("URL change command: %s, returned a status code: %s and output %s" % (cmd, status, output))
                 return False
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("URL change command: %s, returned a status code: %s and output %s because %s" % (cmd, status, output, e))
             return False
 

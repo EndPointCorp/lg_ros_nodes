@@ -16,7 +16,7 @@
 
 """Non-blocking HTTP client implementation using pycurl."""
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import collections
 import logging
@@ -36,7 +36,7 @@ from tornado.util import bytes_type
 try:
     from io import BytesIO  # py3
 except ImportError:
-    from cStringIO import StringIO as BytesIO  # py2
+    from io import StringIO as BytesIO  # py2
 
 
 class CurlAsyncHTTPClient(AsyncHTTPClient):
@@ -298,7 +298,7 @@ def _curl_setup_request(curl, request, buffer, headers):
                     [native_str("%s: %s" % i) for i in request.headers.get_all()])
     else:
         curl.setopt(pycurl.HTTPHEADER,
-                    [native_str("%s: %s" % i) for i in request.headers.items()])
+                    [native_str("%s: %s" % i) for i in list(request.headers.items())])
 
     if request.header_callback:
         curl.setopt(pycurl.HEADERFUNCTION,
@@ -379,7 +379,7 @@ def _curl_setup_request(curl, request, buffer, headers):
         "HEAD": pycurl.NOBODY,
     }
     custom_methods = set(["DELETE", "OPTIONS", "PATCH"])
-    for o in curl_options.values():
+    for o in list(curl_options.values()):
         curl.setopt(o, False)
     if request.method in curl_options:
         curl.unsetopt(pycurl.CUSTOMREQUEST)

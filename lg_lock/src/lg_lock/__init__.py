@@ -1,1 +1,1 @@
-from locker_service import LockerService
+from .locker_service import LockerService

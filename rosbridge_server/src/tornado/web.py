@@ -50,7 +50,7 @@ request.
 
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 
 import base64
@@ -88,20 +88,20 @@ from tornado.util import bytes_type, import_object, ObjectDict, raise_exc_info, 
 try:
     from io import BytesIO  # python 3
 except ImportError:
-    from cStringIO import StringIO as BytesIO  # python 2
+    from io import StringIO as BytesIO  # python 2
 
 try:
-    import Cookie  # py2
+    import http.cookies  # py2
 except ImportError:
     import http.cookies as Cookie  # py3
 
 try:
-    import urlparse  # py2
+    import urllib.parse  # py2
 except ImportError:
     import urllib.parse as urlparse  # py3
 
 try:
-    from urllib import urlencode  # py2
+    from urllib.parse import urlencode  # py2
 except ImportError:
     from urllib.parse import urlencode  # py3
 
@@ -166,7 +166,7 @@ class RequestHandler(object):
         self.path_args = None
         self.path_kwargs = None
         self.ui = ObjectDict((n, self._ui_method(m)) for n, m in
-                             application.ui_methods.items())
+                             list(application.ui_methods.items()))
         # UIModules are available as both `modules` and `_tt_modules` in the
         # template namespace.  Historically only `modules` was available
         # but could be clobbered by user additions to the namespace.
@@ -508,7 +508,7 @@ class RequestHandler(object):
             # Don't let us accidentally inject bad stuff
             raise ValueError("Invalid cookie %r: %r" % (name, value))
         if not hasattr(self, "_new_cookie"):
-            self._new_cookie = Cookie.SimpleCookie()
+            self._new_cookie = http.cookies.SimpleCookie()
         if name in self._new_cookie:
             del self._new_cookie[name]
         self._new_cookie[name] = value
@@ -522,7 +522,7 @@ class RequestHandler(object):
             morsel["expires"] = httputil.format_timestamp(expires)
         if path:
             morsel["path"] = path
-        for k, v in kwargs.items():
+        for k, v in list(kwargs.items()):
             if k == 'max_age':
                 k = 'max-age'
             morsel[k] = v
@@ -628,7 +628,7 @@ class RequestHandler(object):
         else:
             assert isinstance(status, int) and 300 <= status <= 399
         self.set_status(status)
-        self.set_header("Location", urlparse.urljoin(utf8(self.request.uri),
+        self.set_header("Location", urllib.parse.urljoin(utf8(self.request.uri),
                                                      utf8(url)))
         self.finish()
 
@@ -671,7 +671,7 @@ class RequestHandler(object):
         css_files = []
         html_heads = []
         html_bodies = []
-        for module in getattr(self, "_active_modules", {}).values():
+        for module in list(getattr(self, "_active_modules", {}).values()):
             embed_part = module.embedded_javascript()
             if embed_part:
                 js_embed.append(utf8(embed_part))
@@ -839,7 +839,7 @@ class RequestHandler(object):
             # object so an outgoing cookie could be overwritten before it
             # is sent).
             if hasattr(self, "_new_cookie"):
-                for cookie in self._new_cookie.values():
+                for cookie in list(self._new_cookie.values()):
                     self.add_header("Set-Cookie", cookie.OutputString(None))
 
             start_line = httputil.ResponseStartLine(self.request.version,
@@ -1299,7 +1299,7 @@ class RequestHandler(object):
                 raise HTTPError(405)
             self.path_args = [self.decode_argument(arg) for arg in args]
             self.path_kwargs = dict((k, self.decode_argument(v, name=k))
-                                    for (k, v) in kwargs.items())
+                                    for (k, v) in list(kwargs.items()))
             # If XSRF cookies are turned on, reject form submissions without
             # the proper cookie
             if self.request.method not in ("GET", "HEAD", "OPTIONS") and \
@@ -1745,7 +1745,7 @@ class Application(httputil.HTTPServerConnectionDelegate):
             for m in methods:
                 self._load_ui_methods(m)
         else:
-            for name, fn in methods.items():
+            for name, fn in list(methods.items()):
                 if not name.startswith("_") and hasattr(fn, "__call__") \
                         and name[0].lower() == name[0]:
                     self.ui_methods[name] = fn
@@ -1759,7 +1759,7 @@ class Application(httputil.HTTPServerConnectionDelegate):
                 self._load_ui_modules(m)
         else:
             assert isinstance(modules, dict)
-            for name, cls in modules.items():
+            for name, cls in list(modules.items()):
                 try:
                     if issubclass(cls, UIModule):
                         self.ui_modules[name] = cls
@@ -1856,7 +1856,7 @@ class _RequestDispatcher(httputil.HTTPMessageDelegate):
                     if spec.regex.groupindex:
                         self.path_kwargs = dict(
                             (str(k), _unquote_or_none(v))
-                            for (k, v) in match.groupdict().items())
+                            for (k, v) in list(match.groupdict().items()))
                     else:
                         self.path_args = [_unquote_or_none(s)
                                           for s in match.groups()]
@@ -1895,7 +1895,7 @@ class _RequestDispatcher(httputil.HTTPMessageDelegate):
         # request so you don't need to restart to see changes
         if not self.application.settings.get("compiled_template_cache", True):
             with RequestHandler._template_loader_lock:
-                for loader in RequestHandler._template_loaders.values():
+                for loader in list(RequestHandler._template_loaders.values()):
                     loader.reset()
         if not self.application.settings.get('static_hash_cache', True):
             StaticFileHandler.reset()
@@ -2595,7 +2595,7 @@ def authenticated(method):
             if self.request.method in ("GET", "HEAD"):
                 url = self.get_login_url()
                 if "?" not in url:
-                    if urlparse.urlsplit(url).scheme:
+                    if urllib.parse.urlsplit(url).scheme:
                         # if login url is absolute, make next absolute too
                         next_url = self.request.full_url()
                     else:

@@ -46,7 +46,7 @@ be returned when they are all finished::
 .. versionchanged:: 3.2
    Dict support added.
 """
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import collections
 import functools
@@ -399,7 +399,7 @@ class Multi(YieldPoint):
         self.keys = None
         if isinstance(children, dict):
             self.keys = list(children.keys())
-            children = children.values()
+            children = list(children.values())
         self.children = []
         for i in children:
             if is_future(i):
@@ -421,7 +421,7 @@ class Multi(YieldPoint):
     def get_result(self):
         result = (i.get_result() for i in self.children)
         if self.keys is not None:
-            return dict(zip(self.keys, result))
+            return dict(list(zip(self.keys, result)))
         else:
             return list(result)
 
@@ -448,7 +448,7 @@ def multi_future(children):
     """
     if isinstance(children, dict):
         keys = list(children.keys())
-        children = children.values()
+        children = list(children.values())
     else:
         keys = None
     assert all(is_future(i) for i in children)
@@ -466,7 +466,7 @@ def multi_future(children):
                 future.set_exc_info(sys.exc_info())
             else:
                 if keys is not None:
-                    future.set_result(dict(zip(keys, result_list)))
+                    future.set_result(dict(list(zip(keys, result_list))))
                 else:
                     future.set_result(result_list)
     for f in children:
@@ -670,7 +670,7 @@ class Runner(object):
             else:
                 yielded = Multi(yielded)
         elif isinstance(yielded, dict):
-            if all(is_future(f) for f in yielded.values()):
+            if all(is_future(f) for f in list(yielded.values())):
                 yielded = multi_future(yielded)
             else:
                 yielded = Multi(yielded)

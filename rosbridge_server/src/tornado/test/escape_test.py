@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 import tornado.escape
 
 from tornado.escape import utf8, xhtml_escape, xhtml_unescape, url_escape, url_unescape, to_unicode, json_decode, json_encode
@@ -90,8 +90,8 @@ linkify_tests = [
      {"permitted_protocols": ["http", "message"]},
      u('<a href="message://%3c330e7f8409726r6a4ba78dkf1fd71420c1bf6ff@mail.gmail.com%3e">message://%3c330e7f8409726r6a4ba78dkf1fd71420c1bf6ff@mail.gmail.com%3e</a>')),
 
-    (u("http://\u27a1.ws/\u4a39"), {},
-     u('<a href="http://\u27a1.ws/\u4a39">http://\u27a1.ws/\u4a39</a>')),
+    (u("http://\\u27a1.ws/\\u4a39"), {},
+     u('<a href="http://\\u27a1.ws/\\u4a39">http://\\u27a1.ws/\\u4a39</a>')),
 
     ("<tag>http://example.com</tag>", {},
      u('&lt;tag&gt;<a href="http://example.com">http://example.com</a>&lt;/tag&gt;')),
@@ -147,7 +147,7 @@ class EscapeTestCase(unittest.TestCase):
             ("<>&\"'", "&lt;&gt;&amp;&quot;&#39;"),
             ("&amp;", "&amp;amp;"),
 
-            (u("<\u00e9>"), u("&lt;\u00e9&gt;")),
+            (u("<\\u00e9>"), u("&lt;\\u00e9&gt;")),
             (b"<\xc3\xa9>", b"&lt;\xc3\xa9&gt;"),
         ]
         for unescaped, escaped in tests:
@@ -157,20 +157,20 @@ class EscapeTestCase(unittest.TestCase):
     def test_url_escape_unicode(self):
         tests = [
             # byte strings are passed through as-is
-            (u('\u00e9').encode('utf8'), '%C3%A9'),
-            (u('\u00e9').encode('latin1'), '%E9'),
+            (u('\\u00e9').encode('utf8'), '%C3%A9'),
+            (u('\\u00e9').encode('latin1'), '%E9'),
 
             # unicode strings become utf8
-            (u('\u00e9'), '%C3%A9'),
+            (u('\\u00e9'), '%C3%A9'),
         ]
         for unescaped, escaped in tests:
             self.assertEqual(url_escape(unescaped), escaped)
 
     def test_url_unescape_unicode(self):
         tests = [
-            ('%C3%A9', u('\u00e9'), 'utf8'),
-            ('%C3%A9', u('\u00c3\u00a9'), 'latin1'),
-            ('%C3%A9', utf8(u('\u00e9')), None),
+            ('%C3%A9', u('\\u00e9'), 'utf8'),
+            ('%C3%A9', u('\\u00c3\\u00a9'), 'latin1'),
+            ('%C3%A9', utf8(u('\\u00e9')), None),
         ]
         for escaped, unescaped, encoding in tests:
             # input strings to url_unescape should only contain ascii
@@ -205,13 +205,13 @@ class EscapeTestCase(unittest.TestCase):
         self.assertEqual(json_decode(u('"foo"')), u("foo"))
 
         # Non-ascii bytes are interpreted as utf8
-        self.assertEqual(json_decode(utf8(u('"\u00e9"'))), u("\u00e9"))
+        self.assertEqual(json_decode(utf8(u('"\\u00e9"'))), u("\\u00e9"))
 
     def test_json_encode(self):
         # json deals with strings, not bytes.  On python 2 byte strings will
         # convert automatically if they are utf8; on python 3 byte strings
         # are not allowed.
-        self.assertEqual(json_decode(json_encode(u("\u00e9"))), u("\u00e9"))
+        self.assertEqual(json_decode(json_encode(u("\\u00e9"))), u("\\u00e9"))
         if bytes_type is str:
-            self.assertEqual(json_decode(json_encode(utf8(u("\u00e9")))), u("\u00e9"))
+            self.assertEqual(json_decode(json_encode(utf8(u("\\u00e9")))), u("\\u00e9"))
             self.assertRaises(UnicodeDecodeError, json_encode, b"\xe9")

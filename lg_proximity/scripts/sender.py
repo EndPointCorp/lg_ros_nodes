@@ -57,7 +57,7 @@ def main():
         try:
             char = sensor.read(1)
         except serial.SerialException as e:
-            print e
+            print(e)
             break
 
         buf += char

@@ -9,7 +9,7 @@ python3.4 -m tornado.test.runtests --ioloop=tornado.platform.asyncio.AsyncIOMain
 unfinished callbacks on the event loop that fail when it resumes)
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 import datetime
 import functools
 

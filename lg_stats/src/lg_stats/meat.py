@@ -29,7 +29,8 @@ from lg_common.helpers import message_is_nonzero
 from lg_common.helpers import SlotUnpackingException
 from lg_common.helpers import get_random_string
 from lg_stats.msg import Event
-import submitters
+from . import submitters
+from functools import reduce
 
 
 ROS_NODE_NAME = "lg_stats"
@@ -410,7 +411,7 @@ class Processor(object):
                     self.last_out_msg = out_msg
                     self.time_of_last_resubmission = None
 
-        except EmptyIncomingMessage, ex:
+        except EmptyIncomingMessage as ex:
             rospy.logerr(ex)
             return
 

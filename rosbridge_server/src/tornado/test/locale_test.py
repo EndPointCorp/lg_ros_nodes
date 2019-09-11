@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import datetime
 import os
@@ -23,7 +23,7 @@ class TranslationLoaderTest(unittest.TestCase):
         self.clear_locale_cache()
 
     def tearDown(self):
-        for k, v in self.saved.items():
+        for k, v in list(self.saved.items()):
             setattr(tornado.locale, k, v)
         self.clear_locale_cache()
 
@@ -32,7 +32,7 @@ class TranslationLoaderTest(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), 'csv_translations'))
         locale = tornado.locale.get("fr_FR")
         self.assertTrue(isinstance(locale, tornado.locale.CSVLocale))
-        self.assertEqual(locale.translate("school"), u("\u00e9cole"))
+        self.assertEqual(locale.translate("school"), u("\\u00e9cole"))
 
     def test_gettext(self):
         tornado.locale.load_gettext_translations(
@@ -40,14 +40,14 @@ class TranslationLoaderTest(unittest.TestCase):
             "tornado_test")
         locale = tornado.locale.get("fr_FR")
         self.assertTrue(isinstance(locale, tornado.locale.GettextLocale))
-        self.assertEqual(locale.translate("school"), u("\u00e9cole"))
+        self.assertEqual(locale.translate("school"), u("\\u00e9cole"))
 
 
 class LocaleDataTest(unittest.TestCase):
     def test_non_ascii_name(self):
         name = tornado.locale.LOCALE_NAMES['es_LA']['name']
         self.assertTrue(isinstance(name, unicode_type))
-        self.assertEqual(name, u('Espa\u00f1ol'))
+        self.assertEqual(name, u('Espa\\u00f1ol'))
         self.assertEqual(utf8(name), b'Espa\xc3\xb1ol')
 
 

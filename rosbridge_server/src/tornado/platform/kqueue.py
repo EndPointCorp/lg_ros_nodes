@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """KQueue-based IOLoop implementation for BSD/Mac systems."""
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import select
 
@@ -84,7 +84,7 @@ class _KQueue(object):
                     events[fd] = events.get(fd, 0) | IOLoop.WRITE
             if kevent.flags & select.KQ_EV_ERROR:
                 events[fd] = events.get(fd, 0) | IOLoop.ERROR
-        return events.items()
+        return list(events.items())
 
 
 class KQueueIOLoop(PollIOLoop):

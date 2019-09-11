@@ -28,7 +28,7 @@ These streams may be configured independently using the standard library's
 `logging` module.  For example, you may wish to send ``tornado.access`` logs
 to a separate file for analysis.
 """
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import logging
 import logging.handlers
@@ -123,7 +123,7 @@ class LogFormatter(logging.Formatter):
             if (3, 0) < sys.version_info < (3, 2, 3):
                 fg_color = unicode_type(fg_color, "ascii")
 
-            for levelno, code in colors.items():
+            for levelno, code in list(colors.items()):
                 self._colors[levelno] = unicode_type(curses.tparm(fg_color, code), "ascii")
             self._normal = unicode_type(curses.tigetstr("sgr0"), "ascii")
         else:

@@ -29,7 +29,7 @@ provides WSGI support in two ways:
   and Tornado handlers in a single server.
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import sys
 import tornado
@@ -45,7 +45,7 @@ from tornado.util import bytes_type, unicode_type
 try:
     from io import BytesIO  # python 3
 except ImportError:
-    from cStringIO import StringIO as BytesIO  # python 2
+    from io import StringIO as BytesIO  # python 2
 
 try:
     import urllib.parse as urllib_parse  # py3
@@ -341,7 +341,7 @@ class WSGIContainer(object):
             environ["CONTENT_TYPE"] = request.headers.pop("Content-Type")
         if "Content-Length" in request.headers:
             environ["CONTENT_LENGTH"] = request.headers.pop("Content-Length")
-        for key, value in request.headers.items():
+        for key, value in list(request.headers.items()):
             environ["HTTP_" + key.replace("-", "_").upper()] = value
         return environ
 

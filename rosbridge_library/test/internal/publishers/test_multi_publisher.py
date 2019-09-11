@@ -19,7 +19,7 @@ class TestMultiPublisher(unittest.TestCase):
         rospy.init_node("test_multi_publisher")
 
     def is_topic_published(self, topicname):
-        return topicname in dict(rospy.get_published_topics()).keys()
+        return topicname in list(dict(rospy.get_published_topics()).keys())
 
     def test_register_multipublisher(self):
         """ Register a publisher on a clean topic with a good msg type """

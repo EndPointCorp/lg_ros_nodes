@@ -33,7 +33,7 @@ class TestAdhocBrowser(unittest.TestCase):
         browsers_on_touchscreen = json.loads(browsers_on_touchscreen)
         self.assertEqual(len(browsers_on_touchscreen), 1)
 
-        for browser_id, browser_data in browsers_on_touchscreen.items():
+        for browser_id, browser_data in list(browsers_on_touchscreen.items()):
             self.assertEqual(browser_data['binary'], '/usr/bin/google-chrome-stable')
 
         #cleanup

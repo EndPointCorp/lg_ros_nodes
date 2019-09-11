@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 
-import SocketServer
-import thread
+import socketserver
+import _thread
 import socket
 
 
 def print_handler(data):
-    print data
+    print(data)
 
 
-class MyTCPHandler(SocketServer.StreamRequestHandler):
+class MyTCPHandler(socketserver.StreamRequestHandler):
 
     def __init__(self, callback, *args, **keys):
         self.callback = callback
-        SocketServer.StreamRequestHandler.__init__(self, *args, **keys)
+        socketserver.StreamRequestHandler.__init__(self, *args, **keys)
 
     def handle(self):
         data = self.rfile.readline().strip()
@@ -33,15 +33,15 @@ class SpacenavRemote(object):
         HOST, PORT = '', port
 
         # Create the server, binding to localhost on port 6564
-        SocketServer.TCPServer.allow_reuse_address = True
-        self.server = SocketServer.TCPServer((HOST, PORT), handler_factory(handler))
+        socketserver.TCPServer.allow_reuse_address = True
+        self.server = socketserver.TCPServer((HOST, PORT), handler_factory(handler))
         self.server.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
     def fork_and_run(self):
         """
         Activate the server in separate thread
         """
-        thread.start_new_thread(self.serve_forever, ())
+        _thread.start_new_thread(self.serve_forever, ())
 
     def serve_forever(self):
         try:
@@ -55,6 +55,6 @@ class SpacenavRemote(object):
 
 
 if __name__ == "__main__":
-    print "Start spacenav remote server"
+    print("Start spacenav remote server")
     server = SpacenavRemote()
     server.serve_forever()

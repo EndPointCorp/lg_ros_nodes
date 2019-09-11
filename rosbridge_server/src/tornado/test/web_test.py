@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, with_statement
+
 from tornado.concurrent import Future
 from tornado import gen
 from tornado.escape import json_decode, utf8, to_unicode, recursive_unicode, native_str, to_basestring
@@ -337,8 +337,8 @@ class RequestEncodingTest(WebTestCase):
         # Path components and query arguments should be decoded the same way
         self.assertEqual(self.fetch_json('/group/%C3%A9?arg=%C3%A9'),
                          {u("path"): u("/group/%C3%A9"),
-                          u("path_args"): [u("\u00e9")],
-                          u("args"): {u("arg"): [u("\u00e9")]}})
+                          u("path_args"): [u("\\u00e9")],
+                          u("args"): {u("arg"): [u("\\u00e9")]}})
 
     def test_slashes(self):
         # Slashes may be escaped to appear as a single "directory" in the path,
@@ -369,7 +369,7 @@ class TypeCheckHandler(RequestHandler):
         # data, but regular cookies are native strings.
         if list(self.cookies.keys()) != ['asdf']:
             raise Exception("unexpected values for cookie keys: %r" %
-                            self.cookies.keys())
+                            list(self.cookies.keys()))
         self.check_type('get_secure_cookie', self.get_secure_cookie('asdf'), bytes_type)
         self.check_type('get_cookie', self.get_cookie('asdf'), str)
 
@@ -583,8 +583,8 @@ class WSGISafeWebTest(WebTestCase):
             response = self.fetch(req_url)
             response.rethrow()
             data = json_decode(response.body)
-            self.assertEqual(data, {u('path'): [u('unicode'), u('\u00e9')],
-                                    u('query'): [u('unicode'), u('\u00e9')],
+            self.assertEqual(data, {u('path'): [u('unicode'), u('\\u00e9')],
+                                    u('query'): [u('unicode'), u('\\u00e9')],
                                     })
 
         response = self.fetch("/decode_arg/%C3%A9?foo=%C3%A9")
@@ -621,7 +621,7 @@ class WSGISafeWebTest(WebTestCase):
                          '/decode_arg/42')
         self.assertEqual(self.app.reverse_url('decode_arg', b'\xe9'),
                          '/decode_arg/%E9')
-        self.assertEqual(self.app.reverse_url('decode_arg', u('\u00e9')),
+        self.assertEqual(self.app.reverse_url('decode_arg', u('\\u00e9')),
                          '/decode_arg/%C3%A9')
         self.assertEqual(self.app.reverse_url('decode_arg', '1 + 1'),
                          '/decode_arg/1%20%2B%201')

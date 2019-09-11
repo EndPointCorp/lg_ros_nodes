@@ -111,7 +111,7 @@ class MirrorPlaybackPool:
         for window in windows:
             instance_name = self._window_to_instance_name(window)
             # If we were playing this previously, promote to the new list.
-            if instance_name in previous_players.keys():
+            if instance_name in list(previous_players.keys()):
                 self.players[instance_name] = previous_players[instance_name]
                 del previous_players[instance_name]
                 continue
@@ -120,7 +120,7 @@ class MirrorPlaybackPool:
             player.start()
 
         # Any remaining previous players must be stopped.
-        for p in previous_players.values():
+        for p in list(previous_players.values()):
             p.stop()
 
     def handle_scene_msg(self, msg):

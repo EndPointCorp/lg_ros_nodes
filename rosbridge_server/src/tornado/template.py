@@ -188,7 +188,7 @@ with ``{# ... #}``.
     ``{% continue %}`` may be used inside the loop.
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import datetime
 import linecache
@@ -202,7 +202,7 @@ from tornado.log import app_log
 from tornado.util import bytes_type, ObjectDict, exec_in, unicode_type
 
 try:
-    from cStringIO import StringIO  # py2
+    from io import StringIO  # py2
 except ImportError:
     from io import StringIO  # py3
 

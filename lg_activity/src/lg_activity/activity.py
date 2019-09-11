@@ -119,7 +119,7 @@ class ActivitySource:
         """
         try:
             message_type_final = get_message_type_from_string(self.message_type)
-        except Exception, e:
+        except Exception as e:
             msg = "Could not import module because: %s" % (e)
             rospy.logerr(msg)
             raise ActivitySourceException
@@ -187,7 +187,7 @@ class ActivitySource:
         system become inactive.
         """
         for message in self.messages:
-            value = float(message.values()[0])
+            value = float(list(message.values())[0])
             if value >= float(self.value_min) and value <= float(self.value_max):
                 return False
         return True
@@ -293,7 +293,7 @@ class ActivitySourceDetector:
         try:
             source = [source for source in self.sources if source['topic'] == topic]
             return source[0]
-        except KeyError, e:
+        except KeyError as e:
             msg = "Could not find source %s because %s" % (source, e)
             rospy.logerr(msg)
             raise ActivitySourceNotFound(msg)
@@ -384,7 +384,7 @@ class ActivityTracker:
 
                 self._check_states()
                 return True
-            except Exception, e:
+            except Exception as e:
                 rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
                 return False
 
@@ -429,7 +429,7 @@ class ActivityTracker:
 
         """
         now = rospy.get_time()
-        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.iteritems() if self._source_is_active(state)}
+        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state)}
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True

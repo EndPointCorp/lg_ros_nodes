@@ -318,7 +318,7 @@ class PublisherManager():
 
         Keyword arguments:
         client_id -- the ID of the client making this request """
-        for topic in self._publishers.keys():
+        for topic in list(self._publishers.keys()):
             self.unregister(client_id, topic)
 
     def publish(self, client_id, topic, msg, latch=False, queue_size=100):

@@ -36,7 +36,7 @@ class AdvertisedServiceHandler():
         self.protocol.send(request_message)
 
         # wait for a response
-        while request_id not in self.responses.keys():
+        while request_id not in list(self.responses.keys()):
             time.sleep(0)
 
         resp = self.responses[request_id]
@@ -46,7 +46,7 @@ class AdvertisedServiceHandler():
 
 class AdvertiseService(Capability):
 
-    advertise_service_msg_fields = [(True, "service", (str, unicode)), (True, "type", (str, unicode))]
+    advertise_service_msg_fields = [(True, "service", (str, str)), (True, "type", (str, str))]
 
     def __init__(self, protocol):
         # Call superclass constructor
@@ -60,7 +60,7 @@ class AdvertiseService(Capability):
         service_name = message["service"]
 
         # check for an existing entry
-        if service_name in self.protocol.external_service_list.keys():
+        if service_name in list(self.protocol.external_service_list.keys()):
             self.protocol.log("warn", "Duplicate service advertised. Overwriting %s." % service_name)
             self.protocol.external_service_list[service_name].service_handle.shutdown("Duplicate advertiser.")
             del self.protocol.external_service_list[service_name]

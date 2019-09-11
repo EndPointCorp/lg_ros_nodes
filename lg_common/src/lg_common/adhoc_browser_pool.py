@@ -13,9 +13,9 @@ from lg_common.msg import BrowserExtension
 from lg_common.msg import AdhocBrowser, AdhocBrowsers, BrowserURL
 from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import BrowserPool
-from managed_browser import DEFAULT_BINARY
-from urlparse import urlparse, parse_qs, urlunparse
-from urllib import urlencode
+from .managed_browser import DEFAULT_BINARY
+from urllib.parse import urlparse, parse_qs, urlunparse
+from urllib.parse import urlencode
 
 
 class AdhocBrowserPool():
@@ -85,7 +85,7 @@ class AdhocBrowserPool():
         url_parts = urlparse(current_url)
         if url_parts.query:
             get_args = parse_qs(url_parts.query, keep_blank_values=True)
-            filtered = dict((k, v) for k, v in get_args.iteritems() if k not in injected_get_args)
+            filtered = dict((k, v) for k, v in get_args.items() if k not in injected_get_args)
 
             newurl = urlunparse([
                 url_parts.scheme, url_parts.netloc, url_parts.path, url_parts.params,
@@ -105,9 +105,9 @@ class AdhocBrowserPool():
         rtype: dict
         """
         serialized_browsers = {}
-        for browser_id, browser in self.browsers.items():
+        for browser_id, browser in list(self.browsers.items()):
             serialized_browser = json.loads(browser.__str__())
-            for key in self.browsers_info[browser_id].keys():
+            for key in list(self.browsers_info[browser_id].keys()):
                 serialized_browser[key] = self.browsers_info[browser_id][key]
 
             serialized_browser['current_url_normalized'] = self._normalize_url(
@@ -344,7 +344,7 @@ class AdhocBrowserPool():
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
         self.browsers_info[new_browser_pool_id] = browser_info
-        rospy.loginfo("State after addition of %s: %s" % (new_browser_pool_id, self.browsers.keys()))
+        rospy.loginfo("State after addition of %s: %s" % (new_browser_pool_id, list(self.browsers.keys())))
 
         if initial_state:
             rospy.logdebug("Setting initial state of %s to %s" % (new_browser_pool_id, initial_state))
@@ -435,7 +435,7 @@ class AdhocBrowserPool():
         """
         remove = []
 
-        for browser_instance in self.browsers.values():
+        for browser_instance in list(self.browsers.values()):
             # consider only preloadable browsers
             if browser_instance.preload is True:
                 # if browser prefix is not mentioned in the incoming scene
@@ -464,9 +464,9 @@ class AdhocBrowserPool():
             try:
                 self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
             except KeyError:
-                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool" % (browser_pool_id, self.browsers.keys()))
-            except Exception, e:
-                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool because: %s" % (browser_pool_id, self.browsers.keys(), e))
+                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool" % (browser_pool_id, list(self.browsers.keys())))
+            except Exception as e:
+                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool because: %s" % (browser_pool_id, list(self.browsers.keys()), e))
 
     def _inject_get_argument(self, url, get_arg_name, get_arg_value):
         """
@@ -488,7 +488,7 @@ class AdhocBrowserPool():
 
         # join args without encoding - browser will do the rest
         arg_list = []
-        for item in get_args.items():
+        for item in list(get_args.items()):
             if type(item[1]) == list:
                 for val in item[1]:
                     arg = str(item[0]) + "=" + str(val)

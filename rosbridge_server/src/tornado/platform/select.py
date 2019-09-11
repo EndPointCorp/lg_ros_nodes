@@ -17,7 +17,7 @@
 
 Used as a fallback for systems that don't support epoll or kqueue.
 """
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import select
 
@@ -68,7 +68,7 @@ class _Select(object):
             events[fd] = events.get(fd, 0) | IOLoop.WRITE
         for fd in errors:
             events[fd] = events.get(fd, 0) | IOLoop.ERROR
-        return events.items()
+        return list(events.items())
 
 
 class SelectIOLoop(PollIOLoop):

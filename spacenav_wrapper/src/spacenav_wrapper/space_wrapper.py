@@ -114,7 +114,7 @@ class SpacenavRezeroer(object):
         """
         try:
             self._on_timer()
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("There was an exception thrown inside the timer:\n%s" % e)
 
     def _is_twist_equal(self, twist1, twist2, epsilon=0.005):

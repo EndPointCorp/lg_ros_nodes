@@ -94,7 +94,7 @@ class GstreamerPool(object):
 
     def clear(self):
         with self.lock:
-            for k in self.gstreamers.keys():
+            for k in list(self.gstreamers.keys()):
                 self.gstreamers[k].close()
                 del self.gstreamers[k]
 
@@ -109,7 +109,7 @@ class GstreamerPool(object):
         """
         Determine which media id's belong to existing assets.
         """
-        existing_media_urls = [m.url for m in self.gstreamers.values()]
+        existing_media_urls = [m.url for m in list(self.gstreamers.values())]
 
         def media_exists(media):
             return media.url in existing_media_urls
@@ -130,7 +130,7 @@ class GstreamerPool(object):
 
             current_gstreamers_ids = get_app_instances_ids(self.gstreamers)
 
-            existing_media_ids, fresh_media_ids = self._partition_existing_medias(incoming_gstreamers.values())
+            existing_media_ids, fresh_media_ids = self._partition_existing_medias(list(incoming_gstreamers.values()))
 
             # gstreamers to remove
             for gstreamer_pool_id in current_gstreamers_ids:
@@ -154,7 +154,7 @@ class GstreamerPool(object):
 
         """
         with self.lock:
-            d = {app_id: str(app_info) for app_id, app_info in self.gstreamers.items()}
+            d = {app_id: str(app_info) for app_id, app_info in list(self.gstreamers.items())}
             return MediaAppsInfoResponse(json=json.dumps(d))
 
     def _create_gstreamer(self, gstreamer_id, incoming_gstreamer):
@@ -200,7 +200,7 @@ class GstreamerPool(object):
         del self.gstreamers[gstreamer_pool_id]
 
     def handle_soft_relaunch(self, *args, **kwargs):
-        gstreamers = self.gstreamers.keys()
+        gstreamers = list(self.gstreamers.keys())
         for gstreamer in gstreamers:
             self._remove_gstreamer(gstreamer)
 

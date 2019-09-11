@@ -21,7 +21,7 @@ class TestAdvertise(unittest.TestCase):
         rospy.init_node("test_advertise")
 
     def is_topic_published(self, topicname):
-        return topicname in dict(rospy.get_published_topics()).keys()
+        return topicname in list(dict(rospy.get_published_topics()).keys())
 
     def test_missing_arguments(self):
         proto = Protocol("hello")

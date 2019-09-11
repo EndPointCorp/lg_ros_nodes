@@ -53,10 +53,10 @@ import rospy
 
 # Wiimote modules:
 
-from wiiutils import *
-from wiimoteExceptions import *
-from wiimoteConstants import *
-import wiistate
+from .wiiutils import *
+from .wiimoteExceptions import *
+from .wiimoteConstants import *
+from . import wiistate
 
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #

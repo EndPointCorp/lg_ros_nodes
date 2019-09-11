@@ -2,7 +2,7 @@
 
 import rospy
 import os
-from thread import start_new_thread
+from _thread import start_new_thread
 from lg_earth import Client
 from lg_earth.client_config import get_config
 from tempfile import gettempdir as systmp

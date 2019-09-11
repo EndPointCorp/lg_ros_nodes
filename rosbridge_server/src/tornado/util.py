@@ -10,7 +10,7 @@ interface of its subclasses, including `.AsyncHTTPClient`, `.IOLoop`,
 and `.Resolver`.
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import array
 import inspect
@@ -122,8 +122,8 @@ else:
     def u(s):
         return s.decode('unicode_escape')
     bytes_type = str
-    unicode_type = unicode
-    basestring_type = basestring
+    unicode_type = str
+    basestring_type = str
 
 
 if sys.version_info > (3,):
@@ -327,7 +327,7 @@ def _websocket_mask_python(mask, data):
     """
     mask = array.array("B", mask)
     unmasked = array.array("B", data)
-    for i in xrange(len(data)):
+    for i in range(len(data)):
         unmasked[i] = unmasked[i] ^ mask[i % 4]
     if hasattr(unmasked, 'tobytes'):
         # tostring was deprecated in py32.  It hasn't been removed,

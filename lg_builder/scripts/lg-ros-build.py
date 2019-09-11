@@ -41,7 +41,7 @@ class Builder(object):
         if os.path.exists(debdir):
             shutil.rmtree(debdir)
 
-        os.mkdir(debdir, 0755)
+        os.mkdir(debdir, 0o755)
 
         control = self._builder.generate_control(package)
         with open(os.path.join(debdir, 'control'), 'w') as f:
@@ -56,7 +56,7 @@ class Builder(object):
             f.write(compat)
 
         sourcedir = os.path.join(debdir, 'source')
-        os.mkdir(sourcedir, 0755)
+        os.mkdir(sourcedir, 0o755)
 
         source_format = '3.0 (quilt)'
         with open(os.path.join(sourcedir, 'format'), 'w') as f:
@@ -80,25 +80,25 @@ class Builder(object):
         package = parse_package(package_path)
         package_dir = self._builder.get_package_path(package)
 
-        print "Building {} version {}".format(package.name, package.version)
+        print("Building {} version {}".format(package.name, package.version))
 
-        print "Validating package"
+        print("Validating package")
         package.validate()
 
-        print "Updating rosdep"
+        print("Updating rosdep")
         self._builder.rosdep_update()
 
-        print "Checking rosdep sanity"
+        print("Checking rosdep sanity")
         self._builder.rosdep_sanity_check()
 
         # XXX: rosdep only resolves public dependencies
         # print "Installing dependencies"
         # self._builder.rosdep_install_deps(package_dir)
 
-        print "Creating tempdir"
+        print("Creating tempdir")
         self.tempdir = tempfile.mkdtemp()
 
-        print "Copying sources to tempdir"
+        print("Copying sources to tempdir")
         builddir = self._get_builddir()
         shutil.copytree(
             src=package_dir,
@@ -106,10 +106,10 @@ class Builder(object):
             symlinks=True
         )
 
-        print "Writing debian metadata"
+        print("Writing debian metadata")
         self._write_debfiles(package)
 
-        print "Creating upstream tarball"
+        print("Creating upstream tarball")
         debian_name = self._builder.catkin_to_apt_name(package.name)
         upstream_filename = os.path.join(
             self.tempdir,
@@ -118,7 +118,7 @@ class Builder(object):
         with tarfile.open(upstream_filename, 'w:gz') as tar:
             tar.add(builddir, arcname='')
 
-        print "Running dpkg-buildpackage"
+        print("Running dpkg-buildpackage")
         subprocess.check_output(
             args=[
                 'dpkg-buildpackage',
@@ -129,7 +129,7 @@ class Builder(object):
             cwd=builddir
         )
 
-        print "Copying deb package to {}".format(os.getcwd())
+        print("Copying deb package to {}".format(os.getcwd()))
         for f in glob.glob(os.path.join(self.tempdir, '*.deb')):
             shutil.copy(f, os.getcwd())
 

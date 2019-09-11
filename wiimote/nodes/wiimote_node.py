@@ -803,19 +803,19 @@ if __name__ == '__main__':
         
     except rospy.ROSInterruptException:
         rospy.loginfo("ROS Shutdown Request.")
-    except KeyboardInterrupt, e:
+    except KeyboardInterrupt as e:
         rospy.loginfo("Received keyboard interrupt.")
-    except WiimoteNotFoundError, e:
+    except WiimoteNotFoundError as e:
         rospy.logfatal(str(e))
-    except WiimoteEnableError, e:
+    except WiimoteEnableError as e:
         rospy.logfatal(str(e))
-    except CallbackStackMultInstError, e:
+    except CallbackStackMultInstError as e:
         rospy.logfatal(str(e))
-    except CallbackStackEmptyError, e:
+    except CallbackStackEmptyError as e:
         rospy.logfatal(str(e))
-    except ResumeNonPausedError, e:
+    except ResumeNonPausedError as e:
         rospy.logfatal(str(e))
-    except CallbackStackEmptyError, e:
+    except CallbackStackEmptyError as e:
         rospy.logfatal(str(e))
     
     except:

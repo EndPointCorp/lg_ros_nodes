@@ -3,11 +3,11 @@ import struct
 from rosbridge_library.rosbridge_protocol import RosbridgeProtocol
 
 try:
-    import SocketServer
+    import socketserver
 except ImportError:
     import socketserver as SocketServer
 
-class RosbridgeTcpSocket(SocketServer.BaseRequestHandler):
+class RosbridgeTcpSocket(socketserver.BaseRequestHandler):
     """
     TCP Socket server for rosbridge
     """

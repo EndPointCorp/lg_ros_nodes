@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 from tornado import netutil
 from tornado.escape import json_decode, json_encode, utf8, _unicode, recursive_unicode, native_str
 from tornado import gen
@@ -29,7 +29,7 @@ import tempfile
 try:
     from io import BytesIO  # python 3
 except ImportError:
-    from cStringIO import StringIO as BytesIO  # python 2
+    from io import StringIO as BytesIO  # python 2
 
 
 def read_stream_body(stream, callback):
@@ -222,19 +222,19 @@ class HTTPConnectionTest(AsyncHTTPTestCase):
             b"\r\n".join([
                 b"Content-Disposition: form-data; name=argument",
                 b"",
-                u("\u00e1").encode("utf-8"),
+                u("\\u00e1").encode("utf-8"),
                 b"--1234567890",
-                u('Content-Disposition: form-data; name="files"; filename="\u00f3"').encode("utf8"),
+                u('Content-Disposition: form-data; name="files"; filename="\\u00f3"').encode("utf8"),
                 b"",
-                u("\u00fa").encode("utf-8"),
+                u("\\u00fa").encode("utf-8"),
                 b"--1234567890--",
                 b"",
             ]))
         data = json_decode(response)
-        self.assertEqual(u("\u00e9"), data["header"])
-        self.assertEqual(u("\u00e1"), data["argument"])
-        self.assertEqual(u("\u00f3"), data["filename"])
-        self.assertEqual(u("\u00fa"), data["filebody"])
+        self.assertEqual(u("\\u00e9"), data["header"])
+        self.assertEqual(u("\\u00e1"), data["argument"])
+        self.assertEqual(u("\\u00f3"), data["filename"])
+        self.assertEqual(u("\\u00fa"), data["filebody"])
 
     def test_100_continue(self):
         # Run through a 100-continue interaction by hand:
@@ -323,7 +323,7 @@ class HTTPServerTest(AsyncHTTPTestCase):
     def test_query_string_encoding(self):
         response = self.fetch("/echo?foo=%C3%A9")
         data = json_decode(response.body)
-        self.assertEqual(data, {u("foo"): [u("\u00e9")]})
+        self.assertEqual(data, {u("foo"): [u("\\u00e9")]})
 
     def test_empty_query_string(self):
         response = self.fetch("/echo?foo=&foo=")

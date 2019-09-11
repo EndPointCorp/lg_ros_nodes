@@ -103,9 +103,9 @@ class TestAdhocBrowser(unittest.TestCase):
         browsers_on_center = json.loads(center_service().state)
 
         self.assertEqual(len(browsers_on_center), 1)
-        self.assertEqual('monitor_page_urls' in browsers_on_center.items()[0][1]['extensions'][0], True)
-        self.assertEqual('allowed_urls=google.com' in browsers_on_center.items()[0][1]['url'], True)
-        self.assertEqual('allowed_urls=endpoint.com' in browsers_on_center.items()[0][1]['url'], True)
+        self.assertEqual('monitor_page_urls' in list(browsers_on_center.items())[0][1]['extensions'][0], True)
+        self.assertEqual('allowed_urls=google.com' in list(browsers_on_center.items())[0][1]['url'], True)
+        self.assertEqual('allowed_urls=endpoint.com' in list(browsers_on_center.items())[0][1]['url'], True)
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))

@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import traceback
 
@@ -129,9 +129,9 @@ class WebSocketTest(AsyncHTTPTestCase):
     def test_unicode_message(self):
         ws = yield websocket_connect(
             'ws://localhost:%d/echo' % self.get_http_port())
-        ws.write_message(u('hello \u00e9'))
+        ws.write_message(u('hello \\u00e9'))
         response = yield ws.read_message()
-        self.assertEqual(response, u('hello \u00e9'))
+        self.assertEqual(response, u('hello \\u00e9'))
         ws.close()
         yield self.close_future
 

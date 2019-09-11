@@ -30,7 +30,7 @@ def grab_master_volume():
         volume = master_node_volume()
         rospy.logdebug("got volume {} from master".format(volume))
         return volume.volume
-    except rospy.ServiceException, e:
+    except rospy.ServiceException as e:
         rospy.logerr("Problem grabbing the master volume")
         return None
 

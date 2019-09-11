@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 from tornado.concurrent import is_future
 from tornado.escape import utf8, _unicode
@@ -23,10 +23,10 @@ import sys
 try:
     from io import BytesIO  # python 3
 except ImportError:
-    from cStringIO import StringIO as BytesIO  # python 2
+    from io import StringIO as BytesIO  # python 2
 
 try:
-    import urlparse  # py2
+    import urllib.parse  # py2
 except ImportError:
     import urllib.parse as urlparse  # py3
 
@@ -187,7 +187,7 @@ class _HTTPConnection(httputil.HTTPMessageDelegate):
         self._timeout = None
         self._sockaddr = None
         with stack_context.ExceptionStackContext(self._handle_exception):
-            self.parsed = urlparse.urlsplit(_unicode(self.request.url))
+            self.parsed = urllib.parse.urlsplit(_unicode(self.request.url))
             if self.parsed.scheme not in ("http", "https"):
                 raise ValueError("Unsupported url scheme: %s" %
                                  self.request.url)
@@ -454,7 +454,7 @@ class _HTTPConnection(httputil.HTTPMessageDelegate):
                 self.code in (301, 302, 303, 307)):
             assert isinstance(self.request, _RequestProxy)
             new_request = copy.copy(self.request.request)
-            new_request.url = urlparse.urljoin(self.request.url,
+            new_request.url = urllib.parse.urljoin(self.request.url,
                                                self.headers["Location"])
             new_request.max_redirects = self.request.max_redirects - 1
             del new_request.headers["Host"]

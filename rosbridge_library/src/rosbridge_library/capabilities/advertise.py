@@ -72,8 +72,8 @@ class Registration():
 
 class Advertise(Capability):
 
-    advertise_msg_fields = [(True, "topic", (str, unicode)), (True, "type", (str, unicode))]
-    unadvertise_msg_fields = [(True, "topic", (str, unicode))]
+    advertise_msg_fields = [(True, "topic", (str, str)), (True, "type", (str, str))]
+    unadvertise_msg_fields = [(True, "topic", (str, str))]
 
     def __init__(self, protocol):
         # Call superclas constructor
@@ -122,7 +122,7 @@ class Advertise(Capability):
             del self._registrations[topic]
 
     def finish(self):
-        for registration in self._registrations.values():
+        for registration in list(self._registrations.values()):
             registration.unregister()
         self._registrations.clear()
         self.protocol.unregister_operation("advertise")

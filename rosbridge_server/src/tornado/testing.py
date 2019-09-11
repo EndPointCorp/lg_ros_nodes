@@ -10,7 +10,7 @@
   for the tornado.autoreload module to rerun the tests when code changes.
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 try:
     from tornado import gen
@@ -41,7 +41,7 @@ import sys
 import types
 
 try:
-    from cStringIO import StringIO  # py2
+    from io import StringIO  # py2
 except ImportError:
     from io import StringIO  # py3
 

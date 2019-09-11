@@ -18,7 +18,7 @@
 the server into multiple processes and managing subprocesses.
 """
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import errno
 import os
@@ -43,7 +43,7 @@ except ImportError:
     multiprocessing = None
 
 try:
-    long  # py2
+    int  # py2
 except NameError:
     long = int  # py3
 
@@ -72,7 +72,7 @@ def _reseed_random():
     # random.seed (at least as of python 2.6).  If os.urandom is not
     # available, we mix in the pid in addition to a timestamp.
     try:
-        seed = long(hexlify(os.urandom(16)), 16)
+        seed = int(hexlify(os.urandom(16)), 16)
     except NotImplementedError:
         seed = int(time.time() * 1000) ^ os.getpid()
     random.seed(seed)

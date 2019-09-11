@@ -67,7 +67,7 @@ class ConnectivityResults(object):
         if not self.data:
             return False
         for dict_check_results in self.data[-self.num_of_last_check_rounds_consider:]:
-            for res in dict_check_results.values():
+            for res in list(dict_check_results.values()):
                 if res == 0:
                     return False
         else:

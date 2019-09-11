@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from __future__ import print_function
+
 from rospy import init_node, get_param, loginfo, logerr, on_shutdown, Publisher
 from rosbridge_server import RosbridgeTcpSocket
 
@@ -16,7 +16,7 @@ from signal import signal, SIGINT, SIG_DFL
 from std_msgs.msg import Int32
 
 try:
-    import SocketServer
+    import socketserver
 except ImportError:
     import socketserver as SocketServer
 
@@ -231,8 +231,8 @@ if __name__ == "__main__":
 
             # Server host is a tuple ('host', port)
             # empty string for host makes server listen on all available interfaces
-            SocketServer.ThreadingTCPServer.allow_reuse_address = True
-            server = SocketServer.ThreadingTCPServer((host, port), RosbridgeTcpSocket)
+            socketserver.ThreadingTCPServer.allow_reuse_address = True
+            server = socketserver.ThreadingTCPServer((host, port), RosbridgeTcpSocket)
             on_shutdown(partial(shutdown_hook, server))
 
             loginfo("Rosbridge TCP server started on port %d", port)

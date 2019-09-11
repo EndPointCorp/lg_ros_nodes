@@ -61,7 +61,7 @@ def get_rule_pattern(window):
     """
     def pattern(r):
         return "%s = '%s'" % r
-    patternized = map(pattern, get_rule_types(window).iteritems())
+    patternized = list(map(pattern, iter(get_rule_types(window).items())))
     return ', '.join(patternized)
 
 
@@ -144,7 +144,7 @@ def get_subtractive_script(window):
 
     def rule(r):
         return "rule['rule']['%s'] == '%s'" % r
-    checks = ' and '.join(map(rule, rules.iteritems()))
+    checks = ' and '.join(map(rule, iter(rules.items())))
     return "for key,rule in pairs(awful.rules.rules) do if rule['rule'] ~= nil and {checks} then table.remove(awful.rules.rules, key) end end".format(
         checks=checks
     )
@@ -225,7 +225,7 @@ def get_environ():
     def split_environ(raw):
         pair = raw.split('=', 1)
         return pair[0], pair[1]
-    pairs = map(split_environ, awesome_environ_raw.split('\0'))
+    pairs = list(map(split_environ, awesome_environ_raw.split('\0')))
     awesome_environ = dict((p[0], p[1]) for p in pairs)
 
     env = os.environ.copy()

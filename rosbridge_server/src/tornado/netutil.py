@@ -16,7 +16,7 @@
 
 """Miscellaneous network utility code."""
 
-from __future__ import absolute_import, division, print_function, with_statement
+
 
 import errno
 import os
@@ -203,7 +203,7 @@ def add_accept_handler(sock, callback, io_loop=None):
         # Instead, we use the (default) listen backlog as a rough
         # heuristic for the number of connections we can reasonably
         # accept at once.
-        for i in xrange(_DEFAULT_BACKLOG):
+        for i in range(_DEFAULT_BACKLOG):
             try:
                 connection, address = sock.accept()
             except socket.error as e:

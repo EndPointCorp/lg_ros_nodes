@@ -43,7 +43,7 @@ State data structure:
 import json
 import rospy
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import threading
 import xml.etree.ElementTree as ET
 
@@ -102,7 +102,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     @classmethod
     def finish_all_requests(cls):
         with cls.defer_lock:
-            for req in cls.deferred_requests.itervalues():
+            for req in cls.deferred_requests.values():
                 req.get(no_defer=True)
             cls.deferred_requests.clear()
 
@@ -294,7 +294,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cookie = self._get_cookie(assets)
             return [z for z in cookie.split(',')]
-        except AttributeError, e:
+        except AttributeError as e:
             return []
 
     def _get_full_cookie(self, assets):
@@ -366,7 +366,7 @@ class KmlQueryHandler(tornado.web.RequestHandler):
         try:
             for op in query_string.split(','):
                 command, value = op.split('=')
-                value = urllib2.unquote(value)
+                value = urllib.parse.unquote(value)
 
                 if command == 'playtour':
                     rospy.loginfo("Playing tour %s" % value)
