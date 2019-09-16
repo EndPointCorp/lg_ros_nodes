@@ -9,7 +9,7 @@ import time
 
 from lg_common.tcp_relay import TCPRelay
 
-MAGIC = 'MAGIC\n'
+MAGIC = b'MAGIC\n'
 
 
 def get_ephemeral_port():
