@@ -52,8 +52,8 @@ RUN \
     awesome xdg-utils \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/* \
- && pip install --no-cache-dir python-coveralls
- && pip3 install setuptools
+ && pip install --no-cache-dir python-coveralls \
+ && pip3 install setuptools \
  && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify
 
 # Install GE
