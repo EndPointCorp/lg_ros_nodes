@@ -123,8 +123,6 @@ COPY lg_wireless_devices/package.xml ${PROJECT_ROOT}/lg_wireless_devices/package
 COPY liquidgalaxy/package.xml ${PROJECT_ROOT}/liquidgalaxy/package.xml
 COPY rfid_scanner/package.xml ${PROJECT_ROOT}/rfid_scanner/package.xml
 COPY rfreceiver/package.xml ${PROJECT_ROOT}/rfreceiver/package.xml
-COPY rosbridge_library/package.xml ${PROJECT_ROOT}/rosbridge_library/package.xml
-COPY rosbridge_server/package.xml ${PROJECT_ROOT}/rosbridge_server/package.xml
 COPY spacenav_remote/package.xml ${PROJECT_ROOT}/spacenav_remote/package.xml
 COPY spacenav_wrapper/package.xml ${PROJECT_ROOT}/spacenav_wrapper/package.xml
 COPY state_proxy/package.xml ${PROJECT_ROOT}/state_proxy/package.xml
