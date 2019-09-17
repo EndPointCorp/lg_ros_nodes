@@ -94,7 +94,8 @@ RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
 ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
 # clone appctl
-ARG APPCTL_TAG=1.2.1
+# TODO change to latest tag
+ARG APPCTL_TAG=python3
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git $PROJECT_ROOT/appctl
 
 # pre-install dependencies for each package
