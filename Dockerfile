@@ -34,6 +34,7 @@ RUN \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
+    python3-pip \
     python-setuptools \
     git sudo \
     curl tmux git \
@@ -52,6 +53,8 @@ RUN \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/* \
  && pip install --no-cache-dir python-coveralls
+ && pip3 install setuptools
+ && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
