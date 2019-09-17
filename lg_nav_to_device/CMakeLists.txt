@@ -19,5 +19,6 @@ catkin_install_python(PROGRAMS
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   catkin_add_nosetests(test/test_background_stopper.py)
 endif()

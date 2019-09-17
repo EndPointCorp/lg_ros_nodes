@@ -35,6 +35,7 @@ include_directories(
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_volume_control.py)
 endif()
