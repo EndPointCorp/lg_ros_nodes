@@ -3,6 +3,8 @@ import json
 import rospy
 import subprocess
 from lg_common.srv import USCSMessage
+from interactivespaces_msgs.msg import GenericMessage
+from copy import copy
 
 PGREP_CMD = ['pgrep', '-a', 'feh']
 EGREP_CMD = ['egrep', '-o', 'http?://[^ ]+']
@@ -12,34 +14,33 @@ LOOP_TIMEOUT = 5
 
 
 class ImageChecker():
-    def __init__(self, last_uscs_service):
-        self.last_uscs_service = last_uscs_service
-        self.last_uscs = ''
-        self._keep_alive()
+    def __init__(self):
+        self.last_message = ''
 
-    def _keep_alive(self):
-        while not rospy.is_shutdown():
-            assets_to_remove = []
-            current_image_assets = []
-            self.last_uscs = json.loads(self.last_uscs_service().message)
-            for window in self.last_uscs['windows']:
-                if window['activity'] == 'image':
-                    current_image_assets.append(window['assets'][0])
-
-            feh_assets = self._get_feh_assets()
-            if feh_assets:
-                for feh_asset in feh_assets:
-                    if feh_asset not in current_image_assets:
-                        assets_to_remove.append(feh_asset)
-
-                if assets_to_remove:
-                    if self.last_uscs == json.loads(self.last_uscs_service().message):
-                        for image_proc in image_procs_to_kill:
-                            subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
-            rospy.sleep(LOOP_TIMEOUT)
+    def handle_director(self, data):
+        assets_to_remove = []
+        new_image_windows = []
+        message = json.loads(data.message)
+        self.last_message = copy(message)
+        rospy.sleep(2)
+        for window in message.get('windows', []):
+            if window.get('activity', '') == 'image':
+                rospy.logerr('appending: {}'.format(window['assets'][0]))
+                new_image_windows.append(window['assets'][0])
+        feh_assets = self._get_feh_assets()
+        rospy.logerr('new image windows: {}'.format(new_image_windows))
+        for feh_asset in feh_assets:
+            if feh_asset not in new_image_windows:
+                assets_to_remove.append(feh_asset)
+        if assets_to_remove:
+            rospy.logerr('ASSETS TO REMOVE')
+            if self.last_message == message:
+                rospy.logerr('Directive 666')
+                for image_proc in IMAGE_PROCS_TO_KILL:
+                    subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
 
     def _get_feh_assets(self):
-        feh_assets = ''
+        feh_assets = []
         pgrep = subprocess.Popen(PGREP_CMD, stdout=subprocess.PIPE)
         feh_proc = subprocess.Popen(
             EGREP_CMD,
@@ -54,10 +55,8 @@ class ImageChecker():
 
 def main():
     rospy.init_node('image_checker')
-    rospy.wait_for_service('/uscs/message', 10)
-    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
-
-    checker = ImageChecker(last_uscs_service)
+    checker = ImageChecker()
+    rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()
 
 if __name__ == '__main__':
