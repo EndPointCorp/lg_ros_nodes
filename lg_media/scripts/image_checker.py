@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+
+"""Image Checker
+
+   Cross references the current image_viewer procs with the
+   image assets in the last /director/scene msg.  If there are lingering procs
+   kill it with fire
+"""
+
 import json
 import rospy
 import subprocess
@@ -14,28 +22,26 @@ LOOP_TIMEOUT = 5
 
 
 class ImageChecker():
-    def __init__(self):
-        self.last_message = ''
+    def __init__(self, last_uscs_message):
+        self.last_uscs_message = last_uscs_message
 
     def handle_director(self, data):
+        rospy.logerr('handle_director')
         assets_to_remove = []
         new_image_windows = []
         message = json.loads(data.message)
-        self.last_message = copy(message)
         rospy.sleep(2)
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
-                rospy.logerr('appending: {}'.format(window['assets'][0]))
                 new_image_windows.append(window['assets'][0])
+
         feh_assets = self._get_feh_assets()
-        rospy.logerr('new image windows: {}'.format(new_image_windows))
         for feh_asset in feh_assets:
             if feh_asset not in new_image_windows:
                 assets_to_remove.append(feh_asset)
         if assets_to_remove:
             rospy.logerr('ASSETS TO REMOVE')
-            if self.last_message == message:
-                rospy.logerr('Directive 666')
+            if json.loads(self.last_uscs_message().message) == message:
                 for image_proc in IMAGE_PROCS_TO_KILL:
                     subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
 
@@ -55,7 +61,9 @@ class ImageChecker():
 
 def main():
     rospy.init_node('image_checker')
-    checker = ImageChecker()
+    rospy.wait_for_service('/uscs/message', 10)
+    last_uscs_message = rospy.ServiceProxy('/uscs/message', USCSMessage)
+    checker = ImageChecker(last_uscs_message)
     rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()
 
