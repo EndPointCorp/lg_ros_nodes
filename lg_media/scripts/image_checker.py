@@ -17,7 +17,7 @@ from copy import copy
 PGREP_CMD = ['pgrep', '-a', 'feh']
 EGREP_CMD = ['egrep', '-o', 'http?://[^ ]+']
 PARTIAL_KILLER_CMD = ['pkill', '-9', '-f']
-IMAGE_PROCS_TO_KILL = ['image_viewer.py', 'feh', 'pqiv']
+IMAGE_PROCS_TO_KILL = ['image_viewer.py', '/usr/bin/feh', '/usr/bin/pqiv']
 LOOP_TIMEOUT = 5
 
 
@@ -27,7 +27,6 @@ class ImageChecker():
 
     def handle_director(self, data):
         rospy.logerr('handle_director')
-        assets_to_remove = []
         new_image_windows = []
         message = json.loads(data.message)
         rospy.sleep(2)
@@ -38,12 +37,11 @@ class ImageChecker():
         feh_assets = self._get_feh_assets()
         for feh_asset in feh_assets:
             if feh_asset not in new_image_windows:
-                assets_to_remove.append(feh_asset)
-        if assets_to_remove:
-            rospy.logerr('ASSETS TO REMOVE')
-            if json.loads(self.last_uscs_message().message) == message:
-                for image_proc in IMAGE_PROCS_TO_KILL:
-                    subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
+                rospy.logerr('ASSETS TO REMOVE {}'.format(feh_asset))
+                if json.loads(self.last_uscs_message().message) == message:
+                    for image_proc in IMAGE_PROCS_TO_KILL:
+                        subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
+                break
 
     def _get_feh_assets(self):
         feh_assets = []
