@@ -23,22 +23,22 @@ LOOP_TIMEOUT = 5
 
 class ImageChecker():
     def __init__(self, last_uscs_message):
-        self.last_uscs_message = last_uscs_message
+        self.last_uscs_service = last_uscs_service
 
     def handle_director(self, data):
         rospy.logerr('handle_director')
-        new_image_windows = []
+        image_assets = []
         message = json.loads(data.message)
         rospy.sleep(2)
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
-                new_image_windows.append(window['assets'][0])
+                image_assets.append(window['assets'][0])
 
         feh_assets = self._get_feh_assets()
         for feh_asset in feh_assets:
-            if feh_asset not in new_image_windows:
+            if feh_asset not in image_assets:
                 rospy.logerr('ASSETS TO REMOVE {}'.format(feh_asset))
-                if json.loads(self.last_uscs_message().message) == message:
+                if json.loads(self.last_uscs_service().message) == message:
                     for image_proc in IMAGE_PROCS_TO_KILL:
                         subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
                 break
@@ -60,8 +60,8 @@ class ImageChecker():
 def main():
     rospy.init_node('image_checker')
     rospy.wait_for_service('/uscs/message', 10)
-    last_uscs_message = rospy.ServiceProxy('/uscs/message', USCSMessage)
-    checker = ImageChecker(last_uscs_message)
+    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
+    checker = ImageChecker(last_uscs_service)
     rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()
 
