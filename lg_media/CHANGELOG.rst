@@ -2,6 +2,9 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.17 (2019-09-11)
+-------------------
+
 2.0.16 (2019-09-06)
 -------------------
 * gst_video_sync: disable aggressive downloading
