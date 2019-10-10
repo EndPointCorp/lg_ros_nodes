@@ -22,22 +22,30 @@ LOOP_TIMEOUT = 5
 
 
 class ImageChecker():
-    def __init__(self, last_uscs_message):
+    def __init__(self, last_uscs_service, viewports, timeout_length):
         self.last_uscs_service = last_uscs_service
+        self.viewports = viewports
+        self.timeout_length = timeout_length
 
     def handle_director(self, data):
-        rospy.logerr('handle_director')
-        image_assets = []
+        rospy.logdebug('handle_director')
+        feh_image_assets = []
+        pqiv_image_assets = []
         message = json.loads(data.message)
-        rospy.sleep(2)
+        rospy.sleep(self.timeout_length)
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
-                image_assets.append(window['assets'][0])
+                image_viewport = window.get('presentation_viewport', '')
+                if image_viewport in self.viewports:
+                    if window.get('transparent', False):
+                        pqiv_image_assets.append(window['assets'][0])
+                    else:
+                        feh_image_assets.append(window['assets'][0])
 
         feh_assets = self._get_feh_assets()
         for feh_asset in feh_assets:
-            if feh_asset not in image_assets:
-                rospy.logerr('ASSETS TO REMOVE {}'.format(feh_asset))
+            if feh_asset not in feh_image_assets or len(feh_assets) > len(feh_image_assets):
+                rospy.logdebug('ASSETS TO REMOVE {}'.format(feh_asset))
                 if json.loads(self.last_uscs_service().message) == message:
                     for image_proc in IMAGE_PROCS_TO_KILL:
                         subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
@@ -61,7 +69,9 @@ def main():
     rospy.init_node('image_checker')
     rospy.wait_for_service('/uscs/message', 10)
     last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
-    checker = ImageChecker(last_uscs_service)
+    viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
+    timeout_length = rospy.get_param('~timeout_length', 2)
+    checker = ImageChecker(last_uscs_service, viewports, timeout_length)
     rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()
 
