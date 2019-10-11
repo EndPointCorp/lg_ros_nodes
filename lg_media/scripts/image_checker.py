@@ -8,8 +8,10 @@
 """
 
 import json
+import time
 import rospy
 import subprocess
+import threading
 from lg_common.srv import USCSMessage
 from interactivespaces_msgs.msg import GenericMessage
 from copy import copy
@@ -22,17 +24,27 @@ LOOP_TIMEOUT = 5
 
 
 class ImageChecker():
-    def __init__(self, last_uscs_service, viewports, timeout_length):
-        self.last_uscs_service = last_uscs_service
+    def __init__(self, viewports, timeout_length):
         self.viewports = viewports
         self.timeout_length = timeout_length
+        self._timer = None
+        self.current_state = None
 
     def handle_director(self, data):
-        rospy.logdebug('handle_director')
+        if self._timer:
+            rospy.logdebug('IMGERROR canceling old timer')
+            self._timer.cancel()
+        rospy.logdebug('IMGERROR handle_director')
+        message = json.loads(data.message)
+        self.current_state = message
+        self._timer = threading.Timer(self.timeout_length, self.check_image_assets, (message,))
+        self._timer.daemon = True
+        self._timer.start()
+
+    def check_image_assets(self, message):
+        rospy.logdebug('IMGERROR checking image assets msg ')
         feh_image_assets = []
         pqiv_image_assets = []
-        message = json.loads(data.message)
-        rospy.sleep(self.timeout_length)
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
                 image_viewport = window.get('presentation_viewport', '')
@@ -45,10 +57,13 @@ class ImageChecker():
         feh_assets = self._get_feh_assets()
         for feh_asset in feh_assets:
             if feh_asset not in feh_image_assets or len(feh_assets) > len(feh_image_assets):
-                rospy.logdebug('ASSETS TO REMOVE {}'.format(feh_asset))
-                if json.loads(self.last_uscs_service().message) == message:
-                    for image_proc in IMAGE_PROCS_TO_KILL:
-                        subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
+                time.sleep(0)
+                if message != self.current_state:
+                    rospy.logdebug('IMGERROR message does not match, leaving this')
+                    break
+                rospy.logdebug('IMGERROR ASSETS TO REMOVE {}'.format(feh_asset))
+                for image_proc in IMAGE_PROCS_TO_KILL:
+                    subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
                 break
 
     def _get_feh_assets(self):
@@ -67,11 +82,9 @@ class ImageChecker():
 
 def main():
     rospy.init_node('image_checker')
-    rospy.wait_for_service('/uscs/message', 10)
-    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
     viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
     timeout_length = rospy.get_param('~timeout_length', 2)
-    checker = ImageChecker(last_uscs_service, viewports, timeout_length)
+    checker = ImageChecker(viewports, timeout_length)
     rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()
 
