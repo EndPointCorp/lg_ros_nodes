@@ -2,6 +2,11 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* Contributors: Will Plaut
+
 2.0.17 (2019-09-11)
 -------------------
 
