@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.18 (2019-10-11)
+-------------------
 * Merge pull request `#406 <https://github.com/EndPointCorp/lg_ros_nodes/issues/406>`_ from EndPointCorp/topic/image_checker
   image_checker: crosscheck uscs msgs with current procs
 * image_checker: use threading timer

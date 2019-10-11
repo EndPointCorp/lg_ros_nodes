@@ -2,8 +2,8 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.18 (2019-10-11)
+-------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
 * Contributors: Will Plaut
 
