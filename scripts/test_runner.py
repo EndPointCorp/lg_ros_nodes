@@ -96,6 +96,7 @@ def gjslint_test():
 
 
 def run_tests():
+    ROS_DISTRO = os.environ.get('ROS_DISTRO')
     nose_tests, ros_tests, g_tests = get_tests()
     fail_flags = {}
     for nose_test in nose_tests:
@@ -103,12 +104,12 @@ def run_tests():
         # benefit is that it respects pytest stuff
         # previous, nosetests command was this:
         # c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
-        c = "rosunit %s" % nose_test
+        c = "nosetests3 %s" % nose_test
         print("RUNNING: '%s'" % c)
         ret = os.system(c)
         fail_flags[nose_test] = ret
     for ros_test in ros_tests:
-        c = 'rostest %s' % ros_test
+        c = 'python3 /opt/ros/%s/bin/rostest %s' % (ROS_DISTRO, ros_test)
         print("RUNNING: '%s'" % c)
         ret = os.system(c)
         fail_flags[ros_test] = ret
