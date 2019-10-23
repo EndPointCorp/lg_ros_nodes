@@ -35,6 +35,12 @@ RUN \
     python-gst-1.0 \
     python-pip \
     python3-pip \
+    python3-defusedxml \
+    python3-nose \
+    python3-pil \
+    python3-pytest \
+    python3-netifaces \
+    python3-serial \
     python-setuptools \
     git sudo \
     curl tmux git \
@@ -54,7 +60,7 @@ RUN \
  && rm -rf /var/lib/apt/lists/* \
  && pip install --no-cache-dir python-coveralls \
  && pip3 install setuptools \
- && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify
+ && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify catkin_tools empy
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
@@ -78,6 +84,8 @@ RUN \
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh && \
       mkdir -p $PROJECT_ROOT/src
 
+COPY ros_entrypoint.sh ${PROJECT_ROOT}
+
 # Massage libglvnd so opengl plays nicely with nvidia-docker2
 ARG LIBGLVND_VERSION='v1.1.0'
 
@@ -95,8 +103,15 @@ ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBR
 
 # clone appctl
 # TODO change to latest tag
-ARG APPCTL_TAG=python3
-RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git $PROJECT_ROOT/appctl
+ARG APPCTL_TAG=python3-fixtests
+RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
+RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
+
+RUN git clone https://github.com/ros/ros.git /ros
+RUN ln -snf /ros/tools/rosunit ${PROJECT_ROOT}/
+
+RUN git clone https://github.com/ros/ros_comm.git /ros_comm
+RUN ln -snf /ros_comm/tools/rostest ${PROJECT_ROOT}/
 
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml
@@ -148,7 +163,7 @@ COPY ./ ${PROJECT_ROOT}
 RUN \
     cd ${PROJECT_ROOT} && \
     source /opt/ros/$ROS_DISTRO/setup.bash && \
-    /ros_entrypoint.sh ./scripts/init_workspace -a $PROJECT_ROOT/appctl && \
+    /ros_entrypoint.sh ./scripts/init_workspace && \
     cd ${PROJECT_ROOT}/catkin/ && \
     catkin_make && \
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO install && \
