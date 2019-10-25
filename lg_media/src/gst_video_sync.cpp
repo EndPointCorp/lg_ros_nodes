@@ -68,7 +68,7 @@ class SyncVideoApp {
   public:
     SyncVideoApp(char* uri, WindowData* wdata, bool master, bool slave, struct sockaddr_in addr);
     int init();
-    void quit();
+    void quit(int code);
     void play();
     gboolean bus_callback(GstBus *bus, GstMessage *msg);
     void video_changed(GstElement *element);
@@ -230,7 +230,7 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
       g_printerr("Error: %s\n", error->message);
       g_error_free(error);
 
-      this->quit();
+      this->quit(-1);
       break;
     }
     case GST_MESSAGE_EOS:
@@ -242,7 +242,7 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
         0
       )) {
         g_printerr("Loop failed!\n");
-        this->quit();
+        this->quit(-1);
       }
 
       break;
@@ -393,17 +393,20 @@ void SyncVideoApp::play() {
   GstStateChangeReturn sret = gst_element_set_state(this->player, GST_STATE_PLAYING);
   if (sret == GST_STATE_CHANGE_FAILURE) {
     g_printerr("failed to start playing in play()\n");
-    this->quit();
+    this->quit(-1);
   }
 }
 
-void SyncVideoApp::quit() {
+void SyncVideoApp::quit(int code) {
+  g_debug("quitting application\n");
   this->window->hide();
   gst_element_set_state(this->player, GST_STATE_NULL);
   g_main_loop_quit(this->loop);
 
   gst_object_unref(this->player);
   g_main_loop_unref(this->loop);
+
+  exit(code);
 }
 
 bool SyncVideoApp::seek_(gdouble rate, GstFormat format, GstSeekFlags flags, GstSeekType type, guint64 pos) {
@@ -674,7 +677,7 @@ int main (int argc, char **argv) {
 
   ret = app.exec();
 
-  sync.quit();
+  sync.quit(0);
 
   return ret;
 }
