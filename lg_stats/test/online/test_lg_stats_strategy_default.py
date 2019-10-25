@@ -77,7 +77,7 @@ class TestLGStatsRealMessageChain(object):
     """
 
     def setup_method(self, method):
-        RESULT.value = "UNDEFINED"
+        RESULT.value = b"UNDEFINED"
         # subscribed to the /lg_stats/debug topic
         # WARNING: issues retrieving rospy.get_param value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)
@@ -93,7 +93,7 @@ class TestLGStatsRealMessageChain(object):
 
         """
         rospy.logdebug("callback received type: '%s', message: %s" % (type(msg), msg))
-        RESULT.value = msg.metadata
+        RESULT.value = msg.metadata.encode('utf-8')
 
     def checker(self, publisher, msg_to_send, expected_value):
         """
@@ -106,10 +106,10 @@ class TestLGStatsRealMessageChain(object):
         publisher.publish(msg_to_send)
         # wait a bit, call back shall set the share mem value accordingly
         for count in range(3):
-            if RESULT.value != "UNDEFINED":
+            if RESULT.value != b"UNDEFINED":
                 break
             rospy.sleep(1)
-        assert RESULT.value == expected_value
+        assert RESULT.value == expected_value.encode('utf-8')
 
     def send_director_scene(self):
         """
@@ -122,7 +122,7 @@ class TestLGStatsRealMessageChain(object):
         pub = rospy.Publisher("/director/scene", GenericMessage, queue_size=3)
         self.checker(pub, msg, "something")
         # test with another (real) message
-        RESULT.value = "UNDEFINED"
+        RESULT.value = b"UNDEFINED"
         slot = json.loads(real_in_msg_director_scene)["message"]
         msg = GenericMessage(type="json", message=json.dumps(slot))
         self.checker(pub, msg, "bbb94866-2216-41a2-83b4-13ba35a3e9dc__scene-3-1")
