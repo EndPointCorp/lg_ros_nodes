@@ -103,7 +103,7 @@ ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBR
 
 # clone appctl
 # TODO change to latest tag
-ARG APPCTL_TAG=python3-fixtests
+ARG APPCTL_TAG=python3_change
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
 
