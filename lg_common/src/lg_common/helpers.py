@@ -880,7 +880,7 @@ def generate_hash(string, length=8, random_suffix=False):
     random_suffix adds random string to the end of the hash.
     NB. random != unique it's still possible to get two equal hashes.
     """
-    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)].replace('_', '')
+    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string.encode('utf-8')).digest())[0:(length - 1)].replace(b'_', b'').decode('utf-8')
 
     if random_suffix:
         return hash_str + "_" + get_random_string()

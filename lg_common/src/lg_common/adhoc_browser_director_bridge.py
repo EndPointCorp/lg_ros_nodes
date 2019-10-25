@@ -165,7 +165,7 @@ class AdhocBrowserDirectorBridge():
 
         for browser in browsers:
             adhoc_browser = AdhocBrowser()
-            adhoc_browser.scene_slug = message['slug'].encode('ascii')
+            adhoc_browser.scene_slug = message['slug']
             adhoc_browser.url = browser['path']
             adhoc_browser.version = 'stable'
             adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']
