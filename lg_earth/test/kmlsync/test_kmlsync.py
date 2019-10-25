@@ -332,7 +332,11 @@ class TestKMLSync(unittest.TestCase):
 
 
 def get_cookie_string(s):
-    return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
+    ret = re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s.decode('utf-8'), re.M)
+    if ret and len(ret.groups()) > 0:
+        return ret.groups()[0]
+    rospy.logerr('could not find matching pattern for CDATA in {}'.format(s))
+    return ''
 
 
 def get_created_elements(x):
