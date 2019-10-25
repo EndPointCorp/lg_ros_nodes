@@ -35,13 +35,14 @@ function run_tests() {
     --rm \
     --env="DISPLAY=:1" \
     "${DOCKER_NAME}" \
-    /bin/bash
+    /bin/bash \
       -c '
        cd ${PROJECT_ROOT}/catkin && \
        . devel/setup.sh && \
        cd ${PROJECT_ROOT} && \
        ./scripts/docker_xvfb_add.sh && \
        ./scripts/test_runner.py
+       /bin/bash
      '
   RETCODE=$?
 }

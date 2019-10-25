@@ -120,6 +120,8 @@ def run_tests():
         ret = os.system(c)
         fail_flags[g_test + '_gtest'] = ret
     """
+    os.system('cd catkin; catkin_make run_tests -DNOSETESTS=/usr/bin/nosetests3')
+    fail_flags['catkin'] = os.system('cd catkin; catkin_test_results')
     c = 'coveralls'
     os.system(c)
     fail_flags['pep8'] = pep8_test()
