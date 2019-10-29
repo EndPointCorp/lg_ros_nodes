@@ -200,7 +200,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         kml_create_assets = self._get_kml_for_create_assets(assets_to_create, kml_update)
         kml_delete_assets = self._get_kml_for_delete_assets(assets_to_delete, kml_update)
 
-        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root)))
+        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root, encoding='utf-8')))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
         return unescape(kml_content)
 

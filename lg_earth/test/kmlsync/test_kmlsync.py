@@ -215,7 +215,7 @@ class TestKMLSync(unittest.TestCase):
         """
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
 
-        rospy.loginfo("r.content => '%s'" % escape(r.content))
+        rospy.loginfo("r.content => '%s'" % escape(r.content.decode('utf-8')))
 
         asset_urls = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
 
