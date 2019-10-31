@@ -60,7 +60,7 @@ RUN \
  && rm -rf /var/lib/apt/lists/* \
  && pip install --no-cache-dir python-coveralls \
  && pip3 install setuptools \
- && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify catkin_tools empy
+ && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify catkin_tools empy pycrypto gnupg
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
