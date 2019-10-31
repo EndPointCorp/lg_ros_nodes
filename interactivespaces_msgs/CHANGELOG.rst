@@ -2,6 +2,16 @@
 Changelog for package interactivespaces_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* Contributors: Will Plaut
+
 2.0.18 (2019-10-11)
 -------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
