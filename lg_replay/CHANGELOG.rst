@@ -2,6 +2,14 @@
 Changelog for package lg_replay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.18 (2019-10-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* Contributors: Will Plaut
+
+2.0.17 (2019-09-11)
+-------------------
+
 2.0.16 (2019-09-06)
 -------------------
 

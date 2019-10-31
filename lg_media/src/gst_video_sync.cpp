@@ -68,9 +68,10 @@ class SyncVideoApp {
   public:
     SyncVideoApp(char* uri, WindowData* wdata, bool master, bool slave, struct sockaddr_in addr);
     int init();
-    void quit();
+    void quit(int code);
     void play();
     gboolean bus_callback(GstBus *bus, GstMessage *msg);
+    gboolean query_duration();
     void video_changed(GstElement *element);
     GstPadProbeReturn buffer_callback(GstPad *pad, GstPadProbeInfo *info);
 
@@ -90,6 +91,7 @@ class SyncVideoApp {
 
     std::mutex lock;
     gint64 duration;
+    guint query_duration_callback_id;
     GMainLoop *loop;
     GstElement *player;
     guint64 mypos;
@@ -105,7 +107,7 @@ SyncVideoApp::SyncVideoApp
 (char* uri, WindowData* wdata, bool master, bool slave, struct sockaddr_in addr)
   : uri(uri), wdata(wdata), master(master), slave(slave), sockaddr(addr)
 {
-  this->duration = 0;
+  this->duration = G_MAXINT64;
 
   this->loop = NULL;
   this->player = NULL;
@@ -117,11 +119,18 @@ SyncVideoApp::SyncVideoApp
   this->holding = false;
   this->sockfd = -1;
   this->window = NULL;
+  this->query_duration_callback_id = 0;
 }
 
 static gboolean bus_callback_(GstBus *bus, GstMessage *msg, gpointer data) {
   SyncVideoApp *app = (SyncVideoApp *)data;
   return app->bus_callback(bus, msg);
+}
+
+static gboolean query_duration_(gpointer data) {
+  SyncVideoApp *app = (SyncVideoApp *)data;
+  g_debug("querying media duration...\n");
+  return app->query_duration();
 }
 
 static void video_changed_(GstElement *element, gpointer *data) {
@@ -178,9 +187,9 @@ int SyncVideoApp::init() {
     g_printerr("failed to get state\n");
   }
 
-  if (!gst_element_query_duration(this->player, GST_FORMAT_TIME, &this->duration)) {
-    g_printerr("Could not query media duration!\n");
-    return -1;
+  if (query_duration_(this)) {
+    g_warning("Could not initially query media duration!\n");
+    this->query_duration_callback_id = g_timeout_add(200, query_duration_, this);
   }
 
   sret = gst_element_set_state(this->player, GST_STATE_NULL);
@@ -230,7 +239,7 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
       g_printerr("Error: %s\n", error->message);
       g_error_free(error);
 
-      this->quit();
+      this->quit(-1);
       break;
     }
     case GST_MESSAGE_EOS:
@@ -242,7 +251,7 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
         0
       )) {
         g_printerr("Loop failed!\n");
-        this->quit();
+        this->quit(-1);
       }
 
       break;
@@ -264,6 +273,10 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
   }
 
   return true;
+}
+
+gboolean SyncVideoApp::query_duration() {
+  return !gst_element_query_duration(this->player, GST_FORMAT_TIME, &this->duration);
 }
 
 void SyncVideoApp::video_changed(GstElement *element) {
@@ -393,17 +406,25 @@ void SyncVideoApp::play() {
   GstStateChangeReturn sret = gst_element_set_state(this->player, GST_STATE_PLAYING);
   if (sret == GST_STATE_CHANGE_FAILURE) {
     g_printerr("failed to start playing in play()\n");
-    this->quit();
+    this->quit(-1);
   }
 }
 
-void SyncVideoApp::quit() {
+void SyncVideoApp::quit(int code) {
+  g_debug("quitting application\n");
   this->window->hide();
+
+  if (this->query_duration_callback_id != 0) {
+    g_source_remove(this->query_duration_callback_id);
+  }
+
   gst_element_set_state(this->player, GST_STATE_NULL);
   g_main_loop_quit(this->loop);
 
   gst_object_unref(this->player);
   g_main_loop_unref(this->loop);
+
+  exit(code);
 }
 
 bool SyncVideoApp::seek_(gdouble rate, GstFormat format, GstSeekFlags flags, GstSeekType type, guint64 pos) {
@@ -674,7 +695,7 @@ int main (int argc, char **argv) {
 
   ret = app.exec();
 
-  sync.quit();
+  sync.quit(0);
 
   return ret;
 }

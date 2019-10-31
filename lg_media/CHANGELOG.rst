@@ -2,6 +2,28 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.18 (2019-10-11)
+-------------------
+* Merge pull request `#406 <https://github.com/EndPointCorp/lg_ros_nodes/issues/406>`_ from EndPointCorp/topic/image_checker
+  image_checker: crosscheck uscs msgs with current procs
+* image_checker: use threading timer
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* image_checker: remove debuging stuff
+  also adds rosparam for sleep timeout
+* image_checker: fixup naming and such
+* image_checker: small changes
+* image_checker: use uscs to verify
+* image_checker: first round of changes
+* image_checker: cleanup
+* image_checker: working bones
+* image_checker: fix syntax errors
+* lg_media: add script to CMake
+* image_checker: crosscheck uscs msgs with current procs
+* Contributors: Will Plaut
+
+2.0.17 (2019-09-11)
+-------------------
+
 2.0.16 (2019-09-06)
 -------------------
 * gst_video_sync: disable aggressive downloading

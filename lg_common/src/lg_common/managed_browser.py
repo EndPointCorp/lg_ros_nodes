@@ -32,6 +32,7 @@ DEFAULT_ARGS = [
     '--disable-pinch',
     '--overscroll-history-navigation=0',
     '--autoplay-policy=no-user-gesture-required',
+    '--check-for-update-interval=1209600',
 ]
 
 

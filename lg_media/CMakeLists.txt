@@ -59,6 +59,7 @@ catkin_install_python(PROGRAMS
   scripts/browser_launcher.py
   scripts/browser_player
   scripts/browser_player.py
+  scripts/image_checker.py
   scripts/image_viewer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
