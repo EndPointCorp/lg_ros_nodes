@@ -278,8 +278,8 @@ class TestKMLSync(unittest.TestCase):
 
         self.assertEqual(good1.status_code, expected_status)
         self.assertEqual(good2.status_code, expected_status)
-        self.assertEqual(good1.content, expected_string)
-        self.assertEqual(good2.content, expected_string)
+        self.assertEqual(good1.content.decode('utf-8'), expected_string)
+        self.assertEqual(good2.content.decode('utf-8'), expected_string)
 
     def test_8_send_request_before_state_change(self):
         """
