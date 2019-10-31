@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2019-10-31)
+------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
   Conflicts:
   rosbridge_library/CHANGELOG.rst
