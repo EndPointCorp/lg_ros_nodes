@@ -21,14 +21,14 @@ function initialize() {
 # on the dirname of the project, e.g. lg_ros_nodes-test
 function build_docker() {
   echo building "${DOCKER_NAME}"
-  docker build -t "${DOCKER_NAME}" .
+  docker build --pull -t "${DOCKER_NAME}" .
 }
 
 
 # runs tests and returns the return value
 function run_tests() {
   echo running "${DOCKER_NAME}" in "$(pwd)"
-  docker run -it \
+  docker run \
     --name "${DOCKER_NAME}" \
     -u 0 \
     --volume="$(pwd)/docker_nodes:/docker_nodes:ro" \
@@ -75,7 +75,7 @@ initialize
 setup_files
 
 set +e
-#trap cleanup EXIT
+trap cleanup EXIT
 
 build_docker || exit 1
 run_tests
