@@ -47,6 +47,7 @@ RUN \
     xvfb x11-apps \
     devilspie2 \
     xdotool \
+    openbox \
     x-window-system binutils \
     pulseaudio \
     mesa-utils mesa-utils-extra \
