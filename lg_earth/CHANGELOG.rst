@@ -2,6 +2,34 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.0 (2019-10-31)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* Kmlsync: python3 and fixtests
+* decoding instead of encoding
+* Fix kmlsync service calls
+  Persistent mode apparently breaking.
+* lg_earth: fix kmlsync regex
+* set python executable for tests
+* Fix ViewsyncRelay byte stringness
+  Also continue upon any errors instead of failing silently and waiting.
+* 2to3 all of it
+* Merge branch 'topic/python_tree' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+* replace: now takes bytes not strs
+* sock.send[all/to]: now takes bytes not str
+* python 2 shebang to 3
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+2.0.18 (2019-10-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* Contributors: Will Plaut
+
 2.0.17 (2019-09-11)
 -------------------
 

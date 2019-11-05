@@ -108,10 +108,10 @@ class RosBuilder:
         Returns:
             list(str): Build dependencies.
         """
-        build_depends = map(
+        build_depends = list(map(
             self.resolve_rosdep,
             list(set(package.buildtool_depends) | set(package.build_depends))
-        )
+        ))
         build_depends = [d for s in build_depends for d in s]
 
         build_depends.insert(0, 'debhelper (>= 9.0.0)')
@@ -127,10 +127,10 @@ class RosBuilder:
         Returns:
             list(str): Run dependencies.
         """
-        run_depends = map(
+        run_depends = list(map(
             self.resolve_rosdep,
             package.run_depends
-        )
+        ))
         run_depends = [d for s in run_depends for d in s]
 
         run_depends.insert(0, '${shlibs:Depends}, ${misc:Depends}')
@@ -234,11 +234,11 @@ class RosBuilder:
                 date=self._datetime_to_rfc2822(date),
             )
             debian_changelog.add_change('')
-            map(transfer_version_change, changes)
+            list(map(transfer_version_change, changes))
             debian_changelog.add_change('')
 
         if package_changelog is not None:
-            map(transfer_version_block, package_changelog.foreach_version())
+            list(map(transfer_version_block, package_changelog.foreach_version()))
         else:
             # If CHANGELOG.rst is missing, generate a bare changelog
             version = str(package.version)

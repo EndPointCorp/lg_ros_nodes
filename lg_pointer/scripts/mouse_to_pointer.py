@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from threading import Lock
 import math
 from evdev import ecodes
 import evdev
 import os
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import subprocess
 from tempfile import mktemp
 
@@ -45,7 +45,7 @@ def handle_device_info(req):
 def grabCustomUdev(udev_location, rules_dest):
     tmp_rules = mktemp()
     with open(tmp_rules, 'w') as f:
-        resp = urllib2.urlopen(udev_location)
+        resp = urllib.request.urlopen(udev_location)
         if resp.code != 200:
             rospy.logerr("Could not curl the udev rules... continuing without them")
             return

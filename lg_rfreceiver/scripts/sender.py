@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import serial
@@ -42,7 +42,7 @@ def main():
         try:
             button = int(receiver.readline(10).strip())
         except serial.SerialException as e:
-            print e
+            print(e)
             break
 
         buttondown_pub.publish(Byte(button))

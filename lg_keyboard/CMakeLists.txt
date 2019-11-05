@@ -38,6 +38,7 @@ catkin_install_python(PROGRAMS
 )
 
 if(CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   add_rostest(test/online/test_onboard_router.test)
   catkin_add_nosetests(test/offline/test_onboard_router.py)

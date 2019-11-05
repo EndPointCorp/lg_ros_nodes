@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 test_onboard_router - unit tests for onboard_router.py
@@ -66,7 +66,7 @@ class MockActivatePublisher(object):
 
 class TestOnboardRouter(object):
 
-    def setup_method(self, metdhod):
+    def setUp(self):
         self.publisher = MockActivatePublisher()
         self.msg = GenericMessage()
         self.msg.type = "json"

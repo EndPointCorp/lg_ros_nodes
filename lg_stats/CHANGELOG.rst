@@ -2,6 +2,28 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.0 (2019-10-31)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* more tests passing
+* lg_stats: add missing pkg
+* set python executable for tests
+* 2to3 all of it
+* Merge branch 'topic/python_tree' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+* sock.send[all/to]: now takes bytes not str
+* python 2 shebang to 3
+* Contributors: Jacob Minshall, Will Plaut
+
+2.0.18 (2019-10-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* Contributors: Will Plaut
+
 2.0.17 (2019-09-11)
 -------------------
 

@@ -36,6 +36,7 @@ install(
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   add_rostest(test/sv_server.test)
   add_rostest(test/sv_panoid_state.test)

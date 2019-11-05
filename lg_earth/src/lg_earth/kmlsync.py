@@ -43,7 +43,7 @@ State data structure:
 import json
 import rospy
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import threading
 import xml.etree.ElementTree as ET
 
@@ -102,7 +102,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     @classmethod
     def finish_all_requests(cls):
         with cls.defer_lock:
-            for req in cls.deferred_requests.itervalues():
+            for req in cls.deferred_requests.values():
                 req.get(no_defer=True)
             cls.deferred_requests.clear()
 
@@ -200,7 +200,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         kml_create_assets = self._get_kml_for_create_assets(assets_to_create, kml_update)
         kml_delete_assets = self._get_kml_for_delete_assets(assets_to_delete, kml_update)
 
-        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root)))
+        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root).decode('utf-8')))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
         return unescape(kml_content)
 
@@ -294,7 +294,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cookie = self._get_cookie(assets)
             return [z for z in cookie.split(',')]
-        except AttributeError, e:
+        except AttributeError as e:
             return []
 
     def _get_full_cookie(self, assets):
@@ -366,7 +366,7 @@ class KmlQueryHandler(tornado.web.RequestHandler):
         try:
             for op in query_string.split(','):
                 command, value = op.split('=')
-                value = urllib2.unquote(value)
+                value = urllib.parse.unquote(value)
 
                 if command == 'playtour':
                     rospy.loginfo("Playing tour %s" % value)
@@ -393,7 +393,7 @@ class KmlQueryHandler(tornado.web.RequestHandler):
             self._finish_text("OK")
 
         except (IndexError, ValueError) as e:
-            rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
+            rospy.logerr("Failed to split/parse query string: {}".format(query_string))
             self.set_status(400, "Got a bad query string")
             self._finish_text("Bad Request: Got a bad query string")
             return

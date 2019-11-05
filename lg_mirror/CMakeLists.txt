@@ -131,6 +131,7 @@ install(
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_aspect_scale.py)
   add_rostest(test/capture_viewport.test)

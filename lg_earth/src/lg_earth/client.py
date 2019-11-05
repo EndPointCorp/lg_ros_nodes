@@ -11,7 +11,7 @@ from random import randint
 import rospy
 from lg_common.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
-from kmlalive import KmlAlive
+from .kmlalive import KmlAlive
 
 TOOLBAR_HEIGHT = 22
 
@@ -213,9 +213,9 @@ class Client:
             return
 
         with open(self._get_tempdir() + '/' + path, 'w') as f:
-            for section, settings in config.iteritems():
+            for section, settings in config.items():
                 f.write('[' + section + ']\n')
-                for k, v in settings.iteritems():
+                for k, v in settings.items():
                     r = str(v).lower() if isinstance(v, bool) else str(v)
                     f.write(k + '=' + r + '\n')
                 f.write('\n')
@@ -266,7 +266,7 @@ class Client:
             shutil.rmtree(earth_dir)
             self._clear_cache()
             os.mkdir(earth_dir)
-        except Exception, e:
+        except Exception as e:
             rospy.logwarn('found error while removing earth cache: %s, could be normal operation though' % e.message)
         self._render_configs()
         self.earth_proc.handle_soft_relaunch()

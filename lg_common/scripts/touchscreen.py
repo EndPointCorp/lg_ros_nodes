@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 
 
-from urllib import url2pathname
+from urllib.request import url2pathname
 from std_msgs.msg import String
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow

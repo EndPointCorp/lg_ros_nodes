@@ -2,6 +2,29 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.0 (2019-10-31)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* lg_common: python3 changes
+* Fix lg_common test_helpers
+* set python executable for tests
+* Fix byteness in TCP relay test
+* 2to3 all of it
+* Merge branch 'topic/python_tree' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+* sock.send[all/to]: now takes bytes not str
+* python 2 shebang to 3
+* Contributors: Matt Vollrath, Will Plaut
+
+2.0.18 (2019-10-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* Contributors: Will Plaut
+
 2.0.17 (2019-09-11)
 -------------------
 * Increase Chrome update check interval

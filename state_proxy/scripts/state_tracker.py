@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import json
 
@@ -6,7 +6,7 @@ from lg_common.srv import BrowserPool, USCSMessage
 from lg_common.helpers import add_url_params
 from std_msgs.msg import String
 from appctl.msg import Mode
-from urllib2 import urlopen
+from urllib.request import urlopen
 from lg_common.helpers import run_with_influx_exception_handler
 
 
@@ -118,7 +118,7 @@ class StateTracker(object):
         if len(state) > 1:
             rospy.logwarn('There are more than one browser active, the wrong URL might be returned')
 
-        for browser_id, browser_data in state.iteritems():
+        for browser_id, browser_data in state.items():
             return browser_data['current_url_normalized']
 
     def handle_nfc(self, msg):

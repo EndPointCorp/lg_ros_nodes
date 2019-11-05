@@ -75,5 +75,5 @@ def format_kml(data):
                                range=data['range'])
 
 if __name__ == "__main__":
-    msg = parseCLI()
-    print format_kml(msg)
+    msg = parse(sys.stdin)
+    print(format_kml(msg))

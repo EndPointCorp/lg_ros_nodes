@@ -34,6 +34,13 @@ RUN \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
+    python3-pip \
+    python3-defusedxml \
+    python3-nose \
+    python3-pil \
+    python3-pytest \
+    python3-netifaces \
+    python3-serial \
     python-setuptools \
     git sudo \
     curl tmux git \
@@ -51,7 +58,9 @@ RUN \
     awesome xdg-utils \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/* \
- && pip install --no-cache-dir python-coveralls
+ && pip install --no-cache-dir python-coveralls \
+ && pip3 install setuptools \
+ && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify catkin_tools empy pycrypto gnupg
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
@@ -75,6 +84,8 @@ RUN \
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh && \
       mkdir -p $PROJECT_ROOT/src
 
+COPY ros_entrypoint.sh ${PROJECT_ROOT}
+
 # Massage libglvnd so opengl plays nicely with nvidia-docker2
 ARG LIBGLVND_VERSION='v1.1.0'
 
@@ -91,8 +102,16 @@ RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
 ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
 # clone appctl
-ARG APPCTL_TAG=1.2.1
-RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git $PROJECT_ROOT/appctl
+# TODO change to latest tag
+ARG APPCTL_TAG=python3_change
+RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
+RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
+
+RUN git clone https://github.com/ros/ros.git /ros
+RUN ln -snf /ros/tools/rosunit ${PROJECT_ROOT}/
+
+RUN git clone https://github.com/ros/ros_comm.git /ros_comm
+RUN ln -snf /ros_comm/tools/rostest ${PROJECT_ROOT}/
 
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml
@@ -123,8 +142,6 @@ COPY lg_wireless_devices/package.xml ${PROJECT_ROOT}/lg_wireless_devices/package
 COPY liquidgalaxy/package.xml ${PROJECT_ROOT}/liquidgalaxy/package.xml
 COPY rfid_scanner/package.xml ${PROJECT_ROOT}/rfid_scanner/package.xml
 COPY rfreceiver/package.xml ${PROJECT_ROOT}/rfreceiver/package.xml
-COPY rosbridge_library/package.xml ${PROJECT_ROOT}/rosbridge_library/package.xml
-COPY rosbridge_server/package.xml ${PROJECT_ROOT}/rosbridge_server/package.xml
 COPY spacenav_remote/package.xml ${PROJECT_ROOT}/spacenav_remote/package.xml
 COPY spacenav_wrapper/package.xml ${PROJECT_ROOT}/spacenav_wrapper/package.xml
 COPY state_proxy/package.xml ${PROJECT_ROOT}/state_proxy/package.xml
@@ -146,7 +163,7 @@ COPY ./ ${PROJECT_ROOT}
 RUN \
     cd ${PROJECT_ROOT} && \
     source /opt/ros/$ROS_DISTRO/setup.bash && \
-    /ros_entrypoint.sh ./scripts/init_workspace -a $PROJECT_ROOT/appctl && \
+    /ros_entrypoint.sh ./scripts/init_workspace && \
     cd ${PROJECT_ROOT}/catkin/ && \
     catkin_make && \
     catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO install && \

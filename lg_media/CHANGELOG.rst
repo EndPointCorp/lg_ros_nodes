@@ -2,6 +2,44 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.0 (2019-10-31)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* Merge pull request `#407 <https://github.com/EndPointCorp/lg_ros_nodes/issues/407>`_ from EndPointCorp/fix_gst_video_sync_mp3_streaming
+  Fix gst_video_sync MP3 streaming
+* gst_video_sync: Keep trying duration query
+  When streaming MP3 over HTTP sometimes it can't initially query the duration.
+  Keep trying the query, making sure to cancel when we quit.
+* gst_video_sync: Ensure quit() exits
+* set python executable for tests
+* 2to3 all of it
+* python 2 shebang to 3
+* Contributors: Matt Vollrath, Will Plaut
+
+2.0.18 (2019-10-11)
+-------------------
+* Merge pull request `#406 <https://github.com/EndPointCorp/lg_ros_nodes/issues/406>`_ from EndPointCorp/topic/image_checker
+  image_checker: crosscheck uscs msgs with current procs
+* image_checker: use threading timer
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* image_checker: remove debuging stuff
+  also adds rosparam for sleep timeout
+* image_checker: fixup naming and such
+* image_checker: small changes
+* image_checker: use uscs to verify
+* image_checker: first round of changes
+* image_checker: cleanup
+* image_checker: working bones
+* image_checker: fix syntax errors
+* lg_media: add script to CMake
+* image_checker: crosscheck uscs msgs with current procs
+* Contributors: Will Plaut
+
 2.0.17 (2019-09-11)
 -------------------
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_stats</name>
-  <version>2.0.17</version>
+  <version>3.0.0</version>
   <description>lg stats submission ros node</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -22,6 +22,7 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>lg_common</run_depend>
   <run_depend>appctl</run_depend>
+  <run_depend>interactivespaces_msgs</run_depend>
   <test_depend>rostest</test_depend>
   <test_depend>python-pytest</test_depend>
 

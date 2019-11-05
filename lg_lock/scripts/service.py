@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 
 from std_srvs.srv import SetBool
@@ -23,7 +23,7 @@ def init():
 
     if not password:
         rospy.logerr('No or blank password provided, exiting...')
-        print "No or blank password provided, exiting..."
+        print("No or blank password provided, exiting...")
         return
 
     suppressProxy = rospy.ServiceProxy('/spacenav_wrapper/suppress', SetBool)

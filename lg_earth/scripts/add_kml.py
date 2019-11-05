@@ -1,12 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from std_msgs.msg import String, Empty
 from lg_common.srv import USCSMessage
 from lg_common.msg import StringArray
 from interactivespaces_msgs.msg import GenericMessage
 
-import SimpleHTTPServer
-import SocketServer
+import http.server
+import socketserver
 import threading
 import tempfile
 import rospy
@@ -19,15 +19,15 @@ import binascii
 DEFAULT_VIEWPORTS = ['left_three', 'left_two', 'left_one', 'center',
                      'right_one', 'right_two', 'right_three']
 DEFAULT_EARTH_INSTANCE = {
-    u'activity': u'earth',
-    u'activity_config': {},
-    u'assets': [],
-    u'height': 1920,
-    u'presentation_viewport': u'CHANGE_ME',
-    u'slug': -1875729098,
-    u'width': 1080,
-    u'x_coord': 0,
-    u'y_coord': 0
+    'activity': 'earth',
+    'activity_config': {},
+    'assets': [],
+    'height': 1920,
+    'presentation_viewport': 'CHANGE_ME',
+    'slug': -1875729098,
+    'width': 1080,
+    'x_coord': 0,
+    'y_coord': 0
 }
 
 kml_id_pattern = re.compile('<kml .* id=\"()\".*>')
@@ -141,9 +141,9 @@ class KMLAdder():
 
     def _serve(self):
         os.chdir(self.serve_dir)
-        Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        Handler = http.server.SimpleHTTPRequestHandler
 
-        self.httpd = SocketServer.TCPServer(("", self.port), Handler)
+        self.httpd = socketserver.TCPServer(("", self.port), Handler)
 
         self.httpd.serve_forever()
 

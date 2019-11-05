@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import json
 
@@ -149,7 +149,7 @@ class StateSetter(object):
     def _is_tactile_url(self, urls):
         # checking that the length of the filter is not zero, if it is then no urls
         # matched those that should be tactile
-        return len(filter(lambda url: 'maps.google.com' in url or 'google.com/maps' in url, urls)) != 0
+        return len([url for url in urls if 'maps.google.com' in url or 'google.com/maps' in url]) != 0
 
     def is_tactile(self, state):
         self._is_tactile_url(self.grab_urls(state))

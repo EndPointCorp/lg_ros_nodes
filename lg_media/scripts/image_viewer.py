@@ -1,8 +1,8 @@
-#!/usr/bin/env python
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+#!/usr/bin/env python3
+
+
+
+
 from threading import Lock
 import json
 import os
@@ -65,7 +65,7 @@ class ImageViewer():
         self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
-        for _image, _image_obj in current_images.items():
+        for _image, _image_obj in list(current_images.items()):
             if _image.url == image.url and \
                     _image.geometry == image.geometry:
                 return _image_obj
@@ -77,7 +77,7 @@ class ImageViewer():
 
     def _handle_image_views(self, msg):
         new_current_images = {}
-        images_to_remove = self.current_images.values()
+        images_to_remove = list(self.current_images.values())
         images_to_add = []
         for image in msg.images:
             # rospy.logerr('CURRENT IMAGES: {}\n\n'.format(self.current_images))

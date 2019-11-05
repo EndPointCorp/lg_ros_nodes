@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Custom script to run nosetests and rostests as defined in CMakeLists.txt
 files.
@@ -96,37 +96,42 @@ def gjslint_test():
 
 
 def run_tests():
+    ROS_DISTRO = os.environ.get('ROS_DISTRO')
     nose_tests, ros_tests, g_tests = get_tests()
     fail_flags = {}
+    """
     for nose_test in nose_tests:
         # rosunit will urn the offline test just the same
         # benefit is that it respects pytest stuff
         # previous, nosetests command was this:
         # c = 'nosetests --verbosity=3 -s -l DEBUG %s' % nose_test
-        c = "rosunit %s" % nose_test
-        print "RUNNING: '%s'" % c
+        c = "nosetests3 %s" % nose_test
+        print("RUNNING: '%s'" % c)
         ret = os.system(c)
         fail_flags[nose_test] = ret
     for ros_test in ros_tests:
-        c = 'rostest %s' % ros_test
-        print "RUNNING: '%s'" % c
+        c = 'python3 /opt/ros/%s/bin/rostest %s' % (ROS_DISTRO, ros_test)
+        print("RUNNING: '%s'" % c)
         ret = os.system(c)
         fail_flags[ros_test] = ret
     for g_test in g_tests:
         c = 'cd catkin; catkin_make run_tests_%s_gtest' % g_test
-        print "RUNNING: '%s'" % c
+        print("RUNNING: '%s'" % c)
         ret = os.system(c)
         fail_flags[g_test + '_gtest'] = ret
+    """
+    os.system('cd catkin; catkin_make run_tests -DNOSETESTS=/usr/bin/nosetests3')
+    fail_flags['catkin'] = os.system('cd catkin; catkin_test_results')
     c = 'coveralls'
     os.system(c)
     fail_flags['pep8'] = pep8_test()
     fail_flags['cppcheck'] = cppcheck_test()
     fail_flags['gjslint'] = gjslint_test()
-    print "\n\nFINAL SUMMARY:\n"
+    print("\n\nFINAL SUMMARY:\n")
     for test, flag in sorted(fail_flags.items()):
-        print "RAN TEST: %s\nGot exit code %d" % (test, flag)
+        print("RAN TEST: %s\nGot exit code %d" % (test, flag))
     # check for non-zero exit status, and fail if found
-    if filter(None, fail_flags.values()):
+    if [_f for _f in list(fail_flags.values()) if _f]:
         sys.exit(FAIL)
 
 if __name__ == '__main__':

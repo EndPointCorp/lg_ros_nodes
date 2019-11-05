@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import json
 import socket
@@ -58,9 +58,9 @@ def main():
         while True:
             poll_loop()
     except KeyboardInterrupt:
-        print '\nQuitting...'
-    except socket.error, err:
-        print "Connection error: " + err.strerror
+        print('\nQuitting...')
+    except socket.error as err:
+        print("Connection error: " + err.strerror)
     finally:
         spnav_close()
         socket_close(s)
@@ -68,9 +68,9 @@ def main():
 
 def send(msg, sock=None):
     data = msg + "\n"
-    sock.send(data)
+    sock.send(data.encode('utf-8'))
     if not QUITE:
-        print msg
+        print(msg)
 
 
 def socket_close(sock):
@@ -114,15 +114,15 @@ def open_scoket(host="localhost", port=6564, reconnect=True):
     while True:
         try:
             try:
-                print "Connecting to {} {}".format(host, port)
+                print("Connecting to {} {}".format(host, port))
                 soc.connect((host, port))
                 break
-            except IOError, e:
+            except IOError as e:
                 if reconnect:
-                    print "Failed to open connection, will retry in 2 seconds"
+                    print("Failed to open connection, will retry in 2 seconds")
                     time.sleep(2)
                 else:
-                    print e
+                    print(e)
                     quit()
         except KeyboardInterrupt:
             quit()

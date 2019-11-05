@@ -1,9 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_mirror'
 NAME = 'test_aspect_scale_source'
 
-from types import *
 import unittest
 from lg_mirror.utils import aspect_scale_source
 from lg_common.msg import WindowGeometry
@@ -14,8 +13,8 @@ class TestAspectScale(unittest.TestCase):
         width, height = aspect_scale_source(source, dest)
         self.assertEqual(expected_width, width)
         self.assertEqual(expected_height, height)
-        self.assertTrue(type(width) is IntType)
-        self.assertTrue(type(height) is IntType)
+        self.assertTrue(type(width) is int)
+        self.assertTrue(type(height) is int)
 
     def test_equality(self):
         sg = WindowGeometry(width=1920, height=1080, x=0, y=0)

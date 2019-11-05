@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import tornado.web
@@ -56,10 +56,10 @@ def main():
 
     kml_state = KmlState()
     kmlsync_server.playtour = PlaytourQuery()
-    kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)
-    kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=True)
+    kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=False)
+    kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=False)
     kmlsync_server.planet = PlanetQuery()
-    kmlsync_server.planet_service = rospy.ServiceProxy('/kmlsync/planet_query', kmlsync_server.planet, persistent=True)
+    kmlsync_server.planet_service = rospy.ServiceProxy('/kmlsync/planet_query', kmlsync_server.planet, persistent=False)
     kmlsync_server.get_planet = pw.get_planet
     kmlsync_server.listen(port)
     ros_tornado_spin()

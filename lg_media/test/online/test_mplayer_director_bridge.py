@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 on_finish='nothing' is added by default by the director bridge / translator.

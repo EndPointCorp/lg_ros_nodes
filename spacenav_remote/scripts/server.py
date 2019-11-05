@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import json
 import rospy
@@ -21,8 +21,8 @@ def main():
     joy_pub = rospy.Publisher(joy_topic, Joy, queue_size=10)
     twist_pub = rospy.Publisher(twist_topic, Twist, queue_size=10)
 
-    print "Publish joy to: " + joy_topic
-    print "Publish twist to: " + twist_topic
+    print("Publish joy to: " + joy_topic)
+    print("Publish twist to: " + twist_topic)
 
     def handler(data):
 
@@ -46,8 +46,8 @@ def main():
                 twist.linear.z = recived['trans'][2]
 
                 twist_pub.publish(twist)
-        except AttributeError, e:
-            print e
+        except AttributeError as e:
+            print(e)
 
     server = SpacenavRemote(handler=handler, port=port)
     server.fork_and_run()
@@ -62,10 +62,10 @@ def main():
 def byteify(input):
     if isinstance(input, dict):
         return {byteify(key): byteify(value)
-                for key, value in input.iteritems()}
+                for key, value in input.items()}
     elif isinstance(input, list):
         return [byteify(element) for element in input]
-    elif isinstance(input, unicode):
+    elif isinstance(input, str):
         return input.encode('utf-8')
     else:
         return input

@@ -1,6 +1,8 @@
 #!/bin/bash
 # Script used to syncronize catkin workspace between headnode and dispnodes
 
+ROS_DISTRO=melodic
+
 if [ -d .git ]; then
   echo "I'm going to sync catkin/src to dispnodes:catkin_ws/src/ and run catkin_make"
   echo "press enter to go"
@@ -54,7 +56,7 @@ echo 'installing libudev-dev'
 if [[ ${SKIP_APT} != "" ]]; then
   echo "Skipping APT update + install"
 else
-  lg-sudo-bg -w "sudo apt-get update -q && sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-${ROS_DISTRO}-web-video-server -q -y"
+  lg-sudo-bg -w "sudo apt-get update -q && sudo apt-get install build-essential gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good python-gst-1.0 libudev-dev gstreamer1.0-x ros-${ROS_DISTRO}-web-video-server -q -y"
   echo hi
 fi
 
@@ -70,6 +72,12 @@ lg-run-bg -w "cd catkin_ws ; \
            catkin_make clean;\
            catkin_make install;\
            find /home/lg/catkin_ws/src/ -iname '*.pyc' -delete "
+
+# Matt changes
+lg-sudo-bg -w "cd /home/lg/catkin_ws ; \
+        source /opt/ros/${ROS_DISTRO}/setup.bash ; \
+        catkin_make -e install -DCMAKE_INSTALL_PREFIX=/opt/ros/${ROS_DISTRO} "
+
 
 echo 'linking extensions to /opt/google/chrome/extensions/'
 lg-sudo-bg -w 'sudo mkdir -p /opt/google/chrome/extensions/; sudo ln -sf /home/lg/catkin_ws/src/lg_common/src/lg_common/extensions/* /opt/google/chrome/extensions/'

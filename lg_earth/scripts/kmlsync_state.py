@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from lg_earth import KmlSyncState
 from interactivespaces_msgs.msg import GenericMessage

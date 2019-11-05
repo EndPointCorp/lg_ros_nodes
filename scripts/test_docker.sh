@@ -21,28 +21,33 @@ function initialize() {
 # on the dirname of the project, e.g. lg_ros_nodes-test
 function build_docker() {
   echo building "${DOCKER_NAME}"
-  docker build --pull -t "${DOCKER_NAME}" .
+  docker build -t "${DOCKER_NAME}" .
 }
 
 
 # runs tests and returns the return value
 function run_tests() {
   echo running "${DOCKER_NAME}" in "$(pwd)"
-  docker run \
+  docker run -it \
     --name "${DOCKER_NAME}" \
-    --rm \
+    -u 0 \
     --volume="$(pwd)/docker_nodes:/docker_nodes:ro" \
+    --rm \
     --env="DISPLAY=:1" \
     "${DOCKER_NAME}" \
-    /bin/bash -c '
-      cd ${PROJECT_ROOT}/catkin && \
-      . devel/setup.sh && \
-      cd ${PROJECT_ROOT} && \
-      ./scripts/docker_xvfb_add.sh && \
-      ./scripts/test_runner.py
-    '
+    /bin/bash \
+      -c '
+       cd ${PROJECT_ROOT}/catkin && \
+       . devel/setup.sh && \
+       cd ${PROJECT_ROOT} && \
+       ./scripts/docker_xvfb_add.sh && \
+       ./scripts/test_runner.py
+       /bin/bash
+     '
   RETCODE=$?
 }
+
+#ROS_PYTHON_VERSION=2 catkin build; ROS_PYTHON_VERSION=3 catkin build; catkin run_tests; catkin_test_results
 
 # cleans up all test artifacts
 function cleanup() {
@@ -70,7 +75,7 @@ initialize
 setup_files
 
 set +e
-trap cleanup EXIT
+#trap cleanup EXIT
 
 build_docker || exit 1
 run_tests

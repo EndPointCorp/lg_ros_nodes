@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 lg_keyboard_router online tests
@@ -57,9 +57,9 @@ class TestOnboardRouterOnline(object):
         )
         self.director_publisher = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
         self.visibility_publisher = rospy.Publisher('/lg_onboard/visibility', Bool, queue_size=10)
-        SCENE.value = "UNDEFINED"
-        VISIBILITY.value = "UNDEFINED"
-        ACTIVATE.value = "UNDEFINED"
+        SCENE.value = b"UNDEFINED"
+        VISIBILITY.value = b"UNDEFINED"
+        ACTIVATE.value = b"UNDEFINED"
         # must be after pubs/subs initialization:
         rospy.init_node("lg_keyboard_onboard_router", anonymous=True)
         self.grace_delay = 3
@@ -71,24 +71,24 @@ class TestOnboardRouterOnline(object):
     @staticmethod
     def callback_scene_receiver(msg):
         rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
-        SCENE.value = str(msg.message)
+        SCENE.value = str(msg.message).encode('utf-8')
 
     @staticmethod
     def callback_visibility_receiver(msg):
         rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
-        VISIBILITY.value = str(msg.data)
+        VISIBILITY.value = str(msg.data).encode('utf-8')
 
     @staticmethod
     def callback_activate_receiver(msg):
         rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
-        ACTIVATE.value = str(msg.strings)
+        ACTIVATE.value = str(msg.strings).encode('utf-8')
 
     def active_wait(self, what, where, timeout=5):
         for _ in range(timeout):
             rospy.sleep(1)
-            if where == what:
+            if where == what.encode('utf-8'):
                 break
-        assert where == what
+        assert where == what.encode('utf-8')
 
     def test_1_sending_messages_work(self):
         msg = GenericMessage(type='json', message='{}')

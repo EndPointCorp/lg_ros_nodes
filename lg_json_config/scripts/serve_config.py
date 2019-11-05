@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import rospy
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import json
 from lg_json_config.srv import JSONConfig
 from lg_json_config.srv import JSONConfigMore
@@ -26,9 +26,9 @@ class ConfigRequestHandler():
         if not url:
             url = self.get_url()
         try:
-            response = urllib2.urlopen(url)
+            response = urllib.request.urlopen(url)
             r = response.read()
-        except Exception, e:
+        except Exception as e:
             r = """{"result": "error": "reason": "%s"}""" % e
             return r
 

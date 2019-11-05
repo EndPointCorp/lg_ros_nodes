@@ -126,7 +126,7 @@ class ManagedApplication(object):
                     rospy.logerr('caught an Exception in a state change handler')
                     rospy.logerr(e.message)
 
-            map(run_handler, self._state_handlers)
+            list(map(run_handler, self._state_handlers))
 
     def handle_state_msg(self, msg):
         rospy.logdebug('Got state message: {}'.format(msg))
@@ -141,7 +141,7 @@ class ManagedApplication(object):
                 rospy.logerr('caught an Exception in a respawn handler')
                 rospy.logerr(e.message)
 
-        map(run_handler, self._respawn_handlers)
+        list(map(run_handler, self._respawn_handlers))
 
     def handle_soft_relaunch(self, *args, **kwargs):
         rospy.logdebug('managed application relaunch...')

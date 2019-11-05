@@ -181,7 +181,7 @@ class PanoViewerServer:
         npov = self.project_pov(self.last_twist_msg, dt)
         try:
             self.pub_pov(npov)
-        except ROSException, error:
+        except ROSException as error:
             rospy.logwarn("Could not publish pov during _tick: %s" % error)
 
     def start_timer(self):

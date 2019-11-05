@@ -49,6 +49,7 @@ install(TARGETS lg_spacenav_globe joystick_navigator
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   add_rostest(test/test_lg_spacenav_globe.test)
 endif()

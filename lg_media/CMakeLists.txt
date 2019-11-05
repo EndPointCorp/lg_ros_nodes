@@ -59,11 +59,13 @@ catkin_install_python(PROGRAMS
   scripts/browser_launcher.py
   scripts/browser_player
   scripts/browser_player.py
+  scripts/image_checker.py
   scripts/image_viewer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 if(CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   add_rostest(test/online/test_mplayer_adhoc_media.test)
   add_rostest(test/online/test_mplayer_director_bridge.test)

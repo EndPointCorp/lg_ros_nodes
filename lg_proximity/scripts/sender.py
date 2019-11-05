@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import pty
@@ -57,7 +57,7 @@ def main():
         try:
             char = sensor.read(1)
         except serial.SerialException as e:
-            print e
+            print(e)
             break
 
         buf += char

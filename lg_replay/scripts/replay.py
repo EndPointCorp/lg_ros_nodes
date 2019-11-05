@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import os
 import select
-import commands
+import subprocess
 from rosnode import ROSNodeIOException
 from interactivespaces_msgs.msg import GenericMessage
 from lg_replay import DevicePublisher, DeviceReplay
@@ -55,7 +55,7 @@ def main():
         device_replay.run()
     except IOError:
         rospy.logwarn('Device unplugged most likely')
-    except select.error, error:
+    except select.error as error:
         if error[0] == (4, 'Interrupted system call'):
             rospy.logwarn('Interrupted system call during waiting for event - is system shutting down?')
 
@@ -65,7 +65,7 @@ def check_device_path(path, user, group):
         return True, 'Device does not exist'
     err = not os.access(path, os.R_OK | os.O_RDWR | os.O_NONBLOCK)
     if err:
-        status, output = commands.getstatusoutput("sudo chown %s:%s %s" % (user, group, path))
+        status, output = subprocess.getstatusoutput("sudo chown %s:%s %s" % (user, group, path))
         if status != 0:
             rospy.logerr("Could not attach to device: %s - insufficient permissions" % path)
     return False, 'No problems with lg_replay device'

@@ -1,4 +1,4 @@
-from query_notifier import QueryNotifier
+from .query_notifier import QueryNotifier
 from collections import deque
 import threading
 

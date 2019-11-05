@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 PKG = 'lg_common'
 NAME = 'test_tcp_relay'
 
@@ -9,7 +9,7 @@ import time
 
 from lg_common.tcp_relay import TCPRelay
 
-MAGIC = 'MAGIC\n'
+MAGIC = b'MAGIC\n'
 
 
 def get_ephemeral_port():
