@@ -46,7 +46,6 @@ RUN \
     curl tmux git \
     xvfb x11-apps \
     devilspie2 \
-    xdotool \
     openbox \
     x-window-system binutils \
     pulseaudio \

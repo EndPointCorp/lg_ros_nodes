@@ -12,17 +12,7 @@ GRACE_DELAY = 0.1  # How long to wait for window convergence, in seconds.
 class TestManagedWindow(unittest.TestCase):
     def setUp(self):
         self.uid = str(uuid.uuid4())
-        self.proc = subprocess.Popen(args=['xeyes'])
-        time.sleep(GRACE_DELAY)
-        try:
-            subprocess.run(
-                args='xdotool search --sync --name "xeyes" set_window --name "{}"'.format(self.uid),
-                shell=True,
-                check=True,
-            )
-        except:
-            self.proc.terminate()
-            raise
+        self.proc = subprocess.Popen(args=['xeyes', '-name', self.uid])
 
     def tearDown(self):
         self.proc.terminate()
