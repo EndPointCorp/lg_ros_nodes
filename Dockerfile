@@ -45,6 +45,8 @@ RUN \
     git sudo \
     curl tmux git \
     xvfb x11-apps \
+    devilspie2 \
+    xdotool \
     x-window-system binutils \
     pulseaudio \
     mesa-utils mesa-utils-extra \
@@ -55,7 +57,7 @@ RUN \
     ros-$ROS_DISTRO-ros-base ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-web-video-server \
     ros-$ROS_DISTRO-spacenav-node spacenavd \
     google-chrome-stable google-chrome-beta google-chrome-unstable \
-    awesome xdg-utils \
+    xdg-utils \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/* \
  && pip install --no-cache-dir python-coveralls \

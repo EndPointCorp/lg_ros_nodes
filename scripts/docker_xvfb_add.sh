@@ -22,6 +22,9 @@ start_xvfb() {
     export DISPLAY=:1
 
     msg="$msg, DISPLAY=$DISPLAY"
+
+    openbox &> /tmp/openbox.log &
+    msg="$msg, started openbox"
     echo $msg
 }
 

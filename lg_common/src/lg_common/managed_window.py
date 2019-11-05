@@ -4,7 +4,7 @@ import threading
 import re
 
 from lg_common.msg import WindowGeometry
-from . import awesome
+from .devilspie2 import Devilspie2
 
 
 class ManagedWindow(object):
@@ -15,11 +15,11 @@ class ManagedWindow(object):
         self.w_instance = w_instance
         self.geometry = geometry
         self.is_visible = visible
-        self.chrome_kiosk_workaround = chrome_kiosk_workaround
-        self.lock = threading.RLock()
-        self.proc = None
 
-        rospy.on_shutdown(self._cleanup_proc)
+        self._lock = threading.RLock()
+        self._manager = None
+
+        rospy.on_shutdown(self._cleanup_manager)
 
     def __str__(self):
         return 'name={name}, class={cls}, instance={inst}, {w}x{h} {x},{y}'.format(
@@ -72,52 +72,34 @@ class ManagedWindow(object):
 
         Returns None if the private '~viewport' param is not set.
         """
-        if rospy.has_param('~viewport'):
-            viewport = rospy.get_param('~viewport')
-            geometry = ManagedWindow.lookup_viewport_geometry(viewport)
+        viewport = rospy.get_param('~viewport', None)
+        if viewport:
+            return ManagedWindow.lookup_viewport_geometry(viewport)
         else:
-            geometry = None
-
-        return geometry
-
-    def _get_command(self):
-        with self.lock:
-            cmd = []
-            cmd.append('echo "{}" | /usr/bin/awesome-client'.format(
-                awesome.get_script(self, chrome_kiosk_workaround=self.chrome_kiosk_workaround)
-            ))
-        return cmd
-
-    def _cleanup_proc(self):
-        with self.lock:
-            if self.proc is not None:
-                self.proc.kill()
+            return None
 
     def set_visibility(self, visible):
-        with self.lock:
+        with self._lock:
             self.is_visible = visible
 
     def set_geometry(self, geometry):
-        with self.lock:
+        with self._lock:
             self.geometry = geometry
 
-    def converge(self):
-        with self.lock:
-            cmd = self._get_command()
-            self._cleanup_proc()
-            cmd_str = ' '.join(cmd)
-            rospy.logdebug(cmd_str)
-            try:
-                env = awesome.get_environ()
-            except Exception as e:
-                rospy.logerr(
-                    'failed to setup awesome environment: {}'.format(str(e))
-                )
-                return
+    def _cleanup_manager(self):
+        if self._manager:
+            self._manager.close()
+            self._manager = None
 
-            try:
-                subprocess.check_call(cmd_str, close_fds=True, shell=True, env=env)
-            except Exception as e:
-                rospy.logerr('failed to run {} : {}'.format(cmd_str, str(e)))
+    def converge(self):
+        with self._lock:
+            self._cleanup_manager()
+            self._manager = Devilspie2(
+                self.w_name,
+                self.w_class,
+                self.w_instance,
+                self.geometry,
+                self.is_visible,
+            )
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
