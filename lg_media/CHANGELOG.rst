@@ -2,6 +2,9 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.0.1 (2019-11-06)
 ------------------
 * image_checker: python3 shebang

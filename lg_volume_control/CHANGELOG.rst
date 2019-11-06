@@ -2,6 +2,9 @@
 Changelog for package lg_volume_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.0.1 (2019-11-06)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
