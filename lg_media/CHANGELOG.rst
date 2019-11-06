@@ -2,6 +2,12 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* image_checker: python3 shebang
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Will Plaut, dkiselev
+
 3.0.0 (2019-10-31)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree

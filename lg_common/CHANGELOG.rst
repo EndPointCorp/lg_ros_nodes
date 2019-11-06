@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* lg_common: remove socat dep that breaks stuffff
+  Figure out if we can add this back
+* lg_common: add build dep
+* Contributors: Will Plaut, dkiselev
+
 3.0.0 (2019-10-31)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
