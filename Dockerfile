@@ -49,6 +49,7 @@ RUN \
     python3-pytest \
     python3-netifaces \
     python3-serial \
+    python3-tornado \
     git sudo \
     curl tmux git \
     xvfb x11-apps \
@@ -79,7 +80,6 @@ RUN pip install --no-cache-dir python-coveralls \
     rospkg \
     catkin_pkg \
     evdev \
-    tornado \
     bson \
     pyinotify \
     catkin_tools \
