@@ -4,8 +4,8 @@ import unittest
 import os
 import json
 
-from lg_common.msg import AdhocBrowsers
-from lg_common.msg import Ready
+from lg_msg_defs.msg import AdhocBrowsers
+from lg_msg_defs.msg import Ready
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
 from lg_common import InteractiveSpacesMessagesFactory

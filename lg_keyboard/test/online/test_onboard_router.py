@@ -24,7 +24,7 @@ import rospy
 import rospkg
 from multiprocessing import Array
 
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.test_helpers import gen_browser_window

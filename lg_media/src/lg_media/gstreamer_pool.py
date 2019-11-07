@@ -5,9 +5,9 @@ import threading
 import rospy
 
 from std_msgs.msg import String
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 from appctl_support import ProcController
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from lg_media.srv import MediaAppsInfoResponse
 from lg_common.helpers import get_app_instances_ids
 from lg_common import ManagedApplication, ManagedWindow

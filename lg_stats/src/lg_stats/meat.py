@@ -28,7 +28,7 @@ from lg_common.helpers import get_nested_slot_value
 from lg_common.helpers import message_is_nonzero
 from lg_common.helpers import SlotUnpackingException
 from lg_common.helpers import get_random_string
-from lg_stats.msg import Event
+from lg_msg_defs.msg import Event
 from . import submitters
 from functools import reduce
 

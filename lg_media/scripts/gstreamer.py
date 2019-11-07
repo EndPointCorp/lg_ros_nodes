@@ -2,7 +2,7 @@
 
 import rospy
 from lg_media import GstreamerPool
-from lg_media.msg import AdhocMedias
+from lg_msg_defs.msg import AdhocMedias
 from lg_media.srv import MediaAppsInfo
 from lg_media import DirectorMediaBridge
 from lg_media import SRV_QUERY, ROS_NODE_NAME

@@ -4,7 +4,7 @@ import rospy
 from functools import partial
 from lg_nav_to_device import DeviceWriter, BackgroundStopper
 from lg_common.helpers import run_with_influx_exception_handler
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage

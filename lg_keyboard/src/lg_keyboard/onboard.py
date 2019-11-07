@@ -10,8 +10,8 @@ import subprocess
 
 from lg_common import ManagedApplication
 from lg_common import ManagedWindow
-from lg_common.msg import ApplicationState
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.msg import WindowGeometry
 
 
 ROS_NODE_NAME = "lg_onboard"

@@ -6,8 +6,8 @@ NAME = 'test_adhoc_browser_director_bridge'
 import rospy
 import unittest
 
-from lg_screenshot.msg import GetScreenshot
-from lg_screenshot.msg import Screenshot
+from lg_msg_defs.msg import GetScreenshot
+from lg_msg_defs.msg import Screenshot
 from lg_screenshot import WebScreenshot
 
 

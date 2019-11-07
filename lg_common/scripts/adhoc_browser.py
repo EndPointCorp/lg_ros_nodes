@@ -4,13 +4,13 @@ import re
 import rospy
 from std_msgs.msg import String
 from lg_common import AdhocBrowserPool
-from lg_common.msg import AdhocBrowsers
+from lg_msg_defs.msg import AdhocBrowsers
 from lg_common import AdhocBrowserDirectorBridge
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
 from lg_common.helpers import wait_for_pub_sub_connections
 from lg_common.helpers import run_with_influx_exception_handler
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.msg import Ready
+from lg_msg_defs.msg import Ready
 
 NODE_NAME = 'lg_adhoc_browser'
 

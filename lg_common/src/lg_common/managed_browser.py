@@ -6,7 +6,7 @@ import os
 
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.tcp_relay import TCPRelay
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'

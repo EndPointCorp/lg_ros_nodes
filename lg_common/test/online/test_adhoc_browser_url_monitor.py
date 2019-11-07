@@ -3,7 +3,7 @@ import rospy
 import unittest
 import json
 
-from lg_common.msg import AdhocBrowsers
+from lg_msg_defs.msg import AdhocBrowsers
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.helpers import write_log_to_file

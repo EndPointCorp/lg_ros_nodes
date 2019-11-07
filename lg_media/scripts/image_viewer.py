@@ -9,10 +9,10 @@ import os
 import requests
 import rospy
 import uuid
-from lg_common.msg import WindowGeometry, ApplicationState
+from lg_msg_defs.msg import WindowGeometry, ApplicationState
 from lg_common import ManagedApplication
 from lg_common import ManagedWindow
-from lg_media.msg import ImageViews, ImageView
+from lg_msg_defs.msg import ImageViews, ImageView
 from interactivespaces_msgs.msg import GenericMessage
 
 

@@ -7,10 +7,10 @@ import os
 import time
 
 from lg_common import ManagedAdhocBrowser
-from lg_common.msg import ApplicationState
-from lg_common.msg import WindowGeometry
-from lg_common.msg import BrowserExtension
-from lg_common.msg import AdhocBrowser, AdhocBrowsers, BrowserURL
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.msg import WindowGeometry
+from lg_msg_defs.msg import BrowserExtension
+from lg_msg_defs.msg import AdhocBrowser, AdhocBrowsers, BrowserURL
 from lg_common.helpers import get_app_instances_ids
 from lg_common.srv import BrowserPool
 from .managed_browser import DEFAULT_BINARY

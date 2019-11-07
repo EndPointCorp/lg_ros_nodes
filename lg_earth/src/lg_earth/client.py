@@ -9,7 +9,7 @@ from time import sleep
 from random import randint
 
 import rospy
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
 from .kmlalive import KmlAlive
 

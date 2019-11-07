@@ -5,7 +5,7 @@ import time
 
 import rospy
 from appctl_support import ProcController
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from lg_common.helpers import is_valid_state
 
 SIG_RETRY_DELAY = 0.05

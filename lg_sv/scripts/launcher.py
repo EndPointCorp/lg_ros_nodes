@@ -3,7 +3,7 @@
 import rospy
 
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from lg_common.helpers import add_url_params
 from lg_common.helpers import check_www_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise

@@ -6,10 +6,10 @@ import time
 import json
 
 from lg_common import ManagedBrowser
-from lg_common.msg import WindowGeometry
-from lg_common.msg import ApplicationState
-from lg_common.msg import ApplicationState
-from lg_common.msg import AdhocBrowser, AdhocBrowsers
+from lg_msg_defs.msg import WindowGeometry
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.msg import AdhocBrowser, AdhocBrowsers
 
 
 class ManagedAdhocBrowser(ManagedBrowser):

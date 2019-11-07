@@ -10,7 +10,7 @@ import rospy
 import rostest
 
 from geometry_msgs.msg import PoseStamped, Twist, Vector3
-from lg_spacenav_globe.msg import PortalPose
+from lg_msg_defs.msg import PortalPose
 
 NAV_ZERO = Twist()
 NAV_ONE = Twist(

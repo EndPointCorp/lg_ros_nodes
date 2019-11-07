@@ -2,8 +2,8 @@
 
 import rospy
 
-from lg_screenshot.msg import GetScreenshot
-from lg_screenshot.msg import Screenshot
+from lg_msg_defs.msg import GetScreenshot
+from lg_msg_defs.msg import Screenshot
 import subprocess
 import rospkg
 
