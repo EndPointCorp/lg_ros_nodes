@@ -133,12 +133,12 @@ static gboolean query_duration_(gpointer data) {
   return app->query_duration();
 }
 
-static void video_changed_(GstElement *element, gpointer *data) {
+static void video_changed_(GstElement *element, gpointer data) {
   SyncVideoApp *app = static_cast<SyncVideoApp*>(data);
   app->video_changed(element);
 }
 
-static GstPadProbeReturn buffer_callback_(GstPad *pad, GstPadProbeInfo *info, gpointer *data) {
+static GstPadProbeReturn buffer_callback_(GstPad *pad, GstPadProbeInfo *info, gpointer data) {
   SyncVideoApp *app = static_cast<SyncVideoApp*>(data);
   return app->buffer_callback(pad, info);
 }
