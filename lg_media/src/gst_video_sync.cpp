@@ -123,23 +123,23 @@ SyncVideoApp::SyncVideoApp
 }
 
 static gboolean bus_callback_(GstBus *bus, GstMessage *msg, gpointer data) {
-  SyncVideoApp *app = (SyncVideoApp *)data;
+  SyncVideoApp *app = static_cast<SyncVideoApp*>(data);
   return app->bus_callback(bus, msg);
 }
 
 static gboolean query_duration_(gpointer data) {
-  SyncVideoApp *app = (SyncVideoApp *)data;
+  SyncVideoApp *app = static_cast<SyncVideoApp*>(data);
   g_debug("querying media duration...\n");
   return app->query_duration();
 }
 
 static void video_changed_(GstElement *element, gpointer *data) {
-  SyncVideoApp *app = (SyncVideoApp *)data;
+  SyncVideoApp *app = static_cast<SyncVideoApp*>(data);
   app->video_changed(element);
 }
 
 static GstPadProbeReturn buffer_callback_(GstPad *pad, GstPadProbeInfo *info, gpointer *data) {
-  SyncVideoApp *app = (SyncVideoApp *)data;
+  SyncVideoApp *app = static_cast<SyncVideoApp*>(data);
   return app->buffer_callback(pad, info);
 }
 
@@ -508,16 +508,14 @@ void SyncVideoApp::run_udp_thread_() {
 }
 
 static void set_factory(const gchar *name, gboolean enable) {
-  GstRegistry *registry = NULL;
-  GstElementFactory *factory = NULL;
+  GstRegistry *registry = gst_registry_get();
+  GstElementFactory *factory = gst_element_factory_find(name);
 
-  registry = gst_registry_get();
   if (!registry) {
     g_printerr("Could not get the registry in enable_factory()\n");
     return;
   }
 
-  factory = gst_element_factory_find(name);
   if (!factory) {
     g_printerr("Could not get factory for %s in enable_factory()\n", name);
     return;
