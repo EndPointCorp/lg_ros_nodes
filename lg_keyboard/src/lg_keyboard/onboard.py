@@ -46,12 +46,14 @@ class OnboardLauncher(object):
         window = ManagedWindow(w_class='Onboard',
                                geometry=onboard_geometry,
                                visible=False)
-        cmd.extend(list(map(str,
-                       ['-x',
-                        onboard_x,
-                        '-y', onboard_y,
-                        '-s',
-                        '{}x{}'.format(onboard_width, onboard_height)])))
+        cmd.extend(list(map(str, [
+            '-x',
+            onboard_x,
+            '-y',
+            onboard_y,
+            '-s',
+            '{}x{}'.format(onboard_width, onboard_height)
+        ])))
         self.app = ManagedApplication(cmd, window=window)
 
     def handle_activate(self, message):

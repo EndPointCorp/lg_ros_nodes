@@ -563,8 +563,8 @@ if __name__ == "__main__":
         print("")
         print("This file, if called directly, will emit an interactivespaces.msgs.GenericMessage")
         print("")
-        print("You must provide message name to emit:\n%s" % \
-            '\n'.join(["- " + ivar for ivar in dir(messages) if ivar.startswith('test_')]))
+        print("You must provide message name to emit:\n%s" %
+              '\n'.join(["- " + ivar for ivar in dir(messages) if ivar.startswith('test_')]))
         print("")
         print("NOTE: methods beginning with 'test' are used by test suite")
         print("")
