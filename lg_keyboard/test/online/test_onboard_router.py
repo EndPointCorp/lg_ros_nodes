@@ -1,23 +1,11 @@
 #!/usr/bin/env python3
 
-"""
-lg_keyboard_router online tests
-
-starting roslaunch for development:
-    roslaunch --screen lg_keyboard/test/online/test_onboard_router.test
-    could do:
-    py.test -s -v lg_keyboard/test/online/test_onboard_router.py
-
-running tests manually:
-    rostest lg_keyboard/test/online/test_onboard_router.test
-        (as long as it contains <test> tag, it's the same as launch file)
-
-"""
-
+PKG = 'lg_keyboard'
+NAME = 'test_onboard_router'
 
 import os
 import time
-from multiprocessing import Array
+import unittest
 
 import pytest
 import rospy
@@ -38,8 +26,8 @@ VISIBILITY = Array('c', 1000)  # size
 ACTIVATE = Array('c', 1000)  # size
 
 
-class TestOnboardRouterOnline(object):
-    def setup_method(self, method):
+class TestOnboardRouterOnline(unittest.TestCase):
+    def setUp(self):
         rospy.Subscriber(
             '/lg_onboard/visibility',
             Bool,
@@ -61,11 +49,10 @@ class TestOnboardRouterOnline(object):
         VISIBILITY.value = b"UNDEFINED"
         ACTIVATE.value = b"UNDEFINED"
         # must be after pubs/subs initialization:
-        rospy.init_node("lg_keyboard_onboard_router", anonymous=True)
         self.grace_delay = 3
         rospy.sleep(self.grace_delay)
 
-    def teardown_method(self, method):
+    def tearDown(self):
         time.sleep(1)
 
     @staticmethod
@@ -202,13 +189,7 @@ class TestOnboardRouterOnline(object):
         self.active_wait("['cthulhu_fhtagn', 'iah_iah']", ACTIVATE.value)
 
 
-if __name__ == "__main__":
-    # pytest must provide result XML file just as rostest.rosrun would do
-    test_pkg = "lg_keyboard"
-    test_name = "test_onboard_router"
-    test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
-    pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
-    # run only itself
-    test_path = os.path.abspath(os.path.abspath(__file__))
-    # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
-    pytest.main("-vv -rfsX -s --junit-xml=%s %s" % (pytest_result_path, test_path))
+if __name__ == '__main__':
+    import rostest
+    rospy.init_node(NAME)
+    rostest.rosrun(PKG, NAME, TestOnboardRouterOnline)
