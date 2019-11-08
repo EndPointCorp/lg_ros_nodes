@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   message_generation
   lg_common
+  lg_msg_defs
 )
 
 catkin_python_setup()
@@ -14,11 +15,6 @@ add_service_files(
   IsLocked.srv
   Lock.srv
   UnLock.srv
-)
-
-add_message_files(
-  FILES
-  State.msg
 )
 
 generate_messages(

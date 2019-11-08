@@ -3,19 +3,12 @@ project(lg_media)
 
 find_package(catkin REQUIRED COMPONENTS
   lg_common
+  lg_msg_defs
   message_generation
   rospy
 )
 
 catkin_python_setup()
-
-add_message_files(
-  FILES
-  AdhocMedia.msg
-  AdhocMedias.msg
-  ImageViews.msg
-  ImageView.msg
-)
 
 add_service_files(
   FILES
