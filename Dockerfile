@@ -117,12 +117,6 @@ ARG APPCTL_TAG=python3_change
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
 
-RUN git clone https://github.com/ros/ros.git /ros
-RUN ln -snf /ros/tools/rosunit ${PROJECT_ROOT}/
-
-RUN git clone https://github.com/ros/ros_comm.git /ros_comm
-RUN ln -snf /ros_comm/tools/rostest ${PROJECT_ROOT}/
-
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml
 COPY lg_activity/package.xml ${PROJECT_ROOT}/lg_activity/package.xml
