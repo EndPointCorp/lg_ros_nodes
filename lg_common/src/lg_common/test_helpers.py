@@ -97,4 +97,4 @@ def wait_for_assert_equal(val1, val2, timeout, cb=None):
             if cb:
                 cb()
             time.sleep(1)
-    return False
+    raise AssertionError('timed out waiting for:\n{}\n ==\n{}'.format(val1, val2))

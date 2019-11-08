@@ -28,9 +28,6 @@
     <node name="readiness_node" pkg="lg_common" type="readiness.py"/>
     <!-- end of readiness node -->
 
-    <!-- Local rosbridge and rosapi. -->
-    <node name="rosbridge" pkg="rosbridge_server" type="rosbridge_websocket" clear_params="true" respawn="true" respawn_delay="3"/>
-
     <!-- begin touchscreen adhoc browser pool-->
     <node name="adhoc_browser_pool_touchscreen" pkg="lg_common" type="adhoc_browser.py">
       <param name="viewport" value="touchscreen"/>
