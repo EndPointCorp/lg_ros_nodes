@@ -39,11 +39,11 @@ class ViewportMapper {
     ViewportMapper(const std::string& device_name, const std::string& viewport_geometry,
         bool should_flip_axis, int x_flip, int y_flip);
     void Map() const;
-    static lg_common::WindowGeometryPtr GeometryFromString(const std::string& source);
-    static lg_common::WindowGeometryPtr GetRootGeometry();
+    static lg_msg_defs::WindowGeometryPtr GeometryFromString(const std::string& source);
+    static lg_msg_defs::WindowGeometryPtr GetRootGeometry();
     static ViewportMapperTypes::TransformMatrixPtr TransformGeometry(
-      lg_common::WindowGeometryPtr a,
-      lg_common::WindowGeometryPtr b
+      lg_msg_defs::WindowGeometryPtr a,
+      lg_msg_defs::WindowGeometryPtr b
     );
 
   private:
@@ -51,7 +51,7 @@ class ViewportMapper {
     bool should_flip_axis_;
     int x_flip_;
     int y_flip_;
-    lg_common::WindowGeometryPtr viewport_geometry_;
+    lg_msg_defs::WindowGeometryPtr viewport_geometry_;
 };
 
 #endif // _VIEWPORT_MAPPER_H_
