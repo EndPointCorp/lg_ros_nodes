@@ -35,6 +35,33 @@ add_message_files(
   WindowGeometry.msg
 )
 
+add_service_files(
+  FILES
+  Active.srv
+  ActivityStates.srv
+  BrowserPool.srv
+  DesiredState.srv
+  EvdevDeviceInfo.srv
+  InitialUSCS.srv
+  IsLocked.srv
+  JSONConfigMore.srv
+  JSONConfig.srv
+  KmlState.srv
+  Lock.srv
+  MediaAppsInfo.srv
+  NodeReady.srv
+  Offline.srv
+  PanoIdState.srv
+  PlanetQuery.srv
+  PlaytourQuery.srv
+  TouchRoutes.srv
+  UnLock.srv
+  USCSMessage.srv
+  Volume.srv
+)
+
 generate_messages()
 
-
+add_service_files(
+  FILES
+  
