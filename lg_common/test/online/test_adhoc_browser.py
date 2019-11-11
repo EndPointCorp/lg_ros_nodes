@@ -10,7 +10,7 @@ from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.helpers import write_log_to_file
-from lg_common.srv import BrowserPool
+from lg_msg_defs.srv import BrowserPool
 from lg_common.test_helpers import wait_for_assert_equal
 
 

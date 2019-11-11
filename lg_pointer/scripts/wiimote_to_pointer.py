@@ -10,7 +10,7 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JoyFeedback, JoyFeedbackArray
 from wiimote.msg import State
 from lg_msg_defs.msg import EvdevEvent, EvdevEvents
-from lg_mirror.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
+from lg_msg_defs.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
 from lg_msg_defs.msg import StringArray
 from std_srvs.srv import Empty
 from lg_pointer import MegaViewport

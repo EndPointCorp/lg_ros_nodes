@@ -4,10 +4,10 @@ import os
 import rospy
 import urllib.request, urllib.error, urllib.parse
 import json
-from lg_json_config.srv import JSONConfig
-from lg_json_config.srv import JSONConfigMore
-from lg_json_config.srv import JSONConfigResponse
-from lg_json_config.srv import JSONConfigMoreResponse
+from lg_msg_defs.srv import JSONConfig
+from lg_msg_defs.srv import JSONConfigMore
+from lg_msg_defs.srv import JSONConfigResponse
+from lg_msg_defs.srv import JSONConfigMoreResponse
 from lg_common.helpers import run_with_influx_exception_handler
 
 

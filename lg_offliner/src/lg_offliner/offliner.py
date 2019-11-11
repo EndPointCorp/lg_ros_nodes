@@ -20,7 +20,7 @@ import rospy
 from std_msgs.msg import String, Bool
 
 from lg_common import helpers
-from lg_offliner.srv import Offline
+from lg_msg_defs.srv import Offline
 
 
 ROS_NODE_NAME = "lg_offliner"

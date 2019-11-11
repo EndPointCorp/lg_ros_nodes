@@ -12,7 +12,7 @@ from lg_msg_defs.msg import WindowGeometry
 from lg_msg_defs.msg import BrowserExtension
 from lg_msg_defs.msg import AdhocBrowser, AdhocBrowsers, BrowserURL
 from lg_common.helpers import get_app_instances_ids
-from lg_common.srv import BrowserPool
+from lg_msg_defs.srv import BrowserPool
 from .managed_browser import DEFAULT_BINARY
 from urllib.parse import urlparse, parse_qs, urlunparse
 from urllib.parse import urlencode

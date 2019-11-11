@@ -12,7 +12,7 @@ from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
 from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
 from lg_common.helpers import run_with_influx_exception_handler
-from lg_sv.srv import PanoIdState
+from lg_msg_defs.srv import PanoIdState
 
 
 # spacenav_node -> mux_twists -> /lg_twister/twist -> handle_spacenav_msg:

@@ -5,7 +5,7 @@ from lg_msg_defs.msg import AdhocBrowsers
 from lg_common import ReadinessNode
 from lg_common import ReadinessHandbrake
 from std_msgs.msg import String
-from lg_common.srv import NodeReady
+from lg_msg_defs.srv import NodeReady
 from lg_msg_defs.msg import Ready
 from lg_common.helpers import handle_initial_state
 from interactivespaces_msgs.msg import GenericMessage

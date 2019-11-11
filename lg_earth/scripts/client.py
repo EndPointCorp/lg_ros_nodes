@@ -11,7 +11,7 @@ from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from lg_msg_defs.msg import ApplicationState
 from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
-from lg_earth.srv import ViewsyncState
+from lg_msg_defs.srv import ViewsyncState
 from lg_common.helpers import run_with_influx_exception_handler
 from time import sleep
 from random import randint

@@ -4,7 +4,7 @@ import rospy
 import time
 import os
 from geometry_msgs.msg import PoseStamped
-from lg_earth.srv import ViewsyncState
+from lg_msg_defs.srv import ViewsyncState
 
 
 class ViewsyncRelay:

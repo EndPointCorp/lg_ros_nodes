@@ -900,7 +900,7 @@ def handle_initial_state(call_back):
         rospy.logerr("This system does not support initial state setting")
         return
 
-    from lg_common.srv import InitialUSCS, InitialUSCSResponse
+    from lg_msg_defs.srv import InitialUSCS, InitialUSCSResponse
 
     initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
 

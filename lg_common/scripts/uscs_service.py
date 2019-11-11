@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 from std_srvs.srv import Empty
-from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
+from lg_msg_defs.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common import USCSService
 from lg_common.helpers import check_www_dependency

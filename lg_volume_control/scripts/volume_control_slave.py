@@ -3,7 +3,7 @@
 import sys
 import rospy
 from lg_volume_control import VolumeControlSlave
-from lg_volume_control.srv import Volume
+from lg_msg_defs.srv import Volume
 from std_msgs.msg import UInt8
 
 

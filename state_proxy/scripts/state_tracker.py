@@ -2,7 +2,7 @@
 import rospy
 import json
 
-from lg_common.srv import BrowserPool, USCSMessage
+from lg_msg_defs.srv import BrowserPool, USCSMessage
 from lg_common.helpers import add_url_params
 from std_msgs.msg import String
 from appctl.msg import Mode

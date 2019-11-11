@@ -8,7 +8,7 @@ import rostest
 import sys
 import unittest
 from std_msgs.msg import String
-from lg_sv.srv import PanoIdState
+from lg_msg_defs.srv import PanoIdState
 
 PUB_PATH = '/streetview/panoid'
 SRV_PATH = '/streetview/panoid_state'
