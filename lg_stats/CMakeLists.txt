@@ -4,26 +4,15 @@ project(lg_stats)
 find_package(catkin REQUIRED COMPONENTS
   appctl
   lg_common
-  message_generation
+  lg_msg_defs
   rospy
 )
 
 catkin_python_setup()
 
-add_message_files(
-  FILES
-  Event.msg
-  Session.msg
-)
-
-generate_messages(
-  DEPENDENCIES
-  appctl
-  lg_common
-)
 
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_common appctl message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_common appctl lg_msg_defs
 )
 
 include_directories(

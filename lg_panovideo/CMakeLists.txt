@@ -4,6 +4,7 @@ project(lg_panovideo)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_srvs
+  lg_msg_defs
 )
 
 catkin_python_setup()

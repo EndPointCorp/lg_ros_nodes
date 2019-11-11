@@ -2,15 +2,11 @@ cmake_minimum_required(VERSION 2.8.3)
 project(state_proxy)
 
 find_package(catkin REQUIRED COMPONENTS
-  rospy message_generation lg_msg_defs
-)
-
-generate_messages(
-  DEPENDENCIES
+  rospy lg_msg_defs
 )
 
 catkin_package(
-  CATKIN_DEPENDS rospy
+  CATKIN_DEPENDS rospy lg_msg_defs
 )
 
 include_directories(

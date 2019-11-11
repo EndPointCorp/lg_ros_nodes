@@ -4,16 +4,11 @@ project(lg_mirror)
 find_package(catkin REQUIRED COMPONENTS
   lg_msg_defs
   roscpp
-  message_generation
 )
 
 
 
 catkin_python_setup()
-
-generate_messages(
-  DEPENDENCIES
-)
 
 catkin_package(
   CATKIN_DEPENDS
@@ -21,7 +16,6 @@ catkin_package(
   lg_msg_defs
   rospy
   roscpp
-  message_runtime
 )
 
 include_directories(

@@ -4,13 +4,10 @@ project(lg_spacenav_globe)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
+  lg_msg_defs
   message_generation
 )
 
-add_message_files(
-  FILES
-  PortalPose.msg
-)
 
 generate_messages(
   DEPENDENCIES
@@ -18,7 +15,7 @@ generate_messages(
 )
 
 catkin_package(
-  CATKIN_DEPENDS geometry_msgs roscpp message_runtime
+  CATKIN_DEPENDS geometry_msgs roscpp lg_msg_defs
 )
 
 include_directories(

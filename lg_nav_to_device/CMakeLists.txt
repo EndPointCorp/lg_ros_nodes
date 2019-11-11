@@ -3,6 +3,7 @@ project(lg_nav_to_device)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  lg_msg_defs
 )
 
 catkin_python_setup()

@@ -3,16 +3,11 @@ project(lg_json_config)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
   lg_msg_defs
 )
 
-generate_messages(
-  DEPENDENCIES
-)
-
 catkin_package(
-  CATKIN_DEPENDS rospy message_runtime
+  CATKIN_DEPENDS rospy
 )
 
 include_directories(

@@ -4,21 +4,14 @@ project(lg_offliner)
 find_package(catkin REQUIRED COMPONENTS
   appctl
   lg_msg_defs
-  message_generation
   rospy
 )
 
 catkin_python_setup()
 
 
-generate_messages(
-  DEPENDENCIES
-  appctl
-  lg_msg_defs
-)
-
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_msg_defs appctl message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_msg_defs appctl
 )
 
 include_directories(

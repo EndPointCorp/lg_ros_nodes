@@ -3,19 +3,13 @@ project(lg_volume_control)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
   lg_msg_defs
 )
 
 catkin_python_setup()
 
-generate_messages(
-  DEPENDENCIES
-)
-
-
 catkin_package(
-  CATKIN_DEPENDS rospy message_runtime
+  CATKIN_DEPENDS rospy lg_msg_defs
 )
 
 catkin_install_python(PROGRAMS

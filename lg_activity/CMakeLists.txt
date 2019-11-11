@@ -3,21 +3,13 @@ project(lg_activity)
 
 find_package(catkin REQUIRED COMPONENTS
     lg_msg_defs
-    message_generation
     rospy
     )
 
 catkin_python_setup()
 
-
-
-generate_messages(
-  DEPENDENCIES
-  lg_msg_defs
-  )
-
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_msg_defs message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_msg_defs
 )
 
 include_directories(

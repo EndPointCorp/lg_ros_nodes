@@ -3,12 +3,6 @@ project(lg_common)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
-  lg_msg_defs
-)
-
-generate_messages(
-  DEPENDENCIES
   lg_msg_defs
 )
 
