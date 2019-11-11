@@ -2,20 +2,12 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_mirror)
 
 find_package(catkin REQUIRED COMPONENTS
-  lg_common
   lg_msg_defs
   roscpp
   message_generation
 )
 
 
-add_service_files(
-  DIRECTORY
-  srv
-  FILES
-  EvdevDeviceInfo.srv
-  TouchRoutes.srv
-)
 
 catkin_python_setup()
 
@@ -26,7 +18,7 @@ generate_messages(
 catkin_package(
   CATKIN_DEPENDS
   appctl
-  lg_common
+  lg_msg_defs
   rospy
   roscpp
   message_runtime

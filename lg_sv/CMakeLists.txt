@@ -8,11 +8,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_python_setup()
 
-add_service_files(
-  FILES
-  PanoIdState.srv
-)
-
 generate_messages()
 
 catkin_package(

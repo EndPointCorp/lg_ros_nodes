@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_media)
 
 find_package(catkin REQUIRED COMPONENTS
-  lg_common
   lg_msg_defs
   message_generation
   rospy
@@ -10,18 +9,13 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_python_setup()
 
-add_service_files(
-  FILES
-  MediaAppsInfo.srv
-)
-
 generate_messages(
   DEPENDENCIES
-  lg_common
+  lg_msg_defs
 )
 
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_common message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_msg_defs message_runtime
 )
 
 include_directories(

@@ -2,12 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(state_proxy)
 
 find_package(catkin REQUIRED COMPONENTS
-  rospy message_generation
-)
-
-add_service_files(
-  FILES
-  DesiredState.srv
+  rospy message_generation lg_msg_defs
 )
 
 generate_messages(

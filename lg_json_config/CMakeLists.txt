@@ -4,12 +4,7 @@ project(lg_json_config)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   message_generation
-)
-
-add_service_files(
-  FILES
-  JSONConfig.srv
-  JSONConfigMore.srv
+  lg_msg_defs
 )
 
 generate_messages(
