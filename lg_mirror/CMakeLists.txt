@@ -3,16 +3,11 @@ project(lg_mirror)
 
 find_package(catkin REQUIRED COMPONENTS
   lg_common
+  lg_msg_defs
   roscpp
   message_generation
 )
 
-add_message_files(
-  FILES
-  EvdevEvent.msg
-  EvdevEvents.msg
-  ScreenCoordinate.msg
-)
 
 add_service_files(
   DIRECTORY
