@@ -62,6 +62,12 @@ add_service_files(
 
 generate_messages()
 
-add_service_files(
-  FILES
-  
+catkin_package(
+  CATKIN_DEPENDS message_runtime
+  std_msgs
+  geometry_msgs
+)
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)

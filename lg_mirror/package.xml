@@ -14,10 +14,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>message_generation</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>boost</build_depend>
-  <build_depend>lg_common</build_depend>
   <build_depend>lg_msg_defs</build_depend>
 
   <!-- Some test deps are listed here as build deps for convenience. -->

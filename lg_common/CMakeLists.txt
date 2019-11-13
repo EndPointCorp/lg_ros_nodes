@@ -3,14 +3,13 @@ project(lg_common)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  lg_msg_defs
 )
 
 catkin_python_setup()
 
 
 catkin_package(
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime lg_msg_defs
 )
 
 catkin_install_python(PROGRAMS

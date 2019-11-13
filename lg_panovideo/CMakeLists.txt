@@ -11,6 +11,7 @@ catkin_python_setup()
 
 catkin_package(
   CATKIN_DEPENDS
+  lg_msg_defs
   roscpp
   std_srvs
 )
