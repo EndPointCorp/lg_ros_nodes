@@ -8,10 +8,5 @@
         <param name="inactivity_resubmission" value="60"/>
     </node>
 
-    <!-- Local rosbridge and rosapi. -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
-        <arg name="port" value="9875" />
-    </include>
-
     <test test-name="test_lg_stats" pkg="lg_stats" type="test_lg_stats_strategy_default.py"/>
 </launch>

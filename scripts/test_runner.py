@@ -90,8 +90,8 @@ def cppcheck_test():
     return ret
 
 
-def gjslint_test():
-    ret = os.system("gjslint --nojsdoc --max_line_length 120 --disable 0001,0002,0131,0120 -e 'lib,panovideosync,gennodejs' -r .")
+def jslint_test():
+    ret = os.system("eslint .")
     return ret
 
 
@@ -126,7 +126,7 @@ def run_tests():
     os.system(c)
     fail_flags['pep8'] = pep8_test()
     fail_flags['cppcheck'] = cppcheck_test()
-    fail_flags['gjslint'] = gjslint_test()
+    fail_flags['jslint'] = jslint_test()
     print("\n\nFINAL SUMMARY:\n")
     for test, flag in sorted(fail_flags.items()):
         print("RAN TEST: %s\nGot exit code %d" % (test, flag))

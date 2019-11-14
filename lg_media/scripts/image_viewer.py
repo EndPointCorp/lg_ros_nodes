@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-
-
-
 from threading import Lock
 import json
 import os
@@ -118,7 +115,7 @@ class ImageViewer():
             image_path
         ).split()
         rospy.logdebug('command is {}'.format(command))
-        image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path = image_path)
+        image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path=image_path)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
         return image
@@ -133,7 +130,7 @@ class ImageViewer():
             image.url
         ).split()
         rospy.logdebug('command is {}'.format(command))
-        image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='feh', img_path = None)
+        image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='feh', img_path=None)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
         return image

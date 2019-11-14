@@ -88,5 +88,6 @@ def main():
     rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()
 
+
 if __name__ == '__main__':
     main()

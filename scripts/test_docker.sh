@@ -21,7 +21,7 @@ function initialize() {
 # on the dirname of the project, e.g. lg_ros_nodes-test
 function build_docker() {
   echo building "${DOCKER_NAME}"
-  docker build -t "${DOCKER_NAME}" .
+  docker build --pull -t "${DOCKER_NAME}" .
 }
 
 

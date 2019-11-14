@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+
 PKG = 'lg_common'
 NAME = 'test_tcp_relay'
 
+import rospy
 import unittest
 import socket
 import threading
@@ -45,24 +47,22 @@ class Server:
 
 
 class TestTCPRelay(unittest.TestCase):
-    def setUp(self):
+    def test_tcp_relay(self):
+        """Test bi-directional communication over the relay."""
         self.local_port = get_ephemeral_port()
         self.remote_port = get_ephemeral_port()
+
         self.server = Server(self.local_port)
         self.server_thread = threading.Thread(target=self.server.listen)
+        self.server_thread.daemon = True
         self.server_thread.start()
+
         self.relay = TCPRelay(self.local_port, self.remote_port)
         self.relay.start()
+
         # grace delay
         time.sleep(1.0)
 
-    def tearDown(self):
-        self.relay.stop()
-        self.server.shutdown()
-        self.server_thread.join()
-
-    def test_relay(self):
-        """Test bi-directional communication over the relay."""
         remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         remote_sock.settimeout(1.0)
         remote_sock.connect(('127.0.0.1', self.remote_port))
@@ -79,6 +79,7 @@ class TestTCPRelay(unittest.TestCase):
 
 if __name__ == '__main__':
     import rostest
+    rospy.init_node(NAME)
     rostest.rosrun(PKG, NAME, TestTCPRelay)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
