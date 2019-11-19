@@ -18,30 +18,38 @@ COPY scripts/docker_entrypoint.sh /ros_entrypoint.sh
 RUN chmod 0755 /ros_entrypoint.sh
 ENTRYPOINT ["/ros_entrypoint.sh"]
 
+# pre-install some tools for installing further dependencies
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gnupg \
+    wget \
+ && rm -rf /var/lib/apt/lists/*
+
 # install system dependencies and tools not tracked in rosdep
 RUN \
-  apt-get update -y && apt-get install -y ca-certificates gnupg wget && \
   echo "deb http://packages.ros.org/ros/ubuntu ${UBUNTU_RELEASE} main" > /etc/apt/sources.list.d/ros-latest.list && \
   echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-  echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
   apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
   wget --no-check-certificate -q -O /tmp/key.pub https://dl-ssl.google.com/linux/linux_signing_key.pub && apt-key add /tmp/key.pub && rm /tmp/key.pub && \
   apt-key update && \
   apt-get update && \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
-    g++ pycodestyle cppcheck closure-linter \
+    g++ pycodestyle cppcheck \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
+    python-setuptools \
     python3-pip \
+    python3-setuptools \
     python3-defusedxml \
     python3-nose \
     python3-pil \
     python3-pytest \
     python3-netifaces \
     python3-serial \
-    python-setuptools \
+    python3-tornado \
     git sudo \
     curl tmux git \
     xvfb x11-apps \
@@ -57,10 +65,27 @@ RUN \
     google-chrome-stable google-chrome-beta google-chrome-unstable \
     awesome xdg-utils \
     gstreamer1.0-alsa \
- && rm -rf /var/lib/apt/lists/* \
- && pip install --no-cache-dir python-coveralls \
- && pip3 install setuptools \
- && pip3 install wheel rospkg catkin_pkg evdev tornado bson pyinotify catkin_tools empy pycrypto gnupg
+ && rm -rf /var/lib/apt/lists/*
+
+# Install NodeJS and test dependencies
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+ && apt-get install -y nodejs \
+ && npm install -g eslint \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir python-coveralls \
+ && pip3 install --no-cache-dir \
+    wheel \
+    rospkg \
+    catkin_pkg \
+    evdev \
+    bson \
+    pyinotify \
+    catkin_tools \
+    empy \
+    pycrypto \
+    gnupg
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
@@ -86,32 +111,11 @@ RUN \
 
 COPY ros_entrypoint.sh ${PROJECT_ROOT}
 
-# Massage libglvnd so opengl plays nicely with nvidia-docker2
-ARG LIBGLVND_VERSION='v1.1.0'
-
-RUN mkdir /opt/libglvnd && \
-    cd /opt/libglvnd && \
-    git clone --branch="${LIBGLVND_VERSION}" https://github.com/NVIDIA/libglvnd.git . && \
-    ./autogen.sh && \
-    ./configure --prefix=/usr/local --libdir=/usr/local/lib/x86_64-linux-gnu && \
-    make -j"$(nproc)" install-strip && \
-    find /usr/local/lib/x86_64-linux-gnu -type f -name 'lib*.la' -delete
-
-RUN echo '/usr/local/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf
-
-ENV LD_LIBRARY_PATH /usr/local/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-
 # clone appctl
 # TODO change to latest tag
 ARG APPCTL_TAG=python3_change
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
-
-RUN git clone https://github.com/ros/ros.git /ros
-RUN ln -snf /ros/tools/rosunit ${PROJECT_ROOT}/
-
-RUN git clone https://github.com/ros/ros_comm.git /ros_comm
-RUN ln -snf /ros_comm/tools/rostest ${PROJECT_ROOT}/
 
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml

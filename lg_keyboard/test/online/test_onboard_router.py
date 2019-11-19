@@ -1,28 +1,12 @@
 #!/usr/bin/env python3
 
-"""
-lg_keyboard_router online tests
+PKG = 'lg_keyboard'
+NAME = 'test_onboard_router'
 
-starting roslaunch for development:
-    roslaunch --screen lg_keyboard/test/online/test_onboard_router.test
-    could do:
-    py.test -s -v lg_keyboard/test/online/test_onboard_router.py
-
-running tests manually:
-    rostest lg_keyboard/test/online/test_onboard_router.test
-        (as long as it contains <test> tag, it's the same as launch file)
-
-"""
-
-
-import os
 import time
-from multiprocessing import Array
+import unittest
 
-import pytest
 import rospy
-import rospkg
-from multiprocessing import Array
 
 from lg_msg_defs.msg import StringArray
 from std_msgs.msg import Bool
@@ -33,62 +17,21 @@ from lg_common.test_helpers import gen_scene
 from lg_common.test_helpers import gen_scene_msg
 
 
-SCENE = Array('c', 1000)  # size
-VISIBILITY = Array('c', 1000)  # size
-ACTIVATE = Array('c', 1000)  # size
-
-
-class TestOnboardRouterOnline(object):
-    def setup_method(self, method):
-        rospy.Subscriber(
-            '/lg_onboard/visibility',
-            Bool,
-            self.callback_visibility_receiver
-        )
-        rospy.Subscriber(
+class TestOnboardRouterOnline(unittest.TestCase):
+    def setUp(self):
+        self.activates = []
+        self.activates_sub = rospy.Subscriber(
             '/lg_onboard/activate',
             StringArray,
-            self.callback_activate_receiver
-        )
-        rospy.Subscriber(
-            '/director/scene',
-            GenericMessage,
-            self.callback_scene_receiver
+            self.activates.append
         )
         self.director_publisher = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
         self.visibility_publisher = rospy.Publisher('/lg_onboard/visibility', Bool, queue_size=10)
-        SCENE.value = b"UNDEFINED"
-        VISIBILITY.value = b"UNDEFINED"
-        ACTIVATE.value = b"UNDEFINED"
-        # must be after pubs/subs initialization:
-        rospy.init_node("lg_keyboard_onboard_router", anonymous=True)
-        self.grace_delay = 3
-        rospy.sleep(self.grace_delay)
+        rospy.sleep(1)
 
-    def teardown_method(self, method):
+    def tearDown(self):
+        self.activates_sub.unregister()
         time.sleep(1)
-
-    @staticmethod
-    def callback_scene_receiver(msg):
-        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
-        SCENE.value = str(msg.message).encode('utf-8')
-
-    @staticmethod
-    def callback_visibility_receiver(msg):
-        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
-        VISIBILITY.value = str(msg.data).encode('utf-8')
-
-    @staticmethod
-    def callback_activate_receiver(msg):
-        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
-        ACTIVATE.value = str(msg.strings).encode('utf-8')
-
-    def active_wait(self, what, where, timeout=5):
-        for _ in range(timeout):
-            rospy.sleep(1)
-            if where == what.encode('utf-8'):
-                break
-        assert where == what.encode('utf-8')
 
     def test_1_sending_messages_work(self):
         msg = GenericMessage(type='json', message='{}')
@@ -96,9 +39,7 @@ class TestOnboardRouterOnline(object):
         time.sleep(1)
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
-        self.active_wait('{}', SCENE.value)
-        self.active_wait('True', VISIBILITY.value)
-        self.active_wait("['kiosk']", ACTIVATE.value)
+        self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_2_default_viewport_no_route_touch(self):
         """
@@ -118,8 +59,7 @@ class TestOnboardRouterOnline(object):
         self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
-        self.active_wait('True', VISIBILITY.value)
-        self.active_wait("['kiosk']", ACTIVATE.value)
+        self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_3_default_viewport_no_route_touch(self):
         """
@@ -140,8 +80,7 @@ class TestOnboardRouterOnline(object):
         self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
-        self.active_wait('True', VISIBILITY.value)
-        self.active_wait("['kiosk']", ACTIVATE.value)
+        self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_4_route_touch_on_one_viewport(self):
         """
@@ -169,8 +108,7 @@ class TestOnboardRouterOnline(object):
         self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
-        self.active_wait('True', VISIBILITY.value)
-        self.active_wait("['cthulhu_fhtagn']", ACTIVATE.value)
+        self.assertEqual('cthulhu_fhtagn', self.activates[-1].strings[0])
 
     def test_5_route_touch_on_two_viewports(self):
         """
@@ -198,17 +136,11 @@ class TestOnboardRouterOnline(object):
         self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
-        self.active_wait('True', VISIBILITY.value)
-        self.active_wait("['cthulhu_fhtagn', 'iah_iah']", ACTIVATE.value)
+        self.assertTrue('cthulhu_fhtagn' in self.activates[-1].strings)
+        self.assertTrue('iah_iah' in self.activates[-1].strings)
 
 
-if __name__ == "__main__":
-    # pytest must provide result XML file just as rostest.rosrun would do
-    test_pkg = "lg_keyboard"
-    test_name = "test_onboard_router"
-    test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
-    pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
-    # run only itself
-    test_path = os.path.abspath(os.path.abspath(__file__))
-    # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
-    pytest.main("-vv -rfsX -s --junit-xml=%s %s" % (pytest_result_path, test_path))
+if __name__ == '__main__':
+    import rostest
+    rospy.init_node(NAME)
+    rostest.rosrun(PKG, NAME, TestOnboardRouterOnline)
