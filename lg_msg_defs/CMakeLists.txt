@@ -58,7 +58,9 @@ add_service_files(
   Volume.srv
 )
 
-generate_messages()
+generate_messages(
+  DEPENDENCIES
+)
 
 catkin_package(
   CATKIN_DEPENDS message_runtime
