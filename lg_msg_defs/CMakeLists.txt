@@ -59,6 +59,7 @@ add_service_files(
   TouchRoutes.srv
   UnLock.srv
   USCSMessage.srv
+  ViewsyncState.srv
   Volume.srv
 )
 
