@@ -16,6 +16,7 @@ add_message_files(
   ApplicationState.msg
   BrowserCmdArg.msg
   BrowserExtension.msg
+  BrowserURL.msg
   Command.msg
   EvdevEvent.msg
   EvdevEvents.msg
@@ -27,6 +28,7 @@ add_message_files(
   LockState.msg
   PortalPose.msg
   Ready.msg
+  ScreenCoordinate.msg
   Screenshot.msg
   Session.msg
   State.msg
