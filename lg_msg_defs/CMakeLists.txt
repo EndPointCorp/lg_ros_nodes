@@ -3,6 +3,8 @@ project(lg_msg_defs)
 
 find_package(catkin REQUIRED COMPONENTS
    message_generation
+   std_msgs
+   geometry_msgs
 )
 
 add_message_files(
@@ -14,6 +16,7 @@ add_message_files(
   ApplicationState.msg
   BrowserCmdArg.msg
   BrowserExtension.msg
+  BrowserURL.msg
   Command.msg
   EvdevEvent.msg
   EvdevEvents.msg
@@ -25,6 +28,7 @@ add_message_files(
   LockState.msg
   PortalPose.msg
   Ready.msg
+  ScreenCoordinate.msg
   Screenshot.msg
   Session.msg
   State.msg
@@ -55,11 +59,14 @@ add_service_files(
   TouchRoutes.srv
   UnLock.srv
   USCSMessage.srv
+  ViewsyncState.srv
   Volume.srv
 )
 
 generate_messages(
   DEPENDENCIES
+  std_msgs
+  geometry_msgs
 )
 
 catkin_package(
