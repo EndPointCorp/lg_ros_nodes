@@ -8,7 +8,7 @@ string user_agent
 string version
 string[] allowed_urls
 string user_data_dir
-lg_common/WindowGeometry geometry
-lg_common/BrowserExtension[] extensions
-lg_common/BrowserCmdArg[] command_line_args
-lg_common/BrowserCmdArg[] default_args_removal
+lg_msg_defs/WindowGeometry geometry
+lg_msg_defs/BrowserExtension[] extensions
+lg_msg_defs/BrowserCmdArg[] command_line_args
+lg_msg_defs/BrowserCmdArg[] default_args_removal
