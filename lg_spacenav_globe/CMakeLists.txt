@@ -5,13 +5,6 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
   lg_msg_defs
-  message_generation
-)
-
-
-generate_messages(
-  DEPENDENCIES
-  geometry_msgs
 )
 
 catkin_package(
