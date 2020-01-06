@@ -8,8 +8,8 @@
 #include <sstream>
 #include <vector>
 
-#include "lg_msg_defs/EvdevEvent.h"
-#include "lg_msg_defs/EvdevEvents.h"
+#include <lg_msg_defs/EvdevEvent.h>
+#include <lg_msg_defs/EvdevEvents.h>
 #include "device_service.h"
 
 const char* DEVICE_PATH_PARAM = "device_path";

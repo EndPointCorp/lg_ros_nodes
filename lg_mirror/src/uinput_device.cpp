@@ -11,9 +11,9 @@
 #include <string>
 
 #include "util.h"
-#include "lg_msg_defs/EvdevEvent.h"
-#include "lg_msg_defs/EvdevEvents.h"
-#include "lg_msg_defs/EvdevDeviceInfo.h"
+#include <lg_msg_defs/EvdevEvent.h>
+#include <lg_msg_defs/EvdevEvents.h>
+#include <lg_msg_defs/EvdevDeviceInfo.h>
 
 // emulate a typical ELO touchscreen
 const __s32 MIN_TRACKING_ID = 0;

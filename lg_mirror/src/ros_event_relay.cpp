@@ -3,8 +3,8 @@
 #include <vector>
 #include <linux/input.h>
 
-#include "lg_msg_defs/StringArray.h"
-#include "lg_msg_defs/EvdevEvents.h"
+#include <lg_msg_defs/StringArray.h>
+#include <lg_msg_defs/EvdevEvents.h>
 #include "ros_event_relay.h"
 #include "uinput_device.h"
 #include "viewport_mapper.h"

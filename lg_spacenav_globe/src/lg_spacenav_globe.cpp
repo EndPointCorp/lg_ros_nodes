@@ -7,7 +7,7 @@
 #include <geometry_msgs/Twist.h>
 
 #include "joystick_navigator.h"
-#include "lg_msg_defs/PortalPose.h"
+#include <lg_msg_defs/PortalPose.h>
 
 // #define DEBUG
 

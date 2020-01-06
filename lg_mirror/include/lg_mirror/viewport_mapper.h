@@ -4,7 +4,7 @@
 #include "ros/ros.h"
 #include <exception>
 #include <string>
-#include "lg_msg_defs/WindowGeometry.h"
+#include <lg_msg_defs/WindowGeometry.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/shared_ptr.hpp>

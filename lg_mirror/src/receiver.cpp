@@ -5,7 +5,7 @@
 #include "uinput_device.h"
 #include "viewport_mapper.h"
 #include "ros_event_relay.h"
-#include "lg_msg_defs/EvdevDeviceInfo.h"
+#include <lg_msg_defs/EvdevDeviceInfo.h>
 
 const char* DEVICE_NAME_BASE = "Virtual Touchscreen (%s)";
 const char* VIEWPORT_PARAM = "viewport";
