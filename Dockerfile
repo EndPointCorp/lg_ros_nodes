@@ -116,6 +116,7 @@ COPY ros_entrypoint.sh ${PROJECT_ROOT}
 ARG APPCTL_TAG=3.0.1
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
+RUN ln -snf /appctl/appctl_msg_defs ${PROJECT_ROOT}/
 
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml
