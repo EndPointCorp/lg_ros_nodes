@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2020-01-06)
+------------------
 * Merge branch 'master' into fix_tests
 * Contributors: Matt Vollrath
 
