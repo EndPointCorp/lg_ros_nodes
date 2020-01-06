@@ -50,11 +50,11 @@ add_dependencies(device_service
 )
 add_dependencies(viewport_mapper
   ${PROJECT_NAME}_generate_messages_cpp
-  lg_common_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
   util
 )
 add_dependencies(ros_event_relay
-  lg_common_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
   uinput_device
   viewport_mapper
 )
