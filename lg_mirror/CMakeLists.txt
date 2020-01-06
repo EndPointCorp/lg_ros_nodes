@@ -43,13 +43,12 @@ add_dependencies(touch_receiver_node
   ros_event_relay
 )
 add_dependencies(uinput_device
-  ${PROJECT_NAME}_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
 )
 add_dependencies(device_service
-  ${PROJECT_NAME}_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
 )
 add_dependencies(viewport_mapper
-  ${PROJECT_NAME}_generate_messages_cpp
   lg_msg_defs_generate_messages_cpp
   util
 )
