@@ -1188,7 +1188,7 @@ void WiimoteNode::publishImuData()
 
 void WiimoteNode::publishWiimoteState()
 {
-  wiimote::State wiimote_state_data;
+  lg_msg_defs::State wiimote_state_data;
 
   wiimote_state_data.header.stamp.sec = state_secs_;
   wiimote_state_data.header.stamp.nsec = state_nsecs_;
