@@ -113,7 +113,7 @@ COPY ros_entrypoint.sh ${PROJECT_ROOT}
 
 # clone appctl
 # TODO change to latest tag
-ARG APPCTL_TAG=master
+ARG APPCTL_TAG=3.0.1
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
 
