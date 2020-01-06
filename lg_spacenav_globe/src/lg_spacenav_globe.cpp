@@ -97,7 +97,7 @@ void PortalNavigatorNode::HandleSpaceNav(
 }
 
 void PortalNavigatorNode::HandleKioskPose(
-    const lg_spacenav_globe::PortalPose::ConstPtr& portal_pose) {
+    const lg_msg_defs::PortalPose::ConstPtr& portal_pose) {
 #ifdef DEBUG
   ROS_INFO("HandleKioskPose curr lat:%lf, lon:%lf, alt:%lf, hdg:%lf, tlt:%lf",
            portal_pose->current_pose.position.y,
