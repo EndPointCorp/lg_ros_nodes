@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "lg_spacenav_globe/PortalPose.h"
+#include "lg_msg_defs/PortalPose.h"
 
 static const double kPi = 3.141592653589793;
 static const double kPoleLat = 90.0 - 0.00001;
@@ -66,7 +66,7 @@ void JoystickNavigator::Init(
 }
 
 void JoystickNavigator::ProcessCameraMoved(
-    const lg_spacenav_globe::PortalPose& portal_pose) {
+    const lg_msg_defs::PortalPose& portal_pose) {
   // Allow touchscreen takeover.
   if (!under_joy_control_ &&
         !EqualPoses(portal_pose.current_pose, last_camera_pose_)) {
