@@ -26,7 +26,7 @@
 
 #include "ros/ros.h"
 #include "sensor_msgs/Joy.h"
-#include "wiimote/State.h"
+#include <lg_msg_defs/State.h>
 
 #include <math.h>
 

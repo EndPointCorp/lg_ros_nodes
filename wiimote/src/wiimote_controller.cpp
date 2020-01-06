@@ -47,8 +47,8 @@
 #include "sensor_msgs/Joy.h"
 #include "std_msgs/Bool.h"
 
-#include "wiimote/State.h"
-#include "wiimote/IrSourceInfo.h"
+#include <lg_msg_defs/State.h>
+#include <lg_msg_defs/IrSourceInfo.h>
 
 #include <stdarg.h>
 #include <stdio.h>
