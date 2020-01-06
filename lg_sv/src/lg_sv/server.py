@@ -1,7 +1,7 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from std_msgs.msg import String
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from rospy import ROSException
 from lg_sv import NearbyPanos
 import requests

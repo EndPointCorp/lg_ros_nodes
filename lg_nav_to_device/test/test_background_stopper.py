@@ -9,7 +9,7 @@ import rostest
 import unittest
 from lg_nav_to_device import BackgroundStopper
 from std_msgs.msg import String
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from interactivespaces_msgs.msg import GenericMessage
 
 DISABLED_ACTIVITY = 'disableme'

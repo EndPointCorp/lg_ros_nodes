@@ -6,9 +6,9 @@ NAME = 'test_adhoc_browser_director_bridge'
 import rospy
 import unittest
 
-from lg_common.msg import AdhocBrowser
-from lg_common.msg import AdhocBrowsers
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import AdhocBrowser
+from lg_msg_defs.msg import AdhocBrowsers
+from lg_msg_defs.msg import WindowGeometry
 from lg_common import ManagedWindow
 from lg_common import AdhocBrowserDirectorBridge
 from interactivespaces_msgs.msg import GenericMessage

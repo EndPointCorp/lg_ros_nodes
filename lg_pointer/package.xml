@@ -22,6 +22,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>wiimote</run_depend>
   <run_depend>lg_common</run_depend>
+  <run_depend>lg_msg_defs</run_depend>
   <run_depend>std_srvs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>sensor_msgs</run_depend>

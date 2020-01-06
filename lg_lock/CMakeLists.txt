@@ -3,31 +3,13 @@ project(lg_lock)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
-  lg_common
+  lg_msg_defs
 )
 
 catkin_python_setup()
 
-add_service_files(
-  FILES
-  IsLocked.srv
-  Lock.srv
-  UnLock.srv
-)
-
-add_message_files(
-  FILES
-  State.msg
-)
-
-generate_messages(
-  DEPENDENCIES
-  lg_common
-)
-
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_common message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_msg_defs
 )
 
 include_directories(

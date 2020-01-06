@@ -11,7 +11,7 @@ import json
 
 from lg_common import USCSService
 from std_msgs.msg import Bool
-from lg_common.srv import InitialUSCS
+from lg_msg_defs.srv import InitialUSCS
 from interactivespaces_msgs.msg import GenericMessage
 
 

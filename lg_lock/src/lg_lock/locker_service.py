@@ -1,4 +1,4 @@
-from lg_lock.msg import State
+from lg_msg_defs.msg import LockState
 
 
 class LockerService(object):

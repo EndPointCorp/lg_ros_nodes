@@ -2,7 +2,7 @@ import rospy
 import threading
 import types
 from lg_common.helpers import load_director_message, find_window_with_activity
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 
 
 class BackgroundStopper:

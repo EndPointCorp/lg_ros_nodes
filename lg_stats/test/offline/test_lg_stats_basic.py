@@ -23,8 +23,8 @@ import rospkg
 from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
 from appctl.msg import Mode
-from lg_stats.msg import Session
-from lg_stats.msg import Event
+from lg_msg_defs.msg import Session
+from lg_msg_defs.msg import Event
 from lg_stats import ROS_NODE_NAME
 from lg_stats import Processor
 from lg_stats import Submitter

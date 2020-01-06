@@ -42,6 +42,7 @@
   <run_depend>geometry_msgs</run_depend>
   <run_depend>python-cwiid</run_depend>
   <run_depend>cwiid</run_depend>
+  <run_depend>lg_msg_defs</run_depend>
   <run_depend>python-numpy</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>

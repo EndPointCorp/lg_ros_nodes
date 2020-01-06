@@ -13,9 +13,8 @@
   <author email="zdenek@endpoint.com">Zdenek Maxa</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>message_generation</build_depend>
   <build_depend>rospy</build_depend>
-  <build_depend>lg_common</build_depend>
+  <build_depend>lg_msg_defs</build_depend>
   <build_depend>libgstreamer1.0-dev</build_depend>
   <build_depend>libgstreamer-plugins-base1.0-dev</build_depend>
   <build_depend>libqt5-core</build_depend>
@@ -27,6 +26,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>lg_common</run_depend>
+  <run_depend>lg_msg_defs</run_depend>
   <run_depend>mplayer</run_depend>
   <run_depend>libqt5-core</run_depend>
   <run_depend>libqt5-gui</run_depend>

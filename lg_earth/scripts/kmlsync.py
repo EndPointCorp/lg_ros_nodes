@@ -4,7 +4,7 @@ import rospy
 import tornado.web
 import tornado.ioloop
 from lg_earth import KmlMasterHandler, KmlUpdateHandler, KmlQueryHandler
-from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
+from lg_msg_defs.srv import KmlState, PlaytourQuery, PlanetQuery
 from lg_common.webapp import ros_tornado_spin
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String

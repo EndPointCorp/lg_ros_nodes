@@ -2,7 +2,7 @@
 
 import rospy
 
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from lg_keyboard import ROS_NODE_NAME
 from lg_keyboard import OnboardLauncher
 from lg_keyboard import OnboardViewportException

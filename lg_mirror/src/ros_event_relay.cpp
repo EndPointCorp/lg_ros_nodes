@@ -9,8 +9,8 @@
 #include "uinput_device.h"
 #include "viewport_mapper.h"
 
-using lg_common::StringArray;
-using lg_common::StringArrayPtr;
+using lg_msg_defs::StringArray;
+using lg_msg_defs::StringArrayPtr;
 
 /**
  * \brief Constructor

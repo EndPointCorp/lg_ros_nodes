@@ -1,5 +1,5 @@
 from geometry_msgs.msg import Twist
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from evdev import AbsInfo, UInput, InputEvent, ecodes as e
 import time
 

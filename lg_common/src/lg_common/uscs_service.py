@@ -7,7 +7,7 @@ import threading
 import sys
 
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
+from lg_msg_defs.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
 from std_srvs.srv import EmptyResponse
 
 

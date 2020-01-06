@@ -2,8 +2,8 @@
 import rospy
 import json
 
-from lg_common.srv import USCSMessage
-from state_proxy.srv import DesiredState
+from lg_msg_defs.srv import USCSMessage
+from lg_msg_defs.srv import DesiredState
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
 from appctl.msg import Mode

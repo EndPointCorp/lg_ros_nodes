@@ -4,8 +4,8 @@ import rospy
 from std_srvs.srv import SetBool
 from lg_lock import LockerService
 
-from lg_lock.srv import IsLocked, Lock, UnLock
-from lg_lock.msg import State
+from lg_msg_defs.srv import IsLocked, Lock, UnLock
+from lg_msg_defs.msg import LockState
 
 from lg_common.helpers import run_with_influx_exception_handler
 

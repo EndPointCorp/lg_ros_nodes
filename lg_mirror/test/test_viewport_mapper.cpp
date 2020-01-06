@@ -2,8 +2,8 @@
 #include "viewport_mapper.h"
 #include "lg_common/WindowGeometry.h"
 
-using lg_common::WindowGeometry;
-using lg_common::WindowGeometryPtr;
+using lg_msg_defs::WindowGeometry;
+using lg_msg_defs::WindowGeometryPtr;
 
 using namespace ViewportMapperTypes;
 

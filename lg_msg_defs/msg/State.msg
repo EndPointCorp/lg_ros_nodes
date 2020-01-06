@@ -110,7 +110,7 @@ bool rumble
 # we make the following array extensible, rather
 # than locking its length down to four:
 
-wiimote/IrSourceInfo[] ir_tracking
+lg_msg_defs/IrSourceInfo[] ir_tracking
 
 #----------------------
 # Wiimote battery

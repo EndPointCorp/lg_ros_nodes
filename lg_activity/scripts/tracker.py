@@ -5,8 +5,8 @@ import rospy
 from std_msgs.msg import Bool
 from lg_activity import ActivitySource
 from lg_activity import ActivityTracker
-from lg_activity.srv import ActivityStates
-from lg_activity.srv import Active
+from lg_msg_defs.srv import ActivityStates
+from lg_msg_defs.srv import Active
 from lg_activity import ActivitySourceDetector
 from lg_common.helpers import run_with_influx_exception_handler
 

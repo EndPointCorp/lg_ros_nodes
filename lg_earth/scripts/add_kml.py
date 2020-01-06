@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from std_msgs.msg import String, Empty
-from lg_common.srv import USCSMessage
-from lg_common.msg import StringArray
+from lg_msg_defs.srv import USCSMessage
+from lg_msg_defs.msg import StringArray
 from interactivespaces_msgs.msg import GenericMessage
 
 import http.server
