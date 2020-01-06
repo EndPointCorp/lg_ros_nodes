@@ -5,7 +5,7 @@
 #include "uinput_device.h"
 #include "viewport_mapper.h"
 #include "ros_event_relay.h"
-#include "lg_mirror/EvdevDeviceInfo.h"
+#include "lg_msg_defs/EvdevDeviceInfo.h"
 
 const char* DEVICE_NAME_BASE = "Virtual Touchscreen (%s)";
 const char* VIEWPORT_PARAM = "viewport";
@@ -86,8 +86,8 @@ int main(int argc, char** argv) {
 
   /* call the device_info service before creating the device */
 
-  ros::ServiceClient client = n.serviceClient<lg_mirror::EvdevDeviceInfo>(device_info_service.str());
-  lg_mirror::EvdevDeviceInfo srv;
+  ros::ServiceClient client = n.serviceClient<lg_msg_defs::EvdevDeviceInfo>(device_info_service.str());
+  lg_msg_defs::EvdevDeviceInfo srv;
 
   client.waitForExistence();
   if (!client.call(srv)) {

@@ -3,8 +3,8 @@
 #include <vector>
 #include <linux/input.h>
 
-#include "lg_common/StringArray.h"
-#include "lg_mirror/EvdevEvents.h"
+#include "lg_msg_defs/StringArray.h"
+#include "lg_msg_defs/EvdevEvents.h"
 #include "ros_event_relay.h"
 #include "uinput_device.h"
 #include "viewport_mapper.h"
@@ -88,7 +88,7 @@ void RosEventRelay::OpenRoute_() {
   router_sub_ = n_.subscribe(events_topic_, 10, &RosEventRelay::HandleEventMessage, this);
 }
 
-void RosEventRelay::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
+void RosEventRelay::HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg) {
   if (should_idle_remap_) {
     ROS_DEBUG("idle remapping");
     should_idle_remap_ = false;

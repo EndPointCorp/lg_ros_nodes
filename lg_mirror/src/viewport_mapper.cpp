@@ -11,7 +11,7 @@
 
 #include "viewport_mapper.h"
 #include "util.h"
-#include "lg_common/WindowGeometry.h"
+#include "lg_msg_defs/WindowGeometry.h"
 
 using lg_msg_defs::WindowGeometry;
 using lg_msg_defs::WindowGeometryPtr;
