@@ -1,6 +1,6 @@
 // ROS includes
 #include "ros/ros.h"
-#include "lg_mirror/EvdevDeviceInfo.h"
+#include "lg_msg_defs/EvdevDeviceInfo.h"
 
 class DeviceServicer
 {

@@ -6,8 +6,8 @@
 
 #include "uinput_device.h"
 #include "viewport_mapper.h"
-#include "lg_common/StringArray.h"
-#include "lg_mirror/EvdevEvents.h"
+#include "lg_msg_defs/StringArray.h"
+#include "lg_msg_defs/EvdevEvents.h"
 
 class RosEventRelay {
   public:

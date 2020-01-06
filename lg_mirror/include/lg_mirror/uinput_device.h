@@ -5,8 +5,8 @@
 #include <string>
 #include <exception>
 
-#include "lg_mirror/EvdevEvents.h"
-#include "lg_mirror/EvdevDeviceInfo.h"
+#include "lg_msg_defs/EvdevEvents.h"
+#include "lg_msg_defs/EvdevDeviceInfo.h"
 
 namespace UinputDeviceConstants {
   const char* UINPUT_PATH = "/dev/uinput";
