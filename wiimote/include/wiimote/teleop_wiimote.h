@@ -48,7 +48,7 @@ private:
   void rumbleFeedback(int useconds);
   void setLEDFeedback(double value);
   void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
-  void wiimoteStateCallback(const wiimote::State::ConstPtr& wiistate);
+  void wiimoteStateCallback(const lg_msg_defs::State::ConstPtr& wiistate);
 
   double linear_x_max_velocity_;   // m/s
   double linear_x_min_velocity_;   // m/s

@@ -67,7 +67,7 @@ WiimoteNode::WiimoteNode()
 {
   joy_pub_ = nh_.advertise<sensor_msgs::Joy>("/joy", 1);
   imu_data_pub_ = nh_.advertise<sensor_msgs::Imu>("/imu/data", 1);
-  wiimote_state_pub_ = nh_.advertise<wiimote::State>("/wiimote/state", 1);
+  wiimote_state_pub_ = nh_.advertise<lg_msg_defs::State>("/wiimote/state", 1);
   /**
    * Optional Publications -- only advertise if the hardware is connected
    * This is done in the main loop in the ::publish method
@@ -1280,7 +1280,7 @@ void WiimoteNode::publishWiimoteState()
   // IR Tracking Data
   for (int ir_idx = 0; ir_idx < CWIID_IR_SRC_COUNT; ir_idx++)
   {
-    wiimote::IrSourceInfo irSourceInfo;
+    lg_msg_defs::IrSourceInfo irSourceInfo;
 
     if (wiimote_state_.ir_src[ir_idx].valid)
     {
