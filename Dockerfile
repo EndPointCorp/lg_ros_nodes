@@ -113,7 +113,7 @@ COPY ros_entrypoint.sh ${PROJECT_ROOT}
 
 # clone appctl
 # TODO change to latest tag
-ARG APPCTL_TAG=python3_change
+ARG APPCTL_TAG=master
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
 
@@ -128,6 +128,7 @@ COPY lg_json_config/package.xml ${PROJECT_ROOT}/lg_json_config/package.xml
 COPY lg_keyboard/package.xml ${PROJECT_ROOT}/lg_keyboard/package.xml
 COPY lg_media/package.xml ${PROJECT_ROOT}/lg_media/package.xml
 COPY lg_mirror/package.xml ${PROJECT_ROOT}/lg_mirror/package.xml
+COPY lg_msg_defs/package.xml ${PROJECT_ROOT}/lg_msg_defs/package.xml
 COPY lg_nav_to_device/package.xml ${PROJECT_ROOT}/lg_nav_to_device/package.xml
 COPY lg_lock/package.xml ${PROJECT_ROOT}/lg_lock/package.xml
 COPY lg_offliner/package.xml ${PROJECT_ROOT}/lg_offliner/package.xml
