@@ -2,6 +2,11 @@
 Changelog for package lg_builder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' into fix_tests
+* Contributors: Matt Vollrath
+
 3.0.2 (2019-11-06)
 ------------------
 

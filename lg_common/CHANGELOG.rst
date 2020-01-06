@@ -2,6 +2,29 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+  Conflicts:
+  lg_common/package.xml
+* Merge pull request `#410 <https://github.com/EndPointCorp/lg_ros_nodes/issues/410>`_ from EndPointCorp/fix_tests
+  Fix some tests
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* Fix up adhoc browser tests
+* Fix some pycodestyle glitches
+* update import paths everywhere
+* Track socat dependency again
+* Fix TCP Relay test
+  Needs to init a rospy node for appctl to work properly.
+  Also fix threading issues when the relay fails to run.
+* Contributors: Matt Vollrath, Will Plaut
+
 3.0.2 (2019-11-06)
 ------------------
 

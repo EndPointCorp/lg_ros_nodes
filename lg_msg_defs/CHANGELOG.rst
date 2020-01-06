@@ -1,35 +1,60 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package rfid_scanner
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package lg_msg_defs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
-* Merge branch 'master' into fix_tests
-* Contributors: Matt Vollrath
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'topic/msg_cleanup' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+* inter msg deps fixed (again?)
+* lg_msg_defs: add missing service file
+* lg_msg_defs: add missing msgs to CMake
+* lg_msg_defs: add missing build deps
+* fix wiimote msg path
+* CMake: add geo/std deps
+* lg_msg_defs: fix inter-msg deps
+* lg_msg_defs: cmake needs deps for msg gen
+* Remove cruft from CMake
+* cleanup deps with catkin_lint
+* Update CMake and package xmls
+* Move services to lg_msg_defs pkg
+* Move service files to lg_msg_defs
+* starting to update CMakes and package.xmls
+* msg def refactoring
+* Contributors: Will Plaut
 
-3.0.2 (2019-11-06)
-------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'topic/msg_cleanup' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+* inter msg deps fixed (again?)
+* lg_msg_defs: add missing service file
+* lg_msg_defs: add missing msgs to CMake
+* lg_msg_defs: add missing build deps
+* fix wiimote msg path
+* CMake: add geo/std deps
+* lg_msg_defs: fix inter-msg deps
+* lg_msg_defs: cmake needs deps for msg gen
+* Remove cruft from CMake
+* cleanup deps with catkin_lint
+* Update CMake and package xmls
+* Move services to lg_msg_defs pkg
+* Move service files to lg_msg_defs
+* starting to update CMakes and package.xmls
+* msg def refactoring
+* Contributors: Will Plaut
 
-3.0.1 (2019-11-06)
-------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: dkiselev
+3.0.2 (2019-11-06 13:51)
+------------------------
+
+3.0.1 (2019-11-06 13:12)
+------------------------
 
 3.0.0 (2019-10-31)
 ------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
-  Conflicts:
-  rosbridge_library/CHANGELOG.rst
-  rosbridge_library/package.xml
-  rosbridge_server/CHANGELOG.rst
-  rosbridge_server/package.xml
-* python 2 shebang to 3
-* Contributors: Will Plaut
 
 2.0.18 (2019-10-11)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
-* Contributors: Will Plaut
 
 2.0.17 (2019-09-11)
 -------------------
@@ -64,17 +89,17 @@ Forthcoming
 2.0.7 (2019-07-03)
 ------------------
 
-2.0.6 (2019-07-02)
-------------------
+2.0.6 (2019-07-02 19:53)
+------------------------
 
-2.0.5 (2019-07-02)
-------------------
+2.0.5 (2019-07-02 18:27)
+------------------------
 
-2.0.4 (2019-07-02)
-------------------
+2.0.4 (2019-07-02 15:10)
+------------------------
 
-2.0.3 (2019-07-02)
-------------------
+2.0.3 (2019-07-02 14:36)
+------------------------
 
 2.0.2 (2019-07-01)
 ------------------
@@ -87,22 +112,18 @@ Forthcoming
 
 1.20.4 (2019-06-12)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
-* Contributors: Galaxy Admin
 
-1.20.3 (2019-05-22)
--------------------
+1.20.3 (2019-05-22 10:48)
+-------------------------
 
-1.20.2 (2019-05-22)
--------------------
+1.20.2 (2019-05-22 00:59)
+-------------------------
 
 1.20.1 (2019-05-21)
 -------------------
 
 1.20.0 (2019-05-15)
 -------------------
-* PEP8 sweep
-* Contributors: Matt Vollrath
 
 1.19.16 (2019-05-14)
 --------------------
@@ -116,16 +137,14 @@ Forthcoming
 1.19.13 (2019-04-25)
 --------------------
 
-1.19.12 (2019-03-25)
---------------------
+1.19.12 (2019-03-25 18:44)
+--------------------------
 
 1.19.11 (2019-03-20)
 --------------------
 
 1.19.10 (2019-03-15)
 --------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
 1.19.9 (2019-03-06)
 -------------------
@@ -141,26 +160,18 @@ Forthcoming
 
 1.19.5 (2019-02-06)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
 1.19.4 (2019-01-30)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
 1.19.3 (2019-01-29)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
-1.19.2 (2019-01-11)
--------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
+1.19.2 (2019-01-11 16:06)
+-------------------------
 
-1.19.1 (2019-01-11)
--------------------
+1.19.1 (2019-01-11 14:42)
+-------------------------
 
 1.19.0 (2019-01-10)
 -------------------
@@ -243,11 +254,11 @@ Forthcoming
 1.17.12 (2018-01-09)
 --------------------
 
-1.17.11 (2017-12-26)
---------------------
+1.17.11 (2017-12-26 20:19)
+--------------------------
 
-1.17.10 (2017-12-26)
---------------------
+1.17.10 (2017-12-26 17:36)
+--------------------------
 
 1.17.9 (2017-12-18)
 -------------------
@@ -270,20 +281,17 @@ Forthcoming
 1.17.3 (2017-11-07)
 -------------------
 
-1.17.2 (2017-11-06)
--------------------
-
 1.17.1 (2017-10-12)
 -------------------
 
 1.17.0 (2017-10-06)
 -------------------
 
-1.16.1 (2017-08-17)
--------------------
+1.16.1 (2017-08-17 16:36)
+-------------------------
 
-1.16.0 (2017-08-17)
--------------------
+1.16.0 (2017-08-17 15:50)
+-------------------------
 
 1.15.0 (2017-08-07)
 -------------------
@@ -309,17 +317,17 @@ Forthcoming
 1.13.2 (2017-05-23)
 -------------------
 
-1.13.1 (2017-05-19)
--------------------
+1.13.1 (2017-05-19 15:45)
+-------------------------
 
-1.13.0 (2017-05-19)
--------------------
+1.13.0 (2017-05-19 11:09)
+-------------------------
 
-1.12.5 (2017-05-11)
--------------------
+1.12.5 (2017-05-11 20:30)
+-------------------------
 
-1.12.4 (2017-05-11)
--------------------
+1.12.4 (2017-05-11 13:48)
+-------------------------
 
 1.12.3 (2017-05-03)
 -------------------
@@ -336,11 +344,11 @@ Forthcoming
 1.11.4 (2017-04-06)
 -------------------
 
-1.11.3 (2017-03-31)
--------------------
+1.11.3 (2017-03-31 19:48)
+-------------------------
 
-1.11.2 (2017-03-31)
--------------------
+1.11.2 (2017-03-31 09:15)
+-------------------------
 
 1.11.1 (2017-03-28)
 -------------------
@@ -351,17 +359,17 @@ Forthcoming
 1.10.2 (2017-03-24)
 -------------------
 
-1.10.1 (2017-03-23)
--------------------
+1.10.1 (2017-03-23 16:28)
+-------------------------
 
-1.10.0 (2017-03-23)
--------------------
+1.10.0 (2017-03-23 12:27)
+-------------------------
 
-1.9.1 (2017-03-20)
-------------------
+1.9.1 (2017-03-20 15:59)
+------------------------
 
-1.9.0 (2017-03-20)
-------------------
+1.9.0 (2017-03-20 09:41)
+------------------------
 
 1.8.0 (2017-03-09)
 ------------------
@@ -372,23 +380,23 @@ Forthcoming
 1.7.10 (2017-03-02)
 -------------------
 
-1.7.9 (2017-03-01)
-------------------
+1.7.9 (2017-03-01 18:26)
+------------------------
 
-1.7.8 (2017-03-01)
-------------------
+1.7.8 (2017-03-01 10:51)
+------------------------
 
 1.7.7 (2017-02-28)
 ------------------
 
-1.7.6 (2017-02-27)
-------------------
+1.7.6 (2017-02-27 18:59)
+------------------------
 
-1.7.5 (2017-02-27)
-------------------
+1.7.5 (2017-02-27 10:09)
+------------------------
 
-1.7.4 (2017-02-27)
-------------------
+1.7.4 (2017-02-27 00:04)
+------------------------
 
 1.7.3 (2017-02-26)
 ------------------
@@ -404,72 +412,42 @@ Forthcoming
 
 1.6.5 (2017-02-08)
 ------------------
-* stop killing ros nodes because of missing device
-* Contributors: Will Plaut
 
 1.6.4 (2017-02-07)
 ------------------
 
 1.6.3 (2017-02-03)
 ------------------
-* stop dying instantly when the rfid device isn't found
-* Contributors: Jacob Minshall
 
 1.6.2 (2017-01-25)
 ------------------
-* Fix PEP8 errors
-* Contributors: Matt Vollrath
 
 1.6.1 (2017-01-12)
 ------------------
 
 1.6.0 (2016-12-23)
 ------------------
-* Made managed adhoc browser' tests' setUp and tearDown methods great a (`#319 <https://github.com/endpointcorp/lg_ros_nodes/issues/319>`_)
-  * Made managed adhoc browser' tests' setUp and tearDown methods great again
-  * Probably fixed lg_stats tests
-  * Made all ros nodes voluntarily submit exceptions to influx
-  * Initial version of lg_Ros_nodes base
-  * updated docs for lg_ros_nodes_base
-  * Ping CI
-  * Ping CI
-  * Proper name for dockerfile
-  * Dont clean up stuff - jenkins will do it
-  * Wait 2 secs to turn into active
-  * Made changes to lg_activity tests to be less load susceptible
-  * Poll tracker until becomes inactive
-  * Another try to poll activity status
-  * Even more tests refactoring
-  * Remove unnecessary asserts
-  * Let's just not
-  * Increase message emission grace time
-  * Removed even more unncecessary asserts
-  * Fix wrong var during exception handling
-  * Possible breakage fix
-* Contributors: Wojciech Ziniewicz
 
 1.5.26 (2016-12-21)
 -------------------
 
 1.5.25 (2016-12-14)
 -------------------
-* Added influx respawn influx handlers
-* Contributors: Wojciech Ziniewicz
 
-1.5.24 (2016-11-30)
--------------------
+1.5.24 (2016-11-30 22:05)
+-------------------------
 
-1.5.23 (2016-11-30)
--------------------
+1.5.23 (2016-11-30 12:57)
+-------------------------
 
 1.5.22 (2016-11-21)
 -------------------
 
-1.5.21 (2016-11-17)
--------------------
+1.5.21 (2016-11-17 18:45)
+-------------------------
 
-1.5.20 (2016-11-17)
--------------------
+1.5.20 (2016-11-17 15:50)
+-------------------------
 
 1.5.19 (2016-11-16)
 -------------------
@@ -483,20 +461,20 @@ Forthcoming
 1.5.16 (2016-11-07)
 -------------------
 
-1.5.15 (2016-11-04)
--------------------
+1.5.15 (2016-11-04 23:42)
+-------------------------
 
-1.5.14 (2016-11-04)
--------------------
+1.5.14 (2016-11-04 19:57)
+-------------------------
 
-1.5.13 (2016-11-04)
--------------------
+1.5.13 (2016-11-04 09:58)
+-------------------------
 
-1.5.12 (2016-11-03)
--------------------
+1.5.12 (2016-11-03 23:37)
+-------------------------
 
-1.5.11 (2016-11-03)
--------------------
+1.5.11 (2016-11-03 21:46)
+-------------------------
 
 1.5.10 (2016-10-31)
 -------------------
@@ -504,50 +482,32 @@ Forthcoming
 1.5.9 (2016-10-28)
 ------------------
 
-1.5.8 (2016-10-27)
-------------------
+1.5.8 (2016-10-27 21:56)
+------------------------
 
-1.5.7 (2016-10-27)
-------------------
-* rfid notification changes
-* Contributors: Jacob Minshall
+1.5.7 (2016-10-27 23:44)
+------------------------
 
-1.5.6 (2016-10-26)
-------------------
+1.5.6 (2016-10-26 18:22)
+------------------------
 
-1.5.5 (2016-10-26)
-------------------
+1.5.5 (2016-10-26 06:46)
+------------------------
 
-1.5.4 (2016-10-25)
-------------------
+1.5.4 (2016-10-25 16:20)
+------------------------
 
-1.5.3 (2016-10-25)
-------------------
+1.5.3 (2016-10-25 00:17)
+------------------------
 
-1.5.2 (2016-10-19)
-------------------
+1.5.2 (2016-10-19 09:28)
+------------------------
 
-1.5.1 (2016-10-19)
-------------------
+1.5.1 (2016-10-19 04:01)
+------------------------
 
-1.5.0 (2016-10-19)
-------------------
-* getting changelogs / package versions ready
-* small fixes to get rfids working
-* mostly working state tracking / setting
-* Fixed typos, done sqlite uscs storage node
-* Add separate node for uscs messages
-* Add separate node for uscs messages
-* initial rfid code
-* Contributors: Dmitry Kiselev, Jacob Minshall, kiselev-dv
-
-* small fixes to get rfids working
-* mostly working state tracking / setting
-* Fixed typos, done sqlite uscs storage node
-* Add separate node for uscs messages
-* Add separate node for uscs messages
-* initial rfid code
-* Contributors: Dmitry Kiselev, Jacob Minshall, kiselev-dv
+1.5.0 (2016-10-19 00:34)
+------------------------
 
 1.4.19 (2016-10-18)
 -------------------
@@ -837,9 +797,6 @@ Forthcoming
 1.1.21 (2015-10-22)
 -------------------
 
-1.1.20 (2015-10-21)
--------------------
-
 1.1.19 (2015-10-20 21:30)
 -------------------------
 
@@ -909,9 +866,6 @@ Forthcoming
 1.0.7 (2015-08-12 14:05)
 ------------------------
 
-1.0.6 (2015-08-10)
-------------------
-
 1.0.5 (2015-08-03)
 ------------------
 
@@ -944,6 +898,3 @@ Forthcoming
 
 0.0.2 (2015-07-21 17:11)
 ------------------------
-
-0.0.1 (2015-07-08)
-------------------
