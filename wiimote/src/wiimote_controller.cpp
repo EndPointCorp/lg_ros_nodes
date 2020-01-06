@@ -1291,15 +1291,15 @@ void WiimoteNode::publishWiimoteState()
 
       if (irSourceInfo.ir_size < 1)
       {
-        irSourceInfo.ir_size = wiimote::State::INVALID;
+        irSourceInfo.ir_size = lg_msg_defs::State::INVALID;
       }
     }
     else
     {
-      irSourceInfo.x = wiimote::State::INVALID_FLOAT;
-      irSourceInfo.y = wiimote::State::INVALID_FLOAT;
+      irSourceInfo.x = lg_msg_defs::State::INVALID_FLOAT;
+      irSourceInfo.y = lg_msg_defs::State::INVALID_FLOAT;
 
-      irSourceInfo.ir_size = wiimote::State::INVALID;
+      irSourceInfo.ir_size = lg_msg_defs::State::INVALID;
     }
 
     wiimote_state_data.ir_tracking.push_back(irSourceInfo);
