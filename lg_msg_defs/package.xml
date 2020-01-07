@@ -5,6 +5,7 @@
   <description>Mgs types and service defs used throughout lg_ros_node packages</description>
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
   <author email="will@endpoint.com">Will Plaut</author>
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
   <license>TODO</license>
 
 
