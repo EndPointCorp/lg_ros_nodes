@@ -12,7 +12,7 @@ from tempfile import mktemp
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JoyFeedback, JoyFeedbackArray
-from wiimote.msg import State
+from lg_msg_defs.msg import State
 from lg_msg_defs.msg import EvdevEvent, EvdevEvents
 from lg_msg_defs.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
 from lg_msg_defs.msg import StringArray
