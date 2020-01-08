@@ -2,8 +2,8 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.1 (2020-01-08)
+------------------
 * lg_pointer: fix msg path
 * Contributors: Will Plaut
 

@@ -2,8 +2,8 @@
 Changelog for package wiimote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.1 (2020-01-08)
+------------------
 * wiimote: more fixes
 * wiimote: begone errors!
 * wiimote: one more change

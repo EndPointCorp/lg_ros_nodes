@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.1 (2020-01-08)
+------------------
 * kmlalive: use wait for service instead of list services
 * Contributors: Will Plaut
 

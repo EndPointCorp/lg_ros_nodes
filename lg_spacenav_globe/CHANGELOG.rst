@@ -2,8 +2,8 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.1 (2020-01-08)
+------------------
 * lg_spacenav_globe: fix cpp file
 * lg_spacenav_globe: fix msg deps
 * cpp: use angle not quote for non local include

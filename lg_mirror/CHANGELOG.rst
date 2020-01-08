@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.1 (2020-01-08)
+------------------
 * lg_mirror: cleanup msg deps
 * cpp: use angle not quote for non local include
 * try somethings
