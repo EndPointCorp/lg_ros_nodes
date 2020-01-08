@@ -1,6 +1,5 @@
 import subprocess
 import rospy
-import rosservice
 import traceback
 import sys
 
@@ -28,6 +27,7 @@ class KmlAlive:
         rospy.logerr("XXX in first keep_alive")
         loop_timeout = 1
         counter = 0
+        rospy.sleep(1)
         with open('/dev/null', 'w') as dev_null:
             while not rospy.is_shutdown():
                 try:
@@ -37,25 +37,27 @@ class KmlAlive:
                     rospy.logwarn("Earth proc doesn't exist {}".format(e))
                     rospy.sleep(loop_timeout)
                     continue
-                if '/kmlsync/state' in rosservice.get_service_list():
-                    cmd = "lsof -Pn -p {} -a -i @127.0.0.1:8765".format(pid).split(' ')
-                    ret_value = subprocess.call(
-                        cmd,
-                        stdout=dev_null,
-                        stderr=dev_null,
-                        close_fds=True
-                    )
-                    if ret_value == 0:
-                        self.worked = True
-                        counter = 0
-                    else:
-                        counter += 1
-                        rospy.logerr("XXX found non zero value for {} counter at {}".format(pid, counter))
-                        if (counter > self.timeout_period and self.worked) or counter > self.initial_timeout:
-                            rospy.logerr("XXX RELAUNCHING worked: {}  counter: {}".format(self.worked, counter))
-                            self.earth_proc.handle_soft_relaunch()
-                            counter = 0
-                            self.worked = False
-                else:
+                try:
+                    rospy.wait_for_service('/kmlsync/state', 5)
+                except rospy.ROSException:
                     rospy.logerr("no kml sync state found")
+                    continue
+                cmd = "lsof -Pn -p {} -a -i @127.0.0.1:8765".format(pid).split(' ')
+                ret_value = subprocess.call(
+                    cmd,
+                    stdout=dev_null,
+                    stderr=dev_null,
+                    close_fds=True
+                )
+                if ret_value == 0:
+                    self.worked = True
+                    counter = 0
+                else:
+                    counter += 1
+                    rospy.logerr("XXX found non zero value for {} counter at {}".format(pid, counter))
+                    if (counter > self.timeout_period and self.worked) or counter > self.initial_timeout:
+                        rospy.logerr("XXX RELAUNCHING worked: {}  counter: {}".format(self.worked, counter))
+                        self.earth_proc.handle_soft_relaunch()
+                        counter = 0
+                        self.worked = False
                 rospy.sleep(loop_timeout)
