@@ -2,6 +2,15 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_mirror: cleanup msg deps
+* cpp: use angle not quote for non local include
+* try somethings
+* lg_mirror: fix includes
+* lg_mirror: fix cpp includes
+* Contributors: Will Plaut
+
 3.1.0 (2020-01-06)
 ------------------
 * Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup

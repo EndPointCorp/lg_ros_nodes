@@ -2,6 +2,15 @@
 Changelog for package lg_spacenav_globe
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* lg_spacenav_globe: fix cpp file
+* lg_spacenav_globe: fix msg deps
+* cpp: use angle not quote for non local include
+* lg_spacenav_globe: use lg_msg_defs path for PortalPose
+* dep fixing
+* Contributors: Will Plaut
+
 3.1.0 (2020-01-06)
 ------------------
 * Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup

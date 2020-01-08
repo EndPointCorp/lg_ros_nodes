@@ -32,6 +32,7 @@ for d in `ls catkin/src/`; do
     continue
   fi
   cd "${loc}"
+  echo "${loc}"
   git remote update 1>/dev/null
   if [ "$?" != "0" ]; then
     flag=true

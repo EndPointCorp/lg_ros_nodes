@@ -2,6 +2,16 @@
 Changelog for package wiimote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* wiimote: more fixes
+* wiimote: begone errors!
+* wiimote: one more change
+* wiimote: couple more changes
+* wiimote: fix cpp includes
+* dep fixing
+* Contributors: Will Plaut
+
 3.1.0 (2020-01-06)
 ------------------
 * Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
