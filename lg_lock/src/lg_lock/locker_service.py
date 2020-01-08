@@ -41,4 +41,4 @@ class LockerService(object):
         self.publishState()
 
     def publishState(self):
-        self.publisher.publish(State(self.state))
+        self.publisher.publish(LockState(self.state))

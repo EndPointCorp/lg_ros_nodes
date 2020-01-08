@@ -19,7 +19,7 @@ def init():
     suppress_spacenav = rospy.get_param('~suppress_spacenav', True)
     locked = rospy.get_param('~locked', False)
 
-    statePublisher = rospy.Publisher('/lg_lock/locked', State, queue_size=1, latch=True)
+    statePublisher = rospy.Publisher('/lg_lock/locked', LockState, queue_size=1, latch=True)
 
     if not password:
         rospy.logerr('No or blank password provided, exiting...')
