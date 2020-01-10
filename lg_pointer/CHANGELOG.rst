@@ -2,8 +2,8 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.2 (2020-01-10)
+------------------
 * mouse_to_pointer: open wb
 * Contributors: Will Plaut
 
