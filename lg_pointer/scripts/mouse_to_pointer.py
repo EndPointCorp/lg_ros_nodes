@@ -44,7 +44,7 @@ def handle_device_info(req):
 
 def grabCustomUdev(udev_location, rules_dest):
     tmp_rules = mktemp()
-    with open(tmp_rules, 'w') as f:
+    with open(tmp_rules, 'wb') as f:
         resp = urllib.request.urlopen(udev_location)
         if resp.code != 200:
             rospy.logerr("Could not curl the udev rules... continuing without them")
