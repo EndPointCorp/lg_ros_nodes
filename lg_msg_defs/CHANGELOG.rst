@@ -2,6 +2,9 @@
 Changelog for package lg_msg_defs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.1.1 (2020-01-08)
 ------------------
 * lg_msg_defs: fix package.xml

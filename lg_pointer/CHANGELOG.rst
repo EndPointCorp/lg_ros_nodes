@@ -2,6 +2,11 @@
 Changelog for package lg_pointer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* mouse_to_pointer: open wb
+* Contributors: Will Plaut
+
 3.1.1 (2020-01-08)
 ------------------
 * lg_pointer: fix msg path
