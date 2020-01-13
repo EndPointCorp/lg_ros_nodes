@@ -79,8 +79,6 @@ def main():
     director_ready_sub = rospy.Subscriber('/director/ready', Ready, adhocbrowser_pool.unhide_browsers)
     actors.append(director_ready_sub)
 
-    rospy.wait_for_service('/readiness_node/ready', 15)
-    rospy.wait_for_service('/lg_offliner/status', 15)
     wait_for_pub_sub_connections(actors)
 
     handle_initial_state(adhocbrowser_director_bridge.translate_director)

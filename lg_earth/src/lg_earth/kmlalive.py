@@ -37,11 +37,6 @@ class KmlAlive:
                     rospy.logwarn("Earth proc doesn't exist {}".format(e))
                     rospy.sleep(loop_timeout)
                     continue
-                try:
-                    rospy.wait_for_service('/kmlsync/state', 5)
-                except rospy.ROSException:
-                    rospy.logerr("no kml sync state found")
-                    continue
                 cmd = "lsof -Pn -p {} -a -i @127.0.0.1:8765".format(pid).split(' ')
                 ret_value = subprocess.call(
                     cmd,

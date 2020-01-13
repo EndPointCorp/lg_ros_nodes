@@ -893,13 +893,6 @@ def handle_initial_state(call_back):
     Query for initial state from state service and run
     the call back with that state if available
     """
-    # commenting out for now
-    try:
-        rospy.wait_for_service('/initial_state', 15)
-    except Exception:
-        rospy.logerr("This system does not support initial state setting")
-        return
-
     from lg_msg_defs.srv import InitialUSCS, InitialUSCSResponse
 
     initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
