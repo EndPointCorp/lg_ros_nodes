@@ -895,7 +895,7 @@ def handle_initial_state(call_back):
     """
     from lg_msg_defs.srv import InitialUSCS, InitialUSCSResponse
 
-    initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
+    initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS, persistent=False)
 
     tries = 0
     state = None

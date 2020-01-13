@@ -26,7 +26,7 @@ def init():
         print("No or blank password provided, exiting...")
         return
 
-    suppressProxy = rospy.ServiceProxy('/spacenav_wrapper/suppress', SetBool)
+    suppressProxy = rospy.ServiceProxy('/spacenav_wrapper/suppress', SetBool, persistent=False)
 
     def onChange(state):
         if suppress_spacenav:

@@ -190,7 +190,7 @@ def main():
                                  StringArray, queue_size=10)
     feedback_pub = rospy.Publisher('/joy/set_feedback',
                                    JoyFeedbackArray, queue_size=10)
-    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=True)
+    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=False)
 
     mvp = MegaViewport(viewports, arc_width)
 

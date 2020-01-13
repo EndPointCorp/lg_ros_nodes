@@ -162,7 +162,7 @@ def main():
     display_pub = rospy.Publisher('/display/switch', String, queue_size=10)
     kiosk_pub = rospy.Publisher('/kiosk/switch', String, queue_size=10)
 
-    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
+    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage, persistent=False)
 
     state_setter = StateSetter(state_pub, display_pub, kiosk_pub, runway_pub, last_uscs_service)
 

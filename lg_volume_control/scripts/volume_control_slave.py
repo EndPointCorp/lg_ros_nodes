@@ -25,7 +25,7 @@ def main():
 
 def grab_master_volume():
     try:
-        master_node_volume = rospy.ServiceProxy('volume', Volume)
+        master_node_volume = rospy.ServiceProxy('volume', Volume, persistent=False)
         rospy.sleep(1)
         volume = master_node_volume()
         rospy.logdebug("got volume {} from master".format(volume))
