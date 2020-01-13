@@ -897,7 +897,17 @@ def handle_initial_state(call_back):
 
     initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
 
-    state = initial_state_service.call()
+    tries = 0
+    state = None
+    while not state and not rospy.is_shutdown():
+        try:
+            tries += 1
+            state = initial_state_service.call()
+        except rospy.service.ServiceException:
+            if tries > 10:
+                raise
+            rospy.sleep(1.0)
+
     if state and state != InitialUSCSResponse():
         rospy.loginfo('got initial state: %s for callback %s' % (state.message, call_back))
         call_back(state)
