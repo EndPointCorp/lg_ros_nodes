@@ -81,7 +81,7 @@ def main():
                                  StringArray, queue_size=10)
     feedback_pub = rospy.Publisher('/joy/set_feedback',
                                    JoyFeedbackArray, queue_size=10)
-    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=True)
+    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=False)
     mouse_timeout = int(rospy.get_param('~mouse_timeout', 10))
     sleep_time = 0.01  # ooo magic, pretty
 
