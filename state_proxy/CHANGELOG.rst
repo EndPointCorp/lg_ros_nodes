@@ -2,6 +2,15 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#412 <https://github.com/EndPointCorp/lg_ros_nodes/issues/412>`_ from EndPointCorp/no_waiting
+  Fix some service waiting and other issues
+* Ban persistent ServiceProxy
+  Known to be broken in this configuration.
+* Don't wait for services
+* Contributors: Matt Vollrath
+
 3.1.2 (2020-01-10)
 ------------------
 

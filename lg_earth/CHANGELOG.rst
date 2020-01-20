@@ -2,6 +2,18 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#412 <https://github.com/EndPointCorp/lg_ros_nodes/issues/412>`_ from EndPointCorp/no_waiting
+  Fix some service waiting and other issues
+* Ban persistent ServiceProxy
+  Known to be broken in this configuration.
+* Clean up KmlAlive
+  * Use subprocess.DEVNULL
+  * Don't recurse on error
+* Don't wait for services
+* Contributors: Matt Vollrath
+
 3.1.2 (2020-01-10)
 ------------------
 

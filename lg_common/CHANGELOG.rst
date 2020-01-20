@@ -2,6 +2,21 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#413 <https://github.com/EndPointCorp/lg_ros_nodes/issues/413>`_ from EndPointCorp/topic/fix_js_msg_types
+  lots of missing msg/srv updates in js files
+* random problems that need fixin
+* lots of missing msg/srv updates in js files
+* Merge pull request `#412 <https://github.com/EndPointCorp/lg_ros_nodes/issues/412>`_ from EndPointCorp/no_waiting
+  Fix some service waiting and other issues
+* Ban persistent ServiceProxy
+  Known to be broken in this configuration.
+* Retry initial USCS state
+* Don't wait for pubsub connections either
+* Don't wait for services
+* Contributors: Matt Vollrath, Will Plaut
+
 3.1.2 (2020-01-10)
 ------------------
 
