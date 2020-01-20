@@ -114,7 +114,7 @@ StreetviewClient.prototype.init_last_view = function(ros) {
   var director = new ROSLIB.Service({
     ros: ros,
     name: '/uscs/message',
-    serviceType: 'lg_common/USCSMessage'
+    serviceType: 'lg_msg_defs/USCSMessage'
   });
 
   var directorTopic = new ROSLIB.Topic({

@@ -66,7 +66,7 @@ function init() {
   var initialPanoService = new ROSLIB.Service({
     ros: ros,
     name: '/panoviewer/panoid_state',
-    serviceType: 'lg_sv/PanoIdState'
+    serviceType: 'lg_msg_defs/PanoIdState'
   });
   initialPanoService.callService({}, function(resp) {
     var datum = { data: resp.panoid };

@@ -100,7 +100,7 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
   this.stateTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/panoviewer/state',
-    messageType: 'lg_common/ApplicationState',
+    messageType: 'lg_msg_defs/ApplicationState',
     throttle_rate: 16,
     queue_length: 1
   });

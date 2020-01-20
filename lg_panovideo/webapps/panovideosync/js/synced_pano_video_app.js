@@ -155,7 +155,7 @@ class SyncedPanoVideoApp {
       this.stateTopic = new ROSLIB.Topic({
         ros: this.ros,
         name: '/panovideo/state',
-        messageType: 'lg_common/ApplicationState',
+        messageType: 'lg_msg_defs/ApplicationState',
         throttle_rate: 16,
         queue_length: 1,
       });
