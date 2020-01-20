@@ -14,7 +14,7 @@ class StateChanger:
     """
     def __init__(self):
         self.pubbers = {}
-        self.message_type_s = 'lg_common/ApplicationState'
+        self.message_type_s = 'lg_msg_defs/ApplicationState'
         self.message_type = ApplicationState
         self.lock = Lock()
 
