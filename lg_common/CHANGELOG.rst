@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.4 (2020-01-24)
+------------------
 * Merge pull request `#414 <https://github.com/EndPointCorp/lg_ros_nodes/issues/414>`_ from EndPointCorp/topic/image_viewer_fixes_and_tracebacks
   Topic/image viewer fixes and tracebacks
 * changes need to be cleaned up
