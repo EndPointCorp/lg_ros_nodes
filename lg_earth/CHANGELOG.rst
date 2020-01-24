@@ -2,6 +2,9 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.1.3 (2020-01-20)
 ------------------
 * Merge pull request `#412 <https://github.com/EndPointCorp/lg_ros_nodes/issues/412>`_ from EndPointCorp/no_waiting
