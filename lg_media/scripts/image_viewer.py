@@ -13,6 +13,9 @@ from lg_msg_defs.msg import ImageViews, ImageView
 from interactivespaces_msgs.msg import GenericMessage
 
 
+def make_key_from_image(image):
+    return "{}_{}_{}_{}_{}".format(image.url, image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
+
 class Image(ManagedApplication):
     def __init__(self, cmd, window, img_application, img_path, respawn=True):
         self.img_application = img_application
@@ -62,9 +65,8 @@ class ImageViewer():
         self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
-        for _image, _image_obj in list(current_images.items()):
-            if _image.url == image.url and \
-                    _image.geometry == image.geometry:
+        for key_from_image, _image_obj in list(current_images.items()):
+            if key_from_image == make_key_from_image(image):
                 return _image_obj
         return None
 
@@ -82,18 +84,21 @@ class ImageViewer():
             if duplicate_image:
                 # rospy.logerr('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
-                new_current_images[image] = duplicate_image
+                new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
             rospy.logdebug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
 
         for image_obj in images_to_remove:
+            rospy.logerr('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
             if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
         #images_to_remove = []
         for image in images_to_add:
-            new_current_images[image] = self._create_image(image)
+            created_image = None
+            created_image = self._create_image(image)
+            new_current_images[make_key_from_image(image)] = created_image
 
         self.current_images = new_current_images
 
