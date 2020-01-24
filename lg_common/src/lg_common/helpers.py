@@ -888,7 +888,7 @@ def generate_hash(string, length=8, random_suffix=False):
         return hash_str
 
 
-def handle_initial_state(call_back):
+def handle_initial_state(call_back, attempts=20):
     """
     Query for initial state from state service and run
     the call back with that state if available
@@ -904,7 +904,7 @@ def handle_initial_state(call_back):
             tries += 1
             state = initial_state_service.call()
         except rospy.service.ServiceException:
-            if tries > 10:
+            if tries > attempts:
                 raise
             rospy.sleep(1.0)
 
