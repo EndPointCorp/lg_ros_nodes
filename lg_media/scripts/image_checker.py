@@ -76,7 +76,7 @@ class ImageChecker():
         )
         feh_proc_assets = feh_proc.communicate()
         if feh_proc_assets[0]:
-            feh_assets = feh_proc_assets[0].strip().split(b'\n')
+            feh_assets = feh_proc_assets[0].decode().strip().split('\n')
         return feh_assets
 
 
