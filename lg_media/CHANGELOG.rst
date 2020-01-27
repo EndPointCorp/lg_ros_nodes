@@ -2,6 +2,11 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* image_viewer: initial scene functionality
+* Contributors: Jacob Minshall
+
 3.1.5 (2020-01-24)
 ------------------
 * decode in the right place
