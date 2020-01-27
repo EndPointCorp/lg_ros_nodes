@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.6 (2020-01-27)
+------------------
 * image_viewer: initial scene functionality
 * Contributors: Jacob Minshall
 
