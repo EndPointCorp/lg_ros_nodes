@@ -11,6 +11,7 @@ from lg_common import ManagedApplication
 from lg_common import ManagedWindow
 from lg_msg_defs.msg import ImageViews, ImageView
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 
 
 def make_key_from_image(image):
@@ -155,6 +156,15 @@ def main():
 
     rospy.Subscriber('/director/scene', GenericMessage, viewer.director_translator)
     rospy.Subscriber('/image/views', ImageViews, viewer.handle_image_views)
+
+    handle_initial_state(viewer.director_translator)
+
+    def handle_soft(*args, **kwargs):
+        msg = GenericMessage()
+        msg.message = '{}'
+        msg.type = 'json'
+        viewer.director_translator(msg)
+    make_soft_relaunch_callback(handle_soft, groups=['media'])
 
     rospy.spin()
 
