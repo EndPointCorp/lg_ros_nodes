@@ -1015,6 +1015,7 @@ def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
     rospy.logdebug("Going to write: '%s' to influx" % data)
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5.0)
         server_address = (host, port)
         sock.connect(server_address)
         sock.sendall(data.encode('utf-8'))
