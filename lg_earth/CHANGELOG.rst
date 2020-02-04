@@ -2,6 +2,11 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* shutdown fixes
+* Contributors: Will Plaut
+
 3.1.6 (2020-01-27)
 ------------------
 

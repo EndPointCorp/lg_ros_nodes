@@ -2,6 +2,14 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Set timeout when writing to influx
+  Reduces shutdown delay when the telegraf server is unreachable.
+* Remove post-exception handling sleep
+  Blocking socket should not need this.
+* Contributors: Matt Vollrath
+
 3.1.6 (2020-01-27)
 ------------------
 
