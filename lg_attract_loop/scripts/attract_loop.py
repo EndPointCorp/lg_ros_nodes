@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import rospy
@@ -8,7 +8,7 @@ from std_msgs.msg import Bool
 from std_msgs.msg import String
 from lg_attract_loop import AttractLoop
 from lg_attract_loop import DirectorAPIProxy
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import run_with_influx_exception_handler
 
@@ -66,6 +66,7 @@ def main():
     rospy.Subscriber(activity_topic, Bool, attract_loop._process_activity_state_change)
 
     rospy.spin()
+
 
 if __name__ == "__main__":
     run_with_influx_exception_handler(main, NODE_NAME)

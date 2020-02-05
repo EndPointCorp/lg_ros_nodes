@@ -1,7 +1,7 @@
 import rospy
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from std_msgs.msg import String
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from rospy import ROSException
 from lg_sv import NearbyPanos
 import requests
@@ -30,7 +30,7 @@ COEFFICIENT_HIGH = 3
 ZOOM_MIN = 40
 ZOOM_MAX = 40
 INITIAL_ZOOM = 40
-IDLE_TIME_UNTIL_SNAP = 1.25
+#IDLE_TIME_UNTIL_SNAP = 1.25
 SNAP_DURATION = 15.0
 
 
@@ -118,10 +118,10 @@ class StreetviewUtils:
 
 class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                 nav_sensitivity, space_nav_interval, x_threshold=X_THRESHOLD,
-                 nearby_panos=NearbyPanos(), metadata_pub=None,
-                 zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN, tick_rate=180,
-                 director_pub=None, server_type=""):
+                 nav_sensitivity, space_nav_interval, idle_time_until_snap,
+                 x_threshold=X_THRESHOLD, nearby_panos=NearbyPanos(),
+                 metadata_pub=None, zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN,
+                 tick_rate=180, director_pub=None, server_type=""):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
@@ -132,6 +132,7 @@ class PanoViewerServer:
         self.tilt_max = tilt_max
         self.tilt_min = tilt_min
         self.space_nav_interval = space_nav_interval
+        self.idle_time_until_snap = idle_time_until_snap
         self.nearby_panos = nearby_panos
         self.x_threshold = x_threshold
         self.metadata_pub = metadata_pub
@@ -180,7 +181,7 @@ class PanoViewerServer:
         npov = self.project_pov(self.last_twist_msg, dt)
         try:
             self.pub_pov(npov)
-        except ROSException, error:
+        except ROSException as error:
             rospy.logwarn("Could not publish pov during _tick: %s" % error)
 
     def start_timer(self):
@@ -259,10 +260,10 @@ class PanoViewerServer:
     def tilt_snappy(self, twist_msg, coefficient):
         now = rospy.get_time()
         idle_t = now - self.last_nongutter_nav_msg_t
-        if idle_t < IDLE_TIME_UNTIL_SNAP:
+        if idle_t < self.idle_time_until_snap:
             return self.tilt_not_snappy(twist_msg, coefficient)
 
-        snap_t = idle_t - IDLE_TIME_UNTIL_SNAP
+        snap_t = idle_t - self.idle_time_until_snap
         tilt = self.pov.x * max(1 - (snap_t / SNAP_DURATION), 0)
         return tilt
 

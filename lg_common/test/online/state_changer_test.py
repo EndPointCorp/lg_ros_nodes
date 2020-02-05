@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_common'
 NAME = 'test_state_changer'
@@ -7,8 +7,8 @@ import time
 import rospy
 import unittest
 
-from lg_common.msg import StringArray
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import StringArray
+from lg_msg_defs.msg import ApplicationState
 from lg_common import StateChanger
 
 LPNODE = NAME
@@ -146,6 +146,7 @@ class TestStateChanger(unittest.TestCase):
 
     def get_name_for_index(self, index):
         return self.subs[index][SUB].name
+
 
 if __name__ == '__main__':
     rospy.init_node(NAME)

@@ -63,7 +63,7 @@ class CaptureWebcam:
         if self.framerate is not None:
             caps += ',framerate={}/1'.format(self.framerate)
 
-        args = map(lambda arg: arg.format(
+        args = [arg.format(
             device=self.device,
             caps=caps,
             max_quantizer=self.max_quantizer,
@@ -71,7 +71,7 @@ class CaptureWebcam:
             addr=self.janus_host,
             port=self.janus_port,
             flip_method=self.flip_method,
-        ), CAPTURE_ARGS)
+        ) for arg in CAPTURE_ARGS]
 
         cmd = [CAPTURE_CMD]
         cmd.extend(args)

@@ -11,10 +11,10 @@
 # TODO: Catch wiimote being turned off.
 
 
-import WIIMote
-from wiimoteExceptions import *
-from wiiutils import *
-from wiistate import *
+from . import WIIMote
+from .wiimoteExceptions import *
+from .wiiutils import *
+from .wiistate import *
 import numpy as np 
 
 mySampleRate = 1
@@ -60,7 +60,7 @@ try:
   #********************
   
   #ac.integrate()
-except WiimoteError, e:
+except WiimoteError as e:
   report(e)
   exit()
 

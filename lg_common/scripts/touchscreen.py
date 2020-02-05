@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 
 
-from urllib import url2pathname
+from urllib.request import url2pathname
 from std_msgs.msg import String
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import x_available_or_raise, check_www_dependency
 from lg_common.helpers import make_soft_relaunch_callback
 from lg_common.helpers import run_with_influx_exception_handler
@@ -92,6 +92,7 @@ def main():
     rospy.Subscriber('{}/debug'.format(rospy.get_name()), String, handle_debug_sock_msg)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

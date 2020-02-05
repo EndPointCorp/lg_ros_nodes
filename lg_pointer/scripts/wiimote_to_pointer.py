@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from threading import Lock
 import math
@@ -8,10 +8,10 @@ import subprocess
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JoyFeedback, JoyFeedbackArray
-from wiimote.msg import State
-from lg_mirror.msg import EvdevEvent, EvdevEvents
-from lg_mirror.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import State
+from lg_msg_defs.msg import EvdevEvent, EvdevEvents
+from lg_msg_defs.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
+from lg_msg_defs.msg import StringArray
 from std_srvs.srv import Empty
 from lg_pointer import MegaViewport
 
@@ -100,7 +100,8 @@ class WiiMoteToPointer:
             self.x = 0
             self.y = 0
 
-        vp, vpx, vpy = self.mvp.orientation_to_coords(self.z, self.x)
+        if not self.mvp.clamp(self.z, self.x):
+            vp, vpx, vpy = self.mvp.orientation_to_coords(self.z, self.x)
 
         if moving and vp != self.last_vp:
             routes_msg = StringArray(strings=[vp])
@@ -189,7 +190,7 @@ def main():
                                  StringArray, queue_size=10)
     feedback_pub = rospy.Publisher('/joy/set_feedback',
                                    JoyFeedbackArray, queue_size=10)
-    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=True)
+    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=False)
 
     mvp = MegaViewport(viewports, arc_width)
 

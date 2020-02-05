@@ -33,12 +33,13 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
 
   ros.on('close', function() {
     console.log("Disconnected from rosbridge");
+    window.location.href = window.location.href;
   });
 
   this.povListener = new ROSLIB.Topic({
     ros : ros,
     name : '/panoviewer/pov',
-    throttle_rate: 33,
+    throttle_rate: 16,
     queue_length: 1,
     messageType : 'geometry_msgs/Quaternion'
   });
@@ -50,7 +51,9 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
   this.panoListener = new ROSLIB.Topic({
     ros : ros,
     name : '/panoviewer/panoid',
-    messageType : 'std_msgs/String'
+    messageType : 'std_msgs/String',
+    throttle_rate : 16,
+    queue_length : 1,
   });
 
   this.panoHandler = function(msg) {
@@ -64,7 +67,7 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
   this.directorListener = new ROSLIB.Topic({
     ros: ros,
     name: '/director/scene',
-    throttle_rate: 33,
+    throttle_rate: 16,
     queue_length: 1,
     messageType: 'interactivespaces_msgs/GenericMessage'
   });
@@ -97,16 +100,16 @@ function PanoClient(ros, vertFov, aspectRatio, yawRads, pitchRads, rollRads,
   this.stateTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/panoviewer/state',
-    messageType: 'lg_common/ApplicationState',
-    throttle_rate: 33,
-    queue_length: 10
+    messageType: 'lg_msg_defs/ApplicationState',
+    throttle_rate: 16,
+    queue_length: 1
   });
 
   this.timeTopic = new ROSLIB.Topic({
     ros: ros,
     name: '/panoviewer/video_time',
     messageType: 'std_msgs/Float64',
-    throttle_rate: 33,
+    throttle_rate: 16,
     queue_length: 1
   });
 

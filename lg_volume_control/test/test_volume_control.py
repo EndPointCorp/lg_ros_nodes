@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 PKG = 'lg_volume_control'
 NAME = 'test_volume_control'
 
 import unittest
 import os
 
-from lg_volume_control import VolumeControl
+from lg_volume_control import VolumeControlMaster
 from std_msgs.msg import UInt8, Int8
 
 from lg_common.helpers import write_log_to_file
@@ -23,7 +23,7 @@ class TestVolumeControl(unittest.TestCase):
     def setUp(self):
         self.mock_pub = MockPub()
         # setting scale to 1 to make tests easier to read
-        self.volume_controller = VolumeControl(self.mock_pub, scale=1)
+        self.volume_controller = VolumeControlMaster(self.mock_pub, scale=1)
 
     def test_initial_volume(self):
         """
@@ -31,8 +31,8 @@ class TestVolumeControl(unittest.TestCase):
         """
         self.assertEqual(len(self.mock_pub.data), 1)
         write_log_to_file("%s" % self.mock_pub.data[0])
-        self.assertGreaterEqual(self.mock_pub.data[0], self.volume_controller.default / 2)
-        self.assertLessEqual(self.mock_pub.data[0], self.volume_controller.default)
+        self.assertGreaterEqual(self.mock_pub.data[0], self.volume_controller.default_volume / 2)
+        self.assertLessEqual(self.mock_pub.data[0], self.volume_controller.default_volume)
 
     def test_max_volume(self):
         """
@@ -47,14 +47,14 @@ class TestVolumeControl(unittest.TestCase):
         # craft a message and call the handle_volume callback
         increment_message = Int8()
         increment_message.data = increment
-        self.volume_controller.handle_volume_change_request(increment_message)
+        self.volume_controller.handle_change_volume(increment_message)
 
         # check that we are at 100 volume now
         self.assertEqual(self.mock_pub.data[-1], 100)
 
         # increment another 1 volume
         increment_message.data = 1
-        self.volume_controller.handle_volume_change_request(increment_message)
+        self.volume_controller.handle_change_volume(increment_message)
 
         # check that we are _still_ 100 (we should never go above 100 volume)
         self.assertEqual(self.mock_pub.data[-1], 100)
@@ -70,14 +70,14 @@ class TestVolumeControl(unittest.TestCase):
         # craft a message and call the handle_volume callback
         increment_message = Int8()
         increment_message.data = increment
-        self.volume_controller.handle_volume_change_request(increment_message)
+        self.volume_controller.handle_change_volume(increment_message)
 
         # check that we are at 0  volume now
         self.assertEqual(self.mock_pub.data[-1], 0)
 
         # decrement another 1 volume
         increment_message.data = -1
-        self.volume_controller.handle_volume_change_request(increment_message)
+        self.volume_controller.handle_change_volume(increment_message)
 
         # check that we are _still_ 0 (we should never go below 0 volume)
         self.assertEqual(self.mock_pub.data[-1], 0)

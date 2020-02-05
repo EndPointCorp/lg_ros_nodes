@@ -89,7 +89,7 @@ def wait_for_assert_equal(val1, val2, timeout, cb=None):
     """
     Waits for two values to become equal within specified timeout
     """
-    for iteration in xrange(0, timeout):
+    for iteration in range(0, timeout):
         if (val1) == (val2):
             return True
         else:
@@ -97,4 +97,4 @@ def wait_for_assert_equal(val1, val2, timeout, cb=None):
             if cb:
                 cb()
             time.sleep(1)
-    return False
+    raise AssertionError('timed out waiting for:\n{}\n ==\n{}'.format(val1, val2))

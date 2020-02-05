@@ -2,7 +2,7 @@ import threading
 
 from lg_common import ManagedWindow
 from lg_common.helpers import load_director_message
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 from lg_mirror.gst_publisher import GstPublisher
 from lg_mirror.constants import MIRROR_ACTIVITY_TYPE
 from lg_mirror.utils import aspect_scale_source
@@ -73,7 +73,7 @@ class CaptureViewport:
         self._previous_width = target_width
         self._previous_height = target_height
 
-        pipeline = ' '.join(map(lambda arg: arg.format(
+        pipeline = ' '.join([arg.format(
             startx=self.geometry.x,
             starty=self.geometry.y,
             # Subtract 1 from width/height to workaround gstreamer wierdness.
@@ -85,7 +85,7 @@ class CaptureViewport:
             target_width=target_width,
             target_height=target_height,
             display=self.display
-        ), CAPTURE_PIPELINE))
+        ) for arg in CAPTURE_PIPELINE])
 
         self._gst = GstPublisher(pipeline, self.image_pub)
         self._gst.start()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_mirror'
 NAME = 'test_capture_viewport'
@@ -6,7 +6,7 @@ NAME = 'test_capture_viewport'
 import os
 import unittest
 from PIL import Image
-from cStringIO import StringIO
+from io import BytesIO
 
 import rospy
 from lg_common import ManagedWindow
@@ -111,7 +111,7 @@ class TestCaptureViewport(unittest.TestCase):
         rospy.sleep(1.0)
 
         first_image = self.image_capture.msgs[0]
-        first_image_data = StringIO(first_image.data)
+        first_image_data = BytesIO(first_image.data)
         first_image_jpeg = Image.open(first_image_data)
         self.assertEqual(CAPTURE_WIDTH, first_image_jpeg.size[0])
         self.assertEqual(CAPTURE_HEIGHT, first_image_jpeg.size[1])
@@ -122,7 +122,7 @@ class TestCaptureViewport(unittest.TestCase):
         rospy.sleep(1.0)
 
         last_image = self.image_capture.msgs[-1]
-        last_image_data = StringIO(last_image.data)
+        last_image_data = BytesIO(last_image.data)
         last_image_jpeg = Image.open(last_image_data)
         self.assertEqual(CAPTURE_WIDTH / 2, last_image_jpeg.size[0])
         self.assertEqual(CAPTURE_HEIGHT / 2, last_image_jpeg.size[1])

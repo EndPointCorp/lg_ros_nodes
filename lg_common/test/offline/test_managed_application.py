@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 PKG = 'lg_common'
 NAME = 'test_managed_application'
 
@@ -7,7 +7,7 @@ import os
 import unittest
 import weakref
 
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from appctl_support import ProcController
 from lg_common import ManagedApplication, ManagedWindow
 

@@ -1,14 +1,15 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import rospy
 
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from lg_common.helpers import add_url_params
 from lg_common.helpers import check_www_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise
 from lg_common.helpers import make_soft_relaunch_callback
 from lg_common.helpers import run_with_influx_exception_handler
+from lg_common.helpers import combine_viewport_geometries
 
 
 DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
@@ -20,7 +21,12 @@ NODE_NAME = 'panoviewer_browser'
 def main():
     rospy.init_node(NODE_NAME, anonymous=True)
 
-    geometry = ManagedWindow.get_viewport_geometry()
+    viewports = rospy.get_param('~viewports', None)
+    if viewports is None:
+        geometry = ManagedWindow.get_viewport_geometry()
+    else:
+        viewports = [x.strip() for x in viewports.split(',')]
+        geometry = combine_viewport_geometries(viewports)
     server_type = rospy.get_param('~server_type', 'streetview')
     url = str(rospy.get_param('~url', DEFAULT_URL))
     field_of_view = float(rospy.get_param('~fov', DEFAULT_FOV))
@@ -40,6 +46,7 @@ def main():
     zoom = str(rospy.get_param('~zoom', 'false')).lower()
     initial_zoom = rospy.get_param('~initial_zoom', 3)
     kiosk = rospy.get_param('~kiosk', True)
+    map_api_key = rospy.get_param('/google/maps_api_key', None)
 
     # put parameters into one big url
     url = add_url_params(url,
@@ -57,6 +64,11 @@ def main():
                          rosbridgeHost=rosbridge_host,
                          rosbridgePort=rosbridge_port,
                          rosbridgeSecure=rosbridge_secure)
+
+    rospy.loginfo('Use Google maps API key: {}'.format(map_api_key))
+
+    if map_api_key:
+        url = add_url_params(url, map_api_key=map_api_key)
 
     # check if server is already there
     host = discover_host_from_url(url)
@@ -76,11 +88,18 @@ def main():
     state = ApplicationState.STOPPED
     managed_browser.set_state(state)
 
+    def state_proxy(msg):
+        if not msg.state == ApplicationState.VISIBLE:
+            managed_browser.set_state(ApplicationState.HIDDEN)
+        else:
+            managed_browser.set_state(ApplicationState.VISIBLE)
+
     # listen to state messages
-    rospy.Subscriber('/%s/state' % server_type, ApplicationState, managed_browser.handle_state_msg)
+    rospy.Subscriber('/%s/state' % server_type, ApplicationState, state_proxy)
     make_soft_relaunch_callback(managed_browser.handle_soft_relaunch, groups=['streetview'])
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

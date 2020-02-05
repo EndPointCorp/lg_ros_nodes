@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 
 from lg_keyboard.onboard_router import OnboardRouter
 from lg_common.helpers import handle_initial_state
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import Bool
 from lg_common.helpers import run_with_influx_exception_handler

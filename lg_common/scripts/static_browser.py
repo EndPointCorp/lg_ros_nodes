@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 
 from lg_common import ManagedBrowser, ManagedWindow
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import check_www_dependency, discover_host_from_url, discover_port_from_url
 from lg_common.helpers import run_with_influx_exception_handler
 from std_msgs.msg import String
@@ -60,6 +60,7 @@ def main():
     rospy.Subscriber('{}/debug'.format(rospy.get_name()), String, handle_debug_sock_msg)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

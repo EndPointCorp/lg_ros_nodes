@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_replay'
 NAME = 'test_lg_replay'
@@ -15,16 +15,16 @@ from interactivespaces_msgs.msg import GenericMessage
 class MockDevice:
     def __init__(self):
         self.events = [
-            InputEvent(1441716733L, 879280L, 3, 0, 9888L),
-            InputEvent(1441716733L, 879280L, 3, 1, 15600L),
-            InputEvent(1441716733L, 879280L, 0, 0, 0L),
-            InputEvent(1441716733L, 981276L, 3, 53, 9872L),
-            InputEvent(1441716733L, 981276L, 3, 54, 15664L),
-            InputEvent(1441716733L, 981276L, 3, 0, 9872L),
-            InputEvent(1441716733L, 981276L, 3, 1, 15664L),
-            InputEvent(1441716733L, 981276L, 0, 0, 0L),
-            InputEvent(1441716733L, 982263L, 3, 57, -1L),
-            InputEvent(1441716733L, 982263L, 1, 330, 0L)  # < this event gets tested
+            InputEvent(1441716733, 879280, 3, 0, 9888),
+            InputEvent(1441716733, 879280, 3, 1, 15600),
+            InputEvent(1441716733, 879280, 0, 0, 0),
+            InputEvent(1441716733, 981276, 3, 53, 9872),
+            InputEvent(1441716733, 981276, 3, 54, 15664),
+            InputEvent(1441716733, 981276, 3, 0, 9872),
+            InputEvent(1441716733, 981276, 3, 1, 15664),
+            InputEvent(1441716733, 981276, 0, 0, 0),
+            InputEvent(1441716733, 982263, 3, 57, -1),
+            InputEvent(1441716733, 982263, 1, 330, 0)  # < this event gets tested
         ]
 
     def read_loop(self):
@@ -57,6 +57,7 @@ class TestReplay(unittest.TestCase):
 
         self.assertEqual(message['code'], 330)
         self.assertEqual(message['value'], 0)
+
 
 if __name__ == '__main__':
     import rostest

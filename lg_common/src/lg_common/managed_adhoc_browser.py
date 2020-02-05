@@ -1,15 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
-import commands
+import subprocess
 import time
 import json
 
 from lg_common import ManagedBrowser
-from lg_common.msg import WindowGeometry
-from lg_common.msg import ApplicationState
-from lg_common.msg import ApplicationState
-from lg_common.msg import AdhocBrowser, AdhocBrowsers
+from lg_msg_defs.msg import WindowGeometry
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.msg import AdhocBrowser, AdhocBrowsers
 
 
 class ManagedAdhocBrowser(ManagedBrowser):
@@ -17,7 +17,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
                  default_args_removal=[],
                  extensions=[], binary='/usr/bin/google-chrome',
                  user_agent=None, slug=None, url=None, uid=None,
-                 scene_slug=None, preload=False, kiosk=True):
+                 scene_slug=None, preload=False, user_data_dir=None, kiosk=True):
 
         self.scene_slug = scene_slug
         self.slug = slug
@@ -44,6 +44,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             extensions=extensions,
             binary=binary,
             log_level=log_level,
+            user_data_dir=user_data_dir,
             kiosk=kiosk)
 
     def __str__(self):
@@ -79,7 +80,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
         """
         try:
             cmd = 'chromium-remote.py --page-retries=10 --debug-host=localhost --debug-port={} --page-url="{}"'.format(self.debug_port, url)
-            status, output = commands.getstatusoutput(cmd)
+            status, output = subprocess.getstatusoutput(cmd)
             if status == 0:
                 self.url = url
                 rospy.loginfo("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
@@ -87,7 +88,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             else:
                 rospy.logerr("URL change command: %s, returned a status code: %s and output %s" % (cmd, status, output))
                 return False
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("URL change command: %s, returned a status code: %s and output %s because %s" % (cmd, status, output, e))
             return False
 

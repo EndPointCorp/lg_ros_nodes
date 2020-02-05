@@ -1,1 +1,1 @@
-from package_to_debian import *
+from .package_to_debian import *

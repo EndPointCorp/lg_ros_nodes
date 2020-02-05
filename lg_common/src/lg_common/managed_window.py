@@ -3,8 +3,8 @@ import subprocess
 import threading
 import re
 
-from lg_common.msg import WindowGeometry
-import awesome
+from lg_msg_defs.msg import WindowGeometry
+from . import awesome
 
 
 class ManagedWindow(object):
@@ -21,6 +21,17 @@ class ManagedWindow(object):
 
         rospy.on_shutdown(self._cleanup_proc)
 
+    def __str__(self):
+        return 'name={name}, class={cls}, instance={inst}, {w}x{h} {x},{y}'.format(
+            name=self.w_name,
+            cls=self.w_class,
+            inst=self.w_instance,
+            w=self.geometry.width if self.geometry is not None else None,
+            h=self.geometry.height if self.geometry is not None else None,
+            x=self.geometry.x if self.geometry is not None else None,
+            y=self.geometry.y if self.geometry is not None else None,
+        )
+
     @staticmethod
     def parse_geometry(geometry):
         """
@@ -34,7 +45,7 @@ class ManagedWindow(object):
             raise ValueError(
                 'Invalid window geometry: {}'.format(geometry))
 
-        dims = map(int, m.groups())
+        dims = list(map(int, m.groups()))
         return WindowGeometry(width=dims[0], height=dims[1],
                               x=dims[2], y=dims[3])
 
@@ -97,16 +108,16 @@ class ManagedWindow(object):
             cmd_str = ' '.join(cmd)
             rospy.logdebug(cmd_str)
             try:
-                awesome.setup_environ()
+                env = awesome.get_environ()
             except Exception as e:
                 rospy.logerr(
-                    'failed to setup awesome environment: {}'.format(e.message)
+                    'failed to setup awesome environment: {}'.format(str(e))
                 )
+                return
+
             try:
-                self.proc = subprocess.Popen(cmd, close_fds=True, shell=True)
-                self.proc.wait()
-                self.proc = None
-            except OSError:
-                rospy.logerr('failed to run {}'.format(cmd_str))
+                subprocess.check_call(cmd_str, close_fds=True, shell=True, env=env)
+            except Exception as e:
+                rospy.logerr('failed to run {} : {}'.format(cmd_str, str(e)))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

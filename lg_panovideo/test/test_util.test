@@ -1,9 +1,0 @@
-<launch>
-  <param name="/viewport/touchscreen" value="1920x1080+0+0" />
-  <param name="/viewport/left_one" value="1080x1920+1920+0" />
-  <param name="/viewport/center" value="1080x1920+3000+0" />
-  <param name="/viewport/right_one" value="1080x1920+4080+0" />
-  <param name="/viewport/expected_all" value="5160x1920+0+0" />
-  <param name="/viewport/expected_portraits" value="3240x1920+1920+0" />
-  <test test-name="test_panovideo_util" pkg="lg_panovideo" type="test_util.py" />
-</launch>

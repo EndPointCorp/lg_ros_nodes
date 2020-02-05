@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import threading
 import rospy
-import commands
+import subprocess
 
 
 class VolumeControlMaster:
@@ -48,5 +48,5 @@ class VolumeControlSlave:
         cmd = "pactl set-sink-volume {} {}%".format(self.sink, volume)
         with self._lock:
             rospy.loginfo("running command: {}".format(cmd))
-            status, output = commands.getstatusoutput(cmd)
+            status, output = subprocess.getstatusoutput(cmd)
             rospy.loginfo("output {} status {}".format(output, status))

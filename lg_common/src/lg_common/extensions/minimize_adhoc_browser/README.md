@@ -1,0 +1,1 @@
+This extension close the browser for image showing on image click

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Full-fledged mplayer testing scenarios.
@@ -25,10 +25,10 @@ import rospkg
 import rostopic
 import rosgraph.masterapi
 
-from lg_media.msg import AdhocMedia
-from lg_media.msg import AdhocMedias
-from lg_media.srv import MediaAppsInfo
-from lg_media.srv import MediaAppsInfoResponse
+from lg_msg_defs.msg import AdhocMedia
+from lg_msg_defs.msg import AdhocMedias
+from lg_msg_defs.srv import MediaAppsInfo
+from lg_msg_defs.srv import MediaAppsInfoResponse
 from lg_media.mplayer_pool import SRV_QUERY, ROS_NODE_NAME
 
 
@@ -114,7 +114,7 @@ class TestMediaService(object):
         else:
             pytest.fail("Test did not properly shutdown applications.")
 
-        for app_info in prev_data.values():
+        for app_info in list(prev_data.values()):
             fifo = app_info.split(' ')[1]
             fifo.replace("FIFO='", '')
             fifo.replace("'", '')  # the trailing '
@@ -135,7 +135,7 @@ class TestMediaService(object):
             data = self.lg_media_service_call()
             try:
                 assert len(data) == len_data
-                assert media_msg.id in data.keys()
+                assert media_msg.id in list(data.keys())
                 # difficult to check URL in the command if URL changes on-the-fly
                 #assert data[media_msg.id].find(media_msg.url) > 1
                 break
@@ -234,8 +234,8 @@ class TestMediaService(object):
             data = self.lg_media_service_call()
             try:
                 assert len(data) == 2
-                assert media1.id in data.keys()
-                assert media2.id in data.keys()
+                assert media1.id in list(data.keys())
+                assert media2.id in list(data.keys())
                 break
             except AssertionError:
                 pass

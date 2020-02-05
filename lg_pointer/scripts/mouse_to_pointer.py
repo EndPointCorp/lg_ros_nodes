@@ -1,21 +1,21 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from threading import Lock
 import math
 from evdev import ecodes
 import evdev
 import os
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import subprocess
 from tempfile import mktemp
 
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JoyFeedback, JoyFeedbackArray
-from wiimote.msg import State
-from lg_mirror.msg import EvdevEvent, EvdevEvents
-from lg_mirror.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import State
+from lg_msg_defs.msg import EvdevEvent, EvdevEvents
+from lg_msg_defs.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
+from lg_msg_defs.msg import StringArray
 from std_srvs.srv import Empty
 from lg_pointer import MegaViewport
 
@@ -36,7 +36,7 @@ def handle_device_info(req):
     res.types = [ecodes.EV_ABS, ecodes.EV_KEY]
     res.abs_codes = [ecodes.ABS_X, ecodes.ABS_Y]
     res.rel_codes = []
-    res.key_codes = [ecodes.BTN_LEFT]
+    res.key_codes = [ecodes.BTN_TOUCH]
     res.abs_min = [0, 0]
     res.abs_max = [DEV_WIDTH, DEV_HEIGHT]
     return res
@@ -44,8 +44,8 @@ def handle_device_info(req):
 
 def grabCustomUdev(udev_location, rules_dest):
     tmp_rules = mktemp()
-    with open(tmp_rules, 'w') as f:
-        resp = urllib2.urlopen(udev_location)
+    with open(tmp_rules, 'wb') as f:
+        resp = urllib.request.urlopen(udev_location)
         if resp.code != 200:
             rospy.logerr("Could not curl the udev rules... continuing without them")
             return
@@ -58,9 +58,9 @@ def main():
     rospy.init_node(NODE_NAME)
 
     udev_location = rospy.get_param(
-        '~udev_location',
-        'http://lg-head/lg/external_devices/97-logitech-spotlight.rules')
-    grabCustomUdev(udev_location, '/etc/udev/rules.d/97-logitech-spotlight.rules')
+        '~udev_location', None)
+    if udev_location is not None and udev_location != "":
+        grabCustomUdev(udev_location, '/etc/udev/rules.d/99-mouse_to_pointer.rules')
     device_id = rospy.get_param('~device_id', 'default')
     device_path = rospy.get_param('~device_path', 'default')
     viewports = [
@@ -76,12 +76,12 @@ def main():
     events_pub = rospy.Publisher(events_topic,
                                  EvdevEvents, queue_size=10)
     kbd_events_pub = rospy.Publisher(kbd_events_topic,
-                                 EvdevEvents, queue_size=10)
+                                     EvdevEvents, queue_size=10)
     routes_pub = rospy.Publisher(routes_topic,
                                  StringArray, queue_size=10)
     feedback_pub = rospy.Publisher('/joy/set_feedback',
                                    JoyFeedbackArray, queue_size=10)
-    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=True)
+    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=False)
     mouse_timeout = int(rospy.get_param('~mouse_timeout', 10))
     sleep_time = 0.01  # ooo magic, pretty
 
@@ -142,7 +142,8 @@ def main():
 
         ang_x = math.radians(x / 80.0)
         ang_y = math.radians(y / 80.0)
-        new_vp, vpx, vpy = mvp.orientation_to_coords(ang_x, ang_y)
+        if not mvp.clamp(ang_x, ang_y):
+            new_vp, vpx, vpy = mvp.orientation_to_coords(ang_x, ang_y)
 
         if vp != new_vp:
             routes_msg = StringArray(strings=[new_vp])

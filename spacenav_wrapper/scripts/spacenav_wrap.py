@@ -1,6 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
+from std_srvs.srv import SetBool
+from std_srvs.srv import SetBoolResponse
 from spacenav_wrapper import SpacenavWrapper
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
@@ -31,10 +33,17 @@ def main():
 
     s = SpacenavWrapper(twist=twist, joy=joy, gutter_val=gutter_val)
 
+    def suppress(msg):
+        rospy.loginfo('Suppress spacenav output: {}'.format(msg.data))
+        s.suppress(msg.data)
+        return SetBoolResponse(True, "")
+    rospy.Service('/spacenav_wrapper/suppress', SetBool, suppress)
+
     rospy.Subscriber('/spacenav/twist', Twist, s.handle_twist)
     rospy.Subscriber('/spacenav/joy', Joy, s.handle_joy)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

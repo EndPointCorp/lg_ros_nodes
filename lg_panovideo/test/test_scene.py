@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import sys
 from interactivespaces_msgs.msg import GenericMessage

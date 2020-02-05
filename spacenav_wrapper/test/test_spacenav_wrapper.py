@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import rosbag
@@ -61,6 +61,7 @@ def _make_twist(i=0):
     t.linear.y = i
     t.linear.z = i
     return t
+
 
 if __name__ == '__main__':
     rospy.init_node('test_spacenav_wrap')

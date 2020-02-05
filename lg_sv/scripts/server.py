@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import json
@@ -6,13 +6,13 @@ import json
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from lg_common.helpers import get_activity_config_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity, handle_initial_state
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from std_msgs.msg import String, Bool
 from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
 from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
 from lg_common.helpers import run_with_influx_exception_handler
-from lg_sv.srv import PanoIdState
+from lg_msg_defs.srv import PanoIdState
 
 
 # spacenav_node -> mux_twists -> /lg_twister/twist -> handle_spacenav_msg:
@@ -34,6 +34,7 @@ DEFAULT_ZOOM_MAX = 30
 DEFAULT_NAV_SENSITIVITY = 1.0
 DEFAULT_NAV_INTERVAL = 0.02
 DEFAULT_TICK_RATE = 180
+DEFAULT_IDLE_TIME_UNTIL_SNAP = 1.25
 X_THRESHOLD = 0.50
 NODE_NAME = 'pano_viewer_server'
 
@@ -63,9 +64,10 @@ def main():
     inverted = str(rospy.get_param('~inverted', "false")).lower() == "true"
     nearby.invert(inverted)
     tick_rate = rospy.get_param('~tick_rate', DEFAULT_TICK_RATE)
+    idle_time_until_snap = rospy.get_param('~idle_time_until_snap', DEFAULT_IDLE_TIME_UNTIL_SNAP)
 
     server = PanoViewerServer(location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                              nav_sensitivity, space_nav_interval, x_threshold,
+                              nav_sensitivity, space_nav_interval, idle_time_until_snap, x_threshold,
                               nearby, metadata_pub, zoom_max, zoom_min, tick_rate, director_pub=director_pub,
                               server_type=server_type)
 
@@ -103,7 +105,7 @@ def main():
             return
         if not has_asset:
             rospy.loginfo('hiding self')
-            visibility_publisher.publish(ApplicationState(state='STOPPED'))
+            visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         if scene.get('slug', '') == 'auto_generated_sv_scene':
             rospy.loginfo("Ignoring my own generated message")
@@ -122,7 +124,7 @@ def main():
             elif server_type == 'panoviewer' or server_type == 'panovideo':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 return
-            visibility_publisher.publish(ApplicationState(state='STOPPED'))
+            visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
 
         if server_type == 'streetview' or server_type == 'streetview_old':
@@ -142,14 +144,14 @@ def main():
         pov = server.pov
         try:
             pov.x = float(asset['tilt'])
-        except:
+        except Exception:
             pov.x = 0
         try:
             pov.z = float(asset['heading'])
             # we don't want to flip the auto generated ones, or the non_inverted
             if scene.get('slug', '') != 'auto_generated_sv_scene' and inverted:
                 pov.z = (pov.z + 180) % 360
-        except:
+        except Exception:
             pov.z = 0
         pov.w = zoom_max
 
@@ -159,7 +161,7 @@ def main():
         try:
             rospy.loginfo("about to load json: %s" % uscs_msg.message)
             scene = json.loads(uscs_msg.message)
-        except:
+        except Exception:
             return
         handle_director_message(scene)
 

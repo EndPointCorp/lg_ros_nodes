@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_mirror'
 NAME = 'test_touch_router'
@@ -8,7 +8,7 @@ import rospy
 import unittest
 
 from lg_mirror.constants import MIRROR_ACTIVITY_TYPE
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.test_helpers import gen_touch_window
 from lg_common.test_helpers import gen_scene
@@ -49,7 +49,7 @@ class TestTouchRouter(unittest.TestCase):
 
     def test_init_latch(self):
         rospy.sleep(GRACE_DELAY + 3)
-        self.assertEqual(2, len(self.receiver.msgs))
+        self.assertGreaterEqual(len(self.receiver.msgs), 1)
         msg = self.receiver.msgs[-1]
         self.assertEqual(EXPECTED_DEFAULT_MSG, msg.strings)
 

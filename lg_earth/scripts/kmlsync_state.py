@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from lg_earth import KmlSyncState
 from interactivespaces_msgs.msg import GenericMessage
-from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
+from lg_msg_defs.srv import KmlState, PlaytourQuery, PlanetQuery
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
 from lg_common.helpers import run_with_influx_exception_handler
 
@@ -26,6 +26,7 @@ def main():
     make_soft_relaunch_callback(s._handle_soft_relaunch, groups=["earth"])
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

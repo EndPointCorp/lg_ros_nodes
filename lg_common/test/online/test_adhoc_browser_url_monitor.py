@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import unittest
 import json
 
-from lg_common.msg import AdhocBrowsers
+from lg_msg_defs.msg import AdhocBrowsers
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.helpers import write_log_to_file
-from lg_common.srv import BrowserPool
+from lg_msg_defs.srv import BrowserPool
 from lg_common.test_helpers import wait_for_assert_equal
 
 
@@ -103,9 +103,9 @@ class TestAdhocBrowser(unittest.TestCase):
         browsers_on_center = json.loads(center_service().state)
 
         self.assertEqual(len(browsers_on_center), 1)
-        self.assertEqual('monitor_page_urls' in browsers_on_center.items()[0][1]['extensions'][0], True)
-        self.assertEqual('allowed_urls=google.com' in browsers_on_center.items()[0][1]['url'], True)
-        self.assertEqual('allowed_urls=endpoint.com' in browsers_on_center.items()[0][1]['url'], True)
+        self.assertEqual('monitor_page_urls' in list(browsers_on_center.items())[0][1]['extensions'][0], True)
+        self.assertEqual('allowed_urls=google.com' in list(browsers_on_center.items())[0][1]['url'], True)
+        self.assertEqual('allowed_urls=endpoint.com' in list(browsers_on_center.items())[0][1]['url'], True)
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))

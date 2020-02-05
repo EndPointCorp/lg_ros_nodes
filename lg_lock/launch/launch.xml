@@ -1,0 +1,3 @@
+<node name="lock_service_42_a" pkg="lg_lock" type="service.py" clear_params="true" respawn="true" respawn_delay="3">
+    <param name="password" value="test"/>
+</node>

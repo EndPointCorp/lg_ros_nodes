@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # THIS FILE IS MANAGED BY CHEF AND THIS IS JUST A PLACHOLDER
 
 import os
@@ -26,6 +26,7 @@ def main():
     config = get_config(config_destination)
     command_handler = rospy.Publisher('/command', Command, queue_size=10)
     WirelessWatcher(config, command_handler)
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

@@ -2,13 +2,14 @@
 #
 # VERSION 0.1
 
-FROM 	ubuntu:14.04.3
+ARG UBUNTU_RELEASE=bionic
+FROM 	ubuntu:${UBUNTU_RELEASE}
 
 # Install basic stuff
 RUN     apt-get install -y wget curl tmux git
 
 # Add deb repos
-RUN 	echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list ;\
+RUN 	echo "deb http://packages.ros.org/ros/ubuntu $UBUNTU_RELEASE main" > /etc/apt/sources.list.d/ros-latest.list ;\
       apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5523BAEEB01FA116 ;\
       wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - ;\
       echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list ;\
@@ -55,9 +56,10 @@ RUN     mkdir -p /opt/google/earth/free ;\
         ln -s /opt/google/earth/free.newlibs/googleearth /usr/bin/google-earth
 
 # Install ROS
+ARG ROS_RELEASE=melodic
 RUN     apt-get update && apt-get install -y \
-            ros-indigo-ros-base \
-            ros-indigo-rosbridge-server \
+            ros-${ROS_RELEASE}-ros-base \
+            ros-${ROS_RELEASE}-rosbridge-server \
             lsb-core \
             google-chrome-stable
 
@@ -69,8 +71,8 @@ RUN echo "galadmin   ALL=NOPASSWD: ALL" >> /etc/sudoers
 # ROS evironment variables for nodes building
 RUN     mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh ;\
 	    mkdir -p /home/galadmin/src ;\
-        echo "source /opt/ros/indigo/setup.bash" >> /root/.bashrc ;\
-        echo "source /opt/ros/indigo/setup.bash" >> /home/galadmin/.bashrc
+        echo "source /opt/ros/${ROS_RELEASE}/setup.bash" >> /root/.bashrc ;\
+        echo "source /opt/ros/${ROS_RELEASE}/setup.bash" >> /home/galadmin/.bashrc
 
 # Add lg_ros_nodes and appctl repositories
 # Use curent branch for lg_ros_nodes
@@ -82,7 +84,7 @@ USER    root
 
 # Build and install ROS nodes
 WORKDIR /home/galadmin/src/lg_ros_nodes
-RUN     source /opt/ros/indigo/setup.bash;\
+RUN     source /opt/ros/${ROS_RELEASE}/setup.bash;\
         rosdep init;\
         rosdep update;\
         ./scripts/init_workspace --appctl /home/galadmin/src/appctl ;\
@@ -90,10 +92,10 @@ RUN     source /opt/ros/indigo/setup.bash;\
         sudo rosdep install \
             --from-paths /home/galadmin/src/lg_ros_nodes/catkin/src \
             --ignore-src \
-            --rosdistro indigo \
+            --rosdistro ${ROS_RELEASE} \
             -y ;\
         catkin_make ;\
-        catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/indigo install;\
+        catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/${ROS_RELEASE} install;\
         source /home/galadmin/src/lg_ros_nodes/catkin/devel/setup.bash
 
 

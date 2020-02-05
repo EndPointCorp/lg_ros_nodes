@@ -30,7 +30,7 @@
 #  Removed LED and Rumble Feedback
 #  Added support for sensor_msgs/JoyFeedbackArray
 ################################################################################
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """The wiimote_node broadcasts four topics, and listens to messages that control
 the Wiimote stick's rumble (vibration) and LEDs. Transmitted topics (@100Hz):
@@ -84,8 +84,8 @@ from std_msgs.msg import Bool
 from sensor_msgs.msg import Joy
 from sensor_msgs.msg import JoyFeedback
 from sensor_msgs.msg import JoyFeedbackArray
-from wiimote.msg import IrSourceInfo
-from wiimote.msg import State
+from lg_msg_defs.msg import IrSourceInfo
+from lg_msg_defs.msg import State
 
 # -------- WIIMote Modules:
 from wiimote.wiimoteExceptions import *
@@ -803,19 +803,19 @@ if __name__ == '__main__':
         
     except rospy.ROSInterruptException:
         rospy.loginfo("ROS Shutdown Request.")
-    except KeyboardInterrupt, e:
+    except KeyboardInterrupt as e:
         rospy.loginfo("Received keyboard interrupt.")
-    except WiimoteNotFoundError, e:
+    except WiimoteNotFoundError as e:
         rospy.logfatal(str(e))
-    except WiimoteEnableError, e:
+    except WiimoteEnableError as e:
         rospy.logfatal(str(e))
-    except CallbackStackMultInstError, e:
+    except CallbackStackMultInstError as e:
         rospy.logfatal(str(e))
-    except CallbackStackEmptyError, e:
+    except CallbackStackEmptyError as e:
         rospy.logfatal(str(e))
-    except ResumeNonPausedError, e:
+    except ResumeNonPausedError as e:
         rospy.logfatal(str(e))
-    except CallbackStackEmptyError, e:
+    except CallbackStackEmptyError as e:
         rospy.logfatal(str(e))
     
     except:

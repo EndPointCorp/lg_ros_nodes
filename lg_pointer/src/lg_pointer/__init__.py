@@ -1,1 +1,1 @@
-from megaviewport import MegaViewport
+from .megaviewport import MegaViewport

@@ -3,10 +3,13 @@ project(lg_nav_to_device)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  lg_msg_defs
 )
 
 catkin_python_setup()
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS lg_msg_defs
+)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
@@ -19,5 +22,6 @@ catkin_install_python(PROGRAMS
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   catkin_add_nosetests(test/test_background_stopper.py)
 endif()

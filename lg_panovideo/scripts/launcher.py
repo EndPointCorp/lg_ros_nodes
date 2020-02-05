@@ -1,16 +1,16 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import rospy
 
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import add_url_params
 from lg_common.helpers import check_www_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise
 from lg_common.helpers import make_soft_relaunch_callback
 from lg_common.helpers import run_with_influx_exception_handler
 from lg_common.helpers import has_activity, on_new_scene
-from lg_panovideo import util
+from lg_common.helpers import combine_viewport_geometries
 
 
 DEFAULT_URL = 'http://localhost:8008/lg_panovideo/webapps/panovideosync/index.html'
@@ -23,7 +23,7 @@ def main():
 
     viewports = str(rospy.get_param('~viewports'))
     viewports = [x.strip() for x in viewports.split(',')]
-    geometry = util.combine_viewport_geometries(viewports)
+    geometry = combine_viewport_geometries(viewports)
     url = str(rospy.get_param('~url', DEFAULT_URL))
     field_of_view = float(rospy.get_param('~fov', DEFAULT_FOV))
     yaw_offset = float(rospy.get_param('~yaw_offset', 0))
@@ -74,6 +74,7 @@ def main():
     on_new_scene(handle_scene)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

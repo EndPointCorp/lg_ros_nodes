@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_pointer</name>
-  <version>1.18.4</version>
+  <version>3.1.7</version>
   <description>Pointing device integration for Liquid Galaxy</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -22,6 +22,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>wiimote</run_depend>
   <run_depend>lg_common</run_depend>
+  <run_depend>lg_msg_defs</run_depend>
   <run_depend>std_srvs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>sensor_msgs</run_depend>

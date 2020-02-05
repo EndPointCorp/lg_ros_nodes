@@ -4,12 +4,14 @@ project(lg_panovideo)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_srvs
+  lg_msg_defs
 )
 
 catkin_python_setup()
 
 catkin_package(
   CATKIN_DEPENDS
+  lg_msg_defs
   roscpp
   std_srvs
 )
@@ -66,7 +68,6 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
 )
 
-if (CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  add_rostest(test/test_util.test)
-endif()
+#if (CATKIN_ENABLE_TESTING)
+#  find_package(rostest REQUIRED)
+#endif()

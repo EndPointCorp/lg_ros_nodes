@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+
 import sys
 import csv
 from math import sin, radians, fabs
 
 KML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" 
-    xmlns:kml="http://www.opengis.net/kml/2.2" 
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2"
+    xmlns:kml="http://www.opengis.net/kml/2.2"
     xmlns:atom="http://www.w3.org/2005/Atom">
 <Document>
     <name>KmlFile</name>
@@ -28,23 +30,41 @@ KML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 </kml>
 """
 
-def parse(data):
+def parseCSV(data):
     reader = csv.DictReader(data)
     for row in reader:
-        # In all serious GIS lon is X and lat is Y,
+        # In all GIS lon is X and lat is Y,
         # but we messed it up, and print lon as Y.
-        result = {
-            'lat': float(row['field.pose.position.x']),
-            'lon': float(row['field.pose.position.y']),
-            'tilt': float(row['field.pose.orientation.x']),
-            'head': float(row['field.pose.orientation.y'])
-        }
-        divisor = sin(radians(result['tilt']))
-        if fabs(result['tilt']) < 1.0:
-            result['range'] = float(row['field.pose.position.z'])
-        else:
-            result['range'] = float(row['field.pose.position.z']) / divisor
-        return result
+        return calc(
+            row['field.pose.position.y'],
+            row['field.pose.position.x'],
+            row['field.pose.position.z'],
+            row['field.pose.orientation.x'],
+            row['field.pose.orientation.y']
+        )
+
+def calc(x, y, z, heading, tilt):
+    result = {
+        'lon': float(x),
+        'lat': float(y),
+        'tilt': float(tilt),
+        'head': float(heading)
+    }
+    divisor = sin(radians(result['tilt']))
+    if fabs(result['tilt']) < 1.0:
+        result['range'] = float(z)
+    else:
+        result['range'] = float(z) / divisor
+    return result
+
+def parseCLI():
+    return calc(
+        sys.argv[1],
+        sys.argv[2],
+        sys.argv[3],
+        sys.argv[4],
+        sys.argv[5]
+    )
 
 def format_kml(data):
     return KML_TEMPLATE.format(0,
@@ -56,4 +76,4 @@ def format_kml(data):
 
 if __name__ == "__main__":
     msg = parse(sys.stdin)
-    print format_kml(msg)
+    print(format_kml(msg))

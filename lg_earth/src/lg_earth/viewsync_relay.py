@@ -4,7 +4,7 @@ import rospy
 import time
 import os
 from geometry_msgs.msg import PoseStamped
-from lg_earth.srv import ViewsyncState
+from lg_msg_defs.srv import ViewsyncState
 
 
 class ViewsyncRelay:
@@ -38,15 +38,16 @@ class ViewsyncRelay:
         self.listen_port = self.listen_sock.getsockname()[1]
 
     @staticmethod
-    def parse_pose(data):
+    def parse_pose(raw_data):
         """Turn an Earth ViewSync datagram into a Pose.
 
         Args:
-            data (str): ViewSync datagram from Earth.
+            raw_data (bytes): ViewSync datagram from Earth.
 
         Returns:
             PoseStamped: Camera position.
         """
+        data = raw_data.decode('utf-8')
         fields = data.split(',')
         msg = PoseStamped()
         msg.header.stamp = rospy.get_rostime()
@@ -63,7 +64,7 @@ class ViewsyncRelay:
         """Sends data to the repeat address.
 
         Args:
-            data (str): Data to write to the repeat address.
+            data (bytes): Data to write to the repeat address.
         """
         self.repeat_sock.sendto(data, self.repeat_addr)
 
@@ -94,14 +95,13 @@ class ViewsyncRelay:
         while not rospy.is_shutdown():
             try:
                 data = self.listen_sock.recv(255)
-            except error as e:
-                rospy.loginfo('socket interrupted - breaking loopi: %s' % error)
-                break
 
-            self._repeat(data)
+                self._repeat(data)
 
-            pose_msg, planet = ViewsyncRelay.parse_pose(data)
-            self._publish_pose_msg(pose_msg, planet)
+                pose_msg, planet = ViewsyncRelay.parse_pose(data)
+                self._publish_pose_msg(pose_msg, planet)
+            except Exception as e:
+                rospy.logerr('error in ViewsyncRelay loop: {}'.format(e))
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -1,1 +1,1 @@
-from web_screenshot import WebScreenshot
+from .web_screenshot import WebScreenshot

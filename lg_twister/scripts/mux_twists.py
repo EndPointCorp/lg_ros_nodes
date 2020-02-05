@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from functools import partial
 import math
@@ -55,7 +55,7 @@ class TwistMuxer:
         t = rospy.Time.now()
 
         result = Twist()
-        for topic in self.samples.keys():
+        for topic in list(self.samples.keys()):
             stamp = self.sample_stamps[topic]
             if t - stamp > self.age_limit:
                 continue

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from distutils.core import setup
 from catkin_pkg.python_setup import generate_distutils_setup
@@ -11,9 +11,11 @@ d = generate_distutils_setup(
             'extensions/ros_window_ready/*',
             'extensions/monitor_page_urls/*',
             'extensions/current_url/*',
+            'extensions/minimize_adhoc_browser/*',
             'extensions/ros_window_ready/*/*',
             'extensions/monitor_page_urls/*/*',
-            'extensions/current_url/*/*'
+            'extensions/current_url/*/*',
+            'extensions/minimize_adhoc_browser/*/*'
         ]
     },
     scripts=['bin/lg-code-to-command'],

@@ -1,13 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import json
 import threading
 import sys
 
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
+from lg_msg_defs.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
+from std_srvs.srv import EmptyResponse
 
 
 class USCSService:
@@ -149,6 +150,14 @@ class USCSService:
             return self.state
         return USCSMessageResponse()
 
+    def republish(self, *args, **kwargs):
+        """
+        Repeat last scene, without idempotentlity check
+        """
+        state = self.current_uscs_message()
+        self.director_scene_publisher.publish(state)
+        return EmptyResponse()
+
     def initial_state(self, *req, **kwargs):
         """
         Just return the current state
@@ -170,7 +179,7 @@ class USCSService:
         """
         Accepts a URL and returns json parsed version of it
         """
-        response = urllib.urlopen(url)
+        response = urllib.request.urlopen(url)
         if response.code != 200:
             rospy.logerr("Got non-200 error status (%s) from url: %s" % (response.code, url))
             rospy.sleep(3)
@@ -214,7 +223,7 @@ class USCSService:
         try:
             message = self._get_json_from_url(scene_url, to_json=False)
             message = self._create_message(message)
-        except Exception, e:
+        except Exception as e:
             message = None
             rospy.logwarn("Could not get scene for url: %s because %s" % (scene_url, e))
             rospy.logwarn("sleeping for 3 seconds")

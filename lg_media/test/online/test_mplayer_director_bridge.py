@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 on_finish='nothing' is added by default by the director bridge / translator.
@@ -12,10 +12,10 @@ import rospy
 import unittest
 
 from lg_common import ManagedWindow
-from lg_media.msg import AdhocMedia
+from lg_msg_defs.msg import AdhocMedia
 from lg_media import ManagedMplayer
-from lg_media.msg import AdhocMedias
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import AdhocMedias
+from lg_msg_defs.msg import WindowGeometry
 from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
@@ -321,6 +321,7 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
         self.assertEqual(AdhocMedias(medias=[right_mplayer_4]), self.mock_publisher_right.published_messages[0])
         self.assertEqual(AdhocMedias, type(self.mock_publisher_center.published_messages[0]))
         self.assertEqual(AdhocMedias, type(self.mock_publisher_right.published_messages[0]))
+
 
 if __name__ == '__main__':
     import rostest

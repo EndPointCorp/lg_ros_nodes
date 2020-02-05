@@ -1,17 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import os
-from thread import start_new_thread
+from _thread import start_new_thread
 from lg_earth import Client
 from lg_earth.client_config import get_config
 from tempfile import gettempdir as systmp
 from std_msgs.msg import String
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
-from lg_earth.srv import ViewsyncState
+from lg_msg_defs.srv import ViewsyncState
 from lg_common.helpers import run_with_influx_exception_handler
 from time import sleep
 from random import randint
@@ -84,6 +84,7 @@ def make_viewsync():
 
     start_new_thread(relay.run, ())
     return relay
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

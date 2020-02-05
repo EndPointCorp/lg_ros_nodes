@@ -88,15 +88,17 @@
             ros: ros,
             name: '/director/window/ready',
             messageType: 'std_msgs/String',
-            throttle_rate: 33
+            throttle_rate: 33,
+            queue_length: 1,
         });
         readyTopic.advertise();
 
         allReadyTopic = new ROSLIB.Topic({
             ros: ros,
             name: '/director/ready',
-            messageType: 'lg_common/Ready',
-            throttle_rate: 33
+            messageType: 'lg_msg_defs/Ready',
+            throttle_rate: 33,
+            queue_length: 1,
         });
 
         var allReadyTime = null;

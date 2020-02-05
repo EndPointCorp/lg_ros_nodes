@@ -1,6 +1,6 @@
 import rospy
 from std_msgs.msg import String
-from query_queue import QueryQueue
+from .query_queue import QueryQueue
 
 
 class QueryWriter:

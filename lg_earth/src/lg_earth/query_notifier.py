@@ -2,6 +2,7 @@ import rospy
 import os
 import pyinotify
 import sys
+import collections
 
 
 class _QueryDeleteProcessor(pyinotify.ProcessEvent):
@@ -26,7 +27,7 @@ class QueryNotifier():
         )
 
     def add_delete_handler(self, handler):
-        assert callable(handler)
+        assert isinstance(handler, collections.Callable)
         self.delete_handlers.append(handler)
 
     def handle_delete(self, *args, **kwargs):
@@ -36,7 +37,7 @@ class QueryNotifier():
             except Exception as e:
                 rospy.logerr('Caught an Exception in delete handler!')
                 rospy.logerr(sys.exc_info()[2])
-        map(run_handler, self.delete_handlers)
+        list(map(run_handler, self.delete_handlers))
 
     def start(self):
         self.notifier.start()

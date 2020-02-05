@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import tornado.web
 import tornado.ioloop
 from lg_earth import KmlMasterHandler, KmlUpdateHandler, KmlQueryHandler
-from lg_earth.srv import KmlState, PlaytourQuery, PlanetQuery
+from lg_msg_defs.srv import KmlState, PlaytourQuery, PlanetQuery
 from lg_common.webapp import ros_tornado_spin
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
@@ -45,9 +45,6 @@ def main():
     ], debug=True)
 
     global_dependency_timeout = int(rospy.get_param('~global_dependency_timeout', 15))
-    rospy.wait_for_service('/kmlsync/state', global_dependency_timeout)
-    rospy.wait_for_service('/kmlsync/playtour_query', global_dependency_timeout)
-    rospy.wait_for_service('/kmlsync/planet_query', global_dependency_timeout)
 
     director_scene_topic = rospy.get_param('~director_topic', '/director/scene')
     rospy.Subscriber(director_scene_topic, GenericMessage, KmlUpdateHandler.get_scene_msg)
@@ -56,10 +53,10 @@ def main():
 
     kml_state = KmlState()
     kmlsync_server.playtour = PlaytourQuery()
-    kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=True)
-    kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=True)
+    kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', kml_state, persistent=False)
+    kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', kmlsync_server.playtour, persistent=False)
     kmlsync_server.planet = PlanetQuery()
-    kmlsync_server.planet_service = rospy.ServiceProxy('/kmlsync/planet_query', kmlsync_server.planet, persistent=True)
+    kmlsync_server.planet_service = rospy.ServiceProxy('/kmlsync/planet_query', kmlsync_server.planet, persistent=False)
     kmlsync_server.get_planet = pw.get_planet
     kmlsync_server.listen(port)
     ros_tornado_spin()

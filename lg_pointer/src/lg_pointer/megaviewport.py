@@ -12,6 +12,7 @@ class MegaViewport:
     * All given viewports have the same dimensions.
     * The pointing device is located roughly at the center of the cylinder.
     """
+
     def __init__(self, viewports, arc_width):
         """
         Args:
@@ -48,6 +49,8 @@ class MegaViewport:
         # It is assumed here that all viewports have the same width.
         self.viewport_width = self.arc_width / num_viewports
         self.arc_height = self.arc_width / aspect_ratio
+        self.half_arc_width = self.arc_width / 2
+        self.half_arc_height = self.arc_height / 2
 
     def orientation_to_coords(self, ang_z, ang_x):
         """
@@ -63,17 +66,32 @@ class MegaViewport:
 
         Returns:
             str, int, int: Tuple with viewport name and x/y coordinates.
+                If the coordinate is outside all viewports, returns ('', 0, 0)
         """
-        half_arc_width = self.arc_width / 2
-        half_arc_height = self.arc_height / 2
-        nz = ang_z + half_arc_width
-        nx = ang_x + half_arc_height
-        if 0 > nz or nz > self.arc_width or 0 > nx or nx > self.arc_height:
+        if self.clamp(ang_z, ang_x):
             return ('', 0, 0)
-
+        nz = ang_z + self.half_arc_width
+        nx = ang_x + self.half_arc_height
         viewport_index = int(math.floor(nz / self.viewport_width))
         viewport_x = nz % self.viewport_width / self.viewport_width
         viewport_y = nx / self.arc_height
 
         viewport = self.viewports[viewport_index]
         return (viewport, viewport_x, viewport_y)
+
+    def clamp(self, ang_z, ang_x):
+        """
+        Clamp cursors to the viewable boundary.
+
+        Args:
+            ang_z (float): Z (heading) rotation in radians.
+            ang_x (float): X (pitch) rotation in radians.
+
+        Returns:
+            bool: True if the mouse is still viewable
+        """
+        nz = ang_z + self.half_arc_width
+        nx = ang_x + self.half_arc_height
+        if 0 > nz or nz > self.arc_width or 0 > nx or nx > self.arc_height:
+            return True
+        return False

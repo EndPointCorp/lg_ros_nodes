@@ -9,8 +9,9 @@ from time import sleep
 from random import randint
 
 import rospy
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
+from .kmlalive import KmlAlive
 
 TOOLBAR_HEIGHT = 22
 
@@ -88,6 +89,7 @@ class Client:
         self.earth_proc = ManagedApplication(cmd, window=earth_window,
                                              initial_state=initial_state,
                                              env=env)
+        KmlAlive(self.earth_proc)
         # config rendering values
         self.geplus_config = geplus_config
         self.layers_config = layers_config
@@ -175,6 +177,7 @@ class Client:
         os.mkdir(self._get_tempdir())
         assert os.path.exists(self._get_tempdir())
         rospy.on_shutdown(self._clean_tempdir)
+        rospy.on_shutdown(self._clear_cache)
 
     def _clean_tempdir(self):
         """Attempt to delete temporary directory."""
@@ -215,9 +218,9 @@ class Client:
             return
 
         with open(self._get_tempdir() + '/' + path, 'w') as f:
-            for section, settings in config.iteritems():
+            for section, settings in config.items():
                 f.write('[' + section + ']\n')
-                for k, v in settings.iteritems():
+                for k, v in settings.items():
                     r = str(v).lower() if isinstance(v, bool) else str(v)
                     f.write(k + '=' + r + '\n')
                 f.write('\n')
@@ -250,6 +253,13 @@ class Client:
         shutil.copy(custom_conf_expected_path,
                     self._get_tempdir() + '/' + standard_conf_path)
 
+    def _clear_cache(self, *args, **kwargs):
+        if os.path.exists('/home/lg/.googleearth/Cache'):
+            try:
+                shutil.rmtree('/home/lg/.googleearth/Cache')
+            except OSError:
+                pass  # some other instance already deleted this
+
     def _handle_soft_relaunch(self, msg=None):
         """
         Clearing up logs is pretty important for soft relaunches
@@ -259,8 +269,9 @@ class Client:
             # deleting out of OLDHOME because that's where the cache is stored
             earth_dir = '%s/.googleearth' % os.environ['OLDHOME']
             shutil.rmtree(earth_dir)
+            self._clear_cache()
             os.mkdir(earth_dir)
-        except Exception, e:
+        except Exception as e:
             rospy.logwarn('found error while removing earth cache: %s, could be normal operation though' % e.message)
         self._render_configs()
         # when msg is None, we're likely coming from the respawn handler

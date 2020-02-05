@@ -11,7 +11,7 @@ class SceneListener:
         self.callback = callback
         try:
             rospy.loginfo("Registered scene listener with callback: %s" % self.callback.__name__)
-        except AttributeError, e:
+        except AttributeError as e:
             pass
 
     def handle_scene(self, msg):

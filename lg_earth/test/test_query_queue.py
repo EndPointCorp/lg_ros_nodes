@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 PKG = 'lg_earth'
 NAME = 'test_query_queue'
 
@@ -15,7 +15,7 @@ def consume_query():
     try:
         with open(TEST_FILE, 'r') as f:
             query = f.read()
-    except:
+    except Exception:
         return None
     os.remove(TEST_FILE)
     return query

@@ -4,9 +4,9 @@ import threading
 import json
 import threading
 
-from lg_common.msg import AdhocBrowsers
-from lg_common.msg import AdhocBrowser
-from lg_common.msg import Ready
+from lg_msg_defs.msg import AdhocBrowsers
+from lg_msg_defs.msg import AdhocBrowser
+from lg_msg_defs.msg import Ready
 from std_msgs.msg import String
 
 

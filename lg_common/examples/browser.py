@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 from lg_common import ManagedBrowser
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from std_msgs.msg import String
 
 

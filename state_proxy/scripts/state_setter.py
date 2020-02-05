@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import json
 
-from lg_common.srv import USCSMessage
-from state_proxy.srv import DesiredState
+from lg_msg_defs.srv import USCSMessage
+from lg_msg_defs.srv import DesiredState
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
 from appctl.msg import Mode
@@ -28,7 +28,7 @@ class StateSetter(object):
         state = self.last_uscs_service().message
         try:
             return json.loads(state)
-        except:
+        except Exception:
             rospy.logerr("Last state from /uscs/message service returned non-json parsable (%s)" % state)
             return {}
 
@@ -109,7 +109,7 @@ class StateSetter(object):
         ret.type = 'json'
         try:
             ret.message = json.dumps(uscs_message)
-        except:
+        except Exception:
             rospy.logerr('Could not dump state message into json...')
             ret.message = ''
         return ret
@@ -149,7 +149,7 @@ class StateSetter(object):
     def _is_tactile_url(self, urls):
         # checking that the length of the filter is not zero, if it is then no urls
         # matched those that should be tactile
-        return len(filter(lambda url: 'maps.google.com' in url or 'google.com/maps' in url, urls)) != 0
+        return len([url for url in urls if 'maps.google.com' in url or 'google.com/maps' in url]) != 0
 
     def is_tactile(self, state):
         self._is_tactile_url(self.grab_urls(state))
@@ -162,14 +162,14 @@ def main():
     display_pub = rospy.Publisher('/display/switch', String, queue_size=10)
     kiosk_pub = rospy.Publisher('/kiosk/switch', String, queue_size=10)
 
-    rospy.wait_for_service('/uscs/message', 10)
-    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
+    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage, persistent=False)
 
     state_setter = StateSetter(state_pub, display_pub, kiosk_pub, runway_pub, last_uscs_service)
 
     rospy.Service('/state_setter/desired_state', DesiredState, state_setter.desired_state)
     rospy.Subscriber('/state_setter/set_state', String, state_setter.handle_state_setting)
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

@@ -2,7 +2,7 @@ import rospy
 import threading
 import types
 from lg_common.helpers import load_director_message, find_window_with_activity
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 
 
 class BackgroundStopper:
@@ -36,7 +36,7 @@ class BackgroundStopper:
         if self._activity_disabled or self._slug_disabled:
             return
 
-        for topic, visible in self._states.items():
+        for topic, visible in list(self._states.items()):
             if visible:
                 self._set_writer_state(False)
                 return
