@@ -54,7 +54,7 @@ class ImageViewer():
                     x=window['x_coord'],
                     y=window['y_coord']
                 )
-                image.transparent = window.get('transparent', False)
+                image.transparent = window.get('activity_config', {}).get('transparent', False)
                 image.viewport = window['presentation_viewport']
                 if image.viewport not in self.viewports:
                     continue
