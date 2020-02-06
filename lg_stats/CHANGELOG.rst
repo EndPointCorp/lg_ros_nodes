@@ -2,6 +2,9 @@
 Changelog for package lg_stats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.1.7 (2020-02-04)
 ------------------
 * shutdown fixes

@@ -2,6 +2,11 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* image_viewer: slight change for trasparency
+* Contributors: Will Plaut
+
 3.1.7 (2020-02-04)
 ------------------
 
