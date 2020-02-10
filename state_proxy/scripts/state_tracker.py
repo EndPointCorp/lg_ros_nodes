@@ -2,7 +2,7 @@
 import rospy
 import json
 
-from lg_common.srv import BrowserPool, USCSMessage
+from lg_msg_defs.srv import BrowserPool, USCSMessage
 from lg_common.helpers import add_url_params
 from std_msgs.msg import String
 from appctl.msg import Mode
@@ -134,14 +134,9 @@ def main():
     update_rfid_topic = rospy.get_param('~update_rfid_topic', '/rfid/uscs/update')
     tactile_flag = rospy.get_param('~tactile_flag', '')
 
-    # wait for service or kill node
-    rospy.wait_for_service('/uscs/message', 10)
-    rospy.wait_for_service('/browser_service/wall', 10)
-    rospy.wait_for_service('/browser_service/kiosk', 10)
-
-    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
-    kiosk_url_service = rospy.ServiceProxy('/browser_service/kiosk', BrowserPool)
-    display_url_service = rospy.ServiceProxy('/browser_service/wall', BrowserPool)
+    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage, persistent=False)
+    kiosk_url_service = rospy.ServiceProxy('/browser_service/kiosk', BrowserPool, persistent=False)
+    display_url_service = rospy.ServiceProxy('/browser_service/wall', BrowserPool, persistent=False)
 
     current_state = rospy.Publisher(current_state_topic, String, queue_size=10)
     update_rfid_pub = rospy.Publisher(update_rfid_topic, String, queue_size=10)

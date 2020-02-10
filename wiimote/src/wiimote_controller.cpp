@@ -47,8 +47,8 @@
 #include "sensor_msgs/Joy.h"
 #include "std_msgs/Bool.h"
 
-#include "wiimote/State.h"
-#include "wiimote/IrSourceInfo.h"
+#include <lg_msg_defs/State.h>
+#include <lg_msg_defs/IrSourceInfo.h>
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -67,7 +67,7 @@ WiimoteNode::WiimoteNode()
 {
   joy_pub_ = nh_.advertise<sensor_msgs::Joy>("/joy", 1);
   imu_data_pub_ = nh_.advertise<sensor_msgs::Imu>("/imu/data", 1);
-  wiimote_state_pub_ = nh_.advertise<wiimote::State>("/wiimote/state", 1);
+  wiimote_state_pub_ = nh_.advertise<lg_msg_defs::State>("/wiimote/state", 1);
   /**
    * Optional Publications -- only advertise if the hardware is connected
    * This is done in the main loop in the ::publish method
@@ -1188,7 +1188,7 @@ void WiimoteNode::publishImuData()
 
 void WiimoteNode::publishWiimoteState()
 {
-  wiimote::State wiimote_state_data;
+  lg_msg_defs::State wiimote_state_data;
 
   wiimote_state_data.header.stamp.sec = state_secs_;
   wiimote_state_data.header.stamp.nsec = state_nsecs_;
@@ -1280,7 +1280,7 @@ void WiimoteNode::publishWiimoteState()
   // IR Tracking Data
   for (int ir_idx = 0; ir_idx < CWIID_IR_SRC_COUNT; ir_idx++)
   {
-    wiimote::IrSourceInfo irSourceInfo;
+    lg_msg_defs::IrSourceInfo irSourceInfo;
 
     if (wiimote_state_.ir_src[ir_idx].valid)
     {
@@ -1291,15 +1291,15 @@ void WiimoteNode::publishWiimoteState()
 
       if (irSourceInfo.ir_size < 1)
       {
-        irSourceInfo.ir_size = wiimote::State::INVALID;
+        irSourceInfo.ir_size = lg_msg_defs::State::INVALID;
       }
     }
     else
     {
-      irSourceInfo.x = wiimote::State::INVALID_FLOAT;
-      irSourceInfo.y = wiimote::State::INVALID_FLOAT;
+      irSourceInfo.x = lg_msg_defs::State::INVALID_FLOAT;
+      irSourceInfo.y = lg_msg_defs::State::INVALID_FLOAT;
 
-      irSourceInfo.ir_size = wiimote::State::INVALID;
+      irSourceInfo.ir_size = lg_msg_defs::State::INVALID;
     }
 
     wiimote_state_data.ir_tracking.push_back(irSourceInfo);

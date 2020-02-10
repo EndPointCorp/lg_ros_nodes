@@ -3,21 +3,11 @@ project(lg_json_config)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
-)
-
-add_service_files(
-  FILES
-  JSONConfig.srv
-  JSONConfigMore.srv
-)
-
-generate_messages(
-  DEPENDENCIES
+  lg_msg_defs
 )
 
 catkin_package(
-  CATKIN_DEPENDS rospy message_runtime
+  CATKIN_DEPENDS rospy lg_msg_defs message_runtime
 )
 
 include_directories(

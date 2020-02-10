@@ -10,7 +10,7 @@ from std_msgs.msg import Bool
 
 from lg_offliner import ROS_NODE_NAME
 from lg_offliner import LG_OFFLINER_OFFLINE_TOPIC_DEFAULT
-from lg_offliner.srv import Offline
+from lg_msg_defs.srv import Offline
 from appctl.msg import Mode
 
 

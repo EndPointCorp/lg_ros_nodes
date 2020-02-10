@@ -2,6 +2,54 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.8 (2020-02-06)
+------------------
+
+3.1.7 (2020-02-04)
+------------------
+
+3.1.6 (2020-01-27)
+------------------
+
+3.1.5 (2020-01-24)
+------------------
+
+3.1.4 (2020-01-24)
+------------------
+
+3.1.3 (2020-01-20)
+------------------
+* Merge pull request `#413 <https://github.com/EndPointCorp/lg_ros_nodes/issues/413>`_ from EndPointCorp/topic/fix_js_msg_types
+  lots of missing msg/srv updates in js files
+* lots of missing msg/srv updates in js files
+* Contributors: Will Plaut
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* update import paths everywhere
+* Contributors: Matt Vollrath, Will Plaut
+
+3.0.2 (2019-11-06)
+------------------
+
+3.0.1 (2019-11-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
 3.0.0 (2019-10-31)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree

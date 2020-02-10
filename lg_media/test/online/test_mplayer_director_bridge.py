@@ -12,10 +12,10 @@ import rospy
 import unittest
 
 from lg_common import ManagedWindow
-from lg_media.msg import AdhocMedia
+from lg_msg_defs.msg import AdhocMedia
 from lg_media import ManagedMplayer
-from lg_media.msg import AdhocMedias
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import AdhocMedias
+from lg_msg_defs.msg import WindowGeometry
 from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message

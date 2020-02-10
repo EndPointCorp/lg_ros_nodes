@@ -2,7 +2,7 @@ import rospy
 import sys
 import json
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
+from lg_msg_defs.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
 
 
 try:

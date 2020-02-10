@@ -2,6 +2,73 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.8 (2020-02-06)
+------------------
+* image_viewer: slight change for trasparency
+* Contributors: Will Plaut
+
+3.1.7 (2020-02-04)
+------------------
+
+3.1.6 (2020-01-27)
+------------------
+* image_viewer: initial scene functionality
+* Contributors: Jacob Minshall
+
+3.1.5 (2020-01-24)
+------------------
+* decode in the right place
+* Contributors: Jacob Minshall
+
+3.1.4 (2020-01-24)
+------------------
+* Merge pull request `#414 <https://github.com/EndPointCorp/lg_ros_nodes/issues/414>`_ from EndPointCorp/topic/image_viewer_fixes_and_tracebacks
+  Topic/image viewer fixes and tracebacks
+* image_checker: fix encoding issue
+* image_viewer: remove debuggin
+* changes need to be cleaned up
+* Contributors: Jacob Minshall, Will Plaut
+
+3.1.3 (2020-01-20)
+------------------
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+  Conflicts:
+  lg_common/package.xml
+* Merge pull request `#410 <https://github.com/EndPointCorp/lg_ros_nodes/issues/410>`_ from EndPointCorp/fix_tests
+  Fix some tests
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* starting to update CMakes and package.xmls
+* Finish pycodestyle fixing image_viewer
+* Fix pointer glitches in gst_video_sync
+* Fix gst_video_sync style glitches
+* Fix some pycodestyle glitches
+* update import paths everywhere
+* Contributors: Matt Vollrath, Will Plaut
+
+3.0.2 (2019-11-06)
+------------------
+
+3.0.1 (2019-11-06)
+------------------
+* image_checker: python3 shebang
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Will Plaut, dkiselev
+
 3.0.0 (2019-10-31)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree

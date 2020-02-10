@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_stats</name>
-  <version>3.0.0</version>
+  <version>3.1.8</version>
   <description>lg stats submission ros node</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -13,14 +13,15 @@
   <author email="zdenek@endpoint.com">Zdenek Maxa</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>message_generation</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>lg_common</build_depend>
   <build_depend>appctl</build_depend>
+  <build_depend>lg_msg_defs</build_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>lg_common</run_depend>
+  <run_depend>lg_msg_defs</run_depend>
   <run_depend>appctl</run_depend>
   <run_depend>interactivespaces_msgs</run_depend>
   <test_depend>rostest</test_depend>

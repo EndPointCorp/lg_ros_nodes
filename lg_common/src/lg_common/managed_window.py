@@ -3,7 +3,7 @@ import subprocess
 import threading
 import re
 
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 from .devilspie2 import Devilspie2
 
 

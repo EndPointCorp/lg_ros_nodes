@@ -7,8 +7,8 @@ import time
 import rospy
 import unittest
 
-from lg_common.msg import StringArray
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import StringArray
+from lg_msg_defs.msg import ApplicationState
 from lg_common import StateChanger
 
 LPNODE = NAME

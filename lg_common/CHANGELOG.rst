@@ -2,6 +2,85 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.8 (2020-02-06)
+------------------
+
+3.1.7 (2020-02-04)
+------------------
+* Set timeout when writing to influx
+  Reduces shutdown delay when the telegraf server is unreachable.
+* Remove post-exception handling sleep
+  Blocking socket should not need this.
+* Contributors: Matt Vollrath
+
+3.1.6 (2020-01-27)
+------------------
+
+3.1.5 (2020-01-24)
+------------------
+
+3.1.4 (2020-01-24)
+------------------
+* Merge pull request `#414 <https://github.com/EndPointCorp/lg_ros_nodes/issues/414>`_ from EndPointCorp/topic/image_viewer_fixes_and_tracebacks
+  Topic/image viewer fixes and tracebacks
+* changes need to be cleaned up
+* Contributors: Will Plaut
+
+3.1.3 (2020-01-20)
+------------------
+* Merge pull request `#413 <https://github.com/EndPointCorp/lg_ros_nodes/issues/413>`_ from EndPointCorp/topic/fix_js_msg_types
+  lots of missing msg/srv updates in js files
+* random problems that need fixin
+* lots of missing msg/srv updates in js files
+* Merge pull request `#412 <https://github.com/EndPointCorp/lg_ros_nodes/issues/412>`_ from EndPointCorp/no_waiting
+  Fix some service waiting and other issues
+* Ban persistent ServiceProxy
+  Known to be broken in this configuration.
+* Retry initial USCS state
+* Don't wait for pubsub connections either
+* Don't wait for services
+* Contributors: Matt Vollrath, Will Plaut
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+  Conflicts:
+  lg_common/package.xml
+* Merge pull request `#410 <https://github.com/EndPointCorp/lg_ros_nodes/issues/410>`_ from EndPointCorp/fix_tests
+  Fix some tests
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* Fix up adhoc browser tests
+* Fix some pycodestyle glitches
+* update import paths everywhere
+* Track socat dependency again
+* Fix TCP Relay test
+  Needs to init a rospy node for appctl to work properly.
+  Also fix threading issues when the relay fails to run.
+* Contributors: Matt Vollrath, Will Plaut
+
+3.0.2 (2019-11-06)
+------------------
+
+3.0.1 (2019-11-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* lg_common: remove socat dep that breaks stuffff
+  Figure out if we can add this back
+* lg_common: add build dep
+* Contributors: Will Plaut, dkiselev
+
 3.0.0 (2019-10-31)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree

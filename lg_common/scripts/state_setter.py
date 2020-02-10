@@ -2,7 +2,7 @@
 
 import rospy
 from lg_common import StateChanger
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from lg_common.helpers import run_with_influx_exception_handler
 
 

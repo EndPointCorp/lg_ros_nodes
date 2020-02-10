@@ -8,7 +8,7 @@ import rospy
 import unittest
 
 from lg_mirror.constants import MIRROR_ACTIVITY_TYPE
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.test_helpers import gen_touch_window
 from lg_common.test_helpers import gen_scene

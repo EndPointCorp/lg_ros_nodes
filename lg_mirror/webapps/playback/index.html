@@ -50,7 +50,7 @@ ros.connect(rosbridgeUrl);
 var readinessTopic = new ROSLIB.Topic({
   ros: ros,
   name: '/director/ready',
-  messageType: 'lg_common/Ready',
+  messageType: 'lg_msg_defs/Ready',
   throttle_rate: 16,
   queue_length: 1,
 });

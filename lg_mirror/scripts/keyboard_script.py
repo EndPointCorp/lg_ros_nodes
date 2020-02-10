@@ -2,8 +2,8 @@
 
 import rospy
 import evdev
-from lg_mirror.msg import EvdevEvents
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import EvdevEvents
+from lg_msg_defs.msg import StringArray
 
 
 class KeyboardThing:

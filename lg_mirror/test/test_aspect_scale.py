@@ -5,7 +5,7 @@ NAME = 'test_aspect_scale_source'
 
 import unittest
 from lg_mirror.utils import aspect_scale_source
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 
 
 class TestAspectScale(unittest.TestCase):

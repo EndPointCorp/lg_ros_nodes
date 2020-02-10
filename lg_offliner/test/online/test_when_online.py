@@ -22,7 +22,7 @@ import unittest
 import rospy
 
 from lg_offliner import ROS_NODE_NAME
-from lg_offliner.srv import Offline
+from lg_msg_defs.srv import Offline
 
 
 class TestLGOfflinerWhenOnline(unittest.TestCase):

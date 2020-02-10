@@ -1,4 +1,4 @@
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from threading import Lock
 import rostopic
 import rospy
@@ -14,7 +14,7 @@ class StateChanger:
     """
     def __init__(self):
         self.pubbers = {}
-        self.message_type_s = 'lg_common/ApplicationState'
+        self.message_type_s = 'lg_msg_defs/ApplicationState'
         self.message_type = ApplicationState
         self.lock = Lock()
 

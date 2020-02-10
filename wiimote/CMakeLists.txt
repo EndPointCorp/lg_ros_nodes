@@ -15,18 +15,12 @@ set(CMAKE_EXE_LINKER_FLAGS "-pie -z noexecstack -z relro -z now")
 set(CMAKE_SHARED_LINKER_FLAGS "-z noexecstack -z relro -z now ${CMAKE_SHARED_LINKER_FLAGS}")
 
 # Load catkin and all dependencies required for this package
-set(CATKIN_DEPS geometry_msgs sensor_msgs std_msgs std_srvs rospy roscpp roslib genmsg)
+set(CATKIN_DEPS geometry_msgs sensor_msgs std_msgs std_srvs rospy roscpp roslib
+	genmsg lg_msg_defs)
 find_package(catkin REQUIRED ${CATKIN_DEPS} roslint)
 
 catkin_python_setup()
 
-# generate the messages
-add_message_files(
-  DIRECTORY msg
-  FILES
-  IrSourceInfo.msg
-  State.msg
-  TimedSwitch.msg)
 
 generate_messages(DEPENDENCIES geometry_msgs std_msgs sensor_msgs)
 
@@ -58,13 +52,13 @@ include_directories(
 ## C++ Wiimote Node: Declare cpp executables
 add_executable(wiimote_node src/wiimote_controller.cpp src/stat_vector_3d.cpp)
 target_link_libraries(wiimote_node ${catkin_LIBRARIES} bluetooth cwiid)
-add_dependencies(wiimote_node wiimote_generate_messages_cpp)
+add_dependencies(wiimote_node lg_msg_defs_generate_messages_cpp)
 ## End of C++ Wiimote Node
 
 ## C++ Teleop for Wiimote Node: Declare cpp executables
 add_executable(teleop_wiimote src/teleop_wiimote.cpp)
 target_link_libraries(teleop_wiimote ${catkin_LIBRARIES})
-add_dependencies(teleop_wiimote wiimote_generate_messages_cpp)
+add_dependencies(teleop_wiimote lg_msg_defs_generate_messages_cpp)
 ## End C++ Teleop for Wiimote Node
 
 # Install launch files

@@ -6,8 +6,8 @@
 
 #include "uinput_device.h"
 #include "viewport_mapper.h"
-#include "lg_common/StringArray.h"
-#include "lg_mirror/EvdevEvents.h"
+#include <lg_msg_defs/StringArray.h>
+#include <lg_msg_defs/EvdevEvents.h>
 
 class RosEventRelay {
   public:
@@ -19,8 +19,8 @@ class RosEventRelay {
       ViewportMapper mapper,
       bool auto_zero
     );
-    void HandleRouterMessage(const lg_common::StringArrayPtr& msg);
-    void HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg);
+    void HandleRouterMessage(const lg_msg_defs::StringArrayPtr& msg);
+    void HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg);
     void ResetIdleRemap(const ros::TimerEvent& tev);
 
   private:

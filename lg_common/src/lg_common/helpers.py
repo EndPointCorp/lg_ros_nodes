@@ -11,7 +11,7 @@ import string
 
 from lg_common import ManagedWindow
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 
 
 class PublisherSubscriberConnectionsException(Exception):
@@ -682,7 +682,7 @@ def check_device(device, name):
 
 
 def is_valid_state(state):
-    from lg_common.msg import ApplicationState
+    from lg_msg_defs.msg import ApplicationState
     return state == ApplicationState.HIDDEN or \
         state == ApplicationState.STOPPED or \
         state == ApplicationState.STARTED or \
@@ -888,23 +888,26 @@ def generate_hash(string, length=8, random_suffix=False):
         return hash_str
 
 
-def handle_initial_state(call_back):
+def handle_initial_state(call_back, attempts=20):
     """
     Query for initial state from state service and run
     the call back with that state if available
     """
-    # commenting out for now
-    try:
-        rospy.wait_for_service('/initial_state', 15)
-    except Exception:
-        rospy.logerr("This system does not support initial state setting")
-        return
+    from lg_msg_defs.srv import InitialUSCS, InitialUSCSResponse
 
-    from lg_common.srv import InitialUSCS, InitialUSCSResponse
+    initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS, persistent=False)
 
-    initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
+    tries = 0
+    state = None
+    while not state and not rospy.is_shutdown():
+        try:
+            tries += 1
+            state = initial_state_service.call()
+        except rospy.service.ServiceException:
+            if tries > attempts:
+                raise
+            rospy.sleep(1.0)
 
-    state = initial_state_service.call()
     if state and state != InitialUSCSResponse():
         rospy.loginfo('got initial state: %s for callback %s' % (state.message, call_back))
         call_back(state)
@@ -1000,7 +1003,6 @@ def run_with_influx_exception_handler(main, node_name, host='lg-head', port=8094
         data = """ros_respawns ros_node_name="%s",reason="%s",value=1 """ % (node_name, e)
         rospy.logerr("Attempting data point write '%s' to influx database" % data)
         write_influx_point_to_telegraf(data=data, host=host, port=port)
-        rospy.sleep(1)
         raise
 
 
@@ -1013,6 +1015,7 @@ def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
     rospy.logdebug("Going to write: '%s' to influx" % data)
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5.0)
         server_address = (host, port)
         sock.connect(server_address)
         sock.sendall(data.encode('utf-8'))
@@ -1030,7 +1033,7 @@ def director_listener_state_setter(state_pub, activity_list=None, offline_state=
     _any_ of the actives in activity_list then we will publish VISIBLE to state_pub, otherwise we
     will publish offline_state
     """
-    from lg_common.msg import ApplicationState
+    from lg_msg_defs.msg import ApplicationState
 
     def _do_stuff(director_msg, *args, **kwargs):
         try:

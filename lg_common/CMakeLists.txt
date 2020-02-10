@@ -3,35 +3,13 @@ project(lg_common)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
 )
 
 catkin_python_setup()
 
-add_service_files(
-  FILES
-  NodeReady.srv
-  BrowserPool.srv
-  USCSMessage.srv
-  InitialUSCS.srv
-)
-
-add_message_files(
-  FILES
-  ApplicationState.msg
-  WindowGeometry.msg
-  AdhocBrowser.msg
-  AdhocBrowsers.msg
-  BrowserExtension.msg
-  BrowserCmdArg.msg
-  StringArray.msg
-  Ready.msg
-  BrowserURL.msg
-)
-generate_messages()
 
 catkin_package(
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime lg_msg_defs
 )
 
 catkin_install_python(PROGRAMS

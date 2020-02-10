@@ -1,0 +1,14 @@
+string id
+string url
+string scene_slug
+bool preload
+bool custom_preload_event
+bool kiosk
+string user_agent
+string version
+string[] allowed_urls
+string user_data_dir
+lg_msg_defs/WindowGeometry geometry
+lg_msg_defs/BrowserExtension[] extensions
+lg_msg_defs/BrowserCmdArg[] command_line_args
+lg_msg_defs/BrowserCmdArg[] default_args_removal

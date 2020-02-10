@@ -106,7 +106,7 @@ function handleScene(data) {
 let sceneService = new ROSLIB.Service({
   ros: ros,
   name: '/uscs/message',
-  serviceType: 'lg_common/USCSService'
+  serviceType: 'lg_msg_defs/USCSService'
 });
 let sceneRequest = new ROSLIB.ServiceRequest({});
 sceneService.callService(sceneRequest, (result) => {

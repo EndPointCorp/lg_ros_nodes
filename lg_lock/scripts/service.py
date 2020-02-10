@@ -4,8 +4,8 @@ import rospy
 from std_srvs.srv import SetBool
 from lg_lock import LockerService
 
-from lg_lock.srv import IsLocked, Lock, UnLock
-from lg_lock.msg import State
+from lg_msg_defs.srv import IsLocked, Lock, UnLock
+from lg_msg_defs.msg import LockState
 
 from lg_common.helpers import run_with_influx_exception_handler
 
@@ -19,14 +19,14 @@ def init():
     suppress_spacenav = rospy.get_param('~suppress_spacenav', True)
     locked = rospy.get_param('~locked', False)
 
-    statePublisher = rospy.Publisher('/lg_lock/locked', State, queue_size=1, latch=True)
+    statePublisher = rospy.Publisher('/lg_lock/locked', LockState, queue_size=1, latch=True)
 
     if not password:
         rospy.logerr('No or blank password provided, exiting...')
         print("No or blank password provided, exiting...")
         return
 
-    suppressProxy = rospy.ServiceProxy('/spacenav_wrapper/suppress', SetBool)
+    suppressProxy = rospy.ServiceProxy('/spacenav_wrapper/suppress', SetBool, persistent=False)
 
     def onChange(state):
         if suppress_spacenav:

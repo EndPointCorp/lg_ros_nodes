@@ -23,12 +23,18 @@ rosdep update
 sudo rosdep install -y --from-paths $SRCDIR --ignore-src \
     --rosdistro="${BUILD_ROS_DISTRO}" --os="${BUILD_OS}:${BUILD_OS_VERSION}"
 
+if [ -e $SRCDIR/appctl_msg_defs ]; then
+    $BUILD $SRCDIR/appctl_msg_defs
+    sudo dpkg --force-overwrite -i ros-${BUILD_ROS_DISTRO}-appctl-msg-defs_*${BUILD_OS_VERSION}_*.deb
+fi
 if [ -e $SRCDIR/appctl ]; then
     $BUILD $SRCDIR/appctl
     sudo dpkg --force-overwrite -i ros-${BUILD_ROS_DISTRO}-appctl_*${BUILD_OS_VERSION}_*.deb
 fi
 $BUILD $SRCDIR/interactivespaces_msgs
 sudo dpkg --force-overwrite -i ros-${BUILD_ROS_DISTRO}-interactivespaces-msgs_*${BUILD_OS_VERSION}_*.deb
+$BUILD $SRCDIR/lg_msg_defs
+sudo dpkg --force-overwrite -i ros-${BUILD_ROS_DISTRO}-lg-msg-defs_*${BUILD_OS_VERSION}_*.deb
 $BUILD $SRCDIR/lg_common
 sudo dpkg -i ros-${BUILD_ROS_DISTRO}-lg-common_*${BUILD_OS_VERSION}_*.deb
 $BUILD $SRCDIR/lg_activity

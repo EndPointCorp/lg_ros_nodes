@@ -4,7 +4,7 @@ import rospy
 import threading
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_common.helpers import load_director_message
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_mirror import MirrorException
 from lg_mirror.utils import get_mirror_port, viewport_to_multicast_group
 from lg_mirror.constants import *

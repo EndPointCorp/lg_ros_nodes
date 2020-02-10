@@ -5,8 +5,8 @@
 #include <string>
 #include <exception>
 
-#include "lg_mirror/EvdevEvents.h"
-#include "lg_mirror/EvdevDeviceInfo.h"
+#include <lg_msg_defs/EvdevEvents.h>
+#include <lg_msg_defs/EvdevDeviceInfo.h>
 
 namespace UinputDeviceConstants {
   const char* UINPUT_PATH = "/dev/uinput";
@@ -26,16 +26,16 @@ class UinputDevice {
   public:
     UinputDevice(const std::string& device_name, bool translate_to_multitouch);
 
-    bool Init(const lg_mirror::EvdevDeviceInfoResponse& info);
+    bool Init(const lg_msg_defs::EvdevDeviceInfoResponse& info);
     bool WaitForXinput();
     bool FloatPointer() const;
     void Zero();
 
-    void HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg);
+    void HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg);
 
   private:
     static void EnableCode_(int fd, int codeBits, int code);
-    void InitDevice_(int fd, const lg_mirror::EvdevDeviceInfoResponse& info);
+    void InitDevice_(int fd, const lg_msg_defs::EvdevDeviceInfoResponse& info);
     bool WriteEvent_(__u16 type, __u16 code, __s32 value);
 
     int fd_;
