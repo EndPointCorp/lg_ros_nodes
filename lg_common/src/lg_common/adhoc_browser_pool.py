@@ -367,7 +367,7 @@ class AdhocBrowserPool():
         returns: bool
         """
         for browser_pool_id in ids:
-            rospy.loginfo("Hiding browser with id %s" % browser_pool_id)
+            rospy.logdebug("Hiding browser with id %s" % browser_pool_id)
             self.browsers[browser_pool_id].set_state(ApplicationState.HIDDEN)
 
         return True
@@ -376,9 +376,9 @@ class AdhocBrowserPool():
         """
         Accepts a list of browser ids to destroy (kill and remove)
         """
-        rospy.loginfo("Browsers to remove = %s" % (ids))
+        rospy.logdebug("Browsers to remove = %s" % (ids))
         for browser_pool_id in ids:
-            rospy.loginfo("Removing browser id %s" % browser_pool_id)
+            rospy.logdebug("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
 
     def _get_all_preloadable_instances(self, data):
@@ -512,21 +512,21 @@ class AdhocBrowserPool():
 
         with self.lock:
             self.scene_slug = data.scene_slug
-            rospy.loginfo("============= NEW SCENE BEGIN (slug: %s) ===============" % self.scene_slug)
+            rospy.logdebug("============= NEW SCENE BEGIN (slug: %s) ===============" % self.scene_slug)
             incoming_browsers = self._get_incoming_browsers_dict(data.browsers)
             incoming_browsers_ids = set(incoming_browsers.keys())  # set
             current_browsers_ids = get_app_instances_ids(self.browsers)  # set
             ids_to_preload = set([incoming_browser_id for incoming_browser_id in incoming_browsers_ids if incoming_browsers[incoming_browser_id].preload])
             ids_to_remove = current_browsers_ids - incoming_browsers_ids
             ids_to_create = (incoming_browsers_ids - current_browsers_ids).union(ids_to_preload)
-            rospy.loginfo('incoming ids: {}'.format(incoming_browsers_ids))
-            rospy.loginfo('preloadable ids: {}'.format(ids_to_preload))
-            rospy.loginfo('current ids: {}'.format(current_browsers_ids))
-            rospy.loginfo('partitioned fresh ids: {}'.format(ids_to_create))
-            rospy.loginfo('browsers to remove: {}'.format(ids_to_remove))
+            rospy.logdebug('incoming ids: {}'.format(incoming_browsers_ids))
+            rospy.logdebug('preloadable ids: {}'.format(ids_to_preload))
+            rospy.logdebug('current ids: {}'.format(current_browsers_ids))
+            rospy.logdebug('partitioned fresh ids: {}'.format(ids_to_create))
+            rospy.logdebug('browsers to remove: {}'.format(ids_to_remove))
             self._create_browsers(ids_to_create, incoming_browsers)
             self._execute_browser_housekeeping(ids_to_create, ids_to_preload, ids_to_remove)
-            rospy.loginfo("============== NEW SCENE END (slug: %s) ================" % self.scene_slug)
+            rospy.logdebug("============== NEW SCENE END (slug: %s) ================" % self.scene_slug)
             return True
 
     def _execute_browser_housekeeping(self, ids_to_create, ids_to_preload, ids_to_remove):

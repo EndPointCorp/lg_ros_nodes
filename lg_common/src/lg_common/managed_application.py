@@ -12,7 +12,8 @@ SIG_RETRY_DELAY = 0.05
 
 
 class ManagedApplication(object):
-    def __init__(self, cmd, shell=False, window=None, initial_state=None, respawn=True, env=None):
+    def __init__(self, cmd, shell=False, window=None, initial_state=None, respawn=True, env=None,
+                 stdout=None, stderr=None):
         """
         respawn handles whether or not the application shall be automatically
                 respawned at all, default is True.
@@ -25,7 +26,9 @@ class ManagedApplication(object):
                                    spawn_hooks=[self._handle_respawn],
                                    shell=shell,
                                    respawn=respawn,
-                                   env=env)
+                                   env=env,
+                                   stdout=stdout,
+                                   stderr=stderr)
 
         self._respawn_handlers = []
         self._state_handlers = []

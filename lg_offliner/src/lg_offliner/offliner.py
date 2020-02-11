@@ -146,7 +146,7 @@ class Checker(object):
         """
         results = {}
         for cmd in self.check_cmds:
-            res = subprocess.call(cmd.split())
+            res = subprocess.call(cmd.split(), stdout=open('/dev/null', 'w'))
             self.log("'%s' finished, result: %s" % (cmd, res))
             results[cmd] = res
             if rospy.is_shutdown():

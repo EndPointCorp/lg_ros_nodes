@@ -84,12 +84,10 @@ class Client:
         env['LD_LIBRARY_PATH'] += use_dir
 
         cmd = [use_dir + '/googleearth-bin']
+        earth_log = self._get_tempdir() + '/earth_log'
+        earth_err_log = earth_log + '_err'
 
         cmd.extend(args)
-        self.earth_proc = ManagedApplication(cmd, window=earth_window,
-                                             initial_state=initial_state,
-                                             env=env)
-        KmlAlive(self.earth_proc)
         # config rendering values
         self.geplus_config = geplus_config
         self.layers_config = layers_config
@@ -97,6 +95,12 @@ class Client:
         self.view_content = view_content
 
         self._render_configs()
+
+        self.earth_proc = ManagedApplication(cmd, window=earth_window,
+                                             initial_state=initial_state,
+                                             env=env, stdout=open(earth_log, 'w'),
+                                             stderr=open('earth_err_log', 'w'))
+        KmlAlive(self.earth_proc)
 
     def _render_configs(self):
         self._make_tempdir()
