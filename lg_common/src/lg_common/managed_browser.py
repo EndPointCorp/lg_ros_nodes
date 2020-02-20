@@ -160,7 +160,7 @@ class ManagedBrowser(ManagedApplication):
         # clean up after thyself
         rospy.on_shutdown(self.clear_tmp_dir)
 
-        super(ManagedBrowser, self).__init__(cmd=cmd, window=window, stdout=open('/tmp/browser.log', 'w'), stderr=open('/tmp/browser_error.log', 'w'))
+        super(ManagedBrowser, self).__init__(cmd=cmd, window=window, stdout=open('/{}/browser.log'.format(self.tmp_dir), 'w'), stderr=open('/{}/browser_error.log'.format(self.tmp_dir), 'w'))
 
     def post_init(self):
         super(ManagedBrowser, self).post_init()
