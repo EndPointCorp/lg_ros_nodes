@@ -2,7 +2,7 @@
 
 
 pwd
-/var/jenkins_home/workspace/lg_ros_node_master/scripts/init_workspace
+/var/jenkins_home/workspace/lg_ros_nodes_master/scripts/init_workspace
 
 git clean -fdx
 
