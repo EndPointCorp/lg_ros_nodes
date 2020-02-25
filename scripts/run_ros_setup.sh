@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+
+pwd
 /var/jenkins_home/workspace/lg_ros_node_master/scripts/init_workspace
 
 git clean -fdx
