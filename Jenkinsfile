@@ -17,7 +17,7 @@ pipeline {
 	    . devel/setup.sh && \
 	    cd ${PROJECT_ROOT} && \
 	    ./scripts/docker_xvfb_add.sh && \
-	    ./scripts/test_runner
+	    ./scripts/test_runner \
 	    '
       }
     }
