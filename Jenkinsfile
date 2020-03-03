@@ -4,7 +4,7 @@ pipeline {
     stage('Setup')
       agent any
       steps {
-        ./scripts/setup_tests.sh
+        sh ./scripts/setup_tests.sh
       }
     stage('Test') {
       agent { 
