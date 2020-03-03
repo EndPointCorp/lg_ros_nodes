@@ -1,18 +1,11 @@
 pipeline {
-  agent none
-  stages {
-    stage('Setup') {
-      agent any
-      steps {
-        sh './scripts/setup_tests.sh'
-      }
+  agent { 
+    dockerfile {
+      args "-u 0 --rm --env='DISPLAY=:0'"
     }
+  }
+  stages {
     stage('Test') {
-      agent { 
-        dockerfile {
-	  args "-u 0 --rm --env='DISPLAY=:0'"
-	}
-      }
       steps {
         sh 'cd ${PROJECT_ROOT}/catkin && \
 	    . devel/setup.sh && \
