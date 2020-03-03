@@ -8,10 +8,10 @@ source /opt/ros/melodic/setup.bash
 
 ./scripts/init_workspace
 
-cd catkin/src
-git clone git@github.com:EndPointCorp/appctl.git -b master
+#cd catkin/src
+#git clone git@github.com:EndPointCorp/appctl.git -b master
 
-cd ..
+#cd ..
 catkin_make
 
 cd $WORKSPACE
