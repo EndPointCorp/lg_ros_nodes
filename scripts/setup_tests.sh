@@ -4,6 +4,7 @@
 cd $WORKSPACE
 git clean -fdx
 rm -rf "$WORKSPACE/catkin"
+source /opt/ros/melodic/setup.bash
 
 ./scripts/init_workspace
 
