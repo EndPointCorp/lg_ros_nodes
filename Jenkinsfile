@@ -1,15 +1,24 @@
 pipeline {
-  agent {
-    dockerfile {
-      filename 'Dockerfile'
-    }
-
-  }
+  agent none
   stages {
-    stage('Setup') {
+    stage('Setup')
+      agent any
       steps {
-        sh './scripts/run_ros_setup.sh'
-        sh './scripts/test_docker.sh'
+        ./scripts/setup_tests.sh
+      }
+    stage('Test') {
+      agent { 
+        dockerfile {
+	  args "-u 0 --rm --env='DISPLAY=:0'"
+	}
+      }
+      steps {
+        sh 'cd ${PROJECT_ROOT}/catkin && \
+	    . devel/setup.sh && \
+	    cd ${PROJECT_ROOT} && \
+	    ./scripts/docker_xvfb_add.sh && \
+	    ./scripts/test_runner
+	    '
       }
     }
 
