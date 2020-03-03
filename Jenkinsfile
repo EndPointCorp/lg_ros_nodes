@@ -1,11 +1,12 @@
 pipeline {
   agent none
   stages {
-    stage('Setup')
+    stage('Setup') {
       agent any
       steps {
         sh ./scripts/setup_tests.sh
       }
+    }
     stage('Test') {
       agent { 
         dockerfile {
