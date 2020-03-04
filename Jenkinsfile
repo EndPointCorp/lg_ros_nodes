@@ -7,12 +7,12 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        sh 'cd ${PROJECT_ROOT}/catkin && \
+        sh "cd ${PROJECT_ROOT}/catkin && \
 	    . devel/setup.sh && \
 	    cd ${PROJECT_ROOT} && \
 	    ./scripts/docker_xvfb_add.sh && \
 	    ./scripts/test_runner.py \
-	    '
+	    "
       }
     }
 
