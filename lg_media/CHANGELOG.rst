@@ -2,6 +2,9 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.1.8 (2020-02-06)
 ------------------
 * image_viewer: slight change for trasparency
