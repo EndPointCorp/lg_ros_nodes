@@ -40,6 +40,7 @@ RUN \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
+    python-rosdep \
     python-setuptools \
     python3-pip \
     python3-setuptools \
