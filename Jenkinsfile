@@ -1,7 +1,7 @@
 pipeline {
   agent { 
     dockerfile {
-      args "-u 0 --rm -v $SSH_AUTH_SOCK:/ssh-agent --env='DISPLAY=:0'"
+      args "-u 0 --rm --env='DISPLAY=:0'"
     }
   }
   stages {
