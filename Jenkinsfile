@@ -7,6 +7,7 @@ pipeline {
   stages {
     stage('Test') {
       steps {
+        input('Pause until procede')
         sh "pwd && \
 	    cd /home/lg/src/lg_ros_nodes/catkin && \
 	    . devel/setup.sh && \
