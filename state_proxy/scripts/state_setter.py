@@ -6,7 +6,7 @@ from lg_msg_defs.srv import USCSMessage
 from lg_msg_defs.srv import DesiredState
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
-from appctl.msg import Mode
+from appctl_msg_defs.msg import Mode
 from lg_common.helpers import run_with_influx_exception_handler
 
 
