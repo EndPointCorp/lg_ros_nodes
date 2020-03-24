@@ -68,12 +68,14 @@ RUN \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/*
 
+# Install pepperflash
 RUN \
   apt-get update && \
   apt-get install -y software-properties-common && \
   add-apt-repository "deb http://archive.canonical.com/ ${UBUNTU_RELEASE} partner" && \
   apt-get update && \
-  apt-get install -y pepperflashplugin-nonfree
+  apt-get install -y pepperflashplugin-nonfree && \
+  rm -rf /var/lib/apt/lists/*
 
 
 # Install NodeJS and test dependencies
