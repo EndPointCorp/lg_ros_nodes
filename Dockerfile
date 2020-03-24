@@ -32,7 +32,7 @@ RUN \
   echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
   apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
   wget --no-check-certificate -q -O /tmp/key.pub https://dl-ssl.google.com/linux/linux_signing_key.pub && apt-key add /tmp/key.pub && rm /tmp/key.pub && \
-  add-apt-repository "deb http://archive.canonical.com/ ${UBUNTU_RELEASE} partner"
+  add-apt-repository "deb http://archive.canonical.com/ ${UBUNTU_RELEASE} partner" && \
   apt-key update && \
   apt-get update && \
   apt-get install -y --no-install-recommends \
