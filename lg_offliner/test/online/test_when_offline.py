@@ -11,7 +11,7 @@ from std_msgs.msg import Bool
 from lg_offliner import ROS_NODE_NAME
 from lg_offliner import LG_OFFLINER_OFFLINE_TOPIC_DEFAULT
 from lg_msg_defs.srv import Offline
-from appctl.msg import Mode
+from appctl_msg_defs.msg import Mode
 
 
 class TestLGOfflinerWhenOffline(unittest.TestCase):

@@ -4,7 +4,7 @@
         <param name="submission_type" value="InfluxTelegraf"/>
         <param name="host" value="localhost"/>
         <param name="port" value="8094"/>
-        <param name="activity_sources" value="/director/scene:interactivespaces_msgs/GenericMessage-message.slug:default;/appctl/mode:appctl/Mode-mode:default;/activity/active:std_msgs/Bool-data:default;/spacenav/twist:geometry_msgs/Twist-angular:count;/proximity/distance:sensor_msgs/Range-range:average"/>
+        <param name="activity_sources" value="/director/scene:interactivespaces_msgs/GenericMessage-message.slug:default;/appctl/mode:appctl_msg_defs/Mode-mode:default;/activity/active:std_msgs/Bool-data:default;/spacenav/twist:geometry_msgs/Twist-angular:count;/proximity/distance:sensor_msgs/Range-range:average"/>
         <param name="inactivity_resubmission" value="60"/>
     </node>
 

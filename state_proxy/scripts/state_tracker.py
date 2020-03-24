@@ -5,7 +5,7 @@ import json
 from lg_msg_defs.srv import BrowserPool, USCSMessage
 from lg_common.helpers import add_url_params
 from std_msgs.msg import String
-from appctl.msg import Mode
+from appctl_msg_defs.msg import Mode
 from urllib.request import urlopen
 from lg_common.helpers import run_with_influx_exception_handler
 

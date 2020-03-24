@@ -20,8 +20,8 @@
         <param name="check_every_seconds_delay" value="1"/>
         <param name="socket_timeout" value="1"/>
         <param name="checks" value="['sleep 1','sleep 1','sleep 1']"/>  <!-- 0 returning command, as if online -->
-        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile;/something/offline:appctl/Mode-mode:value-online_scene"/>
-        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline;/something/offline:appctl/Mode-mode:value-offline_scene"/>
+        <param name="send_on_online" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-tactile;/something/offline:appctl_msg_defs/Mode-mode:value-online_scene"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-offline;/something/offline:appctl_msg_defs/Mode-mode:value-offline_scene"/>
     </node>
 
     <!-- three adhoc browser pools -->
