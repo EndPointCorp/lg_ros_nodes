@@ -1,7 +1,7 @@
 pipeline {
   agent { 
     dockerfile {
-      args "-u 0 --rm --env='DISPLAY=:0'"
+      args "-u 0 --rm --env='DISPLAY=:0' -v /home/galadmin/inc:/home/lg/inc"
     }
   }
   stages {
