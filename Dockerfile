@@ -41,6 +41,7 @@ RUN \
     python-gst-1.0 \
     python-pip \
     python-setuptools \
+    python-rosdep \
     python3-pip \
     python3-setuptools \
     python3-defusedxml \
