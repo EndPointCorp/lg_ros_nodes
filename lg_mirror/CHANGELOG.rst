@@ -2,8 +2,8 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.10 (2020-03-25)
+-------------------
 * Fix multitouch spoofing for TOUCH codes
   An OS update changed device codes for some touchscreens.  Support both.
 * Contributors: Matt Vollrath
