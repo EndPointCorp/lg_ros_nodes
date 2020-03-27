@@ -36,7 +36,7 @@ class MockSubscriber(object):
 class TestAdhocBrowser(unittest.TestCase):
     def setUp(self):
         self.preloading_grace_time = 45
-        self.message_emission_grace_time = 3
+        self.message_emission_grace_time = 5
         self.message_factory = InteractiveSpacesMessagesFactory()
         self.subscribers = []
         self.browser_service_mock_center = MockSubscriber(topic_name='/browser_service/center')
@@ -154,7 +154,7 @@ class TestAdhocBrowser(unittest.TestCase):
 
     def get_browsers_thru_service(self, viewport):
         rospy.wait_for_service('/browser_service/%s' % viewport)
-        viewport_service = rospy.ServiceProxy('/browser_service/%s' % viewport, BrowserPool)
+        viewport_service = rospy.ServiceProxy('/browser_service/%s' % viewport, BrowserPool, persistent=False)
         browsers_on_viewport = viewport_service('{}').state
 
         try:
@@ -486,7 +486,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
         rospy.wait_for_service('/browser_service/center')
-        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool, persistent=False)
         browsers_on_center = center_service().state
 
         try:
@@ -518,7 +518,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
 
         rospy.wait_for_service('/browser_service/center')
-        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool, persistent=False)
         browsers_on_center = center_service().state
 
         try:

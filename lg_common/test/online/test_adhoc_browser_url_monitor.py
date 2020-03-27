@@ -96,7 +96,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_allowed_urls_msg'))
 
         rospy.wait_for_service('/browser_service/center')
-        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool)
+        center_service = rospy.ServiceProxy('/browser_service/center', BrowserPool, persistent=False)
 
         wait_for_assert_equal(len(json.loads(center_service().state)), 1, self.loading_grace_time)
 

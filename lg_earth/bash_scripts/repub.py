@@ -8,7 +8,7 @@ from lg_msg_defs.srv import USCSMessage, USCSMessageResponse, InitialUSCS, Initi
 try:
     rospy.init_node('director_messager')
     rospy.sleep(1)
-    service = rospy.ServiceProxy('/uscs/message', USCSMessage)
+    service = rospy.ServiceProxy('/uscs/message', USCSMessage, persistent=False)
     current_scene = service()
     clear_scene = stop_scene = " { \"description\": \"STOP the presentation\", \"duration\": 0, \"name\": \"stop the presentations\", \"resource_uri\": \"/director_api/scene/stop-the-presentations/\", \"slug\": \"stop-the-presentations\", \"windows\": [] } "
     clear_scene = json.loads(clear_scene)
