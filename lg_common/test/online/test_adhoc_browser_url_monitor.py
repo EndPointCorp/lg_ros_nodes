@@ -32,7 +32,7 @@ class MockSubscriber(object):
 
 class TestAdhocBrowser(unittest.TestCase):
     def setUp(self):
-        self.loading_grace_time = 30
+        self.loading_grace_time = 45
         self.message_emission_grace_time = 5
         self.message_factory = InteractiveSpacesMessagesFactory()
         self.subscribers = []
