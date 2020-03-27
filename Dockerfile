@@ -87,6 +87,7 @@ RUN pip install --no-cache-dir python-coveralls \
     catkin_tools \
     empy \
     pycrypto \
+    pycryptodome \
     gnupg
 
 # Install GE
