@@ -176,7 +176,7 @@ RUN \
     cd /rosbridge_ws && \
     catkin_make && \
     source /rosbridge_ws/devel/setup.bash && \
-    cd /rosbrdige_ws/src && \
+    cd /rosbridge_ws/src && \
     git clone https://github.com/EndPointCorp/rosbridge_suite.git && \
     cd rosbridge_suite && \
     git checkout never_unregister_hack && \
