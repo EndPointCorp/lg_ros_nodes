@@ -186,7 +186,7 @@ RUN \
     catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic && \
     cd / && \
     rm -rf /rosbridge_ws && \
-    rm -rf /var/lib/apt/lists/* \
+    rm -rf /var/lib/apt/lists/*
 
 
 # install the full package contents
