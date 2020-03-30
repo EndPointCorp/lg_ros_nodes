@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import rospy
-import rosbag
 import rostest
 import unittest
 from geometry_msgs.msg import Twist
