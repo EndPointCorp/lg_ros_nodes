@@ -9,7 +9,7 @@ import unittest
 from lg_common.helpers import required_param
 
 TEST_KEY = "test_key"
-TEST_VALUE = "test_value"
+TEST_VALUE = "test_value".encode('utf-8')
 TEST_MISSING_KEY = "asdfhjkl"
 
 
