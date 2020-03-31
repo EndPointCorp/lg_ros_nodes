@@ -85,7 +85,7 @@ def gen_scene_msg(scene):
     return GenericMessage(type='json', message=scene)
 
 
-def wait_for_assert_equal(val1, val2, timeout, cb=None):
+def wait_for_assert_equal(lam, val2, timeout, cb=None):
     """
     Waits for two values to become equal within specified timeout
     """
