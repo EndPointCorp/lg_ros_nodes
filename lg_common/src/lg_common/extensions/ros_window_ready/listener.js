@@ -21,12 +21,15 @@ function isTrue(val) {
 }
 
 function createRosUrl(params) {
+	console.log('ZZZZ');
     if (params['rosbridge_secure'] === undefined) {
         // Set the default value
         var protocol = 'wss://';
+	console.log("params didn't have rosbridge_secure " + params);
     }
     else {
         var protocol = (isTrue(params['rosbridge_secure']) ? 'wss://' : 'ws://');
+	console.log("protocol is " + protocol " from params " + params);
     }
     return protocol
         + (params['rosbridge_host'] || 'localhost' ) + ':'
@@ -143,8 +146,9 @@ WindowReadyExt.prototype.initRos = function() {
         extension.onRosError.apply(extension, [error]);
     });
 
+	console.log('ZZ initing ros');
     this.ros.on('connection', function() {
-        console.log('Connection made!');
+        console.log('Connection made! window ready');
 
         extension.readyTopic = new ROSLIB.Topic({
             ros: extension.ros,
@@ -159,7 +163,7 @@ WindowReadyExt.prototype.initRos = function() {
         extension.state.setFlag.apply(extension.state, ['rosReady']);
     });
 
-    console.log("Trying to connect to ROS with URL: " + this.rosUrl);
+    console.log("ZZ Trying to connect to ROS with URL: " + this.rosUrl);
     this.ros.connect(this.rosUrl);
 
     this.ros.callOnConnection();
@@ -220,6 +224,7 @@ WindowReadyExt.prototype.attachListeners = function() {
 // * Initialize ROS
 // * Set ros_instance_name
 WindowReadyExt.prototype.applyUrlParams = function(params) {
+    console.log('ZZZ');
     this.rosUrl = createRosUrl(params);
     // Used !! to explicitly convert to boolean
     this.use_app_event = !!params['use_app_event'];
@@ -258,6 +263,7 @@ WindowReadyExt.prototype.directorWindowMsg = function(sender, sendResponse) {
 
 // Dom loaded message from hosted page
 WindowReadyExt.prototype.domLoadedMsg = function(sender, sendResponse) {
+	console.log('ZZZZZ');
     var extension = this;
     this.chromeCallback = sendResponse;
     // Add actual callback which will send a message
