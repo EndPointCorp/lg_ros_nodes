@@ -177,6 +177,7 @@ WindowReadyExt.prototype.sendMsg = function() {
     if(this.sentIds[this.ros_window_name]) {
       return;
     }
+
     this.sentIds[this.ros_window_name] = true;
 
     this.readyTopic.publish({'data': this.ros_window_name});
