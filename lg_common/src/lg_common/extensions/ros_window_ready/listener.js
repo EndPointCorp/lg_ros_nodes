@@ -21,18 +21,12 @@ function isTrue(val) {
 }
 
 function createRosUrl(params) {
-    console.log('ZZZ');
-    console.log(params);
-    console.log(params['rosbridge_secure']);
     if (params['rosbridge_secure'] === undefined) {
         // Set the default value
         var protocol = 'wss://';
-        console.log('XXX');
     }
     else {
-        console.log('yyy');
         var protocol = (isTrue(params['rosbridge_secure']) ? 'wss://' : 'ws://');
-        console.log(protocol);
     }
     return protocol
         + (params['rosbridge_host'] || 'localhost' ) + ':'
@@ -183,7 +177,6 @@ WindowReadyExt.prototype.sendMsg = function() {
     if(this.sentIds[this.ros_window_name]) {
       return;
     }
-
     this.sentIds[this.ros_window_name] = true;
 
     this.readyTopic.publish({'data': this.ros_window_name});
