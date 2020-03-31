@@ -29,7 +29,7 @@ function createRosUrl(params) {
     }
     else {
         var protocol = (isTrue(params['rosbridge_secure']) ? 'wss://' : 'ws://');
-	console.log("protocol is " + protocol " from params " + params);
+	console.log("protocol is " + protocol + " from params " + params);
     }
     return protocol
         + (params['rosbridge_host'] || 'localhost' ) + ':'
