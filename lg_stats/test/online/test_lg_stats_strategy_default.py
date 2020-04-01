@@ -75,7 +75,7 @@ class TestLGStatsRealMessageChain(unittest.TestCase):
 
     """
 
-    def setup_method(self, method):
+    def setUp(self):
         # subscribed to the /lg_stats/debug topic
         # WARNING: issues retrieving rospy.get_param value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)
