@@ -11,7 +11,7 @@ from std_msgs.msg import String
 from lg_common import InteractiveSpacesMessagesFactory
 from lg_common.helpers import write_log_to_file
 from lg_msg_defs.srv import BrowserPool
-from lg_common.test_helpers import wait_for_assert_gt
+from lg_common.test_helpers import wait_for_assert_ge
 
 
 PKG = 'lg_common'
@@ -195,7 +195,7 @@ class TestAdhocBrowser(unittest.TestCase):
         emit browser with 2 extensions - test_extension and ros_window_ready
         """
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
-        wait_for_assert_gt(lambda : len(self.director_window_ready_mock.messages), 1, timeout=self.preloading_grace_time + 15)
+        wait_for_assert_ge(lambda : len(self.director_window_ready_mock.messages), 1, timeout=self.preloading_grace_time + 15)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
@@ -227,7 +227,7 @@ class TestAdhocBrowser(unittest.TestCase):
                          "--enable-crash-reporter")
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
 
-        wait_for_assert_gt(lambda : len(list(self.get_browsers_thru_service('center').items())), 1, self.preloading_grace_time)
+        wait_for_assert_ge(lambda : len(list(self.get_browsers_thru_service('center').items())), 1, self.preloading_grace_time)
 
         browsers_on_center = self.get_browsers_thru_service('center')
 
@@ -284,7 +284,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        wait_for_assert_gt(lambda : len(self.director_scene_mock.messages), 1, self.preloading_grace_time)
+        wait_for_assert_ge(lambda : len(self.director_scene_mock.messages), 1, self.preloading_grace_time)
 
         # no director window ready should be published
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)
@@ -299,7 +299,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        wait_for_assert_gt(lambda : len(self.director_scene_mock.messages), 2, self.preloading_grace_time)
+        wait_for_assert_ge(lambda : len(self.director_scene_mock.messages), 2, self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'gzJERcJ')
@@ -343,7 +343,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1a
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        wait_for_assert_gt(lambda : len(self.director_window_ready_mock.messages), 1, self.preloading_grace_time + 15)
+        wait_for_assert_ge(lambda : len(self.director_window_ready_mock.messages), 1, self.preloading_grace_time + 15)
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
 
@@ -353,7 +353,7 @@ class TestAdhocBrowser(unittest.TestCase):
         # 1b
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_msg'))
         rospy.sleep(self.message_emission_grace_time)
-        wait_for_assert_gt(lambda : len(self.director_ready_mock.messages), 2, self.preloading_grace_time)
+        wait_for_assert_ge(lambda : len(self.director_ready_mock.messages), 2, self.preloading_grace_time)
 
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(browsers_on_center), 1)
@@ -366,7 +366,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_alt_slug_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_gt(lambda : len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
+        wait_for_assert_ge(lambda : len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(browsers_on_center), 1)
         browser_timestamp3 = list(browsers_on_center.items())[0][1]['timestamp']
@@ -378,7 +378,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_gt(lambda : len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
+        wait_for_assert_ge(lambda : len(self.director_ready_mock.messages), 3, self.preloading_grace_time)
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(browsers_on_center), 1)
 
@@ -413,7 +413,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_gt(lambda : len(self.director_ready_mock.messages), 1, self.preloading_grace_time + 15)
+        wait_for_assert_ge(lambda : len(self.director_ready_mock.messages), 1, self.preloading_grace_time + 15)
 
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(browsers_on_center), 2)
@@ -432,7 +432,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_gt(lambda : len(self.director_ready_mock.messages), 2, self.preloading_grace_time + 15)
+        wait_for_assert_ge(lambda : len(self.director_ready_mock.messages), 2, self.preloading_grace_time + 15)
 
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(browsers_on_center), 2)
@@ -454,7 +454,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_two_browsers_with_preloading_mix_alt_slug_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_gt(lambda : len(self.director_ready_mock.messages), 3, self.preloading_grace_time + 15)
+        wait_for_assert_ge(lambda : len(self.director_ready_mock.messages), 3, self.preloading_grace_time + 15)
 
         browsers_on_center = self.get_browsers_thru_service('center')
 
@@ -480,7 +480,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_custom_preloading_event_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_gt( lambda : len(self.director_ready_mock.messages), 1, self.preloading_grace_time)
+        wait_for_assert_ge( lambda : len(self.director_ready_mock.messages), 1, self.preloading_grace_time)
 
         self.assertEqual(len(self.browser_service_mock_common.messages[0].browsers), 1)
         self.assertEqual(len(self.director_ready_mock.messages), 1)
@@ -508,7 +508,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_preloading_and_wrong_url_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
-        wait_for_assert_gt(lambda : len(self.director_ready_mock.messages), 1, self.preloading_grace_time)
+        wait_for_assert_ge(lambda : len(self.director_ready_mock.messages), 1, self.preloading_grace_time)
 
         self.assertEqual(len(self.director_scene_mock.messages), 1)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
