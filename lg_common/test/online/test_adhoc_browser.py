@@ -195,11 +195,12 @@ class TestAdhocBrowser(unittest.TestCase):
         emit browser with 2 extensions - test_extension and ros_window_ready
         """
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_with_two_extensions_and_preloading_msg'))
+        rospy.sleep(self.message_emission_grace_time)
         wait_for_assert_ge(lambda : len(self.director_window_ready_mock.messages), 1, timeout=self.preloading_grace_time + 15)
 
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[0].name, 'test_extension1')
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].extensions[1].name, 'test_extension2')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[-1].extensions[0].name, 'test_extension1')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[-1].extensions[1].name, 'test_extension2')
 
         browsers_on_center = self.get_browsers_thru_service('center')
         # Two extensions, +ros_window_ready +url_monitor
@@ -556,4 +557,5 @@ class TestAdhocBrowser(unittest.TestCase):
 if __name__ == '__main__':
     import rostest
     rospy.init_node("test_adhoc_browser", anonymous=True)
+    rospy.sleep(5)
     rostest.rosrun(PKG, NAME, TestAdhocBrowser)
