@@ -7,9 +7,7 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        input('pause to try things')
-        sh "pwd && \
-	    cd /src/lg_ros_nodes/catkin && \
+        sh "cd /src/lg_ros_nodes/catkin && \
 	    . devel/setup.sh && \
 	    cd /src/lg_ros_nodes && \
 	    ./scripts/docker_xvfb_add.sh && \
