@@ -40,7 +40,7 @@ class TestOnboardRouterOnline(unittest.TestCase):
         time.sleep(1)
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
-        wait_for_assert_ge(lambda : len(self.activates), 1, 30)
+        wait_for_assert_ge(lambda: len(self.activates), 1, 30)
         self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_2_default_viewport_no_route_touch(self):
