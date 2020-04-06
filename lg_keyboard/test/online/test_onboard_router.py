@@ -15,7 +15,7 @@ from lg_common.test_helpers import gen_browser_window
 from lg_common.test_helpers import gen_touch_window
 from lg_common.test_helpers import gen_scene
 from lg_common.test_helpers import gen_scene_msg
-from lg_common.test_helpers import wait_for_assert_gt
+from lg_common.test_helpers import wait_for_assert_ge
 
 
 class TestOnboardRouterOnline(unittest.TestCase):
@@ -40,7 +40,7 @@ class TestOnboardRouterOnline(unittest.TestCase):
         time.sleep(1)
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
-        wait_for_assert_gt(lambda : len(self.activates), 1, 30)
+        wait_for_assert_ge(lambda : len(self.activates), 1, 30)
         self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_2_default_viewport_no_route_touch(self):
