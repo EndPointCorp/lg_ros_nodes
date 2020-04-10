@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+./scripts/init_workspace
+
+[ -e ../appctl/appctl ] && ./scripts/init_workspace -x ${PWD}/../appctl/appctl

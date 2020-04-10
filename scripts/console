@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")/.."
+
+./scripts/bootstrap
+
+[[ "$(docker images | grep -c lg_ros_nodes.*latest)" == 0 ]] && ./scripts/update
+
+MOUNTS=""
+
+for rosnode in $(ls catkin/src/* -d | grep -v CMake); do
+  # $rosnode is catkin/src/package_name
+  MOUNTS="${MOUNTS} -v $(readlink ${rosnode}):/src/lg_ros_nodes/${rosnode}"
+done
+
+echo ${MOUNTS}
+
+docker run ${MOUNTS} -it lg_ros_nodes:latest /bin/bash -c "
+  cd /src/lg_ros_nodes/catkin
+  source devel/setup.bash
+  source ../scripts/docker_xvfb_add.sh
+  echo 'run catkin_make before anything'
+  /bin/bash
+"
