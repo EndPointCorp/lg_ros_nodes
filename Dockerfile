@@ -42,6 +42,7 @@ RUN \
     python-pip \
     python-rosdep \
     python-setuptools \
+    python-rosdep \
     python3-pip \
     python3-setuptools \
     python3-defusedxml \

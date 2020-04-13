@@ -270,7 +270,7 @@ void UinputDevice::HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg) 
       __s32 value = ev.value;
 
       if (type == EV_KEY) {
-        if (code == BTN_LEFT) {
+        if (code == BTN_LEFT || code == BTN_TOUCH) {
           if (value == 1) {
             if (!WriteEvent_(EV_ABS, ABS_MT_TRACKING_ID, 1)) {
               ROS_ERROR("Error while writing an event to the device");
