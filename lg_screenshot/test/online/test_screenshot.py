@@ -35,11 +35,11 @@ class TestWebScreenshot(unittest.TestCase):
 
         self.assertEqual(1, len(self.publisher.published_messages))
         #self.assertEqual(self.publisher.published_messages, 'asdasd')
-        self.assertTrue('--url {}'.format(msg.url) in self.publisher.published_messages[0].base64)
-        self.assertTrue('--out base64'.format(msg.url) in self.publisher.published_messages[0].base64)
-        self.assertTrue('--delay 100' in self.publisher.published_messages[0].base64)
-        self.assertTrue('--width 1200' in self.publisher.published_messages[0].base64)
-        self.assertTrue('--silent true' in self.publisher.published_messages[0].base64)
+        self.assertTrue('--url {}'.format(msg.url).encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--out base64'.format(msg.url).encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--delay 100'.encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--width 1200'.encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--silent true'.encode('utf-8') in self.publisher.published_messages[0].base64)
 
 
 if __name__ == '__main__':

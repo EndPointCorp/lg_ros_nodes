@@ -40,6 +40,7 @@ RUN \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
+    python-rosdep \
     python-setuptools \
     python-rosdep \
     python3-pip \
@@ -68,6 +69,7 @@ RUN \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/*
 
+
 # Install NodeJS and test dependencies
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -y nodejs \
@@ -86,6 +88,7 @@ RUN pip install --no-cache-dir python-coveralls \
     catkin_tools \
     empy \
     pycrypto \
+    pycryptodome \
     gnupg
 
 # Install GE
@@ -164,6 +167,28 @@ RUN \
         --rosdistro $ROS_DISTRO \
         -y && \
     rm -rf /var/lib/apt/lists/*
+
+# Try installing hack'd rosbridge
+RUN \
+    apt update && \
+    apt install -y build-essential python-autobahn python3-autobahn && \
+    source /opt/ros/$ROS_DISTRO/setup.bash && \
+    mkdir -p /rosbridge_ws/src && \
+    cd /rosbridge_ws && \
+    catkin_make && \
+    source /rosbridge_ws/devel/setup.bash && \
+    cd /rosbridge_ws/src && \
+    git clone https://github.com/EndPointCorp/rosbridge_suite.git && \
+    cd rosbridge_suite && \
+    git checkout never_unregister_hack && \
+    cd /rosbridge_ws && \
+    catkin_make && \
+    catkin_make install && \
+    catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic && \
+    cd / && \
+    rm -rf /rosbridge_ws && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # install the full package contents
 COPY ./ ${PROJECT_ROOT}

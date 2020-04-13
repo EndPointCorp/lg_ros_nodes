@@ -17,6 +17,7 @@ from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 def make_key_from_image(image):
     return "{}_{}_{}_{}_{}".format(image.url, image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
 
+
 class Image(ManagedApplication):
     def __init__(self, cmd, window, img_application, img_path, respawn=True):
         self.img_application = img_application

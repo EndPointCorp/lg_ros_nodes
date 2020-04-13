@@ -15,7 +15,7 @@ from interactivespaces_msgs.msg import GenericMessage
 class TestAdhocBrowser(unittest.TestCase):
     def setUp(self):
         rospy.wait_for_service('/browser_service/touchscreen', 5)
-        self.touchscreen_browser_service = rospy.ServiceProxy('/browser_service/touchscreen', BrowserPool)
+        self.touchscreen_browser_service = rospy.ServiceProxy('/browser_service/touchscreen', BrowserPool, persistent=False)
         self.message_factory = InteractiveSpacesMessagesFactory()
         # director scene publisher
         self.director_publisher = rospy.Publisher(
