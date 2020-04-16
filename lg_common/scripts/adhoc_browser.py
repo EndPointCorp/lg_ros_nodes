@@ -34,8 +34,8 @@ def main():
     Initialize adhoc browser pool
     """
 
-    topic_name = '/browser_service/{}'.format(viewport_name)
-    common_topic_name = '/browser_service/browsers'
+    topic_name = 'browser_service/{}'.format(viewport_name)
+    common_topic_name = 'browser_service/browsers'
 
     adhocbrowser_pool = AdhocBrowserPool(viewport_name=viewport_name,
                                          extensions_root=extensions_root,
@@ -67,8 +67,8 @@ def main():
         adhocbrowser_viewport_publisher,
         viewport_name)
 
-    rospy.Subscriber('/director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
-    rospy.Subscriber('/director/ready', Ready, adhocbrowser_pool.unhide_browsers)
+    rospy.Subscriber('director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
+    rospy.Subscriber('director/ready', Ready, adhocbrowser_pool.unhide_browsers)
 
     handle_initial_state(adhocbrowser_director_bridge.translate_director)
 
@@ -83,7 +83,7 @@ def main():
         else:
             adhocbrowser_pool.minimize_browsers([s])
 
-    rospy.Subscriber('/director/minimize', String, getBrowserIds)
+    rospy.Subscriber('director/minimize', String, getBrowserIds)
 
     """
     Spin FTW
