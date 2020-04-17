@@ -1,15 +1,29 @@
 <html>
   <head>
+    <link rel="stylesheet" href="css/spinner.css" />
+
 <style>
 html, body {
   background-color: black;
-  margin: 0;
+  margin: auto auto;
   padding: 0;
   overflow: hidden;
 }
+video {
+  display: block;
+  height: 100%;
+  margin: 0 auto;
+}
+#container {
+  margin: auto auto;
+  vertical-align: middle;
+}
 </style>
+
   </head>
   <body>
+    <div id="container"></div>
+    <script src="js/lib/spinner.js"></script>
     <script src="js/lib/adapter.js"></script>
     <script src="js/lib/janus.js"></script>
     <script src="js/player.js"></script>

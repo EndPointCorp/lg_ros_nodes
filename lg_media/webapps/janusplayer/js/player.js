@@ -20,6 +20,15 @@ const streamID = getParameterByName("streamID", Number, null);
 
 const janusUrl = `ws://${janusHost}:${janusPort}/`;
 
+const container = document.getElementById("container");
+
+const loader = new lv();
+loader.startObserving();
+const spinner = lv.create(null, "lv-circles lv-mid lvt-5 md");
+spinner.addClass("spinner");
+const spinnerElem = spinner.getElement();
+container.appendChild(spinnerElem);
+spinner.show();
 
 let janus;
 let streaming;
@@ -27,7 +36,13 @@ let remoteMedia;
 const video = document.createElement("video");
 video.muted = true;
 video.autoplay = true;
-document.body.appendChild(video);
+container.appendChild(video);
+
+// Use "canplay" to avoid visual glitch removing spinner on "play" event.
+video.addEventListener("canplay", () => {
+  container.removeChild(spinnerElem);
+  spinner.hide();
+}, {once: true});
 
 function attachStreaming() {
   console.log("attaching streaming plugin");
@@ -35,7 +50,7 @@ function attachStreaming() {
     plugin: "janus.plugin.streaming",
     success: (plugin) => {
       streaming = plugin;
-      getStreams();
+      startStream(streamID);
     },
     onmessage: (msg, jsep) => {
       if (jsep !== undefined && jsep !== null) {
@@ -55,18 +70,6 @@ function attachStreaming() {
       remoteMedia = stream;
       video.srcObject = stream;
     },
-  });
-}
-
-function getStreams() {
-  console.log("getting stream list");
-  const body = {request: "list"};
-  streaming.send({
-    message: body,
-    success: (resp) => {
-      startStream(streamID);
-    },
-    error: console.error,
   });
 }
 
