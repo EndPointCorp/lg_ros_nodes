@@ -26,6 +26,8 @@ add_message_files(
   ImageViews.msg
   IrSourceInfo.msg
   LockState.msg
+  MediaOverlay.msg
+  MediaOverlays.msg
   PortalPose.msg
   Ready.msg
   ScreenCoordinate.msg
