@@ -1,3 +1,26 @@
+function getParameterByName(name, type, default_) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+                         results = regex.exec(location.search);
+  return (results === null ? default_ : type(
+          decodeURIComponent(results[1].replace(/\+/g, ' '))));
+}
+
+function isTrue(val) {
+  return val === '1' ||
+    val === 1 ||
+    val === true ||
+    ('' + val).toLowerCase() === 'true';
+}
+
+const janusHost = getParameterByName("janusHost", String, null);
+const janusPort = getParameterByName("janusPort", Number, null);
+const janusSecret = getParameterByName("janusSecret", String, null);
+const streamID = getParameterByName("streamID", Number, null);
+
+const janusUrl = `ws://${janusHost}:${janusPort}/`;
+
+
 let janus;
 let streaming;
 let remoteMedia;
@@ -41,8 +64,7 @@ function getStreams() {
   streaming.send({
     message: body,
     success: (resp) => {
-      const firstId = resp.list[0].id;
-      startStream(firstId);
+      startStream(streamID);
     },
     error: console.error,
   });
@@ -64,7 +86,8 @@ function init() {
     callback: () => {
       console.log("Janus initialized");
       janus = new Janus({
-        server: "ws://localhost:8189/",
+        apisecret: janusSecret,
+        server: janusUrl,
         success: () => {
           attachStreaming();
         },
