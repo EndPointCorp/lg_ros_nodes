@@ -8,12 +8,14 @@ from lg_common import ManagedWindow
 from interactivespaces_msgs.msg import GenericMessage
 from lg_msg_defs.msg import MediaOverlays
 
-StreamInfo = namedtuple('overlay', ['name', 'viewport', 'location'])
+StreamInfo = namedtuple('overlay', ['name', 'viewport', 'location', 'url'])
 
 class MediaLauncher(object):
     """Maintain a list of active streams based on MediaOverlays messages"""
-    def __init__(self, pub, viewports):
+    def __init__(self, janus_host, janus_port, pub, viewports):
         self.director_pub = pub
+        self.janus_host = janus_host
+        self.janus_port = janus_port
         self.viewports = viewports
 
         self.active_overlays = {}
@@ -25,7 +27,7 @@ class MediaLauncher(object):
         """
         message_overlays = []
         for msg in message.overlays:
-            message_overlays.append(StreamInfo(msg.name, msg.viewport, msg.location))
+            message_overlays.append(StreamInfo(msg.name, msg.viewport, msg.location, self._make_url(msg.location)))
 
         stale_overlays = set(self.active_overlays.keys()).difference(set(message_overlays))
         new_overlays = set(message_overlays).difference(set(self.active_overlays.keys()))
@@ -53,6 +55,12 @@ class MediaLauncher(object):
             f"Active overlays: {len(self.active_overlays)}"
         )
 
+    def _make_url(self, stream_id):
+        return(
+            f"http://localhost:8008/lg_media/webapps/janusplayer/index.html?"
+            f"janusHost={self.janus_host}&janusPort={self.janus_port}&streamID={stream_id}"
+        )
+
 
 def make_director_message(overlays):
     browser_windows = []
@@ -65,7 +73,7 @@ def make_director_message(overlays):
             {
                 "activity": "browser",
                 "activity_config": {},
-                "assets": [overlay.location],
+                "assets": [overlay.url],
                 "height": geometry.height,
                 "presentation_viewport": overlay.viewport,
                 "width": geometry.width,
@@ -90,9 +98,12 @@ def make_director_message(overlays):
 def main():
     rospy.init_node('media_launcher', log_level=rospy.INFO)
 
+    janus_host = rospy.get_param('~janus_host', 'localhost')
+    janus_port = rospy.get_param('~janus_port', 8088)
+
     viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
     overlay_director_pub = rospy.Publisher('director/scene', GenericMessage, queue_size=10)
-    launcher = MediaLauncher(overlay_director_pub, viewports)
+    launcher = MediaLauncher(janus_host, janus_port, overlay_director_pub, viewports)
 
     rospy.Subscriber('/media_overlays', MediaOverlays, launcher.handle_message)
 
