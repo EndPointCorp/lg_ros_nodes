@@ -10,8 +10,8 @@ from lg_msg_defs.msg import ApplicationState, MediaOverlays
 StreamInfo = namedtuple('overlay', ['name', 'viewport', 'location'])
 
 STREAMS = {
-    "0": "10.42.41.151",
-    "1": "10.42.41.152"
+    "1": "clickshare",
+    "2": "zoom"
 }
 
 class Player(ManagedApplication):
