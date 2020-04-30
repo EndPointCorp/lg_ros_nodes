@@ -4,7 +4,6 @@ from collections import namedtuple
 
 import rospy
 from lg_common import ManagedApplication, ManagedWindow
-from interactivespaces_msgs.msg import GenericMessage
 from lg_msg_defs.msg import ApplicationState, MediaOverlays
 
 StreamInfo = namedtuple('overlay', ['name', 'viewport', 'location'])
@@ -62,8 +61,6 @@ class MediaLauncher(object):
         for item in stale_overlays:
             rospy.logdebug(f"Removing overlay from active \n\t{item}")
             stale_overlay = self.active_overlays.pop(item, None)
-            if stale_overlay is None:
-                rospy.logerr(f"Error removing expected active overlay: {item}")
             stale_overlay.set_state(ApplicationState.STOPPED)
 
         for item in new_overlays:
