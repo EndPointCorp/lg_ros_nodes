@@ -21,7 +21,7 @@ class Player(ManagedApplication):
         window = ManagedWindow(w_name=window_id, geometry=geometry)
 
         cmd = f"/usr/bin/ffplay -nostats -rtsp_transport udp -fflags nobuffer -flags low_delay " \
-              f"-framedrop -analyzeduration 0 -noborder -probesize 32 " \
+              f"-framedrop -analyzeduration 0 -noborder -probesize 32 -alwaysontop " \
               f"-window_title \'{window_id}\' rtsp://{STREAMS[stream_info.location]}:554/default" \
               .split()
 
