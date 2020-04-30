@@ -190,6 +190,7 @@ class TestAdhocBrowser(unittest.TestCase):
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))
         rospy.sleep(self.message_emission_grace_time)
 
+    @unittest.skip("unreliable test")
     def test2a_chrome_extension_initialization_with_two_extensions(self):
         """
         emit browser with 2 extensions - test_extension and ros_window_ready
@@ -333,6 +334,7 @@ class TestAdhocBrowser(unittest.TestCase):
         browser_timestamp_even_after = list(browsers_on_center.items())[0][1]['timestamp']
         self.assertEqual(browser_timestamp_before, browser_timestamp_even_after, "Emitting same message with identical browser but different scene slug updated the browser instance")
 
+    @unittest.skip("unreliable test")
     def test7_adhoc_browser_preloading(self):
         """
          1.preloading:
