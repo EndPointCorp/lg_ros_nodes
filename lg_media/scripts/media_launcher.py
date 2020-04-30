@@ -60,7 +60,7 @@ class MediaLauncher(object):
 
         for item in stale_overlays:
             rospy.logdebug(f"Removing overlay from active \n\t{item}")
-            stale_overlay = self.active_overlays.pop(item, None)
+            stale_overlay = self.active_overlays.pop(item)
             stale_overlay.set_state(ApplicationState.STOPPED)
 
         for item in new_overlays:
