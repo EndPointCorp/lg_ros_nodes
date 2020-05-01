@@ -34,6 +34,7 @@ class TestOnboardRouterOnline(unittest.TestCase):
         self.activates_sub.unregister()
         time.sleep(1)
 
+    @unittest.skip("unreliable test")
     def test_1_sending_messages_work(self):
         msg = GenericMessage(type='json', message='{}')
         self.director_publisher.publish(msg)
