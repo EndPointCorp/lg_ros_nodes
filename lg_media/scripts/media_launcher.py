@@ -13,6 +13,7 @@ STREAMS = {
     "2": "zoom"
 }
 
+
 class Player(ManagedApplication):
     def __init__(self, stream_info, respawn=True):
         window_id = ".".join(stream_info)
@@ -92,6 +93,7 @@ def main():
     rospy.loginfo(f"Started media_launcher node on topic /media_overlays for viewports {viewports}")
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     main()
