@@ -8,6 +8,14 @@ Changelog for package lg_twister
 3.1.9 (2020-03-11)
 ------------------
 
+Forthcoming
+-----------
+* 3.1.10
+* Changelogs
+* 3.1.9
+* Changelogs
+* Contributors: Matt Vollrath
+
 3.1.8 (2020-02-06)
 ------------------
 
