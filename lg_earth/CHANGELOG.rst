@@ -11,8 +11,8 @@ Changelog for package lg_earth
   This causes major problems in Python 3, and nothing was reading the file.
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.1.11 (2020-05-01)
+-------------------
 * Fix test webserver port conflicts
 * Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
   * Setup step

@@ -11,8 +11,8 @@ Changelog for package lg_mirror
 3.1.9 (2020-03-11)
 ------------------
 
-Forthcoming
------------
+3.1.11 (2020-05-01)
+-------------------
 * Fix test webserver port conflicts
 * 3.1.10
 * Changelogs

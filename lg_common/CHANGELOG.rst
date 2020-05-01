@@ -8,8 +8,8 @@ Changelog for package lg_common
 3.1.9 (2020-03-11)
 ------------------
 
-Forthcoming
------------
+3.1.11 (2020-05-01)
+-------------------
 * Skip some unreliable tests
 * Merge pull request `#419 <https://github.com/EndPointCorp/lg_ros_nodes/issues/419>`_ from EndPointCorp/lg_common_relative_topics
   Use relative topic names in adhoc browser

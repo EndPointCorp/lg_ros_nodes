@@ -8,8 +8,8 @@ Changelog for package lg_media
 3.1.9 (2020-03-11)
 ------------------
 
-Forthcoming
------------
+3.1.11 (2020-05-01)
+-------------------
 * Fix PEP8
 * Add basic media launcher (`#421 <https://github.com/EndPointCorp/lg_ros_nodes/issues/421>`_)
   Co-authored-by: Matt Vollrath <matt@endpoint.com>
