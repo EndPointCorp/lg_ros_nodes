@@ -11,21 +11,20 @@ pipeline {
       }
     }
     stage('Build') {
-      // when {
-      //  branch 'master'
-      //}
+      when {
+        branch 'master'
+      }
       steps {
         sh "./scripts/build.sh"
       }
     }
     stage('Deploy') {
-      // when {
-      //   branch 'master'
-      // }
+      when {
+        branch 'master'
+      }
       steps {
-        input('wait here')
+        sh "./scripts/deploy.sh"
       }
     }
   }
 }
-
