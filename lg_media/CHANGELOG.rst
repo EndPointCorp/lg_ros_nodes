@@ -2,8 +2,8 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.12 (2020-05-04)
+-------------------
 * Fix media_launcher startup, shutdown issues
   multicast instead of unreliable RTSP server.
 * Contributors: Matt Vollrath
