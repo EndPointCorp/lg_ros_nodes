@@ -2,6 +2,14 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
+3.1.11 (2020-05-01)
+-------------------
+* Fix test webserver port conflicts
+* Contributors: Matt Vollrath
+
 3.1.10 (2020-03-25)
 -------------------
 * Fix multitouch spoofing for TOUCH codes
@@ -10,17 +18,6 @@ Changelog for package lg_mirror
 
 3.1.9 (2020-03-11)
 ------------------
-
-3.1.11 (2020-05-01)
--------------------
-* Fix test webserver port conflicts
-* 3.1.10
-* Changelogs
-* Fix multitouch spoofing for TOUCH codes
-  An OS update changed device codes for some touchscreens.  Support both.
-* 3.1.9
-* Changelogs
-* Contributors: Matt Vollrath
 
 3.1.8 (2020-02-06)
 ------------------

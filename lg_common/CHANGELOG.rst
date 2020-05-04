@@ -2,11 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.1.10 (2020-03-25)
--------------------
-
-3.1.9 (2020-03-11)
-------------------
+Forthcoming
+-----------
 
 3.1.11 (2020-05-01)
 -------------------
@@ -100,11 +97,13 @@ Changelog for package lg_common
   * Set env when running tests
   * Test commit
   Co-authored-by: Jacob Minshall <jacob@endpoint.com>
-* 3.1.10
-* Changelogs
-* 3.1.9
-* Changelogs
 * Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
 
 3.1.8 (2020-02-06)
 ------------------
