@@ -1,33 +1,61 @@
 #!/usr/bin/env python3
 
+import subprocess
+import threading
 from collections import namedtuple
 
 import rospy
-from lg_common import ManagedApplication, ManagedWindow
+from lg_common import ManagedWindow
 from lg_msg_defs.msg import ApplicationState, MediaOverlays
 
 StreamInfo = namedtuple('overlay', ['name', 'viewport', 'location'])
 
 STREAMS = {
-    "1": "clickshare",
-    "2": "zoom"
+    "1": "224.42.42.1",
+    "2": "224.42.42.2",
 }
 
 
-class Player(ManagedApplication):
-    def __init__(self, stream_info, respawn=True):
+class RespawningProcess(threading.Thread):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.args = args
+        self.kwargs = kwargs
+        self.lock = threading.Lock()
+        self.daemon = True
+        self.respawn = True
+
+    def run(self):
+        while True:
+            with self.lock:
+                if not self.respawn:
+                    break
+                rospy.logdebug("starting process with args: {}, kwargs: {}".format(self.args, self.kwargs))
+                self.proc = subprocess.Popen(*self.args, **self.kwargs)
+            self.proc.wait()
+
+    def stop(self):
+        with self.lock:
+            self.respawn = False
+            self.proc.terminate()
+            self.proc = None
+
+
+class Player(RespawningProcess):
+    def __init__(self, stream_info):
         window_id = ".".join(stream_info)
         geometry = ManagedWindow.lookup_viewport_geometry(stream_info.viewport)
-        window = ManagedWindow(w_name=window_id, geometry=geometry)
+        self.window = ManagedWindow(w_name=window_id, geometry=geometry)
+        self.window.set_visibility(True)
+        self.window.converge()
 
-        cmd = f"/usr/bin/ffplay -nostats -rtsp_transport udp -fflags nobuffer -flags low_delay " \
-              f"-framedrop -analyzeduration 0 -noborder -probesize 32 -alwaysontop " \
-              f"-window_title \'{window_id}\' rtsp://{STREAMS[stream_info.location]}:554/default" \
+        cmd = f"/usr/bin/ffplay -nostats -fflags nobuffer -flags low_delay " \
+              f"-framedrop -analyzeduration 3000000 -noborder -probesize 32 -alwaysontop " \
+              f"-codec:v h264 -sn " \
+              f"-window_title \'{window_id}\' rtp://{STREAMS[stream_info.location]}:4953" \
               .split()
 
-        rospy.logdebug(f"Starting new ManagedApplication for {stream_info}")
-
-        super(Player, self).__init__(cmd=cmd, window=window, respawn=respawn)
+        super().__init__(cmd)
 
 
 class MediaLauncher(object):
@@ -62,7 +90,7 @@ class MediaLauncher(object):
         for item in stale_overlays:
             rospy.logdebug(f"Removing overlay from active \n\t{item}")
             stale_overlay = self.active_overlays.pop(item)
-            stale_overlay.set_state(ApplicationState.STOPPED)
+            stale_overlay.stop()
 
         for item in new_overlays:
             rospy.logdebug(f"Adding overlay to active \n\t{item}")
@@ -76,9 +104,9 @@ class MediaLauncher(object):
     @staticmethod
     def _make_player(stream_info):
         """Returns a new ManagedApplication for the stream message"""
-        player = Player(stream_info=stream_info)
-        player.set_state(ApplicationState.STARTED)
-        player.set_state(ApplicationState.VISIBLE)
+        player = Player(stream_info)
+        rospy.logdebug(f"Starting new Player for {stream_info}")
+        player.start()
 
         return player
 
