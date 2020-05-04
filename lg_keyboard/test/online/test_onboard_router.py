@@ -145,4 +145,5 @@ class TestOnboardRouterOnline(unittest.TestCase):
 if __name__ == '__main__':
     import rostest
     rospy.init_node(NAME)
+    time.sleep(3)
     rostest.rosrun(PKG, NAME, TestOnboardRouterOnline)
