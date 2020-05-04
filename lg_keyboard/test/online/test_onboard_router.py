@@ -60,7 +60,7 @@ class TestOnboardRouterOnline(unittest.TestCase):
         # need to ensure visibility last value flip
         self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
-        wait_for_assert_ge(lambda: len(self.activates), 1, 30)
+        time.sleep(3)
         self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_3_default_viewport_no_route_touch(self):
