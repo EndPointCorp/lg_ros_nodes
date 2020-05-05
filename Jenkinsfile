@@ -1,7 +1,10 @@
 pipeline {
+  environment {
+    APTLY_SERVER = credentials('aptly-server-url')
+  }
   agent { 
     dockerfile {
-      args "-u 0"
+      args "-u 0 -v /var/lib/jenkins/.ssh/:/root/ssh"
     }
   }
   stages {
