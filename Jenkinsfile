@@ -15,9 +15,16 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh "./pack-debs master"
+        sh "./scripts/build.sh"
+      }
+    }
+    stage('Deploy') {
+      when {
+        branch 'master'
+      }
+      steps {
+        sh "./scripts/deploy.sh"
       }
     }
   }
 }
-
