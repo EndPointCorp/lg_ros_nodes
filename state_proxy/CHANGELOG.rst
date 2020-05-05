@@ -2,11 +2,8 @@
 Changelog for package state_proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.1.10 (2020-03-25)
+3.1.12 (2020-05-04)
 -------------------
-
-3.1.9 (2020-03-11)
-------------------
 
 3.1.11 (2020-05-01)
 -------------------
@@ -95,11 +92,13 @@ Changelog for package state_proxy
   * Set env when running tests
   * Test commit
   Co-authored-by: Jacob Minshall <jacob@endpoint.com>
-* 3.1.10
-* Changelogs
-* 3.1.9
-* Changelogs
 * Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
 
 3.1.8 (2020-02-06)
 ------------------

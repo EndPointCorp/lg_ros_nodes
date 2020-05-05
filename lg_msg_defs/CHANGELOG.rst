@@ -2,21 +2,20 @@
 Changelog for package lg_msg_defs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.1.10 (2020-03-25)
+3.1.12 (2020-05-04)
 -------------------
-
-3.1.9 (2020-03-11)
-------------------
 
 3.1.11 (2020-05-01)
 -------------------
 * Add basic media launcher (`#421 <https://github.com/EndPointCorp/lg_ros_nodes/issues/421>`_)
   Co-authored-by: Matt Vollrath <matt@endpoint.com>
-* 3.1.10
-* Changelogs
-* 3.1.9
-* Changelogs
 * Contributors: Matt Vollrath, nelliott
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
 
 3.1.8 (2020-02-06)
 ------------------

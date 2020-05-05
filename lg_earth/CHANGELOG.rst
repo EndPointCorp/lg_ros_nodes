@@ -2,14 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.1.10 (2020-03-25)
+3.1.12 (2020-05-04)
 -------------------
-
-3.1.9 (2020-03-11)
-------------------
-* Don't write viewsync state file
-  This causes major problems in Python 3, and nothing was reading the file.
-* Contributors: Matt Vollrath
 
 3.1.11 (2020-05-01)
 -------------------
@@ -99,13 +93,18 @@ Changelog for package lg_earth
   * Set env when running tests
   * Test commit
   Co-authored-by: Jacob Minshall <jacob@endpoint.com>
-* 3.1.10
-* Changelogs
-* 3.1.9
-* Changelogs
 * Don't write viewsync state file
   This causes major problems in Python 3, and nothing was reading the file.
 * Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+* Don't write viewsync state file
+  This causes major problems in Python 3, and nothing was reading the file.
+* Contributors: Matt Vollrath
 
 3.1.8 (2020-02-06)
 ------------------
