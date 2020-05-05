@@ -61,6 +61,7 @@ RUN \
     module-init-tools gdebi-core \
     libxext-dev \
     lsb-core tar libfreeimage3 \
+    openssh-client \
     ros-$ROS_DISTRO-rosapi libudev-dev \
     ros-$ROS_DISTRO-ros-base ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-web-video-server \
     ros-$ROS_DISTRO-spacenav-node spacenavd \
