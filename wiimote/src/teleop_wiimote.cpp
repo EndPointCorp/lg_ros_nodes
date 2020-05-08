@@ -114,7 +114,7 @@ TeleopWiimote::TeleopWiimote()
   joy_pub_ = nh.advertise<sensor_msgs::JoyFeedbackArray>("joy/set_feedback", 1);
 
   joy_sub_ = nh.subscribe<sensor_msgs::Joy>("wiimote/nunchuk", 10, &TeleopWiimote::joyCallback, this);
-  wiimote_sub_ = nh.subscribe<wiimote::State>("wiimote/state", 10, &TeleopWiimote::wiimoteStateCallback, this);
+  wiimote_sub_ = nh.subscribe<lg_msg_defs::State>("wiimote/state", 10, &TeleopWiimote::wiimoteStateCallback, this);
 
   dpad_in_use_ = false;
   njoy_in_use_ = false;
@@ -284,7 +284,7 @@ void TeleopWiimote::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     }
   }
 }
-void TeleopWiimote::wiimoteStateCallback(const wiimote::State::ConstPtr& wiistate)
+void TeleopWiimote::wiimoteStateCallback(const lg_msg_defs::State::ConstPtr& wiistate)
 {
   ros::NodeHandle nh_private("~");
   geometry_msgs::Twist vel;

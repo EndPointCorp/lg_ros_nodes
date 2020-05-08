@@ -2,7 +2,7 @@
 import rospy
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
-from lg_earth.srv import KmlState, PlaytourQueryRequest
+from lg_msg_defs.srv import KmlState, PlaytourQueryRequest
 import json
 
 

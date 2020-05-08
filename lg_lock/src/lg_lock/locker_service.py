@@ -1,4 +1,4 @@
-from lg_lock.msg import State
+from lg_msg_defs.msg import LockState
 
 
 class LockerService(object):
@@ -41,4 +41,4 @@ class LockerService(object):
         self.publishState()
 
     def publishState(self):
-        self.publisher.publish(State(self.state))
+        self.publisher.publish(LockState(self.state))

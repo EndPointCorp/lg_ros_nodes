@@ -15,6 +15,7 @@ def main():
     query_file = rospy.get_param('~query_file', '/tmp/ge_queryfile')
     queue_length = rospy.get_param('~queue_length', 10)
     writer = QueryWriter(query_file, queue_length)
+    rospy.on_shutdown(writer.shutdown)
 
     rospy.Subscriber(
         '/earth/query/flyto_kml',

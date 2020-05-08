@@ -40,7 +40,9 @@ RUN \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
+    python-rosdep \
     python-setuptools \
+    python-rosdep \
     python3-pip \
     python3-setuptools \
     python3-defusedxml \
@@ -59,6 +61,7 @@ RUN \
     module-init-tools gdebi-core \
     libxext-dev \
     lsb-core tar libfreeimage3 \
+    openssh-client \
     ros-$ROS_DISTRO-rosapi libudev-dev \
     ros-$ROS_DISTRO-ros-base ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-web-video-server \
     ros-$ROS_DISTRO-spacenav-node spacenavd \
@@ -66,6 +69,7 @@ RUN \
     awesome xdg-utils \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/*
+
 
 # Install NodeJS and test dependencies
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
@@ -85,6 +89,7 @@ RUN pip install --no-cache-dir python-coveralls \
     catkin_tools \
     empy \
     pycrypto \
+    pycryptodome \
     gnupg
 
 # Install GE
@@ -113,9 +118,10 @@ COPY ros_entrypoint.sh ${PROJECT_ROOT}
 
 # clone appctl
 # TODO change to latest tag
-ARG APPCTL_TAG=python3_change
+ARG APPCTL_TAG=3.0.1
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
+RUN ln -snf /appctl/appctl_msg_defs ${PROJECT_ROOT}/
 
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml
@@ -128,6 +134,7 @@ COPY lg_json_config/package.xml ${PROJECT_ROOT}/lg_json_config/package.xml
 COPY lg_keyboard/package.xml ${PROJECT_ROOT}/lg_keyboard/package.xml
 COPY lg_media/package.xml ${PROJECT_ROOT}/lg_media/package.xml
 COPY lg_mirror/package.xml ${PROJECT_ROOT}/lg_mirror/package.xml
+COPY lg_msg_defs/package.xml ${PROJECT_ROOT}/lg_msg_defs/package.xml
 COPY lg_nav_to_device/package.xml ${PROJECT_ROOT}/lg_nav_to_device/package.xml
 COPY lg_lock/package.xml ${PROJECT_ROOT}/lg_lock/package.xml
 COPY lg_offliner/package.xml ${PROJECT_ROOT}/lg_offliner/package.xml
@@ -161,6 +168,28 @@ RUN \
         --rosdistro $ROS_DISTRO \
         -y && \
     rm -rf /var/lib/apt/lists/*
+
+# Try installing hack'd rosbridge
+RUN \
+    apt update && \
+    apt install -y build-essential python-autobahn python3-autobahn && \
+    source /opt/ros/$ROS_DISTRO/setup.bash && \
+    mkdir -p /rosbridge_ws/src && \
+    cd /rosbridge_ws && \
+    catkin_make && \
+    source /rosbridge_ws/devel/setup.bash && \
+    cd /rosbridge_ws/src && \
+    git clone https://github.com/EndPointCorp/rosbridge_suite.git && \
+    cd rosbridge_suite && \
+    git checkout never_unregister_hack && \
+    cd /rosbridge_ws && \
+    catkin_make && \
+    catkin_make install && \
+    catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic && \
+    cd / && \
+    rm -rf /rosbridge_ws && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # install the full package contents
 COPY ./ ${PROJECT_ROOT}

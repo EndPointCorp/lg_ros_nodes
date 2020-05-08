@@ -25,10 +25,10 @@ import rospkg
 import rostopic
 import rosgraph.masterapi
 
-from lg_media.msg import AdhocMedia
-from lg_media.msg import AdhocMedias
-from lg_media.srv import MediaAppsInfo
-from lg_media.srv import MediaAppsInfoResponse
+from lg_msg_defs.msg import AdhocMedia
+from lg_msg_defs.msg import AdhocMedias
+from lg_msg_defs.srv import MediaAppsInfo
+from lg_msg_defs.srv import MediaAppsInfoResponse
 from lg_media.mplayer_pool import SRV_QUERY, ROS_NODE_NAME
 
 
@@ -68,7 +68,7 @@ class TestMediaService(object):
 
         """
         rospy.wait_for_service(SRV_QUERY)
-        proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo)
+        proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo, persistent=False)
         r = proxy()
         assert isinstance(r, MediaAppsInfoResponse)
         data = json.loads(r.json)

@@ -2,39 +2,20 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_mirror)
 
 find_package(catkin REQUIRED COMPONENTS
-  lg_common
+  lg_msg_defs
   roscpp
-  message_generation
 )
 
-add_message_files(
-  FILES
-  EvdevEvent.msg
-  EvdevEvents.msg
-  ScreenCoordinate.msg
-)
 
-add_service_files(
-  DIRECTORY
-  srv
-  FILES
-  EvdevDeviceInfo.srv
-  TouchRoutes.srv
-)
 
 catkin_python_setup()
-
-generate_messages(
-  DEPENDENCIES
-)
 
 catkin_package(
   CATKIN_DEPENDS
   appctl
-  lg_common
+  lg_msg_defs
   rospy
   roscpp
-  message_runtime
 )
 
 include_directories(
@@ -62,18 +43,17 @@ add_dependencies(touch_receiver_node
   ros_event_relay
 )
 add_dependencies(uinput_device
-  ${PROJECT_NAME}_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
 )
 add_dependencies(device_service
-  ${PROJECT_NAME}_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
 )
 add_dependencies(viewport_mapper
-  ${PROJECT_NAME}_generate_messages_cpp
-  lg_common_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
   util
 )
 add_dependencies(ros_event_relay
-  lg_common_generate_messages_cpp
+  lg_msg_defs_generate_messages_cpp
   uinput_device
   viewport_mapper
 )

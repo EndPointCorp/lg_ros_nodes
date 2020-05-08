@@ -2,6 +2,168 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.12 (2020-05-04)
+-------------------
+* Fix media_launcher startup, shutdown issues
+  multicast instead of unreliable RTSP server.
+* Contributors: Matt Vollrath
+
+3.1.11 (2020-05-01)
+-------------------
+* Fix PEP8
+* Add basic media launcher (`#421 <https://github.com/EndPointCorp/lg_ros_nodes/issues/421>`_)
+  Co-authored-by: Matt Vollrath <matt@endpoint.com>
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Contributors: Galaxy Admin, Matt Vollrath, Will Plaut, nelliott
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+
+3.1.8 (2020-02-06)
+------------------
+* image_viewer: slight change for trasparency
+* Contributors: Will Plaut
+
+3.1.7 (2020-02-04)
+------------------
+
+3.1.6 (2020-01-27)
+------------------
+* image_viewer: initial scene functionality
+* Contributors: Jacob Minshall
+
+3.1.5 (2020-01-24)
+------------------
+* decode in the right place
+* Contributors: Jacob Minshall
+
+3.1.4 (2020-01-24)
+------------------
+* Merge pull request `#414 <https://github.com/EndPointCorp/lg_ros_nodes/issues/414>`_ from EndPointCorp/topic/image_viewer_fixes_and_tracebacks
+  Topic/image viewer fixes and tracebacks
+* image_checker: fix encoding issue
+* image_viewer: remove debuggin
+* changes need to be cleaned up
+* Contributors: Jacob Minshall, Will Plaut
+
+3.1.3 (2020-01-20)
+------------------
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+  Conflicts:
+  lg_common/package.xml
+* Merge pull request `#410 <https://github.com/EndPointCorp/lg_ros_nodes/issues/410>`_ from EndPointCorp/fix_tests
+  Fix some tests
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* starting to update CMakes and package.xmls
+* Finish pycodestyle fixing image_viewer
+* Fix pointer glitches in gst_video_sync
+* Fix gst_video_sync style glitches
+* Fix some pycodestyle glitches
+* update import paths everywhere
+* Contributors: Matt Vollrath, Will Plaut
+
 3.0.2 (2019-11-06)
 ------------------
 

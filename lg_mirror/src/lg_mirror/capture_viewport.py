@@ -2,7 +2,7 @@ import threading
 
 from lg_common import ManagedWindow
 from lg_common.helpers import load_director_message
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 from lg_mirror.gst_publisher import GstPublisher
 from lg_mirror.constants import MIRROR_ACTIVITY_TYPE
 from lg_mirror.utils import aspect_scale_source

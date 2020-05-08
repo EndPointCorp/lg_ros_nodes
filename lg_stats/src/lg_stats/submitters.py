@@ -126,6 +126,7 @@ class InfluxTelegraf(Submitter):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_address = (self.host, self.port)
+            sock.settimeout(5.0)
             sock.connect(server_address)
             sock.sendall(data.encode('utf-8'))
             rospy.logdebug("Wrote: '%s' to influx" % data)

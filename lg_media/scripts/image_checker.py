@@ -12,7 +12,7 @@ import time
 import rospy
 import subprocess
 import threading
-from lg_common.srv import USCSMessage
+from lg_msg_defs.srv import USCSMessage
 from interactivespaces_msgs.msg import GenericMessage
 from copy import copy
 
@@ -76,7 +76,7 @@ class ImageChecker():
         )
         feh_proc_assets = feh_proc.communicate()
         if feh_proc_assets[0]:
-            feh_assets = feh_proc_assets[0].strip().split('\n')
+            feh_assets = feh_proc_assets[0].decode().strip().split('\n')
         return feh_assets
 
 

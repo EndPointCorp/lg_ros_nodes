@@ -22,7 +22,7 @@ import unittest
 import rospy
 
 from lg_offliner import ROS_NODE_NAME
-from lg_offliner.srv import Offline
+from lg_msg_defs.srv import Offline
 
 
 class TestLGOfflinerWhenOnline(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestLGOfflinerWhenOnline(unittest.TestCase):
 
         """
         rospy.wait_for_service("%s/status" % ROS_NODE_NAME)
-        proxy = rospy.ServiceProxy("%s/status" % ROS_NODE_NAME, Offline)
+        proxy = rospy.ServiceProxy("%s/status" % ROS_NODE_NAME, Offline, persistent=False)
         r = proxy()
         res = bool(r.offline)
         return res

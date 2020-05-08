@@ -13,8 +13,8 @@
                                      'curl --silent --head --max-time 3 http://x-max.cz/lgping']"/>
         <!-- messages with subslots (e.g. GenericMessage message.slug) will need more care in processing -->
         <!-- not yet implemented -->
-        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile"/>
-        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline"/>
+        <param name="send_on_online" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-tactile"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-offline"/>
     </node>
 
     <!-- Local rosbridge and rosapi. -->

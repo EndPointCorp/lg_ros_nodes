@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import rospy
-from lg_common.msg import AdhocBrowsers, AdhocBrowser
+from lg_msg_defs.msg import AdhocBrowsers, AdhocBrowser
 from lg_common import AdhocBrowserPool
-from lg_media.msg import AdhocMedias
+from lg_msg_defs.msg import AdhocMedias
 from lg_common.helpers import add_url_params, make_soft_relaunch_callback
 from urllib.request import url2pathname
 from lg_common.helpers import run_with_influx_exception_handler

@@ -14,7 +14,7 @@ import rospkg
 from std_msgs.msg import Bool
 
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from lg_keyboard import OnboardRouter
 
 

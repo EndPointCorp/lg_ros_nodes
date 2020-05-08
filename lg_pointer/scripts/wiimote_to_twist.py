@@ -3,7 +3,7 @@
 import math
 import rospy
 from geometry_msgs.msg import Twist, Vector3
-from wiimote.msg import State
+from lg_msg_defs.msg import State
 
 NODE_NAME = 'wiimote_to_twist'
 MAX_AXIS_VAL = 1 / math.sqrt(2.0)

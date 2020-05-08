@@ -37,9 +37,9 @@ import rostopic
 from std_msgs.msg import Bool
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
-from appctl.msg import Mode
-from lg_stats.msg import Session
-from lg_stats.msg import Event
+from appctl_msg_defs.msg import Mode
+from lg_msg_defs.msg import Session
+from lg_msg_defs.msg import Event
 from lg_stats import ROS_NODE_NAME
 from lg_stats import LG_STATS_DEBUG_TOPIC_DEFAULT
 from lg_stats import Processor
@@ -75,7 +75,7 @@ class TestLGStatsRealMessageChain(unittest.TestCase):
 
     """
 
-    def setup_method(self, method):
+    def setUp(self):
         # subscribed to the /lg_stats/debug topic
         # WARNING: issues retrieving rospy.get_param value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)

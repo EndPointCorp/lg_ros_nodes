@@ -3,7 +3,7 @@
 import sys
 import rospy
 from lg_volume_control import VolumeControlSlave
-from lg_volume_control.srv import Volume
+from lg_msg_defs.srv import Volume
 from std_msgs.msg import UInt8
 
 
@@ -25,7 +25,7 @@ def main():
 
 def grab_master_volume():
     try:
-        master_node_volume = rospy.ServiceProxy('volume', Volume)
+        master_node_volume = rospy.ServiceProxy('volume', Volume, persistent=False)
         rospy.sleep(1)
         volume = master_node_volume()
         rospy.logdebug("got volume {} from master".format(volume))

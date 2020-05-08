@@ -6,11 +6,16 @@ import os
 import requests
 import rospy
 import uuid
-from lg_common.msg import WindowGeometry, ApplicationState
+from lg_msg_defs.msg import WindowGeometry, ApplicationState
 from lg_common import ManagedApplication
 from lg_common import ManagedWindow
-from lg_media.msg import ImageViews, ImageView
+from lg_msg_defs.msg import ImageViews, ImageView
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
+
+
+def make_key_from_image(image):
+    return "{}_{}_{}_{}_{}".format(image.url, image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
 
 
 class Image(ManagedApplication):
@@ -50,7 +55,7 @@ class ImageViewer():
                     x=window['x_coord'],
                     y=window['y_coord']
                 )
-                image.transparent = window.get('transparent', False)
+                image.transparent = window.get('activity_config', {}).get('transparent', False)
                 image.viewport = window['presentation_viewport']
                 if image.viewport not in self.viewports:
                     continue
@@ -62,9 +67,8 @@ class ImageViewer():
         self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
-        for _image, _image_obj in list(current_images.items()):
-            if _image.url == image.url and \
-                    _image.geometry == image.geometry:
+        for key_from_image, _image_obj in list(current_images.items()):
+            if key_from_image == make_key_from_image(image):
                 return _image_obj
         return None
 
@@ -82,18 +86,21 @@ class ImageViewer():
             if duplicate_image:
                 # rospy.logerr('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
-                new_current_images[image] = duplicate_image
+                new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
             rospy.logdebug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
 
         for image_obj in images_to_remove:
+            rospy.logerr('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
             if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
         #images_to_remove = []
         for image in images_to_add:
-            new_current_images[image] = self._create_image(image)
+            created_image = None
+            created_image = self._create_image(image)
+            new_current_images[make_key_from_image(image)] = created_image
 
         self.current_images = new_current_images
 
@@ -150,6 +157,15 @@ def main():
 
     rospy.Subscriber('/director/scene', GenericMessage, viewer.director_translator)
     rospy.Subscriber('/image/views', ImageViews, viewer.handle_image_views)
+
+    handle_initial_state(viewer.director_translator)
+
+    def handle_soft(*args, **kwargs):
+        msg = GenericMessage()
+        msg.message = '{}'
+        msg.type = 'json'
+        viewer.director_translator(msg)
+    make_soft_relaunch_callback(handle_soft, groups=['media'])
 
     rospy.spin()
 

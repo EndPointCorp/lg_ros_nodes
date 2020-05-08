@@ -11,7 +11,7 @@ import json
 
 from lg_common import USCSService
 from std_msgs.msg import Bool
-from lg_common.srv import InitialUSCS
+from lg_msg_defs.srv import InitialUSCS
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -81,7 +81,7 @@ class TestUSCSService(unittest.TestCase):
         desired_initial_state = json.loads(requests.get(self.initial_state_url).content)
 
         rospy.wait_for_service('/initial_state')
-        initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
+        initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS, persistent=False)
         initial_state = initial_state_service().message
         initial_state = json.loads(initial_state)
         self.assertEqual(initial_state, desired_initial_state)

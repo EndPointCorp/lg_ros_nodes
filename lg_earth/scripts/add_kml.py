@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from std_msgs.msg import String, Empty
-from lg_common.srv import USCSMessage
-from lg_common.msg import StringArray
+from lg_msg_defs.srv import USCSMessage
+from lg_msg_defs.msg import StringArray
 from interactivespaces_msgs.msg import GenericMessage
 
 import http.server
@@ -174,7 +174,7 @@ def main():
     director_pub = rospy.Publisher('/director/scene', GenericMessage, queue_size=10)
     added_kml_pub = rospy.Publisher('/lg_earth/added_kml', StringArray, latch=True, queue_size=1)
 
-    uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
+    uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage, persistent=False)
 
     hostname = rospy.get_param('~hostname', 'localhost')
     port = rospy.get_param('~port', 18111)

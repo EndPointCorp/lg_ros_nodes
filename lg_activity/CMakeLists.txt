@@ -2,27 +2,14 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lg_activity)
 
 find_package(catkin REQUIRED COMPONENTS
-    lg_common
-    message_generation
+    lg_msg_defs
     rospy
     )
 
 catkin_python_setup()
 
-
-add_service_files(
-  FILES
-  ActivityStates.srv
-  Active.srv
- )
-
-generate_messages(
-  DEPENDENCIES
-  lg_common
-  )
-
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_common message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_msg_defs
 )
 
 include_directories(

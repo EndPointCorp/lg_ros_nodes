@@ -4,7 +4,7 @@ import rospy
 import time
 import os
 from geometry_msgs.msg import PoseStamped
-from lg_earth.srv import ViewsyncState
+from lg_msg_defs.srv import ViewsyncState
 
 
 class ViewsyncRelay:
@@ -77,12 +77,6 @@ class ViewsyncRelay:
         self.pose_pub.publish(pose_msg)
         self.planet_pub.publish(planet)
         self.last_state = str(pose_msg.header.stamp.secs)
-        try:
-            fd = os.open(self.viewsync_state_file, os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
-            os.write(fd, self.last_state)
-            os.close(fd)
-        except Exception:
-            pass
 
     def get_last_state(self, args):
         return self.last_state

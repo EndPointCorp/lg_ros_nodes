@@ -1,4 +1,4 @@
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 import subprocess
 import os
 

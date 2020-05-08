@@ -2,6 +2,52 @@
 Changelog for package lg_nav_to_device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.12 (2020-05-04)
+-------------------
+
+3.1.11 (2020-05-01)
+-------------------
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+
+3.1.8 (2020-02-06)
+------------------
+
+3.1.7 (2020-02-04)
+------------------
+
+3.1.6 (2020-01-27)
+------------------
+
+3.1.5 (2020-01-24)
+------------------
+
+3.1.4 (2020-01-24)
+------------------
+
+3.1.3 (2020-01-20)
+------------------
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* update import paths everywhere
+* Contributors: Matt Vollrath, Will Plaut
+
 3.0.2 (2019-11-06)
 ------------------
 

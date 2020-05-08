@@ -25,8 +25,8 @@ Minimal local roslaunch file necessary for Earth browsers synchronization.
         <param name="max_num_of_rounds_to_retain" value="100"/>
         <param name="num_of_last_check_rounds_consider" value="2"/>
         <param name="socket_timeout" value="1"/>
-        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile"/>
-        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline"/>
+        <param name="send_on_online" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-tactile"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-offline"/>
         <param name="checks" value="['curl --silent --head --max-time 3 http://www.google.com', 'ping -q -W 3 -c 3 www.yahoo.com', 'ping -q -W 3 -c 3 8.8.8.8', 'ping -q -W 3 -c 3 8.8.4.4', 'nc -z -w 1 news.bbc.co.uk 80', 'curl --silent --head --max-time 3 http://x-max.cz/lgping']"/>
     </node>
 

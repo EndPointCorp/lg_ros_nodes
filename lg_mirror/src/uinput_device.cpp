@@ -11,9 +11,9 @@
 #include <string>
 
 #include "util.h"
-#include "lg_mirror/EvdevEvent.h"
-#include "lg_mirror/EvdevEvents.h"
-#include "lg_mirror/EvdevDeviceInfo.h"
+#include <lg_msg_defs/EvdevEvent.h>
+#include <lg_msg_defs/EvdevEvents.h>
+#include <lg_msg_defs/EvdevDeviceInfo.h>
 
 // emulate a typical ELO touchscreen
 const __s32 MIN_TRACKING_ID = 0;
@@ -45,7 +45,7 @@ UinputDevice::UinputDevice(const std::string& device_name, bool translate_to_mul
  * \param info Information about the source device.
  * \return true if successful.
  */
-bool UinputDevice::Init(const lg_mirror::EvdevDeviceInfoResponse& info) {
+bool UinputDevice::Init(const lg_msg_defs::EvdevDeviceInfoResponse& info) {
   int fd;
 
   // open the special uinput device
@@ -76,7 +76,7 @@ bool UinputDevice::Init(const lg_mirror::EvdevDeviceInfoResponse& info) {
  * \param fd File descriptor to operate on.
  * \param info Information about the source device.
  */
-void UinputDevice::InitDevice_(int fd, const lg_mirror::EvdevDeviceInfoResponse& info) {
+void UinputDevice::InitDevice_(int fd, const lg_msg_defs::EvdevDeviceInfoResponse& info) {
   struct uinput_user_dev uidev;
   int status;
 
@@ -252,7 +252,7 @@ bool UinputDevice::FloatPointer() const {
  *
  * \param msg A message describing one or more evdev events.
  */
-void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
+void UinputDevice::HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg) {
   if (fd_ < 0) {
     ROS_ERROR("Tried to handle an event message, but UinputDevice was not initialized");
     ros::shutdown();
@@ -263,14 +263,14 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
 
   if (translate_to_multitouch_) {
     for (int i = 0; i < num_events; i++) {
-      lg_mirror::EvdevEvent ev = msg->events[i];
+      lg_msg_defs::EvdevEvent ev = msg->events[i];
 
       __u16 type = ev.type;
       __u16 code = ev.code;
       __s32 value = ev.value;
 
       if (type == EV_KEY) {
-        if (code == BTN_LEFT) {
+        if (code == BTN_LEFT || code == BTN_TOUCH) {
           if (value == 1) {
             if (!WriteEvent_(EV_ABS, ABS_MT_TRACKING_ID, 1)) {
               ROS_ERROR("Error while writing an event to the device");
@@ -306,7 +306,7 @@ void UinputDevice::HandleEventMessage(const lg_mirror::EvdevEvents::Ptr& msg) {
   }
 
   for (int i = 0; i < num_events; i++) {
-    lg_mirror::EvdevEvent ev = msg->events[i];
+    lg_msg_defs::EvdevEvent ev = msg->events[i];
 
     __u16 type = ev.type;
     __u16 code = ev.code;

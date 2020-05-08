@@ -12,10 +12,10 @@ from tempfile import mktemp
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JoyFeedback, JoyFeedbackArray
-from wiimote.msg import State
-from lg_mirror.msg import EvdevEvent, EvdevEvents
-from lg_mirror.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import State
+from lg_msg_defs.msg import EvdevEvent, EvdevEvents
+from lg_msg_defs.srv import EvdevDeviceInfo, EvdevDeviceInfoResponse
+from lg_msg_defs.msg import StringArray
 from std_srvs.srv import Empty
 from lg_pointer import MegaViewport
 
@@ -44,7 +44,7 @@ def handle_device_info(req):
 
 def grabCustomUdev(udev_location, rules_dest):
     tmp_rules = mktemp()
-    with open(tmp_rules, 'w') as f:
+    with open(tmp_rules, 'wb') as f:
         resp = urllib.request.urlopen(udev_location)
         if resp.code != 200:
             rospy.logerr("Could not curl the udev rules... continuing without them")
@@ -81,7 +81,7 @@ def main():
                                  StringArray, queue_size=10)
     feedback_pub = rospy.Publisher('/joy/set_feedback',
                                    JoyFeedbackArray, queue_size=10)
-    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=True)
+    imu_calibrate = rospy.ServiceProxy('/imu/calibrate', Empty, persistent=False)
     mouse_timeout = int(rospy.get_param('~mouse_timeout', 10))
     sleep_time = 0.01  # ooo magic, pretty
 

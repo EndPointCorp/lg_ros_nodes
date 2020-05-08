@@ -3,7 +3,7 @@
 import rospy
 
 from lg_common import ManagedBrowser, ManagedWindow
-from lg_common.msg import ApplicationState, WindowGeometry
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_common.helpers import check_www_dependency, discover_host_from_url, discover_port_from_url
 from lg_common.helpers import run_with_influx_exception_handler
 from std_msgs.msg import String

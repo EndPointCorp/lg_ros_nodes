@@ -8,8 +8,8 @@
 #include <sstream>
 #include <vector>
 
-#include "lg_mirror/EvdevEvent.h"
-#include "lg_mirror/EvdevEvents.h"
+#include <lg_msg_defs/EvdevEvent.h>
+#include <lg_msg_defs/EvdevEvents.h>
 #include "device_service.h"
 
 const char* DEVICE_PATH_PARAM = "device_path";
@@ -70,12 +70,12 @@ int main(int argc, char** argv) {
   /* advertise the topic */
 
   ros::Publisher evdev_pub =
-    n.advertise<lg_mirror::EvdevEvents>(events_topic.str(),
+    n.advertise<lg_msg_defs::EvdevEvents>(events_topic.str(),
                                         EVENTS_QUEUE_LENGTH);
 
   /* begin relaying from the device to the topic */
 
-  lg_mirror::EvdevEvents events_msg;
+  lg_msg_defs::EvdevEvents events_msg;
 
   DeviceServicer ds(device_fd);
   ros::ServiceServer service = n.advertiseService(device_info_service.str(),
@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
   while(ros::ok()) {
     struct input_event ev;
     struct input_event *event_data = &ev;
-    lg_mirror::EvdevEvent event_msg;
+    lg_msg_defs::EvdevEvent event_msg;
 
     /* read an event */
 

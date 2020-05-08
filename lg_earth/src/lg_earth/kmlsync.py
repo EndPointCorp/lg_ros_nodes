@@ -48,7 +48,7 @@ import threading
 import xml.etree.ElementTree as ET
 
 from xml.dom import minidom
-from lg_earth.srv import KmlState, PlaytourQuery
+from lg_msg_defs.srv import KmlState, PlaytourQuery
 from xml.sax.saxutils import unescape, escape
 from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String

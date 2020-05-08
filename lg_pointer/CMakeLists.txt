@@ -11,7 +11,7 @@ catkin_package(
   CATKIN_DEPENDS
   rospy
   wiimote
-  lg_common
+  lg_msg_defs
   std_srvs
   geometry_msgs
   sensor_msgs

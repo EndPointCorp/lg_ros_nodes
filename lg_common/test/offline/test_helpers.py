@@ -275,10 +275,10 @@ class TestHelpers(unittest.TestCase):
                    "value": None}]
         assert result == unpack_activity_sources(source_string)
 
-        source_string = ("/appctl/mode:appctl/Mode-mode:value-tactile;"
+        source_string = ("/appctl/mode:appctl_msg_defs/Mode-mode:value-tactile;"
                          "/director/scene:interactivespaces_msgs/GenericMessage-message.slug:value-online_scene")
         result = [{"topic": "/appctl/mode",
-                   "message_type": "appctl/Mode",
+                   "message_type": "appctl_msg_defs/Mode",
                    "slot": "mode",
                    "strategy": "value",
                    "value_min": None,

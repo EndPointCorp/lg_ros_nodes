@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
-from lg_media.msg import AdhocMedias
+from lg_msg_defs.msg import AdhocMedias
 from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state

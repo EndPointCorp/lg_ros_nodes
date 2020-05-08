@@ -8,7 +8,7 @@ import rostest
 import sys
 import unittest
 from std_msgs.msg import String
-from lg_sv.srv import PanoIdState
+from lg_msg_defs.srv import PanoIdState
 
 PUB_PATH = '/streetview/panoid'
 SRV_PATH = '/streetview/panoid_state'
@@ -20,7 +20,7 @@ class TestPanoIdState(unittest.TestCase):
         panoid_pub = rospy.Publisher(PUB_PATH, String, queue_size=10)
 
         rospy.wait_for_service(SRV_PATH)
-        panoid_srv = rospy.ServiceProxy(SRV_PATH, PanoIdState)
+        panoid_srv = rospy.ServiceProxy(SRV_PATH, PanoIdState, persistent=False)
 
         response = panoid_srv()
         self.assertEqual('', response.panoid)

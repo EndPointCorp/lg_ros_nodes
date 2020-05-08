@@ -2,7 +2,7 @@
 
 import rospy
 import unittest
-from lg_common.msg import AdhocBrowser
+from lg_msg_defs.msg import AdhocBrowser
 from lg_common import AdhocBrowserPool
 
 
