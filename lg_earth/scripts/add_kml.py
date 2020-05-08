@@ -30,7 +30,7 @@ DEFAULT_EARTH_INSTANCE = {
     'y_coord': 0
 }
 
-kml_id_pattern = re.compile('<kml .* id=\"()\".*>')
+kml_id_pattern = re.compile('<kml.*? id="(.*?)".*?>')
 
 
 def get_kml_id(kml):
@@ -42,8 +42,12 @@ def get_kml_id(kml):
     if id_match:
         return id_match.group(1)
 
-    return hex(binascii.crc32(kml) % (1 << 32))
-
+    try:
+        return hex(binascii.crc32(kml) % (1 << 32))
+    except:
+        print "Can't calculate crc32 for"
+        print kml
+        raise
 
 def get_match_any_starts_with(prefixes):
     def matcher(test_string):
