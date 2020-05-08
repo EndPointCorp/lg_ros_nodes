@@ -45,8 +45,8 @@ def get_kml_id(kml):
     try:
         return hex(binascii.crc32(kml) % (1 << 32))
     except:
-        print "Can't calculate crc32 for"
-        print kml
+        print ("Can't calculate crc32 for")
+        print (kml)
         raise
 
 def get_match_any_starts_with(prefixes):
