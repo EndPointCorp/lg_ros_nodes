@@ -96,7 +96,10 @@ class KMLAdder():
         for window in current_scene['windows']:
             if window['activity'] != 'earth':
                 continue
-            window['assets'].append(self.formatURL(filename))
+            if 'assets' in window:
+                window['assets'].append(self.formatURL(filename))
+            else:
+                window['assets'] = [self.formatURL(filename)]
         new_msg = GenericMessage()
         new_msg.type = 'json'
         new_msg.message = json.dumps(current_scene)
@@ -155,7 +158,7 @@ class KMLAdder():
         for viewport in self.viewports:
             flag = False
             for window in scene['windows']:
-                if window['activity'] == 'earth' and window['presentation_viewport'] == viewport:
+                if window['activity'] == 'earth' and 'presentation_viewport' in window and window['presentation_viewport'] == viewport:
                     flag = True
             # if no instance of earth w/ our current viewport is found
             # we add one and give it our viewport
