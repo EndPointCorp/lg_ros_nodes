@@ -109,33 +109,6 @@ class ManagedWindow(object):
 
         return ['lg_wm_send', json.dumps(msg, ensure_ascii=False)]
 
-    def _get_rule_commands(self):
-        fmt_rule = '{}:{}:{}'.format(self.w_class or '*', self.w_instance or '*', self.w_name or '*')
-        rm_args = [
-            'bspc',
-            'rule',
-            '-r',
-            fmt_rule,
-        ]
-
-        add_args = [
-            'bspc',
-            'rule',
-            '-a',
-            fmt_rule,
-            'state=floating',
-        ]
-
-        if self.geometry:
-            fmt_geometry = ManagedWindow.format_geometry(self.geometry)
-            add_args.append('rectangle={}'.format(fmt_geometry))
-
-        add_args.append('layer={}'.format(self.layer or 'normal'))
-
-        add_args.append('hidden={}'.format('off' if self.is_visible else 'on'))
-
-        return (rm_args, add_args, self._get_lgwm_command())
-
     def set_visibility(self, visible):
         with self.lock:
             self.is_visible = visible
@@ -146,13 +119,12 @@ class ManagedWindow(object):
 
     def converge(self):
         with self.lock:
-            cmds = self._get_rule_commands()
+            cmd = self._get_lgwm_command()
 
-            for cmd in cmds:
-                rospy.logwarn('running: {}'.format(cmd))
-                try:
-                    subprocess.check_call(cmd, close_fds=True)
-                except Exception as e:
-                    rospy.logerr('failed to run {} : {}'.format(cmd, str(e)))
+            rospy.logdebug('running: {}'.format(cmd))
+            try:
+                subprocess.check_call(cmd, close_fds=True)
+            except Exception as e:
+                rospy.logerr('failed to run {} : {}'.format(cmd, str(e)))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
