@@ -565,7 +565,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         + '<latitude>37.71903477888115</latitude><altitude>0</altitude>'
         + '<heading>42.60360249388481</heading>'
         + '<tilt>66.02791701475958</tilt><range>36611.51655091633</range>'
-        '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'
+        + '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'
     )
 
     # the parser requires namespaces to be declared
