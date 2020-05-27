@@ -248,8 +248,8 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     }
 
     geplus_config['TourGuide'] = {
-        'Filmstrip\\Enabled': False,
-        'Filmstrip\\Expanded': False,
+        'Filmstrip\Enabled': False,
+        'Filmstrip\Expanded': False,
     }
 
     layers_config = {}
