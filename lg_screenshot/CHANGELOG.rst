@@ -5,8 +5,8 @@ Changelog for package lg_sreenshot
 3.2.0 (2020-05-27)
 ------------------
 
-Forthcoming
------------
+3.2.1 (2020-05-27)
+------------------
 * 3.2.0
 * BSPWM
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
