@@ -2,8 +2,8 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.2.0 (2020-05-27)
+------------------
 * Move bspc rule commands further down the stack
 * Manage bspc rules from ManagedWindow
   lg_wm now just converges on its internal window list.

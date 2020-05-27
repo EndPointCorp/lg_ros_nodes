@@ -2,8 +2,8 @@
 Changelog for package spacenav_wrapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.2.0 (2020-05-27)
+------------------
 * Topic/move deploy (`#422 <https://github.com/EndPointCorp/lg_ros_nodes/issues/422>`_)
   * Initial commit
   * Fix deploy script and remove failing test
