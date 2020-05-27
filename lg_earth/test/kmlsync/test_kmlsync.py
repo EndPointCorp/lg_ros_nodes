@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_earth'
 NAME = 'test_kmlsync'
@@ -215,12 +215,12 @@ class TestKMLSync(unittest.TestCase):
         """
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
 
-        rospy.loginfo("r.content => '%s'" % escape(r.content))
+        rospy.loginfo("r.content => '%s'" % escape(r.content.decode('utf-8')))
 
         asset_urls = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
 
         expected_cookie = 'asset_slug=' + generate_cookie(asset_urls)
-        expected_list_of_created_slugs = map(escape_asset_url, asset_urls)
+        expected_list_of_created_slugs = list(map(escape_asset_url, asset_urls))
         expected_list_of_deleted_slugs = []
 
         # start testing...
@@ -236,7 +236,7 @@ class TestKMLSync(unittest.TestCase):
         cookie = 'asset_slug=' + generate_cookie([assets[0], delete_slug])
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center&%s' % cookie)
 
-        expected_list_of_created_slugs = map(escape_asset_url, assets[1:])
+        expected_list_of_created_slugs = list(map(escape_asset_url, assets[1:]))
         expected_list_of_deleted_slugs = [delete_slug]
         self.assertEqual(sorted(expected_list_of_created_slugs), sorted(get_created_elements(r.content)))
         self.assertEqual(expected_list_of_deleted_slugs, get_deleted_elements(r.content))
@@ -278,8 +278,8 @@ class TestKMLSync(unittest.TestCase):
 
         self.assertEqual(good1.status_code, expected_status)
         self.assertEqual(good2.status_code, expected_status)
-        self.assertEqual(good1.content, expected_string)
-        self.assertEqual(good2.content, expected_string)
+        self.assertEqual(good1.content.decode('utf-8'), expected_string)
+        self.assertEqual(good2.content.decode('utf-8'), expected_string)
 
     def test_8_send_request_before_state_change(self):
         """
@@ -332,7 +332,11 @@ class TestKMLSync(unittest.TestCase):
 
 
 def get_cookie_string(s):
-    return re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s, re.M).groups()[0]
+    ret = re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s.decode('utf-8'), re.M)
+    if ret and len(ret.groups()) > 0:
+        return ret.groups()[0]
+    rospy.logerr('could not find matching pattern for CDATA in {}'.format(s))
+    return ''
 
 
 def get_created_elements(x):
@@ -348,6 +352,7 @@ def get_deleted_elements(x):
         return [elem.attrib['targetId'] for elem in ET.fromstring(x).find('.//{http://www.opengis.net/kml/2.2}Delete').getchildren()]
     except AttributeError:
         return []
+
 
 if __name__ == '__main__':
     rospy.init_node('test_director')

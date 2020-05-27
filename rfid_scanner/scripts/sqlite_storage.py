@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sqlite3
 import json
@@ -39,7 +39,7 @@ class RfidStorage(object):
         self._init_database()
         try:
             data = json.loads(msg.data)
-        except:
+        except Exception:
             rospy.logerr('Error with json passed')
             return
         rospy.loginfo('got data: %s' % data)

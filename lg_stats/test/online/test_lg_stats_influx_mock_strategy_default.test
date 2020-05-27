@@ -4,14 +4,9 @@
         <param name="submission_type" value="InfluxMock"/>
         <param name="host" value="localhost"/>
         <param name="port" value="8086"/>
-        <param name="activity_sources" value="/director/scene:interactivespaces_msgs/GenericMessage-message.slug:default;/appctl/mode:appctl/Mode-mode:default;/activity/active:std_msgs/Bool-data:default;/streetview/panoid:std_msgs/String-data:default"/> -->
+        <param name="activity_sources" value="/director/scene:interactivespaces_msgs/GenericMessage-message.slug:default;/appctl/mode:appctl_msg_defs/Mode-mode:default;/activity/active:std_msgs/Bool-data:default;/streetview/panoid:std_msgs/String-data:default"/> -->
         <param name="inactivity_resubmission" value="60"/>
     </node>
-
-    <!-- Local rosbridge and rosapi. -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
-        <arg name="port" value="9875" />
-    </include>
 
     <test test-name="test_lg_stats" pkg="lg_stats" type="test_lg_stats_strategy_default.py"/>
 </launch>

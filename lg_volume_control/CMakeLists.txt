@@ -3,23 +3,13 @@ project(lg_volume_control)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
+  lg_msg_defs
 )
 
 catkin_python_setup()
 
-add_service_files(
-  FILES
-  Volume.srv
-)
-
-generate_messages(
-  DEPENDENCIES
-)
-
-
 catkin_package(
-  CATKIN_DEPENDS rospy message_runtime
+  CATKIN_DEPENDS rospy lg_msg_defs
 )
 
 catkin_install_python(PROGRAMS
@@ -35,6 +25,7 @@ include_directories(
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_volume_control.py)
 endif()

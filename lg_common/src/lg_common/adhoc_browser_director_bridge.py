@@ -2,11 +2,11 @@ import rospy
 import json
 
 from lg_common import ManagedWindow
-from lg_common.msg import AdhocBrowser
-from lg_common.msg import AdhocBrowsers
-from lg_common.msg import BrowserCmdArg
-from lg_common.msg import WindowGeometry
-from lg_common.msg import BrowserExtension
+from lg_msg_defs.msg import AdhocBrowser
+from lg_msg_defs.msg import AdhocBrowsers
+from lg_msg_defs.msg import BrowserCmdArg
+from lg_msg_defs.msg import WindowGeometry
+from lg_msg_defs.msg import BrowserExtension
 from lg_common.helpers import generate_hash
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
@@ -134,7 +134,7 @@ class AdhocBrowserDirectorBridge():
         if extensions:
             for extension in extensions:
                 browser_extension = BrowserExtension()
-                if isinstance(extension, basestring):
+                if isinstance(extension, str):
                     browser_extension.name = str(extension)
                 else:
                     browser_extension.name = str(extension['name'])
@@ -165,7 +165,7 @@ class AdhocBrowserDirectorBridge():
 
         for browser in browsers:
             adhoc_browser = AdhocBrowser()
-            adhoc_browser.scene_slug = message['slug'].encode('ascii')
+            adhoc_browser.scene_slug = message['slug']
             adhoc_browser.url = browser['path']
             adhoc_browser.version = 'stable'
             adhoc_browser.geometry.x = browser['x_coord'] + self._get_viewport_offset()['x']

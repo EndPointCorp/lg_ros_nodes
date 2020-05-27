@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_common'
 NAME = 'test_adhoc_browser_director_bridge'
@@ -7,7 +7,7 @@ import rospy
 import unittest
 
 from lg_common import ManagedAdhocBrowser
-from lg_common.msg import WindowGeometry, ApplicationState
+from lg_msg_defs.msg import WindowGeometry, ApplicationState
 
 
 class TestManagedAdhocBrowser(unittest.TestCase):

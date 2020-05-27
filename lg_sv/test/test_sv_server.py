@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_sv'
 NAME = 'test_sv_server'
@@ -9,6 +9,7 @@ TILT_MAX = 80
 TILT_MIN = -80
 NAV_SENSITIVITY = 1
 NAV_INTERVAL = .1
+IDLE_TIL_SNAP = 5.0
 
 import sys
 import json
@@ -46,8 +47,8 @@ class TestSVServer(unittest.TestCase):
         self.pano_pub = MockDirectorToPanoidPub()
         self.pov_pub = MockPublisher()
         self.server = PanoViewerServer(
-            self.location_pub, self.old_pano_pub, self.pov_pub, TILT_MAX,
-            TILT_MIN, NAV_SENSITIVITY, NAV_INTERVAL,
+            self.location_pub, self.old_pano_pub, self.pov_pub, TILT_MIN,
+            TILT_MAX, NAV_SENSITIVITY, NAV_INTERVAL, IDLE_TIL_SNAP,
             nearby_panos=NearbyStreetviewPanos(), director_pub=self.pano_pub)
 
     def tearDown(self):

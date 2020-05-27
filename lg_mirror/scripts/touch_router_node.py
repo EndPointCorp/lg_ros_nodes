@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from functools import partial
 import rospy
@@ -6,10 +6,10 @@ import sys
 
 from lg_mirror.touch_router import TouchRouter
 from lg_common.helpers import on_new_scene, load_director_message
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from lg_common.helpers import handle_initial_state
 from lg_mirror.touch_router import SubscribeListener
-from lg_mirror.srv import TouchRoutes
+from lg_msg_defs.srv import TouchRoutes
 from lg_common.helpers import run_with_influx_exception_handler
 
 

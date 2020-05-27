@@ -6,7 +6,7 @@ import os
 
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.tcp_relay import TCPRelay
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'
@@ -30,7 +30,9 @@ DEFAULT_ARGS = [
     '--ignore-gpu-blacklist',
     '--touch-events=enabled',
     '--disable-pinch',
-    '--overscroll-history-navigation=0'
+    '--overscroll-history-navigation=0',
+    '--autoplay-policy=no-user-gesture-required',
+    '--check-for-update-interval=1209600',
 ]
 
 
@@ -133,7 +135,7 @@ class ManagedBrowser(ManagedApplication):
                 arg += '=' + str(value)
             return arg
 
-        args = map(consume_kwarg, kwargs.iteritems())
+        args = list(map(consume_kwarg, iter(kwargs.items())))
         cmd.extend(args)
 
         if app:
@@ -150,7 +152,7 @@ class ManagedBrowser(ManagedApplication):
 
         # Different versions of Chrome use different window instance names.
         # Matching the tmp_dir should work for all of them.
-        w_instance = '\\({}\\)'.format(self.tmp_dir)
+        w_instance = 'google-chrome ({})'.format(self.tmp_dir)
         window = ManagedWindow(w_instance=w_instance, geometry=geometry, chrome_kiosk_workaround=kiosk)
 
         rospy.logdebug("Command {}".format(cmd))
@@ -183,14 +185,14 @@ class ManagedBrowser(ManagedApplication):
         try:
             os.mkdir(self.tmp_dir)
             os.mkdir(self.tmp_dir + '/PepperFlash')
-        except:
+        except Exception:
             rospy.logerr("Error trying to make the tmp dir, could exist already")
 
         # Link NaCl component. https://github.com/EndPointCorp/lg_ros_nodes/issues/357
         try:
             os.symlink(self.pnacl_dir, os.path.join(self.tmp_dir, 'pnacl'))
             rospy.loginfo("Linked `pnacl` directory %s" % self.pnacl_dir)
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("Error linking pNaCl, %s" % e)
 
         try:
@@ -199,7 +201,7 @@ class ManagedBrowser(ManagedApplication):
                 out = f.read()
             with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "w") as f:
                 f.write(out.replace("${TMP_DIR}", self.tmp_dir))
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("Error copying pepper flash into the tmp dir, %s" % e)
 
     def clear_tmp_dir(self):
@@ -212,7 +214,7 @@ class ManagedBrowser(ManagedApplication):
         try:
             rospy.logerr("Purging ManagedBrowser directory: %s" % self.tmp_dir)
             shutil.rmtree(self.tmp_dir)
-        except OSError, e:
+        except OSError as e:
             rospy.logdebug("Could not purge the %s directory because %s" % (self.tmp_dir, e))
 
     @staticmethod

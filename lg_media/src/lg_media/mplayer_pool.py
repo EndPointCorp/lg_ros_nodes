@@ -5,10 +5,10 @@ import threading
 import rospy
 
 from std_msgs.msg import String
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 from appctl_support import ProcController
-from lg_common.msg import ApplicationState
-from lg_media.srv import MediaAppsInfoResponse
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.srv import MediaAppsInfoResponse
 from lg_common.helpers import get_app_instances_ids
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.helpers import get_app_instances_to_manage
@@ -16,7 +16,7 @@ from lg_common.helpers import get_app_instances_to_manage
 
 ROS_NODE_NAME = "lg_media"
 DEFAULT_APP = "mplayer"
-DEFAULT_ARGS = "-idle -slave -cache 2048 -quiet -osdlevel 0 -nomouseinput -nograbpointer -prefer-ipv4"
+DEFAULT_ARGS = " -idle -slave -cache 2048 -quiet -osdlevel 0 -nomouseinput -nograbpointer -prefer-ipv4"
 SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
 
 
@@ -25,12 +25,13 @@ class ManagedMplayer(ManagedApplication):
     Instance corresponds to a mplayer application managed entity.
 
     """
-    def __init__(self, fifo_path, url, slug, window, respawn=True):
+    def __init__(self, fifo_path, url, slug, window, respawn=True, extra_args=''):
         self.window = window
         self.fifo_path = fifo_path
         self.url = url
         self.slug = slug
         self.respawn = respawn
+        self.extra_args = extra_args
 
         super(ManagedMplayer, self).__init__(window=window,
                                              respawn=self.respawn,
@@ -58,6 +59,8 @@ class ManagedMplayer(ManagedApplication):
         cmd = []
         cmd.extend([rospy.get_param("~application_path", DEFAULT_APP)])
         cmd.extend(rospy.get_param("~application_flags", DEFAULT_ARGS).split())
+        if self.extra_args != '':
+            cmd.extend(self.extra_args.split())
 
         cmd.extend(['-geometry', '{0}x{1}+{2}+{3}'.format(self.window.geometry.width,
                                                           self.window.geometry.height,
@@ -121,7 +124,7 @@ class MplayerPool(object):
         Close all mplayer instances.
         """
         with self.lock:
-            for k in self.mplayers.keys():
+            for k in list(self.mplayers.keys()):
                 self.mplayers[k].close()
                 del self.mplayers[k]
 
@@ -136,7 +139,7 @@ class MplayerPool(object):
         """
         Determine which media id's belong to existing assets.
         """
-        existing_media_urls = [m.url for m in self.mplayers.values()]
+        existing_media_urls = [m.url for m in list(self.mplayers.values())]
 
         def media_exists(media):
             return media.url in existing_media_urls
@@ -157,7 +160,7 @@ class MplayerPool(object):
 
             current_mplayers_ids = get_app_instances_ids(self.mplayers)
 
-            existing_media_ids, fresh_media_ids = self._partition_existing_medias(incoming_mplayers.values())
+            existing_media_ids, fresh_media_ids = self._partition_existing_medias(list(incoming_mplayers.values()))
 
             # mplayers to remove
             for mplayer_pool_id in current_mplayers_ids:
@@ -181,7 +184,7 @@ class MplayerPool(object):
 
         """
         with self.lock:
-            d = {app_id: str(app_info) for app_id, app_info in self.mplayers.items()}
+            d = {app_id: str(app_info) for app_id, app_info in list(self.mplayers.items())}
             return MediaAppsInfoResponse(json=json.dumps(d))
 
     def _create_mplayer(self, mplayer_id, incoming_mplayer):
@@ -209,11 +212,13 @@ class MplayerPool(object):
                                  url=incoming_mplayer.url,
                                  slug=mplayer_id,
                                  window=mplayer_window,
-                                 respawn=respawn)
+                                 respawn=respawn,
+                                 extra_args=incoming_mplayer.extra_args)
 
         mplayer.set_state(ApplicationState.VISIBLE)
 
         rospy.logdebug("MPlayer Pool: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
+
         self.mplayers[mplayer_id] = mplayer
 
         return True
@@ -235,7 +240,7 @@ class MplayerPool(object):
         del self.mplayers[mplayer_pool_id]
 
     def handle_soft_relaunch(self, *args, **kwargs):
-        mplayers = self.mplayers.keys()
+        mplayers = list(self.mplayers.keys())
         for mplayer in mplayers:
             self._remove_mplayer(mplayer)
 

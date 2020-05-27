@@ -12,6 +12,7 @@ class MegaViewport:
     * All given viewports have the same dimensions.
     * The pointing device is located roughly at the center of the cylinder.
     """
+
     def __init__(self, viewports, arc_width):
         """
         Args:
@@ -65,7 +66,10 @@ class MegaViewport:
 
         Returns:
             str, int, int: Tuple with viewport name and x/y coordinates.
+                If the coordinate is outside all viewports, returns ('', 0, 0)
         """
+        if self.clamp(ang_z, ang_x):
+            return ('', 0, 0)
         nz = ang_z + self.half_arc_width
         nx = ang_x + self.half_arc_height
         viewport_index = int(math.floor(nz / self.viewport_width))
@@ -91,4 +95,3 @@ class MegaViewport:
         if 0 > nz or nz > self.arc_width or 0 > nx or nx > self.arc_height:
             return True
         return False
-

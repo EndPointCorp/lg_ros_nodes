@@ -4,20 +4,16 @@ project(lg_keyboard)
 find_package(catkin REQUIRED COMPONENTS
   appctl
   lg_common
+  lg_msg_defs
   message_generation
   rospy
 )
 
 catkin_python_setup()
 
-generate_messages(
-  DEPENDENCIES
-  appctl
-  lg_common
-)
 
 catkin_package(
-  CATKIN_DEPENDS rospy std_msgs lg_common appctl message_runtime
+  CATKIN_DEPENDS rospy std_msgs lg_common lg_msg_defs appctl message_runtime
 )
 
 include_directories(
@@ -38,6 +34,7 @@ catkin_install_python(PROGRAMS
 )
 
 if(CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   add_rostest(test/online/test_onboard_router.test)
   catkin_add_nosetests(test/offline/test_onboard_router.py)

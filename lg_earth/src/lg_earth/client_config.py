@@ -1,7 +1,7 @@
 import os
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 import rospy
 
@@ -19,10 +19,10 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         """
         Curls config and writes to CUSTOM_CONFIG_DIR
         """
-        response = urllib.urlopen(url)
+        response = urllib.request.urlopen(url)
         os.system('mkdir -p %s/%s' % (CUSTOM_CONFIG_DIR, base_path))
-        with open(CUSTOM_CONFIG_DIR + '/' + base_path + '/' + filename, 'w') as f:
-            f.write(response.read().replace("HOME_DIR", base_path))
+        with open(CUSTOM_CONFIG_DIR + '/' + base_path + '/' + filename, 'wb') as f:
+            f.write(response.read().replace("HOME_DIR".encode('utf-8'), base_path.encode('utf-8')))
 
     args = []
 
@@ -596,7 +596,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     ET.SubElement(view_placemark, 'dummy')
 
     view_reparsed = minidom.parseString(ET.tostring(view_root).replace(
-        '<dummy />', default_view))
+        '<dummy />'.encode('utf-8'), default_view.encode('utf-8')))
     view_content = view_reparsed.toprettyxml(indent='\t')
 
     for url_and_filename in custom_configs.split(';'):

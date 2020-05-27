@@ -1,4 +1,4 @@
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from threading import Lock
 import rostopic
 import rospy
@@ -14,7 +14,7 @@ class StateChanger:
     """
     def __init__(self):
         self.pubbers = {}
-        self.message_type_s = 'lg_common/ApplicationState'
+        self.message_type_s = 'lg_msg_defs/ApplicationState'
         self.message_type = ApplicationState
         self.lock = Lock()
 
@@ -35,7 +35,7 @@ class StateChanger:
         for active in activities:
             if active not in self.pubbers:
                 rospy.logerr('Could not find the desired topic (%s) to set the state of' % active)
-        for topic, pub in self.pubbers.iteritems():
+        for topic, pub in self.pubbers.items():
             if topic in activities:
                 pub.publish(ApplicationState.VISIBLE)
             else:

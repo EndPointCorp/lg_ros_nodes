@@ -1,4 +1,4 @@
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import WindowGeometry
 import subprocess
 import os
 
@@ -61,7 +61,7 @@ def get_rule_pattern(window):
     """
     def pattern(r):
         return "%s = '%s'" % r
-    patternized = map(pattern, get_rule_types(window).iteritems())
+    patternized = list(map(pattern, iter(get_rule_types(window).items())))
     return ', '.join(patternized)
 
 
@@ -105,9 +105,11 @@ def get_callback(window):
         str: awesome callback for window geometry.
     """
     if window.geometry is not None:
-        return "function(c) awful.client.property.set(c, 'fullscreen', false) c:geometry({x=%d, y=%d}) end" % (
+        return "function(c) awful.client.property.set(c, 'fullscreen', false) c.fullscreen = false c:geometry({x=%d, y=%d, width=%d, height=%d}) c:connect_signal('property::fullscreen', function() if c.fullscreen then c.fullscreen = false end end) end" % (
             window.geometry.x,
             window.geometry.y,
+            window.geometry.width,
+            window.geometry.height,
         )
     else:
         return ""
@@ -142,8 +144,8 @@ def get_subtractive_script(window):
 
     def rule(r):
         return "rule['rule']['%s'] == '%s'" % r
-    checks = ' and '.join(map(rule, rules.iteritems()))
-    return "for key,rule in pairs(awful.rules.rules) do if {checks} then table.remove(awful.rules.rules, key) end end".format(
+    checks = ' and '.join(map(rule, iter(rules.items())))
+    return "for key,rule in pairs(awful.rules.rules) do if rule['rule'] ~= nil and {checks} then table.remove(awful.rules.rules, key) end end".format(
         checks=checks
     )
 
@@ -197,22 +199,22 @@ def get_awesome_pid():
 
     try:
         awesome_pid = int(subprocess.check_output(['pidof', 'x-window-manager']))
-    except:
+    except Exception:
         pass
     try:
         awesome_pid = int(subprocess.check_output(['pidof', 'awesome']))
-    except:
+    except Exception:
         pass
     try:
         awesome_pid = int(subprocess.check_output(['pidof', '/usr/bin/awesome']))
-    except:
+    except Exception:
         pass
 
     return awesome_pid
 
 
-def setup_environ():
-    """Attempt to copy the environment of the window manager."""
+def get_environ():
+    """Attempt to copy relevant environment of the window manager."""
     awesome_pid = get_awesome_pid()
     if awesome_pid is None:
         raise Exception('Could not find awesome pid')
@@ -223,14 +225,17 @@ def setup_environ():
     def split_environ(raw):
         pair = raw.split('=', 1)
         return pair[0], pair[1]
-    pairs = map(split_environ, awesome_environ_raw.split('\0'))
+    pairs = list(map(split_environ, awesome_environ_raw.split('\0')))
     awesome_environ = dict((p[0], p[1]) for p in pairs)
-    # TODO(mv): return environment for Popen instead of messing with parent environment
+
+    env = os.environ.copy()
 
     def copy_environ(k):
-        os.environ[k] = awesome_environ[k]
+        env[k] = awesome_environ[k]
     copy_environ('DISPLAY')
     copy_environ('DBUS_SESSION_BUS_ADDRESS')
     copy_environ('XAUTHORITY')
+
+    return env
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

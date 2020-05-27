@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_mirror</name>
-  <version>1.18.22</version>
+  <version>3.2.0</version>
   <description>Xorg viewport mirroring</description>
 
   <maintainer email="lg@endpoint.com">End Point LG</maintainer>
@@ -14,10 +14,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>message_generation</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>boost</build_depend>
-  <build_depend>lg_common</build_depend>
+  <build_depend>lg_msg_defs</build_depend>
 
   <!-- Some test deps are listed here as build deps for convenience. -->
   <build_depend>xvfb</build_depend>
@@ -31,6 +30,7 @@
   <run_depend>roscpp</run_depend>
   <run_depend>appctl</run_depend>
   <run_depend>lg_common</run_depend>
+  <run_depend>lg_msg_defs</run_depend>
   <run_depend>gstreamer1.0-tools</run_depend>
   <run_depend>gstreamer1.0-plugins-base</run_depend>
   <run_depend>gstreamer1.0-plugins-good</run_depend>

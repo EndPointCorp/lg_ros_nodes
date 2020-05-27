@@ -1,9 +1,9 @@
 import rospy
 
 from lg_common import ManagedWindow
-from lg_media.msg import AdhocMedia
-from lg_media.msg import AdhocMedias
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import AdhocMedia
+from lg_msg_defs.msg import AdhocMedias
+from lg_msg_defs.msg import WindowGeometry
 from lg_common.helpers import extract_first_asset_from_director_message
 
 
@@ -68,7 +68,9 @@ class DirectorMediaBridge():
             adhoc_media.geometry.width = media['width']
             adhoc_media.geometry.height = media['height']
             adhoc_media.media_type = media_type
+            # TODO figure out if media['on_finish'] or media['activity_config']['onFinish'] is better
             adhoc_media.on_finish = media['on_finish']
+            adhoc_media.extra_args = media.get('activity_config', {}).get('args', '')
             adhoc_medias.append(adhoc_media)
             media_id += 1
 

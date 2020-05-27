@@ -43,12 +43,12 @@ State data structure:
 import json
 import rospy
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import threading
 import xml.etree.ElementTree as ET
 
 from xml.dom import minidom
-from lg_earth.srv import KmlState, PlaytourQuery
+from lg_msg_defs.srv import KmlState, PlaytourQuery
 from xml.sax.saxutils import unescape, escape
 from lg_common.helpers import escape_asset_url, generate_cookie
 from std_msgs.msg import String
@@ -77,7 +77,7 @@ class KmlMasterHandler(tornado.web.RequestHandler):
         kml_document.attrib['id'] = 'master'
         kml_reparsed = minidom.parseString(ET.tostring(kml_root))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
-        self.finish(kml_content)
+        self.finish(kml_content.encode('utf8'))
 
 
 class KmlUpdateHandler(tornado.web.RequestHandler):
@@ -102,7 +102,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
     @classmethod
     def finish_all_requests(cls):
         with cls.defer_lock:
-            for req in cls.deferred_requests.itervalues():
+            for req in cls.deferred_requests.values():
                 req.get(no_defer=True)
             cls.deferred_requests.clear()
 
@@ -141,7 +141,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         if not window_slug:
             self.set_status(400, "No window slug provided")
-            self.finish("400 Bad Request: No window slug provided")
+            self._finish_text("400 Bad Request: No window slug provided")
             return
 
         try:
@@ -152,12 +152,12 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 e.message
             ))
             # Always return a valid KML or Earth will stop requesting updates
-            self.finish(get_kml_root())
+            self._finish_text(get_kml_root())
             return
 
         assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
         if (assets_to_delete or assets_to_create) or no_defer:
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            self._finish_text(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
             return
 
         self.unique_id = KmlUpdateHandler.get_unique_id()
@@ -176,7 +176,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
                 e.message
             ))
             # Always return a valid KML or Earth will stop requesting updates
-            self.finish(get_kml_root())
+            self._finish_text(get_kml_root())
             return
 
         with KmlUpdateHandler.defer_lock:
@@ -185,7 +185,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             del KmlUpdateHandler.deferred_requests[self.unique_id]
 
             assets_to_create, assets_to_delete = self._get_asset_changes(incoming_cookie_string, assets)
-            self.finish(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
+            self._finish_text(self._get_kml_for_networklink_update(assets_to_delete, assets_to_create, assets))
 
     def _get_kml_for_networklink_update(self, assets_to_delete, assets_to_create, assets):
         """ Generate static part of NetworkLinkUpdate xml"""
@@ -200,7 +200,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         kml_create_assets = self._get_kml_for_create_assets(assets_to_create, kml_update)
         kml_delete_assets = self._get_kml_for_delete_assets(assets_to_delete, kml_update)
 
-        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root)))
+        kml_reparsed = minidom.parseString(unescape(ET.tostring(kml_root).decode('utf-8')))
         kml_content = kml_reparsed.toprettyxml(indent='\t')
         return unescape(kml_content)
 
@@ -221,6 +221,13 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
             self._get_assets_to_create(incoming_cookie_string, assets),
             self._get_assets_to_delete(incoming_cookie_string, assets),
         )
+
+    def _finish_text(self, text):
+        """Encode and finish request with provided text.
+        param text: str
+            text to send
+        """
+        self.finish(text.encode('utf8'))
 
     def _get_assets_to_delete(self, incoming_cookie_string, assets):
         """
@@ -287,7 +294,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cookie = self._get_cookie(assets)
             return [z for z in cookie.split(',')]
-        except AttributeError, e:
+        except AttributeError as e:
             return []
 
     def _get_full_cookie(self, assets):
@@ -353,13 +360,13 @@ class KmlQueryHandler(tornado.web.RequestHandler):
 
         if rospy.is_shutdown():
             self.set_status(503, "Server shutting down")
-            self.finish("Server shutting down")
+            self._finish_text("Server shutting down")
             return
 
         try:
             for op in query_string.split(','):
                 command, value = op.split('=')
-                value = urllib2.unquote(value)
+                value = urllib.parse.unquote(value)
 
                 if command == 'playtour':
                     rospy.loginfo("Playing tour %s" % value)
@@ -383,12 +390,19 @@ class KmlQueryHandler(tornado.web.RequestHandler):
                 else:
                     rospy.logerr("unknown query command: %s" % command)
 
-            self.finish("OK")
+            self._finish_text("OK")
 
         except (IndexError, ValueError) as e:
-            rospy.logerr("Failed to split/parse query string: {} ({})".format(query_string, e.message))
+            rospy.logerr("Failed to split/parse query string: {}".format(query_string))
             self.set_status(400, "Got a bad query string")
-            self.finish("Bad Request: Got a bad query string")
+            self._finish_text("Bad Request: Got a bad query string")
             return
+
+    def _finish_text(self, text):
+        """Encode and finish request with provided text.
+        param text: str
+            text to send
+        """
+        self.finish(text.encode('utf8'))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

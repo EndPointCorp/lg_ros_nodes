@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 lg_offliner ROS node implementation.
 
@@ -20,7 +20,7 @@ import rospy
 from std_msgs.msg import String, Bool
 
 from lg_common import helpers
-from lg_offliner.srv import Offline
+from lg_msg_defs.srv import Offline
 
 
 ROS_NODE_NAME = "lg_offliner"
@@ -67,7 +67,7 @@ class ConnectivityResults(object):
         if not self.data:
             return False
         for dict_check_results in self.data[-self.num_of_last_check_rounds_consider:]:
-            for res in dict_check_results.values():
+            for res in list(dict_check_results.values()):
                 if res == 0:
                     return False
         else:

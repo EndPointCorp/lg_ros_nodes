@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_nav_to_device'
 NAME = 'test_background_stopper'
@@ -9,7 +9,7 @@ import rostest
 import unittest
 from lg_nav_to_device import BackgroundStopper
 from std_msgs.msg import String
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from interactivespaces_msgs.msg import GenericMessage
 
 DISABLED_ACTIVITY = 'disableme'
@@ -232,6 +232,7 @@ class TestBackgroundStopper(unittest.TestCase):
 
         self.stopper.handle_disabled_state('/foo', self.hidden_msg)
         self.assertFalse(self.writer.state)
+
 
 if __name__ == '__main__':
     rostest.rosrun(PKG, NAME, TestBackgroundStopper, sys.argv)

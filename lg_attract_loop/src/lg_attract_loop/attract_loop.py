@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import json
@@ -135,7 +135,7 @@ class AttractLoop:
         """
         rospy.loginfo("Playing blank scene")
 
-        viewports = [viewport.split('/')[2] for viewport in params.get_param_names() if '/viewport/' in viewport]
+        viewports = [viewport.split('/')[2] for viewport in params.get_param_names(['/viewport/*'])]
 
         scene = {
             "description": "attract loop blank scene",
@@ -175,7 +175,7 @@ class AttractLoop:
                 self.attract_loop_queue = self._fetch_attract_loop_content()
                 rospy.logdebug("Populated attract_loop_queue with %s" % self.attract_loop_queue)
             self._play_attract_loop_item()
-        except Exception, e:
+        except Exception as e:
             rospy.loginfo("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
             rospy.sleep(60)
 
@@ -298,7 +298,7 @@ class AttractLoop:
                 presentations = json.loads(presentations_request)['presentations']
                 attract_loop_presentations.extend(presentations)
             return attract_loop_presentations
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("Could not fetch presentations from presentationgroups (%s) because %s" % (presentationgroups, e))
             return []
 
@@ -308,7 +308,7 @@ class AttractLoop:
             presentationgroups = json.loads(presentationgroup_request)['objects']
             assert(type(presentationgroups) == list), "Presentationgroups type is not list"
             return presentationgroups
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("Could not get presentationgroups because: %s - sleeping for 10 seconds" % e)
             rospy.sleep(10)
             return []

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import json
@@ -6,13 +6,13 @@ import json
 from geometry_msgs.msg import Pose2D, Quaternion, Twist
 from lg_common.helpers import get_activity_config_from_activity, on_new_scene, make_soft_relaunch_callback, get_first_activity_from_scene, has_activity, handle_initial_state
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState
 from std_msgs.msg import String, Bool
 from sensor_msgs.msg import Joy
 from math import atan2, cos, sin, pi
 from lg_sv import PanoViewerServer, NearbyPanos, NearbyStreetviewPanos
 from lg_common.helpers import run_with_influx_exception_handler
-from lg_sv.srv import PanoIdState
+from lg_msg_defs.srv import PanoIdState
 
 
 # spacenav_node -> mux_twists -> /lg_twister/twist -> handle_spacenav_msg:
@@ -144,14 +144,14 @@ def main():
         pov = server.pov
         try:
             pov.x = float(asset['tilt'])
-        except:
+        except Exception:
             pov.x = 0
         try:
             pov.z = float(asset['heading'])
             # we don't want to flip the auto generated ones, or the non_inverted
             if scene.get('slug', '') != 'auto_generated_sv_scene' and inverted:
                 pov.z = (pov.z + 180) % 360
-        except:
+        except Exception:
             pov.z = 0
         pov.w = zoom_max
 
@@ -161,7 +161,7 @@ def main():
         try:
             rospy.loginfo("about to load json: %s" % uscs_msg.message)
             scene = json.loads(uscs_msg.message)
-        except:
+        except Exception:
             return
         handle_director_message(scene)
 

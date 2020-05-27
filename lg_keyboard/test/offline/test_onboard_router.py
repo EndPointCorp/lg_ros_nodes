@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 test_onboard_router - unit tests for onboard_router.py
@@ -14,7 +14,7 @@ import rospkg
 from std_msgs.msg import Bool
 
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from lg_keyboard import OnboardRouter
 
 
@@ -66,7 +66,7 @@ class MockActivatePublisher(object):
 
 class TestOnboardRouter(object):
 
-    def setup_method(self, metdhod):
+    def setUp(self):
         self.publisher = MockActivatePublisher()
         self.msg = GenericMessage()
         self.msg.type = "json"

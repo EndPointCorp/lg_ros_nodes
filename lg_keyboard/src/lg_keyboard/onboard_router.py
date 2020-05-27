@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 lg_onboard router ROS node implementation.
 
@@ -8,7 +8,7 @@ lg_onboard router ROS node implementation.
 import rospy
 import threading
 
-from lg_common.msg import StringArray
+from lg_msg_defs.msg import StringArray
 from lg_common.helpers import route_touch_to_viewports
 from lg_common.helpers import load_director_message
 

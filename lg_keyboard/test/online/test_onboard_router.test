@@ -1,24 +1,21 @@
 <launch>
     <!-- Development static file server for the -->
-    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py">
+        <param name="port" value="8011" />
+    </node>
 
     <!-- USCS for initial state -->
     <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" >
-        <param name="initial_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/initial_state.json"/>
-        <param name="on_online_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_online.json"/>
-        <param name="on_offline_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_offline.json"/>
-        <param name="on_active_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_active.json"/>
-        <param name="on_inactive_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_inactive.json"/>
+        <param name="initial_state_scene_url" value="http://127.0.0.1:8011/lg_common/webapps/uscs_messages/initial_state.json"/>
+        <param name="on_online_state_scene_url" value="http://127.0.0.1:8011/lg_common/webapps/uscs_messages/on_online.json"/>
+        <param name="on_offline_state_scene_url" value="http://127.0.0.1:8011/lg_common/webapps/uscs_messages/on_offline.json"/>
+        <param name="on_active_state_scene_url" value="http://127.0.0.1:8011/lg_common/webapps/uscs_messages/on_active.json"/>
+        <param name="on_inactive_state_scene_url" value="http://127.0.0.1:8011/lg_common/webapps/uscs_messages/on_inactive.json"/>
     </node>
 
     <node name="lg_keyboard_onboard_router" pkg="lg_keyboard" type="onboard_router.py">
         <param name="default_viewport" value="kiosk"/>
     </node>
-
-    <!-- Local rosbridge and rosapi. -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
-        <arg name="port" value="9875" />
-    </include>
 
     <test test-name="test_onboard_router" pkg="lg_keyboard" type="test_onboard_router.py"/>
 </launch>

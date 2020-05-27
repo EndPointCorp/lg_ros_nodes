@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_common'
 NAME = 'test_uscs_service'
@@ -11,7 +11,7 @@ import json
 
 from lg_common import USCSService
 from std_msgs.msg import Bool
-from lg_common.srv import InitialUSCS
+from lg_msg_defs.srv import InitialUSCS
 from interactivespaces_msgs.msg import GenericMessage
 
 
@@ -32,6 +32,7 @@ class TestUSCSService(unittest.TestCase):
      - publish active, inactive, offline and online messages
      - make asserts that after each message, director scene was published
     """
+
     def setUp(self):
         self.initial_state_url = 'http://127.0.0.1:8008/lg_common/webapps/uscs_messages/initial_state.json'
         self.on_online_state_url = 'http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_online.json'
@@ -80,7 +81,7 @@ class TestUSCSService(unittest.TestCase):
         desired_initial_state = json.loads(requests.get(self.initial_state_url).content)
 
         rospy.wait_for_service('/initial_state')
-        initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
+        initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS, persistent=False)
         initial_state = initial_state_service().message
         initial_state = json.loads(initial_state)
         self.assertEqual(initial_state, desired_initial_state)
@@ -122,6 +123,7 @@ class TestUSCSService(unittest.TestCase):
         self.assertEqual(len(self.connectivity_mock_subscriber.state), 0)
         self.assertEqual(len(self.activity_mock_subscriber.state), 1)
         self.assertEqual(len(self.director_mock_subscriber.state), 1)
+
 
 if __name__ == '__main__':
     import rostest

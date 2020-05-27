@@ -2,7 +2,405 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
+3.2.0 (2020-05-27)
+------------------
+
+3.1.12 (2020-05-04)
+-------------------
+* Fix media_launcher startup, shutdown issues
+  multicast instead of unreliable RTSP server.
+* Contributors: Matt Vollrath
+
+3.1.11 (2020-05-01)
+-------------------
+* Fix PEP8
+* Add basic media launcher (`#421 <https://github.com/EndPointCorp/lg_ros_nodes/issues/421>`_)
+  Co-authored-by: Matt Vollrath <matt@endpoint.com>
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Contributors: Galaxy Admin, Matt Vollrath, Will Plaut, nelliott
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+
+3.1.8 (2020-02-06)
+------------------
+* image_viewer: slight change for trasparency
+* Contributors: Will Plaut
+
+3.1.7 (2020-02-04)
+------------------
+
+3.1.6 (2020-01-27)
+------------------
+* image_viewer: initial scene functionality
+* Contributors: Jacob Minshall
+
+3.1.5 (2020-01-24)
+------------------
+* decode in the right place
+* Contributors: Jacob Minshall
+
+3.1.4 (2020-01-24)
+------------------
+* Merge pull request `#414 <https://github.com/EndPointCorp/lg_ros_nodes/issues/414>`_ from EndPointCorp/topic/image_viewer_fixes_and_tracebacks
+  Topic/image viewer fixes and tracebacks
+* image_checker: fix encoding issue
+* image_viewer: remove debuggin
+* changes need to be cleaned up
+* Contributors: Jacob Minshall, Will Plaut
+
+3.1.3 (2020-01-20)
+------------------
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+  Conflicts:
+  lg_common/package.xml
+* Merge pull request `#410 <https://github.com/EndPointCorp/lg_ros_nodes/issues/410>`_ from EndPointCorp/fix_tests
+  Fix some tests
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* starting to update CMakes and package.xmls
+* Finish pycodestyle fixing image_viewer
+* Fix pointer glitches in gst_video_sync
+* Fix gst_video_sync style glitches
+* Fix some pycodestyle glitches
+* update import paths everywhere
+* Contributors: Matt Vollrath, Will Plaut
+
+3.0.2 (2019-11-06)
+------------------
+
+3.0.1 (2019-11-06)
+------------------
+* image_checker: python3 shebang
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Will Plaut, dkiselev
+
+3.0.0 (2019-10-31)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* Merge pull request `#407 <https://github.com/EndPointCorp/lg_ros_nodes/issues/407>`_ from EndPointCorp/fix_gst_video_sync_mp3_streaming
+  Fix gst_video_sync MP3 streaming
+* gst_video_sync: Keep trying duration query
+  When streaming MP3 over HTTP sometimes it can't initially query the duration.
+  Keep trying the query, making sure to cancel when we quit.
+* gst_video_sync: Ensure quit() exits
+* set python executable for tests
+* 2to3 all of it
+* python 2 shebang to 3
+* Contributors: Matt Vollrath, Will Plaut
+
+2.0.18 (2019-10-11)
+-------------------
+* Merge pull request `#406 <https://github.com/EndPointCorp/lg_ros_nodes/issues/406>`_ from EndPointCorp/topic/image_checker
+  image_checker: crosscheck uscs msgs with current procs
+* image_checker: use threading timer
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* image_checker: remove debuging stuff
+  also adds rosparam for sleep timeout
+* image_checker: fixup naming and such
+* image_checker: small changes
+* image_checker: use uscs to verify
+* image_checker: first round of changes
+* image_checker: cleanup
+* image_checker: working bones
+* image_checker: fix syntax errors
+* lg_media: add script to CMake
+* image_checker: crosscheck uscs msgs with current procs
+* Contributors: Will Plaut
+
+2.0.17 (2019-09-11)
+-------------------
+
+2.0.16 (2019-09-06)
+-------------------
+* gst_video_sync: disable aggressive downloading
+  Don't fill up the disk with this cruft.
+* Contributors: Matt Vollrath
+
+2.0.15 (2019-08-20)
+-------------------
+* Manage libqt5gstreamer build dep properly
+  This was merged into rosdistro.
+* gst_video_sync: Don't mess with buffer size
+  The small buffer was causing audio issues for some videos.
+* Contributors: Matt Vollrath
+
+2.0.14 (2019-08-19)
+-------------------
+* Disable hardware decoding for gst_video_sync
+  Known to be broken when combining vaapi<->vdpau
+* gst_video_sync: Check state changes
+* gst_video_sync: Use autovideosink
+  Disabling hardware decoding was not working because we specified vaapisink.
+* Contributors: Jacob Minshall, Matt Vollrath
+
+2.0.13 (2019-07-29)
+-------------------
+* gst_video_sync: Args for window geometry
+  Awesome WM was having trouble setting x and y, so do it in the app.
+* Contributors: Matt Vollrath
+
+2.0.12 (2019-07-24)
+-------------------
+
+2.0.11 (2019-07-22)
+-------------------
+
+2.0.10 (2019-07-18)
+-------------------
+
+2.0.9 (2019-07-17)
+------------------
+
+2.0.8 (2019-07-08)
+------------------
+
+2.0.7 (2019-07-03)
+------------------
+* gst_video_sync: specify buffer size
+* Normalize roslib topic throttle and queues
+* Contributors: Matt Vollrath
+
+2.0.6 (2019-07-02)
+------------------
+* gst_video_sync: slaves won't wait for master
+* gst_video_sync: Hide init, use vaapi and vdpau
+* Contributors: Matt Vollrath
+
+2.0.5 (2019-07-02)
+------------------
+* gst_video_sync: use xvimagesink
+* Contributors: Matt Vollrath
+
+2.0.4 (2019-07-02)
+------------------
+* Add lg_media gstreamer_pool
+  For launching gst_video_sync.
+  A mostly drop-in replacement for mplayer_pool.
+  Custom mplayer args in scenes will need to be ported.
+* GStreamer-based sync video player
+* Update browser video app
+  Stripped down version of the lg_panovideo player with optional sync.
+* Contributors: Matt Vollrath
+
+2.0.3 (2019-07-02)
+------------------
+
+2.0.2 (2019-07-01)
+------------------
+
+2.0.1 (2019-06-28)
+------------------
+
+2.0.0 (2019-06-14)
+------------------
+
+1.20.4 (2019-06-12)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
+* Contributors: Galaxy Admin
+
+1.20.3 (2019-05-22)
+-------------------
+* Merge pull request `#398 <https://github.com/EndPointCorp/lg_ros_nodes/issues/398>`_ from EndPointCorp/topic/image_viewer_two
+  image_viewer: pqiv and feh
+* image_viewer: better loggin levels
+* image_viewer: pqiv and feh
+  Our powers combined!
+* Contributors: Will Plaut
+
+1.20.2 (2019-05-22)
+-------------------
+
+1.20.1 (2019-05-21)
+-------------------
+
+1.20.0 (2019-05-15)
+-------------------
+* PEP8 sweep
+* lg_media: fix package.xml
+* Add image viewer node with transparent image display
+* Contributors: Matt Vollrath, Will Plaut
+
+1.19.16 (2019-05-14)
+--------------------
+* Merge pull request `#396 <https://github.com/EndPointCorp/lg_ros_nodes/issues/396>`_ from EndPointCorp/topic/transparent_images
+  Topic/transparent images
+* lg_media: fix package.xml
+* image_viewer: cleanup
+* image_viewer: simplified a bit
+* image_viewer: syntax
+* image_viewer: moved to pqiv and cleanup
+* image_viewer: fix image comparison
+* more working image_viewer.py
+* mostly working image viewer
+* Contributors: Will Plaut
+
+1.19.15 (2019-04-29)
+--------------------
+
+1.19.14 (2019-04-26)
+--------------------
+
+1.19.13 (2019-04-25)
+--------------------
+
+1.19.12 (2019-03-25)
+--------------------
+
+1.19.11 (2019-03-20)
+--------------------
+
+1.19.10 (2019-03-15)
+--------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.9 (2019-03-06)
+-------------------
+
+1.19.8 (2019-02-26)
+-------------------
+* Fix Change: re-add line
+* VIDEO-SYNC Ros node changes
+* Contributors: Galaxy Admin
+
+1.19.7 (2019-02-14)
+-------------------
+
+1.19.6 (2019-02-08)
+-------------------
+
+1.19.5 (2019-02-06)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.4 (2019-01-30)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.3 (2019-01-29)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.2 (2019-01-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.1 (2019-01-11)
+-------------------
+
+1.19.0 (2019-01-10)
 -------------------
 
 1.18.22 (2018-12-06)
@@ -109,9 +507,9 @@ Changelog for package lg_media
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
-* Contributors: Will Plaut
+
+1.17.2 (2017-11-06)
+-------------------
 
 1.17.1 (2017-10-12)
 -------------------

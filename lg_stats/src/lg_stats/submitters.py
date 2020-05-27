@@ -126,10 +126,11 @@ class InfluxTelegraf(Submitter):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_address = (self.host, self.port)
+            sock.settimeout(5.0)
             sock.connect(server_address)
-            sock.sendall(data)
+            sock.sendall(data.encode('utf-8'))
             rospy.logdebug("Wrote: '%s' to influx" % data)
-        except Exception, ex:
+        except Exception as ex:
             rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
                          (data, server_address, ex))
         finally:
@@ -169,4 +170,4 @@ class InfluxMock(Submitter):
         This doesn't require ROS init_node.
 
         """
-        return time.time() * long(1e9)
+        return time.time() * int(1e9)

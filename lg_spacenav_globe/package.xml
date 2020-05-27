@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_spacenav_globe</name>
-  <version>1.18.22</version>
+  <version>3.2.0</version>
   <description>Spacenavigator input normalizer for google maps</description>
 
   <maintainer email="lg@endpoint.com">End Point LG</maintainer>
@@ -12,11 +12,11 @@
   <author email="lg-rad@endpoint.com">Liquid Galaxy RD team</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>message_generation</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>roscpp</build_depend>
-  <run_depend>message_runtime</run_depend>
+  <build_depend>lg_msg_defs</build_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>roscpp</run_depend>
+  <run_depend>lg_msg_defs</run_depend>
   <test_depend>rostest</test_depend>
 </package>

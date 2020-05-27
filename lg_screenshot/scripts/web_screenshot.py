@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
-from lg_screenshot.msg import GetScreenshot
-from lg_screenshot.msg import Screenshot
+from lg_msg_defs.msg import GetScreenshot
+from lg_msg_defs.msg import Screenshot
 from lg_screenshot import WebScreenshot
 from lg_common.helpers import run_with_influx_exception_handler
 
@@ -33,6 +33,7 @@ def main():
                      node.take_screenshot)
 
     rospy.spin()
+
 
 if __name__ == "__main__":
     run_with_influx_exception_handler(main, NODE_NAME)

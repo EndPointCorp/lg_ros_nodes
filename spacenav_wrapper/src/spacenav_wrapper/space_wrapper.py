@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 from geometry_msgs.msg import Twist
@@ -114,7 +114,7 @@ class SpacenavRezeroer(object):
         """
         try:
             self._on_timer()
-        except Exception, e:
+        except Exception as e:
             rospy.logerr("There was an exception thrown inside the timer:\n%s" % e)
 
     def _is_twist_equal(self, twist1, twist2, epsilon=0.005):
@@ -133,12 +133,18 @@ class SpacenavWrapper(object):
         self.joy = joy
         self.gutter_val = gutter_val
         self.translate_twist = translate_twist
+        self.suppressed = False
+
+    def suppress(self, suppressed):
+        self.suppressed = suppressed
 
     def handle_twist(self, msg):
         """
         Gets twist message, and publishes it or a cleaned up version
         of it
         """
+        if self.suppressed:
+            return
         if self._is_in_gutter(msg):
             msg = Twist()
         self.translate_twist(msg)

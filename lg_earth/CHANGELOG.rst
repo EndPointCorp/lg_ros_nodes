@@ -2,7 +2,403 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
+3.2.0 (2020-05-27)
+------------------
+* Put Earth windows below
+* Fix for empty earth scene
+* fix parenthesis
+* debug info for add_kml
+* Contributors: Galaxy Admin, Matt Vollrath, dkiselev
+
+3.1.12 (2020-05-04)
+-------------------
+
+3.1.11 (2020-05-01)
+-------------------
+* Fix test webserver port conflicts
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Don't write viewsync state file
+  This causes major problems in Python 3, and nothing was reading the file.
+* Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+* Don't write viewsync state file
+  This causes major problems in Python 3, and nothing was reading the file.
+* Contributors: Matt Vollrath
+
+3.1.8 (2020-02-06)
+------------------
+
+3.1.7 (2020-02-04)
+------------------
+* shutdown fixes
+* Contributors: Will Plaut
+
+3.1.6 (2020-01-27)
+------------------
+
+3.1.5 (2020-01-24)
+------------------
+
+3.1.4 (2020-01-24)
+------------------
+
+3.1.3 (2020-01-20)
+------------------
+* Merge pull request `#412 <https://github.com/EndPointCorp/lg_ros_nodes/issues/412>`_ from EndPointCorp/no_waiting
+  Fix some service waiting and other issues
+* Ban persistent ServiceProxy
+  Known to be broken in this configuration.
+* Clean up KmlAlive
+  * Use subprocess.DEVNULL
+  * Don't recurse on error
+* Don't wait for services
+* Contributors: Matt Vollrath
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+* kmlalive: use wait for service instead of list services
+* Contributors: Will Plaut
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* update import paths everywhere
+* Contributors: Matt Vollrath, Will Plaut
+
+3.0.2 (2019-11-06)
+------------------
+
+3.0.1 (2019-11-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.0.0 (2019-10-31)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* Kmlsync: python3 and fixtests
+* decoding instead of encoding
+* Fix kmlsync service calls
+  Persistent mode apparently breaking.
+* lg_earth: fix kmlsync regex
+* set python executable for tests
+* Fix ViewsyncRelay byte stringness
+  Also continue upon any errors instead of failing silently and waiting.
+* 2to3 all of it
+* Merge branch 'topic/python_tree' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+* replace: now takes bytes not strs
+* sock.send[all/to]: now takes bytes not str
+* python 2 shebang to 3
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+2.0.18 (2019-10-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* Contributors: Will Plaut
+
+2.0.17 (2019-09-11)
+-------------------
+
+2.0.16 (2019-09-06)
+-------------------
+
+2.0.15 (2019-08-20)
+-------------------
+
+2.0.14 (2019-08-19)
+-------------------
+
+2.0.13 (2019-07-29)
+-------------------
+
+2.0.12 (2019-07-24)
+-------------------
+* earth cache: clear the correct cache
+* Contributors: Will Plaut
+
+2.0.11 (2019-07-22)
+-------------------
+
+2.0.10 (2019-07-18)
+-------------------
+
+2.0.9 (2019-07-17)
+------------------
+* Merge pull request `#403 <https://github.com/EndPointCorp/lg_ros_nodes/issues/403>`_ from EndPointCorp/fix_bionic_kmlsync
+  kmlsync: Encode outgoing text
+* _finish_text for query handler too
+* Merge pull request `#404 <https://github.com/EndPointCorp/lg_ros_nodes/issues/404>`_ from EndPointCorp/topic/kml_still_alive
+  kmlalive: improve logging and add ros params
+* fix syntax errs
+* kmlalive: improve logging and add ros params
+* kmlsync: Encode outgoing text
+  New Tornado does not accept strings. Encode UTF-8.
+* Contributors: Matt Vollrath, Will Plaut
+
+2.0.8 (2019-07-08)
+------------------
+
+2.0.7 (2019-07-03)
+------------------
+* Normalize roslib topic throttle and queues
+* Contributors: Matt Vollrath
+
+2.0.6 (2019-07-02)
+------------------
+
+2.0.5 (2019-07-02)
+------------------
+
+2.0.4 (2019-07-02)
+------------------
+
+2.0.3 (2019-07-02)
+------------------
+
+2.0.2 (2019-07-01)
+------------------
+* storing worked as instance variable and stack trace
+* Contributors: Jacob Minshall
+
+2.0.1 (2019-06-28)
+------------------
+* only relaunch if it has worked before
+* wrap kmlalive in exception
+* Contributors: Jacob Minshall
+
+2.0.0 (2019-06-14)
+------------------
+
+1.20.4 (2019-06-12)
+-------------------
+* Merge pull request `#400 <https://github.com/EndPointCorp/lg_ros_nodes/issues/400>`_ from EndPointCorp/topic/kml_alive
+  Topic/kml alive
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
+* clean up errors and only reset counter when relaunching or no proc
+* debugging and fixes
+* client.py import
+* fix formatting
+* fixes
+* more changes
+* fix format mistake
+* initial kmlalive stuff
+* Contributors: Galaxy Admin, Jacob Minshall, Will Plaut
+
+1.20.3 (2019-05-22)
+-------------------
+
+1.20.2 (2019-05-22)
+-------------------
+
+1.20.1 (2019-05-21)
+-------------------
+
+1.20.0 (2019-05-15)
+-------------------
+* PEP8 sweep
+* Contributors: Matt Vollrath
+
+1.19.16 (2019-05-14)
+--------------------
+
+1.19.15 (2019-04-29)
+--------------------
+
+1.19.14 (2019-04-26)
+--------------------
+* Fix clear all kmls
+* Contributors: Dmitry Kiselev
+
+1.19.13 (2019-04-25)
+--------------------
+
+1.19.12 (2019-03-25)
+--------------------
+
+1.19.11 (2019-03-20)
+--------------------
+* application to listen on add_kml topics
+* Contributors: Dmitry Kiselev
+
+1.19.10 (2019-03-15)
+--------------------
+* add snippet for addkml
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* fix filtering
+* Contributors: Dmitry Kiselev
+
+1.19.9 (2019-03-06)
+-------------------
+* Fix 3d Toggle
+* fix typos
+* fixed typo
+* Remove kmls by ids
+* Contributors: Dmitry Kiselev, Galaxy Admin
+
+1.19.8 (2019-02-26)
+-------------------
+* Add clear kml for lg_earth
+* Contributors: Dmitry Kiselev
+
+1.19.7 (2019-02-14)
+-------------------
+* TOGGLE: adjusted script
+* Contributors: Galaxy Admin
+
+1.19.6 (2019-02-08)
+-------------------
+* Disable Keyboard when Toggling 3d layer
+* Contributors: Jarred
+
+1.19.5 (2019-02-06)
+-------------------
+* EARTH_TOGGLE: new scripts
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev, Jarred
+
+1.19.4 (2019-01-30)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* force chmod +x on earth layer toggle script
+* Contributors: Dmitry Kiselev
+
+1.19.3 (2019-01-29)
+-------------------
+* Use topics for 3d layer state switch
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Change executable script path
+* Toggle Earth Layer: Fix for image comparison
+* changed names
+* renamed script
+* fixed cmake
+* Refactored 3d layer set service
+* move scripts folder deployment destination to avoid access issues
+* add service call return
+* Fix stuff for toggling
+* add files for layer state checking
+* deploy bash scripts
+* Deploy bash scripts
+* Changed srv declaration
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Add service for 3d layer state changing
+* Update toggle layer
+* rename layer toggle script
+* Toggle Layer
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev, Jarred
+
+1.19.2 (2019-01-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.1 (2019-01-11)
+-------------------
+
+1.19.0 (2019-01-10)
 -------------------
 
 1.18.22 (2018-12-06)
@@ -130,9 +526,9 @@ Changelog for package lg_earth
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
-* Contributors: Will Plaut
+
+1.17.2 (2017-11-06)
+-------------------
 
 1.17.1 (2017-10-12)
 -------------------

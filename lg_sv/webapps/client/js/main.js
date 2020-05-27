@@ -37,6 +37,10 @@ var initializeViewers = function() {
   ros.on('error', function() {
     setTimeout(initialize, 2000);
   });
+  ros.on('close', function() {
+    console.error('Lost ROS connection');
+    window.location.href = window.location.href;
+  });
 };
 
 var initializeRes = function(ros, yawOffset) {
@@ -119,17 +123,6 @@ var initializeRes = function(ros, yawOffset) {
   window.addEventListener('resize', handleResize, false);
   handleResize();
 
-  var panoTopic = new ROSLIB.Topic({
-    ros: ros,
-    name: '/streetview/panoid',
-    messageType: 'std_msgs/String'
-  });
-  var metadataTopic = new ROSLIB.Topic({
-    ros: ros,
-    name: '/streetview/metadata',
-    messageType: 'std_msgs/String'
-  });
-
   var attributionModule = new Attribution(info);
   var handleMetadataResponse = function(response, stat) {
     if (stat != google.maps.StreetViewStatus.OK) {
@@ -167,14 +160,6 @@ var initializeRes = function(ros, yawOffset) {
     svService.getPanorama({ pano: panoId }, handleMetadataResponse);
   }
   svClient.on('pano_changed', handlePanoChanged);
-  var panoService = new ROSLIB.Service({
-    ros: ros,
-    name: '/streetview/panoid_state',
-    serviceType: 'lg_sv/PanoIdState'
-  });
-  panoService.callService({}, function(resp) {
-    //handlePanoChanged(resp.panoid);
-  });
 
   /**
    * handling director scenes here

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_common'
 NAME = 'test_required_param'
@@ -23,9 +23,9 @@ class TestRequiredParam(unittest.TestCase):
             required_param(TEST_MISSING_KEY)
 
     def test_coerce(self):
-        value = required_param(TEST_KEY, bytearray)
-        self.assertEqual(bytearray, type(value))
-        self.assertEqual(bytearray(TEST_VALUE), value)
+        value = required_param(TEST_KEY, list)
+        self.assertEqual(list, type(value))
+        self.assertEqual(list(TEST_VALUE), value)
 
     def test_bad_coerce(self):
         with self.assertRaises(ValueError):

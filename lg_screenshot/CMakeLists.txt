@@ -3,20 +3,14 @@ project(lg_screenshot)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  message_generation
+  lg_msg_defs
 )
 
 catkin_python_setup()
 
-add_message_files(
-  FILES
-  GetScreenshot.msg
-  Screenshot.msg
-)
-generate_messages()
 
 catkin_package(
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS lg_msg_defs
 )
 
 catkin_install_python(PROGRAMS
@@ -30,6 +24,7 @@ install(
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   add_rostest(test/online/test_screenshots.test)
 endif()

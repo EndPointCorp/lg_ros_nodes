@@ -1,16 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import roslib
 roslib.load_manifest('lg_common')
 
 import rospy
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import json
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from std_msgs.msg import String
 from std_msgs.msg import Bool
-from lg_common.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
+from std_srvs.srv import Empty
+from lg_msg_defs.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common import USCSService
 from lg_common.helpers import check_www_dependency
@@ -76,6 +77,7 @@ def main():
 
     rospy.Service(message_topic, USCSMessage, us.current_uscs_message)
     rospy.Service('/initial_state', InitialUSCS, us.initial_state)
+    rospy.Service('/uscs/republish', Empty, us.republish)
 
     rospy.spin()
 

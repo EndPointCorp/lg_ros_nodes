@@ -2,10 +2,395 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.17.2 (2017-11-06)
+3.2.0 (2020-05-27)
+------------------
+* Move bspc rule commands further down the stack
+* Manage bspc rules from ManagedWindow
+  lg_wm now just converges on its internal window list.
+* Use lg_wm_send instead of awesome-client
+
+3.1.12 (2020-05-04)
 -------------------
-* super security (long live the wojo)
-* Contributors: Jacob Minshall
+
+3.1.11 (2020-05-01)
+-------------------
+* Skip some unreliable tests
+* Merge pull request `#419 <https://github.com/EndPointCorp/lg_ros_nodes/issues/419>`_ from EndPointCorp/lg_common_relative_topics
+  Use relative topic names in adhoc browser
+* Use relative topic names in adhoc browser
+  Allow namespaced duplicates.
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+
+3.1.8 (2020-02-06)
+------------------
+
+3.1.7 (2020-02-04)
+------------------
+* Set timeout when writing to influx
+  Reduces shutdown delay when the telegraf server is unreachable.
+* Remove post-exception handling sleep
+  Blocking socket should not need this.
+* Contributors: Matt Vollrath
+
+3.1.6 (2020-01-27)
+------------------
+
+3.1.5 (2020-01-24)
+------------------
+
+3.1.4 (2020-01-24)
+------------------
+* Merge pull request `#414 <https://github.com/EndPointCorp/lg_ros_nodes/issues/414>`_ from EndPointCorp/topic/image_viewer_fixes_and_tracebacks
+  Topic/image viewer fixes and tracebacks
+* changes need to be cleaned up
+* Contributors: Will Plaut
+
+3.1.3 (2020-01-20)
+------------------
+* Merge pull request `#413 <https://github.com/EndPointCorp/lg_ros_nodes/issues/413>`_ from EndPointCorp/topic/fix_js_msg_types
+  lots of missing msg/srv updates in js files
+* random problems that need fixin
+* lots of missing msg/srv updates in js files
+* Merge pull request `#412 <https://github.com/EndPointCorp/lg_ros_nodes/issues/412>`_ from EndPointCorp/no_waiting
+  Fix some service waiting and other issues
+* Ban persistent ServiceProxy
+  Known to be broken in this configuration.
+* Retry initial USCS state
+* Don't wait for pubsub connections either
+* Don't wait for services
+* Contributors: Matt Vollrath, Will Plaut
+
+3.1.2 (2020-01-10)
+------------------
+
+3.1.1 (2020-01-08)
+------------------
+
+3.1.0 (2020-01-06)
+------------------
+* Merge pull request `#411 <https://github.com/EndPointCorp/lg_ros_nodes/issues/411>`_ from EndPointCorp/topic/msg_cleanup
+  Topic/msg cleanup
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/msg_cleanup
+  Conflicts:
+  lg_common/package.xml
+* Merge pull request `#410 <https://github.com/EndPointCorp/lg_ros_nodes/issues/410>`_ from EndPointCorp/fix_tests
+  Fix some tests
+* cleanup deps with catkin_lint
+* Merge branch 'master' into fix_tests
+* Update CMake and package xmls
+* Remove msg creation from orig pkgs
+* Update service imports
+* Fix up adhoc browser tests
+* Fix some pycodestyle glitches
+* update import paths everywhere
+* Track socat dependency again
+* Fix TCP Relay test
+  Needs to init a rospy node for appctl to work properly.
+  Also fix threading issues when the relay fails to run.
+* Contributors: Matt Vollrath, Will Plaut
+
+3.0.2 (2019-11-06)
+------------------
+
+3.0.1 (2019-11-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* lg_common: remove socat dep that breaks stuffff
+  Figure out if we can add this back
+* lg_common: add build dep
+* Contributors: Will Plaut, dkiselev
+
+3.0.0 (2019-10-31)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+  Conflicts:
+  rosbridge_library/CHANGELOG.rst
+  rosbridge_library/package.xml
+  rosbridge_server/CHANGELOG.rst
+  rosbridge_server/package.xml
+* lg_common: python3 changes
+* Fix lg_common test_helpers
+* set python executable for tests
+* Fix byteness in TCP relay test
+* 2to3 all of it
+* Merge branch 'topic/python_tree' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
+* sock.send[all/to]: now takes bytes not str
+* python 2 shebang to 3
+* Contributors: Matt Vollrath, Will Plaut
+
+2.0.18 (2019-10-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
+* Contributors: Will Plaut
+
+2.0.17 (2019-09-11)
+-------------------
+* Increase Chrome update check interval
+  This should give us a few weeks.
+* Contributors: Matt Vollrath
+
+2.0.16 (2019-09-06)
+-------------------
+
+2.0.15 (2019-08-20)
+-------------------
+
+2.0.14 (2019-08-19)
+-------------------
+
+2.0.13 (2019-07-29)
+-------------------
+
+2.0.12 (2019-07-24)
+-------------------
+
+2.0.11 (2019-07-22)
+-------------------
+
+2.0.10 (2019-07-18)
+-------------------
+* Bypass new Chrome autoplay policy
+  Appreciated when browsing, annoying for kiosk apps.
+  This should fix panovideo master and any other broken media pages.
+* Contributors: Matt Vollrath
+
+2.0.9 (2019-07-17)
+------------------
+* Merge pull request `#403 <https://github.com/EndPointCorp/lg_ros_nodes/issues/403>`_ from EndPointCorp/fix_bionic_kmlsync
+  kmlsync: Encode outgoing text
+* Fix combine_viewport_geometries test
+* Contributors: Matt Vollrath
+
+2.0.8 (2019-07-08)
+------------------
+* Move combine_viewport_geometries to lg_common
+* Contributors: Matt Vollrath
+
+2.0.7 (2019-07-03)
+------------------
+* Normalize roslib topic throttle and queues
+* Contributors: Matt Vollrath
+
+2.0.6 (2019-07-02)
+------------------
+
+2.0.5 (2019-07-02)
+------------------
+
+2.0.4 (2019-07-02)
+------------------
+
+2.0.3 (2019-07-02)
+------------------
+
+2.0.2 (2019-07-01)
+------------------
+
+2.0.1 (2019-06-28)
+------------------
+
+2.0.0 (2019-06-14)
+------------------
+
+1.20.4 (2019-06-12)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
+* Contributors: Galaxy Admin
+
+1.20.3 (2019-05-22)
+-------------------
+
+1.20.2 (2019-05-22)
+-------------------
+* Revert "Revert "Extra fullscreen signal fix for Chrome kiosk""
+  Turns out this wasn't the problem.
+* Include width and height in window callback
+* Contributors: Matt Vollrath
+
+1.20.1 (2019-05-21)
+-------------------
+* Revert "Extra fullscreen signal fix for Chrome kiosk"
+  This fix turned out to not be backwards compatible.
+* Contributors: Matt Vollrath
+
+1.20.0 (2019-05-15)
+-------------------
+* PEP8 sweep
+* Fix jslint errors
+* String form for ManagedWindow
+  A little treat for debugging.
+* Extra fullscreen signal fix for Chrome kiosk
+  Had an issue with new awesome where Chrome in kiosk mode would switch
+  back to fullscreen after the callback had run.  This should prevent any
+  managed client from unwanted fullscreening.
+* Remove backslashes from Chrome instance match
+  Breaks in new awesome.
+* Isolate awesome environment
+  Don't muck with the parent process environment.
+* Set fullscreen attribute in rule
+  Compatibility with new awesome.
+* Contributors: Matt Vollrath
+
+1.19.16 (2019-05-14)
+--------------------
+
+1.19.15 (2019-04-29)
+--------------------
+
+1.19.14 (2019-04-26)
+--------------------
+
+1.19.13 (2019-04-25)
+--------------------
+
+1.19.12 (2019-03-25)
+--------------------
+* Fix awesome rule check
+* Contributors: Matt Vollrath
+
+1.19.11 (2019-03-20)
+--------------------
+* Fix awesome copmatibility
+  In newer versions of awesome, rules may not have a 'rule' field.
+  We know ours do, so check for rules field as a pre-condition.
+* Contributors: Matt Vollrath
+
+1.19.10 (2019-03-15)
+--------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.9 (2019-03-06)
+-------------------
+
+1.19.8 (2019-02-26)
+-------------------
+
+1.19.7 (2019-02-14)
+-------------------
+
+1.19.6 (2019-02-08)
+-------------------
+
+1.19.5 (2019-02-06)
+-------------------
+* add empty response return for service call
+* fix message republishing
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Add /uscs/republish service
+* Contributors: Dmitry Kiselev
+
+1.19.4 (2019-01-30)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.3 (2019-01-29)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.2 (2019-01-11)
+-------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Dmitry Kiselev
+
+1.19.1 (2019-01-11)
+-------------------
+
+1.19.0 (2019-01-10)
+-------------------
 
 1.18.22 (2018-12-06)
 --------------------
@@ -126,10 +511,11 @@ Changelog for package lg_common
 
 1.17.3 (2017-11-07)
 -------------------
-* 1.17.2
-* updated changeslogs for new release
+
+1.17.2 (2017-11-06)
+-------------------
 * super security (long live the wojo)
-* Contributors: Jacob Minshall, Will Plaut
+* Contributors: Jacob Minshall
 
 1.17.1 (2017-10-12)
 -------------------

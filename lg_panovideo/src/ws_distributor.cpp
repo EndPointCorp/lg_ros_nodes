@@ -19,18 +19,18 @@ bool upHandler(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res)
 
 int main(int argc, char** argv)
 {
-    h.onMessage([](uWS::WebSocket<uWS::SERVER> ws, char *message, size_t length, uWS::OpCode opCode) {
+    h.onMessage([](uWS::WebSocket<uWS::SERVER> *ws, char *message, size_t length, uWS::OpCode opCode) {
         uWS::Group<uWS::SERVER> g = h.getDefaultGroup<uWS::SERVER>();
 
-        g.forEach([&ws, message, length, opCode](uWS::WebSocket<uWS::SERVER> cs) {
-            if (ws.getPollHandle() != cs.getPollHandle()) {
-                cs.send(message, length, opCode);
+        g.forEach([ws, message, length, opCode](uWS::WebSocket<uWS::SERVER> *cs) {
+            if (ws != cs) {
+                cs->send(message, length, opCode);
             }
         });
     });
 
-    h.onError([](typename uWS::Group<uWS::SERVER>::errorType error) {
-        ROS_ERROR_STREAM("uWS Hub had an error: " << error);
+    h.onError([](void* error) {
+        ROS_ERROR_STREAM("uWS Hub had an error");
     });
 
     ros::init(argc, argv, "ws_broadcaster", ros::init_options::NoSigintHandler);

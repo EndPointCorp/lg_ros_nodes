@@ -1,12 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import json
 
-from lg_common.srv import BrowserPool, USCSMessage
+from lg_msg_defs.srv import BrowserPool, USCSMessage
 from lg_common.helpers import add_url_params
 from std_msgs.msg import String
-from appctl.msg import Mode
-from urllib2 import urlopen
+from appctl_msg_defs.msg import Mode
+from urllib.request import urlopen
 from lg_common.helpers import run_with_influx_exception_handler
 
 
@@ -40,7 +40,7 @@ class StateTracker(object):
         current_state = self.last_uscs_service().message
         try:
             current_state = json.loads(current_state)
-        except:
+        except Exception:
             rospy.logerr("Error parsing last uscs message as json")
             return
 
@@ -111,14 +111,14 @@ class StateTracker(object):
         state = url_service.call().state
         try:
             state = json.loads(state)
-        except:
+        except Exception:
             rospy.logwarn("Unable to parse state (%s)" % state)
             raise
 
         if len(state) > 1:
             rospy.logwarn('There are more than one browser active, the wrong URL might be returned')
 
-        for browser_id, browser_data in state.iteritems():
+        for browser_id, browser_data in state.items():
             return browser_data['current_url_normalized']
 
     def handle_nfc(self, msg):
@@ -134,14 +134,9 @@ def main():
     update_rfid_topic = rospy.get_param('~update_rfid_topic', '/rfid/uscs/update')
     tactile_flag = rospy.get_param('~tactile_flag', '')
 
-    # wait for service or kill node
-    rospy.wait_for_service('/uscs/message', 10)
-    rospy.wait_for_service('/browser_service/wall', 10)
-    rospy.wait_for_service('/browser_service/kiosk', 10)
-
-    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage)
-    kiosk_url_service = rospy.ServiceProxy('/browser_service/kiosk', BrowserPool)
-    display_url_service = rospy.ServiceProxy('/browser_service/wall', BrowserPool)
+    last_uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage, persistent=False)
+    kiosk_url_service = rospy.ServiceProxy('/browser_service/kiosk', BrowserPool, persistent=False)
+    display_url_service = rospy.ServiceProxy('/browser_service/wall', BrowserPool, persistent=False)
 
     current_state = rospy.Publisher(current_state_topic, String, queue_size=10)
     update_rfid_pub = rospy.Publisher(update_rfid_topic, String, queue_size=10)
@@ -154,6 +149,7 @@ def main():
     rospy.Subscriber('/rfid/set', String, state_tracker.handle_nfc)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 from spacenav_wrapper import SpacenavRezeroer
@@ -47,6 +47,7 @@ def main():
     rospy.Timer(rospy.Duration(1.0 / rate), rezeroer.on_timer)
 
     rospy.spin()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

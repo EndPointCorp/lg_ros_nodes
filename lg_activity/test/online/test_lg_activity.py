@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import unittest
@@ -285,6 +285,7 @@ def make_twist_messages(value):
     msg.linear.y = value
     msg.linear.z = value
     return msg
+
 
 if __name__ == '__main__':
     import rostest

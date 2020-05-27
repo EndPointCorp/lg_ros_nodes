@@ -1,4 +1,0 @@
-<launch>
-  <param name="test_key" value="test_value" />
-  <test test-name="test_required_param" pkg="lg_common" type="required_param_test.py" />
-</launch>

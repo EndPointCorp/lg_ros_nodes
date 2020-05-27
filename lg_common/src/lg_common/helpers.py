@@ -3,14 +3,15 @@ import sys
 import json
 import rospy
 import base64
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import hashlib
-import urlparse
+import urllib.parse
 import random
 import string
 
+from lg_common import ManagedWindow
 from interactivespaces_msgs.msg import GenericMessage
-from lg_common.msg import ApplicationState
+from lg_msg_defs.msg import ApplicationState, WindowGeometry
 
 
 class PublisherSubscriberConnectionsException(Exception):
@@ -54,14 +55,14 @@ def add_url_params(url, **params):
 
     return string, updated url with the params
     """
-    url_parts = list(urlparse.urlparse(url))
-    query_dict = dict(urlparse.parse_qsl(url_parts[4]))
+    url_parts = list(urllib.parse.urlparse(url))
+    query_dict = dict(urllib.parse.parse_qsl(url_parts[4]))
     query_dict.update(params)
 
     # 4th index is the query params position
-    url_parts[4] = urllib.urlencode(query_dict)
+    url_parts[4] = urllib.parse.urlencode(query_dict)
 
-    return urlparse.urlunparse(url_parts)
+    return urllib.parse.urlunparse(url_parts)
 
 
 def geometry_compare(adhoc_browser_message, managed_adhoc_browser_instance):
@@ -90,8 +91,8 @@ def url_compare(a0, b0):
     Returns:
         True if the urls are equivalent.
     """
-    a = urlparse.urlparse(a0)
-    b = urlparse.urlparse(b0)
+    a = urllib.parse.urlparse(a0)
+    b = urllib.parse.urlparse(b0)
 
     if a.scheme != b.scheme:
         return False
@@ -108,8 +109,8 @@ def url_compare(a0, b0):
     if a.fragment != b.fragment:
         return False
 
-    qa = urlparse.parse_qs(a.query)
-    qb = urlparse.parse_qs(b.query)
+    qa = urllib.parse.parse_qs(a.query)
+    qb = urllib.parse.parse_qs(b.query)
     if qa != qb:
         return False
 
@@ -554,7 +555,7 @@ def next_scene_uri(presentation, scene):
     try:
         resource_uri = json.loads(scene)['resource_uri']
         scenes = json.loads(presentation)['scenes']
-        script = map(lambda x: x['resource_uri'], scenes)
+        script = [x['resource_uri'] for x in scenes]
     except KeyError:
         return None
 
@@ -582,10 +583,10 @@ def get_message_type_from_string(string):
 def x_available(timeout=None):
     if not timeout:
         return
-    import commands
+    import subprocess
 
     while timeout >= 0:
-        x_check = commands.getstatusoutput("DISPLAY=:0 xset q")
+        x_check = subprocess.getstatusoutput("DISPLAY=:0 xset q")
         if x_check[0] == 0:
             return True
         else:
@@ -628,7 +629,7 @@ def dependency_available(server, port, name, timeout=None):
                 rospy.logwarn("%s not available because: %s" % (name, serr))
                 rospy.sleep(1)
 
-        except socket.error, err:
+        except socket.error as err:
             # catch timeout exception from underlying network library
             # this one is different from socket.timeout
             rospy.loginfo("%s not yet available - waiting %s secs more" % (name, next_timeout))
@@ -642,13 +643,13 @@ def dependency_available(server, port, name, timeout=None):
 
 
 def discover_host_from_url(url):
-    from urlparse import urlparse
+    from urllib.parse import urlparse
     data = urlparse(url)
     return data.hostname
 
 
 def discover_port_from_url(url):
-    from urlparse import urlparse
+    from urllib.parse import urlparse
     data = urlparse(url)
     return data.port
 
@@ -681,7 +682,7 @@ def check_device(device, name):
 
 
 def is_valid_state(state):
-    from lg_common.msg import ApplicationState
+    from lg_msg_defs.msg import ApplicationState
     return state == ApplicationState.HIDDEN or \
         state == ApplicationState.STOPPED or \
         state == ApplicationState.STARTED or \
@@ -879,7 +880,7 @@ def generate_hash(string, length=8, random_suffix=False):
     random_suffix adds random string to the end of the hash.
     NB. random != unique it's still possible to get two equal hashes.
     """
-    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string).digest())[0:(length - 1)].replace('_', '')
+    hash_str = base64.urlsafe_b64encode(hashlib.sha1(string.encode('utf-8')).digest())[0:(length - 1)].replace(b'_', b'').decode('utf-8')
 
     if random_suffix:
         return hash_str + "_" + get_random_string()
@@ -887,23 +888,26 @@ def generate_hash(string, length=8, random_suffix=False):
         return hash_str
 
 
-def handle_initial_state(call_back):
+def handle_initial_state(call_back, attempts=20):
     """
     Query for initial state from state service and run
     the call back with that state if available
     """
-    # commenting out for now
-    try:
-        rospy.wait_for_service('/initial_state', 15)
-    except:
-        rospy.logerr("This system does not support initial state setting")
-        return
+    from lg_msg_defs.srv import InitialUSCS, InitialUSCSResponse
 
-    from lg_common.srv import InitialUSCS, InitialUSCSResponse
+    initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS, persistent=False)
 
-    initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS)
+    tries = 0
+    state = None
+    while not state and not rospy.is_shutdown():
+        try:
+            tries += 1
+            state = initial_state_service.call()
+        except rospy.service.ServiceException:
+            if tries > attempts:
+                raise
+            rospy.sleep(1.0)
 
-    state = initial_state_service.call()
     if state and state != InitialUSCSResponse():
         rospy.loginfo('got initial state: %s for callback %s' % (state.message, call_back))
         call_back(state)
@@ -955,7 +959,7 @@ def wait_for_pub_sub_connections(network=[], sleep=1, timeout=10, num_connection
     timeout = timeout
     actors_names = ','.join([actor.name for actor in network])
 
-    for interval in xrange(0, timeout):
+    for interval in range(0, timeout):
         if all_actors_connected(network, num_connections):
             rospy.loginfo("All actors connected - ready to handle initial state")
             rospy.sleep(1)
@@ -994,12 +998,11 @@ def run_with_influx_exception_handler(main, node_name, host='lg-head', port=8094
     """
     try:
         main()
-    except Exception, e:
+    except Exception as e:
         rospy.logerr("Exception catched in node %s: %s" % (node_name, e))
         data = """ros_respawns ros_node_name="%s",reason="%s",value=1 """ % (node_name, e)
         rospy.logerr("Attempting data point write '%s' to influx database" % data)
         write_influx_point_to_telegraf(data=data, host=host, port=port)
-        rospy.sleep(1)
         raise
 
 
@@ -1012,11 +1015,12 @@ def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
     rospy.logdebug("Going to write: '%s' to influx" % data)
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5.0)
         server_address = (host, port)
         sock.connect(server_address)
-        sock.sendall(data)
+        sock.sendall(data.encode('utf-8'))
         rospy.logdebug("Wrote: '%s' to influx" % data)
-    except Exception, ex:
+    except Exception as ex:
         rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
                      (data, server_address, ex))
     finally:
@@ -1029,12 +1033,12 @@ def director_listener_state_setter(state_pub, activity_list=None, offline_state=
     _any_ of the actives in activity_list then we will publish VISIBLE to state_pub, otherwise we
     will publish offline_state
     """
-    from lg_common.msg import ApplicationState
+    from lg_msg_defs.msg import ApplicationState
 
     def _do_stuff(director_msg, *args, **kwargs):
         try:
             msg = json.loads(director_msg.message)
-        except:
+        except Exception:
             rospy.logerr("Error loading director message, non-json-y format")
         windows = msg.get('windows', [])
         if msg.get('slug', None) == "stop-the-presentations":
@@ -1073,7 +1077,7 @@ def required_param(key, coercer=None):
     if coercer is not None:
         try:
             value = coercer(value)
-        except:
+        except Exception:
             raise ValueError(
                 'Failed to coerce parameter: "{}" with value: "{}" to: "{}"'.format(
                     key,
@@ -1082,3 +1086,22 @@ def required_param(key, coercer=None):
                 )
             )
     return value
+
+
+def combine_viewport_geometries(viewport_names):
+    geometries = [ManagedWindow.lookup_viewport_geometry(v) for v in viewport_names]
+
+    combined = WindowGeometry(
+        x=geometries[0].x,
+        y=geometries[0].y,
+        width=geometries[0].width,
+        height=geometries[0].height
+    )
+
+    for geometry in geometries:
+        combined.x = min(combined.x, geometry.x)
+        combined.y = min(combined.y, geometry.y)
+        combined.width = max(combined.width, geometry.x - combined.x + geometry.width)
+        combined.height = max(combined.height, geometry.y - combined.y + geometry.height)
+
+    return combined

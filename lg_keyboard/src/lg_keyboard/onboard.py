@@ -10,8 +10,8 @@ import subprocess
 
 from lg_common import ManagedApplication
 from lg_common import ManagedWindow
-from lg_common.msg import ApplicationState
-from lg_common.msg import WindowGeometry
+from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.msg import WindowGeometry
 
 
 ROS_NODE_NAME = "lg_onboard"
@@ -46,12 +46,14 @@ class OnboardLauncher(object):
         window = ManagedWindow(w_class='Onboard',
                                geometry=onboard_geometry,
                                visible=False)
-        cmd.extend(map(str,
-                       ['-x',
-                        onboard_x,
-                        '-y', onboard_y,
-                        '-s',
-                        '{}x{}'.format(onboard_width, onboard_height)]))
+        cmd.extend(list(map(str, [
+            '-x',
+            onboard_x,
+            '-y',
+            onboard_y,
+            '-s',
+            '{}x{}'.format(onboard_width, onboard_height)
+        ])))
         self.app = ManagedApplication(cmd, window=window)
 
     def handle_activate(self, message):
@@ -100,8 +102,8 @@ class OnboardConfig(object):
 
     def _read_onboard_config(self, config_path):
         default_config_file = config_path + "/onboard-default.dconf"
-        with open(default_config_file) as cf:
-            config = cf.read()
+        with open(default_config_file, 'rb') as cf:
+            config = cf.read().decode('utf-8')
         config = config.replace('{config_path}', config_path)
         return config
 

@@ -10,6 +10,7 @@ import pytest
 import rospy
 import rospkg
 import rostopic
+import unittest
 
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
@@ -138,32 +139,21 @@ DIRECTOR_MESSAGE_ACTIVITY_CONFIG_NOTHING = """
     }"""
 
 
-class TestHelpers(object):
-
-    @classmethod
-    def setup_class(cls):
-        pass
-
-    @classmethod
-    def teardown_class(cls):
-        pass
-
-    def setup_method(self, method):
+class TestHelpers(unittest.TestCase):
+    def setUp(self):
         self.msg = GenericMessage()
         self.msg.type = "json"
 
-    def teardown_method(self, _):
-        pass
-
     def test_load_director_message_wrong_json(self):
         self.msg.message = "wrong json"
-        pytest.raises(ValueError, load_director_message, self.msg)
+        with self.assertRaises(ValueError):
+            load_director_message(self.msg)
 
     def test_load_director(self):
         self.msg.message = DIRECTOR_MESSAGE_ACTIVITY_CONFIG_NOTHING
         d = load_director_message(self.msg)
-        assert isinstance(d, dict)
-        assert d["windows"][0]["activity_config"]["onFinish"] == "nothing"
+        self.assertIsInstance(d, dict)
+        self.assertEqual(d["windows"][0]["activity_config"]["onFinish"], "nothing")
 
     def test_extract_first_asset_from_director_message_return_empty_list(self):
         self.msg.message = DIRECTOR_MESSAGE_ACTIVITY_CONFIG_NOTHING
@@ -285,10 +275,10 @@ class TestHelpers(object):
                    "value": None}]
         assert result == unpack_activity_sources(source_string)
 
-        source_string = ("/appctl/mode:appctl/Mode-mode:value-tactile;"
+        source_string = ("/appctl/mode:appctl_msg_defs/Mode-mode:value-tactile;"
                          "/director/scene:interactivespaces_msgs/GenericMessage-message.slug:value-online_scene")
         result = [{"topic": "/appctl/mode",
-                   "message_type": "appctl/Mode",
+                   "message_type": "appctl_msg_defs/Mode",
                    "slot": "mode",
                    "strategy": "value",
                    "value_min": None,
@@ -302,13 +292,3 @@ class TestHelpers(object):
                    "value_max": None,
                    "value": "online_scene"}]
         assert result == unpack_activity_sources(source_string)
-
-if __name__ == "__main__":
-    test_pkg = "lg_common"
-    test_name = "test_helpers"
-    test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
-    pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
-    # run only itself
-    test_path = os.path.abspath(os.path.abspath(__file__))
-    # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
-    pytest.main("%s -s -v --junit-xml=%s" % (test_path, pytest_result_path))

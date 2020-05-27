@@ -11,7 +11,7 @@ catkin_package(
   CATKIN_DEPENDS
   rospy
   wiimote
-  lg_common
+  lg_msg_defs
   std_srvs
   geometry_msgs
   sensor_msgs
@@ -25,6 +25,7 @@ catkin_install_python(PROGRAMS
 )
 
 if (CATKIN_ENABLE_TESTING)
+  set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   add_rostest(test/megaviewport.test)
 endif()

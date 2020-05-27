@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # THIS FILE IS MANAGED BY CHEF AND THIS IS JUST A PLACEHOLDER ####
 import evdev
 import rospy
-from lg_wireless_devices.msg import Command
+from lg_msg_defs.msg import Command
 from time import time
 
 
@@ -32,8 +32,8 @@ class WirelessWatcher:
                 code = config.get(section, 'code')
                 command = config.get(section, 'command')
             except Exception:
-                print "Problem parsing the code or command, continuing"
-                print "Current codes are: %s" % codes
+                print("Problem parsing the code or command, continuing")
+                print("Current codes are: %s" % codes)
                 continue
             codes[code] = command
 
@@ -56,7 +56,7 @@ class WirelessWatcher:
             try:
                 keys[name] = {"code": data[0], "type": data[1], "value": data[2]}
             except IndexError:
-                print 'Malformed data, could not grab three comma separated values from (%s)' % data
+                print('Malformed data, could not grab three comma separated values from (%s)' % data)
 
         return keys
 
@@ -97,7 +97,7 @@ class WirelessWatcher:
         """
         Matches code / type / value against all known codes
         """
-        for code, key in self.keys.iteritems():
+        for code, key in self.keys.items():
             if key['code'] == str(c) and key['type'] == str(t) and key['value'] == str(v):
                 return self.codes[code]
         return None

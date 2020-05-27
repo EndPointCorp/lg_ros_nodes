@@ -102,7 +102,8 @@ function clamp(n, min, max) {
         ros: ros,
         name: '/videosync/time',
         messageType: 'std_msgs/Float64',
-        throttle_rate: Math.floor(1000 / SYNC_RATE)
+        throttle_rate: Math.floor(1000 / SYNC_RATE),
+        queue_length: 1,
       });
       /**
        * Topic for play/pause state.
@@ -110,7 +111,9 @@ function clamp(n, min, max) {
       this.playTopic = new ROSLIB.Topic({
         ros: ros,
         name: '/videosync/playing',
-        messageType: 'std_msgs/Bool'
+        messageType: 'std_msgs/Bool',
+        throttle_rate: 16,
+        queue_length: 1,
       });
       /**
        * Topic for touch events.
@@ -118,7 +121,9 @@ function clamp(n, min, max) {
       this.touchTopic = new ROSLIB.Topic({
         ros: ros,
         name: '/videosync/touch',
-        messageType: 'std_msgs/Bool'
+        messageType: 'std_msgs/Bool',
+        throttle_rate: 16,
+        queue_length: 1,
       });
       /**
        * Topic for ping requests.
@@ -126,7 +131,9 @@ function clamp(n, min, max) {
       this.pingTopic = new ROSLIB.Topic({
         ros: ros,
         name: '/videosync/ping',
-        messageType: 'std_msgs/Float64'
+        messageType: 'std_msgs/Float64',
+        throttle_rate: 16,
+        queue_length: 1,
       });
       /**
        * Topic for ping responses.
@@ -134,7 +141,9 @@ function clamp(n, min, max) {
       this.pongTopic = new ROSLIB.Topic({
         ros: ros,
         name: '/videosync/pong',
-        messageType: 'std_msgs/Float64'
+        messageType: 'std_msgs/Float64',
+        throttle_rate: 16,
+        queue_length: 1,
       });
 
       /**

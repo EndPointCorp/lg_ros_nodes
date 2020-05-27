@@ -528,7 +528,7 @@ class InteractiveSpacesMessagesFactory:
             )
             rospy.init_node("ispaces_messages_factory")
         message = self._get_message(ivar_name)
-        print "message string: %s" % message
+        print("message string: %s" % message)
         self.publisher.publish(message)
         return True
 
@@ -540,7 +540,7 @@ class InteractiveSpacesMessagesFactory:
             message.message = json.dumps(message_json)
             return message
         except ValueError:
-            print "Could not decode json message from InteractiveSpacesMessagesFactory"
+            print("Could not decode json message from InteractiveSpacesMessagesFactory")
             sys.exit(1)
 
     def _init_publisher(self):
@@ -557,15 +557,15 @@ if __name__ == "__main__":
     try:
         messages = InteractiveSpacesMessagesFactory()
         message_name = sys.argv[1]
-        print "Emitting %s message" % message_name
+        print("Emitting %s message" % message_name)
         messages.emit_message(message_name)
     except IndexError:
-        print ""
-        print "This file, if called directly, will emit an interactivespaces.msgs.GenericMessage"
-        print ""
-        print "You must provide message name to emit:\n%s" % \
-            '\n'.join(["- " + ivar for ivar in dir(messages) if ivar.startswith('test_')])
-        print ""
-        print "NOTE: methods beginning with 'test' are used by test suite"
-        print ""
+        print("")
+        print("This file, if called directly, will emit an interactivespaces.msgs.GenericMessage")
+        print("")
+        print("You must provide message name to emit:\n%s" %
+              '\n'.join(["- " + ivar for ivar in dir(messages) if ivar.startswith('test_')]))
+        print("")
+        print("NOTE: methods beginning with 'test' are used by test suite")
+        print("")
         sys.exit(1)

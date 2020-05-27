@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import String
-from lg_earth.srv import ViewsyncState
+from lg_msg_defs.srv import ViewsyncState
 from lg_common.helpers import run_with_influx_exception_handler
 
 

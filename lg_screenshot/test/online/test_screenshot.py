@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_common'
 NAME = 'test_adhoc_browser_director_bridge'
@@ -6,8 +6,8 @@ NAME = 'test_adhoc_browser_director_bridge'
 import rospy
 import unittest
 
-from lg_screenshot.msg import GetScreenshot
-from lg_screenshot.msg import Screenshot
+from lg_msg_defs.msg import GetScreenshot
+from lg_msg_defs.msg import Screenshot
 from lg_screenshot import WebScreenshot
 
 
@@ -35,11 +35,12 @@ class TestWebScreenshot(unittest.TestCase):
 
         self.assertEqual(1, len(self.publisher.published_messages))
         #self.assertEqual(self.publisher.published_messages, 'asdasd')
-        self.assertTrue('--url {}'.format(msg.url) in self.publisher.published_messages[0].base64)
-        self.assertTrue('--out base64'.format(msg.url) in self.publisher.published_messages[0].base64)
-        self.assertTrue('--delay 100' in self.publisher.published_messages[0].base64)
-        self.assertTrue('--width 1200' in self.publisher.published_messages[0].base64)
-        self.assertTrue('--silent true' in self.publisher.published_messages[0].base64)
+        self.assertTrue('--url {}'.format(msg.url).encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--out base64'.format(msg.url).encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--delay 100'.encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--width 1200'.encode('utf-8') in self.publisher.published_messages[0].base64)
+        self.assertTrue('--silent true'.encode('utf-8') in self.publisher.published_messages[0].base64)
+
 
 if __name__ == '__main__':
     import rostest

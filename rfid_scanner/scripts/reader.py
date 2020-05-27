@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import serial
@@ -93,6 +93,7 @@ def main():
     rospy.Subscriber('/rfid/mode', Bool, rfid_listener.handle_debug_msg)
 
     rfid_listener.run()
+
 
 if __name__ == '__main__':
     run_with_influx_exception_handler(main, NODE_NAME)

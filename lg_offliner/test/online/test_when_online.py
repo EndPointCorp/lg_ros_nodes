@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 lg offliner online scenarios ...
@@ -14,19 +14,18 @@ running tests manually:
 
 """
 
+PKG = 'lg_offliner'
+NAME = 'test_offliner_when_online'
 
-import os
-import time
+import unittest
 
-import pytest
 import rospy
-import rospkg
 
 from lg_offliner import ROS_NODE_NAME
-from lg_offliner.srv import Offline
+from lg_msg_defs.srv import Offline
 
 
-class TestLGOfflinerWhenOnline(object):
+class TestLGOfflinerWhenOnline(unittest.TestCase):
 
     def setup_method(self, method):
         pass
@@ -37,13 +36,12 @@ class TestLGOfflinerWhenOnline(object):
 
         """
         rospy.wait_for_service("%s/status" % ROS_NODE_NAME)
-        proxy = rospy.ServiceProxy("%s/status" % ROS_NODE_NAME, Offline)
+        proxy = rospy.ServiceProxy("%s/status" % ROS_NODE_NAME, Offline, persistent=False)
         r = proxy()
         res = bool(r.offline)
         return res
 
     def test_checker(self):
-        rospy.init_node(ROS_NODE_NAME, anonymous=True)
         rospy.sleep(1)
         # first check the initial state - should be False (online) bcoz we assume that
         # the state after relaunch is online - there are no results yet after 1 second
@@ -54,12 +52,6 @@ class TestLGOfflinerWhenOnline(object):
 
 
 if __name__ == "__main__":
-    # pytest must provide result XML file just as rostest.rosrun would do
-    test_pkg = ROS_NODE_NAME
-    test_name = "test_when_online"
-    test_dir = os.path.join(rospkg.get_test_results_dir(env=None), test_pkg)
-    pytest_result_path = os.path.join(test_dir, "rosunit-%s.xml" % test_name)
-    # run only itself
-    test_path = os.path.abspath(os.path.abspath(__file__))
-    # output is unfortunately handled / controlled by above layer of rostest (-s has no effect)
-    pytest.main("-vv -rfsX -s --junit-xml=%s %s" % (pytest_result_path, test_path))
+    import rostest
+    rospy.init_node(NAME)
+    rostest.rosrun(PKG, NAME, TestLGOfflinerWhenOnline)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_media'
 NAME = 'test_mplayer_adhoc_media'
@@ -7,7 +7,7 @@ import rospy
 import unittest
 
 from lg_media import ManagedMplayer
-from lg_common.msg import WindowGeometry, ApplicationState
+from lg_msg_defs.msg import WindowGeometry, ApplicationState
 from lg_common import ManagedWindow
 
 
@@ -59,6 +59,7 @@ class TestManagedAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.url, self.mam.url)
         self.assertEqual(self.fifo_path, self.mam.fifo_path)
         self.assertEqual(ApplicationState.STOPPED, self.mam.state)
+
 
 if __name__ == '__main__':
     import rostest

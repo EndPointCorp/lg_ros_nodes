@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 PKG = 'lg_attract_loop'
 NAME = 'test_lg_attract_loop'
@@ -214,7 +214,7 @@ class TestAttractLoop(unittest.TestCase):
 
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the item is still in the queue
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue[0]['scenes']), 1)   # one out of two scenes left in the queue
-        print "Published scenes" % self.mock_director_scene_publisher.published_scenes
+        print("Published scenes" % self.mock_director_scene_publisher.published_scenes)
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 1)  # one scene playing back right now (1000 seconds :)
 
         self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication

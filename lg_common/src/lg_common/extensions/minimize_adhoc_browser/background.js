@@ -18,11 +18,12 @@ function sendMinimizeMsg(params) {
             ros: ros,
             name: '/director/minimize',
             messageType: 'std_msgs/String',
-            throttle_rate: 33
+            throttle_rate: 33,
+            queue_length: 1,
         });
         topic.advertise();
 
-        topic.publish({'data': wndid})
+        topic.publish({'data': wndid});
     });
 
     ros.connect(rosurl);
