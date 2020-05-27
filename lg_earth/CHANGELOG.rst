@@ -2,8 +2,8 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.2.0 (2020-05-27)
+------------------
 * Put Earth windows below
 * Fix for empty earth scene
 * fix parenthesis
