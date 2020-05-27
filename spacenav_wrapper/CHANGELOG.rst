@@ -15,6 +15,22 @@ Changelog for package spacenav_wrapper
   * Fix deploy path
 * Contributors: Will Plaut
 
+Forthcoming
+-----------
+* 3.2.0
+* BSPWM
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Topic/move deploy (`#422 <https://github.com/EndPointCorp/lg_ros_nodes/issues/422>`_)
+  * Initial commit
+  * Fix deploy script and remove failing test
+  * Readd branch conditional
+  * Try using wait_for_assert in failing test
+  * Try readding tests
+  * Try sleeping as well
+  * Try sleep instead of wait_for\_
+  * Fix deploy path
+* Contributors: Galaxy Admin, Neil Elliott, Will Plaut, dkiselev
+
 3.1.12 (2020-05-04)
 -------------------
 

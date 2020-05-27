@@ -10,6 +10,17 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
+Forthcoming
+-----------
+* 3.2.0
+* BSPWM
+* Put Earth windows below
+* Fix for emty earth scene
+* fix parenthesis
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* debug info for add_kml
+* Contributors: Galaxy Admin, Matt Vollrath, Neil Elliott, dkiselev
+
 3.1.12 (2020-05-04)
 -------------------
 

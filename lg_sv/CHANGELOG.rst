@@ -5,6 +5,17 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* lg_sv: unique slug names with uuid (`#393 <https://github.com/EndPointCorp/lg_ros_nodes/issues/393>`_)
+  * lg_sv: unique slug names with uuid
+  * launcher.py: use viewport instead of uuid
+  * sv: account for empty viewports
+* 3.2.0
+* BSPWM
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin, Neil Elliott, Will Plaut, dkiselev
+
 3.1.12 (2020-05-04)
 -------------------
 

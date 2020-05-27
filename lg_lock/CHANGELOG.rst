@@ -5,6 +5,13 @@ Changelog for package lg_lock
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* 3.2.0
+* BSPWM
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin, Neil Elliott, dkiselev
+
 3.1.12 (2020-05-04)
 -------------------
 

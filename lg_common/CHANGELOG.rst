@@ -9,6 +9,17 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+* 3.2.0
+* BSPWM
+* Move bspc rule commands further down the stack
+* Manage bspc rules from ManagedWindow
+  lg_wm now just converges on its internal window list.
+* Use lg_wm_send instead of awesome-client
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin, Matt Vollrath, Neil Elliott, dkiselev
+
 3.1.12 (2020-05-04)
 -------------------
 
