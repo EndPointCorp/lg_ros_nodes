@@ -21,12 +21,15 @@ NODE_NAME = 'panoviewer_browser'
 def main():
     rospy.init_node(NODE_NAME, anonymous=True)
 
+    slug_suffix = None
+
     viewports = rospy.get_param('~viewports', None)
     if viewports is None:
         geometry = ManagedWindow.get_viewport_geometry()
     else:
         viewports = [x.strip() for x in viewports.split(',')]
         geometry = combine_viewport_geometries(viewports)
+        slug_suffix = viewports[0]
     server_type = rospy.get_param('~server_type', 'streetview')
     url = str(rospy.get_param('~url', DEFAULT_URL))
     field_of_view = float(rospy.get_param('~fov', DEFAULT_FOV))
@@ -81,7 +84,10 @@ def main():
     x_available_or_raise(timeout)
 
     # create the managed browser
-    slug = server_type + "__" + "_fov-" + str(field_of_view) + "__" + "_yaw-" + str(yaw_offset) + "__" + "_pitch-" + str(pitch_offset)
+
+    slug = (server_type + "__" + "fov-" + str(field_of_view) + "__" + "yaw-" +
+            str(yaw_offset) + "__" + "pitch-" + str(pitch_offset) +
+            "__" + str(slug_suffix))
     managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk)
 
     # set initial state
