@@ -2,6 +2,14 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Put Earth windows below
+* Fix for empty earth scene
+* fix parenthesis
+* debug info for add_kml
+* Contributors: Galaxy Admin, Matt Vollrath, dkiselev
+
 3.1.12 (2020-05-04)
 -------------------
 

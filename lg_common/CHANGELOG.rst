@@ -2,6 +2,13 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Move bspc rule commands further down the stack
+* Manage bspc rules from ManagedWindow
+  lg_wm now just converges on its internal window list.
+* Use lg_wm_send instead of awesome-client
+
 3.1.12 (2020-05-04)
 -------------------
 
