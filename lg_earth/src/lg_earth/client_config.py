@@ -248,8 +248,8 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     }
 
     geplus_config['TourGuide'] = {
-        'Filmstrip\Enabled': False,
-        'Filmstrip\Expanded': False,
+        'Filmstrip\\Enabled': False,
+        'Filmstrip\\Expanded': False,
     }
 
     layers_config = {}
@@ -561,10 +561,10 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     default_view = rospy.get_param(
         '~default_view',
 
-        '<LookAt><longitude>-122.4661297737901</longitude>' +
-        '<latitude>37.71903477888115</latitude><altitude>0</altitude>' +
-        '<heading>42.60360249388481</heading>' +
-        '<tilt>66.02791701475958</tilt><range>36611.51655091633</range>' +
+        '<LookAt><longitude>-122.4661297737901</longitude>'
+        + '<latitude>37.71903477888115</latitude><altitude>0</altitude>'
+        + '<heading>42.60360249388481</heading>'
+        + '<tilt>66.02791701475958</tilt><range>36611.51655091633</range>'
         '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'
     )
 
