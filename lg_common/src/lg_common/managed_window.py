@@ -1,24 +1,25 @@
-import json
 import rospy
 import subprocess
 import threading
 import re
 
 from lg_msg_defs.msg import WindowGeometry
+from . import awesome
 
 
 class ManagedWindow(object):
     def __init__(self, w_name=None, w_class=None, w_instance=None,
-                 geometry=None, visible=True, chrome_kiosk_workaround=False,
-                 layer=None):
+                 geometry=None, visible=True, chrome_kiosk_workaround=False):
         self.w_name = w_name
         self.w_class = w_class
         self.w_instance = w_instance
         self.geometry = geometry
         self.is_visible = visible
-        self.layer = layer
+        self.chrome_kiosk_workaround = chrome_kiosk_workaround
+        self.lock = threading.RLock()
+        self.proc = None
 
-        self.lock = threading.Lock()
+        rospy.on_shutdown(self._cleanup_proc)
 
     def __str__(self):
         return 'name={name}, class={cls}, instance={inst}, {w}x{h} {x},{y}'.format(
@@ -47,14 +48,6 @@ class ManagedWindow(object):
         dims = list(map(int, m.groups()))
         return WindowGeometry(width=dims[0], height=dims[1],
                               x=dims[2], y=dims[3])
-
-    @staticmethod
-    def format_geometry(geometry):
-        """
-        Formats WindowGeometry as a string.
-        """
-        return "{}x{}{:+}{:+}".format(geometry.width, geometry.height,
-                                      geometry.x, geometry.y)
 
     @staticmethod
     def lookup_viewport_geometry(viewport_key):
@@ -88,27 +81,17 @@ class ManagedWindow(object):
         return geometry
 
     def _get_command(self):
-        msg = {
-            'op': 'converge',
-            'data': {}
-        }
+        with self.lock:
+            cmd = []
+            cmd.append('echo "{}" | /usr/bin/awesome-client'.format(
+                awesome.get_script(self, chrome_kiosk_workaround=self.chrome_kiosk_workaround)
+            ))
+        return cmd
 
-        if self.w_name:
-            msg['data']['wm_name'] = self.w_name
-        if self.w_instance:
-            msg['data']['wm_instance'] = self.w_instance
-        if self.w_class:
-            msg['data']['wm_class'] = self.w_class
-
-        if self.geometry:
-            msg['data']['rectangle'] = ManagedWindow.format_geometry(self.geometry)
-
-        if self.layer:
-            msg['data']['layer'] = self.layer
-
-        msg['data']['hidden'] = not self.is_visible
-
-        return ['lg_wm_send', json.dumps(msg, ensure_ascii=False)]
+    def _cleanup_proc(self):
+        with self.lock:
+            if self.proc is not None:
+                self.proc.kill()
 
     def set_visibility(self, visible):
         with self.lock:
@@ -121,11 +104,20 @@ class ManagedWindow(object):
     def converge(self):
         with self.lock:
             cmd = self._get_command()
-            rospy.logwarn('running: {}'.format(cmd))
+            self._cleanup_proc()
+            cmd_str = ' '.join(cmd)
+            rospy.logdebug(cmd_str)
+            try:
+                env = awesome.get_environ()
+            except Exception as e:
+                rospy.logerr(
+                    'failed to setup awesome environment: {}'.format(str(e))
+                )
+                return
 
             try:
-                subprocess.check_call(cmd, close_fds=True)
+                subprocess.check_call(cmd_str, close_fds=True, shell=True, env=env)
             except Exception as e:
-                rospy.logerr('failed to run {} : {}'.format(cmd, str(e)))
+                rospy.logerr('failed to run {} : {}'.format(cmd_str, str(e)))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
