@@ -9,6 +9,16 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+* Revert "Use lg_wm_send instead of awesome-client"
+  This reverts commit 23c87310b80df0b502ffdd1ca72f079bc43f220c.
+* Revert "Manage bspc rules from ManagedWindow"
+  This reverts commit 5cd056a3c7c06b314b12a84bc47abd5eee37984d.
+* Revert "Move bspc rule commands further down the stack"
+  This reverts commit 42d9c305bb0a0084b56d461c7047c45744d71029.
+* Contributors: Galaxy Admin, Neil Elliott
+
 3.2.2 (2020-05-28)
 ------------------
 

@@ -10,6 +10,12 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
+Forthcoming
+-----------
+* Revert "Put Earth windows below"
+  This reverts commit 5d0980b2d90ee9c149d32e7b7a6fad3b6e0d76b2.
+* Contributors: Neil Elliott
+
 3.2.2 (2020-05-28)
 ------------------
 * pycodestyle fixes (`#424 <https://github.com/EndPointCorp/lg_ros_nodes/issues/424>`_)
