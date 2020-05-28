@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_stats</name>
-  <version>3.2.1</version>
+  <version>3.2.2</version>
   <description>lg stats submission ros node</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
