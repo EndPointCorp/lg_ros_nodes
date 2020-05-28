@@ -10,6 +10,14 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
+Forthcoming
+-----------
+* pycodestyle fixes (`#424 <https://github.com/EndPointCorp/lg_ros_nodes/issues/424>`_)
+  * pycodestyle fixes
+  * add missing + back
+  * Revert this change for now
+* Contributors: Will Plaut
+
 3.2.1 (2020-05-27)
 ------------------
 * 3.2.0

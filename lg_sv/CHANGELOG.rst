@@ -5,6 +5,9 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+
 3.2.1 (2020-05-27)
 ------------------
 * lg_sv: unique slug names with uuid (`#393 <https://github.com/EndPointCorp/lg_ros_nodes/issues/393>`_)
