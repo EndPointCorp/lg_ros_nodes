@@ -26,6 +26,7 @@ def main():
     viewports = rospy.get_param('~viewports', None)
     if viewports is None:
         geometry = ManagedWindow.get_viewport_geometry()
+        slug_suffix = rospy.get_param('~viewport', None)
     else:
         viewports = [x.strip() for x in viewports.split(',')]
         geometry = combine_viewport_geometries(viewports)
