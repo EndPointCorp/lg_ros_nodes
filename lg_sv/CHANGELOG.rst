@@ -5,6 +5,11 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* lg_sv: launcher change to correctly set suffix
+* Contributors: Will Plaut
+
 3.2.3 (2020-05-28)
 ------------------
 
