@@ -89,7 +89,10 @@ def main():
     slug = (server_type + "__" + "fov-" + str(field_of_view) + "__" + "yaw-" +
             str(yaw_offset) + "__" + "pitch-" + str(pitch_offset) +
             "__" + str(slug_suffix))
-    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk)
+
+    # add modify_cors_headers chrome extension to handle the cors error
+    list_of_extensions = ['/opt/ros/melodic/share/lg_sv/extensions/modify_cors_headers']
+    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk, extensions=list_of_extensions)
 
     # set initial state
     state = ApplicationState.STOPPED
