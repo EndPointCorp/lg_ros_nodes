@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import rospy
+import rospkg
 
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_msg_defs.msg import ApplicationState
@@ -91,8 +92,8 @@ def main():
             "__" + str(slug_suffix))
 
     # add modify_cors_headers chrome extension to handle the cors error
-    list_of_extensions = ['/opt/ros/melodic/share/lg_sv/extensions/modify_cors_headers']
-    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk, extensions=list_of_extensions)
+    extensions_dir = rospkg.RosPack().get_path('lg_sv') + '/extensions/modify_cors_headers'
+    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk, extensions=[extensions_dir])
 
     # set initial state
     state = ApplicationState.STOPPED
