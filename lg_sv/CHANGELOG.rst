@@ -5,8 +5,8 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
-Forthcoming
------------
+3.2.5 (2020-07-06)
+------------------
 * Merge pull request `#426 <https://github.com/EndPointCorp/lg_ros_nodes/issues/426>`_ from EndPointCorp/topic/sv_user_photospheres
   Chrome extension and ROS node changes to fix the problems with streetview interface
 * Removed hard-coded path and used rospkg to get it
