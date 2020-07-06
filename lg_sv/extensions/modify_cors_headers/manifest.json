@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "version": "0.0.1",
+  "name": "Allow CORS",
+  "description": "Allow CORS policy by appending 'Access-Control-Allow-Origin: *' header to all streetview web requests",
+  "permissions": [
+    "<all_urls>",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "homepage_url": "https://github.com/EndPointCorp/lg_ros_nodes",
+  "browser_action":{},
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}
