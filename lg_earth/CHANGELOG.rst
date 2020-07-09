@@ -10,8 +10,8 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
-Forthcoming
------------
+3.2.6 (2020-07-09)
+------------------
 * Revert "Revert "Put Earth windows below""
   This reverts commit 48346d26ad4f45d4fc40b9934d5ea8d656285b1c.
 * Contributors: Neil Elliott
