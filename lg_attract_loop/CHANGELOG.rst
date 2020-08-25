@@ -5,6 +5,9 @@ Changelog for package lg_attract_loop
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+
 3.2.6 (2020-07-09)
 ------------------
 

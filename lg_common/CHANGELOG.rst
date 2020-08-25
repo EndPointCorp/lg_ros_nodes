@@ -9,6 +9,15 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+* Remove BSP  (`#427 <https://github.com/endpointcorp/lg_ros_nodes/issues/427>`_)
+  * Don't lg_wm_send instead of awesome-client
+  * Don't Put Earth windows below
+  * Manage bspc rules from ManagedWindow
+  * Move bspc rule commands further down the stack
+* Contributors: nelliott
+
 3.2.6 (2020-07-09)
 ------------------
 * Revert "Revert "Move bspc rule commands further down the stack""
