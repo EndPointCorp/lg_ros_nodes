@@ -15,8 +15,8 @@ Changelog for package lg_keyboard
   * Fix deploy path
 * Contributors: Will Plaut
 
-Forthcoming
------------
+3.2.7 (2020-08-25)
+------------------
 
 3.2.6 (2020-07-09)
 ------------------
