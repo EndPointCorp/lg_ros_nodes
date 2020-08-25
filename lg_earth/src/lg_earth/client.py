@@ -59,7 +59,6 @@ class Client:
 
             earth_window = ManagedWindow(
                 geometry=geometry,
-                layer='below',
                 w_class=window_classes[use_dir],
                 w_name=window_names[use_dir],
                 w_instance=self._get_instance()
