@@ -5,8 +5,8 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
-Forthcoming
------------
+3.2.8 (2020-08-27)
+------------------
 * Add large viewport hack to streetview
   Use scale tricks to get a legal canvas size.
   Add parameters:
