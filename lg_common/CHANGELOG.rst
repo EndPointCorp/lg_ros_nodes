@@ -9,6 +9,9 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+
 3.2.7 (2020-08-25)
 ------------------
 * Remove BSP  (`#427 <https://github.com/endpointcorp/lg_ros_nodes/issues/427>`_)

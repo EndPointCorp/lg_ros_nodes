@@ -5,6 +5,15 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Add large viewport hack to streetview
+  Use scale tricks to get a legal canvas size.
+  Add parameters:
+  * show_api_links : show the built-in streetview links
+  * large_viewport_hack: for window dimensions > 16384(?)
+* Contributors: Matt Vollrath
+
 3.2.7 (2020-08-25)
 ------------------
 

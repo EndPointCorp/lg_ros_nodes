@@ -10,6 +10,9 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
+Forthcoming
+-----------
+
 3.2.7 (2020-08-25)
 ------------------
 * Remove BSP  (`#427 <https://github.com/endpointcorp/lg_ros_nodes/issues/427>`_)
