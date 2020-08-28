@@ -118,10 +118,10 @@ class StreetviewUtils:
 
 class PanoViewerServer:
     def __init__(self, location_pub, panoid_pub, pov_pub, tilt_min, tilt_max,
-                 nav_sensitivity, space_nav_interval, idle_time_until_snap,
+                 nav_sensitivity, space_nav_interval, idle_time_until_snap, filter_function,
                  x_threshold=X_THRESHOLD, nearby_panos=NearbyPanos(),
                  metadata_pub=None, zoom_max=ZOOM_MAX, zoom_min=ZOOM_MIN,
-                 tick_rate=180, director_pub=None, server_type=""):
+                 tick_rate=180, director_pub=None, server_type="" ):
         self.location_pub = location_pub
         self.panoid_pub = panoid_pub
         self.pov_pub = pov_pub
@@ -141,6 +141,7 @@ class PanoViewerServer:
         self.tick_rate = tick_rate
         self.gutter_val = 0.0005
         self.tick_period = 1.0 / float(self.tick_rate)
+        self.filter_function = filter_function
 
         self.state = True
 
@@ -290,7 +291,9 @@ class PanoViewerServer:
         Grabs the new panoid from a publisher
         """
         # Nothing to do here...
+        rospy.logdebug('handling panoid for {}'.format(self.server_type))
         if self.panoid == panoid.data:
+            rospy.logdebug('self.panoid was equal to panoid.data {}'.format(self.server_type))
             self.nearby_panos.set_panoid(self.panoid)
             return
         self.generate_director_message(panoid.data)
@@ -302,11 +305,10 @@ class PanoViewerServer:
         if panoid == self.panoid:
             return
         server_type = self.server_type
-        if server_type == 'streetview' or server_type == 'streetview_old':
-            if panoid[0:2] == 'F:':
-                server_type = 'streetview_old'
-            else:
-                server_type = 'streetview'
+        rospy.logdebug('about to filter for {}'.format(server_type))
+        if not self.filter_function(panoid):
+            rospy.logerr('error in filter function... returning {}'.format(server_type))
+            return
         msg = GenericMessage()
         msg.type = 'json'
         if pov:
@@ -319,7 +321,7 @@ class PanoViewerServer:
             "slug": "auto_generated_sv_scene",
             "windows": [
                 {
-                    "activity": self.server_type,
+                    "activity": server_type.replace('_old', ''),
                     "assets": [
                         panoid
                     ],
