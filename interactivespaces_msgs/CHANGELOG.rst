@@ -5,6 +5,9 @@ Changelog for package interactivespaces_msgs
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+
 3.2.8 (2020-08-27)
 ------------------
 

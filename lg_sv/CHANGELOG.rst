@@ -5,6 +5,13 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Merge pull request `#429 <https://github.com/EndPointCorp/lg_ros_nodes/issues/429>`_ from EndPointCorp/topic/use_opensource_sv_viewer
+  Use opensource streetview viewer by default
+* Use opensource sv viewer by default
+* Contributors: Kannan Ponnusamy
+
 3.2.8 (2020-08-27)
 ------------------
 * Add large viewport hack to streetview
