@@ -96,6 +96,11 @@ def main():
     def handle_director_message(scene):
         rospy.loginfo('running handle director w/ scene: %s' % scene)
         _server_type = server_type
+
+        #TODO Need to remove this block, once the nonfree streetview viewer is fixed
+        if _server_type == 'streetview':
+            return
+
         if _server_type == 'streetview_old':
             _server_type = 'streetview'
         has_asset = has_activity(scene, _server_type)
@@ -113,13 +118,11 @@ def main():
             panoid = asset.get('panoid', '')
             rospy.logerr("length of panoid is %s server type %s" % (len(panoid), server_type))
             rospy.logerr("panoid is %s" % panoid)
-            if server_type == 'streetview' and (panoid[0:2] != 'F:' and len(panoid) < 60):
+
+            #TODO Need to remove this block, once the nonfree streetview viewer is fixed
+            if server_type == 'streetview' or server_type == 'streetview_old':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 rospy.logerr("publishing visible for {}".format(server_type))
-                return
-            elif server_type == 'streetview_old' and (panoid[0:2] == 'F:' or len(panoid) >= 60):
-                rospy.logerr("publishing visible for {}".format(server_type))
-                visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 return
             elif server_type == 'panoviewer' or server_type == 'panovideo':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
@@ -133,9 +136,9 @@ def main():
             if server_type == 'streetview' and panoid[0:2] == 'F:':
                 rospy.logerr("leaving early for {}".format(server_type))
                 return
-            elif server_type == 'streetview_old' and panoid[0:2] != 'F':
-                rospy.logerr("leaving early for {}".format(server_type))
-                return
+            #elif server_type == 'streetview_old' and panoid[0:2] != 'F':
+            #    rospy.logerr("leaving early for {}".format(server_type))
+            #    return
         else:
             panoid = scene['windows'][0]['assets'][0]
 
