@@ -124,12 +124,9 @@ def main():
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
 
-        if server_type == 'streetview' or server_type == 'streetview_old':
+        if server_type == 'streetview':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
-            if server_type == 'streetview' and panoid[0:2] == 'F:':
-                rospy.logerr("leaving early for {}".format(server_type))
-                return
             #elif server_type == 'streetview_old' and panoid[0:2] != 'F':
             #    rospy.logerr("leaving early for {}".format(server_type))
             #    return
