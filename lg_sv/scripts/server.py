@@ -127,9 +127,6 @@ def main():
         if server_type == 'streetview':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
-            #elif server_type == 'streetview_old' and panoid[0:2] != 'F':
-            #    rospy.logerr("leaving early for {}".format(server_type))
-            #    return
         else:
             panoid = scene['windows'][0]['assets'][0]
 
