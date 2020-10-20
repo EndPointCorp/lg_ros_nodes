@@ -1,0 +1,8 @@
+<launch>
+  <node name="nav_mode" pkg="lg_navlib" type="nav_mode.py">
+    <param name="default_mode" value="none" />
+    <param name="modes/eyelevel" value="  /foo/bar, /baz/bang" />
+    <param name="modes/globe" value="/a/globe,b/globe  " />
+  </node>
+  <test test-name="test_nav_mode" pkg="lg_navlib" type="test_nav_mode.py" />
+</launch>

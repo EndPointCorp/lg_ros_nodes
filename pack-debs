@@ -47,6 +47,7 @@ $BUILD $SRCDIR/lg_media
 $BUILD $SRCDIR/lg_mirror
 $BUILD $SRCDIR/lg_nav_to_device
 $BUILD $SRCDIR/lg_lock
+$BUILD $SRCDIR/lg_navlib
 $BUILD $SRCDIR/lg_offliner
 $BUILD $SRCDIR/lg_panovideo
 $BUILD $SRCDIR/lg_proximity
