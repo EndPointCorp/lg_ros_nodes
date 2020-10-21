@@ -97,12 +97,6 @@ def main():
         rospy.loginfo('running handle director w/ scene: %s' % scene)
         _server_type = server_type
 
-        #TODO Need to remove this block, once the nonfree streetview viewer is fixed
-        if _server_type == 'streetview':
-            return
-
-        if _server_type == 'streetview_old':
-            _server_type = 'streetview'
         has_asset = has_activity(scene, _server_type)
         has_no_activity = has_activity(scene, 'no_activity')
         if has_no_activity:
@@ -118,9 +112,9 @@ def main():
             panoid = asset.get('panoid', '')
             rospy.logerr("length of panoid is %s server type %s" % (len(panoid), server_type))
             rospy.logerr("panoid is %s" % panoid)
-
+            
             #TODO Need to remove this block, once the nonfree streetview viewer is fixed
-            if server_type == 'streetview' or server_type == 'streetview_old':
+            if server_type == 'streetview':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
                 rospy.logerr("publishing visible for {}".format(server_type))
                 return
@@ -130,15 +124,9 @@ def main():
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
 
-        if server_type == 'streetview' or server_type == 'streetview_old':
+        if server_type == 'streetview':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
-            if server_type == 'streetview' and panoid[0:2] == 'F:':
-                rospy.logerr("leaving early for {}".format(server_type))
-                return
-            #elif server_type == 'streetview_old' and panoid[0:2] != 'F':
-            #    rospy.logerr("leaving early for {}".format(server_type))
-            #    return
         else:
             panoid = scene['windows'][0]['assets'][0]
 
@@ -157,7 +145,6 @@ def main():
         except Exception:
             pov.z = 0
         pov.w = zoom_max
-
         server.pub_panoid(panoid, pov=pov)
 
     def initial_state_handler(uscs_msg):
