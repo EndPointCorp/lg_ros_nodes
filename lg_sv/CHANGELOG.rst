@@ -5,6 +5,20 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Merge pull request `#431 <https://github.com/EndPointCorp/lg_ros_nodes/issues/431>`_ from EndPointCorp/topic/fix_streetview
+  Fixes to consolidate the streetview experience
+* More cleanup
+* Fix for the streetview navigation problem
+  - Tested the changes on the RDTN box and it's working! Yay!
+* Remove more references to streetview_old
+  - This code block somehow intercepts the director message and lead to
+  the problem with the open source version of viewer
+* Remove more references of streetview_old
+* Remove references of streetview_old from the ros node server
+* Contributors: Kannan Ponnusamy
+
 3.2.9 (2020-09-21)
 ------------------
 * Merge pull request `#429 <https://github.com/EndPointCorp/lg_ros_nodes/issues/429>`_ from EndPointCorp/topic/use_opensource_sv_viewer
