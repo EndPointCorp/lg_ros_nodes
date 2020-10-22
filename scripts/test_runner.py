@@ -122,8 +122,8 @@ def run_tests():
     """
     os.system('cd catkin; catkin_make run_tests -DNOSETESTS=/usr/bin/nosetests3')
     fail_flags['catkin'] = os.system('cd catkin; catkin_test_results')
-    #c = 'coveralls'
-    #os.system(c)
+    c = 'coveralls'
+    os.system(c)
     fail_flags['pep8'] = pep8_test()
     fail_flags['cppcheck'] = cppcheck_test()
     fail_flags['jslint'] = jslint_test()
