@@ -112,7 +112,6 @@ def main():
             panoid = asset.get('panoid', '')
             rospy.logerr("length of panoid is %s server type %s" % (len(panoid), server_type))
             rospy.logerr("panoid is %s" % panoid)
-            
             #TODO Need to remove this block, once the nonfree streetview viewer is fixed
             if server_type == 'streetview':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
