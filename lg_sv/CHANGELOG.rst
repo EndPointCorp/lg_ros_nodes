@@ -5,6 +5,11 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Remove whitespace to fix the pep8
+* Contributors: Kannan Ponnusamy
+
 3.3.0 (2020-10-21)
 ------------------
 * Merge pull request `#431 <https://github.com/EndPointCorp/lg_ros_nodes/issues/431>`_ from EndPointCorp/topic/fix_streetview
