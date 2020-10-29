@@ -169,28 +169,6 @@ RUN \
         -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Try installing hack'd rosbridge
-RUN \
-    apt update && \
-    apt install -y build-essential python-autobahn python3-autobahn && \
-    source /opt/ros/$ROS_DISTRO/setup.bash && \
-    mkdir -p /rosbridge_ws/src && \
-    cd /rosbridge_ws && \
-    catkin_make && \
-    source /rosbridge_ws/devel/setup.bash && \
-    cd /rosbridge_ws/src && \
-    git clone https://github.com/EndPointCorp/rosbridge_suite.git && \
-    cd rosbridge_suite && \
-    git checkout never_unregister_hack && \
-    cd /rosbridge_ws && \
-    catkin_make && \
-    catkin_make install && \
-    catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic && \
-    cd / && \
-    rm -rf /rosbridge_ws && \
-    rm -rf /var/lib/apt/lists/*
-
-
 # install the full package contents
 COPY ./ ${PROJECT_ROOT}
 RUN \
