@@ -251,6 +251,7 @@ class ManagedBrowser(ManagedApplication):
     def check_alive_and_reload(self):
         if not self.check_alive():
             rospy.logerr("Browser is probably dead")
+            self.proc.handle_soft_relaunch()
 
     def check_alive(self):
         return len(self.list_pages_available_for_debug()) > 0
