@@ -3,6 +3,8 @@ import rospy
 import socket
 import shutil
 import os
+import requests
+import threading
 
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.tcp_relay import TCPRelay
@@ -35,6 +37,13 @@ DEFAULT_ARGS = [
     '--check-for-update-interval=1209600',
 ]
 
+def set_interval(func, sec):
+    def func_wrapper():
+        set_interval(func, sec)
+        func()
+    t = threading.Timer(sec, func_wrapper)
+    t.start()
+    return t
 
 class ManagedBrowser(ManagedApplication):
     def __init__(
@@ -47,6 +56,7 @@ class ManagedBrowser(ManagedApplication):
         binary=DEFAULT_BINARY,
         remote_debugging_port=None,
         app=False,
+        reload_aw_snap=False,
         shell=True,
         command_line_args=[],
         default_args_removal=[],
@@ -157,6 +167,9 @@ class ManagedBrowser(ManagedApplication):
 
         rospy.logdebug("Command {}".format(cmd))
 
+        if (reload_aw_snap):
+            self.set_aw_snap_timer()
+
         # clean up after thyself
         rospy.on_shutdown(self.clear_tmp_dir)
 
@@ -227,6 +240,20 @@ class ManagedBrowser(ManagedApplication):
         port = sock.getsockname()[1]
         sock.close()
         return port
+
+    def list_pages_available_for_debug(self):
+        debug_url = 'http://localhost:{}/json/list'.format(self.debug_port)
+        return requests.get(debug_url).json()
+
+    def set_aw_snap_timer(self):
+        self.aw_snap_interval = set_interval(self.check_alive_and_reload, 1)
+
+    def check_alive_and_reload(self):
+        if not self.check_alive():
+            rospy.logerr("Browser is probably dead")
+
+    def check_alive(self):
+        return len(self.list_pages_available_for_debug()) > 0
 
     def send_debug_sock_msg(self, msg):
         """

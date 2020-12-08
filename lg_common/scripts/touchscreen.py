@@ -80,6 +80,7 @@ def main():
         log_stderr=extra_logging,
         force_device_scale_factor=scale_factor,
         remote_debugging_port=debug_port,
+        reload_aw_snap=True,
         user_agent=user_agent
     )
 
