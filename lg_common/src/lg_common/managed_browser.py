@@ -254,7 +254,10 @@ class ManagedBrowser(ManagedApplication):
             self.reload_page()
 
     def reload_page(self):
-        os.system("DISPLAY=:0 xdotool key F5")
+        pid = self.proc.get_pid()
+        if pid:
+            cmd = "DISPLAY=:0 xdotool search --onlyvisible --pid {} windowfocus key F5".format(pid)
+            os.system(cmd)
 
     def check_alive(self):
         return len(self.list_pages_available_for_debug()) > 0
