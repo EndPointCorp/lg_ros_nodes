@@ -37,6 +37,7 @@ DEFAULT_ARGS = [
     '--check-for-update-interval=1209600',
 ]
 
+
 def set_interval(func, sec):
     def func_wrapper():
         set_interval(func, sec)
@@ -44,6 +45,7 @@ def set_interval(func, sec):
     t = threading.Timer(sec, func_wrapper)
     t.start()
     return t
+
 
 class ManagedBrowser(ManagedApplication):
     def __init__(
