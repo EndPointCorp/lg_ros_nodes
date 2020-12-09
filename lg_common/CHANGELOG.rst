@@ -9,8 +9,8 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
-Forthcoming
------------
+3.3.2 (2020-12-09)
+------------------
 * reload chrome browser on aw snap with F5
 * reload page on aw snap
 * relaunch browser on aw snap
