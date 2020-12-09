@@ -15,6 +15,9 @@ Changelog for package spacenav_wrapper
   * Fix deploy path
 * Contributors: Will Plaut
 
+Forthcoming
+-----------
+
 3.3.1 (2020-10-29)
 ------------------
 
