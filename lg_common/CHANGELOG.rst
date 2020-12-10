@@ -9,8 +9,8 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
-Forthcoming
------------
+3.3.3 (2020-12-10)
+------------------
 * add Chrome class to xdotools search
 * pep8 it
 * Contributors: Will Plaut, dkiselev

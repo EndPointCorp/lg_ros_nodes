@@ -5,8 +5,8 @@ Changelog for package lg_sv
 3.2.0 (2020-05-27)
 ------------------
 
-Forthcoming
------------
+3.3.3 (2020-12-10)
+------------------
 * metedata search broken due to undocumented API being used
   Doesn't seem to be used anywhere else, need to get API key and change
   url to https://maps.googleapis.com/maps/api/streetview/metadata?location={lat}%2C{lon}&radius={radius}&key={api_key}
