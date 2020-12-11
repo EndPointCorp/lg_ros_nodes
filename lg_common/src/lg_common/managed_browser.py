@@ -258,7 +258,7 @@ class ManagedBrowser(ManagedApplication):
     def reload_page(self):
         pid = self.proc.get_pid()
         if pid:
-            cmd = "DISPLAY=:0 xdotool search --onlyvisible --pid {} --Class Chrome windowfocus key F5".format(pid)
+            cmd = "DISPLAY=:0 xdotool search --onlyvisible --pid {} --class Chrome windowfocus key F5".format(pid)
             os.system(cmd)
 
     def check_alive(self):
