@@ -10,6 +10,9 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
+3.3.3 (2020-12-10)
+------------------
+
 3.3.2 (2020-12-09)
 ------------------
 
