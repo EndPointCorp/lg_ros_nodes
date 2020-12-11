@@ -9,6 +9,12 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* fix typo
+* Contributors: dkiselev
+
 3.3.3 (2020-12-10)
 ------------------
 * add Chrome class to xdotools search

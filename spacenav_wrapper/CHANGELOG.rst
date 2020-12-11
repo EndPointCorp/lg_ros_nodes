@@ -15,6 +15,11 @@ Changelog for package spacenav_wrapper
   * Fix deploy path
 * Contributors: Will Plaut
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
 3.3.3 (2020-12-10)
 ------------------
 

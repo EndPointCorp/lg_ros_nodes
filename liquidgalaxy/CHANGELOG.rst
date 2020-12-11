@@ -5,6 +5,11 @@ Changelog for package liquidgalaxy
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
 3.3.3 (2020-12-10)
 ------------------
 

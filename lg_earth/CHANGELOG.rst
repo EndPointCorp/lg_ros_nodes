@@ -10,6 +10,11 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
 3.3.3 (2020-12-10)
 ------------------
 
