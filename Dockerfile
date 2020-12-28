@@ -137,6 +137,7 @@ COPY lg_mirror/package.xml ${PROJECT_ROOT}/lg_mirror/package.xml
 COPY lg_msg_defs/package.xml ${PROJECT_ROOT}/lg_msg_defs/package.xml
 COPY lg_nav_to_device/package.xml ${PROJECT_ROOT}/lg_nav_to_device/package.xml
 COPY lg_lock/package.xml ${PROJECT_ROOT}/lg_lock/package.xml
+COPY lg_navlib/package.xml ${PROJECT_ROOT}/lg_navlib/package.xml
 COPY lg_offliner/package.xml ${PROJECT_ROOT}/lg_offliner/package.xml
 COPY lg_panovideo/package.xml ${PROJECT_ROOT}/lg_panovideo/package.xml
 COPY lg_pointer/package.xml ${PROJECT_ROOT}/lg_pointer/package.xml
