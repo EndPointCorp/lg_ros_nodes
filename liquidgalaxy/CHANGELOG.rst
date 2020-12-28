@@ -5,6 +5,25 @@ Changelog for package liquidgalaxy
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Merge pull request `#430 <https://github.com/EndPointCorp/lg_ros_nodes/issues/430>`_ from EndPointCorp/lg_navlib
+  Add lg_navlib package
+* Add lg_navlib package
+  Backend support for lg_navlib user interface library.
+  The nav_mode.py script listens for application state changes
+  and publishes configured navigation mode when applications
+  become visible.
+  The intention is to help user interfaces send appropriate axis
+  translations for the panoramic content.
+  For example, the SpaceNav axes are different between:
+  * Globe apps like Cesium and Earth
+  * Eye-level apps like Street View and panoramic image/video
+  When implementing a generic multi-touch to SpaceNav interface,
+  we need to know which axis mapping to use.  Pan may be
+  translation in one context and rotation in another.
+* Contributors: Matt Vollrath
+
 3.3.4 (2020-12-11)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes

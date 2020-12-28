@@ -1,17 +1,45 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package spacenav_remote
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-3.2.0 (2020-05-27)
-------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package lg_navlib
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
+* Update lg_navlib version for initial changelog
+* Merge pull request `#430 <https://github.com/EndPointCorp/lg_ros_nodes/issues/430>`_ from EndPointCorp/lg_navlib
+  Add lg_navlib package
+* Skip lg_navlib src package install for now
+* Add lg_navlib package
+  Backend support for lg_navlib user interface library.
+  The nav_mode.py script listens for application state changes
+  and publishes configured navigation mode when applications
+  become visible.
+  The intention is to help user interfaces send appropriate axis
+  translations for the panoramic content.
+  For example, the SpaceNav axes are different between:
+  * Globe apps like Cesium and Earth
+  * Eye-level apps like Street View and panoramic image/video
+  When implementing a generic multi-touch to SpaceNav interface,
+  we need to know which axis mapping to use.  Pan may be
+  translation in one context and rotation in another.
+* Contributors: Matt Vollrath
+
+* Add lg_navlib package
+  Backend support for lg_navlib user interface library.
+  The nav_mode.py script listens for application state changes
+  and publishes configured navigation mode when applications
+  become visible.
+  The intention is to help user interfaces send appropriate axis
+  translations for the panoramic content.
+  For example, the SpaceNav axes are different between:
+  * Globe apps like Cesium and Earth
+  * Eye-level apps like Street View and panoramic image/video
+  When implementing a generic multi-touch to SpaceNav interface,
+  we need to know which axis mapping to use.  Pan may be
+  translation in one context and rotation in another.
+* Contributors: Matt Vollrath
 
 3.3.4 (2020-12-11)
 ------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: dkiselev
 
 3.3.3 (2020-12-10)
 ------------------
@@ -43,30 +71,20 @@ Forthcoming
 3.2.4 (2020-05-29)
 ------------------
 
-3.2.3 (2020-05-28)
-------------------
+3.2.3 (2020-05-28 15:34)
+------------------------
 
-3.2.2 (2020-05-28)
-------------------
+3.2.2 (2020-05-28 10:41)
+------------------------
 
 3.2.1 (2020-05-27)
 ------------------
-* 3.2.0
-* BSPWM
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Galaxy Admin, Neil Elliott, dkiselev
 
 3.1.12 (2020-05-04)
 -------------------
 
 3.1.11 (2020-05-01)
 -------------------
-
-3.1.10 (2020-03-25)
--------------------
-
-3.1.9 (2020-03-11)
-------------------
 
 3.1.8 (2020-02-06)
 ------------------
@@ -77,11 +95,11 @@ Forthcoming
 3.1.6 (2020-01-27)
 ------------------
 
-3.1.5 (2020-01-24)
-------------------
+3.1.5 (2020-01-24 16:48)
+------------------------
 
-3.1.4 (2020-01-24)
-------------------
+3.1.4 (2020-01-24 14:31)
+------------------------
 
 3.1.3 (2020-01-20)
 ------------------
@@ -94,36 +112,18 @@ Forthcoming
 
 3.1.0 (2020-01-06)
 ------------------
-* Merge branch 'master' into fix_tests
-* Contributors: Matt Vollrath
 
-3.0.2 (2019-11-06)
-------------------
+3.0.2 (2019-11-06 13:51)
+------------------------
 
-3.0.1 (2019-11-06)
-------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: dkiselev
+3.0.1 (2019-11-06 13:12)
+------------------------
 
 3.0.0 (2019-10-31)
 ------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
-  Conflicts:
-  rosbridge_library/CHANGELOG.rst
-  rosbridge_library/package.xml
-  rosbridge_server/CHANGELOG.rst
-  rosbridge_server/package.xml
-* 2to3 all of it
-* Merge branch 'topic/python_tree' of github.com:EndPointCorp/lg_ros_nodes into topic/python_tree
-* sock.send[all/to]: now takes bytes not str
-* fix weird shebangs
-* python 2 shebang to 3
-* Contributors: Will Plaut
 
 2.0.18 (2019-10-11)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/image_checker
-* Contributors: Will Plaut
 
 2.0.17 (2019-09-11)
 -------------------
@@ -158,17 +158,17 @@ Forthcoming
 2.0.7 (2019-07-03)
 ------------------
 
-2.0.6 (2019-07-02)
-------------------
+2.0.6 (2019-07-02 19:53)
+------------------------
 
-2.0.5 (2019-07-02)
-------------------
+2.0.5 (2019-07-02 18:27)
+------------------------
 
-2.0.4 (2019-07-02)
-------------------
+2.0.4 (2019-07-02 15:10)
+------------------------
 
-2.0.3 (2019-07-02)
-------------------
+2.0.3 (2019-07-02 14:36)
+------------------------
 
 2.0.2 (2019-07-01)
 ------------------
@@ -181,22 +181,18 @@ Forthcoming
 
 1.20.4 (2019-06-12)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes into topic/kml_alive
-* Contributors: Galaxy Admin
 
-1.20.3 (2019-05-22)
--------------------
+1.20.3 (2019-05-22 10:48)
+-------------------------
 
-1.20.2 (2019-05-22)
--------------------
+1.20.2 (2019-05-22 00:59)
+-------------------------
 
 1.20.1 (2019-05-21)
 -------------------
 
 1.20.0 (2019-05-15)
 -------------------
-* PEP8 sweep
-* Contributors: Matt Vollrath
 
 1.19.16 (2019-05-14)
 --------------------
@@ -210,16 +206,14 @@ Forthcoming
 1.19.13 (2019-04-25)
 --------------------
 
-1.19.12 (2019-03-25)
---------------------
+1.19.12 (2019-03-25 18:44)
+--------------------------
 
 1.19.11 (2019-03-20)
 --------------------
 
 1.19.10 (2019-03-15)
 --------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
 1.19.9 (2019-03-06)
 -------------------
@@ -235,26 +229,18 @@ Forthcoming
 
 1.19.5 (2019-02-06)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
 1.19.4 (2019-01-30)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
 1.19.3 (2019-01-29)
 -------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
 
-1.19.2 (2019-01-11)
--------------------
-* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
-* Contributors: Dmitry Kiselev
+1.19.2 (2019-01-11 16:06)
+-------------------------
 
-1.19.1 (2019-01-11)
--------------------
+1.19.1 (2019-01-11 14:42)
+-------------------------
 
 1.19.0 (2019-01-10)
 -------------------
@@ -337,11 +323,11 @@ Forthcoming
 1.17.12 (2018-01-09)
 --------------------
 
-1.17.11 (2017-12-26)
---------------------
+1.17.11 (2017-12-26 20:19)
+--------------------------
 
-1.17.10 (2017-12-26)
---------------------
+1.17.10 (2017-12-26 17:36)
+--------------------------
 
 1.17.9 (2017-12-18)
 -------------------
@@ -364,20 +350,17 @@ Forthcoming
 1.17.3 (2017-11-07)
 -------------------
 
-1.17.2 (2017-11-06)
--------------------
-
 1.17.1 (2017-10-12)
 -------------------
 
 1.17.0 (2017-10-06)
 -------------------
 
-1.16.1 (2017-08-17)
--------------------
+1.16.1 (2017-08-17 16:36)
+-------------------------
 
-1.16.0 (2017-08-17)
--------------------
+1.16.0 (2017-08-17 15:50)
+-------------------------
 
 1.15.0 (2017-08-07)
 -------------------
@@ -403,17 +386,17 @@ Forthcoming
 1.13.2 (2017-05-23)
 -------------------
 
-1.13.1 (2017-05-19)
--------------------
+1.13.1 (2017-05-19 15:45)
+-------------------------
 
-1.13.0 (2017-05-19)
--------------------
+1.13.0 (2017-05-19 11:09)
+-------------------------
 
-1.12.5 (2017-05-11)
--------------------
+1.12.5 (2017-05-11 20:30)
+-------------------------
 
-1.12.4 (2017-05-11)
--------------------
+1.12.4 (2017-05-11 13:48)
+-------------------------
 
 1.12.3 (2017-05-03)
 -------------------
@@ -430,11 +413,11 @@ Forthcoming
 1.11.4 (2017-04-06)
 -------------------
 
-1.11.3 (2017-03-31)
--------------------
+1.11.3 (2017-03-31 19:48)
+-------------------------
 
-1.11.2 (2017-03-31)
--------------------
+1.11.2 (2017-03-31 09:15)
+-------------------------
 
 1.11.1 (2017-03-28)
 -------------------
@@ -445,17 +428,17 @@ Forthcoming
 1.10.2 (2017-03-24)
 -------------------
 
-1.10.1 (2017-03-23)
--------------------
+1.10.1 (2017-03-23 16:28)
+-------------------------
 
-1.10.0 (2017-03-23)
--------------------
+1.10.0 (2017-03-23 12:27)
+-------------------------
 
-1.9.1 (2017-03-20)
-------------------
+1.9.1 (2017-03-20 15:59)
+------------------------
 
-1.9.0 (2017-03-20)
-------------------
+1.9.0 (2017-03-20 09:41)
+------------------------
 
 1.8.0 (2017-03-09)
 ------------------
@@ -466,23 +449,23 @@ Forthcoming
 1.7.10 (2017-03-02)
 -------------------
 
-1.7.9 (2017-03-01)
-------------------
+1.7.9 (2017-03-01 18:26)
+------------------------
 
-1.7.8 (2017-03-01)
-------------------
+1.7.8 (2017-03-01 10:51)
+------------------------
 
 1.7.7 (2017-02-28)
 ------------------
 
-1.7.6 (2017-02-27)
-------------------
+1.7.6 (2017-02-27 18:59)
+------------------------
 
-1.7.5 (2017-02-27)
-------------------
+1.7.5 (2017-02-27 10:09)
+------------------------
 
-1.7.4 (2017-02-27)
-------------------
+1.7.4 (2017-02-27 00:04)
+------------------------
 
 1.7.3 (2017-02-26)
 ------------------
@@ -507,52 +490,6 @@ Forthcoming
 
 1.6.2 (2017-01-25)
 ------------------
-* Added missing changelog
-* Fix PEP8 errors
-* Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
-  Add spacenav_remote node and spacenav client script
-  Commits history:
-  * Add spacenav remote node
-  * Fixing build
-  * Fix dependancies
-  * Fix threading locks
-  * chmod +x on scripts
-  * Fix setup.py
-  * Fix thread start
-  * Add socket opt, TCP no delay
-  * Run spacenav remote server standalone without ROS
-  * Refactor client: keep connection open, fix networking
-  * Fix messages parsing
-  * Fix dict values access
-  * Normalize spacenav scale (using the code from original spacenav ros node)
-  * Add arg parsing
-  * Added information for running the client
-  * Set param types to int where needed
-  * More details in readme
-* Contributors: Dmitry Kiselev, Matt Vollrath, Wojciech Ziniewicz
-
-* Fix PEP8 errors
-* Remote control for spacenav (`#324 <https://github.com/EndPointCorp/lg_ros_nodes/issues/324>`_)
-  Add spacenav_remote node and spacenav client script
-  Commits history:
-  * Add spacenav remote node
-  * Fixing build
-  * Fix dependancies
-  * Fix threading locks
-  * chmod +x on scripts
-  * Fix setup.py
-  * Fix thread start
-  * Add socket opt, TCP no delay
-  * Run spacenav remote server standalone without ROS
-  * Refactor client: keep connection open, fix networking
-  * Fix messages parsing
-  * Fix dict values access
-  * Normalize spacenav scale (using the code from original spacenav ros node)
-  * Add arg parsing
-  * Added information for running the client
-  * Set param types to int where needed
-  * More details in readme
-* Contributors: Dmitry Kiselev, Matt Vollrath
 
 1.6.1 (2017-01-12)
 ------------------
@@ -929,9 +866,6 @@ Forthcoming
 1.1.21 (2015-10-22)
 -------------------
 
-1.1.20 (2015-10-21)
--------------------
-
 1.1.19 (2015-10-20 21:30)
 -------------------------
 
@@ -1001,9 +935,6 @@ Forthcoming
 1.0.7 (2015-08-12 14:05)
 ------------------------
 
-1.0.6 (2015-08-10)
-------------------
-
 1.0.5 (2015-08-03)
 ------------------
 
@@ -1036,6 +967,3 @@ Forthcoming
 
 0.0.2 (2015-07-21 17:11)
 ------------------------
-
-0.0.1 (2015-07-08)
-------------------
