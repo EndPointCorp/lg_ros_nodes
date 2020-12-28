@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>spacenav_wrapper</name>
-  <version>3.3.4</version>
+  <version>3.3.5</version>
   <description>Wrap around the spacenav node to provide additional support like ignoring gutter vals</description>
 
   <author email="jacob@endpoint.com">Jacob Minshall</author>

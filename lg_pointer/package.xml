@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_pointer</name>
-  <version>3.3.4</version>
+  <version>3.3.5</version>
   <description>Pointing device integration for Liquid Galaxy</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
