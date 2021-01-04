@@ -17,7 +17,8 @@ class ManagedAdhocBrowser(ManagedBrowser):
                  default_args_removal=[],
                  extensions=[], binary='/usr/bin/google-chrome',
                  user_agent=None, slug=None, url=None, uid=None,
-                 scene_slug=None, preload=False, user_data_dir=None, kiosk=True):
+                 scene_slug=None, preload=False,
+                 user_data_dir=None, kiosk=True, reload_aw_snap=False,):
 
         self.scene_slug = scene_slug
         self.slug = slug
@@ -45,6 +46,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             binary=binary,
             log_level=log_level,
             user_data_dir=user_data_dir,
+            reload_aw_snap=reload_aw_snap,
             kiosk=kiosk)
 
     def __str__(self):
