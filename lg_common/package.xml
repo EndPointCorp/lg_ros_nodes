@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_common</name>
-  <version>3.3.3</version>
+  <version>3.3.5</version>
   <description>Common software for Liquid Galaxy ROS nodes.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>

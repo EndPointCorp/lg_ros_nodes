@@ -5,6 +5,14 @@ Changelog for package lg_attract_loop
 3.2.0 (2020-05-27)
 ------------------
 
+3.3.5 (2020-12-28)
+------------------
+
+3.3.4 (2020-12-11)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
 3.3.3 (2020-12-10)
 ------------------
 
