@@ -2,6 +2,13 @@
 Changelog for package lg_navlib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Add lg_navlib package url
+  Required for ROS package scripts.
+* Contributors: Matt Vollrath, dkiselev
+
 3.3.5 (2020-12-28)
 ------------------
 * Update lg_navlib version for initial changelog
