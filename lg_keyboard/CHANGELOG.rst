@@ -15,8 +15,8 @@ Changelog for package lg_keyboard
   * Fix deploy path
 * Contributors: Will Plaut
 
-Forthcoming
------------
+3.3.6 (2021-01-06)
+------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
 * Contributors: dkiselev
 
