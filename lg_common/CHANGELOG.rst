@@ -9,8 +9,8 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
-Forthcoming
------------
+3.3.7 (2021-01-14)
+------------------
 * fix xdo tools browser search string
 * Contributors: dkiselev
 
