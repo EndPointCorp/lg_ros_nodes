@@ -9,8 +9,8 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
-Forthcoming
------------
+3.3.8 (2021-01-29)
+------------------
 
 3.3.7 (2021-01-14)
 ------------------
