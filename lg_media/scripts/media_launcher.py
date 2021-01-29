@@ -11,8 +11,8 @@ from lg_msg_defs.msg import ApplicationState, MediaOverlays
 StreamInfo = namedtuple('overlay', ['name', 'viewport', 'location'])
 
 STREAMS = {
-    "1": "224.42.42.1",
-    "2": "224.42.42.2",
+    "201": "224.42.42.1",
+    "202": "224.42.42.2",
 }
 
 
