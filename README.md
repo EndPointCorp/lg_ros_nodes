@@ -160,7 +160,7 @@ git commit -am "updated changelogs for new release"
 - once that's done, prepare release and send it to the build farm:
 
 ```shell
-$ catkin_prepare_release
+catkin_prepare_release
 ```
 NOTE, catkin_prepare_relase ight be a bit broken, so patch
 /opt/ros/melodic/lib/python2.7/dist-packages/catkin/package_version.py with the below
