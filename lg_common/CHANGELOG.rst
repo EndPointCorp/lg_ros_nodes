@@ -9,8 +9,8 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
-Forthcoming
------------
+3.3.9 (2021-07-20)
+------------------
 * Revert "Revert "Revert "Revert "Use lg_wm_send instead of awesome-client""""
   This reverts commit d134f8bb67f72f7c21e8c9b04864af6e3caddeda.
 * Contributors: Jacob Minshall
