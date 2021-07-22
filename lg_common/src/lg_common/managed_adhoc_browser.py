@@ -19,7 +19,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
                  user_agent=None, slug=None, url=None, uid=None,
                  scene_slug=None, preload=False,
                  user_data_dir=None, kiosk=True, reload_aw_snap=False,
-                 layer=ManagedWindow.LAYER_ABOVE):
+                 layer=ManagedWindow.LAYER_NORMAL):
 
         self.scene_slug = scene_slug
         self.slug = slug

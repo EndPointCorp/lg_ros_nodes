@@ -6,7 +6,7 @@ import lg_common
 import os
 import time
 
-from lg_common import ManagedAdhocBrowser
+from lg_common import ManagedAdhocBrowser, ManagedWindow
 from lg_msg_defs.msg import ApplicationState
 from lg_msg_defs.msg import WindowGeometry
 from lg_msg_defs.msg import BrowserExtension
@@ -339,7 +339,8 @@ class AdhocBrowserPool():
                                                     scene_slug=new_browser.scene_slug,
                                                     preload=new_browser.preload,
                                                     user_data_dir=new_browser.user_data_dir,
-                                                    kiosk=new_browser.kiosk
+                                                    kiosk=new_browser.kiosk,
+                                                    layer=ManagedWindow.LAYER_ABOVE,
                                                     )
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
