@@ -10,8 +10,8 @@ Changelog for package lg_earth
 * debug info for add_kml
 * Contributors: Galaxy Admin, Matt Vollrath, dkiselev
 
-Forthcoming
------------
+3.3.10 (2021-07-22)
+-------------------
 * Put Earth below everything
 * Contributors: Matt Vollrath
 
