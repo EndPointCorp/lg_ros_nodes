@@ -8,6 +8,10 @@ from lg_msg_defs.msg import WindowGeometry
 
 
 class ManagedWindow(object):
+    LAYER_BELOW = 'below'
+    LAYER_NORMAL = 'normal'
+    LAYER_ABOVE = 'above'
+
     def __init__(self, w_name=None, w_class=None, w_instance=None,
                  geometry=None, visible=True, chrome_kiosk_workaround=False,
                  layer=None):
