@@ -9,6 +9,14 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+* Make ad hoc browser LAYER_ABOVE the exception
+* Default to LAYER_NORMAL
+* Ad hoc browsers at LAYER_ABOVE
+* Add layer constants to ManagedWindow
+* Contributors: Matt Vollrath
+
 3.3.9 (2021-07-20)
 ------------------
 * Revert "Revert "Revert "Revert "Use lg_wm_send instead of awesome-client""""

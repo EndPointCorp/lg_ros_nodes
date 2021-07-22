@@ -5,6 +5,12 @@ Changelog for package lg_media
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* delaying kill and threading things
+* Use LAYER_ABOVE in lg_media
+* Contributors: Jacob Minshall, Matt Vollrath
+
 3.3.9 (2021-07-20)
 ------------------
 
