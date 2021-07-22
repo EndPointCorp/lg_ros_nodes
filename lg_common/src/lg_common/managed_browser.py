@@ -69,6 +69,7 @@ class ManagedBrowser(ManagedApplication):
         user_agent='',
         pepper_flash_dir='/home/lg/inc/PepperFlash',
         pnacl_dir='/home/lg/inc/pnacl',
+        layer=ManagedWindow.LAYER_NORMAL,
         **kwargs
     ):
 
@@ -165,7 +166,12 @@ class ManagedBrowser(ManagedApplication):
         # Different versions of Chrome use different window instance names.
         # Matching the tmp_dir should work for all of them.
         w_instance = 'google-chrome ({})'.format(self.tmp_dir)
-        window = ManagedWindow(w_instance=w_instance, geometry=geometry, chrome_kiosk_workaround=kiosk)
+        window = ManagedWindow(
+            w_instance=w_instance,
+            geometry=geometry,
+            chrome_kiosk_workaround=kiosk,
+            layer=layer,
+        )
 
         rospy.logdebug("Command {}".format(cmd))
 

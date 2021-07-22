@@ -5,7 +5,7 @@ import subprocess
 import time
 import json
 
-from lg_common import ManagedBrowser
+from lg_common import ManagedBrowser, ManagedWindow
 from lg_msg_defs.msg import WindowGeometry
 from lg_msg_defs.msg import ApplicationState
 from lg_msg_defs.msg import ApplicationState
@@ -18,7 +18,8 @@ class ManagedAdhocBrowser(ManagedBrowser):
                  extensions=[], binary='/usr/bin/google-chrome',
                  user_agent=None, slug=None, url=None, uid=None,
                  scene_slug=None, preload=False,
-                 user_data_dir=None, kiosk=True, reload_aw_snap=False,):
+                 user_data_dir=None, kiosk=True, reload_aw_snap=False,
+                 layer=ManagedWindow.LAYER_ABOVE):
 
         self.scene_slug = scene_slug
         self.slug = slug
@@ -47,7 +48,8 @@ class ManagedAdhocBrowser(ManagedBrowser):
             log_level=log_level,
             user_data_dir=user_data_dir,
             reload_aw_snap=reload_aw_snap,
-            kiosk=kiosk)
+            kiosk=kiosk,
+            layer=layer)
 
     def __str__(self):
         return json.dumps({
