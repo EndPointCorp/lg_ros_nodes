@@ -45,7 +45,11 @@ class Player(RespawningProcess):
     def __init__(self, stream_info):
         window_id = ".".join(stream_info)
         geometry = ManagedWindow.lookup_viewport_geometry(stream_info.viewport)
-        self.window = ManagedWindow(w_name=window_id, geometry=geometry)
+        self.window = ManagedWindow(
+            w_name=window_id,
+            geometry=geometry,
+            layer=ManagedWindow.LAYER_ABOVE,
+        )
         self.window.set_visibility(True)
         self.window.converge()
 

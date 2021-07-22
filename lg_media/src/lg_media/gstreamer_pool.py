@@ -170,7 +170,8 @@ class GstreamerPool(object):
                                   height=incoming_gstreamer.geometry.height)
 
         gstreamer_window = ManagedWindow(geometry=geometry,
-                                         w_name=str(gstreamer_id))
+                                         w_name=str(gstreamer_id),
+                                         layer=ManagedWindow.LAYER_ABOVE)
 
         if incoming_gstreamer.on_finish == "nothing" or incoming_gstreamer.on_finish == "close":
             respawn = False

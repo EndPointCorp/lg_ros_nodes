@@ -202,7 +202,8 @@ class MplayerPool(object):
 
         mplayer_window = ManagedWindow(geometry=geometry,
                                        w_instance=str(mplayer_id),
-                                       w_class="MPlayer")
+                                       w_class="MPlayer",
+                                       layer=ManagedWindow.LAYER_ABOVE)
 
         if incoming_mplayer.on_finish == "nothing" or incoming_mplayer.on_finish == "close":
             respawn = False
