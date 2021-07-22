@@ -97,7 +97,14 @@ def main():
 
     # add modify_cors_headers chrome extension to handle the cors error
     extensions_dir = rospkg.RosPack().get_path('lg_sv') + '/extensions/modify_cors_headers'
-    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk, extensions=[extensions_dir])
+    managed_browser = ManagedAdhocBrowser(
+        url=url,
+        geometry=geometry,
+        slug=slug,
+        kiosk=kiosk,
+        extensions=[extensions_dir],
+        layer=ManagedWindow.LAYER_NORMAL,
+    )
 
     # set initial state
     state = ApplicationState.STOPPED
