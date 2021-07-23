@@ -310,14 +310,14 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
   this->mypos = mypos;
 
   if (this->window->isHidden()) {
-    this->window->show();
+    if (this->wdata->name != NULL) {
+      this->window->setWindowTitle(this->wdata->name);
+    }
     this->window->move(this->wdata->x, this->wdata->y);
     if (this->wdata->width > 0 && this->wdata->height > 0) {
       this->window->resize(this->wdata->width, this->wdata->height);
     }
-    if (this->wdata->name != NULL) {
-      this->window->setWindowTitle(this->wdata->name);
-    }
+    this->window->show();
   }
 
   if (this->master) {
