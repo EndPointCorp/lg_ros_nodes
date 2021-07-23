@@ -5,6 +5,14 @@ Changelog for package lg_media
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Fix gst_video_sync letterbox color
+  Also comment on window management quirks.
+* Re-order gst_video_sync window ops
+  Set name before showing window to help window manager get it right.
+* Contributors: Matt Vollrath
+
 3.3.10 (2021-07-22)
 -------------------
 * delaying kill and threading things

@@ -9,6 +9,9 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+
 3.3.10 (2021-07-22)
 -------------------
 * Make ad hoc browser LAYER_ABOVE the exception
