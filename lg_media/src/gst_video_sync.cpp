@@ -310,6 +310,11 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
   this->mypos = mypos;
 
   if (this->window->isHidden()) {
+    // Setting the background color here may result in either
+    // the set color or black.  Fortunately we want it black anyway.
+    this->window->setStyleSheet("background-color: black");
+    // It is important to set the window name before configuring or
+    // mapping the window so that window placement rules can be matched instantly.
     if (this->wdata->name != NULL) {
       this->window->setWindowTitle(this->wdata->name);
     }
