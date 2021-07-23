@@ -5,8 +5,8 @@ Changelog for package lg_media
 3.2.0 (2020-05-27)
 ------------------
 
-Forthcoming
------------
+3.3.11 (2021-07-23)
+-------------------
 * Fix gst_video_sync letterbox color
   Also comment on window management quirks.
 * Re-order gst_video_sync window ops
