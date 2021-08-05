@@ -56,7 +56,7 @@ class Player(RespawningProcess):
         cmd = f"/usr/bin/ffplay -nostats -fflags nobuffer -flags low_delay " \
               f"-framedrop -analyzeduration 3000000 -noborder -probesize 32 -alwaysontop " \
               f"-codec:v h264 -sn " \
-              f"-window_title \'{window_id}\' rtp://{STREAMS[stream_info.location]}:4953" \
+              f"-window_title {window_id} rtp://{STREAMS[stream_info.location]}:4953" \
               .split()
 
         super().__init__(cmd)
