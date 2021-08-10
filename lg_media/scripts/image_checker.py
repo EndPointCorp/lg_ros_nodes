@@ -83,7 +83,7 @@ class ImageChecker():
 def main():
     rospy.init_node('image_checker')
     viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
-    timeout_length = rospy.get_param('~timeout_length', 2)
+    timeout_length = rospy.get_param('~timeout_length', 8)
     checker = ImageChecker(viewports, timeout_length)
     rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()
