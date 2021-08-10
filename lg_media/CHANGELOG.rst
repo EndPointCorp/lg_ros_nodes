@@ -5,6 +5,12 @@ Changelog for package lg_media
 3.2.0 (2020-05-27)
 ------------------
 
+3.3.12 (2021-08-10)
+-------------------
+* Increase image checker timeout
+* Fix window title for media launcher ffplay
+* Contributors: Neil Elliott
+
 3.3.11 (2021-07-23)
 -------------------
 * Fix gst_video_sync letterbox color

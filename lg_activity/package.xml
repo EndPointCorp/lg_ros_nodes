@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_activity</name>
-  <version>3.3.11</version>
+  <version>3.3.12</version>
   <description>ROS software for detecting and publishing activity messages from user inputs</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
