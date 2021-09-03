@@ -123,6 +123,10 @@ RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git 
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
 RUN ln -snf /appctl/appctl_msg_defs ${PROJECT_ROOT}/
 
+# clone command_handler
+RUN git clone https://github.com/EndPointCorp/command_handler.git /command_handler
+RUN ln -snf /command_handler ${PROJECT_ROOT}/
+
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml
 COPY lg_activity/package.xml ${PROJECT_ROOT}/lg_activity/package.xml
