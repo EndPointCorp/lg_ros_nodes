@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import argparse
@@ -37,7 +37,7 @@ def parse_config():
     """
     config_file = 'scripts/init.cfg'
     if not os.path.exists(config_file):
-        print 'WARNING, no %s found, using possibly outdated configuration' % config_file
+        print('WARNING, no %s found, using possibly outdated configuration' % config_file)
         return  # rely on hard coded values... maybe an exception would work
     # setting these globals
     global IGNORE_DIRS
@@ -178,18 +178,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def check_validity():
-    """
-    Just checks to see if appctl and interactivespaces_msgs exist in catkin/src
-    """
-    passed = True
-    links = os.listdir("%s/catkin/src" % ROOT_DIR)
-    for needed in NEEDED_DIRS:
-        if needed not in links:
-            passed = False
-            print "############## WARNING catkin/src SHOULD HAVE %s LINK ##############" % needed
-    if passed:
-        print "Successfully completed workspace initialization"
+
 
 
 def main():
