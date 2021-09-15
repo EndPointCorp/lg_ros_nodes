@@ -84,42 +84,38 @@ capture_current_state ()
 # Validate 3D Layer On
 validate_on () {
     for i in $EARTH_INSTANCES
-    do
-        cmp --silent /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
-        result1=$?
-        cmp --silent /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
-        result2=$?
-        if [ $result1 != 0 ] && [ $result2 != 0 ]
+    do        cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
+        result=$?
+        if [ $result == 0 ]
+#        cmp --silent /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
+#        result1=$?
+#        cmp --silent /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
+#        result2=$?
+#        if [ $result1 != 0 ] && [ $result2 != 0 ]
             then
                 EARTH_ERROR[$i]="$i"
                 ERRORS_PRESENT=true
         fi
-#	      sleep .1
+	      sleep .1
     done
 }
 
 # Validate 3D Layer Off
 validate_off () {
 
+	echo "VALIDATING OFF"
     for i in $EARTH_INSTANCES
-#    do
-#        cmp --silent /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
-#        result1=$?
-#        cmp --silent /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
-#        result2=$?
-#        if [[ $result1 == 0 ]] || [[ $result2 == 0 ]]
-#            then
-#                EARTH_ERROR[$i]="$i"
-#                ERRORS_PRESENT=true
-#        fi
-#      	sleep .1
-#    done
     do
+#    	cmp --silent  /home/lg/bash_scripts/3d_layer_on_1 ~/tmp/42-a_"$i"
+#        result1=$?
+#	cmp --silent  /home/lg/bash_scripts/3d_layer_on_2 ~/tmp/42-a_"$i"
+#        result2=$?
+#        if [ $result1 == 0 ] || [ $result2 == 0 ]
+		
         cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
         result=$?
         if [ $result != 0 ]
             then
-                echo "blanks matched" >> ~/tmp.toggle.log
                 EARTH_ERROR[$i]="$i"
                 ERRORS_PRESENT=true
         fi
@@ -156,7 +152,7 @@ toggle_on ()
 
 # Fix Errors if Present
 fix_errors() {
-    echo "${EARTH_ERROR[@]}" >> ~/tmp/success.log
+    echo "${EARTH_ERROR[@]}" 
     if [ ${#EARTH_ERROR[@]} -ne 0 ]; then
         for e in "${EARTH_ERROR[@]}"
         do
