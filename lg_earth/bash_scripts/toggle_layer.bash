@@ -13,6 +13,7 @@ BUILDING_LAYER="$1"
 EARTH_INSTANCES=$(export DISPLAY=:0 ; xdotool search --name "Earth EC")
 # Track if Errors Present
 ERRORS_PRESENT=false
+
 # disable logitech keyboard to prevent errors
 disable_keyboard () {
 	# find keyboard devices
@@ -47,21 +48,21 @@ capture_current_state ()
 
 # Validate 3D Layer On
 validate_on () {
+	echo "VALIDATING ON"
     for i in $EARTH_INSTANCES
-    do        cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
+    do
+    	cmp --silent /home/lg/bash_scripts/3d_layer_off ~/tmp/42-a_"$i"
         result=$?
         if [ $result == 0 ]
             then
                 EARTH_ERROR[$i]="$i"
                 ERRORS_PRESENT=true
         fi
-	      sleep .1
     done
 }
 
 # Validate 3D Layer Off
 validate_off () {
-
 	echo "VALIDATING OFF"
     for i in $EARTH_INSTANCES
     do
@@ -100,7 +101,7 @@ toggle_on ()
 
 # Fix Errors if Present
 fix_errors() {
-    echo "${EARTH_ERROR[@]}" 
+    echo "${EARTH_ERROR[@]}"
     if [ ${#EARTH_ERROR[@]} -ne 0 ]; then
         for e in "${EARTH_ERROR[@]}"
         do
@@ -125,7 +126,7 @@ fix_errors() {
     EARTH_ERROR=()
     ERRORS_PRESENT=false
     capture_current_state
-    validate_"BUILDING_LAYER"
+    validate_"$BUILDING_LAYER"
 }
 
 validate_closed () {
@@ -158,7 +159,6 @@ for i in $EARTH_INSTANCES
 do
 	toggle_menu $i
 done
-capture_current_state
 if [ "$BUILDING_LAYER" == on ]
 then
     toggle_on
@@ -172,6 +172,6 @@ done
 validate_closed
 if [ $HOSTNAME == "42-b" ]
 then
-        python /home/lg/bash_scripts/repub.py
+  python /home/lg/bash_scripts/repub.py
 fi
 disable_keyboard "bind"
