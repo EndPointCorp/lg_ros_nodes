@@ -18,6 +18,7 @@ from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 def image_coordinates(image):
     return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
 
+
 def make_key_from_image(image):
     return "{}_{}".format(image.url, image_coordinates(image))
 
