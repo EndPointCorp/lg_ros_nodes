@@ -11,6 +11,7 @@ class ManagedWindow(object):
     LAYER_BELOW = 'below'
     LAYER_NORMAL = 'normal'
     LAYER_ABOVE = 'above'
+    LAYER_TOUCH = 'touch'  # touch things are always on top
 
     def __init__(self, w_name=None, w_class=None, w_instance=None,
                  geometry=None, visible=True, chrome_kiosk_workaround=False,
