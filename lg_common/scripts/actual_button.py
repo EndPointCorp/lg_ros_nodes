@@ -16,12 +16,8 @@ class ButtonApp(threading.Thread):
 
     def signal_handler(self, *args, **kwargs):
         print("Caught signal")
-        #self.root.quit()
+        self.root.quit()
         sys.exit()
-        self.root.destroy()
-        print("destroyed")
-        sys.exit()
-        print("exited")
 
     def run(self):
         self.root = tk.Tk()
@@ -34,18 +30,13 @@ def main():
     print("in main")
     rospy.init_node('real_button')
     app = ButtonApp()
-    signal.signal(signal.SIGINT, app.signal_handler)
+    for i in [x for x in dir(signal) if x.startswith("SIG")]:
+        try:
+            signum = getattr(signal,i)
+            signal.signal(signum, app.signal_handler)
+        except (OSError, RuntimeError, ValueError) as m: #OSError for Python3, RuntimeError for 2
+            print ("Skipping {}".format(i))
     app.start()
 
 if __name__ == '__main__':
     main()
-#root.attributes('-topmost', True)
-#def background():
-#    while not rospy.is_shutdown():
-#        rospy.logerr("BBBB")
-#        root.attributes('-topmost', True)
-#        root.lift()
-#        root.update()
-#        rospy.sleep(1)
-#t = threading.Thread(name='thread', target=background)
-#t.start()

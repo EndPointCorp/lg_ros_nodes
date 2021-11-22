@@ -27,7 +27,7 @@ def main():
     window = ManagedWindow(
         w_instance='unique_button',
         geometry=geometry,
-        layer=ManagedWindow.LAYER_ABOVE,
+        layer=ManagedWindow.LAYER_TOUCH,
     )
 
     app = ManagedApplication(['/bin/actual_button', '&'], window=window)
