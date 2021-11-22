@@ -19,7 +19,6 @@ state = None
 def main():
     rospy.init_node(NODE_NAME)
 
-
     rospy.set_param('~viewport', 'touchscreen')
     geometry = ManagedWindow.get_viewport_geometry()
     window = ManagedWindow(

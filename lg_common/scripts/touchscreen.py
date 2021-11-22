@@ -104,7 +104,6 @@ def main():
             state = ApplicationState.VISIBLE
         browser.set_state(state)
 
-
     rospy.Subscriber('/touchscreen/toggle', String, handle_toggle)
 
     rospy.spin()

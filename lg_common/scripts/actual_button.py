@@ -26,16 +26,18 @@ class ButtonApp(threading.Thread):
         button.pack(fill=tk.BOTH, expand=1)
         self.root.mainloop()
 
+
 def main():
     rospy.init_node('real_button')
     app = ButtonApp()
     for i in [x for x in dir(signal) if x.startswith("SIG")]:
         try:
-            signum = getattr(signal,i)
+            signum = getattr(signal, i)
             signal.signal(signum, app.signal_handler)
-        except (OSError, RuntimeError, ValueError) as m: #OSError for Python3, RuntimeError for 2
-            print ("Skipping {}".format(i))
+        except (OSError, RuntimeError, ValueError) as m:
+            print("Skipping {}".format(i))
     app.start()
+
 
 if __name__ == '__main__':
     main()
