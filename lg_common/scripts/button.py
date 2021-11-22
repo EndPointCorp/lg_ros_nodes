@@ -22,8 +22,6 @@ def main():
 
     rospy.set_param('~viewport', 'touchscreen')
     geometry = ManagedWindow.get_viewport_geometry()
-    rospy.logerr(f"ZZZ geometry is {geometry}")
-    print(f"ZZZ geometry is {geometry}")
     window = ManagedWindow(
         w_instance='unique_button',
         geometry=geometry,
@@ -31,10 +29,8 @@ def main():
     )
 
     app = ManagedApplication(['/bin/actual_button', '&'], window=window)
-    print("setting state...")
     app.set_state(ApplicationState.VISIBLE)
 
-    print("spinning...")
     rospy.spin()
 
 

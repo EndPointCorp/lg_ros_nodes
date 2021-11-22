@@ -27,7 +27,6 @@ class ButtonApp(threading.Thread):
         self.root.mainloop()
 
 def main():
-    print("in main")
     rospy.init_node('real_button')
     app = ButtonApp()
     for i in [x for x in dir(signal) if x.startswith("SIG")]:
