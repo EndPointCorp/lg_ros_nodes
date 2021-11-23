@@ -97,7 +97,6 @@ def main():
 
     def handle_toggle(msg=None):
         global state
-        print(f'hi, state is {state}')
         if state == ApplicationState.VISIBLE:
             state = ApplicationState.HIDDEN
         else:
