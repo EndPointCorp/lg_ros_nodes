@@ -2,8 +2,8 @@
 Changelog for package lg_navlib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.3.14 (2021-11-23)
+-------------------
 * nav_mode.py README
 * Contributors: Matt Vollrath
 

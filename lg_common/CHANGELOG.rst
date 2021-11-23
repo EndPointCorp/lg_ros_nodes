@@ -9,8 +9,8 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
-Forthcoming
------------
+3.3.14 (2021-11-23)
+-------------------
 * remove debugging
 * use touchscreen_button viewport
 * wait longer, maybe fix test
