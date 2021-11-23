@@ -5,6 +5,11 @@ Changelog for package lg_media
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* fix pep8 on image viewer
+* Contributors: Will Plaut
+
 3.3.13 (2021-09-21)
 -------------------
 

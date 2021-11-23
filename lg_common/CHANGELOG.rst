@@ -9,6 +9,21 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
+Forthcoming
+-----------
+* remove debugging
+* use touchscreen_button viewport
+* wait longer, maybe fix test
+* link
+* removing actual_button for browser based and adding to cmake
+* button is now a chrome app
+* make the linter happy
+* remove debugging
+* fix relaunch for button
+* actual button and ros node added
+* moved button to own file and set touch layer
+* Contributors: Jacob Minshall
+
 3.3.13 (2021-09-21)
 -------------------
 
