@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+
+  var ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+  // Publishing a Topic
+  // ------------------
+
+  var toggle = new ROSLIB.Topic({
+    ros : ros,
+    name : '/touchscreen/toggle',
+    messageType : 'std_msgs/String'
+  });
+
+  var str = new ROSLIB.Message({
+    data: ""
+  });
+  function pub_toggle() {
+  toggle.publish(str);
+  };
+</script>
+</head>
+
+<body>
+    <p onclick="pub_toggle()">Toggle touchscreen</p>
+</body>
+</html>
