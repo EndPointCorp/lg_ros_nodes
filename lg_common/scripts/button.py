@@ -20,12 +20,8 @@ state = None
 def main():
     rospy.init_node(NODE_NAME)
 
-    rospy.set_param('~viewport', 'touchscreen')
+    rospy.set_param('~viewport', 'touchscreen_button')
     geometry = ManagedWindow.get_viewport_geometry()
-    geometry.x = 0
-    geometry.y = 0
-    geometry.width = 200
-    geometry.height = 70
     window = ManagedWindow(
         w_instance='unique_button',
         geometry=geometry,
