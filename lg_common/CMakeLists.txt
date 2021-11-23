@@ -19,6 +19,8 @@ catkin_install_python(PROGRAMS
   scripts/state_setter.py
   scripts/touchscreen.py
   scripts/uscs_service.py
+  scripts/button.py
+  scripts/button
   scripts/dev_webserver
   scripts/static_browser
   scripts/adhoc_browser
