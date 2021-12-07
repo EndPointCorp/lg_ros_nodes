@@ -3,7 +3,7 @@
 import rospy
 
 from urllib.request import url2pathname
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_msg_defs.msg import ApplicationState, WindowGeometry
@@ -95,15 +95,15 @@ def main():
 
     rospy.Subscriber('{}/debug'.format(rospy.get_name()), String, handle_debug_sock_msg)
 
-    def handle_toggle(msg=None):
-        global state
-        if state == ApplicationState.VISIBLE:
+    def handle_toggle(msg):
+        state = None
+        if msg.data == False:
             state = ApplicationState.HIDDEN
         else:
             state = ApplicationState.VISIBLE
         browser.set_state(state)
 
-    rospy.Subscriber('/touchscreen/toggle', String, handle_toggle)
+    rospy.Subscriber('/touchscreen/toggle', Bool, handle_toggle)
 
     rospy.spin()
 
