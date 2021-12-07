@@ -6,11 +6,12 @@ import sys
 
 from lg_mirror.touch_router import TouchRouter
 from lg_common.helpers import on_new_scene, load_director_message
-from lg_msg_defs.msg import StringArray
+from lg_msg_defs.msg import EvdevEvents, StringArray
 from lg_common.helpers import handle_initial_state
 from lg_mirror.touch_router import SubscribeListener
 from lg_msg_defs.srv import TouchRoutes
 from lg_common.helpers import run_with_influx_exception_handler
+from std_msgs.msg import Bool
 
 
 NODE_NAME = 'lg_mirror_router'
@@ -21,7 +22,8 @@ def main():
 
     default_viewport = rospy.get_param('~default_viewport', None)
     device_id = rospy.get_param('~device_id', 'default')
-    router = TouchRouter(default_viewport)
+    event_pub = rospy.Publisher(f'/lg_mirror/{device_id}/events', EvdevEvents, queue_size=100)
+    router = TouchRouter(event_pub, default_viewport)
     route_topic = '/lg_mirror/{}/active_routes'.format(device_id)
 
     def publish_active_routes(routes):
@@ -48,6 +50,9 @@ def main():
     scene_cb = partial(router.handle_scene, publish_active_routes)
 
     on_new_scene(scene_cb)
+
+    rospy.Subscriber('/touchscreen/toggle', Bool, router.handle_touchmenu_state, queue_size=100)
+    rospy.Subscriber(f'/lg_mirror/{device_id}/raw_events', EvdevEvents, router.handle_touch_event, queue_size=100)
 
     rospy.spin()
 
