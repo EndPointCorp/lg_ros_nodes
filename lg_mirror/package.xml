@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_mirror</name>
-  <version>3.3.14</version>
+  <version>3.3.15</version>
   <description>Xorg viewport mirroring</description>
 
   <maintainer email="lg@endpoint.com">End Point LG</maintainer>
