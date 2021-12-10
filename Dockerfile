@@ -94,7 +94,7 @@ RUN pip install --no-cache-dir python-coveralls \
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
-ENV EARTH_PKG_URL https://roscoe-assets.galaxy.endpoint.com:443/google-earth/google-earth-stable_${GOOGLE_EARTH_VERSION}.deb
+ENV EARTH_PKG_URL https://roscoe-assets.visionport.com:443/google-earth/google-earth-stable_${GOOGLE_EARTH_VERSION}.deb
 RUN mkdir -p /tmp/GE \
  && cd /tmp/GE \
  && wget $EARTH_PKG_URL \
