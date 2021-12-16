@@ -20,7 +20,8 @@ state = None
 def main():
     rospy.init_node(NODE_NAME)
 
-    rospy.set_param('~viewport', 'touchscreen_button')
+    rospy.get_param('~viewport', 'touchscreen_button')
+    url = rospy.get_param('~url', DEFAULT_URL)
     geometry = ManagedWindow.get_viewport_geometry()
     window = ManagedWindow(
         w_instance='unique_button',
@@ -29,7 +30,7 @@ def main():
     )
     rospy.logerr(f"geometry is {geometry}")
     managed_browser = ManagedAdhocBrowser(
-        url=DEFAULT_URL,
+        url=url,
         geometry=geometry,
         layer=ManagedWindow.LAYER_TOUCH,
     )
