@@ -20,6 +20,7 @@ add_message_files(
   Command.msg
   EvdevEvent.msg
   EvdevEvents.msg
+  RoutedEvdevEvents.msg
   Event.msg
   GetScreenshot.msg
   ImageView.msg
