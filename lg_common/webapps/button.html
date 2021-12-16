@@ -29,17 +29,19 @@
   // Publishing a Topic
   // ------------------
 
+  var state = true;
   var toggle = new ROSLIB.Topic({
     ros : ros,
     name : '/touchscreen/toggle',
-    messageType : 'std_msgs/String'
+    messageType : 'std_msgs/Bool'
   });
 
-  var str = new ROSLIB.Message({
-    data: ""
-  });
   function pub_toggle() {
-  toggle.publish(str);
+    state = !state;
+    var b = new ROSLIB.Message({
+      data: state,
+    });
+    toggle.publish(b);
   };
 </script>
 </head>

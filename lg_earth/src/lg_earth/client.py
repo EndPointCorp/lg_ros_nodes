@@ -31,6 +31,7 @@ class Client:
         maybe_dirs = [
             '/opt/google/earth/ec',
             '/opt/google/earth/free',
+            '/opt/google/earth/pro',
         ]
         for maybe_dir in maybe_dirs:
             if os.path.isdir(maybe_dir):
@@ -42,10 +43,12 @@ class Client:
         window_names = {
             '/opt/google/earth/ec': 'Google Earth EC',
             '/opt/google/earth/free': 'Google Earth',
+            '/opt/google/earth/pro': 'Google Earth Pro',
         }
         window_classes = {
             '/opt/google/earth/ec': 'Google Earth EC',
             '/opt/google/earth/free': 'Googleearth-bin',
+            '/opt/google/earth/pro': 'Google Earth Pro',
         }
 
         # Skip window management if this window is hidden.
@@ -129,6 +132,10 @@ class Client:
                           '.googleearth/myplaces.kml')
         self._render_file(self.view_content,
                           '.googleearth/cached_default_view.kml')
+        if not os.path.exists(self._get_tempdir() + '/.config/Google/GoogleEarthPro.conf'):
+            os.symlink(self._get_tempdir() + '/.config/Google/GoogleEarthEC.conf',
+                       self._get_tempdir() + '/.config/Google/GoogleEarthPro.conf')
+
         if not os.path.exists(self._get_tempdir() + '/.config/Google/GoogleEarthPlus.conf'):
             os.symlink(self._get_tempdir() + '/.config/Google/GoogleEarthEC.conf',
                        self._get_tempdir() + '/.config/Google/GoogleEarthPlus.conf')
