@@ -9,8 +9,8 @@ Changelog for package lg_common
   lg_wm now just converges on its internal window list.
 * Use lg_wm_send instead of awesome-client
 
-Forthcoming
------------
+3.3.16 (2021-12-16)
+-------------------
 * Merge branch 'touchscreen_toggle_bool' of github.com:endpointcorp/lg_ros_nodes
 * now uses a bool and can use any viewport / url
 * Contributors: Jacob Minshall

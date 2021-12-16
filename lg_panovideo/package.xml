@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_panovideo</name>
-  <version>3.3.15</version>
+  <version>3.3.16</version>
   <description>Synchronized panoramic video playback</description>
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
 
