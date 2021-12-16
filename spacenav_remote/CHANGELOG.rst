@@ -5,6 +5,9 @@ Changelog for package spacenav_remote
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+
 3.3.15 (2021-12-09)
 -------------------
 
