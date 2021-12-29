@@ -6,7 +6,7 @@ import sys
 
 from lg_mirror.touch_router import TouchRouter
 from lg_common.helpers import on_new_scene, load_director_message
-from lg_msg_defs.msg import EvdevEvents, StringArray
+from lg_msg_defs.msg import EvdevEvents, RoutedEvdevEvents, StringArray
 from lg_common.helpers import handle_initial_state
 from lg_mirror.touch_router import SubscribeListener
 from lg_msg_defs.srv import TouchRoutes
@@ -22,7 +22,7 @@ def main():
 
     default_viewport = rospy.get_param('~default_viewport', None)
     device_id = rospy.get_param('~device_id', 'default')
-    event_pub = rospy.Publisher(f'/lg_mirror/{device_id}/events', EvdevEvents, queue_size=100)
+    event_pub = rospy.Publisher(f'/lg_mirror/{device_id}/routed_events', RoutedEvdevEvents, queue_size=100)
     router = TouchRouter(event_pub, default_viewport)
     route_topic = '/lg_mirror/{}/active_routes'.format(device_id)
 

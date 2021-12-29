@@ -7,6 +7,7 @@ from .constants import MIRROR_ACTIVITY_TYPE
 from .constants import MIRROR_TOUCH_CONFIG_KEY
 from lg_common.helpers import route_touch_to_viewports
 from lg_common.managed_window import ManagedWindow
+from lg_msg_defs.msg import RoutedEvdevEvents
 
 
 def absolute_geometry(window):
@@ -65,13 +66,13 @@ class TouchRouter:
         self.spacenav_mode = False
         self.spacenav_exclusion_rects = []
         self.spacenav_viewport = 'fake_wall_a'
+        self.spacenavving = False
         self.non_multitouch_activities = [
             "streetview",
             "cesium",
             "unity",
             "panovideo",
         ]
-        self.publish_cb = None
         self.lock = threading.Lock()
 
     def handle_service_request(self, req):
@@ -96,33 +97,39 @@ class TouchRouter:
                 self.touchmenu_geometry = ManagedWindow.lookup_viewport_geometry('touchscreen')
 
     def handle_touch_event(self, msg):
+        routed = RoutedEvdevEvents(events=msg.events)
         try:
             with self.lock:
-                if not self.spacenav_mode:
-                    return
+                if len(self.route_viewports) == 0:
+                    routed.routes = self.default_viewports
+                else:
+                    routed.routes = self.route_viewports
+
+                if not self.spacenavving and not self.spacenav_mode:
+                    return  # Bypass re-routing when not in spacenav mode or already re-routed.
 
                 events = msg.events
-                if not any((is_touch_btn_event(e) for e in events)):
-                    return  # We only care about messages with touch button events.
-
-                touch_btn_value = next((e.value for e in events if is_touch_btn_event(e)))
-                rospy.loginfo(f'touch value: {touch_btn_value}')
-
-                if touch_btn_value == 0:
-                    rospy.loginfo('reset')
-                    self.publish_cb(frozenset([self.spacenav_viewport]))
+                button = next((e for e in events if is_touch_btn_event(e)), None)
+                if button is None:
+                    if self.spacenavving:
+                        routed.routes = [self.spacenav_viewport]  # Continue routing to nav viewport.
+                    return
+                elif button.value == 0:
+                    if self.spacenavving:
+                        routed.routes = [self.spacenav_viewport]  # Route last message to nav viewport.
+                    self.spacenavving = False
                     return
 
-                x_scale = 3840 / 4095
-                y_scale = 2160 / 4095
+                # Hereafter we are handling a new touch, figure out where to route it.
+                x_scale = 3840 / 4095  # TODO: real scale from device
+                y_scale = 2160 / 4095  # TODO: real scale from device
                 x, y = None, None
                 for event in events:
                     if event.type == 0x03:  # EV_ABS
-                        if event.code == 0:  # ABS_X
+                        if event.code == 0x00:  # ABS_X
                             x = event.value * x_scale
-                        elif event.code == 1:  # ABS_Y
+                        elif event.code == 0x01:  # ABS_Y
                             y = event.value * y_scale
-                rospy.loginfo(f'touch coordinate x: {x} y: {y}')
 
                 rects = self.spacenav_exclusion_rects.copy()
                 if self.touchmenu_visible:
@@ -131,12 +138,13 @@ class TouchRouter:
 
                 if is_point_in_rects(x, y, rects):
                     rospy.loginfo('exclusion')
-                    self.publish_cb(frozenset(self.default_viewports))
-                    rospy.sleep(0.3)
                 else:
+                    # Route all events to nav until this touch ends.
+                    self.spacenavving = True
+                    routed.routes = [self.spacenav_viewport]
                     rospy.loginfo('no exclusion')
         finally:
-            self.event_pub.publish(msg)
+            self.event_pub.publish(routed)
 
     def handle_scene(self, publish_cb, scene):
         """
@@ -149,7 +157,6 @@ class TouchRouter:
             scene (dict): Director scene.
         """
         with self.lock:
-            self.publish_cb = publish_cb
             self.spacnav_mode = False
             self.spacenav_exclusion_rects = []
             windows = scene.get('windows', [])
@@ -169,8 +176,8 @@ class TouchRouter:
                 rects = [g for g in rects if g is not None]
                 rects.append(ManagedWindow.lookup_viewport_geometry('touchscreen_button'))
                 self.spacenav_exclusion_rects = rects
-                rospy.loginfo(f'routing to spacenav: {self.spacenav_viewport}')
-                publish_cb(frozenset([self.spacenav_viewport]))
+                #rospy.loginfo(f'routing to spacenav: {self.spacenav_viewport}')
+                #publish_cb(frozenset([self.spacenav_viewport]))
                 return
 
             rospy.loginfo(f'routing to default viewports: {self.default_viewports}')
