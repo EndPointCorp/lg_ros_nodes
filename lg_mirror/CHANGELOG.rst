@@ -5,8 +5,8 @@ Changelog for package lg_mirror
 3.2.0 (2020-05-27)
 ------------------
 
-Forthcoming
------------
+3.4.0 (2022-01-12)
+------------------
 * matt tmp commit, fake spacenav work
 * Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
 * Conditionally route touches to a side screen
