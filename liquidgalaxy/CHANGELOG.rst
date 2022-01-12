@@ -5,6 +5,11 @@ Changelog for package liquidgalaxy
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* Contributors: Jacob Minshall
+
 3.3.16 (2021-12-16)
 -------------------
 
