@@ -5,8 +5,8 @@ Changelog for package lg_mirror
 3.2.0 (2020-05-27)
 ------------------
 
-Forthcoming
------------
+3.4.1 (2022-02-03)
+------------------
 * touch_router: Real scale from device
 * Contributors: Matt Vollrath
 
