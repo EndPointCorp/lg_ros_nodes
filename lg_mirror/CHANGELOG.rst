@@ -5,6 +5,11 @@ Changelog for package lg_mirror
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* touch_router: Real scale from device
+* Contributors: Matt Vollrath
+
 3.4.0 (2022-01-12)
 ------------------
 * matt tmp commit, fake spacenav work

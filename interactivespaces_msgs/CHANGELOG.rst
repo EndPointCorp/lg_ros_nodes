@@ -5,6 +5,9 @@ Changelog for package interactivespaces_msgs
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+
 3.4.0 (2022-01-12)
 ------------------
 * Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
