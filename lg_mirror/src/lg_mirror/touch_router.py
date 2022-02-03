@@ -8,6 +8,7 @@ from .constants import MIRROR_TOUCH_CONFIG_KEY
 from lg_common.helpers import route_touch_to_viewports
 from lg_common.managed_window import ManagedWindow
 from lg_msg_defs.msg import RoutedEvdevEvents
+from lg_msg_defs.srv import EvdevDeviceInfo
 
 
 def absolute_geometry(window):
@@ -63,6 +64,7 @@ class TouchRouter:
         self.route_viewports = self.default_viewports
         self.touchmenu_visible = True
         self.touchmenu_geometry = ManagedWindow.lookup_viewport_geometry('touchscreen')
+        self.wall_geometry = ManagedWindow.lookup_viewport_geometry('wall_a')
         self.spacenav_mode = False
         self.spacenav_exclusion_rects = []
         self.spacenav_viewport = 'fake_wall_a'
@@ -74,6 +76,11 @@ class TouchRouter:
             "panovideo",
         ]
         self.lock = threading.Lock()
+
+        svc_name = f"/lg_mirror/default/device_info"
+        rospy.wait_for_service(svc_name)
+        svc = rospy.ServiceProxy(svc_name, EvdevDeviceInfo)
+        self.touchscreen = svc()
 
     def handle_service_request(self, req):
         """
@@ -121,8 +128,8 @@ class TouchRouter:
                     return
 
                 # Hereafter we are handling a new touch, figure out where to route it.
-                x_scale = 3840 / 4095  # TODO: real scale from device
-                y_scale = 2160 / 4095  # TODO: real scale from device
+                x_scale = self.wall_geometry.width / (self.touchscreen.abs_max[0] - self.touchscreen.abs_min[0])
+                y_scale = self.wall_geometry.height / (self.touchscreen.abs_max[1] - self.touchscreen.abs_min[1])
                 x, y = None, None
                 for event in events:
                     if event.type == 0x03:  # EV_ABS
