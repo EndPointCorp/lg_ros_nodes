@@ -164,7 +164,7 @@ class TouchRouter:
             scene (dict): Director scene.
         """
         with self.lock:
-            self.spacnav_mode = False
+            self.spacenav_mode = False
             self.spacenav_exclusion_rects = []
             windows = scene.get('windows', [])
             route_viewports = route_touch_to_viewports(windows, route_touch_key=MIRROR_TOUCH_CONFIG_KEY)
