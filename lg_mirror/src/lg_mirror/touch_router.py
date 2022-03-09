@@ -7,7 +7,7 @@ from .constants import MIRROR_ACTIVITY_TYPE
 from .constants import MIRROR_TOUCH_CONFIG_KEY
 from lg_common.helpers import route_touch_to_viewports
 from lg_common.managed_window import ManagedWindow
-from lg_msg_defs.msg import RoutedEvdevEvents
+from lg_msg_defs.msg import RoutedEvdevEvents, EvdevEvent
 from lg_msg_defs.srv import EvdevDeviceInfo
 
 
@@ -120,22 +120,31 @@ class TouchRouter:
                 if button is None:
                     if self.spacenavving:
                         routed.routes = [self.spacenav_viewport]  # Continue routing to nav viewport.
-                    return
+                    #return
                 elif button.value == 0:
                     if self.spacenavving:
                         routed.routes = [self.spacenav_viewport]  # Route last message to nav viewport.
                     self.spacenavving = False
                     return
 
+                slots = [e.value for e in events if e.type == 0x03 and e.code == 0x2f]
+                rospy.loginfo(f"slots: {slots}")
+                if any(slot > 0 for slot in slots):
+                    rospy.loginfo("it's multitouch!")
+                else:
+                    return  # Only one touch, don't check anything else.
+
+
                 # Hereafter we are handling a new touch, figure out where to route it.
                 x_scale = self.wall_geometry.width / (self.touchscreen.abs_max[0] - self.touchscreen.abs_min[0])
                 y_scale = self.wall_geometry.height / (self.touchscreen.abs_max[1] - self.touchscreen.abs_min[1])
                 x, y = None, None
+                rospy.loginfo(f"events: {events}")
                 for event in events:
                     if event.type == 0x03:  # EV_ABS
-                        if event.code == 0x00:  # ABS_X
+                        if event.code == 0x35:  # ABS_MT_POSITION_X
                             x = event.value * x_scale
-                        elif event.code == 0x01:  # ABS_Y
+                        elif event.code == 0x36:  # ABS_MT_POSITION_Y
                             y = event.value * y_scale
 
                 rects = self.spacenav_exclusion_rects.copy()
@@ -143,11 +152,18 @@ class TouchRouter:
                     rospy.loginfo('adding touchmenu rect')
                     rects.append(self.touchmenu_geometry)
 
+                rospy.loginfo(f'{x}, {y}, {self.touchmenu_geometry}')
                 if is_point_in_rects(x, y, rects):
                     rospy.loginfo('exclusion')
                 else:
                     # Route all events to nav until this touch ends.
                     self.spacenavving = True
+                    if button is None:
+                        fake_button_on = EvdevEvent(type=0x01, code=0x14a, value=1)
+                        routed.events.insert(0, fake_button_on)
+                        fake_button_off = EvdevEvent(type=0x01, code=0x14a, value=0)
+                        fake_events = RoutedEvdevEvents(events=[fake_button_off], routes=routed.routes)
+                        self.event_pub.publish(fake_events)
                     routed.routes = [self.spacenav_viewport]
                     rospy.loginfo('no exclusion')
         finally:
@@ -183,7 +199,7 @@ class TouchRouter:
                 rects = [g for g in rects if g is not None]
                 rects.append(ManagedWindow.lookup_viewport_geometry('touchscreen_button'))
                 self.spacenav_exclusion_rects = rects
-                #rospy.loginfo(f'routing to spacenav: {self.spacenav_viewport}')
+                rospy.loginfo(f'scene routing to spacenav: {self.spacenav_viewport}')
                 #publish_cb(frozenset([self.spacenav_viewport]))
                 return
 
