@@ -45,7 +45,6 @@ class MultiPanFix(object):
                 twist.linear.z = -twist.linear.z
                 print(f'canceling zoom {twist.linear.z}')
             # do not reset zoom if under 15 tilt, making it zoom faster to cancel out pan :)
-            print("toma")
             if self.tilt > 15:
                 twist.linear.z = 0.0000001
         print(f"twist out zoom_pan x: {twist.linear.x}")
