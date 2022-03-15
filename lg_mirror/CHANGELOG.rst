@@ -5,6 +5,12 @@ Changelog for package lg_mirror
 3.2.0 (2020-05-27)
 ------------------
 
+Forthcoming
+-----------
+* Update touch_router to use ABS_MT_POSITION_X and Y
+* Fix typo in touch router
+* Contributors: Alejandro Ramon, Matt Vollrath
+
 3.4.1 (2022-02-03)
 ------------------
 * touch_router: Real scale from device
