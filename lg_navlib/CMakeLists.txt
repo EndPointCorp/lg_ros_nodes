@@ -17,7 +17,10 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
+  scripts/nav_mode
+  scripts/navtransform
   scripts/nav_mode.py
+  scripts/navtransform.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
