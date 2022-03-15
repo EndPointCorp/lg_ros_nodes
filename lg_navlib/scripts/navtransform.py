@@ -27,10 +27,13 @@ class MultiPanFix(object):
         tiltness = min(1.0, max(0.0, self.tilt / 90))
         print(f"tilt: {self.tilt} tiltness: {tiltness}")
 
+        if twist.linear.z != 0:
+            twist.linear.x = twist.linear.x * (1 - tiltness) + down * tiltness
+            twist.linear.z *= 1.0 - tiltness
         #twist.linear.x = tiltness * down if twist.linear.z != 0 else twist.linear.x * (1 + tiltness)
         #twist.linear.x *= 1 + tiltness
         #twist.linear.y *= 1 + tiltness
-        twist.linear.z *= 1.0 - tiltness
+        #twist.linear.x = twist.linear.x * (1.0 if twist.linear.z == 0 else 1 + tiltness)
         self.puber.publish(twist)
         """
         # pan for zoom (won't be used if panning before zoom)
