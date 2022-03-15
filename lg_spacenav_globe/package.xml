@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_spacenav_globe</name>
-  <version>3.4.1</version>
+  <version>3.5.0</version>
   <description>Spacenavigator input normalizer for google maps</description>
 
   <maintainer email="lg@endpoint.com">End Point LG</maintainer>

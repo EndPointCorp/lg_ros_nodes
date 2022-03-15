@@ -2,8 +2,8 @@
 Changelog for package lg_navlib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.5.0 (2022-03-15)
+------------------
 * Merge pull request `#438 <https://github.com/endpointcorp/lg_ros_nodes/issues/438>`_ from EndPointCorp/navtransform
   Navtransform implementation
 * build navtransform and symlinks
