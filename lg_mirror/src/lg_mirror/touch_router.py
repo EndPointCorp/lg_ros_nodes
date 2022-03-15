@@ -133,9 +133,9 @@ class TouchRouter:
                 x, y = None, None
                 for event in events:
                     if event.type == 0x03:  # EV_ABS
-                        if event.code == 0x00:  # ABS_X
+                        if event.code == 0x35:  # ABS_MT_POSITION_X
                             x = event.value * x_scale
-                        elif event.code == 0x01:  # ABS_Y
+                        elif event.code == 0x36:  # ABS_MT_POSITION_Y
                             y = event.value * y_scale
 
                 rects = self.spacenav_exclusion_rects.copy()
