@@ -30,51 +30,7 @@ class MultiPanFix(object):
         if twist.linear.z != 0:
             twist.linear.x = twist.linear.x * (1 - tiltness) + down * tiltness
             twist.linear.z *= 1.0 - tiltness
-        #twist.linear.x = tiltness * down if twist.linear.z != 0 else twist.linear.x * (1 + tiltness)
-        #twist.linear.x *= 1 + tiltness
-        #twist.linear.y *= 1 + tiltness
-        #twist.linear.x = twist.linear.x * (1.0 if twist.linear.z == 0 else 1 + tiltness)
         self.puber.publish(twist)
-        """
-        # pan for zoom (won't be used if panning before zoom)
-        if abs(twist.linear.z) > self.min_zoom and self.altitude < self.globe_altitude and self.tilt >= 1:
-            # no tilting/rotating while zooming.
-            twist.angular.z = 0.0
-            twist.angular.x = 0.0
-            twist.angular.y = 0.0
-
-            # mathit
-            #twist.linear.x = (twist.linear.z * self.altitude) / (1080 / (91 - self.tilt))
-
-            # print(f"tilt: {self.tilt}, altitude: {self.altitude}")
-            tilt_varying_zoom = (twist.linear.z / 90) * max(((self.tilt + (2 * (self.tilt - 45))) + 15), self.tilt * 0.0001)
-            # factor in tilt on altitude multiplier
-            tilt_altitude = self.altitude * self.tilt / 90
-            twist.linear.x = -tilt_varying_zoom * tilt_altitude
-            # print(f'tvz: {tilt_varying_zoom}, ta: {tilt_altitude}, out_pan_x: {twist.linear.x}')
-            # test
-            #twist.linear.x = -(twist.linear.z / 90) * (self.altitude * self.tilt / 90) * (self.tilt + (self.tilt ** 2 / 90))
-            print(f"in_zoom: {twist.linear.z}, out pan x: {twist.linear.x}")
-
-            # zoom less at higher tilts when panning
-            if self.tilt < 90 and self.altitude < self.globe_altitude:
-                twist.linear.z = 90 * twist.linear.z / (90 - self.tilt)
-                print(f"zoom corrected to {twist.linear.z}")
-
-        # correct tilt towards 0 when zooming out past an altitude so earth will be centered on screen
-        if twist.linear.z > self.min_zoom and self.altitude > self.globe_altitude and self.tilt > 1:
-            twist.angular.y = 0.1   #self.altitude / self.globe_altitude
-            print(f"tilt: {self.tilt}, tilt correct: {twist.angular.y}")
-
-        # no zoom over 90 tilt
-        if self.tilt >= 90:
-            twist.linear.z = -0.00000000001
-            print(f'tilt: {self.tilt} so zoom: {twist.linear.z}')
-
-        # publish all changed and unchanged
-        print(f"twist out: {twist}")
-        self.puber.publish(twist)
-        """
 
 
 if __name__ == '__main__':
