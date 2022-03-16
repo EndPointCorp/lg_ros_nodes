@@ -2,6 +2,7 @@
 
 set -e
 
+cd "$(dirname "$0")/.."
 ./scripts/init_workspace
 
 # if there's an appctl directory behind us, link it in
