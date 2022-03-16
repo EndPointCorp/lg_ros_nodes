@@ -37,7 +37,7 @@ def parse_config():
     """
     config_file = 'scripts/init.cfg'
     if not os.path.exists(config_file):
-        print('WARNING, no %s found, using possibly outdated configuration' % config_file)
+        print(f"WARNING, no {config_file} found, using possibly outdated configuration")
         return  # rely on hard coded values... maybe an exception would work
     # setting these globals
     global IGNORE_DIRS
@@ -186,7 +186,7 @@ def check_validity():
     for needed in NEEDED_DIRS:
         if needed not in links:
             passed = False
-            print("############## WARNING catkin/src SHOULD HAVE %s LINK ##############" % needed)
+            print(f"############## WARNING catkin/src SHOULD HAVE {needed} LINK ##############")
     if passed:
         print("Successfully completed workspace initialization")
 
