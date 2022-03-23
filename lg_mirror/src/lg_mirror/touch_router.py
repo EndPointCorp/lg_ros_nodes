@@ -70,10 +70,7 @@ class TouchRouter:
         self.spacenav_viewport = 'fake_wall_a'
         self.spacenavving = False
         self.non_multitouch_activities = [
-            "streetview",
-            "cesium",
-            "unity",
-            "panovideo",
+            "unity"
         ]
         self.lock = threading.Lock()
 
@@ -179,7 +176,7 @@ class TouchRouter:
             if not any((w['activity'] in self.non_multitouch_activities for w in windows)):
                 # It's Earth!  At least a little bit.
                 self.spacenav_mode = True
-                rects = [absolute_geometry(w) for w in windows if w['activity'] != 'earth']
+                rects = [absolute_geometry(w) for w in windows if w['activity'] not in ('earth', 'cesium', 'streetview', 'panovideo', 'panoviewer', 'unity')]
                 rects = [g for g in rects if g is not None]
                 rects.append(ManagedWindow.lookup_viewport_geometry('touchscreen_button'))
                 self.spacenav_exclusion_rects = rects
