@@ -28,8 +28,8 @@ Changelog for package lg_replay
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.5.1 (2022-03-24)
+------------------
 * 3.5.0
 * bump changelogs
 * 3.4.1

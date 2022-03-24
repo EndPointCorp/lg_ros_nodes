@@ -50,8 +50,8 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
-Forthcoming
------------
+3.5.1 (2022-03-24)
+------------------
 * Merge pull request `#440 <https://github.com/endpointcorp/lg_ros_nodes/issues/440>`_ from EndPointCorp/nav_mode_earth_state
   Nav mode earth state
 * Add actvities to ros_param get statement

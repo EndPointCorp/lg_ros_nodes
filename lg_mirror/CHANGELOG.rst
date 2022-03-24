@@ -35,8 +35,8 @@ Changelog for package lg_mirror
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.5.1 (2022-03-24)
+------------------
 * Update to touch_router.py to fix absolute_geometry detection
 * 3.5.0
 * bump changelogs

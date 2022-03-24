@@ -47,8 +47,8 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.5.1 (2022-03-24)
+------------------
 * Merge pull request `#440 <https://github.com/endpointcorp/lg_ros_nodes/issues/440>`_ from EndPointCorp/nav_mode_earth_state
   Nav mode earth state
 * untested unknown how this will work!

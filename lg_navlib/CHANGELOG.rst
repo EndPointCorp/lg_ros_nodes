@@ -34,8 +34,8 @@ Changelog for package lg_navlib
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.5.1 (2022-03-24)
+------------------
 * 3.5.0
 * bump changelogs
 * Merge pull request `#438 <https://github.com/endpointcorp/lg_ros_nodes/issues/438>`_ from EndPointCorp/navtransform
