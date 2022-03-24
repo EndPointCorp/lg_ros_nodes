@@ -50,6 +50,44 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
+Forthcoming
+-----------
+* Merge pull request `#440 <https://github.com/endpointcorp/lg_ros_nodes/issues/440>`_ from EndPointCorp/nav_mode_earth_state
+  Nav mode earth state
+* Add actvities to ros_param get statement
+* untested unknown how this will work!
+* 3.5.0
+* bump changelogs
+* 3.4.1
+* Changelogs
+* 3.4.0
+* bump changelogs
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* 3.3.15
+* bump changelogs
+* new pro handling
+* 3.3.14
+* changelogs
+* 3.3.13
+* bump changelogs
+* Tino earth interface (`#434 <https://github.com/endpointcorp/lg_ros_nodes/issues/434>`_)
+  * fixed some bugs, changed some logic, hacked the validation file 3d_layer_1
+  * Fixed some bugs, changed some logic, changed the validation file 3d_layer_1
+  * changed a bug introuduced when retyping a line
+  * added files
+  * added menu open
+  * cleaner
+  * Delete init_workspace
+  * Revert "Merge branch 'tino-earth-interface' of github.com:/EndPointCorp/lg_ros_nodes into tino-earth-interface"
+  This reverts commit ad948e851daa9acb23dcf080d2ed87234a5308ff, reversing
+  changes made to 180d18c0336da1639275e1cf0ed0f372a88e5117.
+  * Update toggle_layer.bash
+  * Update toggle_layer.bash
+  * Update init_workspace
+* Contributors: Alexis Sarthou, Jacob Minshall, Matt Vollrath, Tino, Will Plaut
+
 3.3.12 (2021-08-10)
 -------------------
 

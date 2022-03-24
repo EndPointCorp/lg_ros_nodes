@@ -47,6 +47,41 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#440 <https://github.com/endpointcorp/lg_ros_nodes/issues/440>`_ from EndPointCorp/nav_mode_earth_state
+  Nav mode earth state
+* untested unknown how this will work!
+* 3.5.0
+* bump changelogs
+* 3.4.1
+* Changelogs
+* 3.4.0
+* bump changelogs
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* Merge branch 'touchscreen_toggle_bool' of github.com:endpointcorp/lg_ros_nodes
+* 3.3.15
+* bump changelogs
+* now uses a bool and can use any viewport / url
+* 3.3.14
+* changelogs
+* remove debugging
+* use touchscreen_button viewport
+* wait longer, maybe fix test
+* link
+* removing actual_button for browser based and adding to cmake
+* button is now a chrome app
+* make the linter happy
+* remove debugging
+* fix relaunch for button
+* actual button and ros node added
+* moved button to own file and set touch layer
+* 3.3.13
+* bump changelogs
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
 3.3.12 (2021-08-10)
 -------------------
 

@@ -34,6 +34,32 @@ Changelog for package lg_navlib
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* 3.5.0
+* bump changelogs
+* Merge pull request `#438 <https://github.com/endpointcorp/lg_ros_nodes/issues/438>`_ from EndPointCorp/navtransform
+  Navtransform implementation
+* build navtransform and symlinks
+* remove comments
+* Ready for next steps navtransform
+* add a navtransform_v1 script created by matt and tino
+* 3.4.1
+* Changelogs
+* 3.4.0
+* bump changelogs
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* 3.3.15
+* bump changelogs
+* 3.3.14
+* changelogs
+* nav_mode.py README
+* 3.3.13
+* bump changelogs
+* Contributors: Alejandro Ramon, Jacob Minshall, Matt Vollrath, Will Plaut
+
 3.3.12 (2021-08-10)
 -------------------
 
