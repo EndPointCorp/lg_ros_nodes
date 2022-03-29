@@ -50,8 +50,8 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
-Forthcoming
------------
+3.5.2 (2022-03-29)
+------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
 * Contributors: Galaxy Admin
 
