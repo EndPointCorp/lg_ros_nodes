@@ -44,9 +44,31 @@
     toggle.publish(b);
   };
 </script>
+<style>
+  body {
+      overflow: hidden; /* Hide scrollbars */
+  }
+  button {
+      border: 0;
+      background: black;
+      border-radius: 5px;
+      padding: 5px;
+      color: #fff;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    img {
+      display: inline-block;
+      vertical-align: middle;
+      width: 1.5em;
+      height: 1.5em;
+      margin-right: 0.5em;
+    }
+                                                                    
+</style>
 </head>
 
 <body>
-    <p onclick="pub_toggle()">Toggle touchscreen</p>
+  <button onclick="pub_toggle()"><img src="vp-icon.svg"/>Touchscreen</button>
 </body>
 </html>
