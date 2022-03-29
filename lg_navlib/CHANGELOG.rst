@@ -34,6 +34,15 @@ Changelog for package lg_navlib
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#441 <https://github.com/endpointcorp/lg_ros_nodes/issues/441>`_ from EndPointCorp/navtransform_fixes
+  Working navtransform
+* Further improvements to navtransform ros node, confirmed with testing at CBRE
+* navtransform.py: add rotation fix +
+* navtransform.py: add tilt fixes, normalize names
+* Contributors: Alejandro Ramon, Jandro, Tino
+
 3.5.1 (2022-03-24)
 ------------------
 * 3.5.0

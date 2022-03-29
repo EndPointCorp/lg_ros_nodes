@@ -35,6 +35,11 @@ Changelog for package lg_mirror
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin
+
 3.5.1 (2022-03-24)
 ------------------
 * Update to touch_router.py to fix absolute_geometry detection
