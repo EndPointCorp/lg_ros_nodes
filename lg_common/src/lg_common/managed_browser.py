@@ -13,7 +13,6 @@ from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'
 DEFAULT_ARGS = [
-    '--enable-gpu-rasterization',
     '--no-first-run',
     '--no-sandbox',
     '--test-type',  # only needed to ignore --no-sandbox's warning message
@@ -28,13 +27,16 @@ DEFAULT_ARGS = [
     '--allow-running-insecure-content',
     '--disable-touch-editing',
     '--v=1',
-    '--enable-webgl',
-    '--ignore-gpu-blacklist',
     '--touch-events=enabled',
     '--disable-pinch',
     '--overscroll-history-navigation=0',
     '--autoplay-policy=no-user-gesture-required',
     '--check-for-update-interval=1209600',
+    '--ignore-gpu-blacklist',
+    '--ignore-gpu-blocklist',
+    '--enable-gpu-rasterization',
+    '--simulate-outdated-no-au=\'Tue, 31 Dec 2099 23:59:59 GMT\'',
+    '--enable-features=RawDraw,VaapiVideoDecoder,VaapiVideoEncoder,CanvasOopRasterization',
 ]
 
 
