@@ -28,6 +28,11 @@ Changelog for package lg_sv
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Fixed the streetview issues caused by duplicate CORS headers
+* Contributors: Kannan Ponnusamy
+
 3.5.2 (2022-03-29)
 ------------------
 

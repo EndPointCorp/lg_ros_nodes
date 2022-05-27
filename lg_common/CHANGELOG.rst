@@ -47,6 +47,11 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Update default managed_browser flags to support newer browsers
+* Contributors: Galaxy Admin
+
 3.5.2 (2022-03-29)
 ------------------
 * Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
