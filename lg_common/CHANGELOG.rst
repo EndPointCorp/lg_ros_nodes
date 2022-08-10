@@ -47,6 +47,11 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Remove rawdraw feature from managed browsers, add other additional flags for performance
+* Contributors: Alejandro Ramon
+
 3.5.3 (2022-05-27)
 ------------------
 * Update default managed_browser flags to support newer browsers

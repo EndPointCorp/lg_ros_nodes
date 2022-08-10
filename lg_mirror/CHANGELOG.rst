@@ -35,6 +35,11 @@ Changelog for package lg_mirror
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* fix for touchscreen issues on lgone
+* Contributors: Galaxy Admin
+
 3.5.3 (2022-05-27)
 ------------------
 
