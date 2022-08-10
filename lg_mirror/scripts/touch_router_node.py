@@ -13,7 +13,6 @@ from lg_msg_defs.srv import TouchRoutes
 from lg_common.helpers import run_with_influx_exception_handler
 from std_msgs.msg import Bool
 
-
 NODE_NAME = 'lg_mirror_router'
 
 
@@ -52,7 +51,8 @@ def main():
     on_new_scene(scene_cb)
 
     rospy.Subscriber('/touchscreen/toggle', Bool, router.handle_touchmenu_state, queue_size=100)
-    rospy.Subscriber(f'/lg_mirror/{device_id}/raw_events', EvdevEvents, router.handle_touch_event, queue_size=100)
+    events_topic = rospy.get_param('~events_topic', 'events')
+    rospy.Subscriber(f'/lg_mirror/{device_id}/{events_topic}', EvdevEvents, router.handle_touch_event, queue_size=100)
 
     rospy.spin()
 

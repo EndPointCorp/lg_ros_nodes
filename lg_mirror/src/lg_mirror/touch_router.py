@@ -140,7 +140,7 @@ class TouchRouter:
                     rospy.loginfo('adding touchmenu rect')
                     rects.append(self.touchmenu_geometry)
 
-                if is_point_in_rects(x, y, rects):
+                if x is not None and y is not None and is_point_in_rects(x, y, rects):
                     rospy.loginfo('exclusion')
                 else:
                     # Route all events to nav until this touch ends.
@@ -177,8 +177,8 @@ class TouchRouter:
                 # It's Earth!  At least a little bit.
                 self.spacenav_mode = True
                 rects = [absolute_geometry(w) for w in windows if w['activity'] not in ('earth', 'cesium', 'streetview', 'panovideo', 'panoviewer', 'unity')]
-                rects = [g for g in rects if g is not None]
                 rects.append(ManagedWindow.lookup_viewport_geometry('touchscreen_button'))
+                rects = [g for g in rects if g is not None]
                 self.spacenav_exclusion_rects = rects
                 #rospy.loginfo(f'routing to spacenav: {self.spacenav_viewport}')
                 #publish_cb(frozenset([self.spacenav_viewport]))
