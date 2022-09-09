@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>rfid_scanner</name>
-  <version>3.5.4</version>
+  <version>3.5.5</version>
   <description>The rfid_scanner package</description>
 
   <author email="jacob@endpoint.com">Jacob Minshall</author>

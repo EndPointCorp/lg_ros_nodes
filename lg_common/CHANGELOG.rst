@@ -47,8 +47,8 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.5.5 (2022-09-09)
+------------------
 * scalable png, grey background
 * Contributors: Constante "Tino" Gonzalez
 
