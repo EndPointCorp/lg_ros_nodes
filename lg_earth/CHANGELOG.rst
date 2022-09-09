@@ -50,6 +50,11 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
+Forthcoming
+-----------
+* Remove not used toggle layer scripts + Add Tino's shiny toggle_layer script
+* Contributors: Kannan Ponnusamy
+
 3.5.4 (2022-08-10)
 ------------------
 
