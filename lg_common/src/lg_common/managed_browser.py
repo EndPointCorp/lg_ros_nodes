@@ -37,9 +37,7 @@ DEFAULT_ARGS = [
     '--enable-gpu-rasterization',
     '--simulate-outdated-no-au=\'Tue, 31 Dec 2099 23:59:59 GMT\'',
     '--enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOopRasterization',
-    '--use-gl=desktop',
     '--disable-gpu-driver-bug-workarounds',
-    '--enable-zero-copy',
     '--disable-features=UseChromeOSDirectVideoDecoder',
 ]
 
