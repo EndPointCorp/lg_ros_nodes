@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+./scripts/init_workspace
+
+# if there's an appctl directory behind us, link it in
+[ -e ../appctl/appctl ] && ./scripts/init_workspace -x ${PWD}/../appctl/appctl
