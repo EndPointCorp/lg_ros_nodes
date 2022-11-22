@@ -47,8 +47,8 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.6.0 (2022-11-22)
+------------------
 * add png image for touchscreen toggle button
 * Remove chrome options that are causing issues with scene performance
 * Contributors: Alejandro Ramon, Constante "Tino" Gonzalez

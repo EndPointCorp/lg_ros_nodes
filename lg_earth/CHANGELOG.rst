@@ -50,8 +50,8 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
-Forthcoming
------------
+3.6.0 (2022-11-22)
+------------------
 * Merge pull request `#445 <https://github.com/EndPointCorp/lg_ros_nodes/issues/445>`_ from EndPointCorp/mvollrath/nav_sensitivity_conditions
   Always write spacenav args
 * Always write spacenav args

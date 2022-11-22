@@ -30,8 +30,8 @@ Changelog for package lg_media
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.6.0 (2022-11-22)
+------------------
 * Use browser for media_launcher
 * Contributors: Galaxy Admin
 
