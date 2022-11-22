@@ -50,6 +50,20 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
+Forthcoming
+-----------
+* Merge pull request `#445 <https://github.com/EndPointCorp/lg_ros_nodes/issues/445>`_ from EndPointCorp/mvollrath/nav_sensitivity_conditions
+  Always write spacenav args
+* Always write spacenav args
+  We may omit the device path, but still want sensitivity tweaks.
+* Contributors: Jandro, Matt Vollrath
+
+* Merge pull request `#445 <https://github.com/EndPointCorp/lg_ros_nodes/issues/445>`_ from EndPointCorp/mvollrath/nav_sensitivity_conditions
+  Always write spacenav args
+* Always write spacenav args
+  We may omit the device path, but still want sensitivity tweaks.
+* Contributors: Jandro, Matt Vollrath
+
 3.5.5 (2022-09-09)
 ------------------
 * Remove not used toggle layer scripts + Add Tino's shiny toggle_layer script
