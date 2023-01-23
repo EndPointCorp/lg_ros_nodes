@@ -25,9 +25,16 @@ def main():
     print("Publish twist to: " + twist_topic)
 
     def handler(data):
-
         try:
             recived = byteify(json.loads(data))
+
+            if b'trans' in recived:
+                recived['trans'] = recived[b'trans']
+                recived.pop(b'trans')
+
+            if b'rot' in recived:
+                recived['rot'] = recived[b'rot']
+                recived.pop(b'rot')
 
             if 'trans' in recived and 'rot' in recived:
                 # Send joystic data
