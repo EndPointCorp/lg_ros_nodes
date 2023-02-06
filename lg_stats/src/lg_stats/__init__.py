@@ -7,3 +7,4 @@ from .submitters import Submitter
 from .submitters import InfluxDirect
 from .submitters import InfluxTelegraf
 from .submitters import InfluxMock
+from .stats_handler import StatsHandler
