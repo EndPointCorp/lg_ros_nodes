@@ -13,6 +13,11 @@ class StatsHandler():
     def handle_director(self, msg):
         scene = json.loads(msg.message)
         print(f"got a new scene name: '{scene['name']}'")
+        if scene['slug'] == 'attract-loop-break':
+            # ignore this, if it's from the attract loop it
+            # will publish activity=false and we'll handle
+            # it there.
+            return
         if self.last_presentation_start_time is not None:
             self.write_data()
         self.last_presentation_start_time = time.time()
@@ -23,9 +28,9 @@ class StatsHandler():
 
     def handle_activity(self, msg):
         print(f'got activity: {msg.data}')
-        self.active_state = msg.data
         if self.active_state == msg.data:
             return  # nothing to do here
+        self.active_state = msg.data
         if self.active_state is False:
             self.active_state = False
             self.write_data()
