@@ -9,7 +9,6 @@ from std_msgs.msg import Bool
 def main():
     rospy.init_node('director_stats')
 
-    print("helloo")
     stats_handler = StatsHandler()
 
     rospy.Subscriber('/director/scene', GenericMessage, stats_handler.handle_director)
