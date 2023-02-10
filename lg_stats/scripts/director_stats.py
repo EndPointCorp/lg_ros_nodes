@@ -8,6 +8,7 @@ from std_msgs.msg import Bool
 
 def main():
     rospy.init_node('director_stats')
+    print('asdf')
 
     stats_handler = StatsHandler()
 
