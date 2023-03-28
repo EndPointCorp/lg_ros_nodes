@@ -4,7 +4,7 @@ pipeline {
   }
   agent { 
     dockerfile {
-      args "-u 0 -v /var/lib/jenkins/.ssh/:/root/ssh --entrypoint=''"
+      args "-u 0 -v /var/lib/jenkins/.ssh/:/root/ssh"
     }
   }
   stages {
