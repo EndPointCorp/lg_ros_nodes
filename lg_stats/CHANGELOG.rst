@@ -28,8 +28,8 @@ Changelog for package lg_stats
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.7.0 (2023-03-30)
+------------------
 * Merge pull request `#446 <https://github.com/endpointcorp/lg_ros_nodes/issues/446>`_ from EndPointCorp/director_stats
   director stats
 * fixed up publishing of stats and cleaned logging
