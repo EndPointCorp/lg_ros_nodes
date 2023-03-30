@@ -28,6 +28,25 @@ Changelog for package lg_stats
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#446 <https://github.com/endpointcorp/lg_ros_nodes/issues/446>`_ from EndPointCorp/director_stats
+  director stats
+* fixed up publishing of stats and cleaned logging
+* added back debugging, think stats is working
+* using write_influx_point_to_telegraf to send data over
+* set after checking and ignore attract loop break scene
+* some extra debugging and fixed active_state
+* director stats
+  to run this on a system, try the commands below:
+  rsync -r lg_stats 42-a:catkin_ws/src/lg_stats
+  ssh 42-a
+  cd catkin_ws/
+  catkin_make
+  source devel/setup.bash
+  rosrun lg_stats director_stats.py
+* Contributors: Jacob Minshall
+
 3.6.0 (2022-11-22)
 ------------------
 
