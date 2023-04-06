@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>lg_navlib</name>
-  <version>3.7.0</version>
+  <version>3.7.1</version>
   <description>Backend for lg_navlib user navigation library.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>

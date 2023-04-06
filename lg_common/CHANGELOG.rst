@@ -47,8 +47,8 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.7.1 (2023-04-06)
+------------------
 * small fixes to get static browser working properly
 * Contributors: Jacob Minshall
 
