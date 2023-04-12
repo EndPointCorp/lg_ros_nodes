@@ -13,21 +13,21 @@ function StreetviewClient(ros, streetView) {
 
   this.povTopic = new ROSLIB.Topic({
     ros: ros,
-    name: '/streetview_old/pov',
+    name: '/streetview/pov',
     messageType: 'geometry_msgs/Quaternion',
     throttle_rate: 16,
     queue_length: 1,
   });
   this.panoTopic = new ROSLIB.Topic({
     ros: ros,
-    name: '/streetview_old/panoid',
+    name: '/streetview/panoid',
     messageType: 'std_msgs/String',
     throttle_rate: 16,
     queue_length: 1,
   });
   this.metadataTopic = new ROSLIB.Topic({
     ros: ros,
-    name: '/streetview_old/metadata',
+    name: '/streetview/metadata',
     messageType: 'std_msgs/String',
     throttle_rate: 16,
     queue_length: 1,

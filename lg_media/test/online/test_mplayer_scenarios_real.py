@@ -68,7 +68,7 @@ class TestMediaService(object):
 
         """
         rospy.wait_for_service(SRV_QUERY)
-        proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo)
+        proxy = rospy.ServiceProxy(SRV_QUERY, MediaAppsInfo, persistent=False)
         r = proxy()
         assert isinstance(r, MediaAppsInfoResponse)
         data = json.loads(r.json)

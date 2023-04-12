@@ -56,7 +56,13 @@ def main():
     x_available_or_raise(timeout)
 
     slug = "lg_panovideo__" + str(geometry).replace('\n', '_').replace(': ', '_')
-    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk)
+    managed_browser = ManagedAdhocBrowser(
+        url=url,
+        geometry=geometry,
+        slug=slug,
+        kiosk=kiosk,
+        layer=ManagedWindow.LAYER_NORMAL,
+    )
 
     # set initial state
     state = ApplicationState.STOPPED

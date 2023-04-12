@@ -34,7 +34,8 @@ class TestManagedAdhocBrowser(unittest.TestCase):
 
         self.window = ManagedWindow(geometry=self.geometry,
                                     w_instance="Mplayer \\({}\\)".format(self.slug),
-                                    w_class="Mplayer \\({}\\)".format(self.slug)
+                                    w_class="Mplayer \\({}\\)".format(self.slug),
+                                    layer=ManagedWindow.LAYER_ABOVE,
                                     )
 
         self.mam = ManagedMplayer(window=self.window,

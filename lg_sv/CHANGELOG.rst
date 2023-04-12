@@ -2,6 +2,288 @@
 Changelog for package lg_sv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.0 (2020-05-27)
+------------------
+
+3.5.0 (2022-03-15)
+------------------
+
+3.4.1 (2022-02-03)
+------------------
+
+3.4.0 (2022-01-12)
+------------------
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* Contributors: Jacob Minshall
+
+3.3.16 (2021-12-16)
+-------------------
+
+3.3.15 (2021-12-09)
+-------------------
+
+3.3.14 (2021-11-23)
+-------------------
+
+3.3.13 (2021-09-21)
+-------------------
+
+3.7.1 (2023-04-06)
+------------------
+
+3.7.0 (2023-03-30)
+------------------
+
+3.6.0 (2022-11-22)
+------------------
+
+3.5.5 (2022-09-09)
+------------------
+
+3.5.4 (2022-08-10)
+------------------
+
+3.5.3 (2022-05-27)
+------------------
+* Fixed the streetview issues caused by duplicate CORS headers
+* Contributors: Kannan Ponnusamy
+
+3.5.2 (2022-03-29)
+------------------
+
+3.5.1 (2022-03-24)
+------------------
+* 3.5.0
+* bump changelogs
+* 3.4.1
+* Changelogs
+* 3.4.0
+* bump changelogs
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* 3.3.15
+* bump changelogs
+* 3.3.14
+* changelogs
+* 3.3.13
+* bump changelogs
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+3.3.12 (2021-08-10)
+-------------------
+
+3.3.11 (2021-07-23)
+-------------------
+
+3.3.10 (2021-07-22)
+-------------------
+* Normalize ManagedAdhocBrowser layers
+* Contributors: Matt Vollrath
+
+3.3.9 (2021-07-20)
+------------------
+
+3.3.8 (2021-01-29)
+------------------
+
+3.3.7 (2021-01-14)
+------------------
+
+3.3.6 (2021-01-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.5 (2020-12-28)
+------------------
+
+3.3.4 (2020-12-11)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.3 (2020-12-10)
+------------------
+* metedata search broken due to undocumented API being used
+  Doesn't seem to be used anywhere else, need to get API key and change
+  url to https://maps.googleapis.com/maps/api/streetview/metadata?location={lat}%2C{lon}&radius={radius}&key={api_key}
+  grabbed from here: https://stackoverflow.com/questions/42019281/getting-street-view-panoroma-id-from-lat-long-coordinates
+* Contributors: Will Plaut
+
+3.3.2 (2020-12-09)
+------------------
+
+3.3.1 (2020-10-29)
+------------------
+* Remove whitespace to fix the pep8
+* Contributors: Kannan Ponnusamy
+
+3.3.0 (2020-10-21)
+------------------
+* Merge pull request `#431 <https://github.com/EndPointCorp/lg_ros_nodes/issues/431>`_ from EndPointCorp/topic/fix_streetview
+  Fixes to consolidate the streetview experience
+* More cleanup
+* Fix for the streetview navigation problem
+  - Tested the changes on the RDTN box and it's working! Yay!
+* Remove more references to streetview_old
+  - This code block somehow intercepts the director message and lead to
+  the problem with the open source version of viewer
+* Remove more references of streetview_old
+* Remove references of streetview_old from the ros node server
+* Contributors: Kannan Ponnusamy
+
+3.2.9 (2020-09-21)
+------------------
+* Merge pull request `#429 <https://github.com/EndPointCorp/lg_ros_nodes/issues/429>`_ from EndPointCorp/topic/use_opensource_sv_viewer
+  Use opensource streetview viewer by default
+* Use opensource sv viewer by default
+* Contributors: Kannan Ponnusamy
+
+3.2.8 (2020-08-27)
+------------------
+* Add large viewport hack to streetview
+  Use scale tricks to get a legal canvas size.
+  Add parameters:
+  * show_api_links : show the built-in streetview links
+  * large_viewport_hack: for window dimensions > 16384(?)
+* Contributors: Matt Vollrath
+
+3.2.7 (2020-08-25)
+------------------
+
+3.2.6 (2020-07-09)
+------------------
+
+3.2.5 (2020-07-06)
+------------------
+* Merge pull request `#426 <https://github.com/EndPointCorp/lg_ros_nodes/issues/426>`_ from EndPointCorp/topic/sv_user_photospheres
+  Chrome extension and ROS node changes to fix the problems with streetview interface
+* Removed hard-coded path and used rospkg to get it
+* Initial version of chrome extension and ros node changes to fix the
+  streetview problems `#425 <https://github.com/EndPointCorp/lg_ros_nodes/issues/425>`_
+* Contributors: Kannan Ponnusamy
+
+3.2.4 (2020-05-29)
+------------------
+* lg_sv: launcher change to correctly set suffix
+* Contributors: Will Plaut
+
+3.2.3 (2020-05-28)
+------------------
+
+3.2.2 (2020-05-28)
+------------------
+
+3.2.1 (2020-05-27)
+------------------
+* lg_sv: unique slug names with uuid (`#393 <https://github.com/EndPointCorp/lg_ros_nodes/issues/393>`_)
+  * lg_sv: unique slug names with uuid
+  * launcher.py: use viewport instead of uuid
+  * sv: account for empty viewports
+* 3.2.0
+* BSPWM
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin, Neil Elliott, Will Plaut, dkiselev
+
+3.1.12 (2020-05-04)
+-------------------
+
+3.1.11 (2020-05-01)
+-------------------
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+
 3.1.8 (2020-02-06)
 ------------------
 

@@ -17,9 +17,9 @@ NODE_NAME = 'readiness_node'
 
 def main():
     rospy.init_node(NODE_NAME)
-    common_topic_name = '/browser_service/browsers'
-    readiness_topic_name = '/director/ready'
-    window_instances_topic_name = '/director/window/ready'
+    common_topic_name = 'browser_service/browsers'
+    readiness_topic_name = 'director/ready'
+    window_instances_topic_name = 'director/window/ready'
 
     readiness_timeout = rospy.get_param("/readiness/timeout", 10)
 
@@ -27,7 +27,7 @@ def main():
                                           Ready,
                                           queue_size=20)
 
-    timeout_publisher = rospy.Publisher('/director/window/error',
+    timeout_publisher = rospy.Publisher('director/window/error',
                                         String,
                                         queue_size=10)
 
@@ -44,11 +44,11 @@ def main():
     handle_initial_state(readiness_node.save_uscs_message)
     handle_initial_state(readiness_handbrake.handle_uscs_message)
 
-    rospy.Subscriber('/director/scene',
+    rospy.Subscriber('director/scene',
                      GenericMessage,
                      readiness_node.save_uscs_message)
 
-    rospy.Subscriber('/director/scene',
+    rospy.Subscriber('director/scene',
                      GenericMessage,
                      readiness_handbrake.handle_uscs_message)
 
@@ -60,7 +60,7 @@ def main():
                      AdhocBrowsers,
                      readiness_node.aggregate_browser_instances)
 
-    rospy.Service('/readiness_node/ready', NodeReady, readiness_node.node_ready)
+    rospy.Service('readiness_node/ready', NodeReady, readiness_node.node_ready)
 
     rospy.spin()
 

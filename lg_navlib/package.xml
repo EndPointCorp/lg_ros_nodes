@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lg_navlib</name>
+  <version>3.7.1</version>
+  <description>Backend for lg_navlib user navigation library.</description>
+
+  <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
+  <author email="matt@endpoint.com">Matt Vollrath</author>
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>lg_msg_defs</build_depend>
+  <build_depend>message_runtime</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <exec_depend>lg_msg_defs</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <test_depend>rostest</test_depend>
+</package>

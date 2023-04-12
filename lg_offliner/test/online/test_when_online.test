@@ -5,8 +5,8 @@
         <param name="checks" value="['sleep 3','sleep 1','sleep 2']"/>  <!-- 0 returning command, as if online -->
         <!-- messages with subslots (e.g. GenericMessage message.slug) will need more care in processing -->
         <!-- not yet implemented -->
-        <param name="send_on_online" value="/appctl/mode:appctl/Mode-mode:value-tactile;/something/offline:appctl/Mode-mode:value-online_scene"/>
-        <param name="send_on_offline" value="/appctl/mode:appctl/Mode-mode:value-offline;/something/offline:appctl/Mode-mode:value-offline_scene"/>
+        <param name="send_on_online" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-tactile;/something/offline:appctl_msg_defs/Mode-mode:value-online_scene"/>
+        <param name="send_on_offline" value="/appctl/mode:appctl_msg_defs/Mode-mode:value-offline;/something/offline:appctl_msg_defs/Mode-mode:value-offline_scene"/>
     </node>
 
     <!-- Local rosbridge and rosapi. -->

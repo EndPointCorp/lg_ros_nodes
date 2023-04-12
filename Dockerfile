@@ -40,7 +40,9 @@ RUN \
     python-pytest wget \
     python-gst-1.0 \
     python-pip \
+    python-rosdep \
     python-setuptools \
+    python-rosdep \
     python3-pip \
     python3-setuptools \
     python3-defusedxml \
@@ -59,6 +61,7 @@ RUN \
     module-init-tools gdebi-core \
     libxext-dev \
     lsb-core tar libfreeimage3 \
+    openssh-client \
     ros-$ROS_DISTRO-rosapi libudev-dev \
     ros-$ROS_DISTRO-ros-base ros-$ROS_DISTRO-rosbridge-server ros-$ROS_DISTRO-web-video-server \
     ros-$ROS_DISTRO-spacenav-node spacenavd \
@@ -66,6 +69,7 @@ RUN \
     awesome xdg-utils \
     gstreamer1.0-alsa \
  && rm -rf /var/lib/apt/lists/*
+
 
 # Install NodeJS and test dependencies
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
@@ -85,11 +89,12 @@ RUN pip install --no-cache-dir python-coveralls \
     catkin_tools \
     empy \
     pycrypto \
+    pycryptodome \
     gnupg
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
-ENV EARTH_PKG_URL https://roscoe-assets.galaxy.endpoint.com:443/google-earth/google-earth-stable_${GOOGLE_EARTH_VERSION}.deb
+ENV EARTH_PKG_URL https://roscoe-assets.visionport.com:443/google-earth/google-earth-stable_${GOOGLE_EARTH_VERSION}.deb
 RUN mkdir -p /tmp/GE \
  && cd /tmp/GE \
  && wget $EARTH_PKG_URL \
@@ -118,6 +123,10 @@ RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git 
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
 RUN ln -snf /appctl/appctl_msg_defs ${PROJECT_ROOT}/
 
+# clone command_handler
+RUN git clone https://github.com/EndPointCorp/command_handler.git /command_handler
+RUN ln -snf /command_handler ${PROJECT_ROOT}/
+
 # pre-install dependencies for each package
 COPY interactivespaces_msgs/package.xml ${PROJECT_ROOT}/interactivespaces_msgs/package.xml
 COPY lg_activity/package.xml ${PROJECT_ROOT}/lg_activity/package.xml
@@ -132,6 +141,7 @@ COPY lg_mirror/package.xml ${PROJECT_ROOT}/lg_mirror/package.xml
 COPY lg_msg_defs/package.xml ${PROJECT_ROOT}/lg_msg_defs/package.xml
 COPY lg_nav_to_device/package.xml ${PROJECT_ROOT}/lg_nav_to_device/package.xml
 COPY lg_lock/package.xml ${PROJECT_ROOT}/lg_lock/package.xml
+COPY lg_navlib/package.xml ${PROJECT_ROOT}/lg_navlib/package.xml
 COPY lg_offliner/package.xml ${PROJECT_ROOT}/lg_offliner/package.xml
 COPY lg_panovideo/package.xml ${PROJECT_ROOT}/lg_panovideo/package.xml
 COPY lg_pointer/package.xml ${PROJECT_ROOT}/lg_pointer/package.xml

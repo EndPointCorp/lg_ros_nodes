@@ -177,7 +177,6 @@ def parse_args():
             help='a list of any extra paths to ros nodes you want linked to')
     return parser.parse_args()
 
-
 def check_validity():
     """
     Just checks to see if appctl and interactivespaces_msgs exist in catkin/src

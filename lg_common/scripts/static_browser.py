@@ -17,7 +17,8 @@ def main():
 
     geometry = ManagedWindow.get_viewport_geometry()
     url = rospy.get_param('~url', None)
-    command_line_args = rospy.get_param('~command_line_args', '')
+    command_line_args = rospy.get_param('~command_line_args', '').split(',')
+    user_data_dir = rospy.get_param('~user_data_dir', None)
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     extra_logging = rospy.get_param('~extra_logging', False)
     debug_port = rospy.get_param('~debug_port', None)
@@ -41,6 +42,7 @@ def main():
         geometry=geometry,
         url=url,
         command_line_args=command_line_args,
+        user_data_dir=user_data_dir,
         log_stderr=extra_logging,
         force_device_scale_factor=scale_factor,
         remote_debugging_port=debug_port,

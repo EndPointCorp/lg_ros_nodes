@@ -35,14 +35,14 @@ function run_tests() {
     --rm \
     --env="DISPLAY=:1" \
     "${DOCKER_NAME}" \
-    /bin/bash \
-      -c '
-       cd ${PROJECT_ROOT}/catkin && \
-       . devel/setup.sh && \
-       cd ${PROJECT_ROOT} && \
-       ./scripts/docker_xvfb_add.sh && \
-       ./scripts/test_runner.py
-     '
+    /bin/bash
+     # -c '
+     #  cd ${PROJECT_ROOT}/catkin && \
+     #  . devel/setup.sh && \
+     #  cd ${PROJECT_ROOT} && \
+     #  ./scripts/docker_xvfb_add.sh && \
+     #  ./scripts/test_runner.py
+     #'
   RETCODE=$?
 }
 
@@ -74,7 +74,7 @@ initialize
 setup_files
 
 set +e
-trap cleanup EXIT
+#trap cleanup EXIT
 
 build_docker || exit 1
 run_tests

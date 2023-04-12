@@ -20,7 +20,7 @@ class TestPanoIdState(unittest.TestCase):
         panoid_pub = rospy.Publisher(PUB_PATH, String, queue_size=10)
 
         rospy.wait_for_service(SRV_PATH)
-        panoid_srv = rospy.ServiceProxy(SRV_PATH, PanoIdState)
+        panoid_srv = rospy.ServiceProxy(SRV_PATH, PanoIdState, persistent=False)
 
         response = panoid_srv()
         self.assertEqual('', response.panoid)

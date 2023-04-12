@@ -15,6 +15,7 @@ from lg_common.test_helpers import gen_browser_window
 from lg_common.test_helpers import gen_touch_window
 from lg_common.test_helpers import gen_scene
 from lg_common.test_helpers import gen_scene_msg
+from lg_common.test_helpers import wait_for_assert_ge
 
 
 class TestOnboardRouterOnline(unittest.TestCase):
@@ -39,6 +40,7 @@ class TestOnboardRouterOnline(unittest.TestCase):
         time.sleep(1)
         self.visibility_publisher.publish(Bool(data=True))
         time.sleep(1)
+        wait_for_assert_ge(lambda: len(self.activates), 1, 30)
         self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_2_default_viewport_no_route_touch(self):
@@ -58,7 +60,7 @@ class TestOnboardRouterOnline(unittest.TestCase):
         # need to ensure visibility last value flip
         self.visibility_publisher.publish(Bool(data=False))
         self.visibility_publisher.publish(Bool(data=True))
-        time.sleep(1)
+        time.sleep(3)
         self.assertEqual('kiosk', self.activates[-1].strings[0])
 
     def test_3_default_viewport_no_route_touch(self):
@@ -143,4 +145,5 @@ class TestOnboardRouterOnline(unittest.TestCase):
 if __name__ == '__main__':
     import rostest
     rospy.init_node(NAME)
+    time.sleep(3)
     rostest.rosrun(PKG, NAME, TestOnboardRouterOnline)

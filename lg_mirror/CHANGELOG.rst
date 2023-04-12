@@ -2,6 +2,180 @@
 Changelog for package lg_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.0 (2020-05-27)
+------------------
+
+3.5.0 (2022-03-15)
+------------------
+* Update touch_router to use ABS_MT_POSITION_X and Y
+* Fix typo in touch router
+* Contributors: Alejandro Ramon, Matt Vollrath
+
+3.4.1 (2022-02-03)
+------------------
+* touch_router: Real scale from device
+* Contributors: Matt Vollrath
+
+3.4.0 (2022-01-12)
+------------------
+* matt tmp commit, fake spacenav work
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* Conditionally route touches to a side screen
+* Contributors: Jacob Minshall, Matt Vollrath
+
+3.3.16 (2021-12-16)
+-------------------
+
+3.3.15 (2021-12-09)
+-------------------
+
+3.3.14 (2021-11-23)
+-------------------
+
+3.3.13 (2021-09-21)
+-------------------
+
+3.7.1 (2023-04-06)
+------------------
+
+3.7.0 (2023-03-30)
+------------------
+
+3.6.0 (2022-11-22)
+------------------
+
+3.5.5 (2022-09-09)
+------------------
+
+3.5.4 (2022-08-10)
+------------------
+* fix for touchscreen issues on lgone
+* Contributors: Galaxy Admin
+
+3.5.3 (2022-05-27)
+------------------
+
+3.5.2 (2022-03-29)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin
+
+3.5.1 (2022-03-24)
+------------------
+* Update to touch_router.py to fix absolute_geometry detection
+* 3.5.0
+* bump changelogs
+* Update touch_router to use ABS_MT_POSITION_X and Y
+* Fix typo in touch router
+* 3.4.1
+* Changelogs
+* touch_router: Real scale from device
+* 3.4.0
+* bump changelogs
+* matt tmp commit, fake spacenav work
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* 3.3.15
+* bump changelogs
+* Conditionally route touches to a side screen
+* 3.3.14
+* changelogs
+* 3.3.13
+* bump changelogs
+* Contributors: Alejandro Ramon, Jacob Minshall, Matt Vollrath, Will Plaut
+
+3.3.12 (2021-08-10)
+-------------------
+
+3.3.11 (2021-07-23)
+-------------------
+
+3.3.10 (2021-07-22)
+-------------------
+
+3.3.9 (2021-07-20)
+------------------
+
+3.3.8 (2021-01-29)
+------------------
+
+3.3.7 (2021-01-14)
+------------------
+
+3.3.6 (2021-01-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.5 (2020-12-28)
+------------------
+
+3.3.4 (2020-12-11)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.3 (2020-12-10)
+------------------
+
+3.3.2 (2020-12-09)
+------------------
+
+3.3.1 (2020-10-29)
+------------------
+
+3.3.0 (2020-10-21)
+------------------
+
+3.2.9 (2020-09-21)
+------------------
+
+3.2.8 (2020-08-27)
+------------------
+
+3.2.7 (2020-08-25)
+------------------
+
+3.2.6 (2020-07-09)
+------------------
+
+3.2.5 (2020-07-06)
+------------------
+
+3.2.4 (2020-05-29)
+------------------
+
+3.2.3 (2020-05-28)
+------------------
+
+3.2.2 (2020-05-28)
+------------------
+
+3.2.1 (2020-05-27)
+------------------
+* 3.2.0
+* BSPWM
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin, Neil Elliott, dkiselev
+
+3.1.12 (2020-05-04)
+-------------------
+
+3.1.11 (2020-05-01)
+-------------------
+* Fix test webserver port conflicts
+* Contributors: Matt Vollrath
+
+3.1.10 (2020-03-25)
+-------------------
+* Fix multitouch spoofing for TOUCH codes
+  An OS update changed device codes for some touchscreens.  Support both.
+* Contributors: Matt Vollrath
+
+3.1.9 (2020-03-11)
+------------------
+
 3.1.8 (2020-02-06)
 ------------------
 

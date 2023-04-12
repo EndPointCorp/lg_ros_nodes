@@ -21,6 +21,7 @@ include_directories(
 
 catkin_install_python(PROGRAMS
   scripts/stats.py
+  scripts/director_stats.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

@@ -43,8 +43,7 @@ int main(int argc, char** argv) {
   ViewportMapper *viewport_mapper = NULL;
 
   std::stringstream device_info_service;
-  std::stringstream events_topic;
-  std::stringstream route_topic;
+  std::stringstream routed_events_topic;
 
   /* grab parameters */
 
@@ -63,8 +62,7 @@ int main(int argc, char** argv) {
   n.param<std::string>(DEVICE_ID_PARAM, device_id, "default");
 
   device_info_service << "/lg_mirror/" << device_id << "/device_info";
-  events_topic << "/lg_mirror/" << device_id << "/events";
-  route_topic << "/lg_mirror/" << device_id << "/active_routes";
+  routed_events_topic << "/lg_mirror/" << device_id << "/routed_events";
 
   /* discover viewport geometry */
 
@@ -120,10 +118,14 @@ int main(int argc, char** argv) {
     }
   }
 
+	/* initial map to viewport */
+
+	viewport_mapper->Map();
+
   /* instantiate an event relay */
 
-  RosEventRelay relay(n, viewport_name, uinput_device, events_topic.str(), *viewport_mapper, auto_zero);
-  ros::Subscriber relay_sub = n.subscribe(route_topic.str(), 10, &RosEventRelay::HandleRouterMessage, &relay);
+  RosEventRelay relay(n, viewport_name, uinput_device, *viewport_mapper, auto_zero);
+  ros::Subscriber events_sub = n.subscribe(routed_events_topic.str(), 10, &RosEventRelay::HandleRoutedEventsMessage, &relay);
 
   /* react until termination */
 

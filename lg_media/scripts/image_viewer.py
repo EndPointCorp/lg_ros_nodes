@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from threading import Lock
+from threading import Lock, Thread
+from functools import partial
 import json
 import os
 import requests
@@ -14,8 +15,13 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 
 
+def image_coordinates(image):
+    return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
+
+
 def make_key_from_image(image):
-    return "{}_{}_{}_{}_{}".format(image.url, image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
+    return "{}_{}".format(image.url, image_coordinates(image))
+
 
 class Image(ManagedApplication):
     def __init__(self, cmd, window, img_application, img_path, respawn=True):
@@ -32,6 +38,7 @@ class ImageViewer():
         self.lock = Lock()
 
     def director_translator(self, data):
+        rospy.logerr("ZZZ")
         windows_to_add = ImageViews()
         try:
             message = json.loads(data.message)
@@ -63,6 +70,7 @@ class ImageViewer():
                 image.geometry.y = image.geometry.y + offset_geometry.y
                 image.uuid = str(uuid.uuid4())
                 windows_to_add.images.append(image)
+        rospy.logerr(f"ZZZ {windows_to_add}")
         self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
@@ -71,14 +79,23 @@ class ImageViewer():
                 return _image_obj
         return None
 
+    def is_current_coordinates(self, current_images, image):
+        for key_from_image, _image_obj in list(current_images.items()):
+            rospy.logerr(f"ZZZ comparing {'_'.join(key_from_image.split('_')[-4:])} == {image_coordinates(image)}:")
+            if '_'.join(key_from_image.split('_')[-4:]) == image_coordinates(image):
+                return _image_obj
+        return None
+
     def handle_image_views(self, msg):
         with self.lock:
             self._handle_image_views(msg)
 
     def _handle_image_views(self, msg):
+        rospy.logerr("handling image views")
         new_current_images = {}
         images_to_remove = list(self.current_images.values())
         images_to_add = []
+        images_to_remove_delayed = []
         for image in msg.images:
             # rospy.logerr('CURRENT IMAGES: {}\n\n'.format(self.current_images))
             duplicate_image = self.is_in_current_images(self.current_images, image)
@@ -87,21 +104,44 @@ class ImageViewer():
                 images_to_remove.remove(duplicate_image)
                 new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
+            current_coordinate_image = self.is_current_coordinates(self.current_images, image)
+            if current_coordinate_image:
+                rospy.logerr("image matched, sending to background")
+                images_to_remove_delayed.append(current_coordinate_image)
+                images_to_remove.remove(current_coordinate_image)
             rospy.logdebug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
 
-        for image_obj in images_to_remove:
+        def remove_image(image_obj, *args, **kwargs):
             rospy.logerr('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
             if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
+
+        for image_obj in images_to_remove:
+            rospy.logerr('ZZZ removing image object')
+            remove_image(image_obj)
+        for image_obj in images_to_remove_delayed:
+            # TODO grab this list of images, and on a new image, stop these timers if alive and just
+            # kill them images
+            rospy.logerr('ZZZ delaying removal of image')
+            rospy.Timer(rospy.Duration(3), partial(remove_image, image_obj), oneshot=True)
         #images_to_remove = []
-        for image in images_to_add:
-            created_image = None
+        threads = []
+
+        def make_image(image):
             created_image = self._create_image(image)
             new_current_images[make_key_from_image(image)] = created_image
 
+        for image in images_to_add:
+            thread = Thread(target=make_image, args=(image,))
+            threads.append(thread)
+            thread.start()
+        for thread in threads:
+            thread.join()
+
         self.current_images = new_current_images
+        rospy.logerr("finished handling image views")
 
     def _create_image(self, image):
         if image.transparent:

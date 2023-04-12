@@ -2,6 +2,353 @@
 Changelog for package lg_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.0 (2020-05-27)
+------------------
+* Move bspc rule commands further down the stack
+* Manage bspc rules from ManagedWindow
+  lg_wm now just converges on its internal window list.
+* Use lg_wm_send instead of awesome-client
+
+3.5.0 (2022-03-15)
+------------------
+
+3.4.1 (2022-02-03)
+------------------
+
+3.4.0 (2022-01-12)
+------------------
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* Contributors: Jacob Minshall
+
+3.3.16 (2021-12-16)
+-------------------
+* Merge branch 'touchscreen_toggle_bool' of github.com:endpointcorp/lg_ros_nodes
+* now uses a bool and can use any viewport / url
+* Contributors: Jacob Minshall
+
+3.3.15 (2021-12-09)
+-------------------
+
+3.3.14 (2021-11-23)
+-------------------
+* remove debugging
+* use touchscreen_button viewport
+* wait longer, maybe fix test
+* link
+* removing actual_button for browser based and adding to cmake
+* button is now a chrome app
+* make the linter happy
+* remove debugging
+* fix relaunch for button
+* actual button and ros node added
+* moved button to own file and set touch layer
+* Contributors: Jacob Minshall
+
+3.3.13 (2021-09-21)
+-------------------
+
+3.7.1 (2023-04-06)
+------------------
+* small fixes to get static browser working properly
+* Contributors: Jacob Minshall
+
+3.7.0 (2023-03-30)
+------------------
+
+3.6.0 (2022-11-22)
+------------------
+* add png image for touchscreen toggle button
+* Remove chrome options that are causing issues with scene performance
+* Contributors: Alejandro Ramon, Constante "Tino" Gonzalez
+
+* add png image for touchscreen toggle button
+* Remove chrome options that are causing issues with scene performance
+* Contributors: Alejandro Ramon, Constante "Tino" Gonzalez
+
+3.5.5 (2022-09-09)
+------------------
+* scalable png, grey background
+* Contributors: Constante "Tino" Gonzalez
+
+3.5.4 (2022-08-10)
+------------------
+* Remove rawdraw feature from managed browsers, add other additional flags for performance
+* Contributors: Alejandro Ramon
+
+3.5.3 (2022-05-27)
+------------------
+* Update default managed_browser flags to support newer browsers
+* Contributors: Galaxy Admin
+
+3.5.2 (2022-03-29)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin
+
+3.5.1 (2022-03-24)
+------------------
+* Merge pull request `#440 <https://github.com/endpointcorp/lg_ros_nodes/issues/440>`_ from EndPointCorp/nav_mode_earth_state
+  Nav mode earth state
+* untested unknown how this will work!
+* 3.5.0
+* bump changelogs
+* 3.4.1
+* Changelogs
+* 3.4.0
+* bump changelogs
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* Merge branch 'touchscreen_toggle_bool' of github.com:endpointcorp/lg_ros_nodes
+* 3.3.15
+* bump changelogs
+* now uses a bool and can use any viewport / url
+* 3.3.14
+* changelogs
+* remove debugging
+* use touchscreen_button viewport
+* wait longer, maybe fix test
+* link
+* removing actual_button for browser based and adding to cmake
+* button is now a chrome app
+* make the linter happy
+* remove debugging
+* fix relaunch for button
+* actual button and ros node added
+* moved button to own file and set touch layer
+* 3.3.13
+* bump changelogs
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+3.3.12 (2021-08-10)
+-------------------
+
+3.3.11 (2021-07-23)
+-------------------
+
+3.3.10 (2021-07-22)
+-------------------
+* Make ad hoc browser LAYER_ABOVE the exception
+* Default to LAYER_NORMAL
+* Ad hoc browsers at LAYER_ABOVE
+* Add layer constants to ManagedWindow
+* Contributors: Matt Vollrath
+
+3.3.9 (2021-07-20)
+------------------
+* Revert "Revert "Revert "Revert "Use lg_wm_send instead of awesome-client""""
+  This reverts commit d134f8bb67f72f7c21e8c9b04864af6e3caddeda.
+* Contributors: Jacob Minshall
+
+3.3.8 (2021-01-29)
+------------------
+
+3.3.7 (2021-01-14)
+------------------
+* fix xdo tools browser search string
+* Contributors: dkiselev
+
+3.3.6 (2021-01-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* reload Cesium wall brawsers
+* Contributors: dkiselev
+
+3.3.5 (2020-12-28)
+------------------
+
+3.3.4 (2020-12-11)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* fix typo
+* Contributors: dkiselev
+
+3.3.3 (2020-12-10)
+------------------
+* add Chrome class to xdotools search
+* pep8 it
+* Contributors: Will Plaut, dkiselev
+
+3.3.2 (2020-12-09)
+------------------
+* reload chrome browser on aw snap with F5
+* reload page on aw snap
+* relaunch browser on aw snap
+* aw snaps reloading
+* Contributors: dkiselev
+
+3.3.1 (2020-10-29)
+------------------
+
+3.3.0 (2020-10-21)
+------------------
+
+3.2.9 (2020-09-21)
+------------------
+
+3.2.8 (2020-08-27)
+------------------
+
+3.2.7 (2020-08-25)
+------------------
+* Remove BSP  (`#427 <https://github.com/endpointcorp/lg_ros_nodes/issues/427>`_)
+  * Don't lg_wm_send instead of awesome-client
+  * Don't Put Earth windows below
+  * Manage bspc rules from ManagedWindow
+  * Move bspc rule commands further down the stack
+* Contributors: nelliott
+
+3.2.6 (2020-07-09)
+------------------
+* Revert "Revert "Move bspc rule commands further down the stack""
+  This reverts commit 18a6966bf98c1c06a548273f64a5f4d189eeb841.
+* Revert "Revert "Manage bspc rules from ManagedWindow""
+  This reverts commit bdcf3b6b040a654c43dcbb2e8114270a3c305a56.
+* Revert "Revert "Use lg_wm_send instead of awesome-client""
+  This reverts commit 75c9e05388298c614927bc5552a79c60ed4d8089.
+* Contributors: Neil Elliott
+
+* Revert "Revert "Move bspc rule commands further down the stack""
+  This reverts commit 18a6966bf98c1c06a548273f64a5f4d189eeb841.
+* Revert "Revert "Manage bspc rules from ManagedWindow""
+  This reverts commit bdcf3b6b040a654c43dcbb2e8114270a3c305a56.
+* Revert "Revert "Use lg_wm_send instead of awesome-client""
+  This reverts commit 75c9e05388298c614927bc5552a79c60ed4d8089.
+* Contributors: Neil Elliott
+
+3.2.5 (2020-07-06)
+------------------
+
+3.2.4 (2020-05-29)
+------------------
+
+3.2.3 (2020-05-28)
+------------------
+* Revert "Use lg_wm_send instead of awesome-client"
+  This reverts commit 23c87310b80df0b502ffdd1ca72f079bc43f220c.
+* Revert "Manage bspc rules from ManagedWindow"
+  This reverts commit 5cd056a3c7c06b314b12a84bc47abd5eee37984d.
+* Revert "Move bspc rule commands further down the stack"
+  This reverts commit 42d9c305bb0a0084b56d461c7047c45744d71029.
+* Contributors: Galaxy Admin, Neil Elliott
+
+3.2.2 (2020-05-28)
+------------------
+
+3.2.1 (2020-05-27)
+------------------
+* 3.2.0
+* BSPWM
+* Move bspc rule commands further down the stack
+* Manage bspc rules from ManagedWindow
+  lg_wm now just converges on its internal window list.
+* Use lg_wm_send instead of awesome-client
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin, Matt Vollrath, Neil Elliott, dkiselev
+
+3.1.12 (2020-05-04)
+-------------------
+
+3.1.11 (2020-05-01)
+-------------------
+* Skip some unreliable tests
+* Merge pull request `#419 <https://github.com/EndPointCorp/lg_ros_nodes/issues/419>`_ from EndPointCorp/lg_common_relative_topics
+  Use relative topic names in adhoc browser
+* Use relative topic names in adhoc browser
+  Allow namespaced duplicates.
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+
 3.1.8 (2020-02-06)
 ------------------
 

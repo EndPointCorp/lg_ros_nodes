@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_nav_to_device</name>
-  <version>3.1.8</version>
+  <version>3.7.1</version>
   <description>Subscribes to events published over ros, and writes them back into a virtual device</description>
 
   <author email="jacob@endpoint.com">Jacob Minshall</author>

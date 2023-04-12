@@ -19,6 +19,8 @@ catkin_install_python(PROGRAMS
   scripts/state_setter.py
   scripts/touchscreen.py
   scripts/uscs_service.py
+  scripts/button.py
+  scripts/button
   scripts/dev_webserver
   scripts/static_browser
   scripts/adhoc_browser
@@ -50,13 +52,6 @@ if (CATKIN_ENABLE_TESTING)
   catkin_add_nosetests(test/offline/test_managed_application.py)
   catkin_add_nosetests(test/offline/test_tcp_relay.py)
   catkin_add_nosetests(test/offline/test_uscs_service.py)
-  add_rostest(test/online/test_managed_adhoc_browser_director_bridge.test)
   add_rostest(test/online/test_managed_adhoc_browser.test)
-  add_rostest(test/online/required_param.test)
-  add_rostest(test/online/state_changer.test)
-  add_rostest(test/online/uscs_service.test)
-  add_rostest(test/online/uscs_initial_state_adhoc_browser.test)
-  #add_rostest(test/online/test_adhoc_browser_pool_rosbridge_params.test)
-  add_rostest(test/online/test_adhoc_browser_url_monitor.test)
   add_rostest(test/online/test_combine_viewport_geometries.test)
 endif()

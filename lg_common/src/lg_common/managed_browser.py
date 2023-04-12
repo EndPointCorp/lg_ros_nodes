@@ -3,6 +3,8 @@ import rospy
 import socket
 import shutil
 import os
+import requests
+import threading
 
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.tcp_relay import TCPRelay
@@ -11,7 +13,6 @@ from tornado.websocket import websocket_connect
 
 DEFAULT_BINARY = '/usr/bin/google-chrome'
 DEFAULT_ARGS = [
-    '--enable-gpu-rasterization',
     '--no-first-run',
     '--no-sandbox',
     '--test-type',  # only needed to ignore --no-sandbox's warning message
@@ -26,14 +27,28 @@ DEFAULT_ARGS = [
     '--allow-running-insecure-content',
     '--disable-touch-editing',
     '--v=1',
-    '--enable-webgl',
-    '--ignore-gpu-blacklist',
     '--touch-events=enabled',
     '--disable-pinch',
     '--overscroll-history-navigation=0',
     '--autoplay-policy=no-user-gesture-required',
     '--check-for-update-interval=1209600',
+    '--ignore-gpu-blacklist',
+    '--ignore-gpu-blocklist',
+    '--enable-gpu-rasterization',
+    '--simulate-outdated-no-au=\'Tue, 31 Dec 2099 23:59:59 GMT\'',
+    '--enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOopRasterization',
+    '--disable-gpu-driver-bug-workarounds',
+    '--disable-features=UseChromeOSDirectVideoDecoder',
 ]
+
+
+def set_interval(func, sec):
+    def func_wrapper():
+        set_interval(func, sec)
+        func()
+    t = threading.Timer(sec, func_wrapper)
+    t.start()
+    return t
 
 
 class ManagedBrowser(ManagedApplication):
@@ -47,6 +62,7 @@ class ManagedBrowser(ManagedApplication):
         binary=DEFAULT_BINARY,
         remote_debugging_port=None,
         app=False,
+        reload_aw_snap=False,
         shell=True,
         command_line_args=[],
         default_args_removal=[],
@@ -57,6 +73,7 @@ class ManagedBrowser(ManagedApplication):
         user_agent='',
         pepper_flash_dir='/home/lg/inc/PepperFlash',
         pnacl_dir='/home/lg/inc/pnacl',
+        layer=ManagedWindow.LAYER_NORMAL,
         **kwargs
     ):
 
@@ -152,10 +169,18 @@ class ManagedBrowser(ManagedApplication):
 
         # Different versions of Chrome use different window instance names.
         # Matching the tmp_dir should work for all of them.
-        w_instance = '({})'.format(self.tmp_dir)
-        window = ManagedWindow(w_instance=w_instance, geometry=geometry, chrome_kiosk_workaround=kiosk)
+        w_instance = 'google-chrome ({})'.format(self.tmp_dir)
+        window = ManagedWindow(
+            w_instance=w_instance,
+            geometry=geometry,
+            chrome_kiosk_workaround=kiosk,
+            layer=layer,
+        )
 
         rospy.logdebug("Command {}".format(cmd))
+
+        if (reload_aw_snap):
+            self.set_aw_snap_timer()
 
         # clean up after thyself
         rospy.on_shutdown(self.clear_tmp_dir)
@@ -227,6 +252,27 @@ class ManagedBrowser(ManagedApplication):
         port = sock.getsockname()[1]
         sock.close()
         return port
+
+    def list_pages_available_for_debug(self):
+        debug_url = 'http://localhost:{}/json/list'.format(self.debug_port)
+        return requests.get(debug_url).json()
+
+    def set_aw_snap_timer(self):
+        self.aw_snap_interval = set_interval(self.check_alive_and_reload, 1)
+
+    def check_alive_and_reload(self):
+        if not self.check_alive():
+            rospy.logerr("Browser is probably dead")
+            self.reload_page()
+
+    def reload_page(self):
+        pid = self.proc.get_pid()
+        if pid:
+            cmd = "DISPLAY=:0 xdotool search --onlyvisible --all --pid {} --class Chrome windowfocus key F5".format(pid)
+            os.system(cmd)
+
+    def check_alive(self):
+        return len(self.list_pages_available_for_debug()) > 0
 
     def send_debug_sock_msg(self, msg):
         """
