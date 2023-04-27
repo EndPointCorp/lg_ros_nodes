@@ -47,8 +47,8 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.7.2 (2023-04-27)
+------------------
 * no more static robotwebtools
 * Contributors: Jacob Minshall
 
