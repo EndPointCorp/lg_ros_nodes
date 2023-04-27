@@ -47,6 +47,11 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* no more static robotwebtools
+* Contributors: Jacob Minshall
+
 3.7.1 (2023-04-06)
 ------------------
 * small fixes to get static browser working properly

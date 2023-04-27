@@ -50,6 +50,11 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
+Forthcoming
+-----------
+* no more static robotwebtools
+* Contributors: Jacob Minshall
+
 3.7.1 (2023-04-06)
 ------------------
 
