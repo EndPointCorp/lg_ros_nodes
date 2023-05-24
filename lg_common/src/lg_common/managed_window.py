@@ -6,6 +6,9 @@ import re
 
 from lg_msg_defs.msg import WindowGeometry
 
+from lg_common.logger import get_logger
+logger = get_logger('managed_window')
+
 
 class ManagedWindow(object):
     LAYER_BELOW = 'below'
@@ -126,11 +129,11 @@ class ManagedWindow(object):
     def converge(self):
         with self.lock:
             cmd = self._get_command()
-            rospy.logwarn('running: {}'.format(cmd))
+            logger.warning('running: {}'.format(cmd))
 
             try:
                 subprocess.check_call(cmd, close_fds=True)
             except Exception as e:
-                rospy.logerr('failed to run {} : {}'.format(cmd, str(e)))
+                logger.error('failed to run {} : {}'.format(cmd, str(e)))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

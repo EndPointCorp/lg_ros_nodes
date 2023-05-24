@@ -10,6 +10,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'maxbotix_proximity_sensor'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -39,11 +41,11 @@ def main():
             else:
                 sensor = serial.Serial(device_path, baud_rate)
             # if we are here, we have successfully set sensor so we break
-            rospy.loginfo("%s: We have successfully connected to the serial device" % rospy.get_name())
+            logger.info("%s: We have successfully connected to the serial device" % rospy.get_name())
             break
         except serial.SerialException as e:
-            rospy.logwarn("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
-            rospy.logwarn("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
+            logger.warning("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
+            logger.warning("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
             rospy.sleep(i)
             if i < 30:
                 i += 3

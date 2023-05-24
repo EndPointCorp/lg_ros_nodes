@@ -4,6 +4,8 @@ import rospy
 import evdev
 from lg_msg_defs.msg import EvdevEvents
 from lg_msg_defs.msg import StringArray
+from lg_common.logger import get_logger
+logger = get_logger('keyboard_script')
 
 
 class KeyboardThing:
@@ -50,7 +52,7 @@ def main():
 
     kb = KeyboardThing(routes, double_click)
 
-    rospy.logdebug("subscribing to %s and %s with routes %s" % (event_topic + 'active_routes', event_topic + 'events', routes))
+    logger.debug("subscribing to %s and %s with routes %s" % (event_topic + 'active_routes', event_topic + 'events', routes))
     rospy.Subscriber(event_topic + 'active_routes', StringArray, kb.handle_route_change)
     rospy.Subscriber(event_topic + 'kbd_events', EvdevEvents, kb.handle_event)
 

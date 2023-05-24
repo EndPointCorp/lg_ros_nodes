@@ -11,6 +11,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'state_tracker'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class StateTracker(object):
@@ -41,7 +43,7 @@ class StateTracker(object):
         try:
             current_state = json.loads(current_state)
         except Exception:
-            rospy.logerr("Error parsing last uscs message as json")
+            logger.error("Error parsing last uscs message as json")
             return
 
         windows = current_state.get('windows', [])
@@ -112,11 +114,11 @@ class StateTracker(object):
         try:
             state = json.loads(state)
         except Exception:
-            rospy.logwarn("Unable to parse state (%s)" % state)
+            logger.warning("Unable to parse state (%s)" % state)
             raise
 
         if len(state) > 1:
-            rospy.logwarn('There are more than one browser active, the wrong URL might be returned')
+            logger.warning('There are more than one browser active, the wrong URL might be returned')
 
         for browser_id, browser_data in state.items():
             return browser_data['current_url_normalized']

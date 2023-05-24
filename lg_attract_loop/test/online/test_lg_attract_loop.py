@@ -10,6 +10,8 @@ import json
 from lg_attract_loop import AttractLoop
 from std_msgs.msg import Bool
 
+from lg_common.logger import get_logger
+logger = get_logger('test_lg_attract_loop')
 
 class MockAPI:
     def __init__(self):
@@ -115,7 +117,7 @@ class MockAPI:
         }
 
     def get(self, url):
-        rospy.loginfo("MockAPI call %s" % url)
+        logger.info("MockAPI call %s" % url)
         if url == '/director_api/presentationgroup/?attract_loop=True':
             return json.dumps(self.presentation_group)
         elif url == '/director_api/presentationgroup/kml-test/':
@@ -127,7 +129,7 @@ class MockAPI:
         elif url == '/director_api/scene/mplayer-two-different-instances/?format=json':
             return json.dumps(self.mplayer_scene)
         else:
-            rospy.logerr("Unknown call to MockAPI %s" % url)
+            logger.error("Unknown call to MockAPI %s" % url)
 
 
 class MockDirectorScenePublisher:
@@ -135,7 +137,7 @@ class MockDirectorScenePublisher:
         self.published_scenes = []
 
     def publish(self, message):
-        rospy.loginfo("MDSP publishing message %s" % message)
+        logger.info("MDSP publishing message %s" % message)
         self.published_scenes.append(message)
 
 
@@ -144,7 +146,7 @@ class MockDirectorPresentationPublisher:
         self.published_presentations = []
 
     def publish(self, message):
-        rospy.loginfo("MDPP publishing message %s" % message)
+        logger.info("MDPP publishing message %s" % message)
         self.published_presentations.append(message)
 
 
@@ -153,7 +155,7 @@ class MockEarthQueryPublisher:
         self.published_messages = []
 
     def publish(self, message):
-        rospy.loginfo("MEQP publishing message %s" % message)
+        logger.info("MEQP publishing message %s" % message)
         self.published_messages.append(message)
 
 
@@ -162,7 +164,7 @@ class MockEarthPlanetPublisher:
         self.published_messages = []
 
     def publish(self, message):
-        rospy.loginfo("MEPP publishing message %s" % message)
+        logger.info("MEPP publishing message %s" % message)
         self.published_messages.append(message)
 
 
@@ -179,15 +181,15 @@ class TestAttractLoop(unittest.TestCase):
         self.earth_planet_publisher = MockEarthPlanetPublisher()
 
     def _deactivate_lg(self):
-        rospy.loginfo("Changing LG state to inactive to start playback")
+        logger.info("Changing LG state to inactive to start playback")
         self.attract_loop_controller._process_activity_state_change(Bool(data=False))
-        rospy.loginfo("Sleeping 2 seconds before making asserts")
+        logger.info("Sleeping 2 seconds before making asserts")
         rospy.sleep(2)
 
     def _activate_lg(self):
-        rospy.loginfo("Activating LG - attract looop should stop")
+        logger.info("Activating LG - attract looop should stop")
         self.attract_loop_controller._process_activity_state_change(Bool(data=True))
-        rospy.loginfo("Sleeping 2 seconds for the attract loop to stop")
+        logger.info("Sleeping 2 seconds for the attract loop to stop")
         rospy.sleep(2)
 
     def test_1_entering_and_exiting_attract_loop_with_go_blank(self):
@@ -203,7 +205,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(self.attract_loop_controller.play_loop, False)
         self.assertEqual(self.attract_loop_controller.attract_loop_queue, [])
 
-        rospy.loginfo("game is on - first wait for initialization and check whether attract loop was populated with scenes")
+        logger.info("game is on - first wait for initialization and check whether attract loop was populated with scenes")
         rospy.sleep(2)
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)  # one item waiting for playback
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue[0]['scenes']), 2)  # there are two scenes in the queue
@@ -259,7 +261,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(self.attract_loop_controller.play_loop, False)
         self.assertEqual(self.attract_loop_controller.attract_loop_queue, [])
 
-        rospy.loginfo("game is on - first wait for initialization and check whether attract loop was populated with scenes")
+        logger.info("game is on - first wait for initialization and check whether attract loop was populated with scenes")
         rospy.sleep(2)
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)  # one item waiting for playback
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue[0]['scenes']), 2)  # there are two scenes in the queue
@@ -307,7 +309,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(self.attract_loop_controller.play_loop, False)
         self.assertEqual(self.attract_loop_controller.attract_loop_queue, [])
 
-        rospy.loginfo("game is on - first wait for initialization and check whether attract loop was populated with scenes")
+        logger.info("game is on - first wait for initialization and check whether attract loop was populated with scenes")
         rospy.sleep(3)
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)  # two scenes waiting for playback
         self.assertEqual(len(self.mock_director_scene_publisher.published_scenes), 0)  # no scenes published yet

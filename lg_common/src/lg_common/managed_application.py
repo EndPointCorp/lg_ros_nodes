@@ -8,6 +8,9 @@ from appctl_support import ProcController
 from lg_msg_defs.msg import ApplicationState
 from lg_common.helpers import is_valid_state
 
+from lg_common.logger import get_logger
+logger = get_logger('managed_application')
+
 SIG_RETRY_DELAY = 0.05
 
 
@@ -34,7 +37,7 @@ class ManagedApplication(object):
         self._state_handlers = []
 
         if initial_state and is_valid_state(initial_state):
-            rospy.logdebug('setting initial state to %s' % initial_state)
+            logger.debug('setting initial state to %s' % initial_state)
             self.state = initial_state
             self.set_state(self.state)
         else:
@@ -84,39 +87,39 @@ class ManagedApplication(object):
             self.state = state
 
             if state == ApplicationState.STOPPED:
-                rospy.logdebug("STOPPED")
+                logger.debug("STOPPED")
                 self.proc.stop()
                 if self.window is not None:
                     self.window.set_visibility(False)
 
             elif state == ApplicationState.SUSPENDED:
-                rospy.logdebug("SUSPENDED")
+                logger.debug("SUSPENDED")
                 if self.window is not None:
                     self.window.set_visibility(False)
                     self.window.converge()
                 self.proc.start()
 
             elif state == ApplicationState.HIDDEN:
-                rospy.logdebug("HIDDEN")
+                logger.debug("HIDDEN")
                 if self.window is not None:
                     self.window.set_visibility(False)
                     self.window.converge()
                 else:
-                    rospy.logwarn(
+                    logger.warning(
                         'Tried to hide a ManagedApplication ' +
                         'without a ManagedWindow'
                     )
                 self.proc.start()
 
             elif state == ApplicationState.STARTED:
-                rospy.loginfo("STARTED")
+                logger.info("STARTED")
                 if self.window is not None:
                     self.window.set_visibility(False)
                     self.window.converge()
                 self.proc.start()
 
             elif state == ApplicationState.VISIBLE:
-                rospy.loginfo("VISIBLE")
+                logger.info("VISIBLE")
                 if self.window is not None:
                     self.window.set_visibility(True)
                     self.window.converge()
@@ -126,13 +129,13 @@ class ManagedApplication(object):
                 try:
                     handler(state)
                 except Exception as e:
-                    rospy.logerr('caught an Exception in a state change handler')
-                    rospy.logerr(e.message)
+                    logger.error('caught an Exception in a state change handler')
+                    logger.error(e.message)
 
             list(map(run_handler, self._state_handlers))
 
     def handle_state_msg(self, msg):
-        rospy.logdebug('Got state message: {}'.format(msg))
+        logger.debug('Got state message: {}'.format(msg))
         self.set_state(msg.state)
 
     # TODO(mv): hook this up to ProcController
@@ -141,13 +144,13 @@ class ManagedApplication(object):
             try:
                 handler()
             except Exception as e:
-                rospy.logerr('caught an Exception in a respawn handler')
-                rospy.logerr(e.message)
+                logger.error('caught an Exception in a respawn handler')
+                logger.error(e.message)
 
         list(map(run_handler, self._respawn_handlers))
 
     def handle_soft_relaunch(self, *args, **kwargs):
-        rospy.logdebug('managed application relaunch...')
+        logger.debug('managed application relaunch...')
         self.proc.handle_soft_relaunch()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

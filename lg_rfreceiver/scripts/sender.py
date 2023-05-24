@@ -9,6 +9,8 @@ from std_msgs.msg import Byte
 from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'rfreceiver'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -30,8 +32,8 @@ def main():
             receiver = serial.Serial(port=device_path, baudrate=baud_rate)
             ready = True
         except SerialException:
-            rospy.logerr("Could not open device_path: %s" % (device_path))
-            rospy.logerr("I'm going to sleep %s seconds between attempts" % (i))
+            logger.error("Could not open device_path: %s" % (device_path))
+            logger.error("I'm going to sleep %s seconds between attempts" % (i))
             time.sleep(i)
             if i < retry_grace_time:
                 i += 3

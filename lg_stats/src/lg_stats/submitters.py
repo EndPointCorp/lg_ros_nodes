@@ -6,6 +6,8 @@ InfluxDB submission / communication implementations.
 import socket
 import time
 import rospy
+from lg_common.logger import get_logger
+logger = get_logger('stats_submitters')
 
 
 class Submitter(object):
@@ -36,7 +38,7 @@ class InfluxDirect(Submitter):
     def __init__(self, host=None, port=None, database=None):
         from influxdb import InfluxDBClient
         self._client = InfluxDBClient(host=host, port=port, database=database)
-        rospy.loginfo("InfluxDB (direct) client initialized (%s:%s/%s)." % (host, port, database))
+        logger.info("InfluxDB (direct) client initialized (%s:%s/%s)." % (host, port, database))
 
     @staticmethod
     def get_data_for_influx(msg, measurement_name):
@@ -86,7 +88,7 @@ class InfluxTelegraf(Submitter):
     def __init__(self, host=None, port=None, database=None):
         self.host = host
         self.port = port
-        rospy.loginfo("InfluxDB (telegraf-socket) client initialized (%s:%s)." % (host, port))
+        logger.info("InfluxDB (telegraf-socket) client initialized (%s:%s)." % (host, port))
 
     @staticmethod
     def get_data_for_influx(msg, measurement_name):
@@ -122,16 +124,16 @@ class InfluxTelegraf(Submitter):
 
         It's impossible to tell whether all data was sent or not.
         """
-        rospy.logdebug("Going to write: '%s' to influx" % data)
+        logger.debug("Going to write: '%s' to influx" % data)
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_address = (self.host, self.port)
             sock.settimeout(5.0)
             sock.connect(server_address)
             sock.sendall(data.encode('utf-8'))
-            rospy.logdebug("Wrote: '%s' to influx" % data)
+            logger.debug("Wrote: '%s' to influx" % data)
         except Exception as ex:
-            rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
+            logger.error("Socket error while sending data '%s' to %s, reason: %s" %
                          (data, server_address, ex))
         finally:
             sock.close()
@@ -145,11 +147,11 @@ class InfluxMock(Submitter):
     """
     def __init__(self, host=None, port=None, database=None):
         self.messages = []
-        rospy.loginfo("InfluxDB Mock client initialized ... won't do anything.")
+        logger.info("InfluxDB Mock client initialized ... won't do anything.")
 
     @staticmethod
     def get_data_for_influx(msg, measurement_name):
-        rospy.logdebug("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
+        logger.debug("%s called, received msg: '%s'" % (InfluxMock.__class__.__name__, msg))
         influx_str = ("""%s topic_name="%s",field_name="%s",type="%s",metadata="%s",value=%s" %s""" %
                       (measurement_name,
                        msg.src_topic,
@@ -161,7 +163,7 @@ class InfluxMock(Submitter):
         return influx_str
 
     def write_stats(self, data):
-        rospy.logdebug("%s called, received msg: '%s'" % (self.__class__.__name__, data))
+        logger.debug("%s called, received msg: '%s'" % (self.__class__.__name__, data))
         self.messages.append(data)
 
     @staticmethod

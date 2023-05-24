@@ -24,6 +24,8 @@ from lg_msg_defs.srv import Offline
 
 
 ROS_NODE_NAME = "lg_offliner"
+from lg_common.logger import get_logger
+logger = get_logger(ROS_NODE_NAME)
 LG_OFFLINER_DEBUG_TOPIC_DEFAULT = "debug"
 LG_OFFLINER_OFFLINE_TOPIC_DEFAULT = "offline"
 
@@ -63,7 +65,7 @@ class ConnectivityResults(object):
 
         """
         # -num_of_last_check_rounds_consider won't raise IndexError when len(self.data) is smaller
-        rospy.logdebug("called am_i_offline and data is: %s" % self.data)
+        logger.debug("called am_i_offline and data is: %s" % self.data)
         if not self.data:
             return False
         for dict_check_results in self.data[-self.num_of_last_check_rounds_consider:]:
@@ -119,7 +121,7 @@ class Checker(object):
         self.log("Received shutdown request.")
 
     def log(self, msg):
-        rospy.logdebug(msg)
+        logger.debug(msg)
         self.debug_topic_pub.publish(msg)
 
     def do_active_delay(self):
@@ -230,15 +232,15 @@ def main():
     socket.setdefaulttimeout(socket_timeout)
     checks_str = rospy.get_param("~checks")  # this returns a string representation of a list
     check_cmds = ast.literal_eval(checks_str)
-    rospy.loginfo("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
+    logger.info("Configured to run following check commands:\n%s" % pprint.pformat(check_cmds))
     send_on_online_str = rospy.get_param("~send_on_online")
-    rospy.loginfo(send_on_online_str)
+    logger.info(send_on_online_str)
     send_on_online = helpers.unpack_activity_sources(send_on_online_str)
-    rospy.loginfo("send_on_online: %s" % send_on_online)
+    logger.info("send_on_online: %s" % send_on_online)
     send_on_offline_str = rospy.get_param("~send_on_offline")
-    rospy.loginfo(send_on_offline_str)
+    logger.info(send_on_offline_str)
     send_on_offline = helpers.unpack_activity_sources(send_on_offline_str)
-    rospy.loginfo("send_on_offline: %s" % send_on_offline)
+    logger.info("send_on_offline: %s" % send_on_offline)
     online_pubs, offline_pubs = process_custom_publishers(send_on_online=send_on_online,
                                                           send_on_offline=send_on_offline)
     checker = Checker(check_every_seconds_delay=check_every_seconds_delay,
@@ -250,5 +252,5 @@ def main():
                       online_pubs=online_pubs,
                       offline_pubs=offline_pubs)
     rospy.on_shutdown(checker.on_shutdown)
-    rospy.loginfo("Started, spinning %s ..." % ROS_NODE_NAME)
+    logger.info("Started, spinning %s ..." % ROS_NODE_NAME)
     rospy.spin()

@@ -4,6 +4,8 @@ from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
 from lg_msg_defs.srv import KmlState, PlaytourQueryRequest
 import json
+from lg_common.logger import get_logger
+logger = get_logger('kml_sync_state')
 
 
 class KmlSyncState:
@@ -19,9 +21,9 @@ class KmlSyncState:
             assert 'windows' in state
             self.state = state
         except AssertionError:
-            rospy.logwarn('Invalid message - keeping previous state')
+            logger.warning('Invalid message - keeping previous state')
         except ValueError:
-            rospy.logwarn("Non json value published - keeping previous state")
+            logger.warning("Non json value published - keeping previous state")
 
     def _process_service_request(self, req):
         if self.state is None:

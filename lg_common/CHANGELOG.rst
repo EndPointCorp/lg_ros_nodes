@@ -1822,7 +1822,7 @@ Changelog for package lg_common
 * added log watcher
 * fix up logging
   Move some logerrs to log{warn,info} depending on the information being
-  logged. Also s/rospy.logerror/rospy.logerr/
+  logged. Also s/logger.erroror/logger.error/
 * Contributors: Jacob Minshall
 
 1.1.49 (2016-04-26)
@@ -2191,7 +2191,7 @@ Changelog for package lg_common
 0.0.2 (2015-07-21)
 ------------------
 * Allow missing window geometry
-* Fix rospy.logerr method names
+* Fix logger.error method names
 * Clean up and rename some window mgmt items
 * use spawn hook rather than respawn hook
 * Added geometry, updated dev.launch with TS

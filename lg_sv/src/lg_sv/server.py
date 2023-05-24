@@ -9,6 +9,8 @@ import json
 
 from interactivespaces_msgs.msg import GenericMessage
 
+from lg_common.logger import get_logger
+logger = get_logger('sv_server_class')
 # spacenav_node -> mux_twists -> /lg_twister/twist -> handle_spacenav_msg:
 # 1. change pov based on rotational axes -> /streetview/pov
 # 2. check for movement -> /streetview/panoid
@@ -182,7 +184,7 @@ class PanoViewerServer:
         try:
             self.pub_pov(npov)
         except ROSException as error:
-            rospy.logwarn("Could not publish pov during _tick: %s" % error)
+            logger.warning("Could not publish pov during _tick: %s" % error)
 
     def start_timer(self):
         if not hasattr(self, 'tick_timer') or self.tick_timer is None:
@@ -191,7 +193,7 @@ class PanoViewerServer:
                 self._tick
             )
         else:
-            rospy.logwarn('Tried to start_timer() a running PanoViewerServer')
+            logger.warning('Tried to start_timer() a running PanoViewerServer')
 
     def pub_location(self, pose2d):
         """
@@ -444,7 +446,7 @@ class PanoViewerServer:
         """
         Reinitialize all variables
         """
-        rospy.logdebug('handling soft relaunch for streetview')
+        logger.debug('handling soft relaunch for streetview')
         self.initialize_variables()
         self.nearby_panos.handle_soft_relaunch()
 

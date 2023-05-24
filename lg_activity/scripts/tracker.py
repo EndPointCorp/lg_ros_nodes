@@ -10,7 +10,10 @@ from lg_msg_defs.srv import Active
 from lg_activity import ActivitySourceDetector
 from lg_common.helpers import run_with_influx_exception_handler
 
+
 NODE_NAME = 'lg_activity'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -23,7 +26,7 @@ def main():
     memory_limit = rospy.get_param('~memory_limit', 102400)
 
     if not sources_string:
-        rospy.logerr('No or blank source string supplied, exiting...')
+        logger.error('No or blank source string supplied, exiting...')
         return
 
     activity_publisher = rospy.Publisher(activity_topic, Bool, queue_size=1, latch=True)

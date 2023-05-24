@@ -12,6 +12,8 @@ import rospy
 from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_common import ManagedApplication, ManagedWindow
 from .kmlalive import KmlAlive
+from lg_common.logger import get_logger
+logger = get_logger('earth_client')
 
 TOOLBAR_HEIGHT = 22
 
@@ -271,7 +273,7 @@ class Client:
         """
         Clearing up logs is pretty important for soft relaunches
         """
-        rospy.logdebug('removing cache for google earth')
+        logger.debug('removing cache for google earth')
         try:
             # deleting out of OLDHOME because that's where the cache is stored
             earth_dir = '%s/.googleearth' % os.environ['OLDHOME']
@@ -279,7 +281,7 @@ class Client:
             self._clear_cache()
             os.mkdir(earth_dir)
         except Exception as e:
-            rospy.logwarn('found error while removing earth cache: %s, could be normal operation though' % e.message)
+            logger.warning('found error while removing earth cache: %s, could be normal operation though' % e.message)
         self._render_configs()
         self.earth_proc.handle_soft_relaunch()
 
@@ -288,7 +290,7 @@ class Client:
         Clearing up logs is pretty important for soft relaunches
         """
         random_sleep_stagger = randint(1, 10)
-        rospy.logerr("Sleep Stagger: {} seconds".format(random_sleep_stagger))
+        logger.error("Sleep Stagger: {} seconds".format(random_sleep_stagger))
         sleep(random_sleep_stagger)
         self._handle_soft_relaunch(msg)
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -11,6 +11,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'state_setter'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class StateSetter(object):
@@ -29,7 +31,7 @@ class StateSetter(object):
         try:
             return json.loads(state)
         except Exception:
-            rospy.logerr("Last state from /uscs/message service returned non-json parsable (%s)" % state)
+            logger.error("Last state from /uscs/message service returned non-json parsable (%s)" % state)
             return {}
 
     def handle_state_setting(self, msg):
@@ -37,7 +39,7 @@ class StateSetter(object):
         try:
             state = json.loads(msg.data)
         except Exception:
-            rospy.logerr('Error with the state message, non json format:\n%s' % msg.data)
+            logger.error('Error with the state message, non json format:\n%s' % msg.data)
             return
 
         self.state = state
@@ -110,7 +112,7 @@ class StateSetter(object):
         try:
             ret.message = json.dumps(uscs_message)
         except Exception:
-            rospy.logerr('Could not dump state message into json...')
+            logger.error('Could not dump state message into json...')
             ret.message = ''
         return ret
 

@@ -9,6 +9,9 @@ from lg_msg_defs.msg import AdhocBrowser
 from lg_msg_defs.msg import Ready
 from std_msgs.msg import String
 
+from lg_common.logger import get_logger
+logger = get_logger('readiness_node')
+
 
 class ReadinessHandbrake(object):
     """
@@ -22,7 +25,7 @@ class ReadinessHandbrake(object):
         """
         Reset the timer
         """
-        rospy.logdebug("ReadinessHandbrake registered message")
+        logger.debug("ReadinessHandbrake registered message")
         self._timer_thread = threading.Thread(
             target=self._timer_worker_thread
         )
@@ -30,10 +33,10 @@ class ReadinessHandbrake(object):
 
     def _timer_worker_thread(self):
         for interval in range(0, self.timeout):
-            rospy.logdebug("Waiting for readiness %s" % interval)
+            logger.debug("Waiting for readiness %s" % interval)
             rospy.sleep(1)
 
-        rospy.loginfo("Executing readiness handbrake to activate unactivated browsers within specified timeout of %s secs" % self.timeout)
+        logger.info("Executing readiness handbrake to activate unactivated browsers within specified timeout of %s secs" % self.timeout)
         self.callback(force=True)
 
 
@@ -90,17 +93,17 @@ class ReadinessNode(object):
 
         """
         with self.lock:
-            rospy.loginfo("Received new director scene")
+            logger.info("Received new director scene")
             self.ready = False
             message = json.loads(message.message)
             slug = message.get('slug', None)
             if slug:
-                rospy.loginfo("Waiting for browsers to join to scene %s" % slug)
+                logger.info("Waiting for browsers to join to scene %s" % slug)
                 self.uscs_messages[slug] = message
                 self._purge_state(slug)
-                rospy.loginfo("Current state is: %s" % json.dumps(self.state, indent=4))
+                logger.info("Current state is: %s" % json.dumps(self.state, indent=4))
             else:
-                rospy.logwarn("Readiness node received message without slug this no preloading will be performed")
+                logger.warning("Readiness node received message without slug this no preloading will be performed")
 
     def aggregate_browser_instances(self, browsers):
         """
@@ -115,7 +118,7 @@ class ReadinessNode(object):
                 browser_id = browser.id
                 if browser_id not in self.state['browsers']:
                     with self.lock:
-                        rospy.loginfo("Browser with id %s added to waiting pool" % browser_id)
+                        logger.info("Browser with id %s added to waiting pool" % browser_id)
                         self.state['browsers'].append(browser_id)
 
     def _get_number_of_prelaodable_browsers_to_join(self):
@@ -129,7 +132,7 @@ class ReadinessNode(object):
             windows = self.uscs_messages[self.state['slug']]['windows']
         except KeyError:
             slug = self.state['slug']
-            rospy.logwarn("Could not get number of preloadable browsers for this USCS message for slug: %s" % slug)
+            logger.warning("Could not get number of preloadable browsers for this USCS message for slug: %s" % slug)
             return num_browsers
 
         for window in windows:
@@ -140,7 +143,7 @@ class ReadinessNode(object):
                     if preload:
                         num_browsers += 1
 
-        rospy.logdebug("Got number of preloadable browsers = %s" % num_browsers)
+        logger.debug("Got number of preloadable browsers = %s" % num_browsers)
         return num_browsers
 
     def _all_browsers_joined(self):
@@ -154,7 +157,7 @@ class ReadinessNode(object):
             else:
                 return False
         else:
-            rospy.logdebug("Not enough browsers gathered - joined: %s, registered %s, total: %s" % (ready_browsers, registered_browsers, number_of_browsers_to_join))
+            logger.debug("Not enough browsers gathered - joined: %s, registered %s, total: %s" % (ready_browsers, registered_browsers, number_of_browsers_to_join))
             return False
 
     def _publish_readiness(self, force=False):
@@ -169,10 +172,10 @@ class ReadinessNode(object):
         ready_msg.instances = self.state['ready_browsers']
         ready_msg.activity_type = 'browser'
         if ready_msg.instances:
-            rospy.loginfo("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
+            logger.info("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
             self.readiness_publisher.publish(ready_msg)
         else:
-            rospy.logwarn("Prevented emitting readiness message with empty instances list %s" % ready_msg)
+            logger.warning("Prevented emitting readiness message with empty instances list %s" % ready_msg)
 
     def handle_readiness(self, message):
         """
@@ -185,16 +188,16 @@ class ReadinessNode(object):
         """
         if message.data:
             instance_name = message.data
-            rospy.logdebug("Got instance name ready signal from %s" % instance_name)
+            logger.debug("Got instance name ready signal from %s" % instance_name)
             if instance_name in self.state['browsers']:
                 if instance_name not in self.state['ready_browsers']:
                     self.state['ready_browsers'].append(instance_name)
-                    rospy.loginfo("Browser with ID %s joined (%s out of %s)" % (instance_name, len(self.state['ready_browsers']), len(self.state['browsers'])))
-                    rospy.loginfo("Current state is: %s" % json.dumps(self.state, indent=4))
+                    logger.info("Browser with ID %s joined (%s out of %s)" % (instance_name, len(self.state['ready_browsers']), len(self.state['browsers'])))
+                    logger.info("Current state is: %s" % json.dumps(self.state, indent=4))
                 else:
-                    rospy.logdebug("Readiness node received browser instance id that was already ready")
+                    logger.debug("Readiness node received browser instance id that was already ready")
             else:
-                rospy.logdebug("Readiness node received unknown browser instance id")
+                logger.debug("Readiness node received unknown browser instance id")
 
         self.try_to_become_ready()
 
@@ -208,9 +211,9 @@ class ReadinessNode(object):
         """
         with self.lock:
             self.ready = True
-            rospy.loginfo("Scene %s is becoming ready (force=%s)" % (self.state['slug'], force))
+            logger.info("Scene %s is becoming ready (force=%s)" % (self.state['slug'], force))
             if force:
-                rospy.logwarn("Readiness was forced")
+                logger.warning("Readiness was forced")
             self._publish_readiness(force=force)
 
     def try_to_become_ready(self, force=False):
@@ -222,6 +225,6 @@ class ReadinessNode(object):
 
         if force is True and self.ready is not True:
             message = "Scene %s did not become ready within specified timeout" % self.state['slug']
-            rospy.logwarn(message)
+            logger.warning(message)
             self.timeout_publisher.publish(String(data=message))
             self.become_ready(force=force)

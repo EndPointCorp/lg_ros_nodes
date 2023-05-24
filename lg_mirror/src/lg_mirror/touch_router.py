@@ -9,6 +9,8 @@ from lg_common.helpers import route_touch_to_viewports
 from lg_common.managed_window import ManagedWindow
 from lg_msg_defs.msg import RoutedEvdevEvents
 from lg_msg_defs.srv import EvdevDeviceInfo
+from lg_common.logger import get_logger
+logger = get_logger('touch_router')
 
 
 def absolute_geometry(window):
@@ -41,7 +43,7 @@ class SubscribeListener:
         self.publish_callback = publish_callback
 
     def peer_subscribe(self, topic_name, topic_publish, peer_publish):
-        rospy.logdebug("New subscription. %s / %s / %s" % (
+        logger.debug("New subscription. %s / %s / %s" % (
             topic_name,
             self.publish_callback,
             self.publish_callback)
@@ -96,7 +98,7 @@ class TouchRouter:
         """
         with self.lock:
             self.touchmenu_visible = msg.data
-            rospy.loginfo(f'touchmenu visible: {self.touchmenu_visible}')
+            logger.info(f'touchmenu visible: {self.touchmenu_visible}')
             if self.touchmenu_visible:
                 self.touchmenu_geometry = ManagedWindow.lookup_viewport_geometry('touchscreen')
 
@@ -137,16 +139,16 @@ class TouchRouter:
 
                 rects = self.spacenav_exclusion_rects.copy()
                 if self.touchmenu_visible:
-                    rospy.loginfo('adding touchmenu rect')
+                    logger.info('adding touchmenu rect')
                     rects.append(self.touchmenu_geometry)
 
                 if x is not None and y is not None and is_point_in_rects(x, y, rects):
-                    rospy.loginfo('exclusion')
+                    logger.info('exclusion')
                 else:
                     # Route all events to nav until this touch ends.
                     self.spacenavving = True
                     routed.routes = [self.spacenav_viewport]
-                    rospy.loginfo('no exclusion')
+                    logger.info('no exclusion')
         finally:
             self.event_pub.publish(routed)
 
@@ -169,7 +171,7 @@ class TouchRouter:
 
             if len(route_viewports) > 0:
                 # Should this be the route during spacenav exclusion?  Probably..
-                rospy.loginfo(f'routing to specific viewports: {route_viewports}')
+                logger.info(f'routing to specific viewports: {route_viewports}')
                 publish_cb(frozenset(route_viewports))
                 return
 
@@ -180,11 +182,11 @@ class TouchRouter:
                 rects.append(ManagedWindow.lookup_viewport_geometry('touchscreen_button'))
                 rects = [g for g in rects if g is not None]
                 self.spacenav_exclusion_rects = rects
-                #rospy.loginfo(f'routing to spacenav: {self.spacenav_viewport}')
+                #logger.info(f'routing to spacenav: {self.spacenav_viewport}')
                 #publish_cb(frozenset([self.spacenav_viewport]))
                 return
 
-            rospy.loginfo(f'routing to default viewports: {self.default_viewports}')
+            logger.info(f'routing to default viewports: {self.default_viewports}')
             publish_cb(frozenset(self.default_viewports))
 
     def handle_new_listener(self, publish_cb, data):
@@ -197,7 +199,7 @@ class TouchRouter:
             data: data about new listener
         """
         with self.lock:
-            rospy.loginfo("New listener %s" % data)
+            logger.info("New listener %s" % data)
 
             if len(self.route_viewports) == 0:
                 self.route_viewports = self.default_viewports

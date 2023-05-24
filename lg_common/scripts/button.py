@@ -14,6 +14,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 DEFAULT_URL = 'http://localhost:8008/lg_common/webapps/button.html'
 NODE_NAME = 'static_browser'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 state = None
 
 
@@ -28,7 +30,7 @@ def main():
         geometry=geometry,
         layer=ManagedWindow.LAYER_TOUCH,
     )
-    rospy.logerr(f"geometry is {geometry}")
+    logger.error(f"geometry is {geometry}")
     managed_browser = ManagedAdhocBrowser(
         url=url,
         geometry=geometry,

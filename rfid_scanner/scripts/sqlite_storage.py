@@ -7,6 +7,8 @@ from std_msgs.msg import String
 from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'sqlite_rfid_storage'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class MockPub(object):
@@ -30,7 +32,7 @@ class RfidStorage(object):
     def handle_scan(self, msg):
         self._init_database()
         rfid = msg.data
-        rospy.loginfo('got rfid: %s' % rfid)
+        logger.info('got rfid: %s' % rfid)
         row = self.get_row_as_dict(rfid)
         self.state_set_pub.publish(json.dumps(row))
         self._close_database()
@@ -40,9 +42,9 @@ class RfidStorage(object):
         try:
             data = json.loads(msg.data)
         except Exception:
-            rospy.logerr('Error with json passed')
+            logger.error('Error with json passed')
             return
-        rospy.loginfo('got data: %s' % data)
+        logger.info('got data: %s' % data)
         self.insert_row(data)
         self._close_database()
 
@@ -64,7 +66,7 @@ class RfidStorage(object):
             self.cur.execute('CREATE table %s (%s)' % (self.table_name,
                                                        ','.join(self.rows)))
         except sqlite3.OperationalError:
-            rospy.logfatal('Error trying to create table...')
+            logger.fatal('Error trying to create table...')
 
     def insert_row(self, new_row):
         """
@@ -85,7 +87,7 @@ class RfidStorage(object):
         # delete just in case an entry already exsited for this rfid
         self.delete_row(insert_row[0])
         insert_query = 'INSERT INTO %s (%s) VALUES (%s)' % (self.table_name, ','.join(self.rows), ','.join(['?'] * len(self.rows)))
-        rospy.loginfo('insert_query:\n%s\n' % insert_query)
+        logger.info('insert_query:\n%s\n' % insert_query)
         self.cur.execute(insert_query, tuple(insert_row))
         self.db.commit()
 
@@ -106,17 +108,17 @@ class RfidStorage(object):
         if row is None:
             self.error('Could not find a matching id...')
             return
-        rospy.loginfo('got row: %s' % row.__class__)
+        logger.info('got row: %s' % row.__class__)
         for i in range(len(row)):
             ret[self.rows[i]] = row[i]
         return ret
 
     def check_row_validity(self, row):
         if len(row) > len(self.rows):
-            rospy.logerr('Too much data was supplied to be inserted, (%s)' % row)
+            logger.error('Too much data was supplied to be inserted, (%s)' % row)
         for member in self.rows:
             if member not in row:
-                rospy.logerr('%s does not exist in the valid rows..' % member)
+                logger.error('%s does not exist in the valid rows..' % member)
                 raise
 
     def error(self, msg):

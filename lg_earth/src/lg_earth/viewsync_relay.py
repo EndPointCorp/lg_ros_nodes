@@ -5,6 +5,8 @@ import time
 import os
 from geometry_msgs.msg import PoseStamped
 from lg_msg_defs.srv import ViewsyncState
+from lg_common.logger import get_logger
+logger = get_logger('viewsync_relay')
 
 
 class ViewsyncRelay:
@@ -95,7 +97,7 @@ class ViewsyncRelay:
                 pose_msg, planet = ViewsyncRelay.parse_pose(data)
                 self._publish_pose_msg(pose_msg, planet)
             except Exception as e:
-                rospy.logerr('error in ViewsyncRelay loop: {}'.format(e))
+                logger.error('error in ViewsyncRelay loop: {}'.format(e))
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

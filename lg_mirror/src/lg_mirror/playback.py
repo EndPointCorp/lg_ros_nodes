@@ -8,6 +8,8 @@ from lg_msg_defs.msg import ApplicationState, WindowGeometry
 from lg_mirror import MirrorException
 from lg_mirror.utils import get_mirror_port, viewport_to_multicast_group
 from lg_mirror.constants import *
+from lg_common.logger import get_logger
+logger = get_logger('mirror_playback')
 
 
 class MirrorPlayback:
@@ -91,7 +93,7 @@ class MirrorPlaybackPool:
         conf = window.get('activity_config', {})
         source_viewport = conf.get('viewport', '')
         source_viewport = source_viewport.replace('viewport://', '')
-        rospy.loginfo("Using geometry for playback: %s" % geometry)
+        logger.info("Using geometry for playback: %s" % geometry)
         player = MirrorPlayback(
             instance_name=instance_name,
             janus_url=self.janus_url,

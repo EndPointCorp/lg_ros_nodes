@@ -12,6 +12,8 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_msg_defs.msg import Ready
 
 NODE_NAME = 'lg_adhoc_browser'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -27,7 +29,7 @@ def main():
     destroy_delay = rospy.get_param('~destroy_delay', 2)
 
     if not viewport_name:
-        rospy.logerr("Viewport is not set in the roslaunch file. Exiting.")
+        logger.error("Viewport is not set in the roslaunch file. Exiting.")
         exit(1)
 
     """

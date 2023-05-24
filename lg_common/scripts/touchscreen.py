@@ -13,6 +13,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'static_browser'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 state = None
 
 
@@ -48,7 +50,7 @@ def main():
     x_available_or_raise(global_dependency_timeout)
 
     if url:
-        rospy.loginfo("got prepared full url: %s" % url)
+        logger.info("got prepared full url: %s" % url)
     else:
         url = url_base + ts_name + "/"
 
@@ -61,7 +63,7 @@ def main():
                              rosbridge_port=rosbridge_port)
 
         url = url2pathname(url)
-        rospy.loginfo("assembled a url: %s" % url)
+        logger.info("assembled a url: %s" % url)
 
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', None)
