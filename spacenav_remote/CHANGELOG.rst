@@ -28,8 +28,8 @@ Changelog for package spacenav_remote
 3.3.13 (2021-09-21)
 -------------------
 
-Forthcoming
------------
+3.8.0 (2023-05-25)
+------------------
 * Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into quiet_logs_some
 * Contributors: Jacob Minshall
 
