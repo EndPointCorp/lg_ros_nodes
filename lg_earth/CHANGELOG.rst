@@ -50,6 +50,15 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
+Forthcoming
+-----------
+* Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some
+  log quieting
+* big logging changes
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into quiet_logs_some
+* log quieting
+* Contributors: Jacob Minshall
+
 3.7.2 (2023-04-27)
 ------------------
 * no more static robotwebtools

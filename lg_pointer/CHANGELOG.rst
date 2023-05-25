@@ -28,6 +28,14 @@ Changelog for package lg_pointer
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some
+  log quieting
+* big logging changes
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into quiet_logs_some
+* Contributors: Jacob Minshall
+
 3.7.2 (2023-04-27)
 ------------------
 
