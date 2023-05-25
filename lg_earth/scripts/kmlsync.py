@@ -12,6 +12,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'kmlsync_http_server'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class PlanetWatcher:
@@ -35,7 +37,7 @@ def main():
 
     req_timeout_probe = float(rospy.get_param('~request_timeout'))
     if req_timeout_probe is not None:
-        rospy.logwarn('request_timeout parameter is not active (value is zero, no polling)')
+        logger.warning('request_timeout parameter is not active (value is zero, no polling)')
     KmlUpdateHandler.timeout = 0
 
     kmlsync_server = tornado.web.Application([

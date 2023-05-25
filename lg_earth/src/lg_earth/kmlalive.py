@@ -2,12 +2,14 @@ import subprocess
 import rospy
 import traceback
 import sys
+from lg_common.logger import get_logger
+logger = get_logger('kmlalive')
 
 
 class KmlAlive:
     def __init__(self, earth_proc):
         self.earth_proc = earth_proc
-        rospy.loginfo("XXX starting KMLALIVE process")
+        logger.debug("starting KMLALIVE process")
         self.timeout_period = rospy.get_param('~timeout_period', 5)
         self.initial_timeout = rospy.get_param('~initial_timeout', 60)
         rospy.Timer(rospy.Duration(10), self.keep_alive, oneshot=True)
@@ -16,7 +18,7 @@ class KmlAlive:
         self.worked = False
 
     def keep_alive(self, *args, **kwargs):
-        rospy.logerr("XXX in first keep_alive")
+        logger.debug("just in first keep_alive")
         loop_timeout = 1
         counter = 0
         rospy.sleep(1)
@@ -25,7 +27,7 @@ class KmlAlive:
                 pid = self.earth_proc.proc.watcher.proc.pid
             except AttributeError as e:
                 counter = 0
-                rospy.logwarn("Earth proc doesn't exist {}".format(e))
+                logger.warning("Earth proc doesn't exist {}".format(e))
                 rospy.sleep(loop_timeout)
                 continue
             cmd = "lsof -Pn -p {} -a -i @127.0.0.1:8765".format(pid).split(' ')
@@ -40,9 +42,9 @@ class KmlAlive:
                 counter = 0
             else:
                 counter += 1
-                rospy.logerr("XXX found non zero value for {} counter at {}".format(pid, counter))
+                logger.info("found non zero value for {} counter at {}".format(pid, counter))
                 if (counter > self.timeout_period and self.worked) or counter > self.initial_timeout:
-                    rospy.logerr("XXX RELAUNCHING worked: {}  counter: {}".format(self.worked, counter))
+                    logger.error("RELAUNCHING worked: {}  counter: {}".format(self.worked, counter))
                     self.earth_proc.handle_soft_relaunch()
                     counter = 0
                     self.worked = False

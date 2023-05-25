@@ -17,6 +17,8 @@ DEFAULT_URL = 'http://localhost:8008/lg_sv/webapps/client/index.html'
 # FOV for zoom level 3
 DEFAULT_FOV = 28.125
 NODE_NAME = 'panoviewer_browser'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -74,7 +76,7 @@ def main():
                          rosbridgePort=rosbridge_port,
                          rosbridgeSecure=rosbridge_secure)
 
-    rospy.loginfo('Use Google maps API key: {}'.format(map_api_key))
+    logger.info('Use Google maps API key: {}'.format(map_api_key))
 
     if map_api_key:
         url = add_url_params(url, map_api_key=map_api_key)

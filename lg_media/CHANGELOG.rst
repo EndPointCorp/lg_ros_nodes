@@ -1185,7 +1185,7 @@ Changelog for package lg_media
 * move new loginfo logging to logdebug
 * fix up logging
   Move some logerrs to log{warn,info} depending on the information being
-  logged. Also s/rospy.logerror/rospy.logerr/
+  logged. Also s/logger.erroror/logger.error/
 * Contributors: Jacob Minshall
 
 1.1.49 (2016-04-26)

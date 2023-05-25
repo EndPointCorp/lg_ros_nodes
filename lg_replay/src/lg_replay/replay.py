@@ -3,6 +3,8 @@ import rospy
 from evdev import InputDevice, ecodes
 from lg_common.helpers import rewrite_message_to_dict, find_device
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.logger import get_logger
+logger = get_logger('replay')
 
 
 class LgActivityException(Exception):
@@ -29,14 +31,14 @@ class DeviceReplay:
         # TODO (wz): set device permissions using udev rules because otherwise this node needs sudo
         if self.device:
             self.device = device
-            rospy.loginfo("Initializing device replay with device: %s" % self.device)
+            logger.info("Initializing device replay with device: %s" % self.device)
         else:
             try:
                 device_path = find_device(self.device_name)
                 self.device = InputDevice(device_path)
-                rospy.loginfo("Initialize device reader for %s" % self.device)
+                logger.info("Initialize device reader for %s" % self.device)
             except IndexError:
-                rospy.logerr("No device with name: '%s'" % self.device_name)
+                logger.error("No device with name: '%s'" % self.device_name)
 
     def run(self):
         for event in self.device.read_loop():
@@ -55,7 +57,7 @@ class DevicePublisher:
     """
     def __init__(self, publisher):
         self.publisher = publisher
-        rospy.loginfo("Initialized device publisher for %s" % self.publisher)
+        logger.info("Initialized device publisher for %s" % self.publisher)
 
     def publish_event(self, event):
         msg = GenericMessage()

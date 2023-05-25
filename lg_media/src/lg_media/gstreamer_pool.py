@@ -15,6 +15,9 @@ from lg_common.helpers import get_app_instances_to_manage
 
 
 ROS_NODE_NAME = "lg_media"
+from lg_common.logger import get_logger
+logger = get_logger(ROS_NODE_NAME)
+
 DEFAULT_APP = "gst_video_sync"
 DEFAULT_ARGS = " -a 10.42.42.255"
 SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
@@ -67,7 +70,7 @@ class ManagedGstreamer(ManagedApplication):
             cmd.extend(["-h", str(self.window.geometry.height)])
         #if self.respawn:
         #    cmd.extend(["-loop", "0"])
-        rospy.logdebug("GStreamer POOL: gst_video_sync cmd: %s" % cmd)
+        logger.debug("GStreamer POOL: gst_video_sync cmd: %s" % cmd)
         return cmd
 
     def execute_command(self, command):
@@ -135,14 +138,14 @@ class GstreamerPool(object):
             # gstreamers to remove
             for gstreamer_pool_id in current_gstreamers_ids:
                 if gstreamer_pool_id in existing_media_ids:
-                    rospy.loginfo("Media already playing: %s" % gstreamer_pool_id)
+                    logger.info("Media already playing: %s" % gstreamer_pool_id)
                     continue
-                rospy.loginfo("Removing gstreamer id %s" % gstreamer_pool_id)
+                logger.info("Removing gstreamer id %s" % gstreamer_pool_id)
                 self._remove_gstreamer(gstreamer_pool_id)
 
             # gstreamers to create
             for gstreamer_pool_id in fresh_media_ids:
-                rospy.loginfo("Creating gstreamer with id %s" % gstreamer_pool_id)
+                logger.info("Creating gstreamer with id %s" % gstreamer_pool_id)
                 self._create_gstreamer(gstreamer_pool_id, incoming_gstreamers[gstreamer_pool_id])
 
             return True
@@ -185,7 +188,7 @@ class GstreamerPool(object):
 
         gstreamer.set_state(ApplicationState.VISIBLE)
 
-        rospy.logdebug("MPlayer Pool: started new gstreamer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_gstreamer, gstreamer_id))
+        logger.debug("MPlayer Pool: started new gstreamer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_gstreamer, gstreamer_id))
 
         self.gstreamers[gstreamer_id] = gstreamer
 
@@ -196,7 +199,7 @@ class GstreamerPool(object):
         Wipe out gstreamer instance - both from the screen and memory
         """
         gstreamer_instance = self.gstreamers[gstreamer_pool_id]
-        rospy.logdebug("Stopping app id '%s', Gstreamer instance %s:" % (gstreamer_pool_id, gstreamer_instance))
+        logger.debug("Stopping app id '%s', Gstreamer instance %s:" % (gstreamer_pool_id, gstreamer_instance))
         gstreamer_instance.close()
         del self.gstreamers[gstreamer_pool_id]
 

@@ -5,6 +5,8 @@ import rospy
 from lg_volume_control import VolumeControlSlave
 from lg_msg_defs.srv import Volume
 from std_msgs.msg import UInt8
+from lg_common.logger import get_logger
+logger = get_logger('volume_control_slave')
 
 
 def main():
@@ -28,10 +30,10 @@ def grab_master_volume():
         master_node_volume = rospy.ServiceProxy('volume', Volume, persistent=False)
         rospy.sleep(1)
         volume = master_node_volume()
-        rospy.logdebug("got volume {} from master".format(volume))
+        logger.debug("got volume {} from master".format(volume))
         return volume.volume
     except rospy.ServiceException as e:
-        rospy.logerr("Problem grabbing the master volume")
+        logger.error("Problem grabbing the master volume")
         return None
 
 

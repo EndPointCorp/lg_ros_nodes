@@ -11,6 +11,9 @@ from lg_msg_defs.msg import ApplicationState
 from lg_msg_defs.msg import ApplicationState
 from lg_msg_defs.msg import AdhocBrowser, AdhocBrowsers
 
+from lg_common.logger import get_logger
+logger = get_logger('managed_adhoc_browser')
+
 
 class ManagedAdhocBrowser(ManagedBrowser):
     def __init__(self, geometry=None, log_level=0, command_line_args=[],
@@ -87,13 +90,13 @@ class ManagedAdhocBrowser(ManagedBrowser):
             status, output = subprocess.getstatusoutput(cmd)
             if status == 0:
                 self.url = url
-                rospy.loginfo("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
+                logger.info("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
                 return True
             else:
-                rospy.logerr("URL change command: %s, returned a status code: %s and output %s" % (cmd, status, output))
+                logger.error("URL change command: %s, returned a status code: %s and output %s" % (cmd, status, output))
                 return False
         except Exception as e:
-            rospy.logerr("URL change command: %s, returned a status code: %s and output %s because %s" % (cmd, status, output, e))
+            logger.error("URL change command: %s, returned a status code: %s and output %s because %s" % (cmd, status, output, e))
             return False
 
     def close(self, delay=None):

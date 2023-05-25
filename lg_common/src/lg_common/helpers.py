@@ -12,6 +12,9 @@ import string
 from lg_common import ManagedWindow
 from interactivespaces_msgs.msg import GenericMessage
 from lg_msg_defs.msg import ApplicationState, WindowGeometry
+from lg_common.logger import get_logger
+
+logger = get_logger("helpers_functions")
 
 
 class PublisherSubscriberConnectionsException(Exception):
@@ -43,7 +46,7 @@ def escape_asset_url(asset_url):
                 ss += "_"
         return ss
     except TypeError:
-        rospy.logerr("Got invalid type when trying to escape assets url %s" % asset_url)
+        logger.error("Got invalid type when trying to escape assets url %s" % asset_url)
         return ss
 
 
@@ -147,7 +150,7 @@ def generate_cookie(assets):
         rtype: str
     """
     cookie = (',').join([escape_asset_url(asset) for asset in assets])
-    rospy.logdebug("Generated cookie = %s after new state was set" % cookie)
+    logger.debug("Generated cookie = %s after new state was set" % cookie)
     return cookie
 
 
@@ -174,7 +177,7 @@ def get_app_instances_to_manage(current_instances, incoming_instances, manage_ac
         instances_ids_to_create = incoming_instances - current_instances
         return list(instances_ids_to_create)
     else:
-        rospy.logerr("No action provided for get_app_instances_to_manage")
+        logger.error("No action provided for get_app_instances_to_manage")
         return False
 
 
@@ -186,8 +189,8 @@ def load_director_message(message):
     try:
         ret = json.loads(message.message)
     except (ValueError, SyntaxError) as e:
-        rospy.logwarn("Could not parse json message in helpers.load_director_message")
-        rospy.logwarn("Message: %s" % message)
+        logger.warning("Could not parse json message in helpers.load_director_message")
+        logger.warning("Message: %s" % message)
         raise e
 
     return ret
@@ -224,7 +227,7 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
     if not message:
         return []
 
-    rospy.logdebug("Message: %s, activity_type: %s, viewport: %s" % (message, activity_type, viewport))
+    logger.debug("Message: %s, activity_type: %s, viewport: %s" % (message, activity_type, viewport))
     assets = []
     for window in message.get('windows', []):
         if (window.get('activity') == activity_type) and (window.get('presentation_viewport') == viewport):
@@ -253,9 +256,9 @@ def extract_first_asset_from_director_message(message, activity_type, viewport):
 
             assets.append(asset_object)
         else:
-            rospy.logdebug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))
+            logger.debug("Message was not directed at activity %s on viewport %s" % (window.get('activity'), window.get('presentation_viewport')))
 
-    rospy.logdebug("Returning assets: %s" % assets)
+    logger.debug("Returning assets: %s" % assets)
     return assets
 
 
@@ -480,12 +483,12 @@ def unpack_activity_sources(sources_string):
                 value_max = values[1]
                 value = None
             except IndexError:
-                rospy.loginfo("Detected a singe value from source_string: %s" % source_string)
+                logger.info("Detected a singe value from source_string: %s" % source_string)
                 value = values[0]
                 value_min = None
                 value_max = None
         except IndexError:
-            rospy.loginfo("Could not get value_min/value_max nor single value from sources for source_string: %s" % source_string)
+            logger.info("Could not get value_min/value_max nor single value from sources for source_string: %s" % source_string)
             value_min, value_max, value = None, None, None
 
         single_source['topic'] = topic
@@ -531,10 +534,10 @@ def check_registration(e):
     try:
         nodes = rosnode.get_node_names()
     except rosnode.ROSNodeIOException:
-        rospy.logdebug("Could not contact master for registration check")
+        logger.debug("Could not contact master for registration check")
         return
     if rospy.get_name() not in nodes:
-        rospy.logwarn("Node no longer registered, shutting down")
+        logger.warning("Node no longer registered, shutting down")
         rospy.signal_shutdown("Node no longer registered")
         os.kill(os.getpid(), signal.SIGTERM)
 
@@ -562,7 +565,7 @@ def next_scene_uri(presentation, scene):
     try:
         return script[script.index(resource_uri) + 1]
     except IndexError:
-        rospy.loginfo("Already at last Scene in this Presentation.")
+        logger.info("Already at last Scene in this Presentation.")
         return None
 
 
@@ -590,7 +593,7 @@ def x_available(timeout=None):
         if x_check[0] == 0:
             return True
         else:
-            rospy.loginfo("X not available - sleeping for %s more seconds" % timeout)
+            logger.info("X not available - sleeping for %s more seconds" % timeout)
             timeout -= 1
             rospy.sleep(1)
 
@@ -623,22 +626,22 @@ def dependency_available(server, port, name, timeout=None):
         except socket_error as serr:
             # this exception occurs only if timeout is set
             if serr.errno == errno.ECONNREFUSED:
-                rospy.logwarn("%s not yet available - waiting %s seconds more" % (name, next_timeout))
+                logger.warning("%s not yet available - waiting %s seconds more" % (name, next_timeout))
                 rospy.sleep(1)
             else:
-                rospy.logwarn("%s not available because: %s" % (name, serr))
+                logger.warning("%s not available because: %s" % (name, serr))
                 rospy.sleep(1)
 
         except socket.error as err:
             # catch timeout exception from underlying network library
             # this one is different from socket.timeout
-            rospy.loginfo("%s not yet available - waiting %s secs more" % (name, next_timeout))
+            logger.info("%s not yet available - waiting %s secs more" % (name, next_timeout))
             rospy.sleep(1)
             if type(err.args) != tuple or err[0] != errno.ETIMEDOUT:
                 raise
         else:
             s.close()
-            rospy.loginfo("%s is available" % name)
+            logger.info("%s is available" % name)
             return True
 
 
@@ -699,15 +702,15 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
 
     """
     from std_msgs.msg import String
-    rospy.logdebug('creating callback %s' % kwargs.get('groups', 'no group'))
+    logger.debug('creating callback %s' % kwargs.get('groups', 'no group'))
 
     def cb(msg):
         if msg.data == 'all':
-            rospy.loginfo('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
+            logger.info('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
         if 'groups' in kwargs and msg.data in kwargs['groups']:
-            rospy.loginfo('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
+            logger.info('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)
@@ -760,19 +763,19 @@ def get_nested_slot_value(slot, message):
                         deserialized_msg = deserialized_msg[subslot]
                     except KeyError:
                         msg = "Sublot %s does not exist in message: %s" % (subslot, deserialized_msg)
-                        rospy.logerr(msg)
+                        logger.error(msg)
                     except ValueError:
                         msg = "Could not convert message '%s' to dict using subslot: '%s'" % (subslot, deserialized_msg)
-                        rospy.logerr(msg)
+                        logger.error(msg)
                 elif type(deserialized_msg) == dict:
                     try:
                         deserialized_msg = deserialized_msg[subslot]
                     except KeyError:
                         msg = "Could not get value for slot %s from message %s" % (subslot, deserialized_msg)
-                        rospy.logerr(msg)
+                        logger.error(msg)
                 else:
                     msg = "Could not get subslot value '%s' from message '%s'" % (subslot, deserialized_msg)
-                    rospy.logerr(msg)
+                    logger.error(msg)
 
     return {slot: deserialized_msg}
 
@@ -814,13 +817,13 @@ def check_www_dependency(should_depend, host, port, name, timeout):
     Check if www dependency is available, or raise an exception
     """
     if should_depend:
-        rospy.loginfo("Waiting for rosbridge to become available")
+        logger.info("Waiting for rosbridge to become available")
         if not dependency_available(host, port, name, timeout):
             msg = "Service: %s (%s:%s) hasn't become accessible within %s seconds" % (name, host, port, timeout)
-            rospy.logfatal(msg)
+            logger.fatal(msg)
             raise DependencyException(msg)
         else:
-            rospy.loginfo("%s is online" % name)
+            logger.info("%s is online" % name)
 
 
 def x_available_or_raise(timeout):
@@ -828,10 +831,10 @@ def x_available_or_raise(timeout):
     Checks if x is available, or will raise an error
     """
     if x_available(timeout):
-        rospy.loginfo("X available")
+        logger.info("X available")
     else:
         msg = "X server is not available"
-        rospy.logfatal(msg)
+        logger.fatal(msg)
         raise DependencyException(msg)
 
 
@@ -909,10 +912,10 @@ def handle_initial_state(call_back, attempts=20):
             rospy.sleep(1.0)
 
     if state and state != InitialUSCSResponse():
-        rospy.loginfo('got initial state: %s for callback %s' % (state.message, call_back))
+        logger.info('got initial state: %s for callback %s' % (state.message, call_back))
         call_back(state)
     else:
-        rospy.logwarn('Could not get valid initial state for callback %s')
+        logger.warning('Could not get valid initial state for callback %s')
 
 
 def route_touch_to_viewports(windows, route_touch_key='route_touch'):
@@ -961,18 +964,18 @@ def wait_for_pub_sub_connections(network=[], sleep=1, timeout=10, num_connection
 
     for interval in range(0, timeout):
         if all_actors_connected(network, num_connections):
-            rospy.loginfo("All actors connected - ready to handle initial state")
+            logger.info("All actors connected - ready to handle initial state")
             rospy.sleep(1)
             return True
         else:
-            rospy.logwarn("Waiting for topics (%s) to become connected" % actors_names)
+            logger.warning("Waiting for topics (%s) to become connected" % actors_names)
             rospy.sleep(sleep)
             timeout -= 1
 
     actors_names_connections = ','.join([actor.name + ":" + str(actor.get_num_connections()) for actor in network])
 
     message = "Some publishers and subscribers didnt reach %s connection requirement in %s seconds" % (num_connections, timeout)
-    rospy.logerr(message)
+    logger.error(message)
     raise PublisherSubscriberConnectionsException(message)
 
 
@@ -983,11 +986,11 @@ def all_actors_connected(actors=[], num_connections=1):
     Useful with methods that need to check if pub sub network is connected
     """
     for actor in actors:
-        rospy.loginfo("Actor: %s num connections: %s, limit %s" % (actor.name, actor.get_num_connections(), num_connections))
+        logger.info("Actor: %s num connections: %s, limit %s" % (actor.name, actor.get_num_connections(), num_connections))
         if actor.get_num_connections() < num_connections:
             return False
         else:
-            rospy.logwarn("Actor: %s reached required number of connections: %s" % (actor.name, num_connections))
+            logger.warning("Actor: %s reached required number of connections: %s" % (actor.name, num_connections))
 
     return True
 
@@ -999,9 +1002,9 @@ def run_with_influx_exception_handler(main, node_name, host='lg-head', port=8094
     try:
         main()
     except Exception as e:
-        rospy.logerr("Exception catched in node %s: %s" % (node_name, e))
+        logger.error("Exception catched in node %s: %s" % (node_name, e))
         data = """ros_respawns ros_node_name="%s",reason="%s",value=1 """ % (node_name, e)
-        rospy.logerr("Attempting data point write '%s' to influx database" % data)
+        logger.error("Attempting data point write '%s' to influx database" % data)
         write_influx_point_to_telegraf(data=data, host=host, port=port)
         raise
 
@@ -1012,16 +1015,16 @@ def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
     """
     import socket
     import rospy
-    rospy.logdebug("Going to write: '%s' to influx" % data)
+    logger.debug("Going to write: '%s' to influx" % data)
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(5.0)
         server_address = (host, port)
         sock.connect(server_address)
         sock.sendall(data.encode('utf-8'))
-        rospy.logdebug("Wrote: '%s' to influx" % data)
+        logger.debug("Wrote: '%s' to influx" % data)
     except Exception as ex:
-        rospy.logerr("Socket error while sending data '%s' to %s, reason: %s" %
+        logger.error("Socket error while sending data '%s' to %s, reason: %s" %
                      (data, server_address, ex))
     finally:
         sock.close()
@@ -1034,7 +1037,7 @@ def director_listener_earth_state(state_pub, activity_list=list()):
         try:
             msg = json.loads(director_msg.message)
         except Exception:
-            rospy.logerr("Error loading director message, non-json-y format")
+            logger.error("Error loading director message, non-json-y format")
             return
         windows = msg.get('windows', [])
         for window in windows:
@@ -1057,11 +1060,11 @@ def director_listener_state_setter(state_pub, activity_list=None, offline_state=
         try:
             msg = json.loads(director_msg.message)
         except Exception:
-            rospy.logerr("Error loading director message, non-json-y format")
+            logger.error("Error loading director message, non-json-y format")
             return
         windows = msg.get('windows', [])
         if msg.get('slug', None) == "stop-the-presentations":
-            rospy.loginfo("Ignoring 'stop-the-presentations' scene")
+            logger.info("Ignoring 'stop-the-presentations' scene")
             return
         for window in windows:
             if window.get('activity', None) in activity_list:
@@ -1124,3 +1127,38 @@ def combine_viewport_geometries(viewport_names):
         combined.height = max(combined.height, geometry.y - combined.y + geometry.height)
 
     return combined
+
+
+"""
+import logging
+import sys
+from logging.handlers import TimedRotatingFileHandler
+FORMATTER = logging.Formatter('[%(asctime)s] p%(process)s %(name)s - {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s', '%m-%d %H:%M:%S')
+LOG_FILE = "my_app.log"
+
+
+def get_console_handler():
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(FORMATTER)
+    return console_handler
+
+
+def get_file_handler():
+    file_handler = TimedRotatingFileHandler(LOG_FILE, when='midnight')
+    file_handler.setFormatter(FORMATTER)
+    return file_handler
+
+
+def get_logger(logger_name):
+    name = rospy.get_name() + ':' + logger_name
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)  # better to have too much log than not enough
+    logger.addHandler(get_console_handler())
+    logger.addHandler(get_file_handler())
+    # TODO add file handler with some path in /home/lg/.ros/log/latest/<logger_name>.log
+    # with this pattern, it's rarely necessary to propagate the error up to parent
+    logger.propagate = False
+    return logger
+
+
+"""

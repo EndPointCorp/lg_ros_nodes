@@ -6,6 +6,8 @@ from lg_msg_defs.msg import GetScreenshot
 from lg_msg_defs.msg import Screenshot
 import subprocess
 import rospkg
+from lg_common.logger import get_logger
+logger = get_logger('web_screenshot')
 
 DEFAULT_BINARY = 'phantomjs'
 DEFAULT_SCRIPT = 'screenshots.js'
@@ -27,7 +29,7 @@ class WebScreenshot:
         if self.delay:
             self.call_tmpl.extend(['--delay {}'.format(self.delay)])
 
-        rospy.loginfo("Initialized WebScreenshot with %s args" % self.call_tmpl)
+        logger.info("Initialized WebScreenshot with %s args" % self.call_tmpl)
 
     def take_screenshot(self, search_screenshot):
         url = search_screenshot.url
@@ -49,10 +51,10 @@ class WebScreenshot:
         if search_screenshot.scripts:
             call.extend(['--scripts {}'.format(' '.join(search_screenshot.scripts))])
 
-        rospy.loginfo('Call pahntom js for a screenshot with args: {}'.format(call))
+        logger.info('Call pahntom js for a screenshot with args: {}'.format(call))
         base64 = subprocess.check_output(' '.join(call), shell=True)
         msg = Screenshot()
         msg.url = url
         msg.base64 = base64
         self.publisher.publish(msg)
-        rospy.loginfo("Made screenshot for %s" % url)
+        logger.info("Made screenshot for %s" % url)

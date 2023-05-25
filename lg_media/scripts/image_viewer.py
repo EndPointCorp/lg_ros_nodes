@@ -13,6 +13,8 @@ from lg_common import ManagedWindow
 from lg_msg_defs.msg import ImageViews, ImageView
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
+from lg_common.logger import get_logger
+logger = get_logger('image_viewer')
 
 
 def image_coordinates(image):
@@ -38,18 +40,18 @@ class ImageViewer():
         self.lock = Lock()
 
     def director_translator(self, data):
-        rospy.logerr("ZZZ")
+        logger.error("ZZZ")
         windows_to_add = ImageViews()
         try:
             message = json.loads(data.message)
         except AttributeError:
-            rospy.logwarn('Director message did not contain valid data')
+            logger.warning('Director message did not contain valid data')
             return
         except ValueError:
-            rospy.logwarn('Director message did not contain valid json')
+            logger.warning('Director message did not contain valid json')
             return
         except TypeError:
-            rospy.logwarn('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
+            logger.warning('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
             return
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
@@ -70,7 +72,7 @@ class ImageViewer():
                 image.geometry.y = image.geometry.y + offset_geometry.y
                 image.uuid = str(uuid.uuid4())
                 windows_to_add.images.append(image)
-        rospy.logerr(f"ZZZ {windows_to_add}")
+        logger.error(f"ZZZ {windows_to_add}")
         self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
@@ -81,7 +83,7 @@ class ImageViewer():
 
     def is_current_coordinates(self, current_images, image):
         for key_from_image, _image_obj in list(current_images.items()):
-            rospy.logerr(f"ZZZ comparing {'_'.join(key_from_image.split('_')[-4:])} == {image_coordinates(image)}:")
+            logger.error(f"ZZZ comparing {'_'.join(key_from_image.split('_')[-4:])} == {image_coordinates(image)}:")
             if '_'.join(key_from_image.split('_')[-4:]) == image_coordinates(image):
                 return _image_obj
         return None
@@ -91,40 +93,40 @@ class ImageViewer():
             self._handle_image_views(msg)
 
     def _handle_image_views(self, msg):
-        rospy.logerr("handling image views")
+        logger.error("handling image views")
         new_current_images = {}
         images_to_remove = list(self.current_images.values())
         images_to_add = []
         images_to_remove_delayed = []
         for image in msg.images:
-            # rospy.logerr('CURRENT IMAGES: {}\n\n'.format(self.current_images))
+            # logger.error('CURRENT IMAGES: {}\n\n'.format(self.current_images))
             duplicate_image = self.is_in_current_images(self.current_images, image)
             if duplicate_image:
-                # rospy.logerr('Keeping image: {}\n\n'.format(image))
+                # logger.error('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
                 new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
             current_coordinate_image = self.is_current_coordinates(self.current_images, image)
             if current_coordinate_image:
-                rospy.logerr("image matched, sending to background")
+                logger.error("image matched, sending to background")
                 images_to_remove_delayed.append(current_coordinate_image)
                 images_to_remove.remove(current_coordinate_image)
-            rospy.logdebug('Appending IMAGE: {}\n\n'.format(image))
+            logger.debug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
 
         def remove_image(image_obj, *args, **kwargs):
-            rospy.logerr('Removing image: {}'.format(image_obj))
+            logger.error('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
             if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
 
         for image_obj in images_to_remove:
-            rospy.logerr('ZZZ removing image object')
+            logger.error('ZZZ removing image object')
             remove_image(image_obj)
         for image_obj in images_to_remove_delayed:
             # TODO grab this list of images, and on a new image, stop these timers if alive and just
             # kill them images
-            rospy.logerr('ZZZ delaying removal of image')
+            logger.error('ZZZ delaying removal of image')
             rospy.Timer(rospy.Duration(3), partial(remove_image, image_obj), oneshot=True)
         #images_to_remove = []
         threads = []
@@ -141,7 +143,7 @@ class ImageViewer():
             thread.join()
 
         self.current_images = new_current_images
-        rospy.logerr("finished handling image views")
+        logger.error("finished handling image views")
 
     def _create_image(self, image):
         if image.transparent:
@@ -160,7 +162,7 @@ class ImageViewer():
             image.geometry.y,
             image_path
         ).split()
-        rospy.logdebug('command is {}'.format(command))
+        logger.debug('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path=image_path)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
@@ -175,7 +177,7 @@ class ImageViewer():
             image.geometry.y,
             image.url
         ).split()
-        rospy.logdebug('command is {}'.format(command))
+        logger.debug('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='feh', img_path=None)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
@@ -185,7 +187,7 @@ class ImageViewer():
 def main():
     rospy.init_node('image_viewer')
 
-    # rospy.logerr('starting outputin...')
+    # logger.error('starting outputin...')
     viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
     save_dir = rospy.get_param('~save_dir', 'images')
     save_path = '/tmp/{}'.format(save_dir)

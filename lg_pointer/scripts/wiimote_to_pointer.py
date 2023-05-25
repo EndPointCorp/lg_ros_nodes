@@ -16,6 +16,8 @@ from std_srvs.srv import Empty
 from lg_pointer import MegaViewport
 
 NODE_NAME = 'wiimote_to_pointer'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 TICK_RATE = 65  # Hz
 DEV_WIDTH = 8192
 DEV_HEIGHT = 8192
@@ -77,7 +79,7 @@ class WiiMoteToPointer:
             try:
                 self._tick(tev)
             except Exception as e:
-                rospy.logerr(e.message)
+                logger.error(e.message)
 
     def _tick(self, tev):
         dt = tev.last_duration
@@ -154,7 +156,7 @@ class WiiMoteToPointer:
                 self.stale_count = 0
 
             if self.stale_count == MAX_STALE_COUNT:
-                rospy.logwarn('Attempting to reset a stale device')
+                logger.warning('Attempting to reset a stale device')
                 self.stale_handler()
                 return
 

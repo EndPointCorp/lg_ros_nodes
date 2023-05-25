@@ -15,6 +15,8 @@ from lg_msg_defs.msg import WindowGeometry
 
 
 ROS_NODE_NAME = "lg_onboard"
+from lg_common.logger import get_logger
+logger = get_logger(ROS_NODE_NAME)
 
 
 class OnboardViewportException(Exception):
@@ -76,7 +78,7 @@ class OnboardLauncher(object):
         Idempotently shows onboard window.
 
         """
-        rospy.loginfo("Using config => %s" % self.config)
+        logger.info("Using config => %s" % self.config)
         dconf = subprocess.Popen(['/usr/bin/dconf', 'load', '/org/onboard/'],
                                  stdin=subprocess.PIPE,
                                  close_fds=True)
@@ -91,7 +93,7 @@ class OnboardLauncher(object):
         self.app.set_state(ApplicationState.STOPPED)
 
     def on_shutdown(self):
-        rospy.loginfo("Received shutdown request.")
+        logger.info("Received shutdown request.")
 
 
 class OnboardConfig(object):
@@ -108,5 +110,5 @@ class OnboardConfig(object):
         return config
 
     def get_config(self):
-        rospy.loginfo("Returning onboard config: %s" % self.config)
+        logger.info("Returning onboard config: %s" % self.config)
         return self.config

@@ -3,6 +3,8 @@
 import threading
 import rospy
 import subprocess
+from lg_common.logger import get_logger
+logger = get_logger('master')
 
 
 class VolumeControlMaster:
@@ -17,10 +19,10 @@ class VolumeControlMaster:
     def set_volume(self, volume):
         volume = self.clamp(volume)
         if volume == self.current_volume:
-            rospy.loginfo("VolumeControlMaster: No change to volume level")
+            logger.info("VolumeControlMaster: No change to volume level")
             return
         self.current_volume = volume
-        rospy.loginfo(
+        logger.info(
             "VolumeControlMaster: Setting volume on VolumeControlSlaves to {}%".format(volume))
         self.level_change_pub.publish(volume)
 
@@ -44,9 +46,9 @@ class VolumeControlSlave:
         self.set_volume(msg.data)
 
     def set_volume(self, volume):
-        rospy.loginfo("about to grab the lock...")
+        logger.info("about to grab the lock...")
         cmd = "pactl set-sink-volume {} {}%".format(self.sink, volume)
         with self._lock:
-            rospy.loginfo("running command: {}".format(cmd))
+            logger.info("running command: {}".format(cmd))
             status, output = subprocess.getstatusoutput(cmd)
-            rospy.loginfo("output {} status {}".format(output, status))
+            logger.info("output {} status {}".format(output, status))

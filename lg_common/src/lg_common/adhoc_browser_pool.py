@@ -17,6 +17,9 @@ from .managed_browser import DEFAULT_BINARY
 from urllib.parse import urlparse, parse_qs, urlunparse
 from urllib.parse import urlencode
 
+from lg_common.logger import get_logger
+logger = get_logger('adhoc_browser_pool')
+
 
 class AdhocBrowserPool():
     """
@@ -69,12 +72,12 @@ class AdhocBrowserPool():
 
         It returns a first matched dir under which an `extensions` dir exists
         """
-        rospy.loginfo("Going o to check %s dirs looking for extensions" % lg_common.__path__)
+        logger.info("Going o to check %s dirs looking for extensions" % lg_common.__path__)
         for module_directory in lg_common.__path__:
             possible_extensions_directory = module_directory + "/extensions"
-            rospy.loginfo("Checking if %s exists to load extensions from it" % possible_extensions_directory)
+            logger.info("Checking if %s exists to load extensions from it" % possible_extensions_directory)
             if os.path.isdir(possible_extensions_directory):
-                rospy.loginfo("%s exists!" % possible_extensions_directory)
+                logger.info("%s exists!" % possible_extensions_directory)
                 return possible_extensions_directory
 
         return ''
@@ -126,8 +129,8 @@ class AdhocBrowserPool():
 
         with self.lock:
             response = json.dumps(self._serialize_browser_pool())
-            rospy.loginfo("Received BrowserPool service request")
-            rospy.loginfo("Returning %s" % response)
+            logger.info("Received BrowserPool service request")
+            logger.info("Returning %s" % response)
 
             try:
                 options = json.loads(req.options)
@@ -166,11 +169,11 @@ class AdhocBrowserPool():
         """
         call .close() on browser object and cleanly delete the object
         """
-        rospy.logdebug("Removing browser with id %s" % (browser_pool_id))
+        logger.debug("Removing browser with id %s" % (browser_pool_id))
         self.browsers[browser_pool_id].close()
         del self.browsers[browser_pool_id]
         del self.browsers_info[browser_pool_id]
-        rospy.logdebug("State after %s removal: %s" % (browser_pool_id, self.browsers))
+        logger.debug("State after %s removal: %s" % (browser_pool_id, self.browsers))
 
     def _filter_command_line_args(self, command_line_args):
         """
@@ -179,11 +182,11 @@ class AdhocBrowserPool():
         result = []
         for arg in command_line_args:
             if ';' in arg:
-                rospy.logerror("There is ';' in command line arguments for adhock browser")
+                logger.erroror("There is ';' in command line arguments for adhock browser")
                 return []
 
             if 'enable-arc' in arg or 'enable-nacl' in arg:
-                rospy.logerr("Unsupported command line arg %s" % arg)
+                logger.error("Unsupported command line arg %s" % arg)
                 return []
 
             result.append(arg)
@@ -287,10 +290,10 @@ class AdhocBrowserPool():
         binary = self._get_browser_binary(new_browser)
 
         if new_browser.custom_preload_event:
-            rospy.loginfo("Using custom preloading event")
+            logger.info("Using custom preloading event")
             new_browser.url = self._inject_get_argument(new_browser.url, 'use_app_event', 1)
         else:
-            rospy.loginfo("NOT Using custom preloading event")
+            logger.info("NOT Using custom preloading event")
 
         # Add ros_instance_name to evry browser
         new_browser.url = self._inject_get_argument(new_browser.url, 'ros_instance_name', new_browser_pool_id)
@@ -322,7 +325,7 @@ class AdhocBrowserPool():
             )
             browser_info['injected_get_args'].append('allowed_urls')
 
-        rospy.logdebug(
+        logger.debug(
             "Creating new browser %s with id %s and url %s" %
             (new_browser, new_browser_pool_id, new_browser.url)
         )
@@ -345,10 +348,10 @@ class AdhocBrowserPool():
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
         self.browsers_info[new_browser_pool_id] = browser_info
-        rospy.loginfo("State after addition of %s: %s" % (new_browser_pool_id, list(self.browsers.keys())))
+        logger.info("State after addition of %s: %s" % (new_browser_pool_id, list(self.browsers.keys())))
 
         if initial_state:
-            rospy.logdebug("Setting initial state of %s to %s" % (new_browser_pool_id, initial_state))
+            logger.debug("Setting initial state of %s to %s" % (new_browser_pool_id, initial_state))
             managed_adhoc_browser.set_state(ApplicationState.STARTED)
         else:
             managed_adhoc_browser.set_state(ApplicationState.VISIBLE)
@@ -368,7 +371,7 @@ class AdhocBrowserPool():
         returns: bool
         """
         for browser_pool_id in ids:
-            rospy.loginfo("Hiding browser with id %s" % browser_pool_id)
+            logger.debug("Hiding browser with id %s" % browser_pool_id)
             self.browsers[browser_pool_id].set_state(ApplicationState.HIDDEN)
 
         return True
@@ -377,9 +380,9 @@ class AdhocBrowserPool():
         """
         Accepts a list of browser ids to destroy (kill and remove)
         """
-        rospy.loginfo("Browsers to remove = %s" % (ids))
+        logger.debug("Browsers to remove = %s" % (ids))
         for browser_pool_id in ids:
-            rospy.loginfo("Removing browser id %s" % browser_pool_id)
+            logger.debug("Removing browser id %s" % browser_pool_id)
             self._remove_browser(browser_pool_id)
 
     def _get_all_preloadable_instances(self, data):
@@ -415,17 +418,17 @@ class AdhocBrowserPool():
 
         """
         with self.lock:
-            rospy.loginfo("============UNHIDING BEGIN %s ============" % data.instances)
+            logger.info("============UNHIDING BEGIN %s ============" % data.instances)
             preloadable_prefixes = self._get_all_preloadable_instances(data)
-            rospy.loginfo("Preloadable prefixes: %s" % preloadable_prefixes)
+            logger.info("Preloadable prefixes: %s" % preloadable_prefixes)
             old_preloadable_instances_to_remove = frozenset(self._get_old_preloadable_browser_instances(preloadable_prefixes, data))
             self._unhide_browser_instances(data)
-            rospy.loginfo("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
+            logger.info("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
             rospy.sleep(self.hide_delay)
             self._hide_browsers_ids(old_preloadable_instances_to_remove)
             rospy.sleep(self.destroy_delay)
             self._destroy_browsers_ids(old_preloadable_instances_to_remove)
-            rospy.loginfo("============UNHIDING END %s   ============" % data.instances)
+            logger.info("============UNHIDING END %s   ============" % data.instances)
 
     def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):
         """
@@ -461,13 +464,13 @@ class AdhocBrowserPool():
         returns: bool
         """
         for browser_pool_id in data.instances:
-            rospy.loginfo("Unhiding browser with id %s" % (browser_pool_id))
+            logger.info("Unhiding browser with id %s" % (browser_pool_id))
             try:
                 self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
             except KeyError:
-                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool" % (browser_pool_id, list(self.browsers.keys())))
+                logger.debug("Could not remove %s from %s because browser doesnt exist in this pool" % (browser_pool_id, list(self.browsers.keys())))
             except Exception as e:
-                rospy.logdebug("Could not remove %s from %s because browser doesnt exist in this pool because: %s" % (browser_pool_id, list(self.browsers.keys()), e))
+                logger.debug("Could not remove %s from %s because browser doesnt exist in this pool because: %s" % (browser_pool_id, list(self.browsers.keys()), e))
 
     def _inject_get_argument(self, url, get_arg_name, get_arg_value):
         """
@@ -513,21 +516,21 @@ class AdhocBrowserPool():
 
         with self.lock:
             self.scene_slug = data.scene_slug
-            rospy.loginfo("============= NEW SCENE BEGIN (slug: %s) ===============" % self.scene_slug)
+            logger.debug("============= NEW SCENE BEGIN (slug: %s) ===============" % self.scene_slug)
             incoming_browsers = self._get_incoming_browsers_dict(data.browsers)
             incoming_browsers_ids = set(incoming_browsers.keys())  # set
             current_browsers_ids = get_app_instances_ids(self.browsers)  # set
             ids_to_preload = set([incoming_browser_id for incoming_browser_id in incoming_browsers_ids if incoming_browsers[incoming_browser_id].preload])
             ids_to_remove = current_browsers_ids - incoming_browsers_ids
             ids_to_create = (incoming_browsers_ids - current_browsers_ids).union(ids_to_preload)
-            rospy.loginfo('incoming ids: {}'.format(incoming_browsers_ids))
-            rospy.loginfo('preloadable ids: {}'.format(ids_to_preload))
-            rospy.loginfo('current ids: {}'.format(current_browsers_ids))
-            rospy.loginfo('partitioned fresh ids: {}'.format(ids_to_create))
-            rospy.loginfo('browsers to remove: {}'.format(ids_to_remove))
+            logger.debug('incoming ids: {}'.format(incoming_browsers_ids))
+            logger.debug('preloadable ids: {}'.format(ids_to_preload))
+            logger.debug('current ids: {}'.format(current_browsers_ids))
+            logger.debug('partitioned fresh ids: {}'.format(ids_to_create))
+            logger.debug('browsers to remove: {}'.format(ids_to_remove))
             self._create_browsers(ids_to_create, incoming_browsers)
             self._execute_browser_housekeeping(ids_to_create, ids_to_preload, ids_to_remove)
-            rospy.loginfo("============== NEW SCENE END (slug: %s) ================" % self.scene_slug)
+            logger.debug("============== NEW SCENE END (slug: %s) ================" % self.scene_slug)
             return True
 
     def _execute_browser_housekeeping(self, ids_to_create, ids_to_preload, ids_to_remove):
@@ -554,7 +557,7 @@ class AdhocBrowserPool():
         browsers with these ids.
         """
         for browser_pool_id in ids_to_create:
-            rospy.loginfo("Creating browser %s with preload flag: %s" % (browser_pool_id, incoming_browsers[browser_pool_id].preload))
+            logger.info("Creating browser %s with preload flag: %s" % (browser_pool_id, incoming_browsers[browser_pool_id].preload))
             if incoming_browsers[browser_pool_id].preload:
                 self._create_browser(browser_pool_id,
                                      incoming_browsers[browser_pool_id],

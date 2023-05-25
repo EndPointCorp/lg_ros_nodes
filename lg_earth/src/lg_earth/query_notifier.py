@@ -3,6 +3,8 @@ import os
 import pyinotify
 import sys
 import collections
+from lg_common.logger import get_logger
+logger = get_logger('query_notifier')
 
 
 class _QueryDeleteProcessor(pyinotify.ProcessEvent):
@@ -35,8 +37,8 @@ class QueryNotifier():
             try:
                 h()
             except Exception as e:
-                rospy.logerr('Caught an Exception in delete handler!')
-                rospy.logerr(sys.exc_info()[2])
+                logger.error('Caught an Exception in delete handler!')
+                logger.error(sys.exc_info()[2])
         list(map(run_handler, self.delete_handlers))
 
     def start(self):

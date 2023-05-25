@@ -7,6 +7,8 @@ from geometry_msgs.msg import Twist
 from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'spacenav_anti_spin'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def get_fullscale():
@@ -34,7 +36,7 @@ def main():
         if should_relaunch:
             rezero_pub.publish('rezero')
         else:
-            rospy.logwarn('A rezero is needed, but the rezeroer dose not have permission')
+            logger.warning('A rezero is needed, but the rezeroer dose not have permission')
 
     threshold = get_fullscale() * 0.0147  # this can be tweaked
 

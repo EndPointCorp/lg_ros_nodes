@@ -12,6 +12,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'lg_replay'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -26,7 +28,7 @@ def main():
 
     if not topic_name or not (device_name or device_path):
         msg = "You must provide lg_replay output topic name and (device name or device path)"
-        rospy.logerr(msg)
+        logger.error(msg)
         raise ROSNodeIOException(msg)
 
     publisher = rospy.Publisher(topic_name, GenericMessage, queue_size=10)
@@ -38,7 +40,7 @@ def main():
         while True:
             err, msg = check_device_path(device_path, user, group)
             if err:
-                rospy.logerr('[%s] Invalid device path supplied, sleeping for %s seconds and trying again: %s' % (rospy.get_name(), i, msg))
+                logger.error('[%s] Invalid device path supplied, sleeping for %s seconds and trying again: %s' % (rospy.get_name(), i, msg))
             else:
                 break
             rospy.sleep(i)
@@ -54,10 +56,10 @@ def main():
     try:
         device_replay.run()
     except IOError:
-        rospy.logwarn('Device unplugged most likely')
+        logger.warning('Device unplugged most likely')
     except select.error as error:
         if error[0] == (4, 'Interrupted system call'):
-            rospy.logwarn('Interrupted system call during waiting for event - is system shutting down?')
+            logger.warning('Interrupted system call during waiting for event - is system shutting down?')
 
 
 def check_device_path(path, user, group):
@@ -67,7 +69,7 @@ def check_device_path(path, user, group):
     if err:
         status, output = subprocess.getstatusoutput("sudo chown %s:%s %s" % (user, group, path))
         if status != 0:
-            rospy.logerr("Could not attach to device: %s - insufficient permissions" % path)
+            logger.error("Could not attach to device: %s - insufficient permissions" % path)
     return False, 'No problems with lg_replay device'
 
 

@@ -11,6 +11,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'lg_keyboard_onboard_router'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -34,7 +36,7 @@ def main():
                      Bool,
                      onboard_router.handle_visibility)
 
-    rospy.loginfo("Started lg_onboard_router, spinning")
+    logger.info("Started lg_onboard_router, spinning")
     rospy.spin()
 
 

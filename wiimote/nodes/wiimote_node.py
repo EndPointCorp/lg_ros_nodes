@@ -93,6 +93,9 @@ from wiimote.wiimoteConstants import *
 import wiimote.WIIMote
 import wiimote.wiiutils
 
+from lg_common.logger import get_logger
+logger = get_logger('wiimote_node')
+
 GATHER_CALIBRATION_STATS = True
 
 class WiimoteNode():
@@ -119,8 +122,8 @@ class WiimoteNode():
             rospy.spin()
         
         except:    
-            rospy.loginfo("Error in startup")
-	    rospy.loginfo(sys.exc_info()[0])
+            logger.info("Error in startup")
+	    logger.info(sys.exc_info()[0])
         finally:
             try:
                 wiimoteDevice.setRumble(False)
@@ -210,7 +213,7 @@ class WiimoteDataSender(threading.Thread):
         except AttributeError:
             # An attribute error here occurs when user shuts
             # off the Wiimote before stopping the wiimote_node:
-            rospy.loginfo(self.threadName + " shutting down.")
+            logger.info(self.threadName + " shutting down.")
             exit(0)
 
             
@@ -245,7 +248,7 @@ class IMUSender(WiimoteDataSender):
         diagonal. We obtain the variance from the Wiimote instance.  
         """
         
-        rospy.loginfo("Wiimote IMU publisher starting (topic /imu/data).")
+        logger.info("Wiimote IMU publisher starting (topic /imu/data).")
         self.threadName = "IMU topic Publisher"
         try:
             while not rospy.is_shutdown():
@@ -284,14 +287,14 @@ class IMUSender(WiimoteDataSender):
 		try:
 		  self.pub.publish(msg)
 		except rospy.ROSException:
-		  rospy.loginfo("Topic imu/data closed. Shutting down Imu sender.")
+		  logger.info("Topic imu/data closed. Shutting down Imu sender.")
 		  exit(0)
                 
-                #rospy.logdebug("IMU state:")
-                #rospy.logdebug("    IMU accel: " + str(canonicalAccel) + "\n    IMU angular rate: " + str(canonicalAngleRate))
+                #logger.debug("IMU state:")
+                #logger.debug("    IMU accel: " + str(canonicalAccel) + "\n    IMU angular rate: " + str(canonicalAngleRate))
                 rospy.sleep(self.sleepDuration)
         except rospy.ROSInterruptException:
-            rospy.loginfo("Shutdown request. Shutting down Imu sender.")
+            logger.info("Shutdown request. Shutting down Imu sender.")
             exit(0)
             
             
@@ -319,7 +322,7 @@ class JoySender(WiimoteDataSender):
         The Joy.msg message types calls for just two fields: float32[] axes, and int32[] buttons.
         """
         
-        rospy.loginfo("Wiimote joystick publisher starting (topic wiijoy).")
+        logger.info("Wiimote joystick publisher starting (topic wiijoy).")
         self.threadName = "Joy topic Publisher"
         try:
             while not rospy.is_shutdown():
@@ -362,14 +365,14 @@ class JoySender(WiimoteDataSender):
 		try:
 		  self.pub.publish(msg)
 		except rospy.ROSException:
-		  rospy.loginfo("Topic wiijoy closed. Shutting down Joy sender.")
+		  logger.info("Topic wiijoy closed. Shutting down Joy sender.")
 		  exit(0)
 
-                #rospy.logdebug("Joystick state:")
-                #rospy.logdebug("    Joy buttons: " + str(theButtons) + "\n    Joy accel: " + str(canonicalAccel) + "\n    Joy angular rate: " + str(canonicalAngleRate))
+                #logger.debug("Joystick state:")
+                #logger.debug("    Joy buttons: " + str(theButtons) + "\n    Joy accel: " + str(canonicalAccel) + "\n    Joy angular rate: " + str(canonicalAngleRate))
                 rospy.sleep(self.sleepDuration)
         except rospy.ROSInterruptException:
-            rospy.loginfo("Shutdown request. Shutting down Joy sender.")
+            logger.info("Shutdown request. Shutting down Joy sender.")
             exit(0)
 
 class NunSender(WiimoteDataSender):
@@ -408,7 +411,7 @@ class NunSender(WiimoteDataSender):
                     continue
                 if self.pub is None:
                     self.pub = rospy.Publisher('/wiimote/nunchuk', Joy, queue_size=1)
-                    rospy.loginfo("Wiimote Nunchuk joystick publisher starting (topic nunchuk).")
+                    logger.info("Wiimote Nunchuk joystick publisher starting (topic nunchuk).")
                 
                 (joyx, joyy) = self.wiistate.nunchukStick
                                 
@@ -432,14 +435,14 @@ class NunSender(WiimoteDataSender):
 		try:
 		  self.pub.publish(msg)
 		except rospy.ROSException:
-		  rospy.loginfo("Topic /wiimote/nunchuk closed. Shutting down Nun sender.")
+		  logger.info("Topic /wiimote/nunchuk closed. Shutting down Nun sender.")
 		  exit(0)
                 
-                #rospy.logdebug("nunchuk state:")
-                #rospy.logdebug("    nunchuk buttons: " + str(theButtons) + "\n    Nuchuck axes: " + str(msg.axes) + "\n")
+                #logger.debug("nunchuk state:")
+                #logger.debug("    nunchuk buttons: " + str(theButtons) + "\n    Nuchuck axes: " + str(msg.axes) + "\n")
 
         except rospy.ROSInterruptException:
-            rospy.loginfo("Shutdown request. Shutting down Nun sender.")
+            logger.info("Shutdown request. Shutting down Nun sender.")
             exit(0)
 
 class ClasSender(WiimoteDataSender):
@@ -477,7 +480,7 @@ class ClasSender(WiimoteDataSender):
                     continue
 		if self.pub is None:
 		    self.pub = rospy.Publisher('/wiimote/classic', Joy)
-		    rospy.loginfo("Wiimote Classic Controller joystick publisher starting (topic /wiimote/classic).")
+		    logger.info("Wiimote Classic Controller joystick publisher starting (topic /wiimote/classic).")
 	  
                 (l_joyx, l_joyy) = self.wiistate.classicStickLeft
                 (r_joyx, r_joyy) = self.wiistate.classicStickRight
@@ -528,14 +531,14 @@ class ClasSender(WiimoteDataSender):
 		try:
 		  self.pub.publish(msg)
 		except rospy.ROSException:
-		  rospy.loginfo("Topic /wiimote/classic closed. Shutting down Clas sender.")
+		  logger.info("Topic /wiimote/classic closed. Shutting down Clas sender.")
 		  exit(0)
 
-                #rospy.logdebug("Classic Controller state:")
-                #rospy.logdebug("    Classic Controller buttons: " + str(theButtons) + "\n    Classic Controller axes: " + str(msg.axes) + "\n")
+                #logger.debug("Classic Controller state:")
+                #logger.debug("    Classic Controller buttons: " + str(theButtons) + "\n    Classic Controller axes: " + str(msg.axes) + "\n")
 
         except rospy.ROSInterruptException:
-            rospy.loginfo("Shutdown request. Shutting down Clas sender.")
+            logger.info("Shutdown request. Shutting down Clas sender.")
             exit(0)
 	    
 
@@ -567,7 +570,7 @@ class WiiSender(WiimoteDataSender):
         diagonal. We obtain the variance from the Wiimote instance.  
         """
         
-        rospy.loginfo("Wiimote state publisher starting (topic /wiimote/state).")
+        logger.info("Wiimote state publisher starting (topic /wiimote/state).")
         self.threadName = "Wiimote topic Publisher"
         try:
             while not rospy.is_shutdown():
@@ -695,17 +698,17 @@ class WiiSender(WiimoteDataSender):
 		try:
 		  self.pub.publish(msg)
 		except rospy.ROSException:
-		  rospy.loginfo("Topic /wiimote/state closed. Shutting down Wiimote sender.")
+		  logger.info("Topic /wiimote/state closed. Shutting down Wiimote sender.")
 		  exit(0)
 
-                #rospy.logdebug("Wiimote state:")
-                #rospy.logdebug("    Accel: " + str(canonicalAccel) + "\n    Angular rate: " + str(canonicalAngleRate))
-                #rospy.logdebug("    Rumble: " + str(msg.rumble) + "\n    Battery: [" + str(msg.raw_battery) + "," + str(msg.percent_battery))
-                #rospy.logdebug("    IR positions: " + str(msg.ir_tracking))
+                #logger.debug("Wiimote state:")
+                #logger.debug("    Accel: " + str(canonicalAccel) + "\n    Angular rate: " + str(canonicalAngleRate))
+                #logger.debug("    Rumble: " + str(msg.rumble) + "\n    Battery: [" + str(msg.raw_battery) + "," + str(msg.percent_battery))
+                #logger.debug("    IR positions: " + str(msg.ir_tracking))
                                 
 
         except rospy.ROSInterruptException:
-            rospy.loginfo("Shutdown request. Shutting down Wiimote sender.")
+            logger.info("Shutdown request. Shutting down Wiimote sender.")
             exit(0)
         
 class WiimoteListeners(threading.Thread):
@@ -748,7 +751,7 @@ class WiimoteListeners(threading.Thread):
 	      else:
 		self.ledCommands[fb.id] = False
 	    except:
-	      rospy.logwarn("LED ID out of bounds, ignoring!")
+	      logger.warning("LED ID out of bounds, ignoring!")
 	  elif fb.type == JoyFeedback.TYPE_RUMBLE:
 	    if fb.id == 0:
 	      if fb.intensity >= 0.5:
@@ -756,7 +759,7 @@ class WiimoteListeners(threading.Thread):
 	      else:
 		self.rumbleCommand = False
 	    else:
-	      rospy.logwarn("RUMBLE ID out of bounds, ignoring!")
+	      logger.warning("RUMBLE ID out of bounds, ignoring!")
 
 	self.wiiMote.setLEDs(self.ledCommands)        
 	self.wiiMote.setRumble(self.rumbleCommand)
@@ -768,7 +771,7 @@ class WiimoteListeners(threading.Thread):
       def calibrateCallback(req):
         """The imu/calibrate service handler."""
           
-        rospy.loginfo("Calibration request")
+        logger.info("Calibration request")
         
         calibrationSuccess = self.wiiMote.zeroDevice()
         
@@ -783,16 +786,16 @@ class WiimoteListeners(threading.Thread):
       # level of WiimoteListeners' run() function.
        
       # Subscribe to rumble and LED control messages and sit:
-      rospy.loginfo("Wiimote feedback listener starting (topic /joy/set_feedback).")
+      logger.info("Wiimote feedback listener starting (topic /joy/set_feedback).")
       rospy.Subscriber("joy/set_feedback", JoyFeedbackArray, feedbackCallback)
-      rospy.loginfo("Wiimote calibration service starting (topic /imu/calibrate).")
+      logger.info("Wiimote calibration service starting (topic /imu/calibrate).")
       rospy.Service("imu/calibrate", Empty, calibrateCallback)
-      rospy.loginfo("Wiimote latched is_calibrated publisher starting (topic /imu/is_calibrated).")
+      logger.info("Wiimote latched is_calibrated publisher starting (topic /imu/is_calibrated).")
       
       try:
           rospy.spin()
       except rospy.ROSInterruptException:
-        rospy.loginfo("Shutdown request. Shutting down Wiimote listeners.")
+        logger.info("Shutdown request. Shutting down Wiimote listeners.")
         exit(0)
         
 
@@ -802,21 +805,21 @@ if __name__ == '__main__':
         wiimoteNode.runWiimoteNode()
         
     except rospy.ROSInterruptException:
-        rospy.loginfo("ROS Shutdown Request.")
+        logger.info("ROS Shutdown Request.")
     except KeyboardInterrupt as e:
-        rospy.loginfo("Received keyboard interrupt.")
+        logger.info("Received keyboard interrupt.")
     except WiimoteNotFoundError as e:
-        rospy.logfatal(str(e))
+        logger.fatal(str(e))
     except WiimoteEnableError as e:
-        rospy.logfatal(str(e))
+        logger.fatal(str(e))
     except CallbackStackMultInstError as e:
-        rospy.logfatal(str(e))
+        logger.fatal(str(e))
     except CallbackStackEmptyError as e:
-        rospy.logfatal(str(e))
+        logger.fatal(str(e))
     except ResumeNonPausedError as e:
-        rospy.logfatal(str(e))
+        logger.fatal(str(e))
     except CallbackStackEmptyError as e:
-        rospy.logfatal(str(e))
+        logger.fatal(str(e))
     
     except:
         excType, excValue, excTraceback = sys.exc_info()[:3]
@@ -824,5 +827,5 @@ if __name__ == '__main__':
     finally:
         if (wiimoteNode is not None):
             wiimoteNode.shutdown()
-        rospy.loginfo("Exiting Wiimote node.")
+        logger.info("Exiting Wiimote node.")
         sys.exit(0)

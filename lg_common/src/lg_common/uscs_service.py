@@ -10,6 +10,9 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_msg_defs.srv import USCSMessage, USCSMessageResponse, InitialUSCS, InitialUSCSResponse
 from std_srvs.srv import EmptyResponse
 
+from lg_common.logger import get_logger
+logger = get_logger('uscs_service')
+
 
 class USCSService:
 
@@ -34,30 +37,30 @@ class USCSService:
 
         if on_online_state_scene_url:
             self.on_online_state = self._grab_scene(on_online_state_scene_url)
-            rospy.loginfo("Enabling on_online_state handling")
+            logger.info("Enabling on_online_state handling")
         else:
-            rospy.loginfo("Disabling on_online_state handling")
+            logger.info("Disabling on_online_state handling")
             self.on_online_state = None
 
         if on_offline_state_scene_url:
-            rospy.loginfo("Enabling on_offline_state handling")
+            logger.info("Enabling on_offline_state handling")
             self.on_offline_state = self._grab_scene(on_offline_state_scene_url)
         else:
-            rospy.loginfo("Will use initial state for on_offline_state")
+            logger.info("Will use initial state for on_offline_state")
             self.on_offline_state = None
 
         if on_active_state_scene_url:
-            rospy.loginfo("Enabling on_active_state handling")
+            logger.info("Enabling on_active_state handling")
             self.on_active_state = self._grab_scene(on_active_state_scene_url)
         else:
-            rospy.loginfo("Disabling on_active_state handling")
+            logger.info("Disabling on_active_state handling")
             self.on_active_state = None
 
         if on_inactive_state_scene_url:
-            rospy.loginfo("Enabling on_inactive_state handling")
+            logger.info("Enabling on_inactive_state handling")
             self.on_inactive_state = self._grab_scene(on_inactive_state_scene_url)
         else:
-            rospy.loginfo("Disabling on_inactive_state handling")
+            logger.info("Disabling on_inactive_state handling")
             self.on_inactive_state = None
 
         self.state = self._grab_state(initial_state_scene_url)
@@ -80,7 +83,7 @@ class USCSService:
         If data == True then emit on_offline_state message
         If data == False then emit on_online_state message
         """
-        rospy.loginfo("Incoming message: %s. Currently offline: %s" % (message, self.offline))
+        logger.info("Incoming message: %s. Currently offline: %s" % (message, self.offline))
         if self.director_scene_publisher and not self.offline == message.data:
             self.offline = message.data
             if self.offline is False:
@@ -100,20 +103,20 @@ class USCSService:
         Accepts active/inactive state message
         and emits appropriate message from ivars
         """
-        rospy.loginfo("Incoming message: %s. Current state: %s" % (message, self.active))
+        logger.info("Incoming message: %s. Current state: %s" % (message, self.active))
         if self.director_scene_publisher:
             if (message.data is True) and (self.active is False):
                 """
                 We became active
                 """
-                rospy.loginfo("Active False => True")
+                logger.info("Active False => True")
                 self.idempotently_publish_scene(self.on_active_state)
                 self.active = True
             if (message.data is False) and (self.active is True):
                 """
                 We became inactive
                 """
-                rospy.loginfo("Active True => False")
+                logger.info("Active True => False")
                 self.idempotently_publish_scene(self.on_inactive_state)
                 self.active = False
 
@@ -123,17 +126,17 @@ class USCSService:
         if the scene is not already published
         """
         if scene:
-            rospy.logdebug("Current state is:%s" % self.state)
-            rospy.logdebug("Publishing new state: %s" % scene)
+            logger.debug("Current state is:%s" % self.state)
+            logger.debug("Publishing new state: %s" % scene)
 
             current_state = json.loads(self.state.message)
             new_state = json.loads(scene.message)
 
             if current_state['slug'] == new_state['slug']:
-                rospy.loginfo("Not publishing scene '%s' as it's "
+                logger.info("Not publishing scene '%s' as it's "
                               "already published" % current_state['slug'])
             else:
-                rospy.loginfo("Publishing scene '%s' due to a callback "
+                logger.info("Publishing scene '%s' due to a callback "
                               "for new state" % new_state['slug'])
                 self.director_scene_publisher.publish(scene)
 
@@ -170,7 +173,7 @@ class USCSService:
         Subscribed to track the current state
         """
         with self.lock:
-            rospy.logdebug("Getting message {}".format(message))
+            logger.debug("Getting message {}".format(message))
             self.state = USCSMessageResponse()
             self.state.type = message.type
             self.state.message = message.message
@@ -181,14 +184,14 @@ class USCSService:
         """
         response = urllib.request.urlopen(url)
         if response.code != 200:
-            rospy.logerr("Got non-200 error status (%s) from url: %s" % (response.code, url))
+            logger.error("Got non-200 error status (%s) from url: %s" % (response.code, url))
             rospy.sleep(3)
             return None
 
         try:
             message = response.read()
         except Exception:
-            rospy.logerr("Could not get response for initial state service")
+            logger.error("Could not get response for initial state service")
             rospy.sleep(3)
             return None
 
@@ -197,7 +200,7 @@ class USCSService:
                 message = json.loads(message)
             return message
         except ValueError:
-            rospy.logerr("invalid json: (%s)" % url)
+            logger.error("invalid json: (%s)" % url)
             rospy.sleep(3)
             return None
 
@@ -210,7 +213,7 @@ class USCSService:
             return message
         except ValueError:
             message = "Could not decode json message for msg_string: %s" % msg_string
-            rospy.logerr(message)
+            logger.error(message)
             sys.exit(1)
 
     def _grab_scene(self, scene_url):
@@ -225,8 +228,8 @@ class USCSService:
             message = self._create_message(message)
         except Exception as e:
             message = None
-            rospy.logwarn("Could not get scene for url: %s because %s" % (scene_url, e))
-            rospy.logwarn("sleeping for 3 seconds")
+            logger.warning("Could not get scene for url: %s because %s" % (scene_url, e))
+            logger.warning("sleeping for 3 seconds")
             rospy.sleep(3)
 
         return message
@@ -240,7 +243,7 @@ class USCSService:
         if not scene_url:
             return None
 
-        rospy.logwarn("Attempting to grab state from %s" % scene_url)
+        logger.warning("Attempting to grab state from %s" % scene_url)
         message = self._get_json_from_url(scene_url)
 
         initial_state = USCSMessageResponse()

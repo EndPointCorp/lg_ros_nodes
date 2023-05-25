@@ -20,6 +20,9 @@ from lg_media import DirectorMediaBridge
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
 
+from lg_common.logger import get_logger
+logger = get_logger(NAME)
+
 DIRECTOR_MESSAGE_BOGUS = """
     {
             "description": "bogus",
@@ -194,9 +197,9 @@ class MockMplayerPoolPublisher:
         self.published_messages = []
 
     def publish(self, adhoc_mplayers):
-        rospy.logdebug("Publishing adhoc mplayers: %s" % adhoc_mplayers)
+        logger.debug("Publishing adhoc mplayers: %s" % adhoc_mplayers)
         self.published_messages.append(adhoc_mplayers)
-        rospy.logdebug("After publishing, self.published_messages = %s" % self.published_messages)
+        logger.debug("After publishing, self.published_messages = %s" % self.published_messages)
 
 
 class TestAdhocMediaDirectorBridge(unittest.TestCase):
@@ -260,8 +263,8 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                     media_type='video',
                                     on_finish='nothing')
 
-        rospy.loginfo("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
-        rospy.loginfo("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer]))
+        logger.info("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
+        logger.info("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer]))
 
         self.assertEqual(AdhocMedias(medias=[center_mplayer]), self.mock_publisher_center.published_messages[0])
         self.assertEqual(AdhocMedias(medias=[]), self.mock_publisher_right.published_messages[0])
@@ -315,8 +318,8 @@ class TestAdhocMediaDirectorBridge(unittest.TestCase):
                                      url='http://lg-head/lg/assets/videos/bunny.mp4',
                                      on_finish='nothing')
 
-        rospy.loginfo("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
-        rospy.loginfo("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer_1, center_mplayer_2, center_mplayer_3]))
+        logger.info("published adhoc mplayer => %s" % self.mock_publisher_center.published_messages[0])
+        logger.info("asserted adhoc mplayer => %s" % AdhocMedias(medias=[center_mplayer_1, center_mplayer_2, center_mplayer_3]))
         self.assertEqual(AdhocMedias(medias=[center_mplayer_1, center_mplayer_2, center_mplayer_3]), self.mock_publisher_center.published_messages[0])
         self.assertEqual(AdhocMedias(medias=[right_mplayer_4]), self.mock_publisher_right.published_messages[0])
         self.assertEqual(AdhocMedias, type(self.mock_publisher_center.published_messages[0]))

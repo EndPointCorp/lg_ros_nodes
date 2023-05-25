@@ -18,6 +18,8 @@ from random import randint
 
 
 NODE_NAME = 'lg_earth'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -48,7 +50,7 @@ def main():
     random_stagger = rospy.get_param('~staggered', False)
     if random_stagger:
         random_sleep_length = randint(1, 10)
-        rospy.logerr("Random sleep length: {}".format(random_sleep_length))
+        logger.error("Random sleep length: {}".format(random_sleep_length))
         sleep(random_sleep_length)
 
     instance = '_earth_instance_' + rospy.get_name().strip('/')
