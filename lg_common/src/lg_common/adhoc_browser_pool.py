@@ -282,6 +282,7 @@ class AdhocBrowserPool():
             additional_extensions.append('ros_window_ready')
 
         additional_extensions.append('current_url')
+        additional_extensions.append('virtual_keyboard')
 
         geometry = self._get_browser_window_geometry(new_browser)
         extensions = self._get_browser_extensions(new_browser, additional_extensions)
