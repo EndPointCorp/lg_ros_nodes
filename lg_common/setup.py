@@ -16,6 +16,7 @@ d = generate_distutils_setup(
             'extensions/ros_window_ready/*/*',
             'extensions/monitor_page_urls/*/*',
             'extensions/current_url/*/*',
+            'extensions/virtual_keyboard/*/*',
             'extensions/minimize_adhoc_browser/*/*'
         ]
     },
