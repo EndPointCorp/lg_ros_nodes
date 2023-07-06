@@ -1129,6 +1129,15 @@ def combine_viewport_geometries(viewport_names):
     return combined
 
 
+def get_hostname():
+    import requests
+    r = requests.get('http://lg-head/hostname')
+    if r.status_code != 200:
+        return 'error_unknown'
+    # strip the newline and return
+    return r.text[:-1]
+
+
 """
 import logging
 import sys

@@ -4,7 +4,7 @@ import rospy
 import datetime
 import traceback
 
-from lg_common.helpers import write_influx_point_to_telegraf
+from lg_common.helpers import write_influx_point_to_telegraf, get_hostname
 from lg_common.logger import get_logger
 logger = get_logger('stats_handler')
 
@@ -43,6 +43,7 @@ class StatsHandler():
         pres['presentation_name'] = scene.get('presentation', 'unknown')
         pres['type'] = scene.get('played_from', 'unknown')
         pres['created_by'] = scene.get('created_by', 'unknown')
+        pres['hostname'] = get_hostname()
         self.last_presentation_start_time = time.time()
         self.last_presentation = pres
 
@@ -71,8 +72,9 @@ class StatsHandler():
         if self.last_presentation.get('slug', '') != 'attract-loop-break':
             # only write the presentation when we're not in the attract loop
             pres = self.last_presentation
-            logger.debug(f"touch_stats presentation_name=\"{pres['scene_name']}\",scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started={self.last_presentation_start_time}")
-            write_influx_point_to_telegraf(f"touch_stats presentation_name=\"{pres['scene_name']}\",scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started={self.last_presentation_start_time}")
+            query = f"touch_stats_test presentation_name=\"{pres['scene_name']}\",scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{datetime.datetime.fromtimestamp(self.last_presentation_start_time)}\",system=\"{pres['hostname']}\""
+            logger.debug(query)
+            write_influx_point_to_telegraf(query)
         else:
             logger.debug("ignored writing attract loop blank scene")
 
