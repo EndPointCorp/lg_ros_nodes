@@ -1,4 +1,4 @@
-ARG UBUNTU_RELEASE=bionic
+ARG UBUNTU_RELEASE=focal
 FROM ubuntu:${UBUNTU_RELEASE}
 ARG UBUNTU_RELEASE
 
@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # project settings
 ENV PROJECT_ROOT $HOME/src/lg_ros_nodes
-ENV ROS_DISTRO melodic
+ENV ROS_DISTRO noetic
 
 # Env for nvidia-docker2/nvidia container runtime
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -28,8 +28,9 @@ RUN apt-get update \
 
 # install system dependencies and tools not tracked in rosdep
 RUN \
-  echo "deb http://packages.ros.org/ros/ubuntu ${UBUNTU_RELEASE} main" > /etc/apt/sources.list.d/ros-latest.list && \
+  echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list && \
   echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
+  wget --no-check-certificate -q -O /tmp/key.asc https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc && apt-key add /tmp/key.asc && rm /tmp/key.asc && \
   apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
   wget --no-check-certificate -q -O /tmp/key.pub https://dl-ssl.google.com/linux/linux_signing_key.pub && apt-key add /tmp/key.pub && rm /tmp/key.pub && \
   apt-key update && \
@@ -37,12 +38,12 @@ RUN \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
     g++ pycodestyle cppcheck \
-    python-pytest wget \
-    python-gst-1.0 \
-    python-pip \
-    python-rosdep \
-    python-setuptools \
-    python-rosdep \
+    python3-pytest wget \
+    python3-gst-1.0 \
+    python3-pip \
+    python3-rosdep \
+    python3-setuptools \
+    python3-rosdep \
     python3-pip \
     python3-setuptools \
     python3-defusedxml \
@@ -58,7 +59,7 @@ RUN \
     x-window-system binutils \
     pulseaudio \
     mesa-utils mesa-utils-extra \
-    module-init-tools gdebi-core \
+    gdebi-core \
     libxext-dev \
     lsb-core tar libfreeimage3 \
     openssh-client \
@@ -78,7 +79,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install --no-cache-dir python-coveralls \
+RUN pip install --no-cache-dir coveralls \
  && pip3 install --no-cache-dir \
     wheel \
     rospkg \
@@ -90,6 +91,7 @@ RUN pip install --no-cache-dir python-coveralls \
     empy \
     pycrypto \
     pycryptodome \
+    pymongo \
     gnupg
 
 # Install GE
@@ -118,7 +120,7 @@ COPY ros_entrypoint.sh ${PROJECT_ROOT}
 
 # clone appctl
 # TODO change to latest tag
-ARG APPCTL_TAG=3.0.1
+ARG APPCTL_TAG=3.1.0
 RUN git clone --branch ${APPCTL_TAG} https://github.com/EndPointCorp/appctl.git /appctl
 RUN ln -snf /appctl/appctl ${PROJECT_ROOT}/
 RUN ln -snf /appctl/appctl_msg_defs ${PROJECT_ROOT}/
@@ -162,6 +164,13 @@ COPY spacenav_remote/package.xml ${PROJECT_ROOT}/spacenav_remote/package.xml
 COPY spacenav_wrapper/package.xml ${PROJECT_ROOT}/spacenav_wrapper/package.xml
 COPY state_proxy/package.xml ${PROJECT_ROOT}/state_proxy/package.xml
 COPY wiimote/package.xml ${PROJECT_ROOT}/wiimote/package.xml
+RUN \
+    apt-get update && \
+    apt-get install -y \
+      python3-gst-1.0 \
+      socat \
+      python3-debian
+
 RUN \
     source /opt/ros/$ROS_DISTRO/setup.bash && \
     apt-get update && \

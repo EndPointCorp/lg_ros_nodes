@@ -26,6 +26,6 @@
   <run_depend>std_srvs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>sensor_msgs</run_depend>
-  <run_depend>python-evdev</run_depend>
+  <run_depend>python3-evdev</run_depend>
 
 </package>

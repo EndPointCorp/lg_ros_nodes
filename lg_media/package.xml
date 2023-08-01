@@ -35,5 +35,5 @@
   <run_depend>gstreamer1.0-x</run_depend>
   <run_depend>gstreamer1.0-libav</run_depend>
   <test_depend>rostest</test_depend>
-  <test_depend>python-pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
 </package>

@@ -2,11 +2,11 @@
 #
 # VERSION 0.1
 
-ARG UBUNTU_RELEASE=bionic
+ARG UBUNTU_RELEASE=jammy
 FROM 	ubuntu:${UBUNTU_RELEASE}
 
 # Install basic stuff
-RUN     apt-get install -y wget curl tmux git
+RUN     apt-get update && apt-get install -y wget curl tmux git
 
 # Add deb repos
 RUN 	echo "deb http://packages.ros.org/ros/ubuntu $UBUNTU_RELEASE main" > /etc/apt/sources.list.d/ros-latest.list ;\
@@ -56,7 +56,7 @@ RUN     mkdir -p /opt/google/earth/free ;\
         ln -s /opt/google/earth/free.newlibs/googleearth /usr/bin/google-earth
 
 # Install ROS
-ARG ROS_RELEASE=melodic
+ARG ROS_RELEASE=jammy
 RUN     apt-get update && apt-get install -y \
             ros-${ROS_RELEASE}-ros-base \
             ros-${ROS_RELEASE}-rosbridge-server \

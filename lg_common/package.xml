@@ -22,7 +22,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>rosbridge_suite</run_depend>
   <run_depend>lg_msg_defs</run_depend>
-  <run_depend>socat</run_depend>
+	  <!-- <run_depend>socat</run_depend> -->
   <test_depend>rostest</test_depend>
-  <test_depend>python-pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
 </package>
