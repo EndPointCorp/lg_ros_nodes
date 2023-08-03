@@ -185,18 +185,13 @@ if __name__ == "__main__":
     imagery, borders, places, photos, roads, buildings, weather, gallery, more, terrain
     **pick 0, 1, 2 for on, off, toggle""")
 
-
     args = parser.parse_args()
     if args:
         for arg in args.values:
             try:
                 onoff = int(arg)
             except:
-                if arg.upper() == "ON":
-                    onoff = 0
-                elif arg.upper() == "OFF":
-                    onoff = 1
-                elif arg in Earth.icon_colors.keys():
+                if arg in Earth.icon_colors.keys():
                     layer = arg
                 else:
                     print("bad argument: %s, exiting." % arg)
