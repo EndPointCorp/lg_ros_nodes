@@ -4,13 +4,13 @@ import os
 import sys
 import time
 import subprocess
-import importlib
+import argparse
 
 try:
     from Xlib import X, display
 except Exception as e:
-    subprocess.run(['/usr/local/bin/pip', 'install', 'xlib'])  # , check=True)
-    exit(subprocess.run([*sys.argv], check=True).returncode)
+    subprocess.run(['/usr/local/bin/pip', 'install', 'xlib'])  # required on lgx iso
+    exit(subprocess.run([*sys.argv], check=True).returncode)  # run self again so the import will succeed
 
 os.environ['DISPLAY'] = ':0'
 
@@ -60,7 +60,8 @@ class Earth:
         except Exception as e:
             print(f"Failed to click on window ID: {self.win_id}:\n", e)
 
-    def find_layer_states(self):  # find y coordinate and state of layers
+    def find_layer_states(self):
+        """ find y coordinate and state of layers, set values on dict """
         if not earth.wait_for_menu():
             return None
         y_min = 1
@@ -75,7 +76,7 @@ class Earth:
 
 
     def find_color_in_column(self, x, target_colors, y_min=1):
-        #target_color = target_color.upper()
+        """ find and :return: y coordinate of matching color or None"""
         if self.icons_image is None:
             root = self.display.screen().root
             adjusted_x = x + self.offset
@@ -84,7 +85,6 @@ class Earth:
             depth = self.icons_image.depth
             pixel_size = (depth + 7) // 8
             self.stride = (1 * pixel_size + 3) & ~3  ## TODO check it is always 4(bytes per pixel), simplify
-            print("stride", self.stride)
         try:  # Get each pixel value, check if it is in the list
             for y in range(1, 1920):
                 if y < y_min:
@@ -92,8 +92,6 @@ class Earth:
                 pixel_value_bytes = self.icons_image.data[y * self.stride : (y + 1) * self.stride]
                 pixel_value = int.from_bytes(pixel_value_bytes, byteorder='little')
                 hex_color = hex(pixel_value)[2:].zfill(6).upper()
-                # if y < 1500 and hex_color != 'FFFFFF':  #dev, testing for colors
-                #     print("y: ", y, "hex: ", hex_color)
                 if hex_color in target_colors:
                     return y
             return None
@@ -109,7 +107,7 @@ class Earth:
             data = bytes(image.data)
             pixel_value = int.from_bytes(data, byteorder='little')
             hex_color = hex(pixel_value)[2:].zfill(6).upper()
-            print(x, y, "get_pixel got: ", hex_color)
+            #print(x, y, "get_pixel got: ", hex_color)
             return hex_color
         except subprocess.CalledProcessError:
             print(f"Failed to get pixel color for window ID: {self.win_id}")
@@ -120,24 +118,14 @@ class Earth:
         while earth.get_pixel_color(Earth.checks_column, 1750) != 'FFFFFF':
             time.sleep(.1)
             keep_count += 1
-            if keep_count > 9:  #wait up to 0.7 seconds for menu, plenty at ephq could be shortened TEST
-                if looped == False:  # try to open menu and wait a second time
+            if keep_count > 7:  #wait up to 0.7 seconds for menu, plenty at ephq could be shortened TEST
+                if not looped:  # try to open menu and wait a second time
                     earth.toggle_menu()
                     return earth.wait_for_menu(True)
                 else:
                     return False
         else:  # if the while's condition becomes False
             return True
-
-    # def get_state_old(self, layer_y):  # TODO could work for any but it is set for buildings rn
-    #     color_state = self.get_pixel_color(self.checks_column, layer_y)
-    #     if color_state in ['FFFFFF']:
-    #         return 1
-    #     elif color_state in ['000000', '2F2F2F', '9A9A9A', 'BCB9B6', 'F2F2F2', 'F4F4F4']:
-    #         return 0
-    #     else:
-    #         print(layer_y, " !!!!!!!!!color_state: ", color_state)
-    #         return None
 
     def get_state(self, layer_y):  # TODO could work for any but it is set for buildings rn
         if self.states_image is None:
@@ -151,7 +139,7 @@ class Earth:
         pixel_value_bytes = self.states_image.data[layer_y * self.stride: (layer_y + 1) * self.stride]
         pixel_value = int.from_bytes(pixel_value_bytes, byteorder='little')
         color_state = hex(pixel_value)[2:].zfill(6).upper()
-        print("layer_row: ", layer_y, " hex_state: ", color_state)
+        #print("layer_row: ", layer_y, " hex_state: ", color_state)
         if color_state == 'FFFFFF':
             return 1
         elif color_state in ['000000', '2F2F2F', '9A9A9A', 'BCB9B6', 'F2F2F2', 'F4F4F4']:
@@ -160,13 +148,14 @@ class Earth:
             return None
 
 def find_and_create_earths():
+    """ find earth windows create and :return: list of Earth objects """
     try:
         window_ids = subprocess.check_output(['xdotool', 'search', '--onlyvisible', '--name', 'Google Earth']).decode().strip().split()
     except Exception as e:
         print("Error: 'xdotool' failed searching for earths:\n", e)
         return []
 
-    EARTHS = []  # Earth objects list
+    EARTHS = []
     for win_id in window_ids:
         try:
             geometry_info = subprocess.check_output(['xdotool', 'getwindowgeometry', '--shell', win_id]).decode().strip()
@@ -176,10 +165,10 @@ def find_and_create_earths():
             print(f"Failed to retrieve window geometry for window ID: {win_id}:\n", e)
     sorted_earths = sorted(EARTHS, key=lambda earth: earth.offset)  # Sort by offsets
     center_index = len(sorted_earths) // 2
-    if len(sorted_earths) in [3, 5, 7]:  #mark center and change order of toggle
+    if len(sorted_earths) in [3, 5, 7]:  # mark center and change order of toggle
         sorted_earths[center_index].is_master = True
         newsort_earths = [sorted_earths[center_index]] + [x for pair in zip(sorted_earths[center_index-1::-1], sorted_earths[center_index+1:]) for x in pair]
-        print("earth xdotool ids from center out on canvas:", *[earth.win_id for earth in newsort_earths])
+        print("earth xdotool ids left to right on canvas:", *[earth.win_id for earth in sorted_earths])
         return newsort_earths
     else:
         sorted_earths[0].is_master = True
@@ -188,45 +177,42 @@ def find_and_create_earths():
 
 
 if __name__ == "__main__":
-    onoff = 2  #default to toggle
-    layer = "buildings" #default to buildings layer
-# handle command line arguments
-    if len(sys.argv) == 2:
-        try:
-            onoff = int(sys.argv[1])
-        except:
-            first = sys.argv[1].upper()
-            if first == 'ON':
-                onoff = 0
-            elif first == 'OFF':
-                onoff = 1
-            elif sys.argv[1] in Earth.icon_colors.keys():
-                layer = sys.argv[1]
-            else:
-                print("bad arguments: ", sys.argv[1:],
-                      f"\nuse: {sys.argv[0]} <layer> <0/1/2>")
-                exit(1)
-    elif len(sys.argv) == 3:
-        layer = sys.argv[1]
-        onoff = int(sys.argv[2])
-    elif len(sys.argv) == 1:
-        print("toggling <buildings> <2> ...")
-    else:
-        print("bad arguments: ", sys.argv[1:], f"\nuse: {sys.argv[0]} <layer> <0/1/2>")
-        exit(1)
+    onoff = 2  # default to toggle
+    layer = "buildings"  # default to buildings layer
 
+    parser = argparse.ArgumentParser()  # handle command line arguments
+    parser.add_argument("values", nargs='*', help="""(default='buildings 2' **pick one layer from:
+    imagery, borders, places, photos, roads, buildings, weather, gallery, more, terrain
+    **pick 0, 1, 2 for on, off, toggle""")
+
+
+    args = parser.parse_args()
+    if args:
+        for arg in args.values:
+            try:
+                onoff = int(arg)
+            except:
+                if arg.upper() == "ON":
+                    onoff = 0
+                elif arg.upper() == "OFF":
+                    onoff = 1
+                elif arg in Earth.icon_colors.keys():
+                    layer = arg
+                else:
+                    print("bad argument: %s, exiting." % arg)
+                    exit(1)
     EARTHS = find_and_create_earths()  # create earth objects into a list
-    [earth.toggle_menu() for earth in EARTHS]  #open menus ahead of time
+    [earth.toggle_menu() for earth in EARTHS]  # open menus ahead of time
     for earth in EARTHS:  # find layer positions and states, toggle if it must
         t_y = None
         while t_y is None:
-            earth.find_layer_states()  # or continue?
+            earth.find_layer_states()
             try:
-                t_y = earth.layer_ys[layer]  # should verify it got a value TODO #if t_y is not None:
+                t_y = earth.layer_ys[layer]
             except:
                 earth.icons_image = None
                 time.sleep(.1)
-        print(earth.offset, earth.layer_ys, earth.states)
+        print(earth, earth.states)
         if onoff != earth.states[layer]:
             print("toggle: ", onoff, "it was: ", earth.states[layer])
             try:
@@ -235,7 +221,4 @@ if __name__ == "__main__":
                 print(f"Failed to click for window ID: {earth.win_id}:\n{e}")
         if onoff == 2:  #we only toggle first instance, rest match the first
             onoff = abs(earth.states[layer] - 1)
-        # elif onoff == 3:  # dev/undocumented leave menus open :)
-        #     continue
         earth.toggle_menu()
-    # TODO check it is closed?
