@@ -123,11 +123,6 @@ class ImageViewer():
         for image_obj in images_to_remove:
             logger.error('ZZZ removing image object')
             remove_image(image_obj)
-        for image_obj in images_to_remove_delayed:
-            # TODO grab this list of images, and on a new image, stop these timers if alive and just
-            # kill them images
-            logger.error('ZZZ delaying removal of image')
-            rospy.Timer(rospy.Duration(3), partial(remove_image, image_obj), oneshot=True)
         #images_to_remove = []
         threads = []
 
@@ -141,6 +136,10 @@ class ImageViewer():
             thread.start()
         for thread in threads:
             thread.join()
+        
+        for image_obj in images_to_remove_delayed:
+            logger.error('ZZZ delaying removal of imagei 0.1 seconds')
+            rospy.Timer(rospy.Duration(.1), partial(remove_image, image_obj), oneshot=True)
 
         self.current_images = new_current_images
         logger.error("finished handling image views")
