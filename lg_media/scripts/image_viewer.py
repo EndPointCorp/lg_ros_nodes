@@ -93,11 +93,13 @@ class ImageViewer():
             self._handle_image_views(msg)
 
     def _handle_image_views(self, msg):
+        global matched_images_dict
         logger.error("handling image views")
         new_current_images = {}
         images_to_remove = list(self.current_images.values())
         images_to_add = []
         images_to_remove_delayed = []
+        matched_images_dict = {}
         for image in msg.images:
             # logger.error('CURRENT IMAGES: {}\n\n'.format(self.current_images))
             duplicate_image = self.is_in_current_images(self.current_images, image)
@@ -108,8 +110,8 @@ class ImageViewer():
                 continue
             current_coordinate_image = self.is_current_coordinates(self.current_images, image)
             if current_coordinate_image:
-                logger.error("image matched, sending to background")
-                images_to_remove_delayed.append(current_coordinate_image)
+                logger.error("image matched, waiting to remove after the new one is launched")
+                matched_images_dict[image.img_path] = current_coordinate_image
                 images_to_remove.remove(current_coordinate_image)
             logger.debug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
@@ -123,12 +125,14 @@ class ImageViewer():
         for image_obj in images_to_remove:
             logger.error('ZZZ removing image object')
             remove_image(image_obj)
-        #images_to_remove = []
+        
         threads = []
 
         def make_image(image):
             created_image = self._create_image(image)
             new_current_images[make_key_from_image(image)] = created_image
+            if image.img_path in matched_images_dict.keys():
+                remove_image(matched_images_dict[image.img_path])
 
         for image in images_to_add:
             thread = Thread(target=make_image, args=(image,))
@@ -136,10 +140,6 @@ class ImageViewer():
             thread.start()
         for thread in threads:
             thread.join()
-        
-        for image_obj in images_to_remove_delayed:
-            logger.error('ZZZ delaying removal of imagei 0.1 seconds')
-            rospy.Timer(rospy.Duration(.1), partial(remove_image, image_obj), oneshot=True)
 
         self.current_images = new_current_images
         logger.error("finished handling image views")
