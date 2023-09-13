@@ -111,7 +111,7 @@ class ImageViewer():
             current_coordinate_image = self.is_current_coordinates(self.current_images, image)
             if current_coordinate_image:
                 logger.error("image matched, waiting to remove after the new one is launched")
-                matched_images_dict[image.img_path] = current_coordinate_image
+                matched_images_dict[image_coordinates(image)] = current_coordinate_image
                 images_to_remove.remove(current_coordinate_image)
             logger.debug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
@@ -125,14 +125,14 @@ class ImageViewer():
         for image_obj in images_to_remove:
             logger.error('ZZZ removing image object')
             remove_image(image_obj)
-        
+
         threads = []
 
         def make_image(image):
             created_image = self._create_image(image)
             new_current_images[make_key_from_image(image)] = created_image
-            if image.img_path in matched_images_dict.keys():
-                remove_image(matched_images_dict[image.img_path])
+            if image_coordinates(image) in matched_images_dict.keys():
+                rospy.Timer(rospy.Duration(2), partial(remove_image, matched_images_dict[image_coordinates(image)]), oneshot=True)
 
         for image in images_to_add:
             thread = Thread(target=make_image, args=(image,))
