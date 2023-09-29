@@ -1,0 +1,4 @@
+<launch>
+  <node name="lg_overlay_listener" pkg="lg_common" type="lg_overlay_listener"></node>
+  <node name="lg_active_scene" pkg="lg_common" type="lg_active_scene"></node>
+</launch>
