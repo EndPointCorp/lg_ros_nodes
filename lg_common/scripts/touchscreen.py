@@ -67,12 +67,9 @@ def main():
 
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', None)
-    user_agent = rospy.get_param(
-        '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
-        'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
-        'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
-    )
+    user_agent = rospy.get_param('~user_agent', None)
     log_level = rospy.get_param('/logging/level', 0)
+    extensions = rospy.get_param('~extensions', [])
 
     browser = ManagedBrowser(
         geometry=geometry,
@@ -84,6 +81,7 @@ def main():
         remote_debugging_port=debug_port,
         reload_aw_snap=True,
         user_agent=user_agent,
+        extensions=extensions,
         layer=ManagedWindow.LAYER_TOUCH
     )
 
