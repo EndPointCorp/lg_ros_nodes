@@ -126,6 +126,7 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--crash-dumps-dir={}/crashes'.format(self.tmp_dir))
 
         if extensions:
+            extensions = extensions.split()
             for extension in extensions:
                 if not os.path.isdir(extension):
                     extensions.remove(extension)
