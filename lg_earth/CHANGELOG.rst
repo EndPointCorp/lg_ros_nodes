@@ -50,6 +50,9 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
+Forthcoming
+-----------
+
 3.8.0 (2023-05-25)
 ------------------
 * Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some
