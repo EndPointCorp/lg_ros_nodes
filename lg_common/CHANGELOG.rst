@@ -47,6 +47,11 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Remove duplicated flags from managed browser
+* Contributors: Alejandro Ramon
+
 3.8.1 (2023-10-06)
 ------------------
 
