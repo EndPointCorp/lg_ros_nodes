@@ -50,8 +50,8 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
-Forthcoming
------------
+3.8.1 (2023-10-06)
+------------------
 
 3.8.0 (2023-05-25)
 ------------------
