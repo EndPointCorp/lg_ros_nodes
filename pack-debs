@@ -19,7 +19,7 @@ mkdir -p $DEBDIR
 cd $DEBDIR
 
 sudo rosdep init || /bin/true
-rosdep update
+rosdep update --include-eol-distros
 sudo rosdep install -y --from-paths $SRCDIR --ignore-src \
     --rosdistro="${BUILD_ROS_DISTRO}" --os="${BUILD_OS}:${BUILD_OS_VERSION}"
 
