@@ -28,6 +28,9 @@ Changelog for package lg_spacenav_globe
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+
 3.8.2 (2023-10-06)
 ------------------
 

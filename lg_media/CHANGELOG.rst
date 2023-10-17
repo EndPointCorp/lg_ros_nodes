@@ -30,6 +30,16 @@ Changelog for package lg_media
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+
+3.8.3 (2023-10-17)
+-------------------
+* Fix gstreamer player close on finish (`#454 <https://github.com/endpointcorp/lg_ros_nodes/issues/454>`_)
+  * Add -c arg to gst_video_sync to close on exit
+  * Reflect msg onFinish state in gst_video_sync cmd
+* Contributors: nelliott
+
 3.8.2 (2023-10-06)
 ------------------
 
