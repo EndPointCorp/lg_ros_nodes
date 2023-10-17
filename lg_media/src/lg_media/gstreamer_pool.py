@@ -61,6 +61,8 @@ class ManagedGstreamer(ManagedApplication):
             cmd.extend(self.extra_args.split())
 
         cmd.append("-d")  # Disable hardware decoding -- for compatibility
+        if self.respawn is False:
+            cmd.append("-c")  # close on finish
         cmd.extend(["-n", str(self.slug)])
         cmd.extend(["-u", self.url])
         if self.window:
