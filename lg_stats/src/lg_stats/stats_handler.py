@@ -25,7 +25,7 @@ class StatsHandler():
 
     def _handle_director(self, msg):
         scene = json.loads(msg.message)
-        logger.debug(f"handling stats for director: {scene}")
+        logger.debug(f"handling stats for director")
         # TODO remove this check for a bug
         if scene.get('data', None) is not None:
             scene = scene['data']
@@ -61,9 +61,11 @@ class StatsHandler():
             self.write_data()
 
         if self.active_state is True:
+            if self.last_presentation:
+                logger.debug(f'activity detected, setting presentation start time, starting timer. Presentation is {self.last_presentation}')
+                self.last_presentation_start_time = time.time()
+
             self.active_state = True
-            logger.debug(f'activity detected, setting presentation start time, starting timer. Presentation is {self.last_presentation}')
-            self.last_presentation_start_time = time.time()
 
     def write_data(self):
         try:
