@@ -12,7 +12,7 @@ def main():
     stats_handler = StatsHandler()
 
     rospy.Subscriber('/director/scene', GenericMessage, stats_handler.handle_director)
-    rospy.Subscriber('/activity/active', Bool, stats_handler.handle_activity)
+    rospy.Subscriber('/activity/stats_active', Bool, stats_handler.handle_activity)
     rospy.spin()
 
 

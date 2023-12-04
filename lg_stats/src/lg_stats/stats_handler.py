@@ -53,9 +53,16 @@ class StatsHandler():
             logger.debug('ignoring duplicate active_state')
             return  # nothing to do here
         self.active_state = msg.data
+
         if self.active_state is False:
             self.active_state = False
+            logger.debug('activity ended, writing data')
             self.write_data()
+
+        if self.active_state is True:
+            self.active_state = True
+            logger.debug(f'activity detected, setting presentation start time, starting timer. Presentation is {self.last_presentation}')
+            self.last_presentation_start_time = time.time()
 
     def write_data(self):
         try:
