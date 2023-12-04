@@ -146,7 +146,8 @@ class AttractLoop:
             "name": "attract loop blank scene",
             "resource_uri": "no uri",
             "slug": "attract-loop-break",
-            "windows": []
+            "windows": [],
+            "source": "lg_attract_loop"
         }
 
         for viewport_name in viewports:
@@ -195,6 +196,10 @@ class AttractLoop:
             duration = self.default_duration
         logger.debug("Playing scene %s from presentation %s with duration %s" % (full_scene, full_presentation, duration))
 
+        # Add source attributes to presentation and scene
+        full_presentation['source'] = 'lg_attract_loop'
+        full_scene['source'] = 'lg_attract_loop'
+        
         scene_msg = GenericMessage(type='json', message=json.dumps(full_scene))
         presentation_msg = GenericMessage(type='json', message=json.dumps(full_presentation))
 
