@@ -49,6 +49,7 @@ class StatsHandler():
         self.last_presentation = pres
 
     def handle_activity(self, msg):
+        logger.debug(f"handling stats for activity: {msg}")
         if self.active_state == msg.data:
             logger.debug('ignoring duplicate active_state')
             return  # nothing to do here
