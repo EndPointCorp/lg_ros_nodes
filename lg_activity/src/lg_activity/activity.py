@@ -436,7 +436,7 @@ class ActivityTracker:
 
         """
         now = rospy.get_time()
-        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, self.timeout)}
+        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.timeout)}
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True
@@ -452,7 +452,7 @@ class ActivityTracker:
             logger.debug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
 
         
-        self.sources_active_within_stats_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, self.stats_activity_timeout)}
+        self.sources_active_within_stats_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.stats_activity_timeout)}
 
         if self.sources_active_within_stats_timeout and (not self.stats_active):
             self.stats_active = True
