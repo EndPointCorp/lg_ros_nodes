@@ -26,7 +26,6 @@ class StatsHandler():
     def _handle_director(self, msg):
         scene = json.loads(msg.message)
         logger.debug(f"handling stats for director")
-        # TODO remove this check for a bug
         if scene.get('data', None) is not None:
             scene = scene['data']
         if scene.get('slug', '') == 'attract-loop-break':
@@ -47,6 +46,7 @@ class StatsHandler():
         pres['hostname'] = get_hostname()
         self.last_presentation_start_time = time.time()
         self.last_presentation = pres
+        logger.debug(f"Director msg stored as last_presentation: {self.last_presentation}")
 
     def handle_activity(self, msg):
         logger.debug(f"handling stats for activity: {msg}")
