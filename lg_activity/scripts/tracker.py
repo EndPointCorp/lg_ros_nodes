@@ -32,7 +32,7 @@ def main():
         return
 
     activity_publisher = rospy.Publisher(activity_topic, Bool, queue_size=1, latch=True)
-    stats_activity_publisher = rospy.Publisher(activity_topic, Bool, queue_size=1, latch=True)
+    stats_activity_publisher = rospy.Publisher(stats_activity_topic, Bool, queue_size=1, latch=True)
     activity_sources = ActivitySourceDetector(sources_string).get_sources()
 
     activity_tracker = ActivityTracker(publisher=activity_publisher,
