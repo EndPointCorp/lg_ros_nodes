@@ -270,18 +270,18 @@ class ActivitySource:
 
     def _is_message_active(self):
         """keep last message. Empty list returns False TODO add other cases, empty string, null, ...""" 
-        if not self.messages:
-            return False
-        try:
-            self.messages = [self.messages[-1]]  # skip to last message and keep it
-            if self.messages[0]['overlays']:  # TODO add set False methods, else True
-                self.callback(self.topic, state=True, strategy='message', delay=1)
-                logger.debug("Setting strems state True")
-                return True
-        except (IndexError, KeyError, ValueError, TypeError) as e:
-            logger.debug("error checking stream messages: %" % e)
+        if self.messages:
+             try:
+                 self.messages = [self.messages[-1]]  # skip to last message and keep it
+                 if self.messages[0]['overlays']:  # TODO add set False methods, else True
+                     self.callback(self.topic, state=True, strategy='message', delay=1)
+                     logger.debug("Setting strems state True")
+                     return True
+             except (IndexError, KeyError, ValueError, TypeError) as e:
+                 logger.debug("error checking stream messages: %" % e)
         self.messages = []
         self.callback(self.topic, state=False, strategy='message')
+        logger.debug("Streams are off")
         return False
 
     def _is_duration_active(self):
@@ -433,16 +433,16 @@ class ActivityTracker:
 
                 try:
                     if self.activity_states[topic_name]['state'] == state:
-                        if delay > 0:
+                        if delay > 0:  # use delay as a force update param
                             self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
                             logger.debug("Updated Topic name: %s in state: %s with delay: %s" % (topic_name, state, delay))
 
                         logger.debug("State of %s didn't change" % topic_name)
                         return True
 
-                    logger.debug("State of: %s changed to %s" % (topic_name, state))
+                    logger.debug("Updating: %s state to %s" % (topic_name, state))
                 except KeyError:
-                    logger.error("Initializing state of topic: %s" % topic_name)
+                    logger.error("Initializing: %s with state: %s" % (topic_name, state))
 
                 self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
                 self._check_states()
@@ -479,7 +479,7 @@ class ActivityTracker:
             logger.debug("ActivitySource %s is inactive" % source)
             return False
         else:
-            logger.debug("ActivitySource %s is still active" % source)
+            logger.debug("ActivitySource %s is in inactivity timeout" % source)
             return True
 
     def _check_states(self):
@@ -499,14 +499,14 @@ class ActivityTracker:
             self.active = True
             self.publisher.publish(Bool(data=True))
             logger.info("State turned from False to True because of state: %s" % self.sources_active_within_timeout)
-            logger.info("States: %s" % self.activity_states)
+            logger.debug("States: %s" % self.activity_states)
         elif (not self.sources_active_within_timeout) and self.active:
             self.active = False
             self.publisher.publish(Bool(data=False))
             logger.info("State turned from True to False because no sources were active within the timeout")
             logger.debug("States: %s" % self.activity_states)
         else:
-            logger.debug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
+            logger.debug("Activity state unchanged. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
 
     def _init_activity_sources(self):
         """
