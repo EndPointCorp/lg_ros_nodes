@@ -201,6 +201,7 @@ class ActivitySource:
             - delta - compares messages
             - value - checks for specific value
             - activity - checks for any messages flowing on a topic
+            - message - last message sets the state and stays (using empty list for False, else True for now)
             - duration - all messages trigger True then False, if positive duration adds it to the False timestamp
 
         Once state is asserted then call ActivityTracker to let him know
@@ -214,6 +215,8 @@ class ActivitySource:
             self._is_value_active()
         elif self.strategy == 'activity':
             self._is_activity_active()
+        elif self.strategy == 'message':
+            self._is_message_active()
         elif self.strategy == 'duration':
             self._is_duration_active()
         else:
@@ -262,6 +265,22 @@ class ActivitySource:
         else:
             self.callback(self.topic, state=False, strategy='activity')
             return False
+
+    def _is_message_active(self):
+        """keep last message. Empty list returns False TODO add other cases, empty string, null, ...""" 
+        if not self.messages:
+            return False
+        try:
+            self.messages = [self.messages[-1]]  # skip to last message and keep it
+            if self.messages[0]['overlays']:  # TODO add set False methods, else True
+                self.callback(self.topic, state=True, strategy='message', delay=1)
+                logger.debug("Setting strems state True")
+                return True
+        except (IndexError, KeyError, ValueError, TypeError) as e:
+            logger.debug("error checking stream messages: %" % e)
+        self.messages = []
+        self.callback(self.topic, state=False, strategy='message')
+        return False
 
     def _is_duration_active(self):
         """check scene message for duration or own state if no message"""
