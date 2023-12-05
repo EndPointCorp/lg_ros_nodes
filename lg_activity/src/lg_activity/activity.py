@@ -11,6 +11,8 @@ from lg_common.helpers import rewrite_message_to_dict
 from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
 from std_msgs.msg import Bool
+from std_msgs.msg import String
+from interactivespaces_msgs.msg import GenericMessage
 
 from lg_common.logger import get_logger
 logger = get_logger('activity_class')
@@ -234,7 +236,7 @@ class ActivitySource:
         if list_of_dicts_is_homogenous(self.messages):
             self.messages = self.messages[-self.delta_msg_count + 1:]
             self.callback(self.topic, state=False, strategy='delta')
-            return False  # if list if homogenous than there was no activity
+            return False  # if list is homogenous then there was no activity
         else:
             self.messages = self.messages[-self.delta_msg_count + 1:]
             self.callback(self.topic, state=True, strategy='delta')
@@ -440,14 +442,14 @@ class ActivityTracker:
 
                     logger.debug("State of: %s changed to %s" % (topic_name, state))
                 except KeyError:
-                    logger.debug("Initializing state of topic: %s" % topic_name)
+                    logger.error("Initializing state of topic: %s" % topic_name)
 
                 self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
                 self._check_states()
                 return True
 
             except Exception as e:
-                logger.error("activity_callback for %s failed because %s" % (topic_name, e))
+                logger.debug("Activity callback with state %s for topic name %s failed!: %s" % (state, topic_name, e))
             
             return False
 
