@@ -52,7 +52,7 @@ class ActivitySource:
                  topic=None, message_type=None,
                  strategy=None, slot=None,
                  value_min=None, debug=None,
-                 value_max=None, callback=None):
+                 value_max=None, callback=None, tracker=None):
         self._check_init_args(topic, message_type, strategy, callback,
                               value_min, value_max, slot)
         self.message_type = message_type
@@ -66,7 +66,7 @@ class ActivitySource:
         self.memory_limit = memory_limit
         self.messages = []
         self.delta_msg_count = self.__class__.DELTA_MSG_COUNT
-
+        self.tracker = tracker
         self._initialize_subscriber()
         logger.info("Initialized ActivitySource: %s" % self)
 
@@ -201,6 +201,7 @@ class ActivitySource:
             - delta - compares messages
             - value - checks for specific value
             - activity - checks for any messages flowing on a topic
+            - duration - all messages trigger True then False, if positive duration adds it to the False timestamp
 
         Once state is asserted then call ActivityTracker to let him know
         what's the state of the source
@@ -213,6 +214,8 @@ class ActivitySource:
             self._is_value_active()
         elif self.strategy == 'activity':
             self._is_activity_active()
+        elif self.strategy == 'duration':
+            self._is_duration_active()
         else:
             logger.error("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
 
@@ -260,6 +263,36 @@ class ActivitySource:
             self.callback(self.topic, state=False, strategy='activity')
             return False
 
+    def _is_duration_active(self):
+        """check scene message for duration or own state if no message"""
+        if not self.tracker.active:  # ignore attract_loop playing
+            self.messages = []
+            return False
+        if self.messages:
+            try:
+                duration = int(self.messages[-1]['message.duration'])  # skip to last message duration
+                if duration > 0 and duration != 666:
+                    self.messages = []
+                    self.callback(self.topic, state=True, strategy='duration', delay=duration)
+                    logger.info("Setting scene_duration tate True delayed by %s seconds duration " % duration)
+                    return True
+            except (IndexError, KeyError, ValueError, TypeError) as e:
+                logger.debug("error getting duration from message: %" % e)
+            self.messages = []
+            self.callback(self.topic, state=False, strategy='duration') 
+            return False
+        
+        try:  # no messages, get self state
+            if self.tracker.activity_states[self.topic]["time"] > rospy.get_time():  #if own time is in the future
+                logger.debug("scene_duration returns True, %s  >  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
+                return True
+            self.callback(self.topic, state=False, strategy='duration')  #not active so inactive
+            logger.debug("scene_duration returns and calls False, %s ~<~  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
+            return False
+        except Exception as e:  #no previous timestamp so inactive
+            logger.debug("init scene_duration return and call False")
+            self.callback(self.topic, state=False, strategy='duration')  #not active so inactive
+            return False
 
 class ActivitySourceDetector:
     """
@@ -360,7 +393,7 @@ class ActivityTracker:
         with self._lock:
             return self.active
 
-    def activity_callback(self, topic_name=None, state=True, strategy=None):
+    def activity_callback(self, topic_name=None, state=True, strategy=None, delay=0):
         """
         ActivitySource uses this callback to set it's state in ActivityTracker
 
@@ -371,25 +404,33 @@ class ActivityTracker:
         If all states turned True (active) then proper message is emitted
         """
         with self._lock:
-            if topic_name not in self.activity_states:
-                self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+            try:            
+                if topic_name not in self.activity_states:
+                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
+                    logger.info("Initialize Topic name: %s with state: %s and delay: %s" % (topic_name, state, delay))
+                    return True
 
-            try:
                 try:
                     if self.activity_states[topic_name]['state'] == state:
-                        logger.debug("State of %s didnt change" % topic_name)
-                    else:
-                        self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-                        logger.debug("Topic name: %s state changed to %s" % (topic_name, state))
-                except KeyError:
-                    logger.info("Initializing topic name state: %s" % topic_name)
-                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+                        if delay > 0:
+                            self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
+                            logger.debug("Updated Topic name: %s in state: %s with delay: %s" % (topic_name, state, delay))
 
+                        logger.debug("State of %s didn't change" % topic_name)
+                        return True
+
+                    logger.debug("State of: %s changed to %s" % (topic_name, state))
+                except KeyError:
+                    logger.debug("Initializing state of topic: %s" % topic_name)
+
+                self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
                 self._check_states()
                 return True
+
             except Exception as e:
                 logger.error("activity_callback for %s failed because %s" % (topic_name, e))
-                return False
+            
+            return False
 
     def _source_is_active(self, source):
         """
@@ -428,9 +469,8 @@ class ActivityTracker:
 
         1. check for activity when in inactive state (easiest and fastest)
         2. carefully check for all states
-
-
         """
+
         now = rospy.get_time()
         self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state)}
 
@@ -443,7 +483,7 @@ class ActivityTracker:
             self.active = False
             self.publisher.publish(Bool(data=False))
             logger.info("State turned from True to False because no sources were active within the timeout")
-            logger.info("States: %s" % self.activity_states)
+            logger.debug("States: %s" % self.activity_states)
         else:
             logger.debug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
 
@@ -459,7 +499,7 @@ class ActivityTracker:
                 topic=source['topic'], message_type=source['message_type'],
                 strategy=source['strategy'], slot=source['slot'],
                 value_min=source['value_min'], value_max=source['value_max'],
-                callback=self.activity_callback, debug=self.debug)
+                callback=self.activity_callback, debug=self.debug, tracker=self)
             self.initialized_sources.append(act)
         return True
 
