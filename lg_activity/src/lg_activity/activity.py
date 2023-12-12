@@ -204,7 +204,7 @@ class ActivitySource:
             - value - checks for specific value
             - activity - checks for any messages flowing on a topic
             - message - last message sets the state and stays (using empty list for False, else True for now)
-            - duration - all messages trigger True then False, if positive duration adds it to the False timestamp
+            - duration - messages with positive duration set active True with a now + duration timestamp
 
         Once state is asserted then call ActivityTracker to let him know
         what's the state of the source
@@ -273,12 +273,12 @@ class ActivitySource:
         if self.messages:
              try:
                  self.messages = [self.messages[-1]]  # skip to last message and keep it
-                 if self.messages[0]['overlays']:  # TODO add set False methods, else True
+                 if self.messages[0].get('overlays', False):
                      self.callback(self.topic, state=True, strategy='message', delay=1)
                      logger.debug("Setting strems state True")
                      return True
              except (IndexError, KeyError, ValueError, TypeError) as e:
-                 logger.debug("error checking stream messages: %" % e)
+                 logger.exception("error checking stream messages: %" % e)
         self.messages = []
         self.callback(self.topic, state=False, strategy='message')
         logger.debug("Streams are off")
@@ -291,29 +291,28 @@ class ActivitySource:
             return False
         if self.messages:
             try:
-                duration = int(self.messages[-1]['message.duration'])  # skip to last message duration
+                duration = int(self.messages[-1].get('message.duration', 0)  # skip to last message duration
                 if duration > 0 and duration != 666:
                     self.messages = []
                     self.callback(self.topic, state=True, strategy='duration', delay=duration)
-                    logger.info("Setting scene_duration tate True delayed by %s seconds duration " % duration)
+                    logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
                     return True
             except (IndexError, KeyError, ValueError, TypeError) as e:
-                logger.debug("error getting duration from message: %" % e)
+                logger.exception("error getting duration from message: %" % e)
             self.messages = []
             self.callback(self.topic, state=False, strategy='duration') 
             return False
         
         try:  # no messages, get self state
-            if self.tracker.activity_states[self.topic]["time"] > rospy.get_time():  #if own time is in the future
+            if self.tracker.activity_states[self.topic]["time"] > rospy.get_time():  # if own time is in the future
                 logger.debug("scene_duration returns True, %s  >  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
                 return True
-            self.callback(self.topic, state=False, strategy='duration')  #not active so inactive
-            logger.debug("scene_duration returns and calls False, %s ~<~  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
-            return False
+            else:
+                logger.debug("scene_duration returns and calls False, %s ~<~  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
         except Exception as e:  #no previous timestamp so inactive
-            logger.debug("init scene_duration return and call False")
-            self.callback(self.topic, state=False, strategy='duration')  #not active so inactive
-            return False
+            logger.debug("init scene_duration, return and call False")
+        self.callback(self.topic, state=False, strategy='duration')
+        return False
 
 class ActivitySourceDetector:
     """
