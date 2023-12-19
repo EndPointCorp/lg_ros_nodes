@@ -291,7 +291,7 @@ class ActivitySource:
             return False
         if self.messages:
             try:
-                duration = int(self.messages[-1].get('message.duration', 0)  # skip to last message duration
+                duration = int(self.messages[-1].get('message.duration', 0))  # skip to last message duration
                 if duration > 0 and duration != 666:
                     self.messages = []
                     self.callback(self.topic, state=True, strategy='duration', delay=duration)
