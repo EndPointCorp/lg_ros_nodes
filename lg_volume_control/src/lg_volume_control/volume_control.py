@@ -8,16 +8,17 @@ logger = get_logger('master')
 
 
 class VolumeControlMaster:
-    def __init__(self, level_change_pub, default_volume=50, scale=5):
+    def __init__(self, level_change_pub, default_volume=50, scale=5, max_volume=100):
         self.scale = scale
         self.default_volume = default_volume
+        self.max_volume = max_volume
         self.current_volume = -1
-        volume = self.clamp(self.default_volume, 0, 100)
+        volume = self.clamp(self.default_volume, 0, self.max_volume)
         self.level_change_pub = level_change_pub
         self.set_volume(volume)
 
     def set_volume(self, volume):
-        volume = self.clamp(volume)
+        volume = self.clamp(volume, 0, self.max_volume)
         if volume == self.current_volume:
             logger.info("VolumeControlMaster: No change to volume level")
             return
