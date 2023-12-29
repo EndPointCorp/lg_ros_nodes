@@ -371,19 +371,21 @@ class ActivityTracker:
 
     """
 
-    def __init__(self, publisher=None, timeout=10, sources=None, debug=None):
-        if (not publisher) or (not timeout) or (not sources):
-            msg = "Activity tracker initialized without one of the params: pub=%s, timeout=%s, sources=%s" % \
-                (publisher, timeout, sources)
+    def __init__(self, publisher=None, stats_activity_publisher=None, timeout=10, stats_activity_timeout=120, sources=None, debug=None):
+        if (not publisher) or (not stats_activity_publisher) or (not timeout) or (not sources) or (not stats_activity_timeout):
+            msg = "Activity tracker initialized without one of the params: pub=%s, stats_activity_publisher=%s, timeout=%s, stats_activity_timeout=%s, sources=%s" % \
+                (publisher, stats_activity_publisher, timeout, stats_activity_timeout, sources)
             logger.error(msg)
             raise ActivityTrackerException
 
         self.active = True
+        self.stats_active = True
         self._lock = threading.Lock()
         self.initialized_sources = []
         self.activity_states = {}
         self.debug = debug
         self.timeout = timeout
+        self.stats_activity_timeout = stats_activity_timeout
         if not self.timeout:
             msg = "You must specify inactivity timeout"
             logger.error(msg)
@@ -391,18 +393,21 @@ class ActivityTracker:
         self.sources = sources
         self.publisher = publisher
         self.publisher.publish(Bool(data=True))  # init the state with True (active)
+        self.stats_activity_publisher = stats_activity_publisher
+        rospy.sleep(0.1)
+        self.stats_activity_publisher.publish(Bool(data=True))  # init the state with True (active)
         self._validate_sources()
         self._init_activity_sources()
         logger.info("Initialized ActivityTracker: %s" % self)
 
     def __str__(self):
-        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, publisher: %s" % \
-            (self.sources, self.initialized_sources, self.timeout, self.publisher)
+        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, stats_activity_timeout: %s, publisher: %s, stats_activity_publisher: %s" % \
+            (self.sources, self.initialized_sources, self.timeout, self.stats_activity_timeout, self.publisher, self.stats_activity_publisher)
         return string_representation
 
     def __repr__(self):
-        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, publisher: %s" % \
-            (self.sources, self.initialized_sources, self.timeout, self.publisher)
+        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, stats_activity_timeout: %s, publisher: %s, stats_activity_publisher: %s" % \
+            (self.sources, self.initialized_sources, self.timeout, self.stats_activity_timeout, self.publisher, self.stats_activity_publisher)
         return string_representation
 
     def _get_activity_status(self, _):
@@ -452,7 +457,7 @@ class ActivityTracker:
             
             return False
 
-    def _source_is_active(self, source):
+    def _source_is_active(self, source, timeout=120):
         """
         Checks whether source was active for last `self.timeout` seconds
         which basically means that we can consider this source to be active
@@ -474,7 +479,7 @@ class ActivityTracker:
             logger.debug("ActivitySource %s is active" % source)
             return True
 
-        if source['state'] is False and ((now - source['time']) >= self.timeout):
+        if source['state'] is False and ((now - source['time']) >= timeout):
             logger.debug("ActivitySource %s is inactive" % source)
             return False
         else:
@@ -492,7 +497,7 @@ class ActivityTracker:
         """
 
         now = rospy.get_time()
-        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state)}
+        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.timeout)}
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True
@@ -506,6 +511,24 @@ class ActivityTracker:
             logger.debug("States: %s" % self.activity_states)
         else:
             logger.debug("Activity state unchanged. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
+
+        
+        self.sources_active_within_stats_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.stats_activity_timeout)}
+
+        if self.sources_active_within_stats_timeout and (not self.stats_active):
+            self.stats_active = True
+            self.stats_activity_publisher.publish(Bool(data=True))
+            logger.info("Stats activity state turned from False to True because of state: %s" % self.sources_active_within_stats_timeout)
+            logger.info("States: %s" % self.activity_states)
+        elif (not self.sources_active_within_stats_timeout) and self.stats_active:
+            self.stats_active = False
+            self.stats_activity_publisher.publish(Bool(data=False))
+            logger.info("Stats acitivity state turned from True to False because no sources were active within the timeout")
+            logger.info("States: %s" % self.activity_states)
+        else:
+            logger.debug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_stats_timeout, self.stats_active, self.activity_states))
+
+
 
     def _init_activity_sources(self):
         """
