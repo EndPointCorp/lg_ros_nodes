@@ -28,11 +28,15 @@ class StatsHandler():
         logger.debug(f"handling stats for director")
         if scene.get('data', None) is not None:
             scene = scene['data']
-        if scene.get('source', '') == 'lg_attract_loop':
+        if scene.get('played_from', '') == 'lg_attract_loop':
             # ignore this, if it's from the attract loop it
             # will publish activity=false and we'll handle
             # it there.
             logger.debug('ignoring attract-loop-break')
+            return
+        if scene.get('slug', '') == 'stop-the-presentations':
+            # ignore this as well
+            logger.debug('ignoring stop-the-presentations messages')
             return
         if self.last_presentation_start_time is not None and self.active_state:
             # System is active and we have a new presentation starting, 
@@ -46,7 +50,7 @@ class StatsHandler():
         pres['type'] = scene.get('played_from', 'unknown')
         pres['created_by'] = scene.get('created_by', 'unknown')
         pres['hostname'] = get_hostname()
-        pres['source'] = scene.get('source', '')
+        pres['played_from'] = scene.get('played_from', '')
         if self.active_state:
             # if the system is active, then start the timer to track the active duration
             self.last_presentation_start_time = time.time()
@@ -84,10 +88,10 @@ class StatsHandler():
             return
         duration = time.time() - self.last_presentation_start_time
         # TODO also check for ['source'] to make sure it is from a valid source
-        if self.last_presentation.get('source', '') != 'lg_attract_loop':
+        if self.last_presentation.get('played_from', '') != 'lg_attract_loop':
             # only write the presentation when we're not in the attract loop
             pres = self.last_presentation
-            query = f"touch_stats,presentation_name=\"{pres['presentation_name']}\",source=\"{pres['source']}\" presentation_id=\"{pres['presentation_id']}\",scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{datetime.datetime.fromtimestamp(self.last_presentation_start_time)}\""
+            query = f"touch_stats,presentation_name=\"{pres['presentation_name']}\",played_from=\"{pres['played_from']}\",presentation_id=\"{pres['presentation_id']}\" scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{datetime.datetime.fromtimestamp(self.last_presentation_start_time)}\""
             logger.debug(f"Writing the data point to influxdb: {query}")
             write_influx_point_to_telegraf(query)
         else:

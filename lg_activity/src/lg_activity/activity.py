@@ -341,6 +341,7 @@ class ActivityTracker:
         self.publisher = publisher
         self.publisher.publish(Bool(data=True))  # init the state with True (active)
         self.stats_activity_publisher = stats_activity_publisher
+        rospy.sleep(0.1)
         self.stats_activity_publisher.publish(Bool(data=True))  # init the state with True (active)
         self._validate_sources()
         self._init_activity_sources()
