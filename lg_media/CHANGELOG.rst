@@ -32,6 +32,10 @@ Changelog for package lg_media
 
 Forthcoming
 -----------
+* Merge pull request `#460 <https://github.com/endpointcorp/lg_ros_nodes/issues/460>`_ from EndPointCorp/autozoom_feh
+  image_viewer.py add --auto-zoom option to feh image viewer
+* image_viewer.py add --auto-zoom option to feh image viewer
+* Contributors: Constante "Tino" Gonzalez, Tino
 
 3.8.3 (2023-10-17)
 -------------------

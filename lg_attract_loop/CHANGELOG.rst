@@ -28,6 +28,14 @@ Changelog for package lg_attract_loop
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#458 <https://github.com/endpointcorp/lg_ros_nodes/issues/458>`_ from EndPointCorp/kannan/director_stats
+  Stats - Enhancements
+* More refactoring to the stats submitter
+* More improvements to the stats logic
+* Contributors: Kannan, Kannan Ponnusamy
+
 3.8.3 (2023-10-17)
 ------------------
 
