@@ -1,9 +1,9 @@
 #virtualKeyboardChromeExtension {
 	padding: 15px !important;
 	background-color: #111317 !important;
-	background: -webkit-gradient(linear, 0% 100%, 0% 0%, from(black), to(#333)); !important;
+	background: -webkit-gradient(linear, 0% 100%, 0% 0%, from(black), to(#333)) !important;
 	position: fixed !important;
-	bottom: -450px ;
+	bottom: 0 !important;
 	opacity: 0;
 	left: 0;
 	right: 0;
@@ -23,9 +23,6 @@
 	left: 50%;
 	right: auto;
 	zoom: 1 !important;
-}
-#virtualKeyboardChromeExtension.modeS .virtualKeyboardChromeExtensionMainKeys, #virtualKeyboardChromeExtension.modeS #virtualKeyboardChromeExtensionNumberBarKbd1, #virtualKeyboardChromeExtension.modeS #virtualKeyboardChromeExtensionMainNumbers {
-	zoom: 0.7 !important;
 }
 
 #virtualKeyboardChromeExtensionDraggableLeft, #virtualKeyboardChromeExtensionDraggableRight {
@@ -80,89 +77,11 @@
 	text-shadow: none !important;
 }
 
-@media only screen and (max-height:950px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.95;
-	}
-}
-
-@media only screen and (max-height:900px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.9;
-	}
-}
-
-@media only screen and (max-height:850px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.85;
-	}
-}
-
-@media only screen and (max-height:800px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.80;
-	}
-}
-
-@media only screen and (max-height:750px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.75;
-	}
-}
-
-@media only screen and (max-height:700px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.7;
-	}
-}
-
-@media only screen and (max-height:650px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.65;
-	}
-}
-
 @media only screen and (max-height:600px){
 	#virtualKeyboardChromeExtensionNumberBarKbd1 {
 		display: none;
 	}
 }
-
-@media only screen and (max-height:550px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.6;
-	}
-}
-@media only screen and (max-height:500px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.55;
-	}
-}
-
-@media only screen and (max-height:450px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.5;
-	}
-}
-
-@media only screen and (max-height:400px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.45;
-	}
-}
-
-@media only screen and (max-height:350px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.4;
-	}
-}
-
-@media only screen and (max-height:300px){
-	#virtualKeyboardChromeExtension {
-		zoom: 0.35;
-	}
-}
-
 
 @media only screen and (max-width:1200px){
 	#virtualKeyboardChromeExtension [_key=Backspace].kbdClick span {
@@ -282,30 +201,36 @@
 	top: 3px !important;
 	bottom: 3px !important;
 }
-#virtualKeyboardChromeExtension table td span{
+#virtualKeyboardChromeExtension table td span {
 	color: #fff !important;
 	font-family: 'Segoe UI', Tahoma, Sans-Serif !important;
-	font-size: 32px !important;
+	font-size: 40px !important;
 	text-align: center !important;
 	cursor: pointer;
 	border: 0px !important;
-	overflow: hidden;
 	-webkit-transition-property: all;
 	-webkit-transition-duration: 0.3s;
 	text-shadow: 0 0 10px rgba(0,0,0,0.4) !important;
 	border-radius: 6px !important;
+	margin: 0;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 14px !important;
+}
+#virtualKeyboardChromeExtension span {
 	position: absolute;
 	top: 0;
 	left: 3px;
 	bottom: 0;
 	right: 3px;
-	margin: 0;
-	padding: 0;
-	padding-top: 31px !important;
-	background-position: center;
-	background-repeat: no-repeat;
-	line-height: 14px !important;
 }
+#virtualKeyboardChromeExtension td.kbdH span {
+	top: 40px !important;
+}
+.kbdH {
+	height: 50px;
+}
+
 #virtualKeyboardChromeExtension table td span.kShift {
 	background-image: url(/icons/shift.png);
 }
@@ -330,10 +255,9 @@
 	line-height: 12px !important;
 }
 
-#virtualKeyboardChromeExtension table td.kdbCase span, #virtualKeyboardChromeExtension table td.kbdHB span, #virtualKeyboardChromeExtension td.kbdHBS span, #virtualKeyboardChromeExtension table td.kbdHBE span, #virtualKeyboardChromeExtension table td.kbdH span 
-, #virtualKeyboardChromeExtension table td.kbdS span, #virtualKeyboardChromeExtension table td.kbdD span , #virtualKeyboardChromeExtension table td.kbdShift span {
+#virtualKeyboardChromeExtension table td.kdbCase, #virtualKeyboardChromeExtension table td.kbdHB, #virtualKeyboardChromeExtension td.kbdHBS, #virtualKeyboardChromeExtension table td.kbdHBE, #virtualKeyboardChromeExtension table td.kbdH, #virtualKeyboardChromeExtension table td.kbdS, #virtualKeyboardChromeExtension table td.kbdD, #virtualKeyboardChromeExtension table td.kbdShift {
 	-webkit-box-shadow: inset 0px 1px 0px rgba(255,255,255,0.4), inset 0px -1px 1px rgba(0,0,0,1);
-    padding-top:20px !important;
+    	padding-top: 20px !important;
 }
 #virtualKeyboardChromeExtension td.kdbCase {
 	padding: 30px 20px !important;
@@ -344,25 +268,25 @@
 #virtualKeyboardChromeExtension td.kbdHBE {
 	width: 20% !important;
 }
-#virtualKeyboardChromeExtension td.kbdHB span, #virtualKeyboardChromeExtension td.kbdHBS span, #virtualKeyboardChromeExtension td.kbdHBE span {
+#virtualKeyboardChromeExtension td.kbdHB, #virtualKeyboardChromeExtension td.kbdHBS, #virtualKeyboardChromeExtension td.kbdHBE {
 	background-color: #525152 !important;
 }
 #virtualKeyboardChromeExtension table {
 	width: 100% !important;
 }
-#virtualKeyboardChromeExtension td.kbdH span {
+#virtualKeyboardChromeExtension td.kbdH {
 	background-color: #525152 !important;
 }
-#virtualKeyboardChromeExtension td.kbdS span {
+#virtualKeyboardChromeExtension td.kbdS {
 	background-color: #212421 !important;
-} 
+}
 #virtualKeyboardChromeExtension td.kbdS {
 	width: 60% !important;
 }
-#virtualKeyboardChromeExtension td.kbdD span, #virtualKeyboardChromeExtension td.kbdShift span {
+#virtualKeyboardChromeExtension td.kbdD, #virtualKeyboardChromeExtension td.kbdShift {
 	background-color: #212021 !important;
-}		
-#virtualKeyboardChromeExtensionMainKbd.Shift td.kbdShift span {
+}
+#virtualKeyboardChromeExtensionMainKbd.Shift td.kbdShift {
 	background-color: #DDD !important;
 	color: #333 !important;
 }
@@ -386,12 +310,7 @@
 }
 
 #virtualKeyboardChromeExtension .kbNumberMain {
-	/*padding: 25px 30px !important;*/
     padding: 30px 20px !important;
-}
-#virtualKeyboardChromeExtension .kbNumberMain span {
-	/*padding: 0 !important;
-	padding-top: 17px !important;*/
 }
 
 #virtualKeyboardChromeExtensionNumberBarKbdInput table {
