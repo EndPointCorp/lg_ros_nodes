@@ -45,7 +45,7 @@ class StatsHandler():
         pres = {}
         pres['scene_name'] = scene.get('name', 'unknown')
         pres['slug'] = scene.get('slug', 'unknown')
-        pres['presentation_name'] = scene.get('presentation_name', 'unknown')
+        pres['presentation_name'] = scene.get('name', 'unknown')
         pres['presentation_id'] = scene.get('presentation_id', 'unknown')
         pres['type'] = scene.get('played_from', 'unknown')
         pres['created_by'] = scene.get('created_by', 'unknown')
@@ -91,7 +91,8 @@ class StatsHandler():
         if self.last_presentation.get('played_from', '') != 'lg_attract_loop':
             # only write the presentation when we're not in the attract loop
             pres = self.last_presentation
-            query = f"touch_stats,presentation_name=\"{pres['presentation_name']}\",played_from=\"{pres['played_from']}\",presentation_id=\"{pres['presentation_id']}\" scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{datetime.datetime.fromtimestamp(self.last_presentation_start_time)}\""
+            time_started = datetime.datetime.fromtimestamp(self.last_presentation_start_time)
+            query = f"touch_stats,presentation_name=\"{pres['presentation_name']}\",played_from=\"{pres['played_from']}\",presentation_id=\"{pres['presentation_id']}\" scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{time_started}\""
             logger.debug(f"Writing the data point to influxdb: {query}")
             write_influx_point_to_telegraf(query)
         else:
