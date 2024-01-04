@@ -9,6 +9,20 @@ from lg_common.logger import get_logger
 logger = get_logger('stats_handler')
 
 
+def escape_tag_value(value):
+    """
+    Escapes commas, equal signs, and spaces in tag values with a single backslash.
+    """
+    return value.replace(" ", "\\ ").replace(",", "\\,").replace("=", "\\=")
+
+def escape_field_value(value):
+    """
+    Escapes double quotes and backslashes in field values with a single backslash.
+    """
+    return value.replace('"', '\\"').replace("\\", "\\")
+
+
+
 class StatsHandler():
     def __init__(self):
         # set up stats writer here
@@ -92,6 +106,14 @@ class StatsHandler():
             # only write the presentation when we're not in the attract loop
             pres = self.last_presentation
             time_started = datetime.datetime.fromtimestamp(self.last_presentation_start_time)
+            
+            tag_presentation_name = escape_tag_value(pres['presentation_name'])
+            tag_presentation_id = escape_tag_value(pres['presentation_id'])
+            tag_played_from = escape_tag_value(pres['played_from'])
+            field_time_started = escape_field_value(str(time_started))
+            field_scene_name = escape_field_value(pres['scene_name'])
+            field_type = escape_field_value(pres['type'])
+
             query = f"touch_stats,presentation_name=\"{pres['presentation_name']}\",played_from=\"{pres['played_from']}\",presentation_id=\"{pres['presentation_id']}\" scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{time_started}\""
             logger.debug(f"Writing the data point to influxdb: {query}")
             write_influx_point_to_telegraf(query)
