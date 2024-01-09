@@ -28,6 +28,9 @@ Changelog for package lg_volume_control
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+
 3.8.4 (2023-12-29)
 ------------------
 * Merge pull request `#461 <https://github.com/endpointcorp/lg_ros_nodes/issues/461>`_ from EndPointCorp/lg_volume_max

@@ -30,6 +30,9 @@ Changelog for package lg_media
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+
 3.8.4 (2023-12-29)
 ------------------
 * Merge pull request `#460 <https://github.com/endpointcorp/lg_ros_nodes/issues/460>`_ from EndPointCorp/autozoom_feh

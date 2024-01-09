@@ -28,6 +28,17 @@ Changelog for package lg_stats
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Merge pull request `#462 <https://github.com/EndPointCorp/lg_ros_nodes/issues/462>`_ from EndPointCorp/kannan/director_stats
+  More fixes to director stats
+* More fixes
+* More fixes to formatting
+* Fixing the format for the stats values being pushed
+* Fixed the critical bug when sending metrics to the influxdb
+* Minor improvements to stats ros nodes
+* Contributors: Kannan, Kannan Ponnusamy
+
 3.8.4 (2023-12-29)
 ------------------
 * Merge pull request `#458 <https://github.com/endpointcorp/lg_ros_nodes/issues/458>`_ from EndPointCorp/kannan/director_stats
