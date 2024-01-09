@@ -64,7 +64,7 @@ class StatsHandler():
         pres['type'] = scene.get('played_from', 'unknown')
         pres['created_by'] = scene.get('created_by', 'unknown')
         pres['hostname'] = get_hostname()
-        pres['played_from'] = scene.get('played_from', '')
+        pres['played_from'] = scene.get('played_from', 'unknown')
         if self.active_state:
             # if the system is active, then start the timer to track the active duration
             self.last_presentation_start_time = time.time()
@@ -114,7 +114,7 @@ class StatsHandler():
             field_scene_name = escape_field_value(pres['scene_name'])
             field_type = escape_field_value(pres['type'])
 
-            query = f"touch_stats,presentation_name={pres['presentation_name']},played_from={pres['played_from']},presentation_id={pres['presentation_id']} scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{time_started}\""
+            query = f"touch_stats,presentation_name={tag_presentation_name},played_from={tag_played_from},presentation_id={tag_presentation_id} scene_name=\"{field_scene_name}\",type=\"{field_type}\",duration={duration},time_started=\"{field_time_started}\""
             logger.debug(f"Writing the data point to influxdb: {query}")
             write_influx_point_to_telegraf(query)
         else:
