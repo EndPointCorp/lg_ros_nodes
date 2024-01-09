@@ -9,6 +9,20 @@ from lg_common.logger import get_logger
 logger = get_logger('stats_handler')
 
 
+def escape_tag_value(value):
+    """
+    Escapes commas, equal signs, and spaces in tag values with a single backslash.
+    """
+    return value.replace(" ", "\\ ").replace(",", "\\,").replace("=", "\\=")
+
+def escape_field_value(value):
+    """
+    Escapes double quotes and backslashes in field values with a single backslash.
+    """
+    return value.replace('"', '\\"').replace("\\", "\\")
+
+
+
 class StatsHandler():
     def __init__(self):
         # set up stats writer here
@@ -39,18 +53,18 @@ class StatsHandler():
             logger.debug('ignoring stop-the-presentations messages')
             return
         if self.last_presentation_start_time is not None and self.active_state:
-            # System is active and we have a new presentation starting, 
+            # System is active and we have a new presentation starting,
             # then in that case close the stats for the previous presentation and push the data point
             self.write_data()
         pres = {}
         pres['scene_name'] = scene.get('name', 'unknown')
         pres['slug'] = scene.get('slug', 'unknown')
-        pres['presentation_name'] = scene.get('presentation_name', 'unknown')
+        pres['presentation_name'] = scene.get('name', 'unknown')
         pres['presentation_id'] = scene.get('presentation_id', 'unknown')
         pres['type'] = scene.get('played_from', 'unknown')
         pres['created_by'] = scene.get('created_by', 'unknown')
         pres['hostname'] = get_hostname()
-        pres['played_from'] = scene.get('played_from', '')
+        pres['played_from'] = scene.get('played_from', 'unknown')
         if self.active_state:
             # if the system is active, then start the timer to track the active duration
             self.last_presentation_start_time = time.time()
@@ -91,7 +105,16 @@ class StatsHandler():
         if self.last_presentation.get('played_from', '') != 'lg_attract_loop':
             # only write the presentation when we're not in the attract loop
             pres = self.last_presentation
-            query = f"touch_stats,presentation_name=\"{pres['presentation_name']}\",played_from=\"{pres['played_from']}\",presentation_id=\"{pres['presentation_id']}\" scene_name=\"{pres['scene_name']}\",type=\"{pres['type']}\",duration={duration},time_started=\"{datetime.datetime.fromtimestamp(self.last_presentation_start_time)}\""
+            time_started = datetime.datetime.fromtimestamp(self.last_presentation_start_time)
+
+            tag_presentation_name = escape_tag_value(pres['presentation_name'])
+            tag_presentation_id = escape_tag_value(pres['presentation_id'])
+            tag_played_from = escape_tag_value(pres['played_from'])
+            field_time_started = escape_field_value(str(time_started))
+            field_scene_name = escape_field_value(pres['scene_name'])
+            field_type = escape_field_value(pres['type'])
+
+            query = f"touch_stats,presentation_name={tag_presentation_name},played_from={tag_played_from},presentation_id={tag_presentation_id} scene_name=\"{field_scene_name}\",type=\"{field_type}\",duration={duration},time_started=\"{field_time_started}\""
             logger.debug(f"Writing the data point to influxdb: {query}")
             write_influx_point_to_telegraf(query)
         else:
