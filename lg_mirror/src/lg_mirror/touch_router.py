@@ -56,7 +56,7 @@ class SubscribeListener:
 
 
 class TouchRouter:
-    def __init__(self, event_pub, default_viewport=None):
+    def __init__(self, event_pub, spacenav_viewport, default_viewport=None):
         self.event_pub = event_pub
         if default_viewport is None:
             self.default_viewports = set()
@@ -69,7 +69,7 @@ class TouchRouter:
         self.wall_geometry = ManagedWindow.lookup_viewport_geometry('wall_a')
         self.spacenav_mode = False
         self.spacenav_exclusion_rects = []
-        self.spacenav_viewport = 'fake_wall_a'
+        self.spacenav_viewport = spacenav_viewport
         self.spacenavving = False
         self.non_multitouch_activities = [
             "unity"
