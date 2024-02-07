@@ -34,7 +34,7 @@ class OnboardLauncher(object):
         cmd = ['/usr/bin/onboard', '-m']
 
         onboard_width = viewport_geometry.width
-        onboard_height = viewport_geometry.height / 4
+        onboard_height = viewport_geometry.height / 6
         onboard_x = viewport_geometry.x
         onboard_y = viewport_geometry.y + (viewport_geometry.height - onboard_height)
 
@@ -50,11 +50,11 @@ class OnboardLauncher(object):
                                visible=False)
         cmd.extend(list(map(str, [
             '-x',
-            onboard_x,
+            int(onboard_x),
             '-y',
-            onboard_y,
+            int(onboard_y),
             '-s',
-            '{}x{}'.format(onboard_width, onboard_height)
+            '{}x{}'.format(int(onboard_width), int(onboard_height))
         ])))
         self.app = ManagedApplication(cmd, window=window)
 
@@ -82,7 +82,7 @@ class OnboardLauncher(object):
         dconf = subprocess.Popen(['/usr/bin/dconf', 'load', '/org/onboard/'],
                                  stdin=subprocess.PIPE,
                                  close_fds=True)
-        dconf.communicate(input=self.config)
+        dconf.communicate(input=self.config.encode())
         self.app.set_state(ApplicationState.VISIBLE)
 
     def hide_onboard(self):
