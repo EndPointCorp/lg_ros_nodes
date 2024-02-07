@@ -36,7 +36,7 @@ def main():
     rosbridge_secure = rospy.get_param('~rosbridge_secure', 0)
     director_secure = rospy.get_param('~director_secure', 0)
 
-    rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
+    rosbridge_host = rospy.get_param('~rosbridge_host', 'localhost')
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     ts_name = rospy.get_param('~ts_name', 'default')
 

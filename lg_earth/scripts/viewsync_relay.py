@@ -15,7 +15,7 @@ NODE_NAME = 'earth_viewsync_relay'
 def main():
     rospy.init_node(NODE_NAME)
 
-    listen_host = rospy.get_param('~listen_host', '127.0.0.1')
+    listen_host = rospy.get_param('~listen_host', 'localhost')
     listen_port = rospy.get_param('~listen_port', 42000)
     repeat_host = rospy.get_param('~repeat_host', '<broadcast>')
     repeat_port = rospy.get_param('~repeat_port', 42000)
