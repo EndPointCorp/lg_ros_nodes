@@ -49,7 +49,7 @@ def main():
     large_viewport_hack = str(rospy.get_param('~large_viewport_hack', 'false'))
     depend_on_webserver = rospy.get_param('~depend_on_webserver', False)
     depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
-    rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
+    rosbridge_host = rospy.get_param('~rosbridge_host', 'localhost')
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     rosbridge_secure = rospy.get_param('~rosbridge_secure', 'false')
     zoom = str(rospy.get_param('~zoom', 'false')).lower()

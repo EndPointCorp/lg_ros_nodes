@@ -21,7 +21,7 @@
 #include <thread>
 
 
-const char* DEFAULT_ADDR = "127.0.0.1";
+const char* DEFAULT_ADDR = "localhost";
 const uint16_t DEFAULT_PORT = 9999;
 const char* VAAPI_ENV = "GST_VAAPI_ALL_DRIVERS=1";
 
