@@ -30,7 +30,7 @@ class KmlAlive:
                 logger.warning("Earth proc doesn't exist {}".format(e))
                 rospy.sleep(loop_timeout)
                 continue
-            cmd = "lsof -Pn -p {} -a -i @localohst:8765".format(pid).split(' ')
+            cmd = "lsof -Pn -p {} -a -i @localhost:8765".format(pid).split(' ')
             ret_value = subprocess.call(
                 cmd,
                 stdout=subprocess.DEVNULL,
