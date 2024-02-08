@@ -47,6 +47,26 @@ Changelog for package lg_common
 3.3.13 (2021-09-21)
 -------------------
 
+3.9.0 (2024-02-06)
+------------------
+
+3.8.5 (2024-01-09)
+------------------
+
+3.8.4 (2023-12-29)
+------------------
+
+3.8.3 (2023-10-17)
+------------------
+
+3.8.2 (2023-10-06)
+------------------
+* Remove duplicated flags from managed browser
+* Contributors: Alejandro Ramon
+
+3.8.1 (2023-10-06)
+------------------
+
 3.8.0 (2023-05-25)
 ------------------
 * Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some

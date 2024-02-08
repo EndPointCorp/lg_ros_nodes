@@ -30,6 +30,32 @@ Changelog for package lg_media
 3.3.13 (2021-09-21)
 -------------------
 
+3.9.0 (2024-02-06)
+------------------
+
+3.8.5 (2024-01-09)
+------------------
+
+3.8.4 (2023-12-29)
+------------------
+* Merge pull request `#460 <https://github.com/endpointcorp/lg_ros_nodes/issues/460>`_ from EndPointCorp/autozoom_feh
+  image_viewer.py add --auto-zoom option to feh image viewer
+* image_viewer.py add --auto-zoom option to feh image viewer
+* Contributors: Constante "Tino" Gonzalez, Tino
+
+3.8.3 (2023-10-17)
+-------------------
+* Fix gstreamer player close on finish (`#454 <https://github.com/endpointcorp/lg_ros_nodes/issues/454>`_)
+  * Add -c arg to gst_video_sync to close on exit
+  * Reflect msg onFinish state in gst_video_sync cmd
+* Contributors: nelliott
+
+3.8.2 (2023-10-06)
+------------------
+
+3.8.1 (2023-10-06)
+------------------
+
 3.8.0 (2023-05-25)
 ------------------
 * Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some

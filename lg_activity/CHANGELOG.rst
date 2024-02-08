@@ -28,6 +28,41 @@ Changelog for package lg_activity
 3.3.13 (2021-09-21)
 -------------------
 
+3.9.0 (2024-02-06)
+------------------
+
+3.8.5 (2024-01-09)
+------------------
+
+3.8.4 (2023-12-29)
+------------------
+* Merge pull request `#458 <https://github.com/endpointcorp/lg_ros_nodes/issues/458>`_ from EndPointCorp/kannan/director_stats
+  Stats - Enhancements
+* More refactoring to the stats submitter
+* Activity adds (`#457 <https://github.com/endpointcorp/lg_ros_nodes/issues/457>`_)
+  * activity.py add scene duration support
+  * activity.py add message activity switch
+  * activity.py add message imports, logging changes
+  * activity.py message method callback on False, so it can initialize
+  * activity.py fix logging targets, add default values to dictionary queries
+  * activity.py fix missing ), typo
+  ---------
+  Co-authored-by: Constante "Tino" Gonzalez <tino@endpointdev.com>
+  Co-authored-by: tino <constantegonzalez@gmail.com>
+* More refactoring
+* Fixed the topic name
+* LG Activity changes based on new timeouts for stats
+* Contributors: Jacob Minshall, Kannan, Kannan Ponnusamy
+
+3.8.3 (2023-10-17)
+------------------
+
+3.8.2 (2023-10-06)
+------------------
+
+3.8.1 (2023-10-06)
+------------------
+
 3.8.0 (2023-05-25)
 ------------------
 * Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some

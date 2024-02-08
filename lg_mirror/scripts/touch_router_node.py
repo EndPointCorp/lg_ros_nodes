@@ -20,9 +20,10 @@ def main():
     rospy.init_node(NODE_NAME)
 
     default_viewport = rospy.get_param('~default_viewport', None)
+    spacenav_viewport = rospy.get_param('~spacenav_viewport', 'fake_wall_a')
     device_id = rospy.get_param('~device_id', 'default')
     event_pub = rospy.Publisher(f'/lg_mirror/{device_id}/routed_events', RoutedEvdevEvents, queue_size=100)
-    router = TouchRouter(event_pub, default_viewport)
+    router = TouchRouter(event_pub, spacenav_viewport, default_viewport=default_viewport)
     route_topic = '/lg_mirror/{}/active_routes'.format(device_id)
 
     def publish_active_routes(routes):
