@@ -31,6 +31,11 @@ catkin_install_python(PROGRAMS
   scripts/readiness.py
   scripts/readiness
   scripts/uscs_service
+  scripts/lg_active_overlay
+  scripts/lg_active_overlay.py
+  scripts/lg_active_scene
+  scripts/lg_active_scene.py
+
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
