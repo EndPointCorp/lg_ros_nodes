@@ -56,12 +56,16 @@ class SubscribeListener:
 
 
 class TouchRouter:
-    def __init__(self, event_pub, spacenav_viewport, default_viewport=None):
+    def __init__(self, event_pub, spacenav_viewport, default_viewport=None, non_multitouch_activities=None, multitouch_windows=None):
         self.event_pub = event_pub
         if default_viewport is None:
             self.default_viewports = set()
         else:
             self.default_viewports = set([default_viewport])
+        # Any activities in this list will disable all touch diversion when present.
+        self.non_multitouch_activities = [] if non_multitouch_activities is None else non_multitouch_activities
+        # Any windows with activities in this list will have touches diverted to the spacenav_viewport.
+        self.multitouch_windows = [] if multitouch_windows is None else multitouch_windows
 
         self.route_viewports = self.default_viewports
         self.touchmenu_visible = True
@@ -71,9 +75,6 @@ class TouchRouter:
         self.spacenav_exclusion_rects = []
         self.spacenav_viewport = spacenav_viewport
         self.spacenavving = False
-        self.non_multitouch_activities = [
-            "unity"
-        ]
         self.lock = threading.Lock()
 
         svc_name = f"/lg_mirror/default/device_info"
@@ -178,7 +179,7 @@ class TouchRouter:
             if not any((w['activity'] in self.non_multitouch_activities for w in windows)):
                 # It's Earth!  At least a little bit.
                 self.spacenav_mode = True
-                rects = [absolute_geometry(w) for w in windows if w['activity'] not in ('earth', 'cesium', 'streetview', 'panovideo', 'panoviewer', 'unity')]
+                rects = [absolute_geometry(w) for w in windows if w['activity'] not in self.multitouch_windows]
                 rects.append(ManagedWindow.lookup_viewport_geometry('touchscreen_button'))
                 rects = [g for g in rects if g is not None]
                 self.spacenav_exclusion_rects = rects
