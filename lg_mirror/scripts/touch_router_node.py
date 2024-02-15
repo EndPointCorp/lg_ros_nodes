@@ -22,6 +22,7 @@ def main():
     default_viewport = rospy.get_param('~default_viewport', None)
     spacenav_viewport = rospy.get_param('~spacenav_viewport', 'fake_wall_a')
     device_id = rospy.get_param('~device_id', 'default')
+    divert_empty_scene = rospy.get_param('~divert_empty_scene', True)
     non_multitouch_activities = [
         x.strip() for x in rospy.get_param('~non_multitouch_activities', 'unity').split(',')
     ]
@@ -33,6 +34,7 @@ def main():
         event_pub,
         spacenav_viewport,
         default_viewport=default_viewport,
+        divert_empty_scene=divert_empty_scene,
         non_multitouch_activities=non_multitouch_activities,
         multitouch_windows=multitouch_windows,
     )

@@ -56,12 +56,13 @@ class SubscribeListener:
 
 
 class TouchRouter:
-    def __init__(self, event_pub, spacenav_viewport, default_viewport=None, non_multitouch_activities=None, multitouch_windows=None):
+    def __init__(self, event_pub, spacenav_viewport, default_viewport=None, divert_empty_scene=False, non_multitouch_activities=None, multitouch_windows=None):
         self.event_pub = event_pub
         if default_viewport is None:
             self.default_viewports = set()
         else:
             self.default_viewports = set([default_viewport])
+        self.divert_empty_scene = divert_empty_scene
         # Any activities in this list will disable all touch diversion when present.
         self.non_multitouch_activities = [] if non_multitouch_activities is None else non_multitouch_activities
         # Any windows with activities in this list will have touches diverted to the spacenav_viewport.
@@ -176,7 +177,10 @@ class TouchRouter:
                 publish_cb(frozenset(route_viewports))
                 return
 
-            if not any((w['activity'] in self.non_multitouch_activities for w in windows)):
+            if not windows and not self.divert_empty_scene:
+                # Bypass the next block in this case.
+                pass
+            elif not any((w['activity'] in self.non_multitouch_activities for w in windows)):
                 # It's Earth!  At least a little bit.
                 self.spacenav_mode = True
                 rects = [absolute_geometry(w) for w in windows if w['activity'] not in self.multitouch_windows]
