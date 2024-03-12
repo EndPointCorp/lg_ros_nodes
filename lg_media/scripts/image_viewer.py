@@ -155,7 +155,7 @@ class ImageViewer():
         r = requests.get(image.url)
         with open(image_path, 'wb') as f:
             f.write(r.content)
-        command = '/usr/bin/pqiv -c -i -T {} -P {},{} {}'.format(
+        command = '/usr/bin/pqiv -c -i --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
             image.uuid,
             image.geometry.x,
             image.geometry.y,
