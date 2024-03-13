@@ -22,8 +22,9 @@ class NavTransform(object):
     def transform_twist(self, twist):
         """ fix twist, publish """
 #       increase zoom speed with tilt
-        twist.linear.z = (twist.linear.z + (twist.linear.z * max(self.tilt, 0.01) / 90))
-
+        twist.linear.z = (twist.linear.z + (2 * (twist.linear.z * max(self.tilt, 0.01) / 90)))
+        twist.linear.x = twist.linear.x * 2
+        twist.linear.y = twist.linear.y * 2
         self.puber.publish(twist)
 
 
