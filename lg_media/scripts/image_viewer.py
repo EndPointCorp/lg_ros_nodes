@@ -168,7 +168,7 @@ class ImageViewer():
         return image
 
     def _create_feh(self, image):
-        command = '/usr/bin/feh --auto-zoom --image-bg black --no-screen-clip -x --title {} --geometry {}x{}+{}+{} {}'.format(
+        command = '/usr/bin/feh --scale-down --image-bg black --no-screen-clip -x --title {} --geometry {}x{}+{}+{} {}'.format(
             image.uuid,
             image.geometry.width,
             image.geometry.height,
