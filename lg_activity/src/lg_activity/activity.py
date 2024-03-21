@@ -80,12 +80,12 @@ class ActivitySource:
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
                 (topic, message_type, strategy, callback)
-            logger.error(msg)
+            logger.info(msg)
             raise ActivitySourceException(msg)
 
         if (type(topic) != str) or (type(message_type) != str):
             msg = "Topic and message type should be strings"
-            logger.error(msg)
+            logger.info(msg)
             raise ActivitySourceException(msg)
 
         if strategy == 'value':
@@ -98,7 +98,7 @@ class ActivitySource:
             else:
                 msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (min=%s, max=%s and msg attribute=%s)" % \
                     (value_min, value_max, slot)
-                logger.error(msg)
+                logger.info(msg)
                 raise ActivitySourceException(msg)
 
     def __str__(self):
@@ -126,7 +126,7 @@ class ActivitySource:
             message_type_final = get_message_type_from_string(self.message_type)
         except Exception as e:
             msg = "Could not import module because: %s" % (e)
-            logger.error(msg)
+            logger.info(msg)
             raise ActivitySourceException
 
         logger.info("ActivitySource is going to subscribe topic: %s with message_type: %s" % (self.topic, message_type_final))
@@ -222,7 +222,7 @@ class ActivitySource:
         elif self.strategy == 'duration':
             self._is_duration_active()
         else:
-            logger.error("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
+            logger.info("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
 
     def _is_delta_active(self):
         """
@@ -351,7 +351,7 @@ class ActivitySourceDetector:
             return source[0]
         except KeyError as e:
             msg = "Could not find source %s because %s" % (source, e)
-            logger.error(msg)
+            logger.info(msg)
             raise ActivitySourceNotFound(msg)
 
 
@@ -375,7 +375,7 @@ class ActivityTracker:
         if (not publisher) or (not stats_activity_publisher) or (not timeout) or (not sources) or (not stats_activity_timeout):
             msg = "Activity tracker initialized without one of the params: pub=%s, stats_activity_publisher=%s, timeout=%s, stats_activity_timeout=%s, sources=%s" % \
                 (publisher, stats_activity_publisher, timeout, stats_activity_timeout, sources)
-            logger.error(msg)
+            logger.info(msg)
             raise ActivityTrackerException
 
         self.active = True
@@ -388,7 +388,7 @@ class ActivityTracker:
         self.stats_activity_timeout = stats_activity_timeout
         if not self.timeout:
             msg = "You must specify inactivity timeout"
-            logger.error(msg)
+            logger.info(msg)
             raise ActivityTrackerException(msg)
         self.sources = sources
         self.publisher = publisher
@@ -446,7 +446,7 @@ class ActivityTracker:
 
                     logger.debug("Updating: %s state to %s" % (topic_name, state))
                 except KeyError:
-                    logger.error("Initializing: %s with state: %s" % (topic_name, state))
+                    logger.info("Initializing: %s with state: %s" % (topic_name, state))
 
                 self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
                 self._check_states()
@@ -550,7 +550,7 @@ class ActivityTracker:
         for source in self.sources:
             if type(source) != dict or type(self.sources) != list:
                 msg = "sources argument must be a list containing ActivitySource definition dictionaries but was: %s" % self.sources
-                logger.error(msg)
+                logger.info(msg)
                 raise ActivitySourceException
 
     def _get_state(self, header=None):
