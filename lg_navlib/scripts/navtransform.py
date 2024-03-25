@@ -6,7 +6,7 @@ from geometry_msgs.msg import Twist, PoseStamped
 
 class NavTransform(object):
     """ correct /lg_navlib/twist messages into natural movement, emit on /navtransform/twist """
-    def __init__(self):
+    def __init__(self, speed_multiplier):
         self.node = rospy.init_node('navtransform')
         self.puber = rospy.Publisher('/navtransform/twist', Twist, queue_size=10)
         self.sub_twist = rospy.Subscriber("/lg_navlib/twist", Twist, self.transform_twist)
