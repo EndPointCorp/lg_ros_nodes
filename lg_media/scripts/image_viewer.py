@@ -82,7 +82,8 @@ class ImageViewer():
                     y=window['y_coord']
                 )
                 image.transparent = window.get('activity_config', {}).get('transparent', False)
-                graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = window.get('activity_config', {}).get('graphic_opts', '')
+                graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = {}
+                graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['upscale'] = window.get('activity_config', {}).get('upscale', False)
 
                 image.viewport = window['presentation_viewport']
                 if image.viewport not in self.viewports:
@@ -175,8 +176,12 @@ class ImageViewer():
         r = requests.get(image.url)
         with open(image_path, 'wb') as f:
             f.write(r.content)
+        opts = ''
+        if graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['upscale']:
+            opts += '-t'
+
         command = '/usr/bin/pqiv -c -i {} --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
-            graphic_opts[(image.url, image.geometry.x, image.geometry.y)],
+            opts,
             image.uuid,
             image.geometry.x,
             image.geometry.y,
