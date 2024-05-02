@@ -16,6 +16,22 @@ from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 from lg_common.logger import get_logger
 logger = get_logger('image_viewer')
 
+import subprocess
+
+def identify_image(image_path):
+    try:
+        result = subprocess.run(['identify', image_path], capture_output=True, text=True, check=True)
+        output_lines = result.stdout.splitlines()
+        size = None
+        for line in output_lines:
+            if ' ' in line:
+                size = line.split(' ')[2]
+                break
+        return size
+    except subprocess.CalledProcessError as e:
+        print("Error:", e)
+        return None
+
 
 def image_coordinates(image):
     return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
@@ -40,6 +56,8 @@ class ImageViewer():
         self.lock = Lock()
 
     def director_translator(self, data):
+        global graphic_opts
+        graphic_opts = {}
         logger.error("ZZZ")
         windows_to_add = ImageViews()
         try:
@@ -64,6 +82,8 @@ class ImageViewer():
                     y=window['y_coord']
                 )
                 image.transparent = window.get('activity_config', {}).get('transparent', False)
+                graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = window.get('activity_config', {}).get('graphic_opts', '')
+
                 image.viewport = window['presentation_viewport']
                 if image.viewport not in self.viewports:
                     continue
@@ -117,13 +137,13 @@ class ImageViewer():
             images_to_add.append(image)
 
         def remove_image(image_obj, *args, **kwargs):
-            logger.error('Removing image: {}'.format(image_obj))
+            logger.debug('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
             if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
 
         for image_obj in images_to_remove:
-            logger.error('ZZZ removing image object')
+            logger.debug('ZZZ removing image object')
             remove_image(image_obj)
 
         threads = []
@@ -155,13 +175,14 @@ class ImageViewer():
         r = requests.get(image.url)
         with open(image_path, 'wb') as f:
             f.write(r.content)
-        command = '/usr/bin/pqiv -c -i --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
+        command = '/usr/bin/pqiv -c -i {} --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
+            graphic_opts[(image.url, image.geometry.x, image.geometry.y)],
             image.uuid,
             image.geometry.x,
             image.geometry.y,
             image_path
         ).split()
-        logger.debug('command is {}'.format(command))
+        logger.info('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path=image_path)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
