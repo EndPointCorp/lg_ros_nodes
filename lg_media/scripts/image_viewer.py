@@ -178,7 +178,7 @@ class ImageViewer():
         with open(image_path, 'wb') as f:
             f.write(r.content)
         opts = '-t'
-        if graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['no_upscale']:
+        if graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
             opts = ''
 
         command = '/usr/bin/pqiv -c -i {} --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
