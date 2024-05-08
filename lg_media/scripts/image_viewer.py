@@ -38,10 +38,9 @@ class ImageViewer():
         self.viewports = viewports
         self.save_path = save_path
         self.lock = Lock()
+        self.graphic_opts = {}
 
     def director_translator(self, data):
-        global graphic_opts
-        graphic_opts = {}
         logger.error("ZZZ")
         windows_to_add = ImageViews()
         try:
@@ -76,8 +75,9 @@ class ImageViewer():
                 image.uuid = str(uuid.uuid4())
                 windows_to_add.images.append(image)
                 
-                graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = {}
-                graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['no_upscale'] = window.get('activity_config', {}).get('no_upscale', False)
+                self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = {}
+                self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['no_upscale'] = window.get('activity_config', {}).get('no_upscale', False)
+
         logger.error(f"ZZZ {windows_to_add}")
         self.handle_image_views(windows_to_add)
 
@@ -162,7 +162,7 @@ class ImageViewer():
         with open(image_path, 'wb') as f:
             f.write(r.content)
         opts = '-t'
-        if graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
+        if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
             opts = ''
 
         command = '/usr/bin/pqiv -c -i {} --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
