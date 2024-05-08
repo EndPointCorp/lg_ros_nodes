@@ -16,22 +16,6 @@ from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 from lg_common.logger import get_logger
 logger = get_logger('image_viewer')
 
-import subprocess
-
-def identify_image(image_path):
-    try:
-        result = subprocess.run(['identify', image_path], capture_output=True, text=True, check=True)
-        output_lines = result.stdout.splitlines()
-        size = None
-        for line in output_lines:
-            if ' ' in line:
-                size = line.split(' ')[2]
-                break
-        return size
-    except subprocess.CalledProcessError as e:
-        print("Error:", e)
-        return None
-
 
 def image_coordinates(image):
     return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
