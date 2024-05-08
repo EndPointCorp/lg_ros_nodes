@@ -100,23 +100,23 @@ class ImageViewer():
 
     def _handle_image_views(self, msg):
         global matched_images_dict
-        logger.error("handling image views")
+        logger.debug("handling image views")
         new_current_images = {}
         images_to_remove = list(self.current_images.values())
         images_to_add = []
         images_to_remove_delayed = []
         matched_images_dict = {}
         for image in msg.images:
-            # logger.error('CURRENT IMAGES: {}\n\n'.format(self.current_images))
+            logger.debug('CURRENT IMAGES: {}\n\n'.format(self.current_images))
             duplicate_image = self.is_in_current_images(self.current_images, image)
             if duplicate_image:
-                # logger.error('Keeping image: {}\n\n'.format(image))
+                logger.info('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
                 new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
             current_coordinate_image = self.is_current_coordinates(self.current_images, image)
             if current_coordinate_image:
-                logger.error("image matched, waiting to remove after the new one is launched")
+                logger.info("image matched, waiting to remove after the new one is launched")
                 matched_images_dict[image_coordinates(image)] = current_coordinate_image
                 images_to_remove.remove(current_coordinate_image)
             logger.debug('Appending IMAGE: {}\n\n'.format(image))
