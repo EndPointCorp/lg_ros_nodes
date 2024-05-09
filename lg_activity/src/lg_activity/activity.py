@@ -294,11 +294,11 @@ class ActivitySource:
                 duration = self.messages[-1].get('message.duration', 0)  # skip to last message duration
                 if isinstance(duration, int) or (isinstance(duration, str) and duration.isdigit()):
                     duration = int(duration)
-                if duration > 0 and duration != 666:
-                    self.messages = []
-                    self.callback(self.topic, state=True, strategy='duration', delay=duration)
-                    logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
-                    return True
+                    if duration > 0 and duration != 666:
+                        self.messages = []
+                        self.callback(self.topic, state=True, strategy='duration', delay=duration)
+                        logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
+                        return True
             except:
                 pass
             self.messages = []
