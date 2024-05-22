@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script used to syncronize catkin workspace between headnode and dispnodes
 
-ROS_DISTRO=melodic
+ROS_DISTRO=noetic
 
 if [ -d .git ]; then
   echo "I'm going to sync catkin/src to dispnodes:catkin_ws/src/ and run catkin_make"

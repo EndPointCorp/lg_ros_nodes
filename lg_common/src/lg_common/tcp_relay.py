@@ -9,7 +9,7 @@ class TCPRelay(ProcController):
             'TCP4-LISTEN:{},fork,reuseaddr,bind=0.0.0.0'.format(remote_port)
         )
         cmd.append(
-            'TCP4:127.0.0.1:{}'.format(local_port)
+            'TCP4:localhost:{}'.format(local_port)
         )
 
         super(TCPRelay, self).__init__(cmd=cmd)

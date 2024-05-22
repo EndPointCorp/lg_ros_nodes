@@ -23,8 +23,8 @@ do
 done
 
 lg-run-bg 'cd catkin_ws ; \
-	          source /opt/ros/melodic/setup.bash ; \
-	          rosdep install --from-paths src --ignore-src --rosdistro melodic -y;
+	          source /opt/ros/noetic/setup.bash ; \
+	          rosdep install --from-paths src --ignore-src --rosdistro noetic -y;
             catkin_make install;\
 		        find /home/lg/catkin_ws/src/ -iname "*.pyc" -delete '
 

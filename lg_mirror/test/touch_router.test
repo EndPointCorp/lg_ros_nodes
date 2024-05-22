@@ -1,4 +1,6 @@
 <launch>
+    <param name="/viewport/touchscreen" value="1024x1024+0+0" />
+    <param name="/viewport/wall_a" value="10240x10240+0+0" />
     <!-- Development static file server for the -->
     <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py">
         <param name="port" value="8012" />

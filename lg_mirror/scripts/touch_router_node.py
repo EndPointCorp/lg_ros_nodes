@@ -22,8 +22,22 @@ def main():
     default_viewport = rospy.get_param('~default_viewport', None)
     spacenav_viewport = rospy.get_param('~spacenav_viewport', 'fake_wall_a')
     device_id = rospy.get_param('~device_id', 'default')
+    divert_empty_scene = rospy.get_param('~divert_empty_scene', True)
+    non_multitouch_activities = [
+        x.strip() for x in rospy.get_param('~non_multitouch_activities', 'unity').split(',')
+    ]
+    multitouch_windows = [
+        x.strip() for x in rospy.get_param('~multitouch_windows', 'earth,cesium,streetview,panovideo,panoviewer,unity').split(',')
+    ]
     event_pub = rospy.Publisher(f'/lg_mirror/{device_id}/routed_events', RoutedEvdevEvents, queue_size=100)
-    router = TouchRouter(event_pub, spacenav_viewport, default_viewport=default_viewport)
+    router = TouchRouter(
+        event_pub,
+        spacenav_viewport,
+        default_viewport=default_viewport,
+        divert_empty_scene=divert_empty_scene,
+        non_multitouch_activities=non_multitouch_activities,
+        multitouch_windows=multitouch_windows,
+    )
     route_topic = '/lg_mirror/{}/active_routes'.format(device_id)
 
     def publish_active_routes(routes):

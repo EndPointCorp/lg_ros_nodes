@@ -38,6 +38,7 @@ class ImageViewer():
         self.viewports = viewports
         self.save_path = save_path
         self.lock = Lock()
+        self.graphic_opts = {}
 
     def director_translator(self, data):
         logger.error("ZZZ")
@@ -64,6 +65,7 @@ class ImageViewer():
                     y=window['y_coord']
                 )
                 image.transparent = window.get('activity_config', {}).get('transparent', False)
+
                 image.viewport = window['presentation_viewport']
                 if image.viewport not in self.viewports:
                     continue
@@ -72,6 +74,10 @@ class ImageViewer():
                 image.geometry.y = image.geometry.y + offset_geometry.y
                 image.uuid = str(uuid.uuid4())
                 windows_to_add.images.append(image)
+                
+                self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = {}
+                self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['no_upscale'] = window.get('activity_config', {}).get('no_upscale', False)
+
         logger.error(f"ZZZ {windows_to_add}")
         self.handle_image_views(windows_to_add)
 
@@ -94,36 +100,36 @@ class ImageViewer():
 
     def _handle_image_views(self, msg):
         global matched_images_dict
-        logger.error("handling image views")
+        logger.debug("handling image views")
         new_current_images = {}
         images_to_remove = list(self.current_images.values())
         images_to_add = []
         images_to_remove_delayed = []
         matched_images_dict = {}
         for image in msg.images:
-            # logger.error('CURRENT IMAGES: {}\n\n'.format(self.current_images))
+            logger.debug('CURRENT IMAGES: {}\n\n'.format(self.current_images))
             duplicate_image = self.is_in_current_images(self.current_images, image)
             if duplicate_image:
-                # logger.error('Keeping image: {}\n\n'.format(image))
+                logger.info('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
                 new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
             current_coordinate_image = self.is_current_coordinates(self.current_images, image)
             if current_coordinate_image:
-                logger.error("image matched, waiting to remove after the new one is launched")
+                logger.info("image matched, waiting to remove after the new one is launched")
                 matched_images_dict[image_coordinates(image)] = current_coordinate_image
                 images_to_remove.remove(current_coordinate_image)
             logger.debug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
 
         def remove_image(image_obj, *args, **kwargs):
-            logger.error('Removing image: {}'.format(image_obj))
+            logger.debug('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
             if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
 
         for image_obj in images_to_remove:
-            logger.error('ZZZ removing image object')
+            logger.debug('ZZZ removing image object')
             remove_image(image_obj)
 
         threads = []
@@ -155,20 +161,25 @@ class ImageViewer():
         r = requests.get(image.url)
         with open(image_path, 'wb') as f:
             f.write(r.content)
-        command = '/usr/bin/pqiv -c -i -T {} -P {},{} {}'.format(
+        opts = '-t'
+        if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
+            opts = ''
+
+        command = '/usr/bin/pqiv -c -i {} --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
+            opts,
             image.uuid,
             image.geometry.x,
             image.geometry.y,
             image_path
         ).split()
-        logger.debug('command is {}'.format(command))
+        logger.info('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path=image_path)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
         return image
 
     def _create_feh(self, image):
-        command = '/usr/bin/feh --auto-zoom --image-bg black --no-screen-clip -x --title {} --geometry {}x{}+{}+{} {}'.format(
+        command = '/usr/bin/feh --scale-down --image-bg black --no-screen-clip -x --title {} --geometry {}x{}+{}+{} {}'.format(
             image.uuid,
             image.geometry.width,
             image.geometry.height,
