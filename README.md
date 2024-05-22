@@ -1,5 +1,29 @@
 # Liquid Galaxy
 
+
+
+This is the old non-melodic version of lg_ros_nodes. It is staying
+around in case we need to build something in an emergency for the
+older non-docker version. Please go away from this branch if you
+are trying to build for the latest systems.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ![liquidgalaxy](liquidgalaxy.jpg "lg image")
 
 This repo contains ROS software for running Liquid Galaxy applications.
