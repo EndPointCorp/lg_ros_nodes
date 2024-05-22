@@ -299,8 +299,9 @@ class ActivitySource:
                         self.callback(self.topic, state=True, strategy='duration', delay=duration)
                         logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
                         return True
-            except:
-                pass
+            except (IndexError, KeyError, ValueError, TypeError) as e:
+                logger.exception("error getting duration from message: %" % e)
+
             self.messages = []
             self.callback(self.topic, state=False, strategy='duration') 
             return False
