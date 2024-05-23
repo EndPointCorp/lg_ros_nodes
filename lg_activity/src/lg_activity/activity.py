@@ -273,7 +273,7 @@ class ActivitySource:
         if self.messages:
             try:
                 self.messages = [self.messages[-1]]  # skip to last message and keep it
-                if isinstance(self.messages[0], dict):
+                if self.messages[0] and isinstance(self.messages[0], dict):
                     if self.messages[0].get('overlays', False):
                         self.callback(self.topic, state=True, strategy='message', delay=1)
                         logger.debug("Setting strems state True")
@@ -294,7 +294,7 @@ class ActivitySource:
             return False
         if self.messages:
             try:
-                if isinstance(self.messages[-1], dict):
+                if self.messages[-1] and isinstance(self.messages[-1], dict):
                     duration = self.messages[-1].get('message.duration', 0)  # skip to last message duration
                     if isinstance(duration, int) or (isinstance(duration, str) and duration.isdigit()):
                         duration = int(duration)
@@ -304,7 +304,7 @@ class ActivitySource:
                             logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
                             return True
                     else:
-                        logger.warning("Ignoring duration, it should be a number of seconds, got: %" % duration)
+                        logger.warning("Ignoring duration, it should be a number of seconds, message is: ", self.messages[-1])
                 else:
                     logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
             except (IndexError, KeyError, ValueError, TypeError) as e:
