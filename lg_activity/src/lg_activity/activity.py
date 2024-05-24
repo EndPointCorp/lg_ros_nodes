@@ -269,16 +269,19 @@ class ActivitySource:
             return False
 
     def _is_message_active(self):
-        """keep last message. Empty list returns False TODO add other cases, empty string, null, ...""" 
+        """keep last message. Empty list returns False TODO add other cases, empty string, null, ..."""
         if self.messages:
-             try:
-                 self.messages = [self.messages[-1]]  # skip to last message and keep it
-                 if self.messages[0].get('overlays', False):
-                     self.callback(self.topic, state=True, strategy='message', delay=1)
-                     logger.debug("Setting strems state True")
-                     return True
-             except (IndexError, KeyError, ValueError, TypeError) as e:
-                 logger.exception("error checking stream messages: %" % e)
+            try:
+                self.messages = [self.messages[-1]]  # skip to last message and keep it
+                if self.messages[0] and isinstance(self.messages[0], dict):
+                    if self.messages[0].get('overlays', False):
+                        self.callback(self.topic, state=True, strategy='message', delay=1)
+                        logger.debug("Setting strems state True")
+                    return True
+                else:
+                    logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
+            except (IndexError, KeyError, ValueError, TypeError) as e:
+                logger.exception("error checking stream messages: %" % e)
         self.messages = []
         self.callback(self.topic, state=False, strategy='message')
         logger.debug("Streams are off")
@@ -291,18 +294,26 @@ class ActivitySource:
             return False
         if self.messages:
             try:
-                duration = int(self.messages[-1].get('message.duration', 0))  # skip to last message duration
-                if duration > 0 and duration != 666:
-                    self.messages = []
-                    self.callback(self.topic, state=True, strategy='duration', delay=duration)
-                    logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
-                    return True
+                if self.messages[-1] and isinstance(self.messages[-1], dict):
+                    duration = self.messages[-1].get('message.duration', 0)  # skip to last message duration
+                    if isinstance(duration, int) or (isinstance(duration, str) and duration.isdigit()):
+                        duration = int(duration)
+                        if duration > 0 and duration != 666:
+                            self.messages = []
+                            self.callback(self.topic, state=True, strategy='duration', delay=duration)
+                            logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
+                            return True
+                    else:
+                        logger.warning("Ignoring duration, it should be a number of seconds, message is: ", self.messages[-1])
+                else:
+                    logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
             except (IndexError, KeyError, ValueError, TypeError) as e:
                 logger.exception("error getting duration from message: %" % e)
+
             self.messages = []
-            self.callback(self.topic, state=False, strategy='duration') 
+            self.callback(self.topic, state=False, strategy='duration')
             return False
-        
+
         try:  # no messages, get self state
             if self.tracker.activity_states[self.topic]["time"] > rospy.get_time():  # if own time is in the future
                 logger.debug("scene_duration returns True, %s  >  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
@@ -429,7 +440,7 @@ class ActivityTracker:
         If all states turned True (active) then proper message is emitted
         """
         with self._lock:
-            try:            
+            try:
                 if topic_name not in self.activity_states:
                     self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
                     logger.info("Initialize Topic name: %s with state: %s and delay: %s" % (topic_name, state, delay))
@@ -454,7 +465,7 @@ class ActivityTracker:
 
             except Exception as e:
                 logger.debug("Activity callback with state %s for topic name %s failed!: %s" % (state, topic_name, e))
-            
+
             return False
 
     def _source_is_active(self, source, timeout=120):
@@ -512,7 +523,7 @@ class ActivityTracker:
         else:
             logger.debug("Activity state unchanged. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
 
-        
+
         self.sources_active_within_stats_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.stats_activity_timeout)}
 
         if self.sources_active_within_stats_timeout and (not self.stats_active):
