@@ -64,7 +64,7 @@ def main():
     logger.info(f"Browsers will use URL {url_base}?name=MediaOverlay.name")
 
     if rospy.has_param("~viewports"):
-        viewports = rospy.get_param("~viewports").strip().split(",")
+        viewports = [v.strip() for v in rospy.get_param("~viewports").strip().split(",")]
     else:
         viewports = rospy.get_param("/viewport/").keys()
     logger.info(f"configured viewports: {viewports}")
