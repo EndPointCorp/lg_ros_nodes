@@ -40,7 +40,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     # default for sending should be different for receiving
     if viewsync_send:
         viewsync_port = viewsync_port
-        viewsync_hostname = '127.0.0.1'
+        viewsync_hostname = 'localhost'
     else:
         viewsync_port = rospy.get_param('~viewsync_port_new', 42000)
         viewsync_hostname = rospy.get_param('~viewsync_host', '10.42.42.255')

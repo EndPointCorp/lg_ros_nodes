@@ -61,9 +61,14 @@ def main():
         param_name="~url_base",
         default="http://lg-head/touchscreen_assets/streams/"
     )
-
-    viewports = rospy.get_param("/viewport/")
     logger.info(f"Browsers will use URL {url_base}?name=MediaOverlay.name")
+
+    if rospy.has_param("~viewports"):
+        viewports = rospy.get_param("~viewports").strip().split(",")
+    else:
+        viewports = rospy.get_param("/viewport/").keys()
+    logger.info(f"configured viewports: {viewports}")
+
     rospy.Subscriber(
         name='/media_overlays',
         data_class=MediaOverlays,

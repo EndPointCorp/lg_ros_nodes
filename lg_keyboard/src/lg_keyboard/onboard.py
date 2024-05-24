@@ -33,10 +33,10 @@ class OnboardLauncher(object):
         viewport_geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
         cmd = ['/usr/bin/onboard', '-m']
 
-        onboard_width = viewport_geometry.width
-        onboard_height = viewport_geometry.height / 6
-        onboard_x = viewport_geometry.x
-        onboard_y = viewport_geometry.y + (viewport_geometry.height - onboard_height)
+        onboard_width = int(viewport_geometry.width)
+        onboard_height = int(viewport_geometry.height / 6)
+        onboard_x = int(viewport_geometry.x)
+        onboard_y = int(viewport_geometry.y + (viewport_geometry.height - onboard_height))
 
         onboard_geometry = WindowGeometry(x=onboard_x,
                                           y=onboard_y,
@@ -47,14 +47,15 @@ class OnboardLauncher(object):
 
         window = ManagedWindow(w_class='Onboard',
                                geometry=onboard_geometry,
+                               layer=ManagedWindow.LAYER_TOUCH,
                                visible=False)
         cmd.extend(list(map(str, [
             '-x',
-            int(onboard_x),
+            onboard_x,
             '-y',
-            int(onboard_y),
+            onboard_y,
             '-s',
-            '{}x{}'.format(int(onboard_width), int(onboard_height))
+            '{}x{}'.format(onboard_width, onboard_height)
         ])))
         self.app = ManagedApplication(cmd, window=window)
 

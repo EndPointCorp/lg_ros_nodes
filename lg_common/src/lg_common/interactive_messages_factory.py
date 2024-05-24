@@ -28,7 +28,7 @@ class InteractiveSpacesMessagesFactory:
                 }
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/example/index.html"
+                "http://localhost:8008/lg_common/webapps/example/index.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -116,7 +116,7 @@ class InteractiveSpacesMessagesFactory:
                 }
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -225,7 +225,7 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/example/index.html"
+                "http://localhost:8008/lg_common/webapps/example/index.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -249,7 +249,7 @@ class InteractiveSpacesMessagesFactory:
             "activity_config": {
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/example/index.html"
+                "http://localhost:8008/lg_common/webapps/example/index.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -310,7 +310,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -335,7 +335,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -360,7 +360,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 100,
             "presentation_viewport": "center",
@@ -374,7 +374,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": false
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -399,7 +399,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 100,
             "presentation_viewport": "center",
@@ -413,7 +413,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": false
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -438,7 +438,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 100,
             "presentation_viewport": "center",
@@ -452,7 +452,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": false
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "center",
@@ -466,7 +466,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 100,
             "presentation_viewport": "left",
@@ -480,7 +480,7 @@ class InteractiveSpacesMessagesFactory:
                 "preload": false
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/test.html"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/test.html"
             ],
             "height": 333,
             "presentation_viewport": "left",
@@ -506,7 +506,7 @@ class InteractiveSpacesMessagesFactory:
                 "custom_preload_event": true
             },
             "assets": [
-                "http://127.0.0.1:8008/lg_common/webapps/window_ready_mock/custom_event.html?use_app_event=1"
+                "http://localhost:8008/lg_common/webapps/window_ready_mock/custom_event.html?use_app_event=1"
             ],
             "height": 333,
             "presentation_viewport": "center",

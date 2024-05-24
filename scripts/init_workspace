@@ -158,10 +158,10 @@ def catkin_init():
     try:
         p = None
         with open('/dev/null') as out:
-            p = Popen("catkin_init_workspace", stdout=out, stderr=out)
+            p = Popen("catkin_init_workspace")
         p.wait()
         if p.returncode != 0:
-            raise Exception("catkin_init_workspace exited with a code of %d" % p.return_code)
+            raise Exception("catkin_init_workspace exited with a code of %d" % p.returncode)
     except OSError:
         raise Exception("Error running catkin_init_workspace, is it not in your PATH?")
 
