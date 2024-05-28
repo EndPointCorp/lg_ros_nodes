@@ -277,7 +277,7 @@ class ActivitySource:
                     if self.messages[0].get('overlays', False):
                         self.callback(self.topic, state=True, strategy='message', delay=1)
                         logger.debug("Setting strems state True")
-                    return True
+                        return True
                 else:
                     logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
             except (IndexError, KeyError, ValueError, TypeError) as e:
