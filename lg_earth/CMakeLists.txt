@@ -32,6 +32,8 @@ catkin_install_python(PROGRAMS
   scripts/planet_changer
   scripts/planet_changer.py
   scripts/toggle_3d_service.py
+  scripts/toggles_rosnode
+  scripts/toggles_rosnode.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
