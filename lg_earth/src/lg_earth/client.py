@@ -100,7 +100,12 @@ class Client:
         self.kml_content = kml_content
         self.view_content = view_content
 
-        self._render_configs()
+        # respawn handler to render configs
+        self.earth_proc.add_respawn_handler(self._handle_soft_relaunch)
+
+        # this now happens as part of the spawn handler which runs
+        # whenever the earth proc is started up
+        #self._render_configs()
 
         self.earth_proc = ManagedApplication(cmd, window=earth_window,
                                              initial_state=initial_state,
@@ -269,7 +274,7 @@ class Client:
             except OSError:
                 pass  # some other instance already deleted this
 
-    def _handle_soft_relaunch(self, msg):
+    def _handle_soft_relaunch(self, msg=None):
         """
         Clearing up logs is pretty important for soft relaunches
         """
@@ -283,7 +288,10 @@ class Client:
         except Exception as e:
             logger.warning('found error while removing earth cache: %s, could be normal operation though' % e.message)
         self._render_configs()
-        self.earth_proc.handle_soft_relaunch()
+        # when msg is None, we're likely coming from the respawn handler
+        # meaning we don't need to kill the earth proc since it's just starting
+        if msg is not None:
+            self.earth_proc.handle_soft_relaunch()
 
     def _handle_staggered_soft_relaunch(self, msg):
         """
