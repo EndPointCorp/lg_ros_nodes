@@ -97,12 +97,12 @@ class StateTracker(object):
 
         viewport = window.get('presentation_viewport', None)
         if viewport is None:
-            rospy.info("viewport was None... ignoring")
+            logger.info("viewport was None... ignoring")
             return
 
         # display might be ok to go away, but only once we're sure
         if viewport != 'kiosk' and viewport != 'wall' and viewport != 'display':
-            rospy.warn("Unable to determine viewport named (%s)" % viewport)
+            logger.warning("Unable to determine viewport named (%s)" % viewport)
             return
 
         if viewport == 'kiosk':
