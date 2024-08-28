@@ -60,7 +60,6 @@ class StatsHandler():
         pres['scene_name'] = scene.get('name', 'unknown')
         pres['slug'] = scene.get('slug', 'unknown')
         pres['presentation_name'] = scene.get('name', 'unknown')
-        pres['type'] = scene.get('played_from', 'unknown')
         pres['created_by'] = scene.get('created_by', 'unknown')
         pres['hostname'] = get_hostname()
         pres['played_from'] = scene.get('played_from', 'unknown')
@@ -108,9 +107,8 @@ class StatsHandler():
             tag_presentation_name = escape_tag_value(pres['presentation_name'])
             tag_played_from = escape_tag_value(pres['played_from'])
             field_scene_name = escape_field_value(pres['scene_name'])
-            field_type = escape_field_value(pres['type'])
 
-            query = f"touch_stats,presentation_name={tag_presentation_name},played_from={tag_played_from} scene_name=\"{field_scene_name}\",type=\"{field_type}\",duration={duration}"
+            query = f"touch_stats,presentation_name={tag_presentation_name},played_from={tag_played_from} scene_name=\"{field_scene_name}\",duration={duration}"
             logger.debug(f"Writing the data point to influxdb: {query}")
             write_influx_point_to_telegraf(query)
         else:
