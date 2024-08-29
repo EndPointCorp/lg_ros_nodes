@@ -108,7 +108,7 @@ class StatsHandler():
             tag_played_from = escape_tag_value(pres['played_from'])
             field_scene_name = escape_field_value(pres['scene_name'])
 
-            query = f"touch_stats,presentation_name={tag_presentation_name},played_from={tag_played_from} scene_name=\"{field_scene_name}\",duration={duration}"
+            query = f"director_stats,presentation_name={tag_presentation_name},played_from={tag_played_from} scene_name=\"{field_scene_name}\",duration={duration}"
             logger.debug(f"Writing the data point to influxdb: {query}")
             write_influx_point_to_telegraf(query)
         else:
