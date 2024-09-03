@@ -10,6 +10,8 @@ from lg_msg_defs.msg import LockState
 from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'lg_lock'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def init():
@@ -22,7 +24,7 @@ def init():
     statePublisher = rospy.Publisher('/lg_lock/locked', LockState, queue_size=1, latch=True)
 
     if not password:
-        rospy.logerr('No or blank password provided, exiting...')
+        logger.error('No or blank password provided, exiting...')
         print("No or blank password provided, exiting...")
         return
 
@@ -30,7 +32,7 @@ def init():
 
     def onChange(state):
         if suppress_spacenav:
-            rospy.loginfo("Suppress spacenav: {}".format(state))
+            logger.info("Suppress spacenav: {}".format(state))
             suppressProxy(state)
 
     service = LockerService(statePublisher, password, locked, onChange)

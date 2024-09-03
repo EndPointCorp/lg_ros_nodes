@@ -20,6 +20,8 @@ from std_srvs.srv import Empty
 from lg_pointer import MegaViewport
 
 NODE_NAME = 'wiimote_to_pointer'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 TICK_RATE = 65  # Hz
 DEV_WIDTH = 8192
 DEV_HEIGHT = 8192
@@ -47,7 +49,7 @@ def grabCustomUdev(udev_location, rules_dest):
     with open(tmp_rules, 'wb') as f:
         resp = urllib.request.urlopen(udev_location)
         if resp.code != 200:
-            rospy.logerr("Could not curl the udev rules... continuing without them")
+            logger.error("Could not curl the udev rules... continuing without them")
             return
         f.write(resp.read())
     os.system('sudo mv {} {}'.format(tmp_rules, rules_dest))
@@ -90,7 +92,7 @@ def main():
     rospy.Service(info_srv, EvdevDeviceInfo, handle_device_info)
 
     while not os.path.exists(device_path):
-        rospy.logwarn("No device %s found, sleeping" % device_path)
+        logger.warning("No device %s found, sleeping" % device_path)
         rospy.sleep(5)
     dev = evdev.InputDevice(device_path)
     dev.grab()

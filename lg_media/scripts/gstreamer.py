@@ -8,6 +8,8 @@ from lg_media import DirectorMediaBridge
 from lg_media import SRV_QUERY, ROS_NODE_NAME
 from lg_common.helpers import make_soft_relaunch_callback, handle_initial_state
 from interactivespaces_msgs.msg import GenericMessage
+from lg_common.logger import get_logger
+logger = get_logger('gstreamer')
 
 DEFAULT_VIEWPORT = 'center'
 MEDIA_TYPE = 'video'  # mplayer used video rather than browser_video type
@@ -18,7 +20,7 @@ def main():
     viewport_name = rospy.get_param("~viewport", DEFAULT_VIEWPORT)
 
     if not viewport_name:
-        rospy.logerr("Viewport is not set - exiting")
+        logger.error("Viewport is not set - exiting")
         exit(1)
 
     topic_name = "/{0}/{1}".format(ROS_NODE_NAME, viewport_name)

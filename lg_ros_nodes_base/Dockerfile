@@ -22,7 +22,7 @@ RUN chmod 0755 /ros_entrypoint.sh
 
 RUN \
       sudo apt-get update -y && sudo apt-get install -y wget && \
-      echo "deb http://packages.ros.org/ros/ubuntu bionic main" > /etc/apt/sources.list.d/ros-latest.list && \
+      echo "deb http://packages.ros.org/ros/ubuntu jammy main" > /etc/apt/sources.list.d/ros-latest.list && \
       echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
       echo "deb http://dl.google.com/linux/earth/deb/ stable main" > /etc/apt/sources.list.d/google-earth.list &&\
       apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5523BAEEB01FA116 && \
@@ -42,9 +42,9 @@ RUN \
       lsb-core tar libfreeimage3
 
 RUN \
-      apt-get install -y ros-melodic-rosapi libudev-dev \
-      ros-melodic-ros-base ros-melodic-rosbridge-server \
-      ros-melodic-spacenav-node spacenavd
+      apt-get install -y ros-noetic-rosapi libudev-dev \
+      ros-noetic-ros-base ros-melodic-rosbridge-server \
+      ros-noetic-spacenav-node spacenavd
 
 RUN \
       apt-get install -y google-chrome-stable google-chrome-beta google-chrome-unstable
@@ -85,6 +85,6 @@ RUN \
       useradd -ms /bin/bash galadmin && \
       echo "galadmin   ALL=NOPASSWD: ALL" >> /etc/sudoers && \
 	    mkdir -p /home/galadmin/src ;\
-      echo "source /opt/ros/melodic/setup.bash" >> /root/.bash_profile ;\
-      echo "source /opt/ros/melodic/setup.bash" >> /home/galadmin/.bash_profile ;\
+      echo "source /opt/ros/noetic/setup.bash" >> /root/.bash_profile ;\
+      echo "source /opt/ros/noetic/setup.bash" >> /home/galadmin/.bash_profile ;\
       mv /bin/sh /bin/sh.bak && ln -s /bin/bash /bin/sh

@@ -56,6 +56,8 @@ import tornado.web
 from tornado import gen
 from tornado.concurrent import Future
 from tornado.ioloop import IOLoop
+from lg_common.logger import get_logger
+logger = get_logger('kmlsync')
 
 
 def get_kml_root():
@@ -71,7 +73,7 @@ def get_kml_root():
 class KmlMasterHandler(tornado.web.RequestHandler):
     def get(self):
         """Serve the master.kml which is updated by NLC."""
-        rospy.logdebug("Got master.kml GET request")
+        logger.debug("Got master.kml GET request")
         kml_root = get_kml_root()
         kml_document = ET.SubElement(kml_root, 'Document')
         kml_document.attrib['id'] = 'master'
@@ -111,7 +113,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cls.finish_all_requests()
         except Exception as e:
-            rospy.logerr("Exception getting scene changes" + str(e))
+            logger.error("Exception getting scene changes" + str(e))
             pass
 
     def non_blocking_sleep(self, duration):
@@ -133,11 +135,11 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         if KmlUpdateHandler.timeout <= 0:
             no_defer = True
 
-        rospy.logdebug("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
+        logger.debug("Got network_link_update.kml GET request with params: %s" % self.request.query_arguments)
         window_slug = self.get_query_argument('window_slug', default=None)
         incoming_cookie_string = self.get_query_argument('asset_slug', default='')
 
-        rospy.logdebug("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
+        logger.debug("Got network_link_update GET request for slug: %s with cookie: %s" % (window_slug, incoming_cookie_string))
 
         if not window_slug:
             self.set_status(400, "No window slug provided")
@@ -147,7 +149,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             assets = self._get_assets(window_slug)
         except Exception as e:
-            rospy.logerr('Failed to get assets for {}: {}'.format(
+            logger.error('Failed to get assets for {}: {}'.format(
                 window_slug,
                 e.message
             ))
@@ -162,8 +164,8 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         self.unique_id = KmlUpdateHandler.get_unique_id()
 
-        rospy.logdebug("Request Counter: {}".format(self.unique_id))
-        rospy.logdebug("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
+        logger.debug("Request Counter: {}".format(self.unique_id))
+        logger.debug("Deferred Requests: {}".format(KmlUpdateHandler.deferred_requests))
 
         KmlUpdateHandler.add_deferred_request(self, self.unique_id)
         yield self.non_blocking_sleep(KmlUpdateHandler.timeout)
@@ -171,7 +173,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             assets = self._get_assets(window_slug)
         except Exception as e:
-            rospy.logerr('Failed to get assets for {}: {}'.format(
+            logger.error('Failed to get assets for {}: {}'.format(
                 window_slug,
                 e.message
             ))
@@ -243,7 +245,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         server_slugs_list = self._get_server_slugs_state(assets)
         client_slugs_list = self._get_client_slugs_state(incoming_cookie_string)
         ret = list(set(client_slugs_list) - set(server_slugs_list))
-        rospy.logdebug("Got the assets to delete as: %s" % ret)
+        logger.debug("Got the assets to delete as: %s" % ret)
         return ret
 
     def _get_assets_to_create(self, incoming_cookie_string, assets):
@@ -369,12 +371,12 @@ class KmlQueryHandler(tornado.web.RequestHandler):
                 value = urllib.parse.unquote(value)
 
                 if command == 'playtour':
-                    rospy.loginfo("Playing tour %s" % value)
+                    logger.info("Playing tour %s" % value)
                     self.playtour.tourname = str(value)
                     self.playtour_service(value)
 
                 elif command == 'planet':
-                    rospy.loginfo("Switching to planet %s" % value)
+                    logger.info("Switching to planet %s" % value)
                     self.planet.planetname = value
                     self.planet_service(value)
                     self._wait_for_planet(value)
@@ -383,17 +385,17 @@ class KmlQueryHandler(tornado.web.RequestHandler):
                     try:
                         rospy.sleep(float(value))
                     except ValueError as e:
-                        rospy.logerr(
+                        logger.error(
                             "Failed to convert %s to a float, while trying to sleep" %
                             value)
 
                 else:
-                    rospy.logerr("unknown query command: %s" % command)
+                    logger.error("unknown query command: %s" % command)
 
             self._finish_text("OK")
 
         except (IndexError, ValueError) as e:
-            rospy.logerr("Failed to split/parse query string: {}".format(query_string))
+            logger.error("Failed to split/parse query string: {}".format(query_string))
             self.set_status(400, "Got a bad query string")
             self._finish_text("Bad Request: Got a bad query string")
             return

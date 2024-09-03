@@ -41,8 +41,8 @@ install(
 )
 
 install(
-  DIRECTORY bash_scripts/
-  DESTINATION /home/lg/bash_scripts
+  DIRECTORY python_scripts/
+  DESTINATION /home/lg/python_scripts
 )
 
 if (CATKIN_ENABLE_TESTING)

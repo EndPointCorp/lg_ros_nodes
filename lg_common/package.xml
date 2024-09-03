@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_common</name>
-  <version>3.1.7</version>
+  <version>3.9.0</version>
   <description>Common software for Liquid Galaxy ROS nodes.</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -22,7 +22,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>rosbridge_suite</run_depend>
   <run_depend>lg_msg_defs</run_depend>
-  <run_depend>socat</run_depend>
+	  <!-- <run_depend>socat</run_depend> -->
   <test_depend>rostest</test_depend>
-  <test_depend>python-pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
 </package>

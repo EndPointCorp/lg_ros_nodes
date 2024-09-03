@@ -22,7 +22,7 @@ import rospkg
 
 from std_msgs.msg import Bool
 from interactivespaces_msgs.msg import GenericMessage
-from appctl.msg import Mode
+from appctl_msg_defs.msg import Mode
 from lg_msg_defs.msg import Session
 from lg_msg_defs.msg import Event
 from lg_stats import ROS_NODE_NAME

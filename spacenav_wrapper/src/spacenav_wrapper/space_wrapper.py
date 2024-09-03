@@ -2,6 +2,8 @@
 
 import rospy
 from geometry_msgs.msg import Twist
+from lg_common.logger import get_logger
+logger = get_logger('space_wrapper')
 
 
 GUTTER_VAL = 0.01
@@ -86,7 +88,7 @@ class SpacenavRezeroer(object):
             self.old_sample = self.new_sample
             self.counter = 0
         if self.counter >= self.max_counts:
-            rospy.loginfo('rezeroing after counter reached %s, old_sample:\n%s\nnew_sample:\n%s' % (
+            logger.info('rezeroing after counter reached %s, old_sample:\n%s\nnew_sample:\n%s' % (
                 self.counter, self.old_sample, self.new_sample
             ))
             self.rezero()
@@ -115,7 +117,7 @@ class SpacenavRezeroer(object):
         try:
             self._on_timer()
         except Exception as e:
-            rospy.logerr("There was an exception thrown inside the timer:\n%s" % e)
+            logger.error("There was an exception thrown inside the timer:\n%s" % e)
 
     def _is_twist_equal(self, twist1, twist2, epsilon=0.005):
         return abs(twist1.linear.x - twist2.linear.x) <= epsilon and \

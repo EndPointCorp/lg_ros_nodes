@@ -3,6 +3,9 @@ from threading import Lock
 import rostopic
 import rospy
 
+from lg_common.logger import get_logger
+logger = get_logger('state_changer')
+
 
 class StateChanger:
     """
@@ -34,7 +37,7 @@ class StateChanger:
         self.set_pubbers(topics)
         for active in activities:
             if active not in self.pubbers:
-                rospy.logerr('Could not find the desired topic (%s) to set the state of' % active)
+                logger.error('Could not find the desired topic (%s) to set the state of' % active)
         for topic, pub in self.pubbers.items():
             if topic in activities:
                 pub.publish(ApplicationState.VISIBLE)

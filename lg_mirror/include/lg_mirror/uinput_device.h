@@ -5,7 +5,7 @@
 #include <string>
 #include <exception>
 
-#include <lg_msg_defs/EvdevEvents.h>
+#include <lg_msg_defs/RoutedEvdevEvents.h>
 #include <lg_msg_defs/EvdevDeviceInfo.h>
 
 namespace UinputDeviceConstants {
@@ -31,7 +31,7 @@ class UinputDevice {
     bool FloatPointer() const;
     void Zero();
 
-    void HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg);
+    void HandleEventMessage(const lg_msg_defs::RoutedEvdevEvents::Ptr& msg);
 
   private:
     static void EnableCode_(int fd, int codeBits, int code);

@@ -32,7 +32,7 @@ def main():
     clock_addr = rospy.get_param('~clock_addr', 'ws://localhost:9091')
     depend_on_webserver = rospy.get_param('~depend_on_webserver', False)
     depend_on_rosbridge = rospy.get_param('~depend_on_rosbridge', False)
-    rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
+    rosbridge_host = rospy.get_param('~rosbridge_host', 'localhost')
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     rosbridge_secure = rospy.get_param('~rosbridge_secure', 'false')
     kiosk = rospy.get_param('~kiosk', True)
@@ -56,7 +56,13 @@ def main():
     x_available_or_raise(timeout)
 
     slug = "lg_panovideo__" + str(geometry).replace('\n', '_').replace(': ', '_')
-    managed_browser = ManagedAdhocBrowser(url=url, geometry=geometry, slug=slug, kiosk=kiosk)
+    managed_browser = ManagedAdhocBrowser(
+        url=url,
+        geometry=geometry,
+        slug=slug,
+        kiosk=kiosk,
+        layer=ManagedWindow.LAYER_NORMAL,
+    )
 
     # set initial state
     state = ApplicationState.STOPPED

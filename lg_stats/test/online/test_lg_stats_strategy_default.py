@@ -37,7 +37,7 @@ import rostopic
 from std_msgs.msg import Bool
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
-from appctl.msg import Mode
+from appctl_msg_defs.msg import Mode
 from lg_msg_defs.msg import Session
 from lg_msg_defs.msg import Event
 from lg_stats import ROS_NODE_NAME
@@ -75,7 +75,7 @@ class TestLGStatsRealMessageChain(unittest.TestCase):
 
     """
 
-    def setup_method(self, method):
+    def setUp(self):
         # subscribed to the /lg_stats/debug topic
         # WARNING: issues retrieving rospy.get_param value from the test file, still
         #   getting the default value (regardless of calling it before or after init_node)

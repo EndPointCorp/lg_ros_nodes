@@ -1,4 +1,5 @@
 var showLinks = getParameterByName('showLinks', stringToBoolean, false);
+var showApiLinks = getParameterByName('showApiLinks', stringToBoolean, false);
 var showFPS = getParameterByName('showFPS', stringToBoolean, false);
 var yawOffsets = getParameterByName('yawOffsets', String, '0').split(/\s*,\s*/).map(Number);
 var pitchOffset = getParameterByName('pitchOffset', Number, 0);
@@ -8,11 +9,17 @@ var rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
 var rosbridgePort = getParameterByName('rosbridgePort', String, '9090');
 var rosbridgeSecure = getParameterByName('rosbridgeSecure', stringToBoolean, 'false');
 var shouldTilt = getParameterByName('tilt', stringToBoolean, 'true');
+var largeViewportHack = getParameterByName('largeViewportHack', stringToBoolean, 'false');
 window.devicePixelRatio = getParameterByName('pixelRatio', Number, 1.0);
 // scaleFactor is fixed because it changes fov non-linearly.
 // This value allows for full range of roll at 16:9.
 // See js/fov_fudge.js
-var scaleFactor = shouldTilt ? 2.04 : 1.0;
+var scaleFactor = 1.0;
+if (shouldTilt) {
+  scaleFactor = 2.04;
+} else if (largeViewportHack) {
+  scaleFactor = 2.0;
+}
 var scaleMatrix = [
   [scaleFactor, 0, 0, 0],
   [0, scaleFactor, 0, 0],
@@ -51,8 +58,14 @@ var initializeRes = function(ros, yawOffset) {
 
   var wrapper = document.createElement('div');
   wrapper.style.backgroundColor = 'black';
-  wrapper.style.height = '100%';
-  wrapper.style.width = '100%';
+  if (largeViewportHack) {
+    wrapper.style.transformOrigin = 'top left';
+    wrapper.style.height = '50%';
+    wrapper.style.width = '50%';
+  } else {
+    wrapper.style.height = '100%';
+    wrapper.style.width = '100%';
+  }
   wrapper.style.margin = '0';
   wrapper.style.padding = '0';
   divider.appendChild(wrapper);
@@ -135,6 +148,7 @@ var initializeRes = function(ros, yawOffset) {
   };
 
   var svOptions = {
+    linksControl: showApiLinks,
     visible: true,
     disableDefaultUI: true
   };
@@ -264,7 +278,7 @@ var initializeRes = function(ros, yawOffset) {
       return;
     }
 
-    if (shouldTilt) {
+    if (shouldTilt || largeViewportHack) {
       var radianOffset = toRadians(fieldOfView * yawOffset);
 
       var htr = [povQuaternion.z, povQuaternion.x, 0];

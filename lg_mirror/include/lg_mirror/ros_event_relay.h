@@ -6,8 +6,7 @@
 
 #include "uinput_device.h"
 #include "viewport_mapper.h"
-#include <lg_msg_defs/StringArray.h>
-#include <lg_msg_defs/EvdevEvents.h>
+#include <lg_msg_defs/RoutedEvdevEvents.h>
 
 class RosEventRelay {
   public:
@@ -15,24 +14,16 @@ class RosEventRelay {
       ros::NodeHandle node_handle,
       const std::string& viewport_name,
       UinputDevice device,
-      const std::string& events_topic,
       ViewportMapper mapper,
       bool auto_zero
     );
-    void HandleRouterMessage(const lg_msg_defs::StringArrayPtr& msg);
-    void HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg);
+    void HandleRoutedEventsMessage(const lg_msg_defs::RoutedEvdevEvents::Ptr& msg);
     void ResetIdleRemap(const ros::TimerEvent& tev);
 
   private:
-    void OpenRoute_();
-    void CloseRoute_();
-    void ZeroDevice_();
-
-    bool routing_;
     ros::Subscriber router_sub_;
     ros::NodeHandle n_;
     std::string viewport_name_;
-    std::string events_topic_;
     UinputDevice device_;
     ViewportMapper mapper_;
     bool auto_zero_;

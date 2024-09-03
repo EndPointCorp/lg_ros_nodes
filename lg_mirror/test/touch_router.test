@@ -1,13 +1,17 @@
 <launch>
+    <param name="/viewport/touchscreen" value="1024x1024+0+0" />
+    <param name="/viewport/wall_a" value="10240x10240+0+0" />
     <!-- Development static file server for the -->
-    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py" />
+    <node name="dev_webserver" pkg="lg_common" type="dev_webserver.py">
+        <param name="port" value="8012" />
+    </node>
     <!-- USCS for initial state -->
     <node name="test_uscs_service_node" pkg="lg_common" type="uscs_service.py" >
-        <param name="initial_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/initial_state.json"/>
-        <param name="on_online_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_online.json"/>
-        <param name="on_offline_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_offline.json"/>
-        <param name="on_active_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_active.json"/>
-        <param name="on_inactive_state_scene_url" value="http://127.0.0.1:8008/lg_common/webapps/uscs_messages/on_inactive.json"/>
+        <param name="initial_state_scene_url" value="http://127.0.0.1:8012/lg_common/webapps/uscs_messages/initial_state.json"/>
+        <param name="on_online_state_scene_url" value="http://127.0.0.1:8012/lg_common/webapps/uscs_messages/on_online.json"/>
+        <param name="on_offline_state_scene_url" value="http://127.0.0.1:8012/lg_common/webapps/uscs_messages/on_offline.json"/>
+        <param name="on_active_state_scene_url" value="http://127.0.0.1:8012/lg_common/webapps/uscs_messages/on_active.json"/>
+        <param name="on_inactive_state_scene_url" value="http://127.0.0.1:8012/lg_common/webapps/uscs_messages/on_inactive.json"/>
     </node>
   <arg name="test_viewport" value="test_default" />
   <env name="TEST_VIEWPORT" value="$(arg test_viewport)" />

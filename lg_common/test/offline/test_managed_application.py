@@ -11,7 +11,7 @@ from lg_msg_defs.msg import ApplicationState
 from appctl_support import ProcController
 from lg_common import ManagedApplication, ManagedWindow
 
-TEST_CMD = ['/usr/bin/python']
+TEST_CMD = ['/usr/bin/python3']
 
 
 class MockWindow(ManagedWindow):

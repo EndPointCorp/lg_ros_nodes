@@ -20,12 +20,15 @@ add_message_files(
   Command.msg
   EvdevEvent.msg
   EvdevEvents.msg
+  RoutedEvdevEvents.msg
   Event.msg
   GetScreenshot.msg
   ImageView.msg
   ImageViews.msg
   IrSourceInfo.msg
   LockState.msg
+  MediaOverlay.msg
+  MediaOverlays.msg
   PortalPose.msg
   Ready.msg
   ScreenCoordinate.msg

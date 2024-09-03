@@ -5,6 +5,9 @@ import rospy
 from sensor_msgs.msg import JoyFeedbackArray
 from sensor_msgs.msg import JoyFeedback
 
+from lg_common.logger import get_logger
+logger = get_logger('feedbacktester')
+
 # Test the wiimote package LED control. Expect the following LED
 # patterns of INTER_PATTERN_SLEEP_DURATION seconds duration each:
 
@@ -42,7 +45,7 @@ def talker():
       rum.intensity = 0.49
 
       if msg is not None:
-          rospy.logdebug("Msg: " + str(msg))
+          logger.debug("Msg: " + str(msg))
           pub.publish(msg)
           rospy.sleep(INTER_PATTERN_SLEEP_DURATION)
           
@@ -50,7 +53,7 @@ def talker():
       rum.intensity = 0.51
 
       if msg is not None:
-          rospy.logdebug("Msg: " + str(msg))
+          logger.debug("Msg: " + str(msg))
           pub.publish(msg)
           rospy.sleep(INTER_PATTERN_SLEEP_DURATION)
           
@@ -59,7 +62,7 @@ def talker():
       rum.intensity = 0.0
 
       if msg is not None:
-          rospy.logdebug("Msg: " + str(msg))
+          logger.debug("Msg: " + str(msg))
           pub.publish(msg)
           rospy.sleep(INTER_PATTERN_SLEEP_DURATION)
           
@@ -68,7 +71,7 @@ def talker():
       rum.intensity = 0.7
 
       if msg is not None:
-          rospy.logdebug("Msg: " + str(msg))
+          logger.debug("Msg: " + str(msg))
           pub.publish(msg)
           rospy.sleep(INTER_PATTERN_SLEEP_DURATION)
           
@@ -77,7 +80,7 @@ def talker():
       rum.intensity = 0.49
 
       if msg is not None:
-          rospy.logdebug("Msg: " + str(msg))
+          logger.debug("Msg: " + str(msg))
           pub.publish(msg)
           rospy.sleep(INTER_PATTERN_SLEEP_DURATION)
           
@@ -86,7 +89,7 @@ def talker():
       rum.intensity = 1.0
 
       if msg is not None:
-          rospy.logdebug("Msg: " + str(msg))
+          logger.debug("Msg: " + str(msg))
           pub.publish(msg)
           rospy.sleep(INTER_PATTERN_SLEEP_DURATION)
           
@@ -97,7 +100,7 @@ def talker():
       msg.array = [led0, led1, led2]
 
       if msg is not None:
-          rospy.logdebug("Msg: " + str(msg))
+          logger.debug("Msg: " + str(msg))
           pub.publish(msg)
           rospy.sleep(INTER_PATTERN_SLEEP_DURATION)
 

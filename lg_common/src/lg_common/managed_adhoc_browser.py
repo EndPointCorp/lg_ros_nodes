@@ -5,11 +5,14 @@ import subprocess
 import time
 import json
 
-from lg_common import ManagedBrowser
+from lg_common import ManagedBrowser, ManagedWindow
 from lg_msg_defs.msg import WindowGeometry
 from lg_msg_defs.msg import ApplicationState
 from lg_msg_defs.msg import ApplicationState
 from lg_msg_defs.msg import AdhocBrowser, AdhocBrowsers
+
+from lg_common.logger import get_logger
+logger = get_logger('managed_adhoc_browser')
 
 
 class ManagedAdhocBrowser(ManagedBrowser):
@@ -17,7 +20,9 @@ class ManagedAdhocBrowser(ManagedBrowser):
                  default_args_removal=[],
                  extensions=[], binary='/usr/bin/google-chrome',
                  user_agent=None, slug=None, url=None, uid=None,
-                 scene_slug=None, preload=False, user_data_dir=None, kiosk=True):
+                 scene_slug=None, preload=False,
+                 user_data_dir=None, kiosk=True, reload_aw_snap=False,
+                 layer=ManagedWindow.LAYER_NORMAL):
 
         self.scene_slug = scene_slug
         self.slug = slug
@@ -45,7 +50,9 @@ class ManagedAdhocBrowser(ManagedBrowser):
             binary=binary,
             log_level=log_level,
             user_data_dir=user_data_dir,
-            kiosk=kiosk)
+            reload_aw_snap=reload_aw_snap,
+            kiosk=kiosk,
+            layer=layer)
 
     def __str__(self):
         return json.dumps({
@@ -83,13 +90,13 @@ class ManagedAdhocBrowser(ManagedBrowser):
             status, output = subprocess.getstatusoutput(cmd)
             if status == 0:
                 self.url = url
-                rospy.loginfo("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
+                logger.info("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
                 return True
             else:
-                rospy.logerr("URL change command: %s, returned a status code: %s and output %s" % (cmd, status, output))
+                logger.error("URL change command: %s, returned a status code: %s and output %s" % (cmd, status, output))
                 return False
         except Exception as e:
-            rospy.logerr("URL change command: %s, returned a status code: %s and output %s because %s" % (cmd, status, output, e))
+            logger.error("URL change command: %s, returned a status code: %s and output %s because %s" % (cmd, status, output, e))
             return False
 
     def close(self, delay=None):

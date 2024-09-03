@@ -15,6 +15,9 @@ from lg_common.helpers import get_app_instances_to_manage
 
 
 ROS_NODE_NAME = "lg_media"
+from lg_common.logger import get_logger
+logger = get_logger(ROS_NODE_NAME)
+
 DEFAULT_APP = "mplayer"
 DEFAULT_ARGS = " -idle -slave -cache 2048 -quiet -osdlevel 0 -nomouseinput -nograbpointer -prefer-ipv4"
 SRV_QUERY = '/'.join(('', ROS_NODE_NAME, "query"))
@@ -71,7 +74,7 @@ class ManagedMplayer(ManagedApplication):
         cmd.extend([self.url])
         if self.respawn:
             cmd.extend(["-loop", "0"])
-        rospy.logdebug("Mplayer POOL: mplayer cmd: %s" % cmd)
+        logger.debug("Mplayer POOL: mplayer cmd: %s" % cmd)
         return cmd
 
     def close(self):
@@ -97,7 +100,7 @@ class ManagedMplayer(ManagedApplication):
         Load another movie using the same instance of mplayer
         """
         with open(self.fifo_path, 'w') as fifo:
-            rospy.logdebug("Changing Mplayer %s url to %s" % (self.slug, url))
+            logger.debug("Changing Mplayer %s url to %s" % (self.slug, url))
             fifo.write('loadfile %s\n' % url)
 
     def update_geometry(self, geometry):
@@ -165,14 +168,14 @@ class MplayerPool(object):
             # mplayers to remove
             for mplayer_pool_id in current_mplayers_ids:
                 if mplayer_pool_id in existing_media_ids:
-                    rospy.loginfo("Media already playing: %s" % mplayer_pool_id)
+                    logger.info("Media already playing: %s" % mplayer_pool_id)
                     continue
-                rospy.loginfo("Removing mplayer id %s" % mplayer_pool_id)
+                logger.info("Removing mplayer id %s" % mplayer_pool_id)
                 self._remove_mplayer(mplayer_pool_id)
 
             # mplayers to create
             for mplayer_pool_id in fresh_media_ids:
-                rospy.loginfo("Creating mplayer with id %s" % mplayer_pool_id)
+                logger.info("Creating mplayer with id %s" % mplayer_pool_id)
                 self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
             return True
@@ -202,7 +205,8 @@ class MplayerPool(object):
 
         mplayer_window = ManagedWindow(geometry=geometry,
                                        w_instance=str(mplayer_id),
-                                       w_class="MPlayer")
+                                       w_class="MPlayer",
+                                       layer=ManagedWindow.LAYER_ABOVE)
 
         if incoming_mplayer.on_finish == "nothing" or incoming_mplayer.on_finish == "close":
             respawn = False
@@ -217,7 +221,7 @@ class MplayerPool(object):
 
         mplayer.set_state(ApplicationState.VISIBLE)
 
-        rospy.logdebug("MPlayer Pool: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
+        logger.debug("MPlayer Pool: started new mplayer instance %s on viewport %s with id %s" % (self.viewport_name, incoming_mplayer, mplayer_id))
 
         self.mplayers[mplayer_id] = mplayer
 
@@ -227,7 +231,7 @@ class MplayerPool(object):
         name = "lg_%s_%s.fifo" % (mplayer_id, time.time())
         path = os.path.join("/tmp", name)
         os.mkfifo(path)
-        rospy.logdebug("Created FIFO file '%s'" % path)
+        logger.debug("Created FIFO file '%s'" % path)
         return path
 
     def _remove_mplayer(self, mplayer_pool_id):
@@ -235,7 +239,7 @@ class MplayerPool(object):
         Wipe out mplayer instance - both from the screen and memory
         """
         mplayer_instance = self.mplayers[mplayer_pool_id]
-        rospy.logdebug("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
+        logger.debug("Stopping app id '%s', Mplayer instance %s:" % (mplayer_pool_id, mplayer_instance))
         mplayer_instance.close()
         del self.mplayers[mplayer_pool_id]
 

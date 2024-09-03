@@ -11,6 +11,8 @@ import threading
 from lg_msg_defs.msg import StringArray
 from lg_common.helpers import route_touch_to_viewports
 from lg_common.helpers import load_director_message
+from lg_common.logger import get_logger
+logger = get_logger('onboard_router')
 
 
 class OnboardRouter(object):
@@ -35,7 +37,7 @@ class OnboardRouter(object):
         Publishes empty string of viewports to hide onboard on all of them.
 
         """
-        rospy.loginfo("Hiding Onboard ...")
+        logger.info("Hiding Onboard ...")
         self.onboard_activate_publisher.publish(StringArray([]))
 
     def _show_onboard(self):
@@ -43,7 +45,7 @@ class OnboardRouter(object):
         Publishes an array of strings with viewports to show onboard on.
 
         """
-        rospy.loginfo("Showing Onboard on %s" % self.active_viewport)
+        logger.info("Showing Onboard on %s" % self.active_viewport)
         active_viewport_msg = StringArray(self.active_viewport)
         self.onboard_activate_publisher.publish(active_viewport_msg)
 

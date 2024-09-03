@@ -2,6 +2,368 @@
 Changelog for package lg_earth
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.0 (2020-05-27)
+------------------
+* Put Earth windows below
+* Fix for empty earth scene
+* fix parenthesis
+* debug info for add_kml
+* Contributors: Galaxy Admin, Matt Vollrath, dkiselev
+
+3.5.0 (2022-03-15)
+------------------
+
+3.4.1 (2022-02-03)
+------------------
+
+3.4.0 (2022-01-12)
+------------------
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* Contributors: Jacob Minshall
+
+3.3.16 (2021-12-16)
+-------------------
+
+3.3.15 (2021-12-09)
+-------------------
+* new pro handling
+* Contributors: Jacob Minshall
+
+3.3.14 (2021-11-23)
+-------------------
+
+3.3.13 (2021-09-21)
+-------------------
+* Tino earth interface (`#434 <https://github.com/EndPointCorp/lg_ros_nodes/issues/434>`_)
+  * fixed some bugs, changed some logic, hacked the validation file 3d_layer_1
+  * Fixed some bugs, changed some logic, changed the validation file 3d_layer_1
+  * changed a bug introuduced when retyping a line
+  * added files
+  * added menu open
+  * cleaner
+  * Delete init_workspace
+  * Revert "Merge branch 'tino-earth-interface' of github.com:/EndPointCorp/lg_ros_nodes into tino-earth-interface"
+  This reverts commit ad948e851daa9acb23dcf080d2ed87234a5308ff, reversing
+  changes made to 180d18c0336da1639275e1cf0ed0f372a88e5117.
+  * Update toggle_layer.bash
+  * Update toggle_layer.bash
+  * Update init_workspace
+* Contributors: Tino
+
+3.9.0 (2024-02-06)
+------------------
+
+3.8.5 (2024-01-09)
+------------------
+
+3.8.4 (2023-12-29)
+------------------
+
+3.8.3 (2023-10-17)
+------------------
+
+3.8.2 (2023-10-06)
+------------------
+
+3.8.1 (2023-10-06)
+------------------
+
+3.8.0 (2023-05-25)
+------------------
+* Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some
+  log quieting
+* big logging changes
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into quiet_logs_some
+* log quieting
+* Contributors: Jacob Minshall
+
+3.7.2 (2023-04-27)
+------------------
+* no more static robotwebtools
+* Contributors: Jacob Minshall
+
+3.7.1 (2023-04-06)
+------------------
+
+3.7.0 (2023-03-30)
+------------------
+
+3.6.0 (2022-11-22)
+------------------
+* Merge pull request `#445 <https://github.com/EndPointCorp/lg_ros_nodes/issues/445>`_ from EndPointCorp/mvollrath/nav_sensitivity_conditions
+  Always write spacenav args
+* Always write spacenav args
+  We may omit the device path, but still want sensitivity tweaks.
+* Contributors: Jandro, Matt Vollrath
+
+* Merge pull request `#445 <https://github.com/EndPointCorp/lg_ros_nodes/issues/445>`_ from EndPointCorp/mvollrath/nav_sensitivity_conditions
+  Always write spacenav args
+* Always write spacenav args
+  We may omit the device path, but still want sensitivity tweaks.
+* Contributors: Jandro, Matt Vollrath
+
+3.5.5 (2022-09-09)
+------------------
+* Remove not used toggle layer scripts + Add Tino's shiny toggle_layer script
+* Contributors: Kannan Ponnusamy
+
+3.5.4 (2022-08-10)
+------------------
+
+3.5.3 (2022-05-27)
+------------------
+
+3.5.2 (2022-03-29)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin
+
+3.5.1 (2022-03-24)
+------------------
+* Merge pull request `#440 <https://github.com/endpointcorp/lg_ros_nodes/issues/440>`_ from EndPointCorp/nav_mode_earth_state
+  Nav mode earth state
+* Add actvities to ros_param get statement
+* untested unknown how this will work!
+* 3.5.0
+* bump changelogs
+* 3.4.1
+* Changelogs
+* 3.4.0
+* bump changelogs
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* 3.3.15
+* bump changelogs
+* new pro handling
+* 3.3.14
+* changelogs
+* 3.3.13
+* bump changelogs
+* Tino earth interface (`#434 <https://github.com/endpointcorp/lg_ros_nodes/issues/434>`_)
+  * fixed some bugs, changed some logic, hacked the validation file 3d_layer_1
+  * Fixed some bugs, changed some logic, changed the validation file 3d_layer_1
+  * changed a bug introuduced when retyping a line
+  * added files
+  * added menu open
+  * cleaner
+  * Delete init_workspace
+  * Revert "Merge branch 'tino-earth-interface' of github.com:/EndPointCorp/lg_ros_nodes into tino-earth-interface"
+  This reverts commit ad948e851daa9acb23dcf080d2ed87234a5308ff, reversing
+  changes made to 180d18c0336da1639275e1cf0ed0f372a88e5117.
+  * Update toggle_layer.bash
+  * Update toggle_layer.bash
+  * Update init_workspace
+* Contributors: Alexis Sarthou, Jacob Minshall, Matt Vollrath, Tino, Will Plaut
+
+3.3.12 (2021-08-10)
+-------------------
+
+3.3.11 (2021-07-23)
+-------------------
+
+3.3.10 (2021-07-22)
+-------------------
+* Put Earth below everything
+* Contributors: Matt Vollrath
+
+3.3.9 (2021-07-20)
+------------------
+
+3.3.8 (2021-01-29)
+------------------
+
+3.3.7 (2021-01-14)
+------------------
+
+3.3.6 (2021-01-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.5 (2020-12-28)
+------------------
+
+3.3.4 (2020-12-11)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.3 (2020-12-10)
+------------------
+
+3.3.2 (2020-12-09)
+------------------
+
+3.3.1 (2020-10-29)
+------------------
+
+3.3.0 (2020-10-21)
+------------------
+
+3.2.9 (2020-09-21)
+------------------
+
+3.2.8 (2020-08-27)
+------------------
+
+3.2.7 (2020-08-25)
+------------------
+* Remove BSP  (`#427 <https://github.com/endpointcorp/lg_ros_nodes/issues/427>`_)
+  * Don't lg_wm_send instead of awesome-client
+  * Don't Put Earth windows below
+  * Manage bspc rules from ManagedWindow
+  * Move bspc rule commands further down the stack
+* Contributors: nelliott
+
+3.2.6 (2020-07-09)
+------------------
+* Revert "Revert "Put Earth windows below""
+  This reverts commit 48346d26ad4f45d4fc40b9934d5ea8d656285b1c.
+* Contributors: Neil Elliott
+
+* Revert "Revert "Put Earth windows below""
+  This reverts commit 48346d26ad4f45d4fc40b9934d5ea8d656285b1c.
+* Contributors: Neil Elliott
+
+3.2.5 (2020-07-06)
+------------------
+
+3.2.4 (2020-05-29)
+------------------
+
+3.2.3 (2020-05-28)
+------------------
+* Revert "Put Earth windows below"
+  This reverts commit 5d0980b2d90ee9c149d32e7b7a6fad3b6e0d76b2.
+* Contributors: Neil Elliott
+
+3.2.2 (2020-05-28)
+------------------
+* pycodestyle fixes (`#424 <https://github.com/EndPointCorp/lg_ros_nodes/issues/424>`_)
+  * pycodestyle fixes
+  * add missing + back
+  * Revert this change for now
+* Contributors: Will Plaut
+
+3.2.1 (2020-05-27)
+------------------
+* 3.2.0
+* BSPWM
+* Put Earth windows below
+* Fix for emty earth scene
+* fix parenthesis
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* debug info for add_kml
+* Contributors: Galaxy Admin, Matt Vollrath, Neil Elliott, dkiselev
+
+3.1.12 (2020-05-04)
+-------------------
+
+3.1.11 (2020-05-01)
+-------------------
+* Fix test webserver port conflicts
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Don't write viewsync state file
+  This causes major problems in Python 3, and nothing was reading the file.
+* Contributors: Matt Vollrath, Will Plaut
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+* Don't write viewsync state file
+  This causes major problems in Python 3, and nothing was reading the file.
+* Contributors: Matt Vollrath
+
+3.1.8 (2020-02-06)
+------------------
+
 3.1.7 (2020-02-04)
 ------------------
 * shutdown fixes
@@ -1016,7 +1378,7 @@ Changelog for package lg_earth
 * move new loginfo logging to logdebug
 * fix up logging
   Move some logerrs to log{warn,info} depending on the information being
-  logged. Also s/rospy.logerror/rospy.logerr/
+  logged. Also s/logger.erroror/logger.error/
 * Contributors: Jacob Minshall
 
 1.1.49 (2016-04-26)

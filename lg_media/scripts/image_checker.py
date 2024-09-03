@@ -15,6 +15,8 @@ import threading
 from lg_msg_defs.srv import USCSMessage
 from interactivespaces_msgs.msg import GenericMessage
 from copy import copy
+from lg_common.logger import get_logger
+logger = get_logger('image_checker')
 
 PGREP_CMD = ['pgrep', '-a', 'feh']
 EGREP_CMD = ['egrep', '-o', 'http?://[^ ]+']
@@ -32,9 +34,9 @@ class ImageChecker():
 
     def handle_director(self, data):
         if self._timer:
-            rospy.logdebug('IMGERROR canceling old timer')
+            logger.debug('IMGERROR canceling old timer')
             self._timer.cancel()
-        rospy.logdebug('IMGERROR handle_director')
+        logger.debug('IMGERROR handle_director')
         message = json.loads(data.message)
         self.current_state = message
         self._timer = threading.Timer(self.timeout_length, self.check_image_assets, (message,))
@@ -42,7 +44,7 @@ class ImageChecker():
         self._timer.start()
 
     def check_image_assets(self, message):
-        rospy.logdebug('IMGERROR checking image assets msg ')
+        logger.debug('IMGERROR checking image assets msg ')
         feh_image_assets = []
         pqiv_image_assets = []
         for window in message.get('windows', []):
@@ -59,9 +61,9 @@ class ImageChecker():
             if feh_asset not in feh_image_assets or len(feh_assets) > len(feh_image_assets):
                 time.sleep(0)
                 if message != self.current_state:
-                    rospy.logdebug('IMGERROR message does not match, leaving this')
+                    logger.debug('IMGERROR message does not match, leaving this')
                     break
-                rospy.logdebug('IMGERROR ASSETS TO REMOVE {}'.format(feh_asset))
+                logger.debug('IMGERROR ASSETS TO REMOVE {}'.format(feh_asset))
                 for image_proc in IMAGE_PROCS_TO_KILL:
                     subprocess.call(PARTIAL_KILLER_CMD + [image_proc])
                 break
@@ -83,7 +85,7 @@ class ImageChecker():
 def main():
     rospy.init_node('image_checker')
     viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
-    timeout_length = rospy.get_param('~timeout_length', 2)
+    timeout_length = rospy.get_param('~timeout_length', 8)
     checker = ImageChecker(viewports, timeout_length)
     rospy.Subscriber('/director/scene', GenericMessage, checker.handle_director)
     rospy.spin()

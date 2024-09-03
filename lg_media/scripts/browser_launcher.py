@@ -10,6 +10,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 VIDEOSYNC_URL = 'http://localhost:8008/lg_media/webapps/videosync/index.html'
 NODE_NAME = 'lg_media_browser_launcher'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class BasicBrowserData:
@@ -48,13 +50,13 @@ class BasicBrowserData:
                 sync=True,
             )
             url = url2pathname(url)
-            rospy.logdebug('url for media: %s' % url)
+            logger.debug('url for media: %s' % url)
             new_browser = AdhocBrowser()
             new_browser.id = 'adhoc_media_browser_%s' % self.viewport_name
             new_browser.geometry = media.geometry
             new_browser.url = url
             msg.browsers.append(new_browser)
-            rospy.loginfo("New browser URL: %s" % url)
+            logger.info("New browser URL: %s" % url)
 
         self.publisher.publish(msg)
 
@@ -65,7 +67,7 @@ def main():
     viewport_name = rospy.get_param('~viewport', None)
     if not viewport_name:
         msg = "Viewport not configured for lg_media browser_launcher - exiting"
-        rospy.logerr(msg)
+        logger.error(msg)
         exit(1)
 
     browser_pool_publisher = rospy.Publisher('/media_service/launch_browser/%s' % viewport_name,

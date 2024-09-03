@@ -7,6 +7,8 @@ import rospy
 from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'rfid_sqlite_uscs_storage'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class MockPub(object):
@@ -31,7 +33,7 @@ class RfidStorage(object):
         """
         self._init_database()
         rfid = msg.data
-        rospy.loginfo('got rfid: %s' % rfid)
+        logger.info('got rfid: %s' % rfid)
         uscs = self.get_uscs(rfid)
         if uscs:
             self.state_set_pub.publish(json.dumps(uscs))
@@ -48,15 +50,15 @@ class RfidStorage(object):
             data = json.loads(msg.data)
             rfid = data.get('rfid', None)
         except Exception:
-            rospy.logerr('Error with json passed')
+            logger.error('Error with json passed')
             return
 
-        rospy.loginfo('got data: %s' % data)
+        logger.info('got data: %s' % data)
 
         if rfid:
             self.insert_uscs_row(rfid, data)
         else:
-            rospy.logerr('No rfig passed in message: %s' % data)
+            logger.error('No rfig passed in message: %s' % data)
 
         self._close_database()
 
@@ -77,7 +79,7 @@ class RfidStorage(object):
         try:
             self.cur.execute('CREATE table if not exists %s (rfid PRIMARY KEY, uscs)' % self.table_name)
         except sqlite3.OperationalError:
-            rospy.logfatal('Error trying to create uscs msg table...')
+            logger.fatal('Error trying to create uscs msg table...')
 
     def insert_uscs_row(self, rfid, uscs_message):
         insert_query = 'INSERT OR REPLACE INTO %s (rfid, uscs) VALUES (?, ?)' % self.table_name

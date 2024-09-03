@@ -5,12 +5,14 @@ import json
 from lg_msg_defs.srv import BrowserPool, USCSMessage
 from lg_common.helpers import add_url_params
 from std_msgs.msg import String
-from appctl.msg import Mode
+from appctl_msg_defs.msg import Mode
 from urllib.request import urlopen
 from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'state_tracker'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class StateTracker(object):
@@ -41,7 +43,7 @@ class StateTracker(object):
         try:
             current_state = json.loads(current_state)
         except Exception:
-            rospy.logerr("Error parsing last uscs message as json")
+            logger.error("Error parsing last uscs message as json")
             return
 
         windows = current_state.get('windows', [])
@@ -95,12 +97,12 @@ class StateTracker(object):
 
         viewport = window.get('presentation_viewport', None)
         if viewport is None:
-            rospy.info("viewport was None... ignoring")
+            logger.info("viewport was None... ignoring")
             return
 
         # display might be ok to go away, but only once we're sure
         if viewport != 'kiosk' and viewport != 'wall' and viewport != 'display':
-            rospy.warn("Unable to determine viewport named (%s)" % viewport)
+            logger.warning("Unable to determine viewport named (%s)" % viewport)
             return
 
         if viewport == 'kiosk':
@@ -112,11 +114,11 @@ class StateTracker(object):
         try:
             state = json.loads(state)
         except Exception:
-            rospy.logwarn("Unable to parse state (%s)" % state)
+            logger.warning("Unable to parse state (%s)" % state)
             raise
 
         if len(state) > 1:
-            rospy.logwarn('There are more than one browser active, the wrong URL might be returned')
+            logger.warning('There are more than one browser active, the wrong URL might be returned')
 
         for browser_id, browser_data in state.items():
             return browser_data['current_url_normalized']

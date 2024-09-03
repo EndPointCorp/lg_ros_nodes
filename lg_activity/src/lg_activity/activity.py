@@ -11,6 +11,11 @@ from lg_common.helpers import rewrite_message_to_dict
 from lg_common.helpers import get_message_type_from_string
 from lg_common.helpers import get_nested_slot_value
 from std_msgs.msg import Bool
+from std_msgs.msg import String
+from interactivespaces_msgs.msg import GenericMessage
+
+from lg_common.logger import get_logger
+logger = get_logger('activity_class')
 
 
 class ActivitySourceNotFound(Exception):
@@ -49,7 +54,7 @@ class ActivitySource:
                  topic=None, message_type=None,
                  strategy=None, slot=None,
                  value_min=None, debug=None,
-                 value_max=None, callback=None):
+                 value_max=None, callback=None, tracker=None):
         self._check_init_args(topic, message_type, strategy, callback,
                               value_min, value_max, slot)
         self.message_type = message_type
@@ -63,9 +68,9 @@ class ActivitySource:
         self.memory_limit = memory_limit
         self.messages = []
         self.delta_msg_count = self.__class__.DELTA_MSG_COUNT
-
+        self.tracker = tracker
         self._initialize_subscriber()
-        rospy.loginfo("Initialized ActivitySource: %s" % self)
+        logger.info("Initialized ActivitySource: %s" % self)
 
     def _check_init_args(self, topic, message_type, strategy, callback, value_min, value_max, slot):
         """
@@ -75,12 +80,12 @@ class ActivitySource:
         if (not topic) or (not message_type) or (not strategy) or (not callback):
             msg = "Could not initialize ActivitySource: topic=%s, message_type=%s, strategy=%s, callback=%s" % \
                 (topic, message_type, strategy, callback)
-            rospy.logerr(msg)
+            logger.error(msg)
             raise ActivitySourceException(msg)
 
         if (type(topic) != str) or (type(message_type) != str):
             msg = "Topic and message type should be strings"
-            rospy.logerr(msg)
+            logger.error(msg)
             raise ActivitySourceException(msg)
 
         if strategy == 'value':
@@ -88,12 +93,12 @@ class ActivitySource:
             For 'value' strategy we need to provide a lot of data
             """
             if value_min and value_max and slot:
-                rospy.loginfo("Registering activity source with min=%s, max=%s and msg attribute=%s" %
+                logger.info("Registering activity source with min=%s, max=%s and msg attribute=%s" %
                               (value_min, value_max, slot))
             else:
                 msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (min=%s, max=%s and msg attribute=%s)" % \
                     (value_min, value_max, slot)
-                rospy.logerr(msg)
+                logger.error(msg)
                 raise ActivitySourceException(msg)
 
     def __str__(self):
@@ -121,10 +126,10 @@ class ActivitySource:
             message_type_final = get_message_type_from_string(self.message_type)
         except Exception as e:
             msg = "Could not import module because: %s" % (e)
-            rospy.logerr(msg)
+            logger.error(msg)
             raise ActivitySourceException
 
-        rospy.loginfo("ActivitySource is going to subscribe topic: %s with message_type: %s" % (self.topic, message_type_final))
+        logger.info("ActivitySource is going to subscribe topic: %s with message_type: %s" % (self.topic, message_type_final))
         self.subscriber = rospy.Subscriber(self.topic, message_type_final, self._aggregate_message)
 
     def _aggregate_message(self, message):
@@ -133,9 +138,9 @@ class ActivitySource:
         ActivitySource buffer for later calculations
         """
         while sys.getsizeof(self.messages) >= self.memory_limit:
-            rospy.logwarn("%s activity source memory limit reached (%s) - discarding oldest message" % (self.topic, self.memory_limit))
+            logger.warn("%s activity source memory limit reached (%s) - discarding oldest message" % (self.topic, self.memory_limit))
             if len(self.messages) <= 1:
-                rospy.logwarn("Too small of a memory limit set... Ignoring")
+                logger.warn("Too small of a memory limit set... Ignoring")
                 break
             del self.messages[0]
 
@@ -198,6 +203,8 @@ class ActivitySource:
             - delta - compares messages
             - value - checks for specific value
             - activity - checks for any messages flowing on a topic
+            - message - last message sets the state and stays (using empty list for False, else True for now)
+            - duration - messages with positive duration set active True with a now + duration timestamp
 
         Once state is asserted then call ActivityTracker to let him know
         what's the state of the source
@@ -210,8 +217,12 @@ class ActivitySource:
             self._is_value_active()
         elif self.strategy == 'activity':
             self._is_activity_active()
+        elif self.strategy == 'message':
+            self._is_message_active()
+        elif self.strategy == 'duration':
+            self._is_duration_active()
         else:
-            rospy.logerr("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
+            logger.error("Unknown strategy: %s for activity on topic %s" % (self.strategy, self.topic))
 
     def _is_delta_active(self):
         """
@@ -219,13 +230,13 @@ class ActivitySource:
         homogenous. If they are not then this activity source is active
         """
         if len(self.messages) < self.delta_msg_count:
-            rospy.logdebug("Not enough messages (minimum of %s) for 'delta' strategy" % self.delta_msg_count)
+            logger.debug("Not enough messages (minimum of %s) for 'delta' strategy" % self.delta_msg_count)
             return
 
         if list_of_dicts_is_homogenous(self.messages):
             self.messages = self.messages[-self.delta_msg_count + 1:]
             self.callback(self.topic, state=False, strategy='delta')
-            return False  # if list if homogenous than there was no activity
+            return False  # if list is homogenous then there was no activity
         else:
             self.messages = self.messages[-self.delta_msg_count + 1:]
             self.callback(self.topic, state=True, strategy='delta')
@@ -257,6 +268,62 @@ class ActivitySource:
             self.callback(self.topic, state=False, strategy='activity')
             return False
 
+    def _is_message_active(self):
+        """keep last message. Empty list returns False TODO add other cases, empty string, null, ..."""
+        if self.messages:
+            try:
+                self.messages = [self.messages[-1]]  # skip to last message and keep it
+                if self.messages[0] and isinstance(self.messages[0], dict):
+                    if self.messages[0].get('overlays', False):
+                        self.callback(self.topic, state=True, strategy='message', delay=1)
+                        logger.debug("Setting strems state True")
+                        return True
+                else:
+                    logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
+            except (IndexError, KeyError, ValueError, TypeError) as e:
+                logger.exception("error checking stream messages: %" % e)
+        self.messages = []
+        self.callback(self.topic, state=False, strategy='message')
+        logger.debug("Streams are off")
+        return False
+
+    def _is_duration_active(self):
+        """check scene message for duration or own state if no message"""
+        if not self.tracker.active:  # ignore attract_loop playing
+            self.messages = []
+            return False
+        if self.messages:
+            try:
+                if self.messages[-1] and isinstance(self.messages[-1], dict):
+                    duration = self.messages[-1].get('message.duration', 0)  # skip to last message duration
+                    if isinstance(duration, int) or (isinstance(duration, str) and duration.isdigit()):
+                        duration = int(duration)
+                        if duration > 0 and duration != 666:
+                            self.messages = []
+                            self.callback(self.topic, state=True, strategy='duration', delay=duration)
+                            logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
+                            return True
+                    else:
+                        logger.warning("Ignoring duration, it should be a number of seconds, message is: ", self.messages[-1])
+                else:
+                    logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
+            except (IndexError, KeyError, ValueError, TypeError) as e:
+                logger.exception("error getting duration from message: %" % e)
+
+            self.messages = []
+            self.callback(self.topic, state=False, strategy='duration')
+            return False
+
+        try:  # no messages, get self state
+            if self.tracker.activity_states[self.topic]["time"] > rospy.get_time():  # if own time is in the future
+                logger.debug("scene_duration returns True, %s  >  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
+                return True
+            else:
+                logger.debug("scene_duration returns and calls False, %s ~<~  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
+        except Exception as e:  #no previous timestamp so inactive
+            logger.debug("init scene_duration, return and call False")
+        self.callback(self.topic, state=False, strategy='duration')
+        return False
 
 class ActivitySourceDetector:
     """
@@ -273,7 +340,7 @@ class ActivitySourceDetector:
     """
     def __init__(self, sources_string):
         self.sources = unpack_activity_sources(sources_string)
-        rospy.loginfo("Initialized ActivitySourceDetector: %s" % self)
+        logger.info("Initialized ActivitySourceDetector: %s" % self)
 
     def __str__(self):
         string_representation = "<ActivitySourceDetector: sources: %s" % self.sources
@@ -295,7 +362,7 @@ class ActivitySourceDetector:
             return source[0]
         except KeyError as e:
             msg = "Could not find source %s because %s" % (source, e)
-            rospy.logerr(msg)
+            logger.error(msg)
             raise ActivitySourceNotFound(msg)
 
 
@@ -315,38 +382,43 @@ class ActivityTracker:
 
     """
 
-    def __init__(self, publisher=None, timeout=10, sources=None, debug=None):
-        if (not publisher) or (not timeout) or (not sources):
-            msg = "Activity tracker initialized without one of the params: pub=%s, timeout=%s, sources=%s" % \
-                (publisher, timeout, sources)
-            rospy.logerr(msg)
+    def __init__(self, publisher=None, stats_activity_publisher=None, timeout=10, stats_activity_timeout=120, sources=None, debug=None):
+        if (not publisher) or (not stats_activity_publisher) or (not timeout) or (not sources) or (not stats_activity_timeout):
+            msg = "Activity tracker initialized without one of the params: pub=%s, stats_activity_publisher=%s, timeout=%s, stats_activity_timeout=%s, sources=%s" % \
+                (publisher, stats_activity_publisher, timeout, stats_activity_timeout, sources)
+            logger.error(msg)
             raise ActivityTrackerException
 
         self.active = True
+        self.stats_active = True
         self._lock = threading.Lock()
         self.initialized_sources = []
         self.activity_states = {}
         self.debug = debug
         self.timeout = timeout
+        self.stats_activity_timeout = stats_activity_timeout
         if not self.timeout:
             msg = "You must specify inactivity timeout"
-            rospy.logerr(msg)
+            logger.error(msg)
             raise ActivityTrackerException(msg)
         self.sources = sources
         self.publisher = publisher
         self.publisher.publish(Bool(data=True))  # init the state with True (active)
+        self.stats_activity_publisher = stats_activity_publisher
+        rospy.sleep(0.1)
+        self.stats_activity_publisher.publish(Bool(data=True))  # init the state with True (active)
         self._validate_sources()
         self._init_activity_sources()
-        rospy.loginfo("Initialized ActivityTracker: %s" % self)
+        logger.info("Initialized ActivityTracker: %s" % self)
 
     def __str__(self):
-        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, publisher: %s" % \
-            (self.sources, self.initialized_sources, self.timeout, self.publisher)
+        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, stats_activity_timeout: %s, publisher: %s, stats_activity_publisher: %s" % \
+            (self.sources, self.initialized_sources, self.timeout, self.stats_activity_timeout, self.publisher, self.stats_activity_publisher)
         return string_representation
 
     def __repr__(self):
-        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, publisher: %s" % \
-            (self.sources, self.initialized_sources, self.timeout, self.publisher)
+        string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, stats_activity_timeout: %s, publisher: %s, stats_activity_publisher: %s" % \
+            (self.sources, self.initialized_sources, self.timeout, self.stats_activity_timeout, self.publisher, self.stats_activity_publisher)
         return string_representation
 
     def _get_activity_status(self, _):
@@ -357,7 +429,7 @@ class ActivityTracker:
         with self._lock:
             return self.active
 
-    def activity_callback(self, topic_name=None, state=True, strategy=None):
+    def activity_callback(self, topic_name=None, state=True, strategy=None, delay=0):
         """
         ActivitySource uses this callback to set it's state in ActivityTracker
 
@@ -368,27 +440,35 @@ class ActivityTracker:
         If all states turned True (active) then proper message is emitted
         """
         with self._lock:
-            if topic_name not in self.activity_states:
-                self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-
             try:
+                if topic_name not in self.activity_states:
+                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
+                    logger.info("Initialize Topic name: %s with state: %s and delay: %s" % (topic_name, state, delay))
+                    return True
+
                 try:
                     if self.activity_states[topic_name]['state'] == state:
-                        rospy.logdebug("State of %s didnt change" % topic_name)
-                    else:
-                        self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
-                        rospy.logdebug("Topic name: %s state changed to %s" % (topic_name, state))
-                except KeyError:
-                    rospy.loginfo("Initializing topic name state: %s" % topic_name)
-                    self.activity_states[topic_name] = {"state": state, "time": rospy.get_time()}
+                        if delay > 0:  # use delay as a force update param
+                            self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
+                            logger.debug("Updated Topic name: %s in state: %s with delay: %s" % (topic_name, state, delay))
 
+                        logger.debug("State of %s didn't change" % topic_name)
+                        return True
+
+                    logger.debug("Updating: %s state to %s" % (topic_name, state))
+                except KeyError:
+                    logger.error("Initializing: %s with state: %s" % (topic_name, state))
+
+                self.activity_states[topic_name] = {"state": state, "time": rospy.get_time() + delay}
                 self._check_states()
                 return True
-            except Exception as e:
-                rospy.logerr("activity_callback for %s failed because %s" % (topic_name, e))
-                return False
 
-    def _source_is_active(self, source):
+            except Exception as e:
+                logger.debug("Activity callback with state %s for topic name %s failed!: %s" % (state, topic_name, e))
+
+            return False
+
+    def _source_is_active(self, source, timeout=120):
         """
         Checks whether source was active for last `self.timeout` seconds
         which basically means that we can consider this source to be active
@@ -407,14 +487,14 @@ class ActivityTracker:
         now = rospy.get_time()
 
         if source['state'] is True:
-            rospy.logdebug("ActivitySource %s is active" % source)
+            logger.debug("ActivitySource %s is active" % source)
             return True
 
-        if source['state'] is False and ((now - source['time']) >= self.timeout):
-            rospy.logdebug("ActivitySource %s is inactive" % source)
+        if source['state'] is False and ((now - source['time']) >= timeout):
+            logger.debug("ActivitySource %s is inactive" % source)
             return False
         else:
-            rospy.logdebug("ActivitySource %s is still active" % source)
+            logger.debug("ActivitySource %s is in inactivity timeout" % source)
             return True
 
     def _check_states(self):
@@ -425,24 +505,41 @@ class ActivityTracker:
 
         1. check for activity when in inactive state (easiest and fastest)
         2. carefully check for all states
-
-
         """
+
         now = rospy.get_time()
-        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state)}
+        self.sources_active_within_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.timeout)}
 
         if self.sources_active_within_timeout and (not self.active):
             self.active = True
             self.publisher.publish(Bool(data=True))
-            rospy.loginfo("State turned from False to True because of state: %s" % self.sources_active_within_timeout)
-            rospy.loginfo("States: %s" % self.activity_states)
+            logger.info("State turned from False to True because of state: %s" % self.sources_active_within_timeout)
+            logger.debug("States: %s" % self.activity_states)
         elif (not self.sources_active_within_timeout) and self.active:
             self.active = False
             self.publisher.publish(Bool(data=False))
-            rospy.loginfo("State turned from True to False because no sources were active within the timeout")
-            rospy.loginfo("States: %s" % self.activity_states)
+            logger.info("State turned from True to False because no sources were active within the timeout")
+            logger.debug("States: %s" % self.activity_states)
         else:
-            rospy.logdebug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
+            logger.debug("Activity state unchanged. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
+
+
+        self.sources_active_within_stats_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.stats_activity_timeout)}
+
+        if self.sources_active_within_stats_timeout and (not self.stats_active):
+            self.stats_active = True
+            self.stats_activity_publisher.publish(Bool(data=True))
+            logger.info("Stats activity state turned from False to True because of state: %s" % self.sources_active_within_stats_timeout)
+            logger.info("States: %s" % self.activity_states)
+        elif (not self.sources_active_within_stats_timeout) and self.stats_active:
+            self.stats_active = False
+            self.stats_activity_publisher.publish(Bool(data=False))
+            logger.info("Stats acitivity state turned from True to False because no sources were active within the timeout")
+            logger.info("States: %s" % self.activity_states)
+        else:
+            logger.debug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_stats_timeout, self.stats_active, self.activity_states))
+
+
 
     def _init_activity_sources(self):
         """
@@ -456,7 +553,7 @@ class ActivityTracker:
                 topic=source['topic'], message_type=source['message_type'],
                 strategy=source['strategy'], slot=source['slot'],
                 value_min=source['value_min'], value_max=source['value_max'],
-                callback=self.activity_callback, debug=self.debug)
+                callback=self.activity_callback, debug=self.debug, tracker=self)
             self.initialized_sources.append(act)
         return True
 
@@ -464,7 +561,7 @@ class ActivityTracker:
         for source in self.sources:
             if type(source) != dict or type(self.sources) != list:
                 msg = "sources argument must be a list containing ActivitySource definition dictionaries but was: %s" % self.sources
-                rospy.logerr(msg)
+                logger.error(msg)
                 raise ActivitySourceException
 
     def _get_state(self, header=None):

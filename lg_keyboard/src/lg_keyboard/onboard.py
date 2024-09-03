@@ -15,6 +15,8 @@ from lg_msg_defs.msg import WindowGeometry
 
 
 ROS_NODE_NAME = "lg_onboard"
+from lg_common.logger import get_logger
+logger = get_logger(ROS_NODE_NAME)
 
 
 class OnboardViewportException(Exception):
@@ -31,10 +33,10 @@ class OnboardLauncher(object):
         viewport_geometry = ManagedWindow.lookup_viewport_geometry(self.viewport)
         cmd = ['/usr/bin/onboard', '-m']
 
-        onboard_width = viewport_geometry.width
-        onboard_height = viewport_geometry.height / 4
-        onboard_x = viewport_geometry.x
-        onboard_y = viewport_geometry.y + (viewport_geometry.height - onboard_height)
+        onboard_width = int(viewport_geometry.width)
+        onboard_height = int(viewport_geometry.height / 6)
+        onboard_x = int(viewport_geometry.x)
+        onboard_y = int(viewport_geometry.y + (viewport_geometry.height - onboard_height))
 
         onboard_geometry = WindowGeometry(x=onboard_x,
                                           y=onboard_y,
@@ -45,6 +47,7 @@ class OnboardLauncher(object):
 
         window = ManagedWindow(w_class='Onboard',
                                geometry=onboard_geometry,
+                               layer=ManagedWindow.LAYER_TOUCH,
                                visible=False)
         cmd.extend(list(map(str, [
             '-x',
@@ -76,11 +79,11 @@ class OnboardLauncher(object):
         Idempotently shows onboard window.
 
         """
-        rospy.loginfo("Using config => %s" % self.config)
+        logger.info("Using config => %s" % self.config)
         dconf = subprocess.Popen(['/usr/bin/dconf', 'load', '/org/onboard/'],
                                  stdin=subprocess.PIPE,
                                  close_fds=True)
-        dconf.communicate(input=self.config)
+        dconf.communicate(input=self.config.encode())
         self.app.set_state(ApplicationState.VISIBLE)
 
     def hide_onboard(self):
@@ -91,7 +94,7 @@ class OnboardLauncher(object):
         self.app.set_state(ApplicationState.STOPPED)
 
     def on_shutdown(self):
-        rospy.loginfo("Received shutdown request.")
+        logger.info("Received shutdown request.")
 
 
 class OnboardConfig(object):
@@ -108,5 +111,5 @@ class OnboardConfig(object):
         return config
 
     def get_config(self):
-        rospy.loginfo("Returning onboard config: %s" % self.config)
+        logger.info("Returning onboard config: %s" % self.config)
         return self.config

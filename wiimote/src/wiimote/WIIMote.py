@@ -58,6 +58,9 @@ from .wiimoteExceptions import *
 from .wiimoteConstants import *
 from . import wiistate
 
+from lg_common.logger import get_logger
+logger = get_logger('wiimote')
+
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #
 #    Global Constants
@@ -194,7 +197,7 @@ class WIIMote(object):
       raise WiimoteNotFoundError("No Wiimote found to pair with.")
       exit()
 
-    rospy.loginfo("Pairing successful.")
+    logger.info("Pairing successful.")
 
     try:
       self._wm.enable(cwiid.FLAG_MOTIONPLUS)
@@ -222,7 +225,7 @@ class WIIMote(object):
     # we get two error msgs to the screen from the lowest cwiid levels.
     # TODO: suppress those two error messages ('Wiimote read error' and
     #       'Read error (nunchuk cal)'
-    rospy.loginfo("Checking presence of Nunchuk attachment ...ignore two possibly following error msgs.")
+    logger.info("Checking presence of Nunchuk attachment ...ignore two possibly following error msgs.")
     try:
       (factoryZero, factoryOne) = self.getNunchukFactoryCalibrationSettings()
       self.setNunchukAccelerometerCalibration(factoryZero, factoryOne)
@@ -232,7 +235,7 @@ class WIIMote(object):
     time.sleep(0.2)
     self._wiiCallbackStack.push(self._steadyStateCallback)
 
-    rospy.loginfo("Wiimote activated.")
+    logger.info("Wiimote activated.")
 
 
   #----------------------------------------
@@ -418,15 +421,15 @@ class WIIMote(object):
         # We can calibrate the Wiimote anyway, if the preference
         # constant in wiimoteConstants.py is set accordingly:
         if (CALIBRATE_WITH_FAILED_CALIBRATION_DATA and self.motionPlusPresent()):
-            rospy.loginfo("Failed calibration; using questionable calibration anyway.")
+            logger.info("Failed calibration; using questionable calibration anyway.")
             wiistate.WIIState.setGyroCalibration(self.meanGyro)
         else:
             if (gyroCalibrationOrig is not None):
-                rospy.loginfo("Failed calibration; retaining previous calibration.")
+                logger.info("Failed calibration; retaining previous calibration.")
                 if (self.motionPlusPresent()):
                     wiistate.WIIState.setGyroCalibration(gyroCalibrationOrig)
             else:
-                rospy.loginfo("Failed calibration; running without calibration now.")
+                logger.info("Failed calibration; running without calibration now.")
         return False
     
     # Tell the WIIState factory that all WIIMote state instance creations
@@ -439,7 +442,7 @@ class WIIMote(object):
     wiistate.WIIState.setGyroCalibration(self.meanGyro)
             
     self.lastZeroingTime = getTimeStamp()
-    rospy.loginfo("Calibration successful.")
+    logger.info("Calibration successful.")
     self.latestCalibrationSuccessful = True;
     return True;
 

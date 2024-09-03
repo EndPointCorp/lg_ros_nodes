@@ -29,6 +29,11 @@ install(
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/webapps
 )
 
+install(
+  DIRECTORY extensions/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/extensions
+)
+
 if (CATKIN_ENABLE_TESTING)
   set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)

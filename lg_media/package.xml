@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_media</name>
-  <version>3.1.7</version>
+  <version>3.9.0</version>
   <description>Ad hoc media services</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
@@ -35,5 +35,5 @@
   <run_depend>gstreamer1.0-x</run_depend>
   <run_depend>gstreamer1.0-libav</run_depend>
   <test_depend>rostest</test_depend>
-  <test_depend>python-pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
 </package>

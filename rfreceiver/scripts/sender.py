@@ -6,6 +6,8 @@ import time
 
 from serial import SerialException
 from std_msgs.msg import Byte
+from lg_common.logger import get_logger
+logger = get_logger('rf_sender')
 
 
 def main():
@@ -31,15 +33,15 @@ def main():
             receiver = serial.Serial(port=device_path, baudrate=baud_rate, timeout=device_timeout)
             ready = True
         except SerialException:
-            rospy.logerr("Could not open device_path: %s in %s seconds" % (device_path, device_timeout))
-            rospy.logerr("I'm going to try %s times more and will sleep %s seconds between attempts" % (retry_attempts, retry_grace_time))
+            logger.error("Could not open device_path: %s in %s seconds" % (device_path, device_timeout))
+            logger.error("I'm going to try %s times more and will sleep %s seconds between attempts" % (retry_attempts, retry_grace_time))
             time.sleep(retry_grace_time)
             retry_attempts -= 1
 
     buf = ''
 
     if not ready:
-        rospy.logerr("Giving up - couldn't connect to the device %s" % device_path)
+        logger.error("Giving up - couldn't connect to the device %s" % device_path)
         while not rospy.is_shutdown():
             pass
     else:

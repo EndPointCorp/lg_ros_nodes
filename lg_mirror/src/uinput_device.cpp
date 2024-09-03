@@ -12,7 +12,7 @@
 
 #include "util.h"
 #include <lg_msg_defs/EvdevEvent.h>
-#include <lg_msg_defs/EvdevEvents.h>
+#include <lg_msg_defs/RoutedEvdevEvents.h>
 #include <lg_msg_defs/EvdevDeviceInfo.h>
 
 // emulate a typical ELO touchscreen
@@ -252,7 +252,7 @@ bool UinputDevice::FloatPointer() const {
  *
  * \param msg A message describing one or more evdev events.
  */
-void UinputDevice::HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg) {
+void UinputDevice::HandleEventMessage(const lg_msg_defs::RoutedEvdevEvents::Ptr& msg) {
   if (fd_ < 0) {
     ROS_ERROR("Tried to handle an event message, but UinputDevice was not initialized");
     ros::shutdown();
@@ -270,7 +270,7 @@ void UinputDevice::HandleEventMessage(const lg_msg_defs::EvdevEvents::Ptr& msg) 
       __s32 value = ev.value;
 
       if (type == EV_KEY) {
-        if (code == BTN_LEFT) {
+        if (code == BTN_LEFT || code == BTN_TOUCH) {
           if (value == 1) {
             if (!WriteEvent_(EV_ABS, ABS_MT_TRACKING_ID, 1)) {
               ROS_ERROR("Error while writing an event to the device");

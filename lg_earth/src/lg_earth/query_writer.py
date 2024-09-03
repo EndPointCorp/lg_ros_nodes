@@ -1,6 +1,8 @@
 import rospy
 from std_msgs.msg import String
 from .query_queue import QueryQueue
+from lg_common.logger import get_logger
+logger = get_logger('query_writer')
 
 
 class QueryWriter:
@@ -9,7 +11,7 @@ class QueryWriter:
         self._queue = QueryQueue(self.filename, maxlen=maxlen)
 
     def post_query(self, query):
-        rospy.loginfo('posting query: {}'.format(query))
+        logger.info('posting query: {}'.format(query))
         self._queue.post_query(query)
 
     def shutdown(self):
@@ -22,7 +24,7 @@ class QueryWriter:
 
     def handle_flyto_pose_camera(self, msg):
         pose = msg
-        rospy.loginfo(msg)
+        logger.info(msg)
         pose_lon = pose.position.x
         pose_lat = pose.position.y
         pose_alt = pose.position.z
@@ -45,7 +47,7 @@ class QueryWriter:
 
     def handle_flyto_pose_lookat(self, msg):
         pose = msg
-        rospy.loginfo(msg)
+        logger.info(msg)
         pose_lon = pose.position.x
         pose_lat = pose.position.y
         pose_alt = pose.position.z
@@ -85,7 +87,7 @@ class QueryWriter:
             query = 'exittour=true'
         else:
             query = 'playtour={}'.format(tour_var)
-            rospy.loginfo(tour_var)
+            logger.info(tour_var)
         self.post_query(query)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

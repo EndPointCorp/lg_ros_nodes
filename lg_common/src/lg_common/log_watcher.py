@@ -4,6 +4,9 @@ from _thread import start_new_thread
 from time import sleep
 import rospy
 
+from lg_common.logger import get_logger
+logger = get_logger('log_watcher')
+
 
 def MockCB(*args, **kwargs):
     pass
@@ -22,7 +25,7 @@ class LogWatcher(object):
         try:
             f = open(self.logfile, 'r')
         except IOError:
-            rospy.logwarn('No file (%s) found, retrying in 0.5 seconds' % self.logfile)
+            logger.warning('No file (%s) found, retrying in 0.5 seconds' % self.logfile)
             sleep(0.5)
             self.watch()
             return

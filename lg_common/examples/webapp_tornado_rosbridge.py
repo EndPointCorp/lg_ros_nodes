@@ -5,6 +5,9 @@ from lg_common.webapp import RosbridgeWebSocket, ros_tornado_spin
 from tornado.web import Application, RequestHandler
 from std_msgs.msg import String
 
+from lg_common.logger import get_logger
+logger = get_logger('webapp_tornado_rosbridge')
+
 """
 This is an example of a custom Tornado web application with a dedicated
 rosbridge server listening on the same port.
@@ -26,7 +29,7 @@ class StringHolder:
 
     def set_string(self, s):
         self.string = s
-        rospy.loginfo('Now listening for {}'.format(self.string))
+        logger.info('Now listening for {}'.format(self.string))
 
     def handle_string_message(self, msg):
         self.set_string(msg.data)
@@ -45,7 +48,7 @@ class MainHandler(RequestHandler):
         stringer = self.__class__.stringer
 
         s = stringer.string
-        rospy.loginfo('GET /{} ({})'.format(slug, s))
+        logger.info('GET /{} ({})'.format(slug, s))
 
         if slug == s:
             res = 'You asked for {} and got it!\n'.format(slug, s)

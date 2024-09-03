@@ -10,7 +10,7 @@ from std_msgs.msg import String
 from lg_earth import ViewsyncRelay
 from geometry_msgs.msg import PoseStamped
 from lg_msg_defs.msg import ApplicationState
-from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback
+from lg_common.helpers import check_www_dependency, x_available_or_raise, make_soft_relaunch_callback, director_listener_earth_state
 from lg_msg_defs.srv import ViewsyncState
 from lg_common.helpers import run_with_influx_exception_handler
 from time import sleep
@@ -18,6 +18,8 @@ from random import randint
 
 
 NODE_NAME = 'lg_earth'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -29,6 +31,10 @@ def main():
     depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
     initial_state = rospy.get_param('~initial_state', 'VISIBLE')
     state_topic = rospy.get_param('~state_topic', '/earth/state')
+    activity_list = rospy.get_param('~full_screen_activities', 'earth,cesium,mapbox,streetview,panovideo,panoviewer,unreal,unity,pannellum')
+
+    state_pub = rospy.Publisher(state_topic, ApplicationState, queue_size=10)
+    director_listener_earth_state(state_pub, activity_list.split(','))
 
     if os.environ.get("LG_LANG"):
         os.environ["LANG"] = os.environ["LG_LANG"]
@@ -44,7 +50,7 @@ def main():
     random_stagger = rospy.get_param('~staggered', False)
     if random_stagger:
         random_sleep_length = randint(1, 10)
-        rospy.logerr("Random sleep length: {}".format(random_sleep_length))
+        logger.error("Random sleep length: {}".format(random_sleep_length))
         sleep(random_sleep_length)
 
     instance = '_earth_instance_' + rospy.get_name().strip('/')

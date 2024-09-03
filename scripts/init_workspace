@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import argparse
 from subprocess import Popen
-from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
+from configparser import RawConfigParser, NoSectionError, NoOptionError
 
 # make sure to set the root directory
 ROOT_DIR = os.path.realpath(os.curdir)
@@ -37,7 +37,7 @@ def parse_config():
     """
     config_file = 'scripts/init.cfg'
     if not os.path.exists(config_file):
-        print 'WARNING, no %s found, using possibly outdated configuration' % config_file
+        print('WARNING, no %s found, using possibly outdated configuration' % config_file)
         return  # rely on hard coded values... maybe an exception would work
     # setting these globals
     global IGNORE_DIRS
@@ -158,10 +158,10 @@ def catkin_init():
     try:
         p = None
         with open('/dev/null') as out:
-            p = Popen("catkin_init_workspace", stdout=out, stderr=out)
+            p = Popen("catkin_init_workspace")
         p.wait()
         if p.returncode != 0:
-            raise Exception("catkin_init_workspace exited with a code of %d" % p.return_code)
+            raise Exception("catkin_init_workspace exited with a code of %d" % p.returncode)
     except OSError:
         raise Exception("Error running catkin_init_workspace, is it not in your PATH?")
 
@@ -177,7 +177,6 @@ def parse_args():
             help='a list of any extra paths to ros nodes you want linked to')
     return parser.parse_args()
 
-
 def check_validity():
     """
     Just checks to see if appctl and interactivespaces_msgs exist in catkin/src
@@ -187,9 +186,9 @@ def check_validity():
     for needed in NEEDED_DIRS:
         if needed not in links:
             passed = False
-            print "############## WARNING catkin/src SHOULD HAVE %s LINK ##############" % needed
+            print("############## WARNING catkin/src SHOULD HAVE %s LINK ##############" % needed)
     if passed:
-        print "Successfully completed workspace initialization"
+        print("Successfully completed workspace initialization")
 
 
 def main():

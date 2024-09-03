@@ -2,9 +2,8 @@
 
 import rospy
 
-
 from urllib.request import url2pathname
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 from lg_common.helpers import add_url_params
 from lg_common import ManagedBrowser, ManagedWindow
 from lg_msg_defs.msg import ApplicationState, WindowGeometry
@@ -14,6 +13,9 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'static_browser'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
+state = None
 
 
 def main():
@@ -34,7 +36,7 @@ def main():
     rosbridge_secure = rospy.get_param('~rosbridge_secure', 0)
     director_secure = rospy.get_param('~director_secure', 0)
 
-    rosbridge_host = rospy.get_param('~rosbridge_host', '127.0.0.1')
+    rosbridge_host = rospy.get_param('~rosbridge_host', 'localhost')
     rosbridge_port = rospy.get_param('~rosbridge_port', 9090)
     ts_name = rospy.get_param('~ts_name', 'default')
 
@@ -48,7 +50,7 @@ def main():
     x_available_or_raise(global_dependency_timeout)
 
     if url:
-        rospy.loginfo("got prepared full url: %s" % url)
+        logger.info("got prepared full url: %s" % url)
     else:
         url = url_base + ts_name + "/"
 
@@ -61,7 +63,7 @@ def main():
                              rosbridge_port=rosbridge_port)
 
         url = url2pathname(url)
-        rospy.loginfo("assembled a url: %s" % url)
+        logger.info("assembled a url: %s" % url)
 
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     debug_port = rospy.get_param('~debug_port', None)
@@ -80,16 +82,30 @@ def main():
         log_stderr=extra_logging,
         force_device_scale_factor=scale_factor,
         remote_debugging_port=debug_port,
-        user_agent=user_agent
+        reload_aw_snap=True,
+        user_agent=user_agent,
+        layer=ManagedWindow.LAYER_TOUCH
     )
 
     browser.set_state(ApplicationState.VISIBLE)
+    global state
+    state = ApplicationState.VISIBLE
     make_soft_relaunch_callback(browser.handle_soft_relaunch, groups=['touchscreen'])
 
     def handle_debug_sock_msg(msg):
         browser.send_debug_sock_msg(msg.data)
 
     rospy.Subscriber('{}/debug'.format(rospy.get_name()), String, handle_debug_sock_msg)
+
+    def handle_toggle(msg):
+        state = None
+        if msg.data == False:
+            state = ApplicationState.HIDDEN
+        else:
+            state = ApplicationState.VISIBLE
+        browser.set_state(state)
+
+    rospy.Subscriber('/touchscreen/toggle', Bool, handle_toggle)
 
     rospy.spin()
 

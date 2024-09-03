@@ -21,7 +21,7 @@
 #include <thread>
 
 
-const char* DEFAULT_ADDR = "127.0.0.1";
+const char* DEFAULT_ADDR = "localhost";
 const uint16_t DEFAULT_PORT = 9999;
 const char* VAAPI_ENV = "GST_VAAPI_ALL_DRIVERS=1";
 
@@ -66,7 +66,7 @@ WindowData::WindowData() : name(NULL), width(0), height(0), x(0), y(0) {}
 
 class SyncVideoApp {
   public:
-    SyncVideoApp(char* uri, WindowData* wdata, bool master, bool slave, struct sockaddr_in addr);
+    SyncVideoApp(char* uri, WindowData* wdata, bool master, bool slave, bool close, struct sockaddr_in addr);
     int init();
     void quit(int code);
     void play();
@@ -87,6 +87,7 @@ class SyncVideoApp {
     WindowData* wdata;
     bool master;
     bool slave;
+    bool close;
     struct sockaddr_in sockaddr;
 
     std::mutex lock;
@@ -104,8 +105,8 @@ class SyncVideoApp {
 };
 
 SyncVideoApp::SyncVideoApp
-(char* uri, WindowData* wdata, bool master, bool slave, struct sockaddr_in addr)
-  : uri(uri), wdata(wdata), master(master), slave(slave), sockaddr(addr)
+(char* uri, WindowData* wdata, bool master, bool slave, bool close, struct sockaddr_in addr)
+  : uri(uri), wdata(wdata), master(master), slave(slave), close(close), sockaddr(addr)
 {
   this->duration = G_MAXINT64;
 
@@ -243,6 +244,10 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
       break;
     }
     case GST_MESSAGE_EOS:
+      if (this->close) {
+        this->quit(0);
+      }
+
       if (!this->seek_(
         1.0,
         GST_FORMAT_TIME,
@@ -310,14 +315,19 @@ GstPadProbeReturn SyncVideoApp::buffer_callback(GstPad *pad, GstPadProbeInfo *in
   this->mypos = mypos;
 
   if (this->window->isHidden()) {
-    this->window->show();
+    // Setting the background color here may result in either
+    // the set color or black.  Fortunately we want it black anyway.
+    this->window->setStyleSheet("background-color: black");
+    // It is important to set the window name before configuring or
+    // mapping the window so that window placement rules can be matched instantly.
+    if (this->wdata->name != NULL) {
+      this->window->setWindowTitle(this->wdata->name);
+    }
     this->window->move(this->wdata->x, this->wdata->y);
     if (this->wdata->width > 0 && this->wdata->height > 0) {
       this->window->resize(this->wdata->width, this->wdata->height);
     }
-    if (this->wdata->name != NULL) {
-      this->window->setWindowTitle(this->wdata->name);
-    }
+    this->window->show();
   }
 
   if (this->master) {
@@ -563,6 +573,7 @@ int main (int argc, char **argv) {
   char *arguri = NULL;
   uint16_t argport = DEFAULT_PORT;
   bool argsoftware = false;
+  bool argclose = false;
 
   // vdpau+vaapi is not officially supported, but we want to use it.
   putenv((char*)VAAPI_ENV);
@@ -570,7 +581,7 @@ int main (int argc, char **argv) {
 
   opterr = 0;
   int c = 0;
-  while ((c = getopt (argc, argv, "msda:p:u:n:w:h:x:y:")) != -1) {
+  while ((c = getopt (argc, argv, "msdca:p:u:n:w:h:x:y:")) != -1) {
     switch (c)
       {
       case 'm':
@@ -584,6 +595,10 @@ int main (int argc, char **argv) {
       case 'd':
         g_debug("I will disable hardware decoding\n");
         argsoftware = true;
+        break;
+      case 'c':
+        g_debug("I will close instead of looping playback");
+        argclose = true;
         break;
       case 'a':
         g_debug("Using addr %s\n", optarg);
@@ -683,6 +698,7 @@ int main (int argc, char **argv) {
     wdata,
     argmaster,
     argslave,
+    argclose,
     sockaddr
   );
   ret = sync.init();

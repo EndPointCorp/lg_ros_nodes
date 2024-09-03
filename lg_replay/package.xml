@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_replay</name>
-  <version>3.1.7</version>
+  <version>3.9.0</version>
   <description>Subscribes to events flowing on an input device (e.g. touchscreen) and publishes them on a specified topic</description>
 
   <author email="wojtek@endpoint.com">Wojciech Ziniewicz</author>
@@ -14,7 +14,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>
   <run_depend>rospy</run_depend>
-  <run_depend>python-evdev</run_depend>
+  <run_depend>python3-evdev</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <test_depend>rostest</test_depend>
 

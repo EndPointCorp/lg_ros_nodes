@@ -25,6 +25,8 @@ from interactivespaces_msgs.msg import GenericMessage
 from threading import Thread
 from multiprocessing.pool import ThreadPool
 from subprocess import Popen
+from lg_common.logger import get_logger
+logger = get_logger('test_kmlsync')
 QUERY_TOPIC = '/earth/query/tour'
 SCENE_TOPIC = '/director/scene'
 LPNODE = 'testing_kmlsync_node'
@@ -215,7 +217,7 @@ class TestKMLSync(unittest.TestCase):
         """
         r = self.get_request(KML_ENDPOINT + '/network_link_update.kml?window_slug=center')
 
-        rospy.loginfo("r.content => '%s'" % escape(r.content.decode('utf-8')))
+        logger.info("r.content => '%s'" % escape(r.content.decode('utf-8')))
 
         asset_urls = json.loads(DIRECTOR_MESSAGE)['windows'][0]['assets']
 
@@ -335,7 +337,7 @@ def get_cookie_string(s):
     ret = re.search('\\<\\!\\[CDATA\\[(.*)\\]\\]\\>', s.decode('utf-8'), re.M)
     if ret and len(ret.groups()) > 0:
         return ret.groups()[0]
-    rospy.logerr('could not find matching pattern for CDATA in {}'.format(s))
+    logger.error('could not find matching pattern for CDATA in {}'.format(s))
     return ''
 
 

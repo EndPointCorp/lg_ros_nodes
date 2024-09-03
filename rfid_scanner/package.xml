@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>rfid_scanner</name>
-  <version>3.1.7</version>
+  <version>3.9.0</version>
   <description>The rfid_scanner package</description>
 
   <author email="jacob@endpoint.com">Jacob Minshall</author>
@@ -15,7 +15,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>
   <run_depend>rospy</run_depend>
-  <run_depend>python-serial</run_depend>
-  <run_depend>python-oauth2client</run_depend>
+  <run_depend>python3-serial</run_depend>
+  <run_depend>python3-oauth2client</run_depend>
 
 </package>

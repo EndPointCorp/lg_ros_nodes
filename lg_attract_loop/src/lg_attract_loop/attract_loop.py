@@ -9,22 +9,25 @@ from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
 from rosapi import params
 
+from lg_common.logger import get_logger
+logger = get_logger('attract_loop')
+
 
 class DirectorAPIProxy:
     def __init__(self, director_api_url):
         """
         Class responsible for getting content from director api
         """
-        rospy.loginfo("Initializing Attract Loooooooooooop")
+        logger.info("Initializing Attract Loooooooooooop")
         self.director_api_url = director_api_url
-        rospy.loginfo("Using director API url: %s" % self.director_api_url)
+        logger.info("Using director API url: %s" % self.director_api_url)
 
     def get(self, uri):
         try:
             url = "%s%s" % (self.director_api_url, uri)
             return requests.get(url).content
         except Exception:
-            rospy.logerr("Could not get content from URL: %s" % url)
+            logger.error("Could not get content from URL: %s" % url)
 
 
 def MockFunc(*args, **kwargs):
@@ -72,16 +75,16 @@ class AttractLoop:
         self.scene_timer = 0
 
         if message.data is True and self.play_loop is True:
-            rospy.loginfo("Director: Attract loop becoming inactive")
+            logger.info("Director: Attract loop becoming inactive")
             self.play_loop = False
             self._stop_attract_loop()
         elif message.data is False and self.play_loop is False:
             self._switch_to_planet()
-            rospy.loginfo("Director: Attract loop becoming active")
+            logger.info("Director: Attract loop becoming active")
             self.play_loop = True
             rospy.sleep(2)
         else:
-            rospy.logwarn("Activity message contained state %s and current state is %s - that's weird" % (message.data, self.play_loop))
+            logger.warn("Activity message contained state %s and current state is %s - that's weird" % (message.data, self.play_loop))
 
     def _stop_attract_loop(self):
         """
@@ -90,7 +93,7 @@ class AttractLoop:
         """
         self.play_loop = False
 
-        rospy.loginfo("Stopping scene timer")
+        logger.info("Stopping scene timer")
 
         if self.stop_action == 'stop_playtour':
             self._stop_playtour()
@@ -106,7 +109,7 @@ class AttractLoop:
             if self.default_presentation:
                 pass
             else:
-                rospy.logerr("No default presentation defined")
+                logger.error("No default presentation defined")
         else:
             pass
 
@@ -115,7 +118,7 @@ class AttractLoop:
         Emits a message with planet change taken from configuration
         """
         switch_to_planet_msg = String(data=self.default_planet)
-        rospy.loginfo("Executing 'switch_to_planet' action")
+        logger.info("Executing 'switch_to_planet' action")
         self.earth_planet_publisher.publish(switch_to_planet_msg)
 
     def _stop_playtour(self):
@@ -126,14 +129,14 @@ class AttractLoop:
 
         """
         stop_tour_msg = String(data='')
-        rospy.loginfo("Executing 'stop_playtour' action")
+        logger.info("Executing 'stop_playtour' action")
         self.earth_query_publisher.publish(stop_tour_msg)
 
     def _publish_blank_scene(self):
         """
         Emits a scene with empty windows to clean up all assets from screens
         """
-        rospy.loginfo("Playing blank scene")
+        logger.info("Playing blank scene")
 
         viewports = [viewport.split('/')[2] for viewport in params.get_param_names(['/viewport/*'])]
 
@@ -143,7 +146,8 @@ class AttractLoop:
             "name": "attract loop blank scene",
             "resource_uri": "no uri",
             "slug": "attract-loop-break",
-            "windows": []
+            "windows": [],
+            "played_from": "lg_attract_loop"
         }
 
         for viewport_name in viewports:
@@ -167,16 +171,16 @@ class AttractLoop:
         If there's no queue - populate it
         Every item in the queue is a scene + presentation
         """
-        rospy.logdebug("Populating attract loop queue with content")
+        logger.debug("Populating attract loop queue with content")
         try:
             if self.attract_loop_queue:
-                rospy.logdebug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
+                logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
             else:
                 self.attract_loop_queue = self._fetch_attract_loop_content()
-                rospy.logdebug("Populated attract_loop_queue with %s" % self.attract_loop_queue)
+                logger.debug("Populated attract_loop_queue with %s" % self.attract_loop_queue)
             self._play_attract_loop_item()
         except Exception as e:
-            rospy.loginfo("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
+            logger.info("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
             rospy.sleep(60)
 
     def _play_scene(self, lazy_scene, lazy_presentation):
@@ -190,7 +194,7 @@ class AttractLoop:
         duration = full_scene['duration']
         if duration <= 0:
             duration = self.default_duration
-        rospy.logdebug("Playing scene %s from presentation %s with duration %s" % (full_scene, full_presentation, duration))
+        logger.debug("Playing scene %s from presentation %s with duration %s" % (full_scene, full_presentation, duration))
 
         # Add source attributes to presentation and scene
         full_presentation['played_from'] = 'lg_attract_loop'
@@ -212,19 +216,19 @@ class AttractLoop:
         its presentation to /director/presentation
         handles the timer countdown
         """
-        rospy.logdebug("Executing _play_attract_loop_item - self.play_loop=%s" % self.play_loop)
-        rospy.logdebug("Scene timer=%s" % self.scene_timer)
+        logger.debug("Executing _play_attract_loop_item - self.play_loop=%s" % self.play_loop)
+        logger.debug("Scene timer=%s" % self.scene_timer)
 
         if self.play_loop and self.scene_timer <= 0:
-            rospy.logdebug("Inside play loop - queue size=%s" % (len(self.attract_loop_queue)))
+            logger.debug("Inside play loop - queue size=%s" % (len(self.attract_loop_queue)))
             playback_item = self.attract_loop_queue[0]
             if playback_item['scenes']:  # play item back or remove it from queue if no scenes
                 lazy_presentation = playback_item['presentation']
                 lazy_scene = playback_item['scenes'].pop(0)  # take it away - forever
                 self._play_scene(lazy_scene, lazy_presentation)
-                rospy.logdebug("Item to played back taken from self.attract_loop_queue: %s" % playback_item)
+                logger.debug("Item to played back taken from self.attract_loop_queue: %s" % playback_item)
             else:
-                rospy.logdebug("Removing item as it does not longer have any scenes inside it")
+                logger.debug("Removing item as it does not longer have any scenes inside it")
                 self.attract_loop_queue.remove(playback_item)
 
         self.scene_timer -= 1
@@ -260,21 +264,21 @@ class AttractLoop:
         content = []
         presentationgroups = self._fetch_attract_loop_presentationgroups()
         if presentationgroups:
-            rospy.loginfo("Fetched %s presentationgroups" % len(presentationgroups))
+            logger.info("Fetched %s presentationgroups" % len(presentationgroups))
             presentations = self._fetch_presentationgroup_presentations(presentationgroups)
             if presentations:
-                rospy.loginfo("Fetched %s presentations" % len(presentations))
-                rospy.logdebug("Here they are: %s" % presentations)
+                logger.info("Fetched %s presentations" % len(presentations))
+                logger.debug("Here they are: %s" % presentations)
                 for presentation in presentations:
-                    rospy.logdebug("Preparing content object")
+                    logger.debug("Preparing content object")
                     presentation_object = {"presentation": presentation,
                                            "scenes": self._fetch_presentation_by_slug(presentation['slug'])['scenes']}
-                    rospy.logdebug("Appending presentation object %s to fetched content" % presentation_object)
-                    rospy.loginfo("Fetched %s scenes" % len(presentation_object['scenes']))
+                    logger.debug("Appending presentation object %s to fetched content" % presentation_object)
+                    logger.info("Fetched %s scenes" % len(presentation_object['scenes']))
                     content.append(presentation_object)
-            rospy.logdebug("Fetched new content: %s" % content)
+            logger.debug("Fetched new content: %s" % content)
         else:
-            rospy.logdebug("No presentation groups found in attract loop sleeping for 120 seconds")
+            logger.debug("No presentation groups found in attract loop sleeping for 120 seconds")
             rospy.sleep(120)
 
         return content
@@ -305,7 +309,7 @@ class AttractLoop:
                 attract_loop_presentations.extend(presentations)
             return attract_loop_presentations
         except Exception as e:
-            rospy.logerr("Could not fetch presentations from presentationgroups (%s) because %s" % (presentationgroups, e))
+            logger.error("Could not fetch presentations from presentationgroups (%s) because %s" % (presentationgroups, e))
             return []
 
     def _fetch_attract_loop_presentationgroups(self):
@@ -315,6 +319,6 @@ class AttractLoop:
             assert(type(presentationgroups) == list), "Presentationgroups type is not list"
             return presentationgroups
         except Exception as e:
-            rospy.logerr("Could not get presentationgroups because: %s - sleeping for 10 seconds" % e)
+            logger.error("Could not get presentationgroups because: %s - sleeping for 10 seconds" % e)
             rospy.sleep(10)
             return []

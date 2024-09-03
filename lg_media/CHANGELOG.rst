@@ -2,6 +2,313 @@
 Changelog for package lg_media
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.0 (2020-05-27)
+------------------
+
+3.5.0 (2022-03-15)
+------------------
+
+3.4.1 (2022-02-03)
+------------------
+
+3.4.0 (2022-01-12)
+------------------
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* Contributors: Jacob Minshall
+
+3.3.16 (2021-12-16)
+-------------------
+
+3.3.15 (2021-12-09)
+-------------------
+
+3.3.14 (2021-11-23)
+-------------------
+* fix pep8 on image viewer
+* Contributors: Will Plaut
+
+3.3.13 (2021-09-21)
+-------------------
+
+3.9.0 (2024-02-06)
+------------------
+
+3.8.5 (2024-01-09)
+------------------
+
+3.8.4 (2023-12-29)
+------------------
+* Merge pull request `#460 <https://github.com/endpointcorp/lg_ros_nodes/issues/460>`_ from EndPointCorp/autozoom_feh
+  image_viewer.py add --auto-zoom option to feh image viewer
+* image_viewer.py add --auto-zoom option to feh image viewer
+* Contributors: Constante "Tino" Gonzalez, Tino
+
+3.8.3 (2023-10-17)
+-------------------
+* Fix gstreamer player close on finish (`#454 <https://github.com/endpointcorp/lg_ros_nodes/issues/454>`_)
+  * Add -c arg to gst_video_sync to close on exit
+  * Reflect msg onFinish state in gst_video_sync cmd
+* Contributors: nelliott
+
+3.8.2 (2023-10-06)
+------------------
+
+3.8.1 (2023-10-06)
+------------------
+
+3.8.0 (2023-05-25)
+------------------
+* Merge pull request `#416 <https://github.com/endpointcorp/lg_ros_nodes/issues/416>`_ from EndPointCorp/quiet_logs_some
+  log quieting
+* big logging changes
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into quiet_logs_some
+* Contributors: Jacob Minshall
+
+3.7.2 (2023-04-27)
+------------------
+
+3.7.1 (2023-04-06)
+------------------
+
+3.7.0 (2023-03-30)
+------------------
+
+3.6.0 (2022-11-22)
+------------------
+* Use browser for media_launcher
+* Contributors: Galaxy Admin
+
+* Use browser for media_launcher
+* Contributors: Galaxy Admin
+
+3.5.5 (2022-09-09)
+------------------
+
+3.5.4 (2022-08-10)
+------------------
+
+3.5.3 (2022-05-27)
+------------------
+
+3.5.2 (2022-03-29)
+------------------
+
+3.5.1 (2022-03-24)
+------------------
+* 3.5.0
+* bump changelogs
+* 3.4.1
+* Changelogs
+* 3.4.0
+* bump changelogs
+* Merge branch 'master' of github.com:endpointcorp/lg_ros_nodes into fake_spacenav
+* 3.3.16
+* bump changelogs
+* 3.3.15
+* bump changelogs
+* 3.3.14
+* changelogs
+* fix pep8 on image viewer
+* 3.3.13
+* bump changelogs
+* Contributors: Jacob Minshall, Matt Vollrath, Will Plaut
+
+3.3.12 (2021-08-10)
+-------------------
+* Increase image checker timeout
+* Fix window title for media launcher ffplay
+* Contributors: Neil Elliott
+
+3.3.11 (2021-07-23)
+-------------------
+* Fix gst_video_sync letterbox color
+  Also comment on window management quirks.
+* Re-order gst_video_sync window ops
+  Set name before showing window to help window manager get it right.
+* Contributors: Matt Vollrath
+
+3.3.10 (2021-07-22)
+-------------------
+* delaying kill and threading things
+* Use LAYER_ABOVE in lg_media
+* Contributors: Jacob Minshall, Matt Vollrath
+
+3.3.9 (2021-07-20)
+------------------
+
+3.3.8 (2021-01-29)
+------------------
+* Update media launcher rules
+* Contributors: Galaxy Admin
+
+3.3.7 (2021-01-14)
+------------------
+
+3.3.6 (2021-01-06)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.5 (2020-12-28)
+------------------
+
+3.3.4 (2020-12-11)
+------------------
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: dkiselev
+
+3.3.3 (2020-12-10)
+------------------
+
+3.3.2 (2020-12-09)
+------------------
+
+3.3.1 (2020-10-29)
+------------------
+
+3.3.0 (2020-10-21)
+------------------
+
+3.2.9 (2020-09-21)
+------------------
+
+3.2.8 (2020-08-27)
+------------------
+
+3.2.7 (2020-08-25)
+------------------
+
+3.2.6 (2020-07-09)
+------------------
+
+3.2.5 (2020-07-06)
+------------------
+
+3.2.4 (2020-05-29)
+------------------
+
+3.2.3 (2020-05-28)
+------------------
+
+3.2.2 (2020-05-28)
+------------------
+
+3.2.1 (2020-05-27)
+------------------
+* 3.2.0
+* BSPWM
+* Merge branch 'master' of github.com:EndPointCorp/lg_ros_nodes
+* Contributors: Galaxy Admin, Neil Elliott, dkiselev
+
+3.1.12 (2020-05-04)
+-------------------
+* Fix media_launcher startup, shutdown issues
+  multicast instead of unreliable RTSP server.
+* Contributors: Matt Vollrath
+
+3.1.11 (2020-05-01)
+-------------------
+* Fix PEP8
+* Add basic media launcher (`#421 <https://github.com/EndPointCorp/lg_ros_nodes/issues/421>`_)
+  Co-authored-by: Matt Vollrath <matt@endpoint.com>
+* Update Jenkins usage and Fix tests (`#417 <https://github.com/EndPointCorp/lg_ros_nodes/issues/417>`_)
+  * Setup step
+  * run_ros_setup
+  * add more setup tasks
+  * syntax changes
+  * foo
+  * Added Jenkinsfile
+  * blah
+  * foo
+  * blahhhh
+  * gahhh
+  * bar
+  * setup_tests and jenkinsfile stuff
+  * Jenkinsfile: fix syntax
+  * Jenkinsfile: fix syntax2
+  * Jenkinsfile: fix syntax3
+  * jenkinsfile stuff
+  * Fix perms
+  * setup_tests: more changes
+  * setup_tests
+  * more setup
+  * fix stufff
+  * remove weird setup stage
+  * fix stuff
+  * fix stuff
+  * Jenkinsfile
+  * Jenkinsfile
+  * Jenkinsfile: use diff syntax
+  * More changes
+  * remove auth sock stuff for now
+  * Jenkins file tweaks
+  * Wrong env for vars
+  * blah
+  * Jenkinsfile pause on input
+  * more jenkinsfile fixin
+  * add debugging pause
+  * Install pepperflash
+  * Dockerfile syntax fixes
+  * Dockerfile changes
+  * pepperflash
+  * Appctl changes in our tests
+  * Dockerfile cleanup
+  * Fix remaining stats issue
+  * Try mounting pepperflash
+  * Fix mistakes
+  * Try increasing timeout
+  * Don't install pepperflash
+  * Ban persistent ServiceProxys
+  * Try increasing load time
+  * Install pycryptodome
+  * Remove unused import from test
+  * Try installing hacked rosbridge
+  * Fix spelling
+  * Fix unit test and try longer grace period
+  * Fix test (dont use bytearray)
+  * try again
+  * Cleanup rosbridge install
+  * Fix syntax
+  * Change listener.js and add rosbridge
+  * fix listener issue
+  * revert most listener changes
+  * more changes to listener
+  * wait_for_assert fix
+  THANKS JACOB
+  * fix test_helper
+  * Add time to two remaining fails
+  * more changes to listener
+  * more changes to listener
+  * Use new assert gt
+  Thanks jacob
+  * import updated helper
+  * Greater than or equal
+  * fix stuff
+  * ftw!
+  * pep8 changes
+  * Combine lg_common tests
+  * Fixup lg_screenshot and lg_keyboard tests
+  * fix import
+  * pycodestyle!
+  * Don't --rm
+  * Cleanup Jenkinsfile
+  * Add step for master builds
+  * Set env when running tests
+  * Test commit
+  Co-authored-by: Jacob Minshall <jacob@endpoint.com>
+* Contributors: Galaxy Admin, Matt Vollrath, Will Plaut, nelliott
+
+3.1.10 (2020-03-25)
+-------------------
+
+3.1.9 (2020-03-11)
+------------------
+
+3.1.8 (2020-02-06)
+------------------
+* image_viewer: slight change for trasparency
+* Contributors: Will Plaut
+
 3.1.7 (2020-02-04)
 ------------------
 
@@ -912,7 +1219,7 @@ Changelog for package lg_media
 * move new loginfo logging to logdebug
 * fix up logging
   Move some logerrs to log{warn,info} depending on the information being
-  logged. Also s/rospy.logerror/rospy.logerr/
+  logged. Also s/logger.erroror/logger.error/
 * Contributors: Jacob Minshall
 
 1.1.49 (2016-04-26)

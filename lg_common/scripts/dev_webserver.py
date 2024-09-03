@@ -10,6 +10,8 @@ from lg_common.helpers import run_with_influx_exception_handler
 
 
 NODE_NAME = 'lg_dev_webserver'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class DevStaticHandler(tornado.web.StaticFileHandler):
@@ -28,7 +30,7 @@ def main():
     rospack = rospkg.RosPack()
     pkg_path = rospack.get_path('lg_common')
     share_path = os.path.abspath(os.path.join(pkg_path, os.pardir))
-    rospy.loginfo('Serving files from {} on port {}'.format(share_path, port))
+    logger.info('Serving files from {} on port {}'.format(share_path, port))
 
     handler = DevStaticHandler
 

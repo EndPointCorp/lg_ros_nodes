@@ -40,7 +40,7 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     # default for sending should be different for receiving
     if viewsync_send:
         viewsync_port = viewsync_port
-        viewsync_hostname = '127.0.0.1'
+        viewsync_hostname = 'localhost'
     else:
         viewsync_port = rospy.get_param('~viewsync_port_new', 42000)
         viewsync_hostname = rospy.get_param('~viewsync_host', '10.42.42.255')
@@ -91,30 +91,29 @@ def get_config(base_path, instance_name, viewsync_port=42001):
         spacenav_sensitivity
 
     if spacenav_device is not None:
-        args.extend([
-            '-sSpaceNavigator/device={}'.format(
-                str(spacenav_device)),
-            '-sSpaceNavigator/gutterValue={}'.format(
-                float(spacenav_gutter)),
-            '-sSpaceNavigator/sensitivityYaw={}'.format(
-                float(spacenav_sensitivity_yaw)),
-            '-sSpaceNavigator/sensitivityPitch={}'.format(
-                float(spacenav_sensitivity_pitch)),
-            '-sSpaceNavigator/sensitivityRoll={}'.format(
-                float(spacenav_sensitivity_roll)),
-            '-sSpaceNavigator/sensitivityX={}'.format(
-                float(spacenav_sensitivity_x)),
-            '-sSpaceNavigator/sensitivityY={}'.format(
-                float(spacenav_sensitivity_y)),
-            '-sSpaceNavigator/sensitivityZ={}'.format(
-                float(spacenav_sensitivity_z)),
-            '-sSpaceNavigator/zeroYaw=0',
-            '-sSpaceNavigator/zeroPitch=0',
-            '-sSpaceNavigator/zeroRoll=0',
-            '-sSpaceNavigator/zeroX=0',
-            '-sSpaceNavigator/zeroY=0',
-            '-sSpaceNavigator/zeroZ=0',
-        ])
+        args.append('-sSpaceNavigator/device={}'.format(str(spacenav_device)))
+    args.extend([
+        '-sSpaceNavigator/gutterValue={}'.format(
+            float(spacenav_gutter)),
+        '-sSpaceNavigator/sensitivityYaw={}'.format(
+            float(spacenav_sensitivity_yaw)),
+        '-sSpaceNavigator/sensitivityPitch={}'.format(
+            float(spacenav_sensitivity_pitch)),
+        '-sSpaceNavigator/sensitivityRoll={}'.format(
+            float(spacenav_sensitivity_roll)),
+        '-sSpaceNavigator/sensitivityX={}'.format(
+            float(spacenav_sensitivity_x)),
+        '-sSpaceNavigator/sensitivityY={}'.format(
+            float(spacenav_sensitivity_y)),
+        '-sSpaceNavigator/sensitivityZ={}'.format(
+            float(spacenav_sensitivity_z)),
+        '-sSpaceNavigator/zeroYaw=0',
+        '-sSpaceNavigator/zeroPitch=0',
+        '-sSpaceNavigator/zeroRoll=0',
+        '-sSpaceNavigator/zeroX=0',
+        '-sSpaceNavigator/zeroY=0',
+        '-sSpaceNavigator/zeroZ=0',
+    ])
 
     hide_gui = rospy.get_param('~hide_gui', False)
     if hide_gui:
@@ -561,11 +560,11 @@ def get_config(base_path, instance_name, viewsync_port=42001):
     default_view = rospy.get_param(
         '~default_view',
 
-        '<LookAt><longitude>-122.4661297737901</longitude>' +
-        '<latitude>37.71903477888115</latitude><altitude>0</altitude>' +
-        '<heading>42.60360249388481</heading>' +
-        '<tilt>66.02791701475958</tilt><range>36611.51655091633</range>' +
-        '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'
+        '<LookAt><longitude>-122.4661297737901</longitude>'
+        + '<latitude>37.71903477888115</latitude><altitude>0</altitude>'
+        + '<heading>42.60360249388481</heading>'
+        + '<tilt>66.02791701475958</tilt><range>36611.51655091633</range>'
+        + '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'
     )
 
     # the parser requires namespaces to be declared

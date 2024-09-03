@@ -11,7 +11,9 @@ from std_msgs.msg import Bool
 from lg_offliner import ROS_NODE_NAME
 from lg_offliner import LG_OFFLINER_OFFLINE_TOPIC_DEFAULT
 from lg_msg_defs.srv import Offline
-from appctl.msg import Mode
+from appctl_msg_defs.msg import Mode
+from lg_common.logger import get_logger
+logger = get_logger('test_when_offline')
 
 
 class TestLGOfflinerWhenOffline(unittest.TestCase):
@@ -25,15 +27,15 @@ class TestLGOfflinerWhenOffline(unittest.TestCase):
         rospy.Subscriber("/something/offline", Mode, self.callback_2)
 
     def callback_0(self, msg):
-        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
+        logger.info("callback received type: '%s', message: %s" % (type(msg), msg))
         self.results[0] = msg.data
 
     def callback_1(self, msg):
-        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
+        logger.info("callback received type: '%s', message: %s" % (type(msg), msg))
         self.results[1] = msg.mode
 
     def callback_2(self, msg):
-        rospy.loginfo("callback received type: '%s', message: %s" % (type(msg), msg))
+        logger.info("callback received type: '%s', message: %s" % (type(msg), msg))
         self.results[2] = msg.mode
 
     def get_offline_status(self):
@@ -42,7 +44,7 @@ class TestLGOfflinerWhenOffline(unittest.TestCase):
 
         """
         rospy.wait_for_service("%s/status" % ROS_NODE_NAME)
-        proxy = rospy.ServiceProxy("%s/status" % ROS_NODE_NAME, Offline)
+        proxy = rospy.ServiceProxy("%s/status" % ROS_NODE_NAME, Offline, persistent=False)
         r = proxy()
         res = bool(r.offline)
         return res

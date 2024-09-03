@@ -13,7 +13,7 @@ class Toggle3d:
         self.layer_is_on = True
 
         # catkin will istall bash scripts as executable without .bash extension
-        self.script = '/home/lg/bash_scripts/toggle_layer.bash'
+        self.script = '/home/lg/python_scripts/toggle_layer.py'
         chmod_x(self.script)
 
     def set_layer_state(self, state):
@@ -27,4 +27,4 @@ class Toggle3d:
         self.state_listener = state_listener
 
     def sync_state_to_earth(self, state):
-        subprocess.call([self.script, 'on' if state else 'off'])
+        subprocess.call([self.script, '0' if state else '1'])

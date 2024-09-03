@@ -10,6 +10,8 @@ from lg_msg_defs.msg import BrowserExtension
 from lg_common.helpers import generate_hash
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
+from lg_common.logger import get_logger
+logger = get_logger('adhoc_browser_director_bridge')
 
 
 class AdhocBrowserDirectorBridge():
@@ -48,16 +50,16 @@ class AdhocBrowserDirectorBridge():
             message = json.loads(data.message)
             slug = message['slug']
         except KeyError:
-            rospy.logwarn("Director message did not contain 'slug' attribute")
+            logger.warning("Director message did not contain 'slug' attribute")
             return
         except AttributeError:
-            rospy.logwarn("Director message did not contain valid data")
+            logger.warning("Director message did not contain valid data")
             return
         except ValueError:
-            rospy.logwarn("Director message did not contain valid json")
+            logger.warning("Director message did not contain valid json")
             return
         except TypeError:
-            rospy.logwarn("Director message did not contai valid type. Type was %s, and content was: %s" % (type(message), message))
+            logger.warning("Director message did not contai valid type. Type was %s, and content was: %s" % (type(message), message))
             return
 
         adhoc_browsers_list = self._extract_browsers_from_message(data)
@@ -66,7 +68,7 @@ class AdhocBrowserDirectorBridge():
         adhoc_browsers.scene_slug = slug
         adhoc_browsers.browsers = adhoc_browsers_list
 
-        rospy.logdebug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
+        logger.debug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
 
         self.browser_pool_publisher.publish(adhoc_browsers)
         if adhoc_browsers.browsers:
@@ -124,9 +126,9 @@ class AdhocBrowserDirectorBridge():
                 adhoc_browser.command_line_args.append(browser_arg)
 
         if default_args_removal:
-            rospy.logerr("there were args to remove")
+            logger.error("there were args to remove")
             for cmd_arg in default_args_removal:
-                rospy.logerr("One arg was..")
+                logger.error("One arg was..")
                 browser_arg = BrowserCmdArg()
                 browser_arg.argument = str(cmd_arg)
                 adhoc_browser.default_args_removal.append(browser_arg)
@@ -157,10 +159,10 @@ class AdhocBrowserDirectorBridge():
         Each browser has a unique hash assigned to it. It's generated on the basis
         of browser's attributes.
         """
-        rospy.logdebug("Got data on _extract_browsers_from_message: %s" % data)
+        logger.debug("Got data on _extract_browsers_from_message: %s" % data)
         adhoc_browsers = []
         browsers = extract_first_asset_from_director_message(data, 'browser', self.viewport_name)
-        rospy.logdebug("Extracted browsers _extract_browsers_from_message: %s" % browsers)
+        logger.debug("Extracted browsers _extract_browsers_from_message: %s" % browsers)
         message = json.loads(data.message)
 
         for browser in browsers:
@@ -201,7 +203,7 @@ class AdhocBrowserDirectorBridge():
 
             adhoc_browsers.append(adhoc_browser)
 
-        rospy.logdebug("Returning adhocbrowsers: %s" % adhoc_browsers)
+        logger.debug("Returning adhocbrowsers: %s" % adhoc_browsers)
 
         return adhoc_browsers
 

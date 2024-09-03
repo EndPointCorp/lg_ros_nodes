@@ -9,6 +9,9 @@ import unittest
 from lg_common import ManagedAdhocBrowser
 from lg_msg_defs.msg import WindowGeometry, ApplicationState
 
+from lg_common.logger import get_logger
+logger = get_logger('test_managed_adhoc_browser')
+
 
 class TestManagedAdhocBrowser(unittest.TestCase):
     def setUp(self):
@@ -37,7 +40,7 @@ class TestManagedAdhocBrowser(unittest.TestCase):
             slug=self.slug,
             url=self.url,
             kiosk=True)
-        rospy.logdebug("This is mab: %s" % self.mab.__dict__)
+        logger.debug("This is mab: %s" % self.mab.__dict__)
 
     def test_1_run_basic_asserts(self):
         """

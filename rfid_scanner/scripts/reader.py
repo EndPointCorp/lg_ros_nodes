@@ -10,6 +10,8 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import run_with_influx_exception_handler
 
 NODE_NAME = 'rfid_reader'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 class RfidListener(object):
@@ -29,17 +31,17 @@ class RfidListener(object):
         while True:
             try:
                 self.device = serial.Serial(port=self.port, baudrate=self.baudrate)
-                rospy.loginfo("%s: We have successfully connected to the serial device" % rospy.get_name())
+                logger.info("%s: We have successfully connected to the serial device" % rospy.get_name())
                 break
             except serial.SerialException as e:
-                rospy.logwarn("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
-                rospy.logwarn("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
+                logger.warning("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
+                logger.warning("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
                 rospy.sleep(i)
                 if i < 30:
                     i += 3
 
     def send_notification(self, msg):
-        rospy.loginfo(msg)
+        logger.info(msg)
         if not self.notify:
             return
         note = {'title': 'rfid', 'message': msg}

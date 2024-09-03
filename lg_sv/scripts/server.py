@@ -37,6 +37,8 @@ DEFAULT_TICK_RATE = 180
 DEFAULT_IDLE_TIME_UNTIL_SNAP = 1.25
 X_THRESHOLD = 0.50
 NODE_NAME = 'pano_viewer_server'
+from lg_common.logger import get_logger
+logger = get_logger(NODE_NAME)
 
 
 def main():
@@ -94,32 +96,28 @@ def main():
 
     # This will translate director messages into /<server_type>/panoid messages
     def handle_director_message(scene):
-        rospy.loginfo('running handle director w/ scene: %s' % scene)
+        logger.debug('running handle director w/ scene: %s' % scene)
         _server_type = server_type
-        if _server_type == 'streetview_old':
-            _server_type = 'streetview'
+
         has_asset = has_activity(scene, _server_type)
         has_no_activity = has_activity(scene, 'no_activity')
         if has_no_activity:
-            rospy.loginfo('ignoring scene due to no_activity')
+            logger.debug('ignoring scene due to no_activity')
             return
         if not has_asset:
-            rospy.loginfo('hiding self')
+            logger.debug('hiding self')
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
         if scene.get('slug', '') == 'auto_generated_sv_scene':
-            rospy.loginfo("Ignoring my own generated message")
+            logger.debug("Ignoring my own generated message")
             asset = get_activity_config_from_activity(scene, _server_type)
             panoid = asset.get('panoid', '')
-            rospy.logerr("length of panoid is %s server type %s" % (len(panoid), server_type))
-            rospy.logerr("panoid is %s" % panoid)
-            if server_type == 'streetview' and (panoid[0:2] != 'F:' and len(panoid) < 60):
+            logger.debug("length of panoid is %s server type %s" % (len(panoid), server_type))
+            logger.debug("panoid is %s" % panoid)
+            #TODO Need to remove this block, once the nonfree streetview viewer is fixed
+            if server_type == 'streetview':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
-                rospy.logerr("publishing visible for {}".format(server_type))
-                return
-            elif server_type == 'streetview_old' and (panoid[0:2] == 'F:' or len(panoid) >= 60):
-                rospy.logerr("publishing visible for {}".format(server_type))
-                visibility_publisher.publish(ApplicationState(state='VISIBLE'))
+                logger.debug("publishing visible for {}".format(server_type))
                 return
             elif server_type == 'panoviewer' or server_type == 'panovideo':
                 visibility_publisher.publish(ApplicationState(state='VISIBLE'))
@@ -127,15 +125,9 @@ def main():
             visibility_publisher.publish(ApplicationState(state='HIDDEN'))
             return
 
-        if server_type == 'streetview' or server_type == 'streetview_old':
+        if server_type == 'streetview':
             asset = get_activity_config_from_activity(scene, server_type)
             panoid = asset.get('panoid', '')
-            if server_type == 'streetview' and panoid[0:2] == 'F:':
-                rospy.logerr("leaving early for {}".format(server_type))
-                return
-            elif server_type == 'streetview_old' and panoid[0:2] != 'F':
-                rospy.logerr("leaving early for {}".format(server_type))
-                return
         else:
             panoid = scene['windows'][0]['assets'][0]
 
@@ -154,12 +146,11 @@ def main():
         except Exception:
             pov.z = 0
         pov.w = zoom_max
-
         server.pub_panoid(panoid, pov=pov)
 
     def initial_state_handler(uscs_msg):
         try:
-            rospy.loginfo("about to load json: %s" % uscs_msg.message)
+            logger.debug("about to load json: %s" % uscs_msg.message)
             scene = json.loads(uscs_msg.message)
         except Exception:
             return

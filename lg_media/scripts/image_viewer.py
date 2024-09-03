@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from threading import Lock
+from threading import Lock, Thread
+from functools import partial
 import json
 import os
 import requests
@@ -12,10 +13,17 @@ from lg_common import ManagedWindow
 from lg_msg_defs.msg import ImageViews, ImageView
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
+from lg_common.logger import get_logger
+logger = get_logger('image_viewer')
+
+
+def image_coordinates(image):
+    return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
 
 
 def make_key_from_image(image):
-    return "{}_{}_{}_{}_{}".format(image.url, image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
+    return "{}_{}".format(image.url, image_coordinates(image))
+
 
 class Image(ManagedApplication):
     def __init__(self, cmd, window, img_application, img_path, respawn=True):
@@ -30,19 +38,21 @@ class ImageViewer():
         self.viewports = viewports
         self.save_path = save_path
         self.lock = Lock()
+        self.graphic_opts = {}
 
     def director_translator(self, data):
+        logger.error("ZZZ")
         windows_to_add = ImageViews()
         try:
             message = json.loads(data.message)
         except AttributeError:
-            rospy.logwarn('Director message did not contain valid data')
+            logger.warning('Director message did not contain valid data')
             return
         except ValueError:
-            rospy.logwarn('Director message did not contain valid json')
+            logger.warning('Director message did not contain valid json')
             return
         except TypeError:
-            rospy.logwarn('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
+            logger.warning('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
             return
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
@@ -54,7 +64,8 @@ class ImageViewer():
                     x=window['x_coord'],
                     y=window['y_coord']
                 )
-                image.transparent = window.get('transparent', False)
+                image.transparent = window.get('activity_config', {}).get('transparent', False)
+
                 image.viewport = window['presentation_viewport']
                 if image.viewport not in self.viewports:
                     continue
@@ -63,6 +74,11 @@ class ImageViewer():
                 image.geometry.y = image.geometry.y + offset_geometry.y
                 image.uuid = str(uuid.uuid4())
                 windows_to_add.images.append(image)
+                
+                self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = {}
+                self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['no_upscale'] = window.get('activity_config', {}).get('no_upscale', False)
+
+        logger.error(f"ZZZ {windows_to_add}")
         self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
@@ -71,37 +87,68 @@ class ImageViewer():
                 return _image_obj
         return None
 
+    def is_current_coordinates(self, current_images, image):
+        for key_from_image, _image_obj in list(current_images.items()):
+            logger.error(f"ZZZ comparing {'_'.join(key_from_image.split('_')[-4:])} == {image_coordinates(image)}:")
+            if '_'.join(key_from_image.split('_')[-4:]) == image_coordinates(image):
+                return _image_obj
+        return None
+
     def handle_image_views(self, msg):
         with self.lock:
             self._handle_image_views(msg)
 
     def _handle_image_views(self, msg):
+        global matched_images_dict
+        logger.debug("handling image views")
         new_current_images = {}
         images_to_remove = list(self.current_images.values())
         images_to_add = []
+        images_to_remove_delayed = []
+        matched_images_dict = {}
         for image in msg.images:
-            # rospy.logerr('CURRENT IMAGES: {}\n\n'.format(self.current_images))
+            logger.debug('CURRENT IMAGES: {}\n\n'.format(self.current_images))
             duplicate_image = self.is_in_current_images(self.current_images, image)
             if duplicate_image:
-                # rospy.logerr('Keeping image: {}\n\n'.format(image))
+                logger.info('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
                 new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
-            rospy.logdebug('Appending IMAGE: {}\n\n'.format(image))
+            current_coordinate_image = self.is_current_coordinates(self.current_images, image)
+            if current_coordinate_image:
+                logger.info("image matched, waiting to remove after the new one is launched")
+                matched_images_dict[image_coordinates(image)] = current_coordinate_image
+                images_to_remove.remove(current_coordinate_image)
+            logger.debug('Appending IMAGE: {}\n\n'.format(image))
             images_to_add.append(image)
 
-        for image_obj in images_to_remove:
-            rospy.logerr('Removing image: {}'.format(image_obj))
+        def remove_image(image_obj, *args, **kwargs):
+            logger.debug('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
             if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
-        #images_to_remove = []
-        for image in images_to_add:
-            created_image = None
+
+        for image_obj in images_to_remove:
+            logger.debug('ZZZ removing image object')
+            remove_image(image_obj)
+
+        threads = []
+
+        def make_image(image):
             created_image = self._create_image(image)
             new_current_images[make_key_from_image(image)] = created_image
+            if image_coordinates(image) in matched_images_dict.keys():
+                rospy.Timer(rospy.Duration(2), partial(remove_image, matched_images_dict[image_coordinates(image)]), oneshot=True)
+
+        for image in images_to_add:
+            thread = Thread(target=make_image, args=(image,))
+            threads.append(thread)
+            thread.start()
+        for thread in threads:
+            thread.join()
 
         self.current_images = new_current_images
+        logger.error("finished handling image views")
 
     def _create_image(self, image):
         if image.transparent:
@@ -114,20 +161,25 @@ class ImageViewer():
         r = requests.get(image.url)
         with open(image_path, 'wb') as f:
             f.write(r.content)
-        command = '/usr/bin/pqiv -c -i -T {} -P {},{} {}'.format(
+        opts = '-t'
+        if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
+            opts = ''
+
+        command = '/usr/bin/pqiv -c -i {} --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
+            opts,
             image.uuid,
             image.geometry.x,
             image.geometry.y,
             image_path
         ).split()
-        rospy.logdebug('command is {}'.format(command))
+        logger.info('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path=image_path)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
         return image
 
     def _create_feh(self, image):
-        command = '/usr/bin/feh --image-bg black --no-screen-clip -x --title {} --geometry {}x{}+{}+{} {}'.format(
+        command = '/usr/bin/feh --scale-down --image-bg black --no-screen-clip -x --title {} --geometry {}x{}+{}+{} {}'.format(
             image.uuid,
             image.geometry.width,
             image.geometry.height,
@@ -135,7 +187,7 @@ class ImageViewer():
             image.geometry.y,
             image.url
         ).split()
-        rospy.logdebug('command is {}'.format(command))
+        logger.debug('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='feh', img_path=None)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)
@@ -145,7 +197,7 @@ class ImageViewer():
 def main():
     rospy.init_node('image_viewer')
 
-    # rospy.logerr('starting outputin...')
+    # logger.error('starting outputin...')
     viewports = [param.strip() for param in rospy.get_param('~viewports', '').split(',')]
     save_dir = rospy.get_param('~save_dir', 'images')
     save_path = '/tmp/{}'.format(save_dir)

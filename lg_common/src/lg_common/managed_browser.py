@@ -3,37 +3,52 @@ import rospy
 import socket
 import shutil
 import os
+import requests
+import threading
 
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.tcp_relay import TCPRelay
 from lg_msg_defs.msg import ApplicationState
 from tornado.websocket import websocket_connect
 
+from lg_common.logger import get_logger
+logger = get_logger('managed_browser')
+
 DEFAULT_BINARY = '/usr/bin/google-chrome'
 DEFAULT_ARGS = [
-    '--enable-gpu-rasterization',
     '--no-first-run',
     '--no-sandbox',
     '--test-type',  # only needed to ignore --no-sandbox's warning message
     '--allow-file-access-from-files',
+    '--allow-running-insecure-content',
     '--disable-default-apps',
     '--disable-java',
     '--disable-session-storage',
     '--disable-translate',
     '--touch-events=enabled',
-    '--disable-pinch',
-    '--overscroll-history-navigation=0',
-    '--allow-running-insecure-content',
     '--disable-touch-editing',
-    '--v=1',
-    '--enable-webgl',
-    '--ignore-gpu-blacklist',
-    '--touch-events=enabled',
     '--disable-pinch',
     '--overscroll-history-navigation=0',
+    '--v=1',
     '--autoplay-policy=no-user-gesture-required',
     '--check-for-update-interval=1209600',
+    '--simulate-outdated-no-au=\'Tue, 31 Dec 2099 23:59:59 GMT\'',
+    '--ignore-gpu-blacklist',
+    '--ignore-gpu-blocklist',
+    '--enable-gpu-rasterization',
+    '--enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOopRasterization',
+    '--disable-gpu-driver-bug-workarounds',
+    '--disable-features=UseChromeOSDirectVideoDecoder',
 ]
+
+
+def set_interval(func, sec):
+    def func_wrapper():
+        set_interval(func, sec)
+        func()
+    t = threading.Timer(sec, func_wrapper)
+    t.start()
+    return t
 
 
 class ManagedBrowser(ManagedApplication):
@@ -47,6 +62,7 @@ class ManagedBrowser(ManagedApplication):
         binary=DEFAULT_BINARY,
         remote_debugging_port=None,
         app=False,
+        reload_aw_snap=False,
         shell=True,
         command_line_args=[],
         default_args_removal=[],
@@ -57,6 +73,7 @@ class ManagedBrowser(ManagedApplication):
         user_agent='',
         pepper_flash_dir='/home/lg/inc/PepperFlash',
         pnacl_dir='/home/lg/inc/pnacl',
+        layer=ManagedWindow.LAYER_NORMAL,
         **kwargs
     ):
 
@@ -91,11 +108,11 @@ class ManagedBrowser(ManagedApplication):
         self.user_data_dir = user_data_dir
 
         if self.user_data_dir:
-            rospy.logdebug('using data dir {}'.format(self.user_data_dir))
+            logger.debug('using data dir {}'.format(self.user_data_dir))
             self.tmp_dir = '/tmp/user_data_dirs/{}'.format(self.user_data_dir)
         else:
             self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
-            rospy.logdebug('clearing tmp dir {}'.format(self.tmp_dir))
+            logger.debug('clearing tmp dir {}'.format(self.tmp_dir))
         self.clear_tmp_dir()
         self.pepper_flash_dir = pepper_flash_dir
         self.pnacl_dir = pnacl_dir
@@ -109,7 +126,7 @@ class ManagedBrowser(ManagedApplication):
             for extension in extensions:
                 if not os.path.isdir(extension):
                     extensions.remove(extension)
-                    rospy.logwarn("Could not load extension from %s because dir does not exist" % extension)
+                    logger.warning("Could not load extension from %s because dir does not exist" % extension)
             if extensions:
                 cmd.append('--load-extension={}'.format(','.join(extensions)))
 
@@ -148,19 +165,27 @@ class ManagedBrowser(ManagedApplication):
                 cmd.append(url)
 
         # finishing command line and piping output to logger
-        rospy.logdebug("Starting cmd: %s" % cmd)
+        logger.debug("Starting cmd: %s" % cmd)
 
         # Different versions of Chrome use different window instance names.
         # Matching the tmp_dir should work for all of them.
-        w_instance = '({})'.format(self.tmp_dir)
-        window = ManagedWindow(w_instance=w_instance, geometry=geometry, chrome_kiosk_workaround=kiosk)
+        w_instance = 'google-chrome ({})'.format(self.tmp_dir)
+        window = ManagedWindow(
+            w_instance=w_instance,
+            geometry=geometry,
+            chrome_kiosk_workaround=kiosk,
+            layer=layer,
+        )
 
-        rospy.logdebug("Command {}".format(cmd))
+        logger.debug("Command {}".format(cmd))
+
+        if (reload_aw_snap):
+            self.set_aw_snap_timer()
 
         # clean up after thyself
         rospy.on_shutdown(self.clear_tmp_dir)
 
-        super(ManagedBrowser, self).__init__(cmd=cmd, window=window)
+        super(ManagedBrowser, self).__init__(cmd=cmd, window=window, stdout=open('/{}/browser.log'.format(self.tmp_dir), 'w'), stderr=open('/{}/browser_error.log'.format(self.tmp_dir), 'w'))
 
     def post_init(self):
         super(ManagedBrowser, self).post_init()
@@ -181,19 +206,19 @@ class ManagedBrowser(ManagedApplication):
             if self.user_data_dir:
                 return  # this is fine
             else:
-                rospy.logerr("Temp dir exists for chrome already")
+                logger.error("Temp dir exists for chrome already")
         try:
             os.mkdir(self.tmp_dir)
             os.mkdir(self.tmp_dir + '/PepperFlash')
         except Exception:
-            rospy.logerr("Error trying to make the tmp dir, could exist already")
+            logger.error("Error trying to make the tmp dir, could exist already")
 
         # Link NaCl component. https://github.com/EndPointCorp/lg_ros_nodes/issues/357
         try:
             os.symlink(self.pnacl_dir, os.path.join(self.tmp_dir, 'pnacl'))
-            rospy.loginfo("Linked `pnacl` directory %s" % self.pnacl_dir)
+            logger.info("Linked `pnacl` directory %s" % self.pnacl_dir)
         except Exception as e:
-            rospy.logerr("Error linking pNaCl, %s" % e)
+            logger.error("Error linking pNaCl, %s" % e)
 
         try:
             os.symlink(self.pepper_flash_dir + '/flash_dir', "%s/PepperFlash/flash_dir" % self.tmp_dir)
@@ -202,20 +227,20 @@ class ManagedBrowser(ManagedApplication):
             with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "w") as f:
                 f.write(out.replace("${TMP_DIR}", self.tmp_dir))
         except Exception as e:
-            rospy.logerr("Error copying pepper flash into the tmp dir, %s" % e)
+            logger.error("Error copying pepper flash into the tmp dir, %s" % e)
 
     def clear_tmp_dir(self):
         """
         Clears out all temporary files and disk cache for this instance.
         """
         if self.user_data_dir:
-            rospy.logerr('not clearing, because user data dir')
+            logger.error('not clearing, because user data dir')
             return
         try:
-            rospy.logerr("Purging ManagedBrowser directory: %s" % self.tmp_dir)
+            logger.error("Purging ManagedBrowser directory: %s" % self.tmp_dir)
             shutil.rmtree(self.tmp_dir)
         except OSError as e:
-            rospy.logdebug("Could not purge the %s directory because %s" % (self.tmp_dir, e))
+            logger.debug("Could not purge the %s directory because %s" % (self.tmp_dir, e))
 
     @staticmethod
     def get_os_port():
@@ -228,11 +253,32 @@ class ManagedBrowser(ManagedApplication):
         sock.close()
         return port
 
+    def list_pages_available_for_debug(self):
+        debug_url = 'http://localhost:{}/json/list'.format(self.debug_port)
+        return requests.get(debug_url).json()
+
+    def set_aw_snap_timer(self):
+        self.aw_snap_interval = set_interval(self.check_alive_and_reload, 1)
+
+    def check_alive_and_reload(self):
+        if not self.check_alive():
+            logger.error("Browser is probably dead")
+            self.reload_page()
+
+    def reload_page(self):
+        pid = self.proc.get_pid()
+        if pid:
+            cmd = "DISPLAY=:0 xdotool search --onlyvisible --all --pid {} --class Chrome windowfocus key F5".format(pid)
+            os.system(cmd)
+
+    def check_alive(self):
+        return len(self.list_pages_available_for_debug()) > 0
+
     def send_debug_sock_msg(self, msg):
         """
         Writes a string to the browser's debug web socket.
         """
-        rospy.warn(
+        logger.warning(
             'ManagedBrowser.send_debug_sock_msg() probably not yet working'
         )
         ws_url = 'ws://localhost:{}'.format(self.debug_port)
