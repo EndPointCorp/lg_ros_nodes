@@ -57,9 +57,9 @@ class StatsHandler():
             # then in that case close the stats for the previous presentation and push the data point
             self.write_data()
         pres = {}
-        pres['scene_name'] = scene.get('name', 'unknown')
+        pres['scene_name'] = scene.get('scene_name', 'unknown')
         pres['slug'] = scene.get('slug', 'unknown')
-        pres['presentation_name'] = scene.get('name', 'unknown')
+        pres['presentation_name'] = scene.get('presentation_name', 'unknown')
         pres['created_by'] = scene.get('created_by', 'unknown')
         pres['hostname'] = get_hostname()
         pres['played_from'] = scene.get('played_from', 'unknown')
