@@ -198,9 +198,7 @@ class AttractLoop:
 
         # Add source attributes to presentation and scene
         full_presentation['played_from'] = 'lg_attract_loop'
-        full_presentation['scene'] = full_scene.get('name', '')
         full_scene['played_from'] = 'lg_attract_loop'
-        full_scene['presentation'] = full_presentation.get('name', '')
         
         scene_msg = GenericMessage(type='json', message=json.dumps(full_scene))
         presentation_msg = GenericMessage(type='json', message=json.dumps(full_presentation))
@@ -283,11 +281,11 @@ class AttractLoop:
 
         return content
 
-    def _fetch_presentation_by_slug(self, presentation_slug):
+    def _fetch_presentation_by_slug(self, presentation_name):
         """
         Accepts slug of presentation and fetches full object of presentation
         """
-        full_presentation = json.loads(self.api_proxy.get("/director_api/presentation/%s/" % presentation_slug))
+        full_presentation = json.loads(self.api_proxy.get("/director_api/presentation/%s/" % presentation_name))
         return full_presentation
 
     def _fetch_by_resource_uri(self, resource_uri):
