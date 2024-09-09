@@ -77,6 +77,7 @@ class ImageViewer():
                 
                 self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = {}
                 self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['no_upscale'] = window.get('activity_config', {}).get('no_upscale', False)
+                self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['slideshow'] = window.get('activity_config', {}).get('slideshow', False)
 
         logger.error(f"ZZZ {windows_to_add}")
         self.handle_image_views(windows_to_add)
@@ -164,14 +165,17 @@ class ImageViewer():
         opts = '-t'
         if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
             opts = ''
+        if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('slideshow', False):
+            opts += ' --slideshow'
+            image_path = self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('slideshow', False)
 
-        command = '/usr/bin/pqiv -c -i {} --scale-mode-screen-fraction=1.0 -T {} -P {},{} {}'.format(
+        command = '/usr/bin/pqiv -c -i --scale-mode-screen-fraction=1.0 {} -P {},{} {}'.format(
             opts,
-            image.uuid,
             image.geometry.x,
             image.geometry.y,
             image_path
         ).split()
+
         logger.info('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path=image_path)
         image.set_state(ApplicationState.STARTED)
