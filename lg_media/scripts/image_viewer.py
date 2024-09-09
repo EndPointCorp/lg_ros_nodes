@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from urllib.parse import urlparse
 from threading import Lock, Thread
 from functools import partial
 import json
@@ -16,6 +17,8 @@ from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 from lg_common.logger import get_logger
 logger = get_logger('image_viewer')
 
+
+img_folder = "/media/ros_cms_default_assets"
 
 def image_coordinates(image):
     return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
@@ -52,7 +55,7 @@ class ImageViewer():
             logger.warning('Director message did not contain valid json')
             return
         except TypeError:
-            logger.warning('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
+            logger.warning('Director message did not contain valid type. Type was %s, and content was: %s' % (type(message), message))
             return
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
@@ -157,10 +160,10 @@ class ImageViewer():
             return self._create_feh(image)
 
     def _create_pqiv(self, image):
-        image_path = self.save_path + '/{}'.format(image.uuid)
-        r = requests.get(image.url)
-        with open(image_path, 'wb') as f:
-            f.write(r.content)
+        parsed_url = urlparse(image.url)
+        img_filename = parsed_url.path
+        image_path = os.path.join(img_folder, img_filename)
+
         opts = '-t'
         if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
             opts = ''
