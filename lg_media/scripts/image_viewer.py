@@ -128,8 +128,6 @@ class ImageViewer():
         def remove_image(image_obj, *args, **kwargs):
             logger.debug('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
-            if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
-                os.remove(image_obj.img_path)
 
         for image_obj in images_to_remove:
             logger.debug('ZZZ removing image object')
@@ -161,7 +159,7 @@ class ImageViewer():
 
     def _create_pqiv(self, image):
         parsed_url = urlparse(image.url)
-        img_filename = parsed_url.path
+        img_filename = os.path.basename(parsed_url.path)
         image_path = os.path.join(img_folder, img_filename)
 
         opts = '-t'
