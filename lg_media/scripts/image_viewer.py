@@ -18,7 +18,7 @@ from lg_common.logger import get_logger
 logger = get_logger('image_viewer')
 
 
-img_folder = "/media/ros_cms_default_assets"
+nfs_path = "/media/ros_cms_default_assets"
 
 def image_coordinates(image):
     return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
@@ -128,6 +128,8 @@ class ImageViewer():
         def remove_image(image_obj, *args, **kwargs):
             logger.debug('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
+            if image_obj.img_application == 'pqiv' and nfs_path not in image_obj.img_path and os.path.exists(image_obj.img_path):
+                os.remove(image_obj.img_path)
 
         for image_obj in images_to_remove:
             logger.debug('ZZZ removing image object')
@@ -139,7 +141,7 @@ class ImageViewer():
             created_image = self._create_image(image)
             new_current_images[make_key_from_image(image)] = created_image
             if image_coordinates(image) in matched_images_dict.keys():
-                rospy.Timer(rospy.Duration(2), partial(remove_image, matched_images_dict[image_coordinates(image)]), oneshot=True)
+                rospy.Timer(rospy.Duration(1.5), partial(remove_image, matched_images_dict[image_coordinates(image)]), oneshot=True)
 
         for image in images_to_add:
             thread = Thread(target=make_image, args=(image,))
@@ -160,8 +162,13 @@ class ImageViewer():
     def _create_pqiv(self, image):
         parsed_url = urlparse(image.url)
         img_filename = os.path.basename(parsed_url.path)
-        image_path = os.path.join(img_folder, img_filename)
-
+        image_path = os.path.join(nfs_path, img_filename)
+        if not os.path.exists(image_path):
+            logger.warning('Downloading Image, not in nfs assets folder: {}'.format(image_path))
+            image_path = self.save_path + '/{}'.format(image.uuid)
+            r = requests.get(image.url)
+            with open(image_path, 'wb') as f:
+                f.write(r.content)
         opts = '-t'
         if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
             opts = ''
