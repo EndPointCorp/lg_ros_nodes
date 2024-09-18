@@ -20,7 +20,7 @@
   <run_depend>std_srvs</run_depend>
   <run_depend>interactivespaces_msgs</run_depend>
   <run_depend>rospy</run_depend>
-  <run_depend>rosbridge_suite</run_depend>
+  <run_depend version_gte="0.11.7">rosbridge_suite</run_depend>
   <run_depend>lg_msg_defs</run_depend>
 	  <!-- <run_depend>socat</run_depend> -->
   <test_depend>rostest</test_depend>
