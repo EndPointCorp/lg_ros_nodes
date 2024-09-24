@@ -15,7 +15,7 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 from lg_common.logger import get_logger
 logger = get_logger('image_viewer')
-
+nfs_path = "/media/ros_cms_default_assets"
 
 def image_coordinates(image):
     return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
@@ -167,7 +167,11 @@ class ImageViewer():
             opts = ''
         if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('slideshow', False):
             opts += ' --slideshow'
-            image_path = self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('slideshow', False)
+            images = self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('slideshow', False)
+            if images:
+                files = images.split()
+                updated_files = [f"{nfs_path}/{file}" for file in files]
+                image_path = ' '.join(updated_files)
 
         command = '/usr/bin/pqiv -c -i --scale-mode-screen-fraction=1.0 {} -P {},{} {}'.format(
             opts,
