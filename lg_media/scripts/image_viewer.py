@@ -20,8 +20,6 @@ from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 from lg_common.logger import get_logger
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
 logger = get_logger('image_viewer')
 
 def image_coordinates(image):
@@ -32,7 +30,7 @@ class Image(ManagedApplication):
         self.img_application = img_application
         self.img_path = img_path
         super(Image, self).__init__(cmd, window=window, respawn=respawn)
-        self.image = None  # Store ImageView object
+        self.image = None  # to store ImageView object
 
 class ImageViewer():
     def __init__(self, viewports, save_path):
@@ -41,7 +39,6 @@ class ImageViewer():
         self.save_path = save_path
         self.lock = Lock()
         self.graphic_opts = {}
-        self.geometry = None
 
     def director_translator(self, data):
         logger.debug("Processing director message")
@@ -89,11 +86,6 @@ class ImageViewer():
         socket_path = f"/tmp/tiv_socket_{geometry_str}.sock"
         return socket_path
 
-#    def _get_socket_path_from_geometry(self, geometry):
-#        geometry_str = sanitize_geometry(geometry)
-#        socket_path = f"/tmp/tiv_socket_{geometry_str}.sock"
-#        return socket_path
-
     def handle_image_views(self, msg):
         with self.lock:
             self._handle_image_views(msg)
@@ -107,29 +99,24 @@ class ImageViewer():
             geometry_key = image_coordinates(image)
             logger.debug(f"Processing image with geometry key: {geometry_key}")
 
-            # Check if an image with the same geometry is already displayed
-            existing_image = self.current_images.get(geometry_key)
+            existing_image = self.current_images.get(geometry_key, False)
 
             if existing_image:
                 if existing_image.image.url == image.url:
-                    # The image is the same; keep it
                     logger.debug(f"Image with geometry {geometry_key} is already displayed; keeping it.")
                     new_current_images[geometry_key] = existing_image
                     images_to_remove.pop(geometry_key, None)
                 else:
-                    # Different image but same geometry; update the image with transition
                     logger.debug(f"Updating image at geometry {geometry_key} with a new image.")
                     self._update_image(existing_image, image)
                     new_current_images[geometry_key] = existing_image
                     images_to_remove.pop(geometry_key, None)
             else:
-                # No existing image at this geometry; create a new one
                 logger.debug(f"Creating new image at geometry {geometry_key}.")
                 created_image = self._create_tiv(image)
                 if created_image:
                     new_current_images[geometry_key] = created_image
 
-        # Remove images that are no longer needed
         for geometry_key, image_obj in images_to_remove.items():
             logger.debug(f"Removing image at geometry {geometry_key}.")
             self._remove_image(image_obj)
@@ -168,14 +155,13 @@ class ImageViewer():
 
     def _reload_image(self, image_obj, new_image, transition):
         logger.debug(f"Reloading image in application for {image_obj}")
-
-        filename = os.path.basename(new_image.url)
-        nfs_folder = '/media/ros_cms_default_assets'
-        image_path = os.path.join(nfs_folder, filename)
-        if os.path.exists(image_path):
-            logger.debug(f"Image found in nfs_folder: {image_path}")
-        else:
-            # If not, fetch it via requests and save to self.save_path
+        image_path = self._get_local_image_path(new_image.url)
+        #filename = os.path.basename(new_image.url)
+        #nfs_folder = '/media/ros_cms_default_assets'
+        #image_path = os.path.join(nfs_folder, filename)
+        if not os.path.exists(image_path):
+            # fetch it via requests and save to self.save_path
+            filename = os.path.basename(image.url)
             logger.debug(f"Image not found in nfs_folder, downloading from URL: {new_image.url}")
             image_path = os.path.join(self.save_path, filename)
             try:
@@ -203,14 +189,9 @@ class ImageViewer():
             logger.error(f"Failed to send command to image viewer at {socket_path}: {e}")
 
     def _create_tiv(self, image):
-        # Extract filename from URL
-        filename = os.path.basename(image.url)
-        nfs_folder = '/media/ros_cms_default_assets'
-        image_path = os.path.join(nfs_folder, filename)
-        if os.path.exists(image_path):
-            #logger.debug(f"Image found in nfs_folder: {image_path}")
-            pass
-        else:
+        image_path = self._get_local_image_path(image.url)
+        if not os.path.exists(image_path):
+            filename = os.path.basename(image.url)
             # If not, fetch it via requests and save to self.save_path
             logger.debug(f"Image not found in nfs_folder, downloading from URL: {image.url}")
             image_path = os.path.join(self.save_path, filename)
@@ -256,11 +237,11 @@ class ImageViewer():
         if self.graphic_opts.get(image_coordinates(image), {}).get('slideshow', False):
             # If slideshow images are specified, add them to the command
             slideshow_names = self.graphic_opts.get(image_coordinates(image)).get('slideshow', [])
-            slideshow_full_names = [nfs_folder + '/' + name for name in slideshow_names.split()] 
-            if slideshow_full_names:
+            slideshow_local_paths = [self._get_local_image_path(image_name) for image_name in slideshow_names.split()] 
+            if slideshow_local_paths:
                 command.append('--slideshow')
-                command.extend(slideshow_full_names)
-        #### here after skudeshow images if any
+                command.extend(slideshow_local_paths)
+        #### here after slideshow images if any
         command.append(image_path)
 
         logger.info('Launching image viewer with command: {}'.format(command))
@@ -271,7 +252,7 @@ class ImageViewer():
         return image_obj
 
     def _send_image_to_socket(self, socket_path, image, transition, retries=5, delay=0.3):
-        image_path = self._get_local_image_path(image)
+        image_path = self._get_local_image_path(image.url)
         command = f"UPDATE_IMAGE {image_path} {transition or ''}"
         logger.debug(f"Sending command to socket {socket_path}: {command}")
  
@@ -292,7 +273,7 @@ class ImageViewer():
                     logger.error(f"All retries failed to connect to socket {socket_path}")
 
     def _get_local_image_path(self, image):
-        filename = os.path.basename(image.url)
+        filename = os.path.basename(image)
         nfs_folder = '/media/ros_cms_default_assets'
         image_path = os.path.join(nfs_folder, filename)
         if os.path.exists(image_path):
