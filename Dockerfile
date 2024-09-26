@@ -53,6 +53,7 @@ RUN \
     python3-netifaces \
     python3-serial \
     python3-tornado \
+    python3-pyqt5 \
     git sudo \
     curl tmux git \
     xvfb x11-apps \

@@ -18,10 +18,10 @@ from copy import copy
 from lg_common.logger import get_logger
 logger = get_logger('image_checker')
 
-PGREP_CMD = ['pgrep', '-a', 'feh']
+PGREP_CMD = ['pgrep', '-a', 'tiv.py']
 EGREP_CMD = ['egrep', '-o', 'http?://[^ ]+']
 PARTIAL_KILLER_CMD = ['pkill', '-9', '-f']
-IMAGE_PROCS_TO_KILL = ['image_viewer.py', '/usr/bin/feh', '/usr/bin/pqiv']
+IMAGE_PROCS_TO_KILL = ['image_viewer.py', '/usr/bin/tiv.py']
 LOOP_TIMEOUT = 5
 
 
