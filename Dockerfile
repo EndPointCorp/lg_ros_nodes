@@ -140,6 +140,7 @@ COPY lg_earth/package.xml ${PROJECT_ROOT}/lg_earth/package.xml
 COPY lg_json_config/package.xml ${PROJECT_ROOT}/lg_json_config/package.xml
 COPY lg_keyboard/package.xml ${PROJECT_ROOT}/lg_keyboard/package.xml
 COPY lg_media/package.xml ${PROJECT_ROOT}/lg_media/package.xml
+COPY lg_media/scripts/tiv.py /usr/bin/tiv.py
 COPY lg_mirror/package.xml ${PROJECT_ROOT}/lg_mirror/package.xml
 COPY lg_msg_defs/package.xml ${PROJECT_ROOT}/lg_msg_defs/package.xml
 COPY lg_nav_to_device/package.xml ${PROJECT_ROOT}/lg_nav_to_device/package.xml
