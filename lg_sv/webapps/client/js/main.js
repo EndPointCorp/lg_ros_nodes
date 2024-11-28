@@ -158,13 +158,17 @@ var initializeRes = function(ros, yawOffset) {
 
   var svService = new google.maps.StreetViewService();
 
-  function handlePanoChanged(panoId) {
+  function handlePanoChanged({panoId, zoom=false}) {
     sv.setPano(panoId);
-    if (shouldTilt) {
-      var fovFudge = getFovFudge(fieldOfView);
-      var zoomLevel = getZoomLevel(fieldOfView * scaleFactor * fovFudge);
+    if (zoom) {
+      zoomLevel = zoom
     } else {
-      var zoomLevel = getZoomLevel(fieldOfView);
+      if (shouldTilt) {
+        var fovFudge = getFovFudge(fieldOfView);
+        var zoomLevel = getZoomLevel(fieldOfView * scaleFactor * fovFudge);
+      } else {
+        var zoomLevel = getZoomLevel(fieldOfView);
+      }
     }
     sv.setZoom(zoomLevel);
     if (lastPov) {
@@ -199,13 +203,15 @@ var initializeRes = function(ros, yawOffset) {
       pov.z = sv_window['activity_config']['heading'];
     if (sv_window['activity_config']['tilt'])
       pov.x = sv_window['activity_config']['tilt'];
+    
+    var zoom = sv_window['activity_config']?.['zoom'] || false;
 
 
     if (panoid[0] == '-' && panoid.search("%2F") > -1)
       panoid = "F:" + panoid;
 
     console.log("Emitting " + panoid + " with pov " + pov);
-    svClient.emit('pano_changed', panoid);
+    svClient.emit('pano_changed', {'panoid': panoid, 'zoom': zoom});
     svClient.emit('pov_changed', pov);
   }
   svClient.on('director_message', handleDirectorMessage);
