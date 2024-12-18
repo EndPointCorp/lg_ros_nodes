@@ -2,7 +2,7 @@ import rospy
 import os
 import pyinotify
 import sys
-import collections
+from collections.abc import Callable
 from lg_common.logger import get_logger
 logger = get_logger('query_notifier')
 
@@ -29,7 +29,7 @@ class QueryNotifier():
         )
 
     def add_delete_handler(self, handler):
-        assert isinstance(handler, collections.Callable)
+        assert isinstance(handler, Callable)
         self.delete_handlers.append(handler)
 
     def handle_delete(self, *args, **kwargs):
