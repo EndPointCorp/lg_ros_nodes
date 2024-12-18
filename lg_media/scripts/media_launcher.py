@@ -66,7 +66,7 @@ def main():
     if rospy.has_param("~viewports"):
         viewports = [v.strip() for v in rospy.get_param("~viewports").strip().split(",")]
     else:
-        viewports = rospy.get_param("/viewport/").keys()
+        viewports = [k.strip() for k in rospy.get_param_names() if k.startswith("/viewport/")]
     logger.info(f"configured viewports: {viewports}")
 
     rospy.Subscriber(
