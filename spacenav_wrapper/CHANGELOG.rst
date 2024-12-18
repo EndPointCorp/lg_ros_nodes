@@ -38,6 +38,9 @@ Changelog for package spacenav_wrapper
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+
 3.9.0 (2024-02-06)
 ------------------
 

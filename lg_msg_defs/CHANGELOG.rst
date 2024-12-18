@@ -29,6 +29,11 @@ Changelog for package lg_msg_defs
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Fix lg_msg_defs/Active srv definition
+* Contributors: Matt Vollrath
+
 3.9.0 (2024-02-06)
 ------------------
 

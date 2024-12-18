@@ -30,6 +30,11 @@ Changelog for package lg_media
 3.3.13 (2021-09-21)
 -------------------
 
+Forthcoming
+-----------
+* Parameter filtering compatibility
+* Contributors: Matt Vollrath
+
 3.9.0 (2024-02-06)
 ------------------
 
