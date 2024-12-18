@@ -50,8 +50,8 @@ Changelog for package lg_earth
   * Update init_workspace
 * Contributors: Tino
 
-Forthcoming
------------
+3.9.1 (2024-12-17)
+------------------
 * Fix Python 3.10 compat in query_notifier
 * Contributors: Matt Vollrath
 
