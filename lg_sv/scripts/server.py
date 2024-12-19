@@ -110,7 +110,7 @@ def main():
             return
         if scene.get('slug', '') == 'auto_generated_sv_scene':
             logger.debug("Ignoring my own generated message")
-            asset = get_activity_config_from_activity(scene, _server_type)
+            asset = get_activity_config_or_asset(scene, _server_type)
             panoid = asset.get('panoid', '')
             logger.debug("length of panoid is %s server type %s" % (len(panoid), server_type))
             logger.debug("panoid is %s" % panoid)

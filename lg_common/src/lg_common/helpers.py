@@ -306,6 +306,16 @@ def get_activity_config_from_activity(scene, activity):
 
     return window.get('activity_config', {})
 
+def get_activity_config_or_asset(scene, activity):
+    """
+    First checks for activity config, then if blank it will
+    return the first asset itself.
+    """
+    config = get_activity_config_from_activity(scene, activity)
+    if config:
+        return config
+    return get_first_asset_from_activity(scene, activity)
+
 
 def get_first_asset_from_activity(scene, activity):
     """
