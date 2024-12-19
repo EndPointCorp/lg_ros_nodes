@@ -126,7 +126,7 @@ def main():
             return
 
         if server_type == 'streetview':
-            asset = get_activity_config_from_activity(scene, server_type)
+            asset = get_activity_config_or_asset(scene, server_type)
             panoid = asset.get('panoid', '')
         else:
             panoid = scene['windows'][0]['assets'][0]
