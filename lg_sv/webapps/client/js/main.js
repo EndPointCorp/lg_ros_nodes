@@ -193,12 +193,16 @@ var initializeRes = function(ros, yawOffset) {
     if (is_streetview == false)
       return;
 
-    var panoid = sv_window['activity_config']['panoid'];
+    var panoid = sv_window['activity_config']['panoid'] || sv_window['assets'][0]['panoid'];
     var pov = lastPov || {};
     if (sv_window['activity_config']['heading'])
       pov.z = sv_window['activity_config']['heading'];
+    else if (sv_window['assets'][0]['heading'])
+      pov.z = sv_window['assets'][0]['heading'];
     if (sv_window['activity_config']['tilt'])
       pov.x = sv_window['activity_config']['tilt'];
+    else if (sv_window['assets'][0]['tilt'])
+      pov.x = sv_window['assets'][0]['tilt'];
 
 
     if (panoid[0] == '-' && panoid.search("%2F") > -1)
