@@ -35,8 +35,8 @@ Changelog for package lg_media
 * Parameter filtering compatibility
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.2 (2024-12-23)
+------------------
 * 3.9.1
 * Changelogs
 * Parameter filtering compatibility

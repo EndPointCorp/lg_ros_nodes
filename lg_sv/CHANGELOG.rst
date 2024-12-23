@@ -31,8 +31,8 @@ Changelog for package lg_sv
 3.9.1 (2024-12-17)
 ------------------
 
-Forthcoming
------------
+3.9.2 (2024-12-23)
+------------------
 * fix up javascript to look for assets location of data too
 * importing
 * one more place to change

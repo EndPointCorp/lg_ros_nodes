@@ -50,8 +50,8 @@ Changelog for package lg_common
 3.9.1 (2024-12-17)
 ------------------
 
-Forthcoming
------------
+3.9.2 (2024-12-23)
+------------------
 * fix for sv to grab data out of asset instead of activity config
 * 3.9.1
 * Changelogs

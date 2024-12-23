@@ -41,8 +41,8 @@ Changelog for package spacenav_wrapper
 3.9.1 (2024-12-17)
 ------------------
 
-Forthcoming
------------
+3.9.2 (2024-12-23)
+------------------
 * 3.9.1
 * Changelogs
 * Contributors: Matt Vollrath
