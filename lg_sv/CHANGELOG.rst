@@ -31,6 +31,16 @@ Changelog for package lg_sv
 3.9.1 (2024-12-17)
 ------------------
 
+Forthcoming
+-----------
+* fix up javascript to look for assets location of data too
+* importing
+* one more place to change
+* fix for sv to grab data out of asset instead of activity config
+* 3.9.1
+* Changelogs
+* Contributors: Jacob Minshall, Matt Vollrath
+
 3.9.0 (2024-02-06)
 ------------------
 

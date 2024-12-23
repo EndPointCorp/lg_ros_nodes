@@ -38,6 +38,12 @@ Changelog for package lg_mirror
 3.9.1 (2024-12-17)
 ------------------
 
+Forthcoming
+-----------
+* 3.9.1
+* Changelogs
+* Contributors: Matt Vollrath
+
 3.9.0 (2024-02-06)
 ------------------
 * Configurable spacenav viewport in touch_router
