@@ -44,8 +44,7 @@ if (!viewport) {
 var readinessFallbackDuration = getParameterByName('readiness_fallback_duration', Number, 2000);
 var visibilityDelay = getParameterByName('visibility_delay', Number, 1500);
 
-var ros = new ROSLIB.Ros();
-ros.connect(rosbridgeUrl);
+var ros = new ROSLIB.Ros({url: rosbridgeUrl});
 
 var readinessTopic = new ROSLIB.Topic({
   ros: ros,

@@ -10,7 +10,7 @@ function sendMinimizeMsg(params) {
     var wndid = params['ros_instance_name'];
     var rosurl = createRosUrl(params);
 
-    var ros = new ROSLIB.Ros();
+    var ros = new ROSLIB.Ros({url: rosurl});
     ros.on('connection', function() {
         console.log('Connection made!');
 
@@ -25,6 +25,4 @@ function sendMinimizeMsg(params) {
 
         topic.publish({'data': wndid});
     });
-
-    ros.connect(rosurl);
 }
