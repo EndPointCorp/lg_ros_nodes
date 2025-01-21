@@ -6,13 +6,17 @@ import json
 import rospy
 from interactivespaces_msgs.msg import GenericMessage
 
+
+IGNORED_SCENE_SLUGS = ["auto_generated_sv_scene"]
+
 def save_scene_played_time(data):
     """Callback for /director/scene listener, updates the played time for the scene."""
     #input_file_path = '/media/videos/scene_times.json'
-    json_file_path = '/home/lg/scene_times.json'
-    if os.path.exists(json_file_path):
-        with open(json_file_path, 'r') as file:
-            scene_times = json.load(file)
+    scene_times_path = '/home/lg/scene_times.json'
+    scene_infos_path = '/home/lg/scene_infos.json'
+    if os.path.exists(scene_times_path):
+        with open(scene_times_path, 'r') as times_file:
+            scene_times = json.load(times_file)
     else:
         scene_times = [] 
     try:
@@ -25,16 +29,46 @@ def save_scene_played_time(data):
     if message_dict:
         slug = message_dict.get('slug', None)
     else:
-        print(data)
+        print("failed to load: ", data)
         return
 
     if slug:
-        timestamp = time.time()
-        scene_times += [[timestamp, slug]]
+        try:
+            if slug not in IGNORED_SCENE_SLUGS:
+                timestamp = time.time()
+                scene_times += [[timestamp, slug]]
+ 
+                with open(scene_times_path, 'w') as times_file:
+                    json.dump(scene_times, times_file, indent=4)
+        except Exception as e:
+            print(f"something failed updating played time for scene with slug: {slug}")
 
-        with open(json_file_path, 'w') as file:
-            json.dump(scene_times, file, indent=4)
+        try:
+            if slug not in IGNORED_SCENE_SLUGS:
+                scene_duration = message_dict.get('duration', '0')
+                scene_name = message_dict.get('scene_name', None)
+ 
+                if os.path.exists(scene_infos_path):
+                    with open(scene_infos_path, 'r') as info_file:
+                        scene_infos = json.load(info_file)
+                else:
+                    scene_infos = {}
+ 
+                if scene_infos.get(slug, {}).get("scene_name", None) != scene_name or scene_infos.get(slug, {}).get("duration", "0") != scene_duration:
+                    scene_infos[slug] = {}
+                    scene_infos[slug]["scene_name"] = scene_name
+                    scene_infos[slug]["duration"] = scene_duration
+ 
+                    with open(scene_infos_path, 'w') as info_file:
+                        json.dump(scene_infos, info_file, indent=4)
+ 
+            else:
+                print("skipped scene with slug marked to ignore")
+        except Exception as e:
+            print(f"something failed updating info for scene with slug: {slug}")
 
+    else:
+        print("skipped scene bc no slug was found")
 
 if __name__ == "__main__":
     rospy.init_node('lg_active_scene')
