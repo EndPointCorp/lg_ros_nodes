@@ -1,0 +1,7 @@
+gstreamer1.0-tools
+gstreamer1.0-plugins-base libgstreamer-plugins-base1.0-0 gir1.2-gst-plugins-base-1.0
+python3-evdev
+xvfb
+gstreamer1.0-plugins-good libgstreamer-plugins-good1.0-0
+gstreamer1.0-x
+libboost-all-dev
