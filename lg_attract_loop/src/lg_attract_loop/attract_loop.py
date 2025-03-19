@@ -39,7 +39,7 @@ class AttractLoop:
                  director_presentation_publisher, stop_action,
                  earth_query_publisher, earth_planet_publisher,
                  default_presentation=None, default_planet='earth',
-                 set_earth=MockFunc, default_duration=120):
+                 set_earth=MockFunc, default_duration=20):
         """
         Class responsible for playing back presentations/scenes that are marked as "attract_loop"
         in Liquid Galaxy content management system.
@@ -173,11 +173,14 @@ class AttractLoop:
         """
         logger.debug("Populating attract loop queue with content")
         try:
-            if self.attract_loop_queue:
-                logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
-            else:
+            prompt_reload = Path("/mnt/videos/prompt_reload_file")
+            if not self.attract_loop_queue or prompt_reload.exists():
                 self.attract_loop_queue = self._fetch_attract_loop_content()
                 logger.debug("Populated attract_loop_queue with %s" % self.attract_loop_queue)
+                if prompt_reload.exists():
+                    prompt_reload.unlink()
+            else:
+                logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
             self._play_attract_loop_item()
         except Exception as e:
             logger.info("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
