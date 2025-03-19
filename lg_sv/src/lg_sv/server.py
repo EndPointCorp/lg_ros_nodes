@@ -314,6 +314,7 @@ class PanoViewerServer:
             tilt = self.pov.x
         message = {
             "slug": "auto_generated_sv_scene",
+            "duration": 45,
             "windows": [
                 {
                     "activity": self.server_type,
