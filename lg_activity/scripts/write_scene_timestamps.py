@@ -39,7 +39,7 @@ def save_scene_played_time(data):
                 scene_times += [[timestamp, slug]]
  
                 with open(scene_times_path, 'w') as times_file:
-                    json.dump(scene_times, times_file, indent=4)
+                    json.dump(scene_times[-20000:], times_file, indent=4)
         except Exception as e:
             print(f"something failed updating played time for scene with slug: {slug}")
 
@@ -59,8 +59,8 @@ def save_scene_played_time(data):
                     scene_infos[slug]["scene_name"] = scene_name
                     scene_infos[slug]["duration"] = scene_duration
  
-                    with open(scene_infos_path, 'w') as info_file:
-                        json.dump(scene_infos, info_file, indent=4)
+                    with open(scene_infos_path, 'w') as infos_file:
+                        json.dump(dict(list(scene_infos.items())[-2000:]), infos_file, indent=4)
  
             else:
                 print("skipped scene with slug marked to ignore")
