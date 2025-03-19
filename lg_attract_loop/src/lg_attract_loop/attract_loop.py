@@ -8,6 +8,7 @@ import requests
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
 from rosapi import params
+from pathlib import Path
 
 from lg_common.logger import get_logger
 logger = get_logger('attract_loop')
@@ -173,15 +174,22 @@ class AttractLoop:
         """
         logger.debug("Populating attract loop queue with content")
         try:
-            prompt_reload = Path("/mnt/videos/prompt_reload_file")
-            if not self.attract_loop_queue or prompt_reload.exists():
+            if self.attract_loop_queue:
+                try:
+                    prompt_reload = Path("/catkin/prompt_reload_file")
+                    if prompt_reload.exists():
+                        self.attract_loop_queue = self._fetch_attract_loop_content()
+                        logger.debug("FORCED Populated attract_loop_queue with %s" % self.attract_loop_queue)
+                        prompt_reload.unlink()
+                except Exception as e:
+                    logger.info(f"FAIL: {e}")
+
+                logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
+            else:
                 self.attract_loop_queue = self._fetch_attract_loop_content()
                 logger.debug("Populated attract_loop_queue with %s" % self.attract_loop_queue)
-                if prompt_reload.exists():
-                    prompt_reload.unlink()
-            else:
-                logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
             self._play_attract_loop_item()
+
         except Exception as e:
             logger.info("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
             rospy.sleep(60)
