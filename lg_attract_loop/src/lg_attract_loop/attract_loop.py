@@ -174,16 +174,23 @@ class AttractLoop:
         """
         logger.debug("Populating attract loop queue with content")
         try:
-            if self.attract_loop_queue:
-                try:
-                    prompt_reload = Path("/catkin/prompt_reload_file")
-                    if prompt_reload.exists():
-                        self.attract_loop_queue = self._fetch_attract_loop_content()
-                        logger.debug("FORCED Populated attract_loop_queue with %s" % self.attract_loop_queue)
-                        prompt_reload.unlink()
-                except Exception as e:
-                    logger.info(f"FAIL: {e}")
+            try:
+                prompt_reload = Path("/home/lg/prompt_reload")
+                prompt_next = Path("/home/lg/prompt_next")
+                if prompt_reload.exists():
+                    logger.info("FORCE Populateing attract_loop_queue")
+                    self.attract_loop_queue = []
+                    self.scene_timer = 0
+                    prompt_reload.unlink()
+                elif prompt_next.exists():
+                    logger.info("FORCE kipping to next scene")
+                    self.scene_timer = 0
+                    prompt_next.unlink()
 
+            except Exception as e:
+                logger.info(f"FAIL force reloading: {e}")
+
+            if self.attract_loop_queue:
                 logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
             else:
                 self.attract_loop_queue = self._fetch_attract_loop_content()
