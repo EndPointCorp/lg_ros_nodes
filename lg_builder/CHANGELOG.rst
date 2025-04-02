@@ -31,6 +31,11 @@ Changelog for package lg_builder
 3.9.1 (2024-12-17)
 ------------------
 
+Forthcoming
+-----------
+* Write sys.deps for all packages
+* Contributors: Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * 3.9.1

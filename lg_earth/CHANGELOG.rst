@@ -55,6 +55,11 @@ Changelog for package lg_earth
 * Fix Python 3.10 compat in query_notifier
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Write sys.deps for all packages
+* Contributors: Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * 3.9.1
