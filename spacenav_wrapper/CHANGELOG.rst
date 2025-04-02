@@ -41,8 +41,8 @@ Changelog for package spacenav_wrapper
 3.9.1 (2024-12-17)
 ------------------
 
-Forthcoming
------------
+3.9.3 (2025-04-02)
+------------------
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
