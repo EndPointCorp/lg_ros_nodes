@@ -175,8 +175,8 @@ class AttractLoop:
         logger.debug("Populating attract loop queue with content")
         try:
             try:
-                prompt_reload = Path("/home/lg/prompt_reload")
-                prompt_next = Path("/home/lg/prompt_next")
+                prompt_reload = Path("/mnt/videos/prompt_reload")
+                prompt_next = Path("/mnt/videos/prompt_next")
                 if prompt_reload.exists():
                     logger.info("FORCE Populateing attract_loop_queue")
                     self.attract_loop_queue = []
