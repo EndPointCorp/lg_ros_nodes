@@ -46,6 +46,13 @@ def main():
 
     while not rospy.is_shutdown():
         activity_tracker.poll_activities()
+        if activity_timeout != rospy.get_param('~activity_timeout', 120):
+            activity_timeout = rospy.get_param('~activity_timeout', 120)
+            activity_tracker = ActivityTracker(publisher=activity_publisher,
+                                               stats_activity_publisher=stats_activity_publisher,
+                                               timeout=activity_timeout,
+                                               stats_activity_timeout=stats_activity_timeout,
+                                               sources=activity_sources)
         rospy.sleep(1)
 
 
