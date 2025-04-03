@@ -12,8 +12,8 @@ IGNORED_SCENE_SLUGS = ["auto_generated_sv_scene"]
 def save_scene_played_time(data):
     """Callback for /director/scene listener, updates the played time for the scene."""
     #input_file_path = '/media/videos/scene_times.json'
-    scene_times_path = '/home/lg/scene_times.json'
-    scene_infos_path = '/home/lg/scene_infos.json'
+    scene_times_path = '/mnt/videos/scene_times.json'
+    scene_infos_path = '/mnt/videos/scene_infos.json'
     if os.path.exists(scene_times_path):
         with open(scene_times_path, 'r') as times_file:
             scene_times = json.load(times_file)
