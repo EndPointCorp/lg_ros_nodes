@@ -7,7 +7,6 @@ import requests
 
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
-from rosapi import params
 
 from lg_common.logger import get_logger
 logger = get_logger('attract_loop')
@@ -138,7 +137,7 @@ class AttractLoop:
         """
         logger.info("Playing blank scene")
 
-        viewports = [viewport.split('/')[2] for viewport in params.get_param_names(['/viewport/*'])]
+        viewports = [*rospy.get_param('/viewport').keys()]
 
         scene = {
             "description": "attract loop blank scene",
@@ -201,7 +200,7 @@ class AttractLoop:
         full_presentation['scene'] = full_scene.get('name', '')
         full_scene['played_from'] = 'lg_attract_loop'
         full_scene['presentation'] = full_presentation.get('name', '')
-        
+
         scene_msg = GenericMessage(type='json', message=json.dumps(full_scene))
         presentation_msg = GenericMessage(type='json', message=json.dumps(full_presentation))
 
