@@ -36,6 +36,13 @@ Changelog for package wiimote
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* 3.9.3
+* Changelogs
+* Write sys.deps for all packages
+* Contributors: Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * 3.9.1

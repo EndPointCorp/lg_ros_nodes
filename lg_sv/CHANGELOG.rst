@@ -36,6 +36,13 @@ Changelog for package lg_sv
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* 3.9.3
+* Changelogs
+* Write sys.deps for all packages
+* Contributors: Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * fix up javascript to look for assets location of data too

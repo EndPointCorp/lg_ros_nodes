@@ -34,6 +34,12 @@ Changelog for package lg_attract_loop
 3.9.3 (2025-04-02)
 ------------------
 
+Forthcoming
+-----------
+* 3.9.3
+* Changelogs
+* Contributors: Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * 3.9.1

@@ -56,6 +56,14 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* 3.9.3
+* Changelogs
+* Remove crufty rospy import
+* Write sys.deps for all packages
+* Contributors: Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * fix for sv to grab data out of asset instead of activity config
