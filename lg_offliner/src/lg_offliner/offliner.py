@@ -20,6 +20,7 @@ import rospy
 from std_msgs.msg import String, Bool
 
 from lg_common import helpers
+from lg_common.helpers import get_message_type_from_string
 from lg_msg_defs.srv import Offline
 
 
