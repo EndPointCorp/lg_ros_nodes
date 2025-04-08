@@ -208,7 +208,7 @@ def process_custom_publishers(send_on_online=None, send_on_offline=None):
     def process(senders):
         pub_senders = []
         for sender in senders:
-            msg_type = helpers.get_message_type_from_string(sender["message_type"])
+            msg_type = get_message_type_from_string(sender["message_type"])
             publisher = rospy.Publisher(sender["topic"], msg_type, queue_size=5)
             msg = msg_type()
             setattr(msg, sender["slot"], sender["value"])
