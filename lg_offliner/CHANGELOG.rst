@@ -36,6 +36,11 @@ Changelog for package lg_offliner
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* actually use the newly import version
+* Contributors: Jacob Minshall
+
 3.9.4 (2025-04-08)
 ------------------
 * import this helper directly for ease of replacing it
