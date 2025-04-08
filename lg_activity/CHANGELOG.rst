@@ -34,8 +34,8 @@ Changelog for package lg_activity
 3.9.3 (2025-04-02)
 ------------------
 
-Forthcoming
------------
+3.9.4 (2025-04-08)
+------------------
 * 3.9.3
 * Changelogs
 * Contributors: Matt Vollrath
