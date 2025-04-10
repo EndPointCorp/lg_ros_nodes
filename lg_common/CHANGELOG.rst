@@ -67,6 +67,20 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* fixing up user data dir
+  also adds a script to sync onto running docker
+* 3.9.5
+* bump
+* 3.9.4
+* bump
+* 3.9.3
+* Changelogs
+* Remove crufty rospy import
+* Write sys.deps for all packages
+* Contributors: Jacob Minshall, Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * fix for sv to grab data out of asset instead of activity config

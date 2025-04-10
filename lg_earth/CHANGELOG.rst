@@ -70,6 +70,17 @@ Changelog for package lg_earth
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* 3.9.5
+* bump
+* 3.9.4
+* bump
+* 3.9.3
+* Changelogs
+* Write sys.deps for all packages
+* Contributors: Jacob Minshall, Matt Vollrath
+
 3.9.2 (2024-12-23)
 ------------------
 * 3.9.1
