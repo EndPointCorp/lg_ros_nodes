@@ -67,8 +67,8 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.6 (2025-04-09)
+------------------
 * fixing up user data dir
   also adds a script to sync onto running docker
 * 3.9.5
