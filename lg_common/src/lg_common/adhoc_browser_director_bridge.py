@@ -180,7 +180,6 @@ class AdhocBrowserDirectorBridge():
             activity_config = browser.get('activity_config', None)
 
             if activity_config:
-                chrome_config = activity_config.get('google_chrome', None)
                 if activity_config.get('preload', None):
                     adhoc_browser.preload = True
 
@@ -191,8 +190,9 @@ class AdhocBrowserDirectorBridge():
                 else:
                     adhoc_browser.custom_preload_event = False
 
-                if chrome_config:
-                    adhoc_browser = self._unpack_browser_config(adhoc_browser, chrome_config)
+                chrome_config = activity_config.copy()
+                chrome_config.update(activity_config.get('google_chrome', {}))
+                adhoc_browser = self._unpack_browser_config(adhoc_browser, chrome_config)
 
             if adhoc_browser.preload:
                 browser_id = generate_hash(self._serialize_adhoc_browser(adhoc_browser), random_suffix=True)

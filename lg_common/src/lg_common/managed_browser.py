@@ -208,33 +208,17 @@ class ManagedBrowser(ManagedApplication):
             else:
                 logger.error("Temp dir exists for chrome already")
         try:
-            os.mkdir(self.tmp_dir)
-            os.mkdir(self.tmp_dir + '/PepperFlash')
+            os.makedirs(self.tmp_dir, exist_ok=True)
         except Exception:
+            import traceback
+            logger.error(traceback.format_exc())
             logger.error("Error trying to make the tmp dir, could exist already")
-
-        # Link NaCl component. https://github.com/EndPointCorp/lg_ros_nodes/issues/357
-        try:
-            os.symlink(self.pnacl_dir, os.path.join(self.tmp_dir, 'pnacl'))
-            logger.info("Linked `pnacl` directory %s" % self.pnacl_dir)
-        except Exception as e:
-            logger.error("Error linking pNaCl, %s" % e)
-
-        try:
-            os.symlink(self.pepper_flash_dir + '/flash_dir', "%s/PepperFlash/flash_dir" % self.tmp_dir)
-            with open("%s/latest-component-updated-flash" % self.pepper_flash_dir, "r") as f:
-                out = f.read()
-            with open("%s/PepperFlash/latest-component-updated-flash" % self.tmp_dir, "w") as f:
-                f.write(out.replace("${TMP_DIR}", self.tmp_dir))
-        except Exception as e:
-            logger.error("Error copying pepper flash into the tmp dir, %s" % e)
 
     def clear_tmp_dir(self):
         """
         Clears out all temporary files and disk cache for this instance.
         """
         if self.user_data_dir:
-            logger.error('not clearing, because user data dir')
             return
         try:
             logger.error("Purging ManagedBrowser directory: %s" % self.tmp_dir)
