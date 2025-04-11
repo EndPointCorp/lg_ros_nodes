@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-import roslib
-roslib.load_manifest('lg_common')
-
 import rospy
 import urllib.request, urllib.parse, urllib.error
 import json
