@@ -43,8 +43,8 @@ Changelog for package interactivespaces_msgs
 * Changelogs
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.7 (2025-04-11)
+------------------
 
 3.9.6 (2025-04-09)
 ------------------
