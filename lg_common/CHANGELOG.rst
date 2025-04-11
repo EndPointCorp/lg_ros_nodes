@@ -67,6 +67,11 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Clean up legacy roslib.load_manifest() call
+* Contributors: Matt Vollrath
+
 3.9.6 (2025-04-09)
 ------------------
 * fixing up user data dir

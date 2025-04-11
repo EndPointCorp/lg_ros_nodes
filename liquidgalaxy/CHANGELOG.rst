@@ -43,6 +43,9 @@ Changelog for package liquidgalaxy
 * Changelogs
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.6 (2025-04-09)
 ------------------
 * 3.9.5
