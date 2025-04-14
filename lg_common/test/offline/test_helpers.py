@@ -8,7 +8,6 @@ import os
 
 import pytest
 import rospy
-import rospkg
 import rostopic
 import unittest
 

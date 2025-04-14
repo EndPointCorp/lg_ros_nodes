@@ -3,9 +3,9 @@
 import os.path
 
 import rospy
-import rospkg
 import tornado.web
 import tornado.ioloop
+from lg_common.helpers import get_package_path
 from lg_common.helpers import run_with_influx_exception_handler
 
 
@@ -27,8 +27,7 @@ def main():
 
     port = rospy.get_param('~port', 8008)
 
-    rospack = rospkg.RosPack()
-    pkg_path = rospack.get_path('lg_common')
+    pkg_path = get_package_path('lg_common')
     share_path = os.path.abspath(os.path.join(pkg_path, os.pardir))
     logger.info('Serving files from {} on port {}'.format(share_path, port))
 

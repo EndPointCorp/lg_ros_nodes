@@ -5,7 +5,7 @@ import rospy
 from lg_msg_defs.msg import GetScreenshot
 from lg_msg_defs.msg import Screenshot
 import subprocess
-import rospkg
+from lg_common.helpers import get_package_path
 from lg_common.logger import get_logger
 logger = get_logger('web_screenshot')
 
@@ -19,7 +19,7 @@ class WebScreenshot:
         self.publisher = publisher
         self.binary = binary
         self.delay = delay
-        self.script = rospkg.RosPack().get_path('lg_screenshot') + "/webapps/" + script
+        self.script = get_package_path('lg_screenshot') + "/webapps/" + script
 
         self.user_agent = user_agent
         self.call_tmpl = [self.binary]

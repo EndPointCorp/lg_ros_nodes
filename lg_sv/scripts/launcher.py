@@ -1,13 +1,13 @@
 #! /usr/bin/env python3
 
 import rospy
-import rospkg
 
 from lg_common import ManagedWindow, ManagedBrowser, ManagedAdhocBrowser
 from lg_msg_defs.msg import ApplicationState
 from lg_common.helpers import add_url_params
 from lg_common.helpers import check_www_dependency
 from lg_common.helpers import discover_port_from_url, discover_host_from_url, x_available_or_raise
+from lg_common.helpers import get_package_path
 from lg_common.helpers import make_soft_relaunch_callback
 from lg_common.helpers import run_with_influx_exception_handler
 from lg_common.helpers import combine_viewport_geometries
@@ -98,7 +98,7 @@ def main():
             "__" + str(slug_suffix))
 
     # add modify_cors_headers chrome extension to handle the cors error
-    extensions_dir = rospkg.RosPack().get_path('lg_sv') + '/extensions/modify_cors_headers'
+    extensions_dir = get_package_path('lg_sv') + '/extensions/modify_cors_headers'
     managed_browser = ManagedAdhocBrowser(
         url=url,
         geometry=geometry,

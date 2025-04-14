@@ -5,7 +5,6 @@ lg_onboard ROS node implementation.
 
 
 import rospy
-import rospkg
 import subprocess
 
 from lg_common import ManagedApplication
@@ -15,6 +14,7 @@ from lg_msg_defs.msg import WindowGeometry
 
 
 ROS_NODE_NAME = "lg_onboard"
+from lg_common.helpers import get_package_path
 from lg_common.logger import get_logger
 logger = get_logger(ROS_NODE_NAME)
 
@@ -100,7 +100,7 @@ class OnboardLauncher(object):
 class OnboardConfig(object):
     def __init__(self, config_path=None):
         self.config_path = config_path
-        config_path = rospkg.RosPack().get_path('lg_keyboard') + "/config"
+        config_path = get_package_path('lg_keyboard') + "/config"
         self.config = self._read_onboard_config(config_path)
 
     def _read_onboard_config(self, config_path):

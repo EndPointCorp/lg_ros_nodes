@@ -8,7 +8,7 @@ import subprocess
 import tarfile
 import tempfile
 
-import rospkg
+from lg_common.helpers import get_package_path
 from catkin_pkg.package import parse_package
 from lg_builder import RosBuilder
 
@@ -62,8 +62,7 @@ class Builder(object):
         with open(os.path.join(sourcedir, 'format'), 'w') as f:
             f.write(source_format)
 
-        rospack = rospkg.RosPack()
-        pkg_path = rospack.get_path('lg_builder')
+        pkg_path = get_package_path('lg_builder')
         template_dir = os.path.join(pkg_path, 'templates')
 
         with open(os.path.join(template_dir, 'rules'), 'r') as f:
