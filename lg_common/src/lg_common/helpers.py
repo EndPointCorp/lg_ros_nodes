@@ -1154,6 +1154,7 @@ def get_package_path(package_name: str) -> str:
     try:
         return rospack.get_path(package_name)
     except rospkg.ResourceNotFound:
+        # Raise a more generic error for forwards compatibility.
         raise RuntimeError(f"Package '{package_name}' not found.")
 
 
