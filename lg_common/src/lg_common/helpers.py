@@ -1147,6 +1147,16 @@ def get_hostname():
     return r.text[:-1]
 
 
+def get_package_path(package_name: str) -> str:
+    """Get the path to a ROS package."""
+    import rospkg
+    rospack = rospkg.RosPack()
+    try:
+        return rospack.get_path(package_name)
+    except rospkg.ResourceNotFound:
+        raise RuntimeError(f"Package '{package_name}' not found.")
+
+
 """
 import logging
 import sys
