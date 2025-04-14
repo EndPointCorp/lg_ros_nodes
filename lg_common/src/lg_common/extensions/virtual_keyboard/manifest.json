@@ -1,0 +1,28 @@
+{
+   "action": {
+      "default_title": "Chrome Simple Keyboard"
+   },
+   "content_scripts": [ {
+      "js": [ "contentScript.js" ],
+      "matches": [ "\u003Call_urls>" ],
+      "run_at": "document_idle"
+   } ],
+   "description": "A native virtual keyboard based on the simple-keyboard package",
+   "icons": {
+      "128": "icons/icon_128.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6v2M+NZplC6IRmj6OVHhnzBfRfSIDm2rE3PNOyVLKSykOssh3onIDXcnrbQxIVe+pCqNQPvF+zSLTmvv81YkYCY2nnMPYSOxJC6MPIee4NW+MFfCKUapt9a8TTL7W2EHrO8apvztop5WglcyTXdT4JPsl0LFV5Kz481cI1SHapL1tCWmRJx3IyZpNcYwnfUrSNUWeVoQY08pYZiF1hFSrjTWoxDgXLwUjN5Vns5/Y9dTgUfzcTND43WZ8siSwuzzZ01YLD8VrQO2y2KlYAbZEddBl+ne29OPpW+GgcE861cpNvWZvnyca3swr9wYduhbTgADZef/Fc6Y94/8KTHqIwIDAQAB",
+   "manifest_version": 3,
+   "name": "Chrome Simple Keyboard - A virtual keyboard",
+   "options_ui": {
+      "open_in_tab": true,
+      "page": "options.html"
+   },
+   "permissions": [ "storage" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "0.4.6",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "contentScript.css" ]
+   } ]
+}
