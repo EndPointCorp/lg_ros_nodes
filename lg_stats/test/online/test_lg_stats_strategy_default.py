@@ -31,7 +31,6 @@ from multiprocessing import Array
 
 import rostest
 import rospy
-import rospkg
 import rostopic
 
 from std_msgs.msg import Bool

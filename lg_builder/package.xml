@@ -14,6 +14,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 		  <!--<run_depend>python3-debian</run_depend> does not exist in rosdep currently-->
+  <run_depend>lg_common</run_depend>
   <run_depend>python3-catkin-pkg</run_depend>
   <run_depend>python3-rospkg</run_depend>
 </package>
