@@ -87,7 +87,10 @@ class Client:
         # Google Earth has its own copies of some libraries normally found on
         # the system, so we need to tell the loader to look there. This is
         # normally done in the google-earth wrapper script.
-        env['LD_LIBRARY_PATH'] += use_dir
+        if 'LD_LIBRARY_PATH' in env:
+            env['LD_LIBRARY_PATH'] += ':' + use_dir
+        else:
+            env['LD_LIBRARY_PATH'] = use_dir
 
         cmd = [use_dir + '/googleearth-bin']
         earth_log = self._get_tempdir() + '/earth_log'
