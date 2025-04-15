@@ -30,8 +30,7 @@ const clockAddr = getParameterByName('clockAddr', String, 'ws://42-a:9091');
 const protocol = (rosbridgeSecure ? 'wss' : 'ws') + '://';
 const rosbridgeUrl = protocol + rosbridgeHost + ':' + rosbridgePort;
 
-var ros = new ROSLIB.Ros();
-ros.connect(rosbridgeUrl);
+var ros = new ROSLIB.Ros({url: rosbridgeUrl});
 
 var sync = new SyncedPanoVideoApp({
     master: master,

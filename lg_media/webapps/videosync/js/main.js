@@ -25,8 +25,7 @@ const shouldSync = getParameterByName('sync', isTrue, false);
 const protocol = (rosbridgeSecure ? 'wss' : 'ws') + '://';
 const rosbridgeUrl = protocol + rosbridgeHost + ':' + rosbridgePort;
 
-const ros = new ROSLIB.Ros();
-ros.connect(rosbridgeUrl);
+const ros = new ROSLIB.Ros({url: rosbridgeUrl});
 
 const sync = new SyncedVideoApp({
     master: master,
