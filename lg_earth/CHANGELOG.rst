@@ -70,8 +70,8 @@ Changelog for package lg_earth
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.11 (2025-04-15)
+-------------------
 * Fix requirement of LD_LIBRARY_PATH in environment
 * Contributors: Matt Vollrath
 

@@ -43,8 +43,8 @@ Changelog for package lg_lock
 * Changelogs
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.11 (2025-04-15)
+-------------------
 
 3.9.10 (2025-04-15)
 -------------------
