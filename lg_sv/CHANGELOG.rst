@@ -46,6 +46,11 @@ Changelog for package lg_sv
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* director messages don't make more director messages
+* Contributors: Jacob Minshall
+
 3.9.8 (2025-04-14)
 ------------------
 * Use get_package_path
