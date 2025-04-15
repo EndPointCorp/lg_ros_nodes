@@ -56,6 +56,9 @@ Changelog for package spacenav_wrapper
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.11 (2025-04-15)
 -------------------
 
