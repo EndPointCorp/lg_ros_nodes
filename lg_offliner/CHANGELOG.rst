@@ -49,8 +49,8 @@ Changelog for package lg_offliner
 * Write sys.deps for all packages
 * Contributors: Jacob Minshall, Matt Vollrath
 
-Forthcoming
------------
+3.9.9 (2025-04-15)
+------------------
 
 3.9.8 (2025-04-14)
 ------------------
