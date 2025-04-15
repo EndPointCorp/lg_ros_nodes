@@ -43,6 +43,11 @@ Changelog for package lg_attract_loop
 * Changelogs
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Phase out rosapi use in attract loop
+* Contributors: Matt Vollrath
+
 3.9.9 (2025-04-15)
 ------------------
 
