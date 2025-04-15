@@ -146,7 +146,7 @@ def main():
         except Exception:
             pov.z = 0
         pov.w = zoom_max
-        server.pub_panoid(panoid, pov=pov)
+        server.pub_panoid(panoid, pov=pov, no_director=True)
 
     def initial_state_handler(uscs_msg):
         try:

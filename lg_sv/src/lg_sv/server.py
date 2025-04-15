@@ -249,11 +249,12 @@ class PanoViewerServer:
         """
         self.pov = quaternion
 
-    def pub_panoid(self, panoid, pov=None):
+    def pub_panoid(self, panoid, pov=None, no_director=False):
         """
         Publishes a new panoid after setting the instance variable
         """
-        self.generate_director_message(panoid, pov)
+        if not no_director:
+            self.generate_director_message(panoid, pov)
         if pov:
             self.pub_pov(pov)
         self.panoid = panoid
@@ -300,10 +301,9 @@ class PanoViewerServer:
         self.nearby_panos.set_panoid(self.panoid)
         # now sets up director message so we can set the state of the system
 
-    def generate_director_message(self, panoid, pov=None):
+    def generate_director_message(self, panoid, pov=None, asset={}):
         if panoid == self.panoid:
             return
-        server_type = self.server_type
         msg = GenericMessage()
         msg.type = 'json'
         if pov:
@@ -312,22 +312,27 @@ class PanoViewerServer:
         else:
             heading = self.pov.z
             tilt = self.pov.x
-        message = {
-            "slug": "auto_generated_sv_scene",
-            "windows": [
-                {
-                    "activity": self.server_type,
-                    "assets": [
-                        panoid
-                    ],
-                    "activity_config": {
-                        "panoid": panoid,
-                        "heading": heading,
-                        "tilt": tilt
-                    }
-                }
-            ]
+        activity = {
+            "activity": self.server_type,
+            "assets": [
+                panoid
+            ],
+            "activity_config": {
+                "panoid": panoid,
+                "heading": heading,
+                "tilt": tilt
+            }
         }
+        if asset == {}:
+            message = {
+                "slug": "auto_generated_sv_scene",
+                "windows": [activity]
+            }
+        else:
+            # asset was passed, keep all director message parts
+            message = asset.copy()
+            message['slug'] = 'auto_generated_sv_scene'
+            message['windows'] = [activity]
         msg.message = json.dumps(message)
         if self.director_pub:
             self.director_pub.publish(msg)
