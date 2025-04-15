@@ -46,8 +46,8 @@ Changelog for package lg_sv
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.8 (2025-04-14)
+------------------
 * Use get_package_path
   Cleanup some unused rospkg imports.
 * Contributors: Matt Vollrath

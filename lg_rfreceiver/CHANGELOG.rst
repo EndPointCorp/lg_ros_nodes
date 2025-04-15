@@ -46,8 +46,8 @@ Changelog for package lg_rfreceiver
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.8 (2025-04-14)
+------------------
 
 3.9.7 (2025-04-11)
 ------------------
