@@ -56,6 +56,12 @@ Changelog for package lg_keyboard
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Use get_package_path
+  Cleanup some unused rospkg imports.
+* Contributors: Matt Vollrath
+
 3.9.7 (2025-04-11)
 ------------------
 

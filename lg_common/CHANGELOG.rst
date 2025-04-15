@@ -67,6 +67,15 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Note about get_package_path error case
+* Use get_package_path
+  Cleanup some unused rospkg imports.
+* Add get_package_path helper
+  Refactor this pattern for portability.
+* Contributors: Matt Vollrath
+
 3.9.7 (2025-04-11)
 ------------------
 * Clean up legacy roslib.load_manifest() call
