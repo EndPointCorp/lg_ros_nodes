@@ -206,7 +206,7 @@ class TestActivityTracker(unittest.TestCase):
 
         sources = ActivitySourceDetector(spacenav.source_string).get_sources()
         pub = MockPublisher()
-        timeout = 5
+        timeout = lambda: 5
         tracker = ActivityTracker(publisher=pub, timeout=timeout, sources=sources, debug=True)
         # test if it's active by default
 

@@ -395,7 +395,7 @@ class ActivityTracker:
         self.initialized_sources = []
         self.activity_states = {}
         self.debug = debug
-        self.timeout = timeout
+        self._timeout = timeout
         self.stats_activity_timeout = stats_activity_timeout
         if not self.timeout:
             msg = "You must specify inactivity timeout"
@@ -410,6 +410,10 @@ class ActivityTracker:
         self._validate_sources()
         self._init_activity_sources()
         logger.info("Initialized ActivityTracker: %s" % self)
+
+    @property
+    def timeout(self):
+        return self._timeout()
 
     def __str__(self):
         string_representation = "<ActivityTracker: sources: %s, initialized_sources: %s, timeout: %s, stats_activity_timeout: %s, publisher: %s, stats_activity_publisher: %s" % \
