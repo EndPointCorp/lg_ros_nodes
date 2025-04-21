@@ -46,6 +46,9 @@ Changelog for package lg_proximity
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.12 (2025-04-15)
 -------------------
 
