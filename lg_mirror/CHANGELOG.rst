@@ -53,8 +53,8 @@ Changelog for package lg_mirror
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.13 (2025-04-21)
+-------------------
 
 3.9.12 (2025-04-15)
 -------------------
