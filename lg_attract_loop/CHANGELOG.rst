@@ -43,8 +43,8 @@ Changelog for package lg_attract_loop
 * Changelogs
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.14 (2025-04-22)
+-------------------
 * remove type annotation
 * Contributors: Jacob Minshall
 
