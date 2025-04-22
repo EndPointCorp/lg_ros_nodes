@@ -50,7 +50,7 @@ def main():
     # director API
     director_api_proxy = DirectorAPIProxy(api_url)
 
-    def get_viewport_names() -> list[str]:
+    def get_viewport_names():
         """Get the list of viewport names from parameters."""
         viewports = rospy.get_param('/viewport', {})
         if not isinstance(viewports, dict):
