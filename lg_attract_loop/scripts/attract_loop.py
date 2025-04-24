@@ -50,6 +50,14 @@ def main():
     # director API
     director_api_proxy = DirectorAPIProxy(api_url)
 
+    def get_viewport_names() -> list[str]:
+        """Get the list of viewport names from parameters."""
+        viewports = rospy.get_param('/viewport', {})
+        if not isinstance(viewports, dict):
+            rospy.logerr('Invalid viewport parameter format. Expected a dictionary.')
+            return []
+        return [name for name, value in viewports.items() if isinstance(value, str)]
+
     # initialize main logic class
     attract_loop = AttractLoop(director_api_proxy,
                                director_scene_publisher,
@@ -57,6 +65,7 @@ def main():
                                stop_action,
                                earth_query_publisher,
                                earth_planet_publisher,
+                               get_viewport_names,
                                default_presentation=default_presentation,
                                default_planet=default_planet,
                                set_earth=set_earth,

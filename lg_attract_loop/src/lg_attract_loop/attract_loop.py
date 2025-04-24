@@ -4,11 +4,10 @@ import os
 import json
 import rospy
 import requests
+from typing import Callable, Sequence
 
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
-from rosapi import params
-from pathlib import Path
 
 from lg_common.logger import get_logger
 logger = get_logger('attract_loop')
@@ -39,6 +38,7 @@ class AttractLoop:
     def __init__(self, api_proxy, director_scene_publisher,
                  director_presentation_publisher, stop_action,
                  earth_query_publisher, earth_planet_publisher,
+                 get_viewport_names: Callable[[], Sequence[str]],
                  default_presentation=None, default_planet='earth',
                  set_earth=MockFunc, default_duration=20):
         """
@@ -52,6 +52,7 @@ class AttractLoop:
         self.default_presentation = default_presentation
         self.default_planet = default_planet
         self.earth_planet_publisher = earth_planet_publisher
+        self.get_viewport_names = get_viewport_names
         self.director_scene_publisher = director_scene_publisher
         self.director_presentation_publisher = director_presentation_publisher
         self.attract_loop_queue = []
@@ -139,7 +140,7 @@ class AttractLoop:
         """
         logger.info("Playing blank scene")
 
-        viewports = [viewport.split('/')[2] for viewport in params.get_param_names(['/viewport/*'])]
+        viewport_names = self.get_viewport_names()
 
         scene = {
             "description": "attract loop blank scene",
@@ -151,7 +152,7 @@ class AttractLoop:
             "played_from": "lg_attract_loop"
         }
 
-        for viewport_name in viewports:
+        for viewport_name in viewport_names:
             window = {
                 "assets": [],
                 "y_coord": 666,
@@ -178,12 +179,12 @@ class AttractLoop:
                 prompt_reload = Path("/mnt/videos/prompt_reload")
                 prompt_next = Path("/mnt/videos/prompt_next")
                 if prompt_reload.exists():
-                    logger.info("FORCE Populateing attract_loop_queue")
+                    logger.info("FORCE Populating attract_loop_queue")
                     self.attract_loop_queue = []
                     self.scene_timer = 0
                     prompt_reload.unlink()
                 elif prompt_next.exists():
-                    logger.info("FORCE kipping to next scene")
+                    logger.info("FORCE skipping to next scene")
                     self.scene_timer = 0
                     prompt_next.unlink()
 

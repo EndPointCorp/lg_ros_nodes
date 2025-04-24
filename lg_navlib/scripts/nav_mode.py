@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from functools import partial
+
 import rospy
 from lg_msg_defs.msg import ApplicationState
 from std_msgs.msg import String
@@ -11,7 +13,7 @@ class NavMode:
         self.mode = default_mode
         self.publish_mode()
 
-    def handle_state(self, msg, mode):
+    def handle_state(self, mode: str, msg: ApplicationState) -> None:
         if msg.state != ApplicationState.VISIBLE:
             return
         self.mode = mode
@@ -33,6 +35,6 @@ if __name__ == '__main__':
     for mode, topics in modes.items():
         topics = [t.strip() for t in topics.split(',')]
         for topic in topics:
-            rospy.Subscriber(topic, ApplicationState, nav_mode.handle_state, mode)
+            rospy.Subscriber(topic, ApplicationState, partial(nav_mode.handle_state, mode))
 
     rospy.spin()

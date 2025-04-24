@@ -1,6 +1,6 @@
 <package>
   <name>wiimote</name>
-  <version>3.9.9</version>
+  <version>3.9.13</version>
   <license>GPL</license>
   <description>
     The wiimote package allows ROS nodes to communicate with a Nintendo Wiimote

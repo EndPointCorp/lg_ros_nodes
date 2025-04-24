@@ -148,10 +148,9 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         try:
             assets = self._get_assets(window_slug)
-        except Exception as e:
-            logger.error('Failed to get assets for {}: {}'.format(
+        except Exception:
+            logger.exception('Failed to get assets for {}'.format(
                 window_slug,
-                e.message
             ))
             # Always return a valid KML or Earth will stop requesting updates
             self._finish_text(get_kml_root())

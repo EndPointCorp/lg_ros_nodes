@@ -49,6 +49,21 @@ Changelog for package lg_navlib
 * Changelogs
 * Contributors: Matt Vollrath
 
+3.9.13 (2025-04-21)
+-------------------
+* Don't use Subscriber user data in nav_mode
+  Forwards compatibility change.
+* Contributors: Matt Vollrath
+
+3.9.12 (2025-04-15)
+-------------------
+
+3.9.11 (2025-04-15)
+-------------------
+
+3.9.10 (2025-04-15)
+-------------------
+
 3.9.9 (2025-04-15)
 ------------------
 

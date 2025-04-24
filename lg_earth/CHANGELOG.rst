@@ -70,6 +70,25 @@ Changelog for package lg_earth
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+3.9.13 (2025-04-21)
+-------------------
+* Fix an exception handler
+* Contributors: Matt Vollrath
+
+3.9.12 (2025-04-15)
+-------------------
+* Fix kmlsync asset_service given an instance
+  Give a type instead.
+* Contributors: Matt Vollrath
+
+3.9.11 (2025-04-15)
+-------------------
+* Fix requirement of LD_LIBRARY_PATH in environment
+* Contributors: Matt Vollrath
+
+3.9.10 (2025-04-15)
+-------------------
+
 3.9.9 (2025-04-15)
 ------------------
 
