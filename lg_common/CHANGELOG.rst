@@ -67,6 +67,11 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* extra global param to remove default args
+* Contributors: Jacob Minshall
+
 3.9.14 (2025-04-22)
 -------------------
 
