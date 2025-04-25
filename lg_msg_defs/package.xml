@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_msg_defs</name>
-  <version>3.9.14</version>
+  <version>3.9.15</version>
   <description>Mgs types and service defs used throughout lg_ros_node packages</description>
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>
   <author email="will@endpoint.com">Will Plaut</author>
