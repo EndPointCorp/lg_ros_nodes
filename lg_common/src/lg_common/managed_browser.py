@@ -130,11 +130,16 @@ class ManagedBrowser(ManagedApplication):
             if extensions:
                 cmd.append('--load-extension={}'.format(','.join(extensions)))
 
+        global DEFAULT_ARGS
+        remove_default_args = str(rospy.get_param('/remove_default_args', "false")).lower() == "true"
+        if remove_default_args:
+            DEFAULT_ARGS = ['--no-first-run']
         for _cmd in default_args_removal:
             if _cmd in DEFAULT_ARGS:
                 DEFAULT_ARGS.remove(_cmd)
 
         cmd.extend(DEFAULT_ARGS)
+        logger.debug(f"cmd is {cmd} and default args is {remove_default_args}")
         if command_line_args != []:
             cmd.extend(command_line_args)
 
