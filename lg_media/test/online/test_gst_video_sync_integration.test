@@ -1,0 +1,7 @@
+<launch>
+  <param name="/viewport/center" value="640x480+0+0" />
+  <node name="gst_video_sync" pkg="lg_media" type="gstreamer.py">
+    <param name="viewport" value="center" />
+  </node>
+  <test test-name="test_gst_video_sync_integration" pkg="lg_media" type="test_gst_video_sync_integration.py" />
+</launch>
