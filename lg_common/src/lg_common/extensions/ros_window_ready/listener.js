@@ -137,7 +137,8 @@ WindowReadyExt.prototype.initRos = function() {
 
     var extension = this;
 
-    this.ros = new ROSLIB.Ros();
+    console.log("Trying to connect to ROS with URL: " + this.rosUrl);
+    this.ros = new ROSLIB.Ros({url: this.rosUrl});
 
     this.ros.on('error', function(error) {
         extension.onRosError.apply(extension, [error]);
@@ -158,11 +159,6 @@ WindowReadyExt.prototype.initRos = function() {
 
         extension.state.setFlag.apply(extension.state, ['rosReady']);
     });
-
-    console.log("Trying to connect to ROS with URL: " + this.rosUrl);
-    this.ros.connect(this.rosUrl);
-
-    this.ros.callOnConnection();
 };
 
 WindowReadyExt.prototype.onRosError = function(error) {
