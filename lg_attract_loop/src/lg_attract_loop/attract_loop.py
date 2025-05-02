@@ -8,6 +8,7 @@ from typing import Callable, Sequence
 
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
+from pathlib import Path
 
 from lg_common.logger import get_logger
 logger = get_logger('attract_loop')
@@ -175,12 +176,29 @@ class AttractLoop:
         """
         logger.debug("Populating attract loop queue with content")
         try:
+            try:
+                prompt_reload = Path("/mnt/videos/prompt_reload")
+                prompt_next = Path("/mnt/videos/prompt_next")
+                if prompt_reload.exists():
+                    logger.info("FORCE Populating attract_loop_queue")
+                    self.attract_loop_queue = []
+                    self.scene_timer = 0
+                    prompt_reload.unlink()
+                elif prompt_next.exists():
+                    logger.info("FORCE skipping to next scene")
+                    self.scene_timer = 0
+                    prompt_next.unlink()
+
+            except Exception as e:
+                logger.info(f"FAIL force reloading: {e}")
+
             if self.attract_loop_queue:
                 logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
             else:
                 self.attract_loop_queue = self._fetch_attract_loop_content()
                 logger.debug("Populated attract_loop_queue with %s" % self.attract_loop_queue)
             self._play_attract_loop_item()
+
         except Exception as e:
             logger.info("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
             rospy.sleep(60)
