@@ -14,11 +14,13 @@ def save_scene_played_time(data):
     #input_file_path = '/media/videos/scene_times.json'
     scene_times_path = '/mnt/videos/scene_times.json'
     scene_infos_path = '/mnt/videos/scene_infos.json'
+    scene_times = []
     if os.path.exists(scene_times_path):
-        with open(scene_times_path, 'r') as times_file:
-            scene_times = json.load(times_file)
-    else:
-        scene_times = []
+        try:
+            with open(scene_times_path, 'r') as times_file:
+                scene_times = json.load(times_file)
+        except:
+            pass
     try:
         message_dict = json.loads(data.message)
     except:
