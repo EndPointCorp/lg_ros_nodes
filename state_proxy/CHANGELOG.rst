@@ -43,6 +43,12 @@ Changelog for package state_proxy
 * Changelogs
 * Contributors: Matt Vollrath
 
+3.9.15 (2025-04-25)
+-------------------
+
+3.9.14 (2025-04-22)
+-------------------
+
 3.9.13 (2025-04-21)
 -------------------
 
