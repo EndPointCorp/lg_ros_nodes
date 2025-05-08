@@ -6,6 +6,7 @@ import rospy
 import requests
 from typing import Callable, Sequence
 
+from pathlib import Path
 from std_msgs.msg import String
 from interactivespaces_msgs.msg import GenericMessage
 
