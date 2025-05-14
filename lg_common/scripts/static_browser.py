@@ -22,11 +22,7 @@ def main():
     scale_factor = rospy.get_param('~force_device_scale_factor', 1)
     extra_logging = rospy.get_param('~extra_logging', False)
     debug_port = rospy.get_param('~debug_port', None)
-    user_agent = rospy.get_param(
-        '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
-        'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
-        'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
-    )
+    user_agent = rospy.get_param('~user_agent', None)
     state = rospy.get_param('~state', ApplicationState.VISIBLE)
     extensions = rospy.get_param('~extensions', [])
     kiosk = rospy.get_param('~kiosk', True)
