@@ -49,8 +49,8 @@ Changelog for package lg_navlib
 * Changelogs
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.17 (2025-05-15)
+-------------------
 
 3.9.15 (2025-04-25)
 -------------------
