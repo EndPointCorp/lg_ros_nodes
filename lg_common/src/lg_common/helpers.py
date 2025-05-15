@@ -909,6 +909,7 @@ def handle_initial_state(call_back, attempts=20):
     from lg_msg_defs.srv import InitialUSCS, InitialUSCSResponse
 
     initial_state_service = rospy.ServiceProxy('/initial_state', InitialUSCS, persistent=False)
+    initial_state_service.wait_for_service(timeout=attempts + 1.0)
 
     tries = 0
     state = None
