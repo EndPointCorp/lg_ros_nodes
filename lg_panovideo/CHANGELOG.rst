@@ -46,6 +46,11 @@ Changelog for package lg_panovideo
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* panovideo: supply opts to Ros constructor
+* Contributors: Matt Vollrath
+
 3.9.17 (2025-05-15)
 -------------------
 

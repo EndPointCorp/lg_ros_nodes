@@ -46,6 +46,9 @@ Changelog for package lg_nav_to_device
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.17 (2025-05-15)
 -------------------
 
