@@ -22,9 +22,9 @@ const loop = getParameterByName('loop', isTrue, false);
 const yawOffsets = getParameterByName('yawOffsets', String, '0')
   .split(/\s*,\s*/)
   .map(Number);
-const rosbridgeHost = getParameterByName('rosbridge_host', String, 'localhost');
-const rosbridgePort = getParameterByName('rosbridge_port', Number, 9090);
-const rosbridgeSecure = getParameterByName('rosbridge_secure', isTrue, false);
+const rosbridgeHost = getParameterByName('rosbridgeHost', String, 'localhost');
+const rosbridgePort = getParameterByName('rosbridgePort', Number, 9090);
+const rosbridgeSecure = getParameterByName('rosbridgeSecure', isTrue, false);
 const clockAddr = getParameterByName('clockAddr', String, 'ws://42-a:9091');
 
 const protocol = (rosbridgeSecure ? 'wss' : 'ws') + '://';
