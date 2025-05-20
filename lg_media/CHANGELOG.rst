@@ -50,6 +50,9 @@ Changelog for package lg_media
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.18 (2025-05-19)
 -------------------
 

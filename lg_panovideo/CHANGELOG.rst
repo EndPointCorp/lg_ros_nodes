@@ -46,6 +46,11 @@ Changelog for package lg_panovideo
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Fix panovideo webapp ws addr params
+* Contributors: Matt Vollrath
+
 3.9.18 (2025-05-19)
 -------------------
 * panovideo: supply opts to Ros constructor

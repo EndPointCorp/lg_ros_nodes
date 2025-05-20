@@ -43,6 +43,9 @@ Changelog for package lg_volume_control
 * Changelogs
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.18 (2025-05-19)
 -------------------
 
