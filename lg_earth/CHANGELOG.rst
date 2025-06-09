@@ -70,8 +70,8 @@ Changelog for package lg_earth
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.20 (2025-06-09)
+-------------------
 
 3.9.19 (2025-05-20)
 -------------------
