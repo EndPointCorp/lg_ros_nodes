@@ -67,6 +67,12 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* multiple browsers using the same user data dir
+  Copy the user data dir over if it is already in use
+* Contributors: Jacob Minshall
+
 3.9.19 (2025-05-20)
 -------------------
 

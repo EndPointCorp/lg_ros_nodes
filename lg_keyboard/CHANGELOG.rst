@@ -56,6 +56,9 @@ Changelog for package lg_keyboard
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.19 (2025-05-20)
 -------------------
 

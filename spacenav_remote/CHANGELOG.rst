@@ -43,6 +43,9 @@ Changelog for package spacenav_remote
 * Changelogs
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.19 (2025-05-20)
 -------------------
 
