@@ -3,7 +3,7 @@
 REMOTE="42-a"
 REMOTE_TMP="/tmp"
 # Set your docker container name (or ID) here.
-DOCKER_CONTAINER="lg-ros_lg_ros_docker_1"
+DOCKER_CONTAINER="lg-ros"
 
 # Get the list of modified files in the current git repo.
 # (This example uses HEAD. You could change this to, e.g., "git status --porcelain" if desired.)

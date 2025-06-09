@@ -3,6 +3,7 @@ import rospy
 import socket
 import shutil
 import os
+from pathlib import Path
 import requests
 import threading
 
@@ -105,14 +106,15 @@ class ManagedBrowser(ManagedApplication):
         cmd.append('--remote-debugging-port={}'.format(self.debug_port))
         cmd.append('--log-level={}'.format(log_level))
 
-        self.user_data_dir = user_data_dir
-
-        if self.user_data_dir:
-            logger.debug('using data dir {}'.format(self.user_data_dir))
-            self.tmp_dir = '/tmp/user_data_dirs/{}'.format(self.user_data_dir)
+        self.USER_DATA_DIR_PREFIX = '/tmp/user_data_dirs/'
+        if user_data_dir:
+            self.user_data_dir = self.USER_DATA_DIR_PREFIX + user_data_dir
         else:
-            self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
-            logger.debug('clearing tmp dir {}'.format(self.tmp_dir))
+            self.user_data_dir = None
+
+        self.tmp_dir = '/tmp/lg_browser_{}'.format(slug)
+        logger.debug(f'user_data_dir is {self.user_data_dir} and tmp is {self.tmp_dir}')
+        logger.debug('clearing tmp dir {}'.format(self.tmp_dir))
         self.clear_tmp_dir()
         self.pepper_flash_dir = pepper_flash_dir
         self.pnacl_dir = pnacl_dir
@@ -131,7 +133,7 @@ class ManagedBrowser(ManagedApplication):
                 cmd.append('--load-extension={}'.format(','.join(extensions)))
 
         global DEFAULT_ARGS
-        remove_default_args = str(rospy.get_param('/remove_default_args', "false")).lower() == "true"
+        remove_default_args = str(rospy.get_param('~remove_default_args', rospy.get_param('/remove_default_args', "false"))).lower() == "true"
         if remove_default_args:
             DEFAULT_ARGS = ['--no-first-run']
         for _cmd in default_args_removal:
@@ -195,7 +197,9 @@ class ManagedBrowser(ManagedApplication):
     def post_init(self):
         super(ManagedBrowser, self).post_init()
 
-        if not self.user_data_dir:
+        if self.user_data_dir:
+            self.add_respawn_handler(self.clear_link)
+        else:
             self.add_respawn_handler(self.clear_tmp_dir)
         self.add_respawn_handler(self.init_tmp_dir)
         self.add_state_handler(self.control_relay)
@@ -213,17 +217,46 @@ class ManagedBrowser(ManagedApplication):
             else:
                 logger.error("Temp dir exists for chrome already")
         try:
-            os.makedirs(self.tmp_dir, exist_ok=True)
+            if self.user_data_dir:
+                if not os.path.exists(self.user_data_dir):
+                    logger.debug(f'user_data_dir does not exists')
+                    os.makedirs(self.user_data_dir, exist_ok=True)
+                    self.tmp_dir = self.user_data_dir
+                elif not os.path.exists(self.user_data_dir + '/SingletonCookie') and not os.path.exists(self.user_data_dir + '/SingletonSocket'):
+                    # user data dir exists, but has no singleton files
+                    self.tmp_dir = self.user_data_dir
+                    return
+                else:
+                    logger.info(f'user_data_dir exists {self.user_data_dir}, copying to tmp_dir {self.tmp_dir} contains {os.listdir(self.user_data_dir)}')
+                    shutil.copytree(self.user_data_dir, self.tmp_dir, dirs_exist_ok=True, symlinks=True)
+                    os.remove(self.tmp_dir + '/SingletonCookie')
+                    os.remove(self.tmp_dir + '/SingletonSocket')
+            else:
+                os.makedirs(self.tmp_dir, exist_ok=True)
         except Exception:
             import traceback
             logger.error(traceback.format_exc())
             logger.error("Error trying to make the tmp dir, could exist already")
+
+    def clear_link(self):
+        if self.user_data_dir == self.tmp_dir or self.tmp_dir.startswith(self.USER_DATA_DIR_PREFIX):
+            logger.debug("Not clearing link because user_data_dir is the same as tmp_dir, saving data")
+            if os.path.exists(self.tmp_dir + '/SingletonCookie'):
+                os.remove(self.tmp_dir + '/SingletonCookie')
+            if os.path.exists(self.tmp_dir + '/SingletonSocket'):
+                os.remove(self.tmp_dir + '/SingletonSocket')
+            if os.path.exists(self.tmp_dir + '/SingletonLock'):
+                os.remove(self.tmp_dir + '/SingletonLock')
+            return
+        logger.debug(f"clearing link because {self.user_data_dir} is not the same as {self.tmp_dir}")
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def clear_tmp_dir(self):
         """
         Clears out all temporary files and disk cache for this instance.
         """
         if self.user_data_dir:
+            self.clear_link()
             return
         try:
             logger.error("Purging ManagedBrowser directory: %s" % self.tmp_dir)
