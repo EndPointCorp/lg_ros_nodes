@@ -383,7 +383,11 @@ def message_is_nonzero(incoming_message):
     """
     slots_objects = incoming_message.__reduce__()[2]
     for slot_object in slots_objects:
-        value_list = slot_object.__reduce__()[2]
+        try:
+            value_list = slot_object.__reduce__()[2]
+        except TypeError:
+            # If it can't be pickled, consider it not zero.
+            return True
         # print value_list
         for value in value_list:
             # print value
