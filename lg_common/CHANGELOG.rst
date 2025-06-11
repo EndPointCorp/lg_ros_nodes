@@ -67,8 +67,8 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.21 (2025-06-11)
+-------------------
 * Don't raise when field can't be pickled
 * Fix misldeading message_is_nonzero docstring
 * Contributors: Matt Vollrath
