@@ -376,7 +376,7 @@ def rewrite_message_to_dict(message):
 
 def message_is_nonzero(incoming_message):
     """
-    returns True if all slots and subslots are nonzero
+    returns True if any slots and subslots are nonzero
     False otherwise
 
     Note: tested only with geometry messages Twist()
