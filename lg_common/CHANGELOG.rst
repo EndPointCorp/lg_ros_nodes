@@ -67,6 +67,12 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Don't raise when field can't be pickled
+* Fix misldeading message_is_nonzero docstring
+* Contributors: Matt Vollrath
+
 3.9.20 (2025-06-09)
 -------------------
 * multiple browsers using the same user data dir
