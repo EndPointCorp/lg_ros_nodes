@@ -43,8 +43,8 @@ Changelog for package lg_json_config
 * Changelogs
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.22 (2025-06-12)
+-------------------
 
 3.9.21 (2025-06-11)
 -------------------

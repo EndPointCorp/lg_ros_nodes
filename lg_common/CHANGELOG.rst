@@ -67,8 +67,8 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.22 (2025-06-12)
+-------------------
 * file locking apt install python3-filelock
 * WIP getting things working on ephq
 * Contributors: Galaxy Admin
