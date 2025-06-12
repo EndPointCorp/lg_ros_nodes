@@ -11,6 +11,7 @@ from lg_common import ManagedApplication, ManagedWindow
 from lg_common.tcp_relay import TCPRelay
 from lg_msg_defs.msg import ApplicationState
 from tornado.websocket import websocket_connect
+from filelock import FileLock
 
 from lg_common.logger import get_logger
 logger = get_logger('managed_browser')
@@ -222,23 +223,27 @@ class ManagedBrowser(ManagedApplication):
                 logger.error("Temp dir exists for chrome already")
         try:
             if self.user_data_dir:
-                if not os.path.exists(self.user_data_dir):
-                    logger.error(f'ZZZ user data dir does not exist')
-                    logger.debug(f'user_data_dir does not exists')
-                    os.makedirs(self.user_data_dir, exist_ok=True)
-                    self.tmp_dir = self.user_data_dir
-                elif not os.path.lexists(self.user_data_dir + '/SingletonCookie') and not os.path.lexists(self.user_data_dir + '/SingletonSocket'):
-                    # user data dir exists, but has no singleton files
-                    logger.error(f'ZZZ user data dir does exist and no singletons found')
-                    self.tmp_dir = self.user_data_dir
-                    return
-                else:
-                    logger.error(f'ZZZ user_data_dir exists {self.user_data_dir}, copying to tmp_dir {self.tmp_dir} contains {os.listdir(self.user_data_dir)}')
-                    shutil.copytree(self.user_data_dir, self.tmp_dir, dirs_exist_ok=True, symlinks=True)
-                    os.remove(self.tmp_dir + '/SingletonCookie')
-                    os.remove(self.tmp_dir + '/SingletonSocket')
-                    os.remove(self.tmp_dir + '/SingletonLock')
-                    logger.error(f'ZZZ copy finished, tmp_dir {self.tmp_dir} now contains {os.listdir(self.tmp_dir)}')
+                lock = FileLock(self.user_data_dir + '.lock')
+                with lock:
+                    logger.info(f"ZZZ Starting lock")
+                    if not os.path.exists(self.user_data_dir):
+                        logger.error(f'ZZZ user data dir does not exist')
+                        logger.debug(f'user_data_dir does not exists')
+                        os.makedirs(self.user_data_dir, exist_ok=True)
+                        self.tmp_dir = self.user_data_dir
+                    elif not os.path.lexists(self.user_data_dir + '/SingletonCookie') and not os.path.lexists(self.user_data_dir + '/SingletonSocket') and not os.path.lexists(self.user_data_dir + '/in_use'):
+                        # user data dir exists, but has no singleton files
+                        logger.error(f'ZZZ user data dir does exist and no singletons found')
+                        with open(self.user_data_dir + '/in_use', 'w') as f:
+                            f.write('why am I like this')
+                        self.tmp_dir = self.user_data_dir
+                    else:
+                        logger.error(f'ZZZ user_data_dir exists {self.user_data_dir}, copying to tmp_dir {self.tmp_dir} contains {os.listdir(self.user_data_dir)}')
+                        shutil.copytree(self.user_data_dir, self.tmp_dir, dirs_exist_ok=True, symlinks=True)
+
+                        self.actually_clear_links()
+                        logger.error(f'ZZZ copy finished, tmp_dir {self.tmp_dir} now contains {os.listdir(self.tmp_dir)}')
+                    logger.info(f"ZZZ ending lock")
             else:
                 logger.error(f'ZZZ no user data dir')
                 os.makedirs(self.tmp_dir, exist_ok=True)
@@ -246,6 +251,21 @@ class ManagedBrowser(ManagedApplication):
             import traceback
             logger.error(traceback.format_exc())
             logger.error("Error trying to make the tmp dir, could exist already")
+
+    def actually_clear_links(self):
+        if os.path.lexists(self.tmp_dir + '/SingletonCookie'):
+            logger.info("ZZZ clearing cookie")
+            os.remove(self.tmp_dir + '/SingletonCookie')
+        if os.path.lexists(self.tmp_dir + '/SingletonSocket'):
+            logger.info("ZZZ clearing socket")
+            os.remove(self.tmp_dir + '/SingletonSocket')
+        if os.path.lexists(self.tmp_dir + '/SingletonLock'):
+            logger.info("ZZZ clearing Lock")
+            os.remove(self.tmp_dir + '/SingletonLock')
+        if os.path.lexists(self.tmp_dir + '/in_use'):
+            logger.info("ZZZ clearing Lock")
+            os.remove(self.tmp_dir + '/in_use')
+        return
 
     def clear_link(self):
         logger.info(f"ZZZ about to clear link for {self.user_data_dir} with {self.tmp_dir}")
@@ -260,6 +280,9 @@ class ManagedBrowser(ManagedApplication):
             if os.path.lexists(self.tmp_dir + '/SingletonLock'):
                 logger.info("ZZZ clearing Lock")
                 os.remove(self.tmp_dir + '/SingletonLock')
+            if os.path.lexists(self.tmp_dir + '/in_use'):
+                logger.info("ZZZ clearing Lock")
+                os.remove(self.tmp_dir + '/in_use')
             return
         logger.error(f"ZZZ clearing link because {self.user_data_dir} is not the same as {self.tmp_dir}")
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
