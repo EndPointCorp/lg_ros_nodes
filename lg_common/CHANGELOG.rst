@@ -67,6 +67,12 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* file locking apt install python3-filelock
+* WIP getting things working on ephq
+* Contributors: Galaxy Admin
+
 3.9.21 (2025-06-11)
 -------------------
 * Don't raise when field can't be pickled

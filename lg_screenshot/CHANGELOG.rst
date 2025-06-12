@@ -46,6 +46,9 @@ Changelog for package lg_sreenshot
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.21 (2025-06-11)
 -------------------
 
