@@ -67,8 +67,8 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.23 (2025-06-16)
+-------------------
 * clean up logs and make the data dir before anything else
 * Contributors: Jacob Minshall
 
