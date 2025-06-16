@@ -67,6 +67,11 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* clean up logs and make the data dir before anything else
+* Contributors: Jacob Minshall
+
 3.9.22 (2025-06-12)
 -------------------
 * file locking apt install python3-filelock

@@ -46,6 +46,9 @@ Changelog for package lg_stats
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.22 (2025-06-12)
 -------------------
 
