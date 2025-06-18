@@ -7,14 +7,15 @@ import rospy
 import json
 import time
 import os
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 
 class DcvActivityPublisher:
     def __init__(self):
         rospy.init_node('dcv_activity_publisher')
-        self.pub = rospy.Publisher('/dcv_viewer/activity', String, queue_size=10)
+        self.pubdata = rospy.Publisher('/dcv_viewer/activity', String, queue_size=10)
+        self.pubbool = rospy.Publisher('/dcv_viewer/active', Bool, queue_size=10)
 
-        self.allowed_time = rospy.get_param('~allowed_time', 300)
+        #self.allowed_time = rospy.get_param('~allowed_time', 300)
         self.connections_file = rospy.get_param('~connections_file', '/mnt/videos/dcv_activity.json')
         self.poll_interval = rospy.get_param('~poll_interval', 1.0)  # seconds
         self.previous_data = {}
@@ -35,12 +36,12 @@ class DcvActivityPublisher:
             if current != self.previous_data:
                 # Compose message payload
                 payload = {
-                    'allowed_time': self.allowed_time,
                     'activity': current
                 }
                 msg = String()
                 msg.data = json.dumps(payload)
-                self.pub.publish(msg)
+                self.pubdata.publish(msg)
+                self.pubbool.publish(True)
                 rospy.loginfo(f"Published updated DCV activity: {current}")
                 self.previous_data = current
 
