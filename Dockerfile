@@ -48,6 +48,7 @@ RUN \
     python3-setuptools \
     python3-defusedxml \
     python3-nose \
+    python3-filelock \
     python3-pil \
     python3-pytest \
     python3-netifaces \
