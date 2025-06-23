@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from urllib.parse import urlparse
 from threading import Lock, Thread
 from functools import partial
 import json
@@ -16,6 +17,8 @@ from lg_common.helpers import handle_initial_state, make_soft_relaunch_callback
 from lg_common.logger import get_logger
 logger = get_logger('image_viewer')
 
+
+nfs_path = "/media/ros_cms_default_assets"
 
 def image_coordinates(image):
     return "{}_{}_{}_{}".format(image.geometry.x, image.geometry.y, image.geometry.width, image.geometry.height)
@@ -52,7 +55,7 @@ class ImageViewer():
             logger.warning('Director message did not contain valid json')
             return
         except TypeError:
-            logger.warning('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
+            logger.warning('Director message did not contain valid type. Type was %s, and content was: %s' % (type(message), message))
             return
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
@@ -125,7 +128,7 @@ class ImageViewer():
         def remove_image(image_obj, *args, **kwargs):
             logger.debug('Removing image: {}'.format(image_obj))
             image_obj.set_state(ApplicationState.STOPPED)
-            if image_obj.img_application == 'pqiv' and os.path.exists(image_obj.img_path):
+            if image_obj.img_application == 'pqiv' and nfs_path not in image_obj.img_path and os.path.exists(image_obj.img_path):
                 os.remove(image_obj.img_path)
 
         for image_obj in images_to_remove:
@@ -138,7 +141,7 @@ class ImageViewer():
             created_image = self._create_image(image)
             new_current_images[make_key_from_image(image)] = created_image
             if image_coordinates(image) in matched_images_dict.keys():
-                rospy.Timer(rospy.Duration(2), partial(remove_image, matched_images_dict[image_coordinates(image)]), oneshot=True)
+                rospy.Timer(rospy.Duration(1.5), partial(remove_image, matched_images_dict[image_coordinates(image)]), oneshot=True)
 
         for image in images_to_add:
             thread = Thread(target=make_image, args=(image,))
@@ -157,10 +160,15 @@ class ImageViewer():
             return self._create_feh(image)
 
     def _create_pqiv(self, image):
-        image_path = self.save_path + '/{}'.format(image.uuid)
-        r = requests.get(image.url)
-        with open(image_path, 'wb') as f:
-            f.write(r.content)
+        parsed_url = urlparse(image.url)
+        img_filename = os.path.basename(parsed_url.path)
+        image_path = os.path.join(nfs_path, img_filename)
+        if not os.path.exists(image_path):
+            logger.warning('Downloading Image, not in nfs assets folder: {}'.format(image_path))
+            image_path = self.save_path + '/{}'.format(image.uuid)
+            r = requests.get(image.url)
+            with open(image_path, 'wb') as f:
+                f.write(r.content)
         opts = '-t'
         if self.graphic_opts.get((image.url, image.geometry.x, image.geometry.y), {}).get('no_upscale', False):
             opts = ''
