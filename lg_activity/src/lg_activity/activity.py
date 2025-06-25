@@ -298,15 +298,20 @@ class ActivitySource:
                     duration = self.messages[-1].get('message.duration', 0)  # skip to last message duration
                     if isinstance(duration, int) or (isinstance(duration, str) and duration.isdigit()):
                         duration = int(duration)
-                        if duration > 0 and duration != 666:
-                            self.messages = []
-                            self.callback(self.topic, state=True, strategy='duration', delay=duration)
-                            logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
-                            return True
                     else:
                         logger.warning("Ignoring duration, it should be a number of seconds, message is: ", self.messages[-1])
+                elif self.messages[-1] and isinstance(self.messages[-1], str):
+                    duration = int(self.messages[-1])
+
                 else:
                     logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
+                    return
+
+                if duration > 0 and duration != 666:
+                    self.messages = []
+                    self.callback(self.topic, state=True, strategy='duration', delay=duration)
+                    logger.info("Setting scene_duration state True delayed by %s seconds duration " % duration)
+                    return True
             except (IndexError, KeyError, ValueError, TypeError) as e:
                 logger.exception("error getting duration from message: %" % e)
 
