@@ -46,6 +46,9 @@ Changelog for package rfreceiver
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.23 (2025-06-16)
 -------------------
 
