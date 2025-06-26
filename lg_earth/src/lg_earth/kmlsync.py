@@ -336,9 +336,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
 class KmlQueryHandler(tornado.web.RequestHandler):
     def initialize(self):
-        self.playtour = self.application.playtour
         self.playtour_service = self.application.playtour_service
-        self.planet = self.application.planet
         self.planet_service = self.application.planet_service
         self.get_planet = self.application.get_planet
 
@@ -371,12 +369,10 @@ class KmlQueryHandler(tornado.web.RequestHandler):
 
                 if command == 'playtour':
                     logger.info("Playing tour %s" % value)
-                    self.playtour.tourname = str(value)
                     self.playtour_service(value)
 
                 elif command == 'planet':
                     logger.info("Switching to planet %s" % value)
-                    self.planet.planetname = value
                     self.planet_service(value)
                     self._wait_for_planet(value)
 
