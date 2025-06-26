@@ -43,8 +43,8 @@ Changelog for package lg_spacenav_globe
 * Changelogs
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.24 (2025-06-26)
+-------------------
 
 3.9.23 (2025-06-16)
 -------------------
