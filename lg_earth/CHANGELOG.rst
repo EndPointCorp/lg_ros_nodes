@@ -70,6 +70,11 @@ Changelog for package lg_earth
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* fix kml on visionport systems
+* Contributors: Jacob Minshall
+
 3.9.23 (2025-06-16)
 -------------------
 
