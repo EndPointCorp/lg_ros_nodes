@@ -44,8 +44,8 @@ def main():
             logger.info("%s: We have successfully connected to the serial device" % rospy.get_name())
             break
         except serial.SerialException as e:
-            logger.warning("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
-            logger.warning("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
+            logger.error("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
+            logger.info("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
             rospy.sleep(i)
             if i < 30:
                 i += 3

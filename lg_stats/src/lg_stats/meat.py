@@ -107,7 +107,7 @@ class Processor(object):
         self.influxdb_client = influxdb_client
         self.resubmission_thread = None
         self._lock = threading.Lock()
-        logger.info("Initializing Processor instance: %s" % self)
+        logger.debug("Initializing Processor instance: %s" % self)
 
     def __str__(self):
         return "<Processor instance for topic %s, msg_slot %s, strategy: %s>" % (self.watched_topic, self.msg_slot, self.strategy)
@@ -127,16 +127,16 @@ class Processor(object):
         """
 
         if self.strategy == "default" or self.strategy == 'default_session':
-            logger.info("Starting %s strategy resubmission thread for %s" % (self.strategy, self))
+            logger.debug("Starting %s strategy resubmission thread for %s" % (self.strategy, self))
             self.resubmission_thread = threading.Thread(target=self._resubmission_thread)
             self.resubmission_thread.start()
         else:
-            logger.info("Starting background thread for %s" % self)
+            logger.debug("Starting background thread for %s" % self)
             self._periodic_flush_thread = threading.Thread(target=self._periodic_flush_thread)
             self._periodic_flush_thread.start()
 
     def on_shutdown(self):
-        logger.info("Received shutdown for periodic/resubmission")
+        logger.debug("Received shutdown for periodic/resubmission")
 
     def _periodic_flush_thread(self):
         """
@@ -170,7 +170,7 @@ class Processor(object):
                 if rospy.is_shutdown():
                     break
                 rospy.sleep(1)
-        logger.info("Resubmission thread finished for %s has finished" % self.watched_topic)
+        logger.debug("Resubmission thread finished for %s has finished" % self.watched_topic)
 
     def _resubmit_worker(self):
         """
@@ -456,7 +456,7 @@ def main():
                       inactivity_resubmission=inactivity_resubmission,
                       influxdb_client=influxdb_client)
         p._start_resubmission_thread()  # keep it separated (easier testing)
-        logger.info("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type))
+        logger.debug("Subscribing to topic '%s' (msg type: '%s') ..." % (stats_source["topic"], msg_type))
         rospy.Subscriber(stats_source["topic"], msg_type, p.process, queue_size=3)
         processors.append(p)
         rospy.on_shutdown(p.on_shutdown)
@@ -464,5 +464,5 @@ def main():
     # wake all processors that have strategy of average and count and make sure their buffers are emptied
     logger.info("Initializing lg_stats with: %s" % processors)
 
-    logger.info("%s spinning ..." % ROS_NODE_NAME)
+    logger.debug("%s spinning ..." % ROS_NODE_NAME)
     rospy.spin()

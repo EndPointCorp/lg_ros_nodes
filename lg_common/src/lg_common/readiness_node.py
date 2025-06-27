@@ -36,7 +36,7 @@ class ReadinessHandbrake(object):
             logger.debug("Waiting for readiness %s" % interval)
             rospy.sleep(1)
 
-        logger.info("Executing readiness handbrake to activate unactivated browsers within specified timeout of %s secs" % self.timeout)
+        logger.debug("Executing readiness handbrake to activate unactivated browsers within specified timeout of %s secs" % self.timeout)
         self.callback(force=True)
 
 
@@ -93,15 +93,15 @@ class ReadinessNode(object):
 
         """
         with self.lock:
-            logger.info("Received new director scene")
+            logger.debug("Received new director scene")
             self.ready = False
             message = json.loads(message.message)
             slug = message.get('slug', None)
             if slug:
-                logger.info("Waiting for browsers to join to scene %s" % slug)
+                logger.debug("Waiting for browsers to join to scene %s" % slug)
                 self.uscs_messages[slug] = message
                 self._purge_state(slug)
-                logger.info("Current state is: %s" % json.dumps(self.state, indent=4))
+                logger.debug("Current state is: %s" % json.dumps(self.state, indent=4))
             else:
                 logger.warning("Readiness node received message without slug this no preloading will be performed")
 
@@ -118,7 +118,7 @@ class ReadinessNode(object):
                 browser_id = browser.id
                 if browser_id not in self.state['browsers']:
                     with self.lock:
-                        logger.info("Browser with id %s added to waiting pool" % browser_id)
+                        logger.debug("Browser with id %s added to waiting pool" % browser_id)
                         self.state['browsers'].append(browser_id)
 
     def _get_number_of_prelaodable_browsers_to_join(self):
@@ -172,7 +172,7 @@ class ReadinessNode(object):
         ready_msg.instances = self.state['ready_browsers']
         ready_msg.activity_type = 'browser'
         if ready_msg.instances:
-            logger.info("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
+            logger.debug("Became ready with %s browsers (force=%s)" % (ready_msg.instances, force))
             self.readiness_publisher.publish(ready_msg)
         else:
             logger.warning("Prevented emitting readiness message with empty instances list %s" % ready_msg)
@@ -192,8 +192,8 @@ class ReadinessNode(object):
             if instance_name in self.state['browsers']:
                 if instance_name not in self.state['ready_browsers']:
                     self.state['ready_browsers'].append(instance_name)
-                    logger.info("Browser with ID %s joined (%s out of %s)" % (instance_name, len(self.state['ready_browsers']), len(self.state['browsers'])))
-                    logger.info("Current state is: %s" % json.dumps(self.state, indent=4))
+                    logger.debug("Browser with ID %s joined (%s out of %s)" % (instance_name, len(self.state['ready_browsers']), len(self.state['browsers'])))
+                    logger.debug("Current state is: %s" % json.dumps(self.state, indent=4))
                 else:
                     logger.debug("Readiness node received browser instance id that was already ready")
             else:
@@ -211,7 +211,7 @@ class ReadinessNode(object):
         """
         with self.lock:
             self.ready = True
-            logger.info("Scene %s is becoming ready (force=%s)" % (self.state['slug'], force))
+            logger.debug("Scene %s is becoming ready (force=%s)" % (self.state['slug'], force))
             if force:
                 logger.warning("Readiness was forced")
             self._publish_readiness(force=force)

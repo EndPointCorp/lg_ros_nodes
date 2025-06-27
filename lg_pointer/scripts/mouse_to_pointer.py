@@ -92,7 +92,7 @@ def main():
     rospy.Service(info_srv, EvdevDeviceInfo, handle_device_info)
 
     while not os.path.exists(device_path):
-        logger.warning("No device %s found, sleeping" % device_path)
+        logger.info("No device %s found, sleeping" % device_path)
         rospy.sleep(5)
     dev = evdev.InputDevice(device_path)
     dev.grab()

@@ -113,7 +113,7 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
         try:
             cls.finish_all_requests()
         except Exception as e:
-            logger.error("Exception getting scene changes" + str(e))
+            logger.exception("Exception getting scene changes")
             pass
 
     def non_blocking_sleep(self, duration):
@@ -171,10 +171,9 @@ class KmlUpdateHandler(tornado.web.RequestHandler):
 
         try:
             assets = self._get_assets(window_slug)
-        except Exception as e:
-            logger.error('Failed to get assets for {}: {}'.format(
+        except Exception:
+            logger.exception('Failed to get assets for {}'.format(
                 window_slug,
-                e.message
             ))
             # Always return a valid KML or Earth will stop requesting updates
             self._finish_text(get_kml_root())
@@ -368,11 +367,11 @@ class KmlQueryHandler(tornado.web.RequestHandler):
                 value = urllib.parse.unquote(value)
 
                 if command == 'playtour':
-                    logger.info("Playing tour %s" % value)
+                    logger.debug("Playing tour %s" % value)
                     self.playtour_service(value)
 
                 elif command == 'planet':
-                    logger.info("Switching to planet %s" % value)
+                    logger.debug("Switching to planet %s" % value)
                     self.planet_service(value)
                     self._wait_for_planet(value)
 

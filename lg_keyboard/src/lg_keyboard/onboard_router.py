@@ -37,7 +37,7 @@ class OnboardRouter(object):
         Publishes empty string of viewports to hide onboard on all of them.
 
         """
-        logger.info("Hiding Onboard ...")
+        logger.debug("Hiding Onboard ...")
         self.onboard_activate_publisher.publish(StringArray([]))
 
     def _show_onboard(self):
@@ -45,7 +45,7 @@ class OnboardRouter(object):
         Publishes an array of strings with viewports to show onboard on.
 
         """
-        logger.info("Showing Onboard on %s" % self.active_viewport)
+        logger.debug("Showing Onboard on %s" % self.active_viewport)
         active_viewport_msg = StringArray(self.active_viewport)
         self.onboard_activate_publisher.publish(active_viewport_msg)
 

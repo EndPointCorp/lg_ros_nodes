@@ -76,8 +76,6 @@ def main():
                          rosbridgePort=rosbridge_port,
                          rosbridgeSecure=rosbridge_secure)
 
-    logger.info('Use Google maps API key: {}'.format(map_api_key))
-
     if map_api_key:
         url = add_url_params(url, map_api_key=map_api_key)
 
