@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import rospy
 from logging.handlers import TimedRotatingFileHandler
@@ -19,10 +20,15 @@ def get_file_handler(log_file=LOG_FILE):
 
 
 def get_logger(logger_name, log_level=logging.INFO):
+    """Get a logger.
+
+    Use log_level arg unless VPROS_LOG_LEVEL environment variable is set."""
     name = rospy.get_name() + ':' + logger_name
     logger = logging.getLogger(name)
-    # TODO get this from ros params
-    logger.setLevel(logging.INFO)
+    if (level_env := os.environ.get("VPROS_LOG_LEVEL", None)) is not None:
+        # TODO: Python 3.11+ should use getLevelNamesMapping
+        log_level = logging.getLevelName(level_env.upper())
+    logger.setLevel(log_level)
     logger.addHandler(get_console_handler())
     logger.addHandler(get_file_handler(log_file=logger_name + ".log"))
     # TODO add file handler with some path in /home/lg/.ros/log/latest/<logger_name>.log
