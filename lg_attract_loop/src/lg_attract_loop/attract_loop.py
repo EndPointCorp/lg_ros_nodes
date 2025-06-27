@@ -21,14 +21,14 @@ class DirectorAPIProxy:
         """
         logger.info("Initializing Attract Loooooooooooop")
         self.director_api_url = director_api_url
-        logger.info("Using director API url: %s" % self.director_api_url)
+        logger.debug("Using director API url: %s" % self.director_api_url)
 
     def get(self, uri):
         try:
             url = "%s%s" % (self.director_api_url, uri)
             return requests.get(url).content
         except Exception:
-            logger.error("Could not get content from URL: %s" % url)
+            logger.exception("Could not get content from URL: %s" % url)
 
 
 def MockFunc(*args, **kwargs):
@@ -96,7 +96,7 @@ class AttractLoop:
         """
         self.play_loop = False
 
-        logger.info("Stopping scene timer")
+        logger.debug("Stopping scene timer")
 
         if self.stop_action == 'stop_playtour':
             self._stop_playtour()
@@ -121,7 +121,7 @@ class AttractLoop:
         Emits a message with planet change taken from configuration
         """
         switch_to_planet_msg = String(data=self.default_planet)
-        logger.info("Executing 'switch_to_planet' action")
+        logger.debug("Executing 'switch_to_planet' action")
         self.earth_planet_publisher.publish(switch_to_planet_msg)
 
     def _stop_playtour(self):
@@ -132,14 +132,14 @@ class AttractLoop:
 
         """
         stop_tour_msg = String(data='')
-        logger.info("Executing 'stop_playtour' action")
+        logger.debug("Executing 'stop_playtour' action")
         self.earth_query_publisher.publish(stop_tour_msg)
 
     def _publish_blank_scene(self):
         """
         Emits a scene with empty windows to clean up all assets from screens
         """
-        logger.info("Playing blank scene")
+        logger.debug("Playing blank scene")
 
         viewport_names = self.get_viewport_names()
 
@@ -180,17 +180,17 @@ class AttractLoop:
                 prompt_reload = Path("/mnt/videos/prompt_reload")
                 prompt_next = Path("/mnt/videos/prompt_next")
                 if prompt_reload.exists():
-                    logger.info("FORCE Populating attract_loop_queue")
+                    logger.debug("FORCE Populating attract_loop_queue")
                     self.attract_loop_queue = []
                     self.scene_timer = 0
                     prompt_reload.unlink()
                 elif prompt_next.exists():
-                    logger.info("FORCE skipping to next scene")
+                    logger.debug("FORCE skipping to next scene")
                     self.scene_timer = 0
                     prompt_next.unlink()
 
             except Exception as e:
-                logger.info(f"FAIL force reloading: {e}")
+                logger.exception("FAIL force reloading")
 
             if self.attract_loop_queue:
                 logger.debug("Attract_loop_queue alrady contains content (%s) continuing from last played scene" % self.attract_loop_queue)
@@ -200,7 +200,7 @@ class AttractLoop:
             self._play_attract_loop_item()
 
         except Exception as e:
-            logger.info("Failed to populate attract loop queue with content because %s - sleeping for 60 seconds" % e)
+            logger.exception("Failed to populate attract loop queue with content, sleeping for 60 seconds")
             rospy.sleep(60)
 
     def _play_scene(self, lazy_scene, lazy_presentation):
@@ -284,17 +284,17 @@ class AttractLoop:
         content = []
         presentationgroups = self._fetch_attract_loop_presentationgroups()
         if presentationgroups:
-            logger.info("Fetched %s presentationgroups" % len(presentationgroups))
+            logger.debug("Fetched %s presentationgroups" % len(presentationgroups))
             presentations = self._fetch_presentationgroup_presentations(presentationgroups)
             if presentations:
-                logger.info("Fetched %s presentations" % len(presentations))
+                logger.debug("Fetched %s presentations" % len(presentations))
                 logger.debug("Here they are: %s" % presentations)
                 for presentation in presentations:
                     logger.debug("Preparing content object")
                     presentation_object = {"presentation": presentation,
                                            "scenes": self._fetch_presentation_by_slug(presentation['slug'])['scenes']}
                     logger.debug("Appending presentation object %s to fetched content" % presentation_object)
-                    logger.info("Fetched %s scenes" % len(presentation_object['scenes']))
+                    logger.debug("Fetched %s scenes" % len(presentation_object['scenes']))
                     content.append(presentation_object)
             logger.debug("Fetched new content: %s" % content)
         else:
@@ -329,7 +329,7 @@ class AttractLoop:
                 attract_loop_presentations.extend(presentations)
             return attract_loop_presentations
         except Exception as e:
-            logger.error("Could not fetch presentations from presentationgroups (%s) because %s" % (presentationgroups, e))
+            logger.exception("Could not fetch presentations from presentationgroups (%s)" % presentationgroups)
             return []
 
     def _fetch_attract_loop_presentationgroups(self):
@@ -339,6 +339,6 @@ class AttractLoop:
             assert(type(presentationgroups) == list), "Presentationgroups type is not list"
             return presentationgroups
         except Exception as e:
-            logger.error("Could not get presentationgroups because: %s - sleeping for 10 seconds" % e)
+            logger.exception("Could not get presentationgroups, sleeping for 10 seconds")
             rospy.sleep(10)
             return []

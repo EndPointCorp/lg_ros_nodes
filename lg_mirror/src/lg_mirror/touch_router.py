@@ -100,7 +100,7 @@ class TouchRouter:
         """
         with self.lock:
             self.touchmenu_visible = msg.data
-            logger.info(f'touchmenu visible: {self.touchmenu_visible}')
+            logger.debug(f'touchmenu visible: {self.touchmenu_visible}')
             if self.touchmenu_visible:
                 self.touchmenu_geometry = ManagedWindow.lookup_viewport_geometry('touchscreen')
 
@@ -141,16 +141,16 @@ class TouchRouter:
 
                 rects = self.spacenav_exclusion_rects.copy()
                 if self.touchmenu_visible:
-                    logger.info('adding touchmenu rect')
+                    logger.debug('adding touchmenu rect')
                     rects.append(self.touchmenu_geometry)
 
                 if x is not None and y is not None and is_point_in_rects(x, y, rects):
-                    logger.info('exclusion')
+                    logger.debug('exclusion')
                 else:
                     # Route all events to nav until this touch ends.
                     self.spacenavving = True
                     routed.routes = [self.spacenav_viewport]
-                    logger.info('no exclusion')
+                    logger.debug('no exclusion')
         finally:
             self.event_pub.publish(routed)
 
@@ -173,7 +173,7 @@ class TouchRouter:
 
             if len(route_viewports) > 0:
                 # Should this be the route during spacenav exclusion?  Probably..
-                logger.info(f'routing to specific viewports: {route_viewports}')
+                logger.debug(f'routing to specific viewports: {route_viewports}')
                 publish_cb(frozenset(route_viewports))
                 return
 
@@ -191,7 +191,7 @@ class TouchRouter:
                 #publish_cb(frozenset([self.spacenav_viewport]))
                 return
 
-            logger.info(f'routing to default viewports: {self.default_viewports}')
+            logger.debug(f'routing to default viewports: {self.default_viewports}')
             publish_cb(frozenset(self.default_viewports))
 
     def handle_new_listener(self, publish_cb, data):
@@ -204,7 +204,7 @@ class TouchRouter:
             data: data about new listener
         """
         with self.lock:
-            logger.info("New listener %s" % data)
+            logger.debug("New listener %s" % data)
 
             if len(self.route_viewports) == 0:
                 self.route_viewports = self.default_viewports

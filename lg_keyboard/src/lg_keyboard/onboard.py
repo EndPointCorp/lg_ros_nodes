@@ -79,7 +79,7 @@ class OnboardLauncher(object):
         Idempotently shows onboard window.
 
         """
-        logger.info("Using config => %s" % self.config)
+        logger.debug("Using config => %s" % self.config)
         dconf = subprocess.Popen(['/usr/bin/dconf', 'load', '/org/onboard/'],
                                  stdin=subprocess.PIPE,
                                  close_fds=True)
@@ -94,7 +94,7 @@ class OnboardLauncher(object):
         self.app.set_state(ApplicationState.STOPPED)
 
     def on_shutdown(self):
-        logger.info("Received shutdown request.")
+        logger.debug("Received shutdown request.")
 
 
 class OnboardConfig(object):
@@ -111,5 +111,5 @@ class OnboardConfig(object):
         return config
 
     def get_config(self):
-        logger.info("Returning onboard config: %s" % self.config)
+        logger.debug("Returning onboard config: %s" % self.config)
         return self.config

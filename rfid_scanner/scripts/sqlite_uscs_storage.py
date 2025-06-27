@@ -33,7 +33,7 @@ class RfidStorage(object):
         """
         self._init_database()
         rfid = msg.data
-        logger.info('got rfid: %s' % rfid)
+        logger.debug('got rfid: %s' % rfid)
         uscs = self.get_uscs(rfid)
         if uscs:
             self.state_set_pub.publish(json.dumps(uscs))
@@ -50,15 +50,15 @@ class RfidStorage(object):
             data = json.loads(msg.data)
             rfid = data.get('rfid', None)
         except Exception:
-            logger.error('Error with json passed')
+            logger.exception('Error with json passed')
             return
 
-        logger.info('got data: %s' % data)
+        logger.debug('got data: %s' % data)
 
         if rfid:
             self.insert_uscs_row(rfid, data)
         else:
-            logger.error('No rfig passed in message: %s' % data)
+            logger.debug('No rfig passed in message: %s' % data)
 
         self._close_database()
 

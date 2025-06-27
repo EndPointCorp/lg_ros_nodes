@@ -34,7 +34,7 @@ def main():
             ready = True
         except SerialException:
             logger.error("Could not open device_path: %s in %s seconds" % (device_path, device_timeout))
-            logger.error("I'm going to try %s times more and will sleep %s seconds between attempts" % (retry_attempts, retry_grace_time))
+            logger.info("I'm going to try %s times more and will sleep %s seconds between attempts" % (retry_attempts, retry_grace_time))
             time.sleep(retry_grace_time)
             retry_attempts -= 1
 

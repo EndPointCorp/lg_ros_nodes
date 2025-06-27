@@ -36,7 +36,7 @@ def main():
     s = SpacenavWrapper(twist=twist, joy=joy, gutter_val=gutter_val)
 
     def suppress(msg):
-        logger.info('Suppress spacenav output: {}'.format(msg.data))
+        logger.debug('Suppress spacenav output: {}'.format(msg.data))
         s.suppress(msg.data)
         return SetBoolResponse(True, "")
     rospy.Service('/spacenav_wrapper/suppress', SetBool, suppress)

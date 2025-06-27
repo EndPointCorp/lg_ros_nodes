@@ -72,12 +72,12 @@ class AdhocBrowserPool():
 
         It returns a first matched dir under which an `extensions` dir exists
         """
-        logger.info("Going o to check %s dirs looking for extensions" % lg_common.__path__)
+        logger.debug("Going to to check %s dirs looking for extensions" % lg_common.__path__)
         for module_directory in lg_common.__path__:
             possible_extensions_directory = module_directory + "/extensions"
-            logger.info("Checking if %s exists to load extensions from it" % possible_extensions_directory)
+            logger.debug("Checking if %s exists to load extensions from it" % possible_extensions_directory)
             if os.path.isdir(possible_extensions_directory):
-                logger.info("%s exists!" % possible_extensions_directory)
+                logger.debug("%s exists!" % possible_extensions_directory)
                 return possible_extensions_directory
 
         return ''
@@ -129,8 +129,8 @@ class AdhocBrowserPool():
 
         with self.lock:
             response = json.dumps(self._serialize_browser_pool())
-            logger.info("Received BrowserPool service request")
-            logger.info("Returning %s" % response)
+            logger.debug("Received BrowserPool service request")
+            logger.debug("Returning %s" % response)
 
             try:
                 options = json.loads(req.options)
@@ -182,7 +182,7 @@ class AdhocBrowserPool():
         result = []
         for arg in command_line_args:
             if ';' in arg:
-                logger.erroror("There is ';' in command line arguments for adhock browser")
+                logger.error("There is ';' in command line arguments for adhock browser")
                 return []
 
             if 'enable-arc' in arg or 'enable-nacl' in arg:
@@ -290,10 +290,10 @@ class AdhocBrowserPool():
         binary = self._get_browser_binary(new_browser)
 
         if new_browser.custom_preload_event:
-            logger.info("Using custom preloading event")
+            logger.debug("Using custom preloading event")
             new_browser.url = self._inject_get_argument(new_browser.url, 'use_app_event', 1)
         else:
-            logger.info("NOT Using custom preloading event")
+            logger.debug("NOT Using custom preloading event")
 
         # Add ros_instance_name to evry browser
         new_browser.url = self._inject_get_argument(new_browser.url, 'ros_instance_name', new_browser_pool_id)
@@ -348,7 +348,7 @@ class AdhocBrowserPool():
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser
         self.browsers_info[new_browser_pool_id] = browser_info
-        logger.info("State after addition of %s: %s" % (new_browser_pool_id, list(self.browsers.keys())))
+        logger.debug("State after addition of %s: %s" % (new_browser_pool_id, list(self.browsers.keys())))
 
         if initial_state:
             logger.debug("Setting initial state of %s to %s" % (new_browser_pool_id, initial_state))
@@ -418,17 +418,17 @@ class AdhocBrowserPool():
 
         """
         with self.lock:
-            logger.info("============UNHIDING BEGIN %s ============" % data.instances)
+            logger.debug("============UNHIDING BEGIN %s ============" % data.instances)
             preloadable_prefixes = self._get_all_preloadable_instances(data)
-            logger.info("Preloadable prefixes: %s" % preloadable_prefixes)
+            logger.debug("Preloadable prefixes: %s" % preloadable_prefixes)
             old_preloadable_instances_to_remove = frozenset(self._get_old_preloadable_browser_instances(preloadable_prefixes, data))
             self._unhide_browser_instances(data)
-            logger.info("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
+            logger.debug("Old preloadable instances to remove: %s" % old_preloadable_instances_to_remove)
             rospy.sleep(self.hide_delay)
             self._hide_browsers_ids(old_preloadable_instances_to_remove)
             rospy.sleep(self.destroy_delay)
             self._destroy_browsers_ids(old_preloadable_instances_to_remove)
-            logger.info("============UNHIDING END %s   ============" % data.instances)
+            logger.debug("============UNHIDING END %s   ============" % data.instances)
 
     def _get_old_preloadable_browser_instances(self, preloadable_prefixes, data):
         """
@@ -464,7 +464,7 @@ class AdhocBrowserPool():
         returns: bool
         """
         for browser_pool_id in data.instances:
-            logger.info("Unhiding browser with id %s" % (browser_pool_id))
+            logger.debug("Unhiding browser with id %s" % (browser_pool_id))
             try:
                 self.browsers[browser_pool_id].set_state(ApplicationState.VISIBLE)
             except KeyError:
@@ -557,7 +557,7 @@ class AdhocBrowserPool():
         browsers with these ids.
         """
         for browser_pool_id in ids_to_create:
-            logger.info("Creating browser %s with preload flag: %s" % (browser_pool_id, incoming_browsers[browser_pool_id].preload))
+            logger.debug("Creating browser %s with preload flag: %s" % (browser_pool_id, incoming_browsers[browser_pool_id].preload))
             if incoming_browsers[browser_pool_id].preload:
                 self._create_browser(browser_pool_id,
                                      incoming_browsers[browser_pool_id],

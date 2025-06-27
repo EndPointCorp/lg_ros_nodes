@@ -56,7 +56,7 @@ class BasicBrowserData:
             new_browser.geometry = media.geometry
             new_browser.url = url
             msg.browsers.append(new_browser)
-            logger.info("New browser URL: %s" % url)
+            logger.debug("New browser URL: %s" % url)
 
         self.publisher.publish(msg)
 

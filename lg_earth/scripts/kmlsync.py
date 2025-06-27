@@ -37,7 +37,7 @@ def main():
 
     req_timeout_probe = float(rospy.get_param('~request_timeout'))
     if req_timeout_probe is not None:
-        logger.warning('request_timeout parameter is not active (value is zero, no polling)')
+        logger.debug('request_timeout parameter is not active (value is zero, no polling)')
     KmlUpdateHandler.timeout = 0
 
     kmlsync_server = tornado.web.Application([

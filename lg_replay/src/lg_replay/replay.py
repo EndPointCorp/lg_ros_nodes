@@ -36,7 +36,7 @@ class DeviceReplay:
             try:
                 device_path = find_device(self.device_name)
                 self.device = InputDevice(device_path)
-                logger.info("Initialize device reader for %s" % self.device)
+                logger.debug("Initialize device reader for %s" % self.device)
             except IndexError:
                 logger.error("No device with name: '%s'" % self.device_name)
 

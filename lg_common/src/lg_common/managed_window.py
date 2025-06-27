@@ -129,11 +129,11 @@ class ManagedWindow(object):
     def converge(self):
         with self.lock:
             cmd = self._get_command()
-            logger.warning('running: {}'.format(cmd))
+            logger.debug('running: {}'.format(cmd))
 
             try:
                 subprocess.check_call(cmd, close_fds=True)
             except Exception as e:
-                logger.error('failed to run {} : {}'.format(cmd, str(e)))
+                logger.exception('failed to run {}'.format(cmd))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -125,9 +125,9 @@ class ActivitySource:
         try:
             message_type_final = get_message_type_from_string(self.message_type)
         except Exception as e:
-            msg = "Could not import module because: %s" % (e)
-            logger.error(msg)
-            raise ActivitySourceException
+            msg = "Could not import module"
+            logger.exception(msg)
+            raise ActivitySourceException(msg) from e
 
         logger.info("ActivitySource is going to subscribe topic: %s with message_type: %s" % (self.topic, message_type_final))
         self.subscriber = rospy.Subscriber(self.topic, message_type_final, self._aggregate_message)
@@ -281,7 +281,7 @@ class ActivitySource:
                 else:
                     logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
             except (IndexError, KeyError, ValueError, TypeError) as e:
-                logger.exception("error checking stream messages: %" % e)
+                logger.exception("error checking stream messages")
         self.messages = []
         self.callback(self.topic, state=False, strategy='message')
         logger.debug("Streams are off")
@@ -535,12 +535,12 @@ class ActivityTracker:
             self.stats_active = True
             self.stats_activity_publisher.publish(Bool(data=True))
             logger.info("Stats activity state turned from False to True because of state: %s" % self.sources_active_within_stats_timeout)
-            logger.info("States: %s" % self.activity_states)
+            logger.debug("States: %s" % self.activity_states)
         elif (not self.sources_active_within_stats_timeout) and self.stats_active:
             self.stats_active = False
             self.stats_activity_publisher.publish(Bool(data=False))
             logger.info("Stats acitivity state turned from True to False because no sources were active within the timeout")
-            logger.info("States: %s" % self.activity_states)
+            logger.debug("States: %s" % self.activity_states)
         else:
             logger.debug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_stats_timeout, self.stats_active, self.activity_states))
 

@@ -217,11 +217,11 @@ class ManagedBrowser(ManagedApplication):
             if self.user_data_dir:
                 return  # this is fine
             else:
-                logger.error("Temp dir exists for chrome already")
+                logger.debug("Temp dir exists for chrome already")
         try:
             if self.user_data_dir:
                 # just in case make the user_data_dir directory
-                logger.error(f"ZZZ making user_data_dir {self.user_data_dir}")
+                logger.debug(f"ZZZ making user_data_dir {self.user_data_dir}")
                 os.makedirs(self.user_data_dir, exist_ok=True)
 
                 # lockfile so different processes don't try to use the same user_data_dir
@@ -248,9 +248,7 @@ class ManagedBrowser(ManagedApplication):
             else:
                 os.makedirs(self.tmp_dir, exist_ok=True)
         except Exception:
-            import traceback
-            logger.error(traceback.format_exc())
-            logger.error("Error trying to make the tmp dir, could exist already")
+            logger.exception("Error trying to make the tmp dir, could exist already")
 
     def actually_clear_links(self):
         if os.path.lexists(self.tmp_dir + '/SingletonCookie'):

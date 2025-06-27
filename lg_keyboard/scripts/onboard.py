@@ -26,7 +26,7 @@ def main():
                                                    StringArray,
                                                    onboard_launcher.handle_activate)
     rospy.on_shutdown(onboard_launcher.on_shutdown)
-    logger.info("Started, spinning %s ..." % ROS_NODE_NAME)
+    logger.debug("Started, spinning %s ..." % ROS_NODE_NAME)
     rospy.spin()
 
 

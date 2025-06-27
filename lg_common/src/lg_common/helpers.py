@@ -497,12 +497,12 @@ def unpack_activity_sources(sources_string):
                 value_max = values[1]
                 value = None
             except IndexError:
-                logger.info("Detected a singe value from source_string: %s" % source_string)
+                logger.debug("Detected a singe value from source_string: %s" % source_string)
                 value = values[0]
                 value_min = None
                 value_max = None
         except IndexError:
-            logger.info("Could not get value_min/value_max nor single value from sources for source_string: %s" % source_string)
+            logger.error("Could not get value_min/value_max nor single value from sources for source_string: %s" % source_string)
             value_min, value_max, value = None, None, None
 
         single_source['topic'] = topic
@@ -579,7 +579,7 @@ def next_scene_uri(presentation, scene):
     try:
         return script[script.index(resource_uri) + 1]
     except IndexError:
-        logger.info("Already at last Scene in this Presentation.")
+        logger.debug("Already at last Scene in this Presentation.")
         return None
 
 
@@ -640,10 +640,10 @@ def dependency_available(server, port, name, timeout=None):
         except socket_error as serr:
             # this exception occurs only if timeout is set
             if serr.errno == errno.ECONNREFUSED:
-                logger.warning("%s not yet available - waiting %s seconds more" % (name, next_timeout))
+                logger.info("%s not yet available - waiting %s seconds more" % (name, next_timeout))
                 rospy.sleep(1)
             else:
-                logger.warning("%s not available because: %s" % (name, serr))
+                logger.info("%s not available because: %s" % (name, serr))
                 rospy.sleep(1)
 
         except socket.error as err:
@@ -720,11 +720,11 @@ def make_soft_relaunch_callback(func, *args, **kwargs):
 
     def cb(msg):
         if msg.data == 'all':
-            logger.info('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
+            logger.debug('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
         if 'groups' in kwargs and msg.data in kwargs['groups']:
-            logger.info('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
+            logger.debug('calling callback for data: (%s) kwargs: (%s)' % (msg.data, kwargs))
             func(msg)
             return
     return rospy.Subscriber('/soft_relaunch', String, cb)
@@ -927,7 +927,7 @@ def handle_initial_state(call_back, attempts=20):
             rospy.sleep(1.0)
 
     if state and state != InitialUSCSResponse():
-        logger.info('got initial state: %s for callback %s' % (state.message, call_back))
+        logger.debug('got initial state: %s for callback %s' % (state.message, call_back))
         call_back(state)
     else:
         logger.warning('Could not get valid initial state for callback %s')
@@ -983,7 +983,7 @@ def wait_for_pub_sub_connections(network=[], sleep=1, timeout=10, num_connection
             rospy.sleep(1)
             return True
         else:
-            logger.warning("Waiting for topics (%s) to become connected" % actors_names)
+            logger.info("Waiting for topics (%s) to become connected" % actors_names)
             rospy.sleep(sleep)
             timeout -= 1
 
@@ -1005,7 +1005,7 @@ def all_actors_connected(actors=[], num_connections=1):
         if actor.get_num_connections() < num_connections:
             return False
         else:
-            logger.warning("Actor: %s reached required number of connections: %s" % (actor.name, num_connections))
+            logger.info("Actor: %s reached required number of connections: %s" % (actor.name, num_connections))
 
     return True
 
@@ -1078,7 +1078,7 @@ def director_listener_state_setter(state_pub, activity_list=None, offline_state=
             return
         windows = msg.get('windows', [])
         if msg.get('slug', None) == "stop-the-presentations":
-            logger.info("Ignoring 'stop-the-presentations' scene")
+            logger.debug("Ignoring 'stop-the-presentations' scene")
             return
         for window in windows:
             if window.get('activity', None) in activity_list:

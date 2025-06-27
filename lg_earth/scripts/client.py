@@ -50,7 +50,7 @@ def main():
     random_stagger = rospy.get_param('~staggered', False)
     if random_stagger:
         random_sleep_length = randint(1, 10)
-        logger.error("Random sleep length: {}".format(random_sleep_length))
+        logger.debug("Random sleep length: {}".format(random_sleep_length))
         sleep(random_sleep_length)
 
     instance = '_earth_instance_' + rospy.get_name().strip('/')

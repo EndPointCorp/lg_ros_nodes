@@ -20,10 +20,10 @@ class VolumeControlMaster:
     def set_volume(self, volume):
         volume = self.clamp(volume, 0, self.max_volume)
         if volume == self.current_volume:
-            logger.info("VolumeControlMaster: No change to volume level")
+            logger.debug("VolumeControlMaster: No change to volume level")
             return
         self.current_volume = volume
-        logger.info(
+        logger.debug(
             "VolumeControlMaster: Setting volume on VolumeControlSlaves to {}%".format(volume))
         self.level_change_pub.publish(volume)
 
@@ -47,9 +47,9 @@ class VolumeControlSlave:
         self.set_volume(msg.data)
 
     def set_volume(self, volume):
-        logger.info("about to grab the lock...")
+        logger.debug("about to grab the lock...")
         cmd = "pactl set-sink-volume {} {}%".format(self.sink, volume)
         with self._lock:
-            logger.info("running command: {}".format(cmd))
+            logger.debug("running command: {}".format(cmd))
             status, output = subprocess.getstatusoutput(cmd)
-            logger.info("output {} status {}".format(output, status))
+            logger.debug("output {} status {}".format(output, status))
