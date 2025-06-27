@@ -56,8 +56,8 @@ Changelog for package lg_keyboard
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.25 (2025-06-26)
+-------------------
 * Cleanup logging
   Change messages and adjust log levels.
 * Contributors: Matt Vollrath
