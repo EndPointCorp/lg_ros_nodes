@@ -43,6 +43,12 @@ Changelog for package lg_attract_loop
 * Changelogs
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Cleanup logging
+  Change messages and adjust log levels.
+* Contributors: Matt Vollrath
+
 3.9.24 (2025-06-26)
 -------------------
 
