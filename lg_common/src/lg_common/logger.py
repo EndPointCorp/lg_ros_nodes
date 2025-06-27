@@ -7,7 +7,7 @@ LOG_FILE = "my_app.log"
 
 
 def get_console_handler():
-    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setFormatter(FORMATTER)
     return console_handler
 
