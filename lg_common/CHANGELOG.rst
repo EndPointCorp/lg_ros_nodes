@@ -67,8 +67,8 @@ Changelog for package lg_common
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.25 (2025-06-26)
+-------------------
 * Use VPROS_LOG_LEVEL env
 * Log to stderr
 * Cleanup logging
