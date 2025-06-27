@@ -97,7 +97,7 @@ class ViewsyncRelay:
                 pose_msg, planet = ViewsyncRelay.parse_pose(data)
                 self._publish_pose_msg(pose_msg, planet)
             except Exception as e:
-                logger.error('error in ViewsyncRelay loop: {}'.format(e))
+                logger.exception('error in ViewsyncRelay loop')
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

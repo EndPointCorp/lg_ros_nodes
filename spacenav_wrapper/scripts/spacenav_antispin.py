@@ -36,7 +36,7 @@ def main():
         if should_relaunch:
             rezero_pub.publish('rezero')
         else:
-            logger.warning('A rezero is needed, but the rezeroer dose not have permission')
+            logger.error('A rezero is needed, but the rezeroer dose not have permission')
 
     threshold = get_fullscale() * 0.0147  # this can be tweaked
 

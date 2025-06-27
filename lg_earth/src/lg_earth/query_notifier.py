@@ -36,9 +36,8 @@ class QueryNotifier():
         def run_handler(h):
             try:
                 h()
-            except Exception as e:
-                logger.error('Caught an Exception in delete handler!')
-                logger.error(sys.exc_info()[2])
+            except Exception:
+                logger.exception('Exception in delete handler!')
         list(map(run_handler, self.delete_handlers))
 
     def start(self):

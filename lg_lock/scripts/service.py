@@ -32,7 +32,7 @@ def init():
 
     def onChange(state):
         if suppress_spacenav:
-            logger.info("Suppress spacenav: {}".format(state))
+            logger.debug("Suppress spacenav: {}".format(state))
             suppressProxy(state)
 
     service = LockerService(statePublisher, password, locked, onChange)

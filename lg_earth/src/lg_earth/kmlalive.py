@@ -44,7 +44,7 @@ class KmlAlive:
                 counter += 1
                 logger.info("found non zero value for {} counter at {}".format(pid, counter))
                 if (counter > self.timeout_period and self.worked) or counter > self.initial_timeout:
-                    logger.error("RELAUNCHING worked: {}  counter: {}".format(self.worked, counter))
+                    logger.info("RELAUNCHING worked: {}  counter: {}".format(self.worked, counter))
                     self.earth_proc.handle_soft_relaunch()
                     counter = 0
                     self.worked = False

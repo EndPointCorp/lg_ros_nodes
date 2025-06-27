@@ -293,7 +293,7 @@ class Client:
         Clearing up logs is pretty important for soft relaunches
         """
         random_sleep_stagger = randint(1, 10)
-        logger.error("Sleep Stagger: {} seconds".format(random_sleep_stagger))
+        logger.debug("Sleep Stagger: {} seconds".format(random_sleep_stagger))
         sleep(random_sleep_stagger)
         self._handle_soft_relaunch(msg)
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

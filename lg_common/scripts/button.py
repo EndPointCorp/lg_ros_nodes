@@ -30,7 +30,7 @@ def main():
         geometry=geometry,
         layer=ManagedWindow.LAYER_TOUCH,
     )
-    logger.error(f"geometry is {geometry}")
+    logger.debug(f"geometry is {geometry}")
     managed_browser = ManagedAdhocBrowser(
         url=url,
         geometry=geometry,

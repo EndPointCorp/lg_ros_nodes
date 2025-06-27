@@ -168,14 +168,14 @@ class MplayerPool(object):
             # mplayers to remove
             for mplayer_pool_id in current_mplayers_ids:
                 if mplayer_pool_id in existing_media_ids:
-                    logger.info("Media already playing: %s" % mplayer_pool_id)
+                    logger.debug("Media already playing: %s" % mplayer_pool_id)
                     continue
-                logger.info("Removing mplayer id %s" % mplayer_pool_id)
+                logger.debug("Removing mplayer id %s" % mplayer_pool_id)
                 self._remove_mplayer(mplayer_pool_id)
 
             # mplayers to create
             for mplayer_pool_id in fresh_media_ids:
-                logger.info("Creating mplayer with id %s" % mplayer_pool_id)
+                logger.debug("Creating mplayer with id %s" % mplayer_pool_id)
                 self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
             return True

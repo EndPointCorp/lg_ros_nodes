@@ -13,7 +13,7 @@ class SceneListener:
                                     self.handle_scene)
         self.callback = callback
         try:
-            logger.info("Registered scene listener with callback: %s" % self.callback.__name__)
+            logger.debug("Registered scene listener with callback: %s" % self.callback.__name__)
         except AttributeError as e:
             pass
 

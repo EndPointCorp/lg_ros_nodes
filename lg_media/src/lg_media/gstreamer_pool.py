@@ -140,14 +140,14 @@ class GstreamerPool(object):
             # gstreamers to remove
             for gstreamer_pool_id in current_gstreamers_ids:
                 if gstreamer_pool_id in existing_media_ids:
-                    logger.info("Media already playing: %s" % gstreamer_pool_id)
+                    logger.debug("Media already playing: %s" % gstreamer_pool_id)
                     continue
-                logger.info("Removing gstreamer id %s" % gstreamer_pool_id)
+                logger.debug("Removing gstreamer id %s" % gstreamer_pool_id)
                 self._remove_gstreamer(gstreamer_pool_id)
 
             # gstreamers to create
             for gstreamer_pool_id in fresh_media_ids:
-                logger.info("Creating gstreamer with id %s" % gstreamer_pool_id)
+                logger.debug("Creating gstreamer with id %s" % gstreamer_pool_id)
                 self._create_gstreamer(gstreamer_pool_id, incoming_gstreamers[gstreamer_pool_id])
 
             return True

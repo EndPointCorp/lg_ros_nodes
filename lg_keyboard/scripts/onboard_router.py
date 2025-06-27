@@ -36,7 +36,7 @@ def main():
                      Bool,
                      onboard_router.handle_visibility)
 
-    logger.info("Started lg_onboard_router, spinning")
+    logger.debug("Started lg_onboard_router, spinning")
     rospy.spin()
 
 

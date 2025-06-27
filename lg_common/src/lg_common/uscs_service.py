@@ -37,30 +37,30 @@ class USCSService:
 
         if on_online_state_scene_url:
             self.on_online_state = self._grab_scene(on_online_state_scene_url)
-            logger.info("Enabling on_online_state handling")
+            logger.debug("Enabling on_online_state handling")
         else:
-            logger.info("Disabling on_online_state handling")
+            logger.debug("Disabling on_online_state handling")
             self.on_online_state = None
 
         if on_offline_state_scene_url:
-            logger.info("Enabling on_offline_state handling")
+            logger.debug("Enabling on_offline_state handling")
             self.on_offline_state = self._grab_scene(on_offline_state_scene_url)
         else:
-            logger.info("Will use initial state for on_offline_state")
+            logger.debug("Will use initial state for on_offline_state")
             self.on_offline_state = None
 
         if on_active_state_scene_url:
-            logger.info("Enabling on_active_state handling")
+            logger.debug("Enabling on_active_state handling")
             self.on_active_state = self._grab_scene(on_active_state_scene_url)
         else:
-            logger.info("Disabling on_active_state handling")
+            logger.debug("Disabling on_active_state handling")
             self.on_active_state = None
 
         if on_inactive_state_scene_url:
-            logger.info("Enabling on_inactive_state handling")
+            logger.debug("Enabling on_inactive_state handling")
             self.on_inactive_state = self._grab_scene(on_inactive_state_scene_url)
         else:
-            logger.info("Disabling on_inactive_state handling")
+            logger.debug("Disabling on_inactive_state handling")
             self.on_inactive_state = None
 
         self.state = self._grab_state(initial_state_scene_url)
@@ -83,7 +83,7 @@ class USCSService:
         If data == True then emit on_offline_state message
         If data == False then emit on_online_state message
         """
-        logger.info("Incoming message: %s. Currently offline: %s" % (message, self.offline))
+        logger.debug("Incoming message: %s. Currently offline: %s" % (message, self.offline))
         if self.director_scene_publisher and not self.offline == message.data:
             self.offline = message.data
             if self.offline is False:
@@ -103,20 +103,20 @@ class USCSService:
         Accepts active/inactive state message
         and emits appropriate message from ivars
         """
-        logger.info("Incoming message: %s. Current state: %s" % (message, self.active))
+        logger.debug("Incoming message: %s. Current state: %s" % (message, self.active))
         if self.director_scene_publisher:
             if (message.data is True) and (self.active is False):
                 """
                 We became active
                 """
-                logger.info("Active False => True")
+                logger.debug("Active False => True")
                 self.idempotently_publish_scene(self.on_active_state)
                 self.active = True
             if (message.data is False) and (self.active is True):
                 """
                 We became inactive
                 """
-                logger.info("Active True => False")
+                logger.debug("Active True => False")
                 self.idempotently_publish_scene(self.on_inactive_state)
                 self.active = False
 
@@ -133,10 +133,10 @@ class USCSService:
             new_state = json.loads(scene.message)
 
             if current_state['slug'] == new_state['slug']:
-                logger.info("Not publishing scene '%s' as it's "
+                logger.debug("Not publishing scene '%s' as it's "
                               "already published" % current_state['slug'])
             else:
-                logger.info("Publishing scene '%s' due to a callback "
+                logger.debug("Publishing scene '%s' due to a callback "
                               "for new state" % new_state['slug'])
                 self.director_scene_publisher.publish(scene)
 

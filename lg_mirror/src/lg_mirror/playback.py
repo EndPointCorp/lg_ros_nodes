@@ -93,7 +93,7 @@ class MirrorPlaybackPool:
         conf = window.get('activity_config', {})
         source_viewport = conf.get('viewport', '')
         source_viewport = source_viewport.replace('viewport://', '')
-        logger.info("Using geometry for playback: %s" % geometry)
+        logger.debug("Using geometry for playback: %s" % geometry)
         player = MirrorPlayback(
             instance_name=instance_name,
             janus_url=self.janus_url,

@@ -90,7 +90,7 @@ class ManagedAdhocBrowser(ManagedBrowser):
             status, output = subprocess.getstatusoutput(cmd)
             if status == 0:
                 self.url = url
-                logger.info("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
+                logger.debug("Successfully executed URL change command (%s) for browser: %s, old_url: %s, new_url: %s" % (cmd, self.slug, self.url, url))
                 return True
             else:
                 logger.error("URL change command: %s, returned a status code: %s and output %s" % (cmd, status, output))

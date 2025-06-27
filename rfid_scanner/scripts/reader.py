@@ -35,13 +35,13 @@ class RfidListener(object):
                 break
             except serial.SerialException as e:
                 logger.warning("%s: Error reading from serial device: %s" % (rospy.get_name(), e.message))
-                logger.warning("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
+                logger.info("%s: Sleeping for %s seconds and then retrying connection with serial device" % (rospy.get_name(), i))
                 rospy.sleep(i)
                 if i < 30:
                     i += 3
 
     def send_notification(self, msg):
-        logger.info(msg)
+        logger.debug(msg)
         if not self.notify:
             return
         note = {'title': 'rfid', 'message': msg}

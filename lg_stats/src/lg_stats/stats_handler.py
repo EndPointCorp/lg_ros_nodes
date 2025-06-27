@@ -33,9 +33,8 @@ class StatsHandler():
     def handle_director(self, msg):
         try:
             self._handle_director(msg)
-        except Exception as e:
-            logger.error(f"exception was {e}")
-            traceback.print_exc()
+        except Exception:
+            logger.exception("While handling scene")
 
     def _handle_director(self, msg):
         scene = json.loads(msg.message)
@@ -90,9 +89,8 @@ class StatsHandler():
     def write_data(self):
         try:
             self._write_data()
-        except Exception as e:
-            logger.error(e)
-            traceback.print_exc()
+        except Exception:
+            logger.exception("While writing data")
 
     def _write_data(self):
         # write data here

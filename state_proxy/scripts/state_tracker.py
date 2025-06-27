@@ -97,7 +97,7 @@ class StateTracker(object):
 
         viewport = window.get('presentation_viewport', None)
         if viewport is None:
-            logger.info("viewport was None... ignoring")
+            logger.debug("viewport was None... ignoring")
             return
 
         # display might be ok to go away, but only once we're sure

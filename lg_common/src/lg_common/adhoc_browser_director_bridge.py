@@ -50,16 +50,16 @@ class AdhocBrowserDirectorBridge():
             message = json.loads(data.message)
             slug = message['slug']
         except KeyError:
-            logger.warning("Director message did not contain 'slug' attribute")
+            logger.error("Director message did not contain 'slug' attribute")
             return
         except AttributeError:
-            logger.warning("Director message did not contain valid data")
+            logger.error("Director message did not contain valid data")
             return
         except ValueError:
-            logger.warning("Director message did not contain valid json")
+            logger.error("Director message did not contain valid json")
             return
         except TypeError:
-            logger.warning("Director message did not contai valid type. Type was %s, and content was: %s" % (type(message), message))
+            logger.error("Director message did not contain valid type. Type was %s, and content was: %s" % (type(message), message))
             return
 
         adhoc_browsers_list = self._extract_browsers_from_message(data)
@@ -126,9 +126,9 @@ class AdhocBrowserDirectorBridge():
                 adhoc_browser.command_line_args.append(browser_arg)
 
         if default_args_removal:
-            logger.error("there were args to remove")
+            logger.debug("there were args to remove")
             for cmd_arg in default_args_removal:
-                logger.error("One arg was..")
+                logger.debug("One arg was..")
                 browser_arg = BrowserCmdArg()
                 browser_arg.argument = str(cmd_arg)
                 adhoc_browser.default_args_removal.append(browser_arg)

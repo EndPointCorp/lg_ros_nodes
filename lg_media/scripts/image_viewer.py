@@ -41,18 +41,17 @@ class ImageViewer():
         self.graphic_opts = {}
 
     def director_translator(self, data):
-        logger.error("ZZZ")
         windows_to_add = ImageViews()
         try:
             message = json.loads(data.message)
         except AttributeError:
-            logger.warning('Director message did not contain valid data')
+            logger.error('Director message did not contain valid data')
             return
         except ValueError:
-            logger.warning('Director message did not contain valid json')
+            logger.error('Director message did not contain valid json')
             return
         except TypeError:
-            logger.warning('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
+            logger.error('Director message did not contai valid type. Type was %s, and content was: %s' % (type(message), message))
             return
         for window in message.get('windows', []):
             if window.get('activity', '') == 'image':
@@ -74,11 +73,11 @@ class ImageViewer():
                 image.geometry.y = image.geometry.y + offset_geometry.y
                 image.uuid = str(uuid.uuid4())
                 windows_to_add.images.append(image)
-                
+
                 self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)] = {}
                 self.graphic_opts[(image.url, image.geometry.x, image.geometry.y)]['no_upscale'] = window.get('activity_config', {}).get('no_upscale', False)
 
-        logger.error(f"ZZZ {windows_to_add}")
+        logger.debug(f"Adding windows {windows_to_add}")
         self.handle_image_views(windows_to_add)
 
     def is_in_current_images(self, current_images, image):
@@ -89,7 +88,7 @@ class ImageViewer():
 
     def is_current_coordinates(self, current_images, image):
         for key_from_image, _image_obj in list(current_images.items()):
-            logger.error(f"ZZZ comparing {'_'.join(key_from_image.split('_')[-4:])} == {image_coordinates(image)}:")
+            logger.debug(f"comparing {'_'.join(key_from_image.split('_')[-4:])} == {image_coordinates(image)}:")
             if '_'.join(key_from_image.split('_')[-4:]) == image_coordinates(image):
                 return _image_obj
         return None
@@ -110,13 +109,13 @@ class ImageViewer():
             logger.debug('CURRENT IMAGES: {}\n\n'.format(self.current_images))
             duplicate_image = self.is_in_current_images(self.current_images, image)
             if duplicate_image:
-                logger.info('Keeping image: {}\n\n'.format(image))
+                logger.debug('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
                 new_current_images[make_key_from_image(image)] = duplicate_image
                 continue
             current_coordinate_image = self.is_current_coordinates(self.current_images, image)
             if current_coordinate_image:
-                logger.info("image matched, waiting to remove after the new one is launched")
+                logger.debug("image matched, waiting to remove after the new one is launched")
                 matched_images_dict[image_coordinates(image)] = current_coordinate_image
                 images_to_remove.remove(current_coordinate_image)
             logger.debug('Appending IMAGE: {}\n\n'.format(image))
@@ -148,7 +147,7 @@ class ImageViewer():
             thread.join()
 
         self.current_images = new_current_images
-        logger.error("finished handling image views")
+        logger.debug("finished handling image views")
 
     def _create_image(self, image):
         if image.transparent:
@@ -172,7 +171,7 @@ class ImageViewer():
             image.geometry.y,
             image_path
         ).split()
-        logger.info('command is {}'.format(command))
+        logger.debug('command is {}'.format(command))
         image = Image(command, ManagedWindow(w_name=image.uuid, geometry=image.geometry), img_application='pqiv', img_path=image_path)
         image.set_state(ApplicationState.STARTED)
         image.set_state(ApplicationState.VISIBLE)

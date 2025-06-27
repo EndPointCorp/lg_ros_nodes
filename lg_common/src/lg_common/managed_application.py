@@ -112,14 +112,14 @@ class ManagedApplication(object):
                 self.proc.start()
 
             elif state == ApplicationState.STARTED:
-                logger.info("STARTED")
+                logger.debug("STARTED")
                 if self.window is not None:
                     self.window.set_visibility(False)
                     self.window.converge()
                 self.proc.start()
 
             elif state == ApplicationState.VISIBLE:
-                logger.info("VISIBLE")
+                logger.debug("VISIBLE")
                 if self.window is not None:
                     self.window.set_visibility(True)
                     self.window.converge()
@@ -128,9 +128,8 @@ class ManagedApplication(object):
             def run_handler(handler):
                 try:
                     handler(state)
-                except Exception as e:
-                    logger.error('caught an Exception in a state change handler')
-                    logger.error(e.message)
+                except Exception:
+                    logger.exception('Exception in a state change handler')
 
             list(map(run_handler, self._state_handlers))
 
@@ -143,9 +142,8 @@ class ManagedApplication(object):
         def run_handler(handler):
             try:
                 handler()
-            except Exception as e:
-                logger.error('caught an Exception in a respawn handler')
-                logger.error(e.message)
+            except Exception:
+                logger.exception('Exception in a respawn handler')
 
         list(map(run_handler, self._respawn_handlers))
 
