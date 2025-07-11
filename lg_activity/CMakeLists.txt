@@ -17,6 +17,8 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
+  scripts/earth_keystroke_sender
+  scripts/earth_keystroke_sender.py
   scripts/write_scene_timestamps
   scripts/write_scene_timestamps.py
   scripts/tracker
