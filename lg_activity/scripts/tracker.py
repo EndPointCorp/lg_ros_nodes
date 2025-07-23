@@ -19,13 +19,14 @@ logger = get_logger(NODE_NAME)
 def main():
     rospy.init_node(NODE_NAME, anonymous=False)
 
-    activity_timeout = rospy.get_param('~activity_timeout', 120)
+    def get_timeout():
+        return rospy.get_param('~activity_timeout', 120)
+    activity_timeout = get_timeout
     stats_activity_timeout = rospy.get_param('~stats_activity_timeout', 5)
     activity_topic = rospy.get_param('~activity_publisher_topic', '/activity/active')
     stats_activity_topic = rospy.get_param('~stats_activity_publisher_topic', '/activity/stats_active')
     activity_status_topic = rospy.get_param('~activity_publisher_topic', '/activity/status')
     sources_string = rospy.get_param('~activity_sources', None)
-    memory_limit = rospy.get_param('~memory_limit', 102400)
 
     if not sources_string:
         logger.error('No or blank source string supplied, exiting...')
