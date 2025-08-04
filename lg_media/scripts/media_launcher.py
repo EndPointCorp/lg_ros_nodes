@@ -32,7 +32,7 @@ def handle_message(message: MediaOverlays) -> None:
     stale_overlays = set(active_overlays.keys()).difference(set(message_overlays))
     new_overlays = set(message_overlays).difference(set(active_overlays.keys()))
 
-    logger.info(
+    logger.debug(
         f"New MediaOverlays definition: {message_overlays} | "
     )
 
@@ -56,7 +56,7 @@ def main():
     global url_base
     global viewports
     rospy.init_node('media_launcher', log_level=rospy.INFO)
-    logger.info(f"Starting media_launcher node")
+    logger.debug(f"Starting media_launcher node")
     url_base = rospy.get_param(
         param_name="~url_base",
         default="http://lg-head/touchscreen_assets/streams/"
@@ -67,7 +67,7 @@ def main():
         viewports = [v.strip() for v in rospy.get_param("~viewports").strip().split(",")]
     else:
         viewports = [k.strip() for k in rospy.get_param_names() if k.startswith("/viewport/")]
-    logger.info(f"configured viewports: {viewports}")
+    logger.debug(f"configured viewports: {viewports}")
 
     rospy.Subscriber(
         name='/media_overlays',
