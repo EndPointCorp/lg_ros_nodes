@@ -21,4 +21,9 @@
   <run_depend>visionport</run_depend>
   <run_depend>lg_common</run_depend>
   <run_depend>tomli</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+
 </package>
