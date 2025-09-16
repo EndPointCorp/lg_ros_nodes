@@ -24,6 +24,7 @@
   <run_depend>lg_lock</run_depend>
   <run_depend>lg_navlib</run_depend>
   <run_depend>lg_offliner</run_depend>
+  <run_depend>lg_ollama</run_depend>
   <run_depend>lg_panovideo</run_depend>
   <run_depend>lg_proximity</run_depend>
   <run_depend>lg_screenshot</run_depend>

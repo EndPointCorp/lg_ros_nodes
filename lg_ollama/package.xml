@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <name>lg_ollama</name>
+  <version>0.0.1</version>
+  <description>link a speech button from touch interfaces to ollama backend</description>
+
+  <maintainer email="lg@endpointdev.com">End Point Liquid Galaxy Team</maintainer>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/EndPointCorp/lg_ros_nodes</url>
+
+  <author email="tino@endpointdev.com">Tino</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>lg_common</build_depend>
+  <build_depend>visionport</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>visionport</run_depend>
+  <run_depend>lg_common</run_depend>
+</package>
