@@ -11,3 +11,4 @@ from .readiness_node import ReadinessNode
 from .readiness_node import ReadinessHandbrake
 from .interactive_messages_factory import InteractiveSpacesMessagesFactory
 from .uscs_service import USCSService
+from .topicbridge import OllamaClient, LLMAggregator, TopicBridge
