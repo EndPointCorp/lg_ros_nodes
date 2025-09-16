@@ -31,6 +31,8 @@ catkin_install_python(PROGRAMS
   scripts/readiness.py
   scripts/readiness
   scripts/uscs_service
+  scripts/stt_bridge.py
+  scripts/stt_bridge
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
