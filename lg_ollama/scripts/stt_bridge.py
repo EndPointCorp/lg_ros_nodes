@@ -9,13 +9,17 @@ Usage:
 from __future__ import annotations
 import argparse, sys
 
+from visionport.node import VPNode
+
 try:
     import tomllib  # py311+
 except ModuleNotFoundError:
     import tomli as tomllib  # pip install tomli
 
-from visionport.node import VPNode
-from topicbridge import OllamaClient, LLMAggregator, TopicBridge, OllamaClient as _OC
+try:
+    from topicbridge import OllamaClient, LLMAggregator, TopicBridge
+except ModuleNotFoundError:
+    from lg_ollama import OllamaClient, LLMAggregator, TopicBridge
 
 
 def load_toml(path: str) -> dict:
@@ -103,7 +107,7 @@ def main():
     else:
         raise ValueError(f"Unknown handler.type: {handler_type}")
 
-    # Optional: fail fast if models missing (comment out if you auto-pull elsewhere)
+    # fail fast if models missing
     need = list(models) + ([agg_model] if agg_model else [])
     client.ensure_models(need)
 
