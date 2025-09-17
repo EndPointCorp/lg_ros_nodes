@@ -28,7 +28,7 @@ def load_toml(path: str) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--config", default="/opt/visionport/lib/python3/site-packages/lg_common/scripts/stt_bridge.toml")
+    ap.add_argument("-c", "--config", default="/media/dockers/stt_bridge.toml")
     ap.add_argument("args", nargs=argparse.REMAINDER)
 
     args = ap.parse_args()

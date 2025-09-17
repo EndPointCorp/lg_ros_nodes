@@ -93,7 +93,8 @@ RUN pip install --no-cache-dir coveralls \
     pycrypto \
     pycryptodome \
     pymongo \
-    gnupg
+    gnupg \
+    tomli
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
