@@ -13,7 +13,7 @@ from typing import Callable, Dict, List, Optional
 
 from visionport.node import VPNode
 from visionport.vpros.models.std_msgs.msg import String
-from kml_tools_worker import Runner
+from .kml_tools_worker import Runner
 
 
 def _log(msg: str) -> None:
@@ -192,48 +192,39 @@ class LLM_KML:
         client: OllamaClient,
         quick_model: str,
         json_model: str,
-        json_system_prompt: str,
-        json_callback: Callable[[Dict], self.handle_json_toolcalls],
-
         quick_template: str = "User said:\n{transcript}\n\nRespond briefly to acknowledge receipt.",
-        json_prompt_template: str = "{system}\n\nInput:\n{transcript}",
+        json_template: str = "Input:\n{transcript}",
         max_workers: int = 2,
         json_callback: Optional[Callable[[Dict], None]] = None,
         debug: bool = False,
     ):
         if "{transcript}" not in quick_template:
             raise ValueError("quick_template must contain {transcript}")
-        if "{transcript}" not in json_prompt_template or "{system}" not in json_prompt_template:
+        if "{transcript}" not in json_template:
             raise ValueError("json_prompt_template must contain {system} and {transcript}")
 
         self.client = client
+        self.quick_template = quick_template
+        self.json_template = json_template
         self.quick_model = quick_model
         self.json_model = json_model
-        self.json_system_prompt = json_system_prompt
         self.json_callback = json_callback or self.handle_json_toolcalls,
-        self.quick_template = quick_template
-        self.json_prompt_template = json_prompt_template
         self.max_workers = max_workers
         self.debug = debug
 
+    def handle_json_toolcalls(data: Dict):
+        print("Received JSON from model:", data)
+        r = Runner(title="VP_KML")
+        r.run_plan(data)
+
     def __call__(self, transcript: str) -> str:
         """Runs both models concurrently and handles JSON callback."""
-        quick_prompt = self.quick_template.format(transcript=transcript)
-        json_prompt = self.json_prompt_template.format(
-            system=self.json_system_prompt,
-            transcript=transcript
-        )
 
         def run_quick():
-            return self.client.generate(model=self.quick_model, prompt=quick_prompt)
+            return self.client.generate(model=self.quick_model, prompt=self.quick_template.format(transcript=transcript))
 
         def run_json():
-            return self.client.generate(model=self.json_model, prompt=json_prompt)
-        
-        def handle_json_toolcalls(data: Dict):
-            print("Received JSON from model:", data)
-            r = Runner(title="VP_KML")
-            r.run_plan(data)
+            return self.client.generate(model=self.json_model, prompt=self.json_template.format(transcript=transcript))
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             quick_future = executor.submit(run_quick)
@@ -252,7 +243,7 @@ class LLM_KML:
                 print("Parsed JSON:", parsed)
             self.json_callback(parsed)
         except Exception as e:
-            print(f"[LLMAgentDual] JSON parsing failed: {e}")
+            print(f"[LLM_KML] JSON parsing failed: {e}")
             if self.debug:
                 print("Raw JSON response:\n", json_raw)
 
@@ -405,7 +396,7 @@ def main():
         debug=bool(os.getenv("DEBUG")),
     )
 
-    if AGG_SYSTEM = "LLMAggregator":
+    if AGG_SYSTEM == "LLMAggregator":
         handler = LLMAggregator(
             client=client,
             models=MODELS,
@@ -419,13 +410,14 @@ def main():
             max_transcript_chars=2000,
             debug=bool(os.getenv("DEBUG")),
         )
-        
-    elif AGG_SYSTEM = "LLM_KML":
+
+    elif AGG_SYSTEM == "LLM_KML":
         handler = LLM_KML(
             client=client,
             quick_model=quick_model,
             json_model=json_model,
-            quick_prompt = quick_template
+            quick_prompt = quick_template,
+            json_system_prompt=json_system_prompt,
             json_prompt=json_prompt_template,
             json_callback=handle_json_toolcalls,
             debug=True,

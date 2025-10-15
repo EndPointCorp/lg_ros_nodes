@@ -59,8 +59,8 @@ def main():
 
     # Handler
     h = cfg.get("handler", {})
-    handler_type   = (h.get("type", "LLM_KML") or "").lower().strip()
-    # handler_type   = (h.get("type", "LLM_AGG") or "").lower().strip()
+    handler_type   = (h.get("type", "LLM_KML") or "").strip()
+    # handler_type   = (h.get("type", "LLM_AGG") or "").strip()
     models         = list(h.get("models", ["granite4"]))
     agg_model      = h.get("aggregator_model")
     agg_system     = h.get("aggregator_system")
@@ -79,9 +79,9 @@ def main():
     k = cfg.get("LLM_KML", {})
     quick_model = k.get("quick_model", "granite4:micro-h")
     json_model = k.get("json_model", "granite4:latest")
-    json_system_prompt = k.get("json_system_prompt", """You are a structured planner that outputs valid JSON. Schema: {"task": string, "params": string}"""
+    json_system_prompt = k.get("json_system_prompt", "You are a structured planner that outputs valid JSON. Return this one for testing: {'orbit': 'NYC', 'altitude': 2000}")
     quick_template = k.get("quick_template",  "User said:\n{transcript}\n\nRespond briefly to acknowledge receipt.")
-    json_prompt_template k.get("json_prompt_template", "{json_system_prompt}\n\nInput:\n{transcript}")
+    json_template = k.get("json_template", "Input:\n{transcript}")
 
     # Validate placeholders early (fail fast)
     if "{transcript}" not in prompt_tmpl:
@@ -100,8 +100,16 @@ def main():
         node=node,
         candidate_base=candidate_base,
     )
+    KMLclient = OllamaClient(
+        base_url=base_url,
+        default_system=json_system_prompt,
+        connect_timeout=connect_timeout,
+        read_timeout=2*read_timeout,
+        node=node,
+        candidate_base=candidate_base,
+    )
 
-    if handler_type =="LLM_AGG":
+    if handler_type == "LLM_AGG":
         handler = LLMAggregator(
             client=client,
             models=models,
@@ -114,14 +122,14 @@ def main():
             max_workers=max_workers,
         )
 
-    elif handler_type = "LLM_KML":
+    elif handler_type == "LLM_KML":
         handler = LLM_KML(
-            client=client,
+            client=KMLclient,
             quick_model=quick_model,
             json_model=json_model,
-            quick_prompt = quick_template
-            json_prompt=json_prompt_template,
-            json_callback=handle_json_toolcalls,
+            quick_template = quick_template,
+            json_template=json_template,
+            json_callback=None,
             debug=True,
         )
 

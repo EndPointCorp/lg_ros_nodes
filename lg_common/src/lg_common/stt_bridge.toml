@@ -8,21 +8,19 @@ queue_max = 16
 base_url = "http://127.0.0.1:11434"
 system = ""                # optional global system prompt
 connect_timeout = 7.0
-read_timeout = 140.0
+read_timeout = 200.0
 candidate_base = "/llm"    # publishes /llm/<model> if VPNode is provided
 
 [LLM_KML]
 quick_model = "granite4:micro-h"
 json_model = "granite4:latest"
-json_system_prompt = """
-You are a structured planner that outputs valid JSON.
-Schema: {"task": string, "params": string}
-"""
+json_system_prompt = "You are a structured planner that outputs valid JSON. Schema: {'task': string, 'params': string}"
 quick_template = "User said:\n{transcript}\n\nRespond briefly to acknowledge receipt."
-json_prompt_template = "{system}\n\nInput:\n{transcript}"
+json_template = "Input:\n{transcript}"
 
 
 [handler]
+## type = "llm_aggregator"    # "llm_aggregator" or "echo"
 type = "LLM_KML"    # or "LLM_AGG, or "echo"
 models = ["qwen2.5:1.5b", "llama3.2:1b", "tinyllama"]
 aggregator_model = "llama3.2:1b"      # optional, omit for first-nonempty fallback
@@ -39,7 +37,7 @@ top_k = 40
 repeat_penalty = 1.15
 repeat_last_n = 256
 num_ctx     = 4096   # keep KV small unless you need more
-num_thread  = 8      # e.g., your physical cores
+num_thread  = 4      # e.g., your physical cores
 
 [handler.agg_options]
 num_predict = 220

@@ -7,7 +7,7 @@ import inspect
 import html as _html
 import logging as _logging
 
-from kml_tools import get_logger, configure_logging, env, FUNCTION_TABLE
+from .kml_tools import get_logger, configure_logging, env, FUNCTION_TABLE
 
 """
 kml_tools_worker.py — Runner / Publisher / Minimal HTTP server
