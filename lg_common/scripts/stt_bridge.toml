@@ -23,6 +23,7 @@ json_prompt_template = "{system}\n\nInput:\n{transcript}"
 
 
 [handler]
+## type = "llm_aggregator"    # "llm_aggregator" or "echo"
 type = "LLM_KML"    # or "LLM_AGG, or "echo"
 models = ["qwen2.5:1.5b", "llama3.2:1b", "tinyllama"]
 aggregator_model = "llama3.2:1b"      # optional, omit for first-nonempty fallback
