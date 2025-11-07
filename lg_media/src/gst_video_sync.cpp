@@ -66,7 +66,7 @@ WindowData::WindowData() : name(NULL), width(0), height(0), x(0), y(0) {}
 
 class SyncVideoApp {
   public:
-    SyncVideoApp(char* uri, WindowData* wdata, bool master, bool slave, bool close, struct sockaddr_in addr);
+    SyncVideoApp(char* uri, WindowData* wdata, bool master, bool slave, bool close, bool holdlast, struct sockaddr_in addr);
     int init();
     void quit(int code);
     void play();
@@ -88,6 +88,7 @@ class SyncVideoApp {
     bool master;
     bool slave;
     bool close;
+    bool holdlast;
     struct sockaddr_in sockaddr;
 
     std::mutex lock;
@@ -105,8 +106,8 @@ class SyncVideoApp {
 };
 
 SyncVideoApp::SyncVideoApp
-(char* uri, WindowData* wdata, bool master, bool slave, bool close, struct sockaddr_in addr)
-  : uri(uri), wdata(wdata), master(master), slave(slave), close(close), sockaddr(addr)
+(char* uri, WindowData* wdata, bool master, bool slave, bool close, bool holdlast, struct sockaddr_in addr)
+  : uri(uri), wdata(wdata), master(master), slave(slave), close(close), holdlast(holdlast), sockaddr(addr)
 {
   this->duration = G_MAXINT64;
 
@@ -246,6 +247,14 @@ gboolean SyncVideoApp::bus_callback(GstBus *bus, GstMessage *msg) {
     case GST_MESSAGE_EOS:
       if (this->close) {
         this->quit(0);
+      }
+
+      if (this->holdlast) {
+        GstStateChangeReturn sret = gst_element_set_state(this->player, GST_STATE_PAUSED);
+        if (sret == GST_STATE_CHANGE_FAILURE) {
+          g_printerr("failed to hold on last frame\n");
+        }
+        break;
       }
 
       if (!this->seek_(
@@ -574,6 +583,7 @@ int main (int argc, char **argv) {
   uint16_t argport = DEFAULT_PORT;
   bool argsoftware = false;
   bool argclose = false;
+  bool argholdlast = false;
 
   // vdpau+vaapi is not officially supported, but we want to use it.
   putenv((char*)VAAPI_ENV);
@@ -581,7 +591,7 @@ int main (int argc, char **argv) {
 
   opterr = 0;
   int c = 0;
-  while ((c = getopt (argc, argv, "msdca:p:u:n:w:h:x:y:")) != -1) {
+  while ((c = getopt (argc, argv, "msdca:p:u:n:w:h:l:x:y:")) != -1) {
     switch (c)
       {
       case 'm':
@@ -599,6 +609,10 @@ int main (int argc, char **argv) {
       case 'c':
         g_debug("I will close instead of looping playback");
         argclose = true;
+        break;
+      case 'l':
+        g_debug("Holding on last frame");
+        argholdlast = true;
         break;
       case 'a':
         g_debug("Using addr %s\n", optarg);
@@ -699,6 +713,7 @@ int main (int argc, char **argv) {
     argmaster,
     argslave,
     argclose,
+    argholdlast,
     sockaddr
   );
   ret = sync.init();
