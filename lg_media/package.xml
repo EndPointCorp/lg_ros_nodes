@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_media</name>
-  <version>3.9.25</version>
+  <version>3.9.26</version>
   <description>Ad hoc media services</description>
 
   <maintainer email="lg@endpoint.com">End Point Liquid Galaxy Team</maintainer>

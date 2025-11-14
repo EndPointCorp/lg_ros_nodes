@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lg_replay</name>
-  <version>3.9.25</version>
+  <version>3.9.26</version>
   <description>Subscribes to events flowing on an input device (e.g. touchscreen) and publishes them on a specified topic</description>
 
   <author email="wojtek@endpoint.com">Wojciech Ziniewicz</author>

@@ -70,8 +70,8 @@ Changelog for package lg_earth
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.26 (2025-11-14)
+-------------------
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
