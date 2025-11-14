@@ -50,6 +50,11 @@ Changelog for package lg_media
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Reduce media_launcher logging verbosity
+* Contributors: Matt Vollrath
+
 3.9.25 (2025-06-26)
 -------------------
 * Cleanup logging

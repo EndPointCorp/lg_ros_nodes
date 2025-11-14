@@ -46,6 +46,9 @@ Changelog for package rfid_scanner
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.25 (2025-06-26)
 -------------------
 * Cleanup logging

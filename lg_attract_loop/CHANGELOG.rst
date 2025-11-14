@@ -43,6 +43,9 @@ Changelog for package lg_attract_loop
 * Changelogs
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.25 (2025-06-26)
 -------------------
 * Cleanup logging
