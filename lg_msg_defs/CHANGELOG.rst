@@ -46,8 +46,8 @@ Changelog for package lg_msg_defs
 * Changelogs
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.27 (2025-12-03)
+-------------------
 
 3.9.26 (2025-11-14)
 -------------------
