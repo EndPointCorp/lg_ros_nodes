@@ -81,6 +81,7 @@ class TouchRouter:
         svc_name = f"/lg_mirror/default/device_info"
         rospy.wait_for_service(svc_name)
         svc = rospy.ServiceProxy(svc_name, EvdevDeviceInfo)
+        svc.wait_for_service(timeout=5.0)
         self.touchscreen = svc()
 
     def handle_service_request(self, req):
