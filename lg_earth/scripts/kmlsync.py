@@ -62,6 +62,9 @@ def main():
     kmlsync_server.asset_service = rospy.ServiceProxy('/kmlsync/state', KmlState, persistent=False)
     kmlsync_server.playtour_service = rospy.ServiceProxy('/kmlsync/playtour_query', PlaytourQuery, persistent=False)
     kmlsync_server.planet_service = rospy.ServiceProxy('/kmlsync/planet_query', PlanetQuery, persistent=False)
+    kmlsync_server.asset_service.wait_for_service(timeout=5.0)
+    kmlsync_server.playtour_service.wait_for_service(timeout=5.0)
+    kmlsync_server.planet_service.wait_for_service(timeout=5.0)
     kmlsync_server.get_planet = pw.get_planet
     kmlsync_server.listen(port)
     ros_tornado_spin()
