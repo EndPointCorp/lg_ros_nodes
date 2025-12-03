@@ -53,6 +53,11 @@ Changelog for package lg_mirror
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* touch_router: Wait for service
+* Contributors: Matt Vollrath
+
 3.9.26 (2025-11-14)
 -------------------
 

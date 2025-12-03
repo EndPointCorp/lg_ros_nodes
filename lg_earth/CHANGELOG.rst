@@ -70,6 +70,11 @@ Changelog for package lg_earth
 * Write sys.deps for all packages
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* kmlsync: Wait for services
+* Contributors: Matt Vollrath
+
 3.9.26 (2025-11-14)
 -------------------
 * Reduce Tornado access log level
