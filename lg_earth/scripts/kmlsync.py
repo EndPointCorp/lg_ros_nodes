@@ -19,7 +19,7 @@ from lg_common.logger import get_logger
 logger = get_logger(NODE_NAME)
 
 # Reduce tornado access log verbosity
-access_log.setLevel(logging.DEBUG)
+access_log.setLevel(logging.WARNING)
 
 
 class PlanetWatcher:
