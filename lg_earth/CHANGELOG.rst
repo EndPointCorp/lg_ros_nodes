@@ -80,6 +80,20 @@ Changelog for package lg_earth
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Fix kmlsync_state service responses
+  Use classes rather than implicit dict responses.
+* Fix tornado access log silencing
+  Opposite day.
+* 3.9.27
+* Changelogs
+* kmlsync: Wait for services
+* 3.9.26
+* Changelogs
+* Reduce Tornado access log level
+* Contributors: Galaxy Admin, Matt Vollrath
+
 3.9.25 (2025-06-26)
 -------------------
 * Cleanup logging

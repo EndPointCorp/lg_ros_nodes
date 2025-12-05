@@ -58,6 +58,18 @@ Changelog for package lg_media
 * Reduce media_launcher logging verbosity
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Merge branch 'video-hold'
+* 3.9.27
+* Changelogs
+* Flip default behavior for video player from close to hold
+* 3.9.26
+* Changelogs
+* Add lg_media player hold on finish
+* Reduce media_launcher logging verbosity
+* Contributors: Alejandro Ramon, Galaxy Admin, Jacob Minshall, Matt Vollrath
+
 3.9.25 (2025-06-26)
 -------------------
 * Cleanup logging

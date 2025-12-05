@@ -49,6 +49,14 @@ Changelog for package state_proxy
 3.9.26 (2025-11-14)
 -------------------
 
+Forthcoming
+-----------
+* 3.9.27
+* Changelogs
+* 3.9.26
+* Changelogs
+* Contributors: Galaxy Admin, Matt Vollrath
+
 3.9.25 (2025-06-26)
 -------------------
 * Cleanup logging

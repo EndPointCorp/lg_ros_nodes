@@ -75,6 +75,17 @@ Changelog for package lg_common
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Fix tornado access log silencing
+  Opposite day.
+* 3.9.27
+* Changelogs
+* 3.9.26
+* Changelogs
+* Reduce Tornado access log level
+* Contributors: Galaxy Admin, Matt Vollrath
+
 3.9.25 (2025-06-26)
 -------------------
 * Use VPROS_LOG_LEVEL env
