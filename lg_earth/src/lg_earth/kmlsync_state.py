@@ -2,7 +2,7 @@
 import rospy
 from interactivespaces_msgs.msg import GenericMessage
 from std_msgs.msg import String
-from lg_msg_defs.srv import KmlState, PlaytourQueryRequest
+from lg_msg_defs.srv import KmlStateResponse, PlaytourQueryResponse, PlanetQueryResponse
 import json
 from lg_common.logger import get_logger
 logger = get_logger('kml_sync_state')
@@ -27,7 +27,7 @@ class KmlSyncState:
 
     def _process_service_request(self, req):
         if self.state is None:
-            return {'assets': []}
+            return KmlStateResponse(assets=[])
         window_slug = req.window_slug
         for window in self.state['windows']:
             if 'presentation_viewport' not in window or 'assets' not in window:
@@ -36,17 +36,16 @@ class KmlSyncState:
                 continue
             if 'activity' not in window or window['activity'] != 'earth':
                 continue
-            return {'assets': window['assets']}
+            return KmlStateResponse(assets=window['assets'])
         # couldn't find specific window_slug inside state
-        return {'assets': []}
+        return KmlStateResponse(assets=[])
 
     def _send_playtour_query(self, req):
         self.playtour_pub.publish(String(req.tourname))
-        return {'response': True}
-
+        return PlaytourQueryResponse(response=True)
     def _send_planet_query(self, req):
         self.planet_pub.publish(String(req.planetname))
-        return {'response': True}
+        return PlanetQueryResponse(response=True)
 
     def _handle_soft_relaunch(self, msg):
         """
