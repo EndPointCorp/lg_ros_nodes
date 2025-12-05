@@ -239,7 +239,7 @@ class AttractLoop:
         logger.debug("Executing _play_attract_loop_item - self.play_loop=%s" % self.play_loop)
         logger.debug("Scene timer=%s" % self.scene_timer)
 
-        if self.play_loop and self.scene_timer <= 0:
+        if self.play_loop and self.scene_timer <= 0 and self.attract_loop_queue:
             logger.debug("Inside play loop - queue size=%s" % (len(self.attract_loop_queue)))
             playback_item = self.attract_loop_queue[0]
             if playback_item['scenes']:  # play item back or remove it from queue if no scenes
