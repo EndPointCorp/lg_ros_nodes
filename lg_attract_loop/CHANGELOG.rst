@@ -49,8 +49,8 @@ Changelog for package lg_attract_loop
 3.9.26 (2025-11-14)
 -------------------
 
-Forthcoming
------------
+3.9.28 (2025-12-05)
+-------------------
 * Don't try to play empty attract loop queue
   Prevent IndexError when attract loop queue is empty.
 * 3.9.27

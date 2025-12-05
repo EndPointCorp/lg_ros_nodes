@@ -75,8 +75,8 @@ Changelog for package lg_common
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.28 (2025-12-05)
+-------------------
 * Fix tornado access log silencing
   Opposite day.
 * 3.9.27

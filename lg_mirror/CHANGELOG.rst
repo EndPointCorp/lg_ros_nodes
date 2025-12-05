@@ -61,8 +61,8 @@ Changelog for package lg_mirror
 3.9.26 (2025-11-14)
 -------------------
 
-Forthcoming
------------
+3.9.28 (2025-12-05)
+-------------------
 * 3.9.27
 * Changelogs
 * touch_router: Wait for service
