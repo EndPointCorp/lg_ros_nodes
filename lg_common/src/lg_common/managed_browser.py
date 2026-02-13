@@ -76,6 +76,7 @@ class ManagedBrowser(ManagedApplication):
         pepper_flash_dir='/home/lg/inc/PepperFlash',
         pnacl_dir='/home/lg/inc/pnacl',
         layer=ManagedWindow.LAYER_NORMAL,
+        api_url_endpoint=None,
         **kwargs
     ):
 
@@ -162,6 +163,19 @@ class ManagedBrowser(ManagedApplication):
 
         args = list(map(consume_kwarg, iter(kwargs.items())))
         cmd.extend(args)
+
+        if api_url_endpoint:
+            try:
+                response = requests.get(api_url_endpoint, timeout=5)
+                response.raise_for_status()
+                api_token = response.text.strip()
+                if api_token:
+                    separator = '&' if '?' in url else '?'
+                    url = f'{url}{separator}api_token={api_token}'
+                else:
+                    logger.warning(f"Empty response from api_url_endpoint {api_url_endpoint}")
+            except Exception as e:
+                logger.error(f"Error fetching api_url_endpoint {api_url_endpoint}: {e}")
 
         if app:
             cmd.append('--app={}'.format(url))

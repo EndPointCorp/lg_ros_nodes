@@ -22,7 +22,8 @@ class ManagedAdhocBrowser(ManagedBrowser):
                  user_agent=None, slug=None, url=None, uid=None,
                  scene_slug=None, preload=False,
                  user_data_dir=None, kiosk=True, reload_aw_snap=False,
-                 layer=ManagedWindow.LAYER_NORMAL):
+                 layer=ManagedWindow.LAYER_NORMAL,
+                 api_url_endpoint=None):
 
         self.scene_slug = scene_slug
         self.slug = slug
@@ -52,7 +53,8 @@ class ManagedAdhocBrowser(ManagedBrowser):
             user_data_dir=user_data_dir,
             reload_aw_snap=reload_aw_snap,
             kiosk=kiosk,
-            layer=layer)
+            layer=layer,
+            api_url_endpoint=api_url_endpoint)
 
     def __str__(self):
         return json.dumps({
