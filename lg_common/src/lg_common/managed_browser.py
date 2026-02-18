@@ -166,7 +166,14 @@ class ManagedBrowser(ManagedApplication):
 
         if api_url_endpoint:
             try:
-                response = requests.get(api_url_endpoint, timeout=5)
+                try:
+                    headers_response = requests.get('http://lg-head/lg/api_headers.html', timeout=5)
+                    headers_response.raise_for_status()
+                    api_headers = headers_response.json()
+                except Exception as e:
+                    logger.warning(f"Could not fetch API headers: {e}")
+                    api_headers = {}
+                response = requests.get(api_url_endpoint, headers=api_headers, timeout=5)
                 response.raise_for_status()
                 api_token = response.text.strip()
                 if api_token:
