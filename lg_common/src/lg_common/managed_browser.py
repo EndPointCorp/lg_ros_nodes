@@ -175,7 +175,7 @@ class ManagedBrowser(ManagedApplication):
                     api_headers = {}
                 response = requests.get(api_url_endpoint, headers=api_headers, timeout=5)
                 response.raise_for_status()
-                api_token = response.text.strip()
+                api_token = response.json()['token']
                 if api_token:
                     separator = '&' if '?' in url else '?'
                     url = f'{url}{separator}token={api_token}'
