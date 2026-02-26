@@ -178,7 +178,7 @@ class ManagedBrowser(ManagedApplication):
                 api_token = response.text.strip()
                 if api_token:
                     separator = '&' if '?' in url else '?'
-                    url = f'{url}{separator}api_token={api_token}'
+                    url = f'{url}{separator}token={api_token}'
                 else:
                     logger.warning(f"Empty response from api_url_endpoint {api_url_endpoint}")
             except Exception as e:
