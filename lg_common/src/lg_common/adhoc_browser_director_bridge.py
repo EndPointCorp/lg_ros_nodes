@@ -149,10 +149,6 @@ class AdhocBrowserDirectorBridge():
         if user_data_dir:
             adhoc_browser.user_data_dir = user_data_dir
 
-        api_url_endpoint = browser_config.get('api_url_endpoint', None)
-        if api_url_endpoint:
-            adhoc_browser.api_url_endpoint = api_url_endpoint
-
         return adhoc_browser
 
     def _extract_browsers_from_message(self, data):

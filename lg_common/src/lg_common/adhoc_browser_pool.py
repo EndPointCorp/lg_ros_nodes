@@ -344,7 +344,6 @@ class AdhocBrowserPool():
                                                     user_data_dir=new_browser.user_data_dir,
                                                     kiosk=new_browser.kiosk,
                                                     layer=ManagedWindow.LAYER_ABOVE,
-                                                    api_url_endpoint=new_browser.api_url_endpoint,
                                                     )
 
         self.browsers[new_browser_pool_id] = managed_adhoc_browser

@@ -76,7 +76,6 @@ class ManagedBrowser(ManagedApplication):
         pepper_flash_dir='/home/lg/inc/PepperFlash',
         pnacl_dir='/home/lg/inc/pnacl',
         layer=ManagedWindow.LAYER_NORMAL,
-        api_url_endpoint=None,
         **kwargs
     ):
 
@@ -164,25 +163,28 @@ class ManagedBrowser(ManagedApplication):
         args = list(map(consume_kwarg, iter(kwargs.items())))
         cmd.extend(args)
 
-        if api_url_endpoint:
-            try:
-                try:
-                    headers_response = requests.get('http://lg-head/lg/api_headers.html', timeout=5)
-                    headers_response.raise_for_status()
-                    api_headers = headers_response.json()
-                except Exception as e:
-                    logger.warning(f"Could not fetch API headers: {e}")
-                    api_headers = {}
-                response = requests.get(api_url_endpoint, headers=api_headers, timeout=5)
-                response.raise_for_status()
-                api_token = response.json()['token']
-                if api_token:
-                    separator = '&' if '?' in url else '?'
-                    url = f'{url}{separator}token={api_token}'
-                else:
-                    logger.warning(f"Empty response from api_url_endpoint {api_url_endpoint}")
-            except Exception as e:
-                logger.error(f"Error fetching api_url_endpoint {api_url_endpoint}: {e}")
+        try:
+            headers_response = requests.get('http://lg-head/lg/api_headers.html', timeout=5)
+            headers_response.raise_for_status()
+            api_configs = headers_response.json()
+            if not isinstance(api_configs, list):
+                api_configs = [api_configs]
+            for api_config in api_configs:
+                match_pattern = api_config.get('match', '')
+                api_url = api_config.get('api_url', '')
+                api_headers = api_config.get('headers', {})
+                if match_pattern and api_url and match_pattern in url:
+                    response = requests.get(api_url, headers=api_headers, timeout=5, verify=False)
+                    response.raise_for_status()
+                    api_token = response.json()['token']
+                    if api_token:
+                        separator = '&' if '?' in url else '?'
+                        url = f'{url}{separator}token={api_token}'
+                    else:
+                        logger.warning(f"Empty token from api_url {api_url}")
+                    break
+        except Exception as e:
+            logger.info(f"API headers check: {e}")
 
         if app:
             cmd.append('--app={}'.format(url))
