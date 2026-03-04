@@ -12,3 +12,4 @@ lg_msg_defs/WindowGeometry geometry
 lg_msg_defs/BrowserExtension[] extensions
 lg_msg_defs/BrowserCmdArg[] command_line_args
 lg_msg_defs/BrowserCmdArg[] default_args_removal
+
