@@ -75,6 +75,21 @@ Changelog for package lg_common
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* adding api_url_endpoint to adhocbrowser (`#479 <https://github.com/endpointcorp/lg_ros_nodes/issues/479>`_)
+  * adding api_url_endpoint to adhocbrowser
+  The output of the endpoint passed to the message will end up appended
+  to the URL. This will go in the browser_config with the user_data_dir
+  and other chrome_config options.
+  * add option of headers when making api calls
+  We will need chef to deploy a json file with the proper headers
+  to /var/www/lg/api_headers.html
+  * fix name of url
+  * grab out the token from the json return
+  * remove api_url_endpoint and go off of the json only
+* Contributors: Jacob Minshall
+
 3.9.28 (2025-12-05)
 -------------------
 * Fix tornado access log silencing

@@ -80,6 +80,9 @@ Changelog for package lg_earth
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.28 (2025-12-05)
 -------------------
 * Fix kmlsync_state service responses

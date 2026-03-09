@@ -58,6 +58,9 @@ Changelog for package lg_media
 * Reduce media_launcher logging verbosity
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+
 3.9.28 (2025-12-05)
 -------------------
 * Merge branch 'video-hold'
