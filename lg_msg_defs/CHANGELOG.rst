@@ -52,8 +52,8 @@ Changelog for package lg_msg_defs
 3.9.26 (2025-11-14)
 -------------------
 
-Forthcoming
------------
+3.9.29 (2026-03-09)
+-------------------
 * adding api_url_endpoint to adhocbrowser (`#479 <https://github.com/endpointcorp/lg_ros_nodes/issues/479>`_)
   * adding api_url_endpoint to adhocbrowser
   The output of the endpoint passed to the message will end up appended
