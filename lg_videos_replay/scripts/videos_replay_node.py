@@ -3,12 +3,12 @@
 import visionport.vpros as rospy
 import json
 from visionport.vpros.models.interactivespaces_msgs.msg import GenericMessage
-from .player import VideoReplayPlayer
+from lg_videos_replay.player import VideoReplayPlayer
 
 class VideosReplayNode:
     def __init__(self):
-        self.recordings_path = rospy.get_param('~recordings_path', '/videos/tmp')
-        self.recordings_log = rospy.get_param('~recordings_log', '/videos/recordings.jsonl')
+        self.recordings_path = rospy.get_param('~recordings_path', '/mnt//videos/tmp')
+        self.recordings_log = rospy.get_param('~recordings_log', '/mnt//videos/recordings.jsonl')
 
         self.player = VideoReplayPlayer(self.recordings_log, self.recordings_path)
 

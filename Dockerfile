@@ -171,7 +171,8 @@ RUN \
     apt-get install -y \
       python3-gst-1.0 \
       socat \
-      python3-debian
+      python3-debian \
+      mpv
 
 RUN \
     source /opt/ros/$ROS_DISTRO/setup.bash && \

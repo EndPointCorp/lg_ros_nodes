@@ -2,6 +2,7 @@ import os
 import json
 import subprocess
 from pathlib import Path
+import visionport.vpros as rospy
 from visionport.vpros.models.interactivespaces_msgs.msg import GenericMessage
 
 class VideoReplayPlayer:
@@ -27,10 +28,15 @@ class VideoReplayPlayer:
         log = self.read_log()
         target_timestamp = float(timestamp)
 
+        rospy.loginfo(f"Read {len(log)} segments from {self.recordings_log}")
+        if log:
+            rospy.loginfo(f"Log boundaries: first start={log[0]['start']}, last stop={log[-1]['stop']}")
+
         # Find starting segment
         start_idx = -1
+        grace_period = 2.0  # Allow a small grace period for float inaccuracies or delayed recording starts
         for i, segment in enumerate(log):
-            if segment['start'] <= target_timestamp < segment['stop']:
+            if (segment['start'] - grace_period) <= target_timestamp < segment['stop']:
                 start_idx = i
                 break
 
@@ -39,7 +45,7 @@ class VideoReplayPlayer:
             return None, []
 
         start_segment = log[start_idx]
-        offset = target_timestamp - start_segment['start']
+        offset = max(0.0, target_timestamp - start_segment['start'])
 
         # Build continuous playlist, stopping at gaps > 2.5 seconds (matches lg_videos validation)
         playlist = [start_segment]
@@ -66,13 +72,13 @@ class VideoReplayPlayer:
         rospy.loginfo(f"Playing {len(playlist)} segments starting at offset {offset:.2f}s")
 
         # Build mpv command
-        cmd = ['mpv', '--fullscreen', '--fs-screen=all', '--no-terminal', '--no-osc', '--no-osd-bar']
+        cmd = ['mpv', '--window-scale=2']
 
         env = os.environ.copy()
         if 'DISPLAY' not in env:
             env['DISPLAY'] = ':0'
 
-        # Add files to the mpv command, applying start offset only to the first
+        # Add files to the mpv command, scoped for the first file's offset
         first = True
         for segment in playlist:
             filepath = self.recordings_path / segment['filename']
@@ -81,12 +87,10 @@ class VideoReplayPlayer:
                 break
 
             if first:
-                cmd.extend(['--start', str(offset)])
+                cmd.extend(['--{', f'--start={offset}', str(filepath), '--}'])
                 first = False
             else:
-                cmd.extend(['--start', '0'])
-
-            cmd.append(str(filepath))
+                cmd.append(str(filepath))
 
         rospy.loginfo(f"Running mpv command: {' '.join(cmd)}")
         self.process = subprocess.Popen(cmd, env=env)
