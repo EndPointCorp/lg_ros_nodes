@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import rospy
+import visionport.vpros as rospy
 import json
-from interactivespaces_msgs.msg import GenericMessage
-from lg_videos_replay.player import VideoReplayPlayer
+from visionport.vpros.models.interactivespaces_msgs.msg import GenericMessage
+from .player import VideoReplayPlayer
 
 class VideosReplayNode:
     def __init__(self):
@@ -23,12 +23,12 @@ class VideosReplayNode:
             rospy.logerr(f"Failed to parse message payload: {msg.message}")
             payload = {}
 
-        if msg_type == "play":
+        if msg_type in ("play", "start"):
             timestamp = payload.get("timestamp")
             if timestamp is None:
-                rospy.logerr("Play command requires 'timestamp' in the message payload")
+                rospy.logerr("Play/start command requires 'timestamp' in the message payload")
                 return
-            rospy.loginfo(f"Received play command for timestamp {timestamp}")
+            rospy.loginfo(f"Received {msg_type} command for timestamp {timestamp}")
             self.player.play(timestamp)
 
         elif msg_type == "stop":

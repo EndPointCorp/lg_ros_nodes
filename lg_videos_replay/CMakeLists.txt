@@ -12,6 +12,7 @@ catkin_python_setup()
 catkin_package()
 
 catkin_install_python(PROGRAMS
+  scripts/lg_videos_play.py
   scripts/videos_replay_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
