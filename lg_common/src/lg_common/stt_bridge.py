@@ -4,10 +4,11 @@
 Loads config from a toml file and starts a TopicBridge with a custom handler.
 
 Usage:
-  python3 -m stt_bridge -c /path/to/stt_bridge.toml
+  python3 -m lg_common.stt_bridge -c lg_common/scripts/stt_bridge.toml
 """
 from __future__ import annotations
 import argparse, sys
+from pathlib import Path
 
 from visionport.node import VPNode
 
@@ -16,22 +17,41 @@ try:
 except ModuleNotFoundError:
     import tomli as tomllib  # pip install tomli
 
-try:
-    from lg_common.topicbridge import OllamaClient, LLMAggregator, LLM_KML, TopicBridge
-except ModuleNotFoundError:
-    from lg_common import OllamaClient, LLMAggregator, LLM_KML, TopicBridge
+from lg_common.topicbridge import OllamaClient, LLMAggregator, LLM_KML, TopicBridge
+
+
+DEFAULT_CONFIG_PRIMARY = Path("/media/dockers/stt_bridge.toml")
+PACKAGE_CONFIG_FALLBACK = Path(__file__).resolve().parents[2] / "scripts" / "stt_bridge.toml"
+
+
+def default_config_path() -> str:
+    if DEFAULT_CONFIG_PRIMARY.exists():
+        return str(DEFAULT_CONFIG_PRIMARY)
+    return str(PACKAGE_CONFIG_FALLBACK)
 
 
 def load_toml(path: str) -> dict:
-    with open(path, "rb") as f:
-        return tomllib.load(f)
+    try:
+        with open(path, "rb") as f:
+            return tomllib.load(f)
+    except OSError:
+        if Path(path) == DEFAULT_CONFIG_PRIMARY and PACKAGE_CONFIG_FALLBACK.exists():
+            with open(PACKAGE_CONFIG_FALLBACK, "rb") as f:
+                return tomllib.load(f)
+        raise
+    except tomllib.TOMLDecodeError:
+        if Path(path) == DEFAULT_CONFIG_PRIMARY and PACKAGE_CONFIG_FALLBACK.exists():
+            with open(PACKAGE_CONFIG_FALLBACK, "rb") as f:
+                return tomllib.load(f)
+        raise
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--config", default="/media/dockers/stt_bridge.toml")
+    ap.add_argument("-c", "--config", default=default_config_path())
     ap.add_argument("args", nargs=argparse.REMAINDER)
 
     args = ap.parse_args()
+    vpnode_name = None
     print(args.args)
     for raw in args.args:  ## pick up ros created name
         if raw.startswith("__name:="):
@@ -59,8 +79,8 @@ def main():
 
     # Handler
     h = cfg.get("handler", {})
-    handler_type   = (h.get("type", "LLM_KML") or "").strip()
-    # handler_type   = (h.get("type", "LLM_AGG") or "").strip()
+    handler_type   = (h.get("type", "LLM_KML") or "").strip().lower()
+    # handler_type   = (h.get("type", "LLM_AGG") or "").strip().lower()
     models         = list(h.get("models", ["granite4"]))
     agg_model      = h.get("aggregator_model")
     agg_system     = h.get("aggregator_system")
@@ -84,7 +104,7 @@ def main():
     json_template = k.get("json_template", "Input:\n{transcript}")
 
     # Validate placeholders early (fail fast)
-    if "{transcript}" not in prompt_tmpl:
+    if not prompt_tmpl or "{transcript}" not in prompt_tmpl:
         raise ValueError("prompts.prompt_template must contain {transcript}")
     if agg_synth_tmpl and ("{transcript}" not in agg_synth_tmpl or "{candidates}" not in agg_synth_tmpl):
         raise ValueError("prompts.aggregate_template must contain {transcript} AND {candidates}")
@@ -99,6 +119,8 @@ def main():
         read_timeout=read_timeout,
         node=node,
         candidate_base=candidate_base,
+        keep_alive=keep_alive,
+        debug=debug_client,
     )
     KMLclient = OllamaClient(
         base_url=base_url,
@@ -107,9 +129,11 @@ def main():
         read_timeout=2*read_timeout,
         node=node,
         candidate_base=candidate_base,
+        keep_alive=keep_alive,
+        debug=debug_client,
     )
 
-    if handler_type == "LLM_AGG":
+    if handler_type == "llm_agg":
         handler = LLMAggregator(
             client=client,
             models=models,
@@ -120,17 +144,20 @@ def main():
             candidate_options=cand_opts,
             agg_options=agg_opts,
             max_workers=max_workers,
+            max_transcript_chars=max_chars,
+            debug=debug_handler,
         )
 
-    elif handler_type == "LLM_KML":
+    elif handler_type == "llm_kml":
         handler = LLM_KML(
             client=KMLclient,
             quick_model=quick_model,
             json_model=json_model,
-            quick_template = quick_template,
+            quick_template=quick_template,
             json_template=json_template,
             json_callback=None,
-            debug=True,
+            max_workers=max_workers or 2,
+            debug=debug_handler,
         )
 
     elif handler_type in ("echo", ""):
@@ -157,4 +184,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         pass
-

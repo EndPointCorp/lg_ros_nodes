@@ -2,6 +2,7 @@
 
 from lg_common.stt_bridge import main
 
+
 if __name__ == "__main__":
     try:
         main()
