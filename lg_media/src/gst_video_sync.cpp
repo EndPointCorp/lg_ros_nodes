@@ -686,13 +686,13 @@ int main (int argc, char **argv) {
 
 
   if (argsoftware) {
-    set_factory("vaapidecodebin", false);
-    set_factory("vaapipostproc", false);
-    set_factory("vaapisink", false);
+    set_factory("nvh264dec", false);
+    set_factory("nvvidconv", false);
+    set_factory("autovideosink", false);
   } else {
-    set_factory("vaapidecodebin", true);
-    set_factory("vaapipostproc", true);
-    set_factory("vaapisink", true);
+    set_factory("nvh264dec", true);
+    set_factory("nvvidconv", true);
+    set_factory("autovideosink", true);
   }
 
   memset(&sockaddr, 0, sizeof(sockaddr));
