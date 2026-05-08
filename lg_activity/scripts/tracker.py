@@ -19,7 +19,7 @@ logger = get_logger(NODE_NAME)
 def main():
     rospy.init_node(NODE_NAME, anonymous=False)
 
-    activity_timeout = rospy.get_param('~activity_timeout', 120)
+    activity_timeout = rospy.get_param('/activity_timeout', 120)
     stats_activity_timeout = rospy.get_param('~stats_activity_timeout', 5)
     activity_topic = rospy.get_param('~activity_publisher_topic', '/activity/active')
     stats_activity_topic = rospy.get_param('~stats_activity_publisher_topic', '/activity/stats_active')
