@@ -204,8 +204,8 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(self.browser_service_mock_center.messages[0].browsers[-1].extensions[1].name, 'test_extension2')
 
         browsers_on_center = self.get_browsers_thru_service('center')
-        # Two extensions, +ros_window_ready +url_monitor
-        self.assertEqual(len(list(browsers_on_center.items())[0][1]['extensions']), 4)
+        # Two extensions, +ros_window_ready +url_monitor +onboard
+        self.assertEqual(len(list(browsers_on_center.items())[0][1]['extensions']), 5)
 
         # cleanup
         self.director_publisher.publish(self.message_factory._get_message('test_no_browsers_msg'))

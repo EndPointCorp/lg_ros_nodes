@@ -283,6 +283,8 @@ class AdhocBrowserPool():
 
         additional_extensions.append('current_url')
 
+        additional_extensions.append('onboard')
+
         geometry = self._get_browser_window_geometry(new_browser)
         extensions = self._get_browser_extensions(new_browser, additional_extensions)
         command_line_args = self._get_browser_command_line_args(new_browser)

@@ -1,0 +1,41 @@
+{
+    "background": {
+        "page": "onboard.html"
+    },
+    "browser_action": {
+        "default_icon": "onboard.png",
+        "default_title": "keyboard"
+    },
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "js": [
+                "lib/eventemitter2.min.js",
+                "lib/roslib.min.js",
+                "lib/albatros.js",
+                "lib/rosLogging.js",
+                "apply.js"
+            ],
+            "matches": [
+                "*://*.google.com/maps/*"
+            ]
+        }
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "description": "This extension shows and hides the onboard keyboard.",
+    "manifest_version": 2,
+    "name": "Onboard",
+    "options_ui": {
+        "chrome_style": true,
+        "page": "options.html"
+    },
+    "permissions": [
+        "<all_urls>",
+        "tabs",
+        "webRequest",
+        "webNavigation",
+        "management",
+        "activeTab"
+    ],
+    "version": "1.2"
+}
