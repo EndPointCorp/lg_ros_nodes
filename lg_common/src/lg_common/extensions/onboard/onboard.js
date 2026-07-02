@@ -1,7 +1,15 @@
 /*
  * Onboard on-screen keyboard integration.
- * Shows onboard when tapped the search field.
- * Hides onboard when tapped anywhere else, or spacenav is moved.
+ *
+ * Runs in the offscreen document (see offscreen.html) so that roslib.js has a
+ * real DOM to work with under Manifest V3.
+ *
+ * Shows onboard when the Maps search field is tapped.
+ * Hides onboard when tapped anywhere else, or when the spacenav is moved.
+ *
+ * Show/hide requests arrive over chrome.runtime messaging:
+ *   - from the content script (apply.js): {onboard: 'show'|'hide'}
+ *   - from the service worker (toolbar click): {onboard: 'toggle'}
  */
 
 var onboardRos = new AlbatRos();
@@ -41,36 +49,35 @@ onboardSpacenavListener.subscribe(function(msg) {
   }
 });
 
+var keyboardVisible = false;
 
 function showOnboard() {
-  //console.log('Showing Onboard keyboard');
   onboardPublisher.publish(onboardShowMsg);
+  keyboardVisible = true;
 }
 
 function hideOnboard() {
-  //console.log('Hiding Onboard keyboard');
   onboardPublisher.publish(onboardHideMsg);
+  keyboardVisible = false;
 }
 
-chrome.runtime.onConnect.addListener(function(port) {
-  port.onMessage.addListener(function(msg) {
-    if (msg.show) {
-      showOnboard();
-    } else {
-      hideOnboard();
-    }
-  });
-});
-
-var keyboardVisible = false;
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-
+function toggleOnboard() {
   if (keyboardVisible) {
     hideOnboard();
-    keyboardVisible = false;
   } else {
     showOnboard();
-    keyboardVisible = true;
+  }
+}
+
+chrome.runtime.onMessage.addListener(function(message) {
+  if (!message || typeof message.onboard === 'undefined') {
+    return;
+  }
+  if (message.onboard === 'show') {
+    showOnboard();
+  } else if (message.onboard === 'hide') {
+    hideOnboard();
+  } else if (message.onboard === 'toggle') {
+    toggleOnboard();
   }
 });
