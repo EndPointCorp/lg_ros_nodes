@@ -108,7 +108,7 @@ class AdhocBrowserDirectorBridge():
         default_args_removal = browser_config.get('default_args_removal', None)
         extensions = browser_config.get('extensions', None)
         allowed_urls = browser_config.get('allowed_urls', None)
-        kiosk = browser_config.get('kiosk', True)
+        kiosk = browser_config.get('kiosk', False)  # TEMP: kiosk disabled (see managed_adhoc_browser)
         user_data_dir = browser_config.get('user_data_dir', None)
 
         adhoc_browser.kiosk = kiosk
@@ -175,7 +175,7 @@ class AdhocBrowserDirectorBridge():
             adhoc_browser.geometry.height = browser['height']
             adhoc_browser.geometry.width = browser['width']
             adhoc_browser.preload = False  # it's a default value
-            adhoc_browser.kiosk = True  # also default
+            adhoc_browser.kiosk = False  # TEMP: kiosk disabled (also default)
 
             activity_config = browser.get('activity_config', None)
 
