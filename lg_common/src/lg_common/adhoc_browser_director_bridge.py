@@ -291,10 +291,17 @@ class AdhocBrowserDirectorBridge():
                                % (duration_seconds, adhoc_browser.url))
                 duration_seconds = 0.0
 
+            serialized = self._serialize_adhoc_browser(adhoc_browser)
             if adhoc_browser.preload:
-                browser_id = generate_hash(self._serialize_adhoc_browser(adhoc_browser), random_suffix=True)
+                browser_id = generate_hash(serialized, random_suffix=True)
+            elif delay_seconds > 0 or duration_seconds > 0:
+                # Fresh id every scene so the pool recreates it rather than
+                # leaving the old instance up with its delay already spent.
+                # Not random_suffix=True: its "_" marks an id preloadable to
+                # the pool, which then skips removing it.
+                browser_id = generate_hash('%s%d' % (serialized, self.scene_gen))
             else:
-                browser_id = generate_hash(self._serialize_adhoc_browser(adhoc_browser))
+                browser_id = generate_hash(serialized)
 
             adhoc_browser.id = browser_id
 

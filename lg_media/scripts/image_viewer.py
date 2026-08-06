@@ -161,21 +161,19 @@ class ImageViewer():
         images_to_add = []
         matched_images_dict = {}
         for image in msg.images:
-            duplicate_image = self.is_in_current_images(self.current_images, image)
+            delay_seconds, duration_seconds = self._timing_for(image)
+            # Matching url+geometry normally keeps the image up so it does not
+            # flicker between scenes. A timed image must not be kept: it would
+            # skip its delay and stay on the old scene's duration clock.
+            timed = delay_seconds > 0 or duration_seconds > 0
+            duplicate_image = None if timed else self.is_in_current_images(self.current_images, image)
             if duplicate_image:
                 logger.debug('Keeping image: {}\n\n'.format(image))
                 images_to_remove.remove(duplicate_image)
                 key = make_key_from_image(image)
                 new_current_images[key] = duplicate_image
-                # Image persists into this scene: (re)start its duration clock so
-                # a still-present asset with a duration still cleans itself up.
-                _, duration_seconds = self._timing_for(image)
-                if duration_seconds > 0:
-                    rospy.Timer(rospy.Duration(duration_seconds),
-                                lambda event, k=key: self._expire_image(k, gen), oneshot=True)
                 continue
             current_coordinate_image = self.is_current_coordinates(self.current_images, image)
-            delay_seconds, _ = self._timing_for(image)
             # A delayed image must not claim the coordinate-swap: make_image (which
             # schedules the old image's teardown) does not run until the delay
             # elapses, so the old process would be orphaned. Let it tear down
