@@ -1,5 +1,6 @@
 import rospy
 import json
+import threading
 
 from lg_common import ManagedWindow
 from lg_msg_defs.msg import AdhocBrowser
@@ -26,13 +27,61 @@ class AdhocBrowserDirectorBridge():
     def __init__(self,
                  aggregate_publisher,
                  viewport_browser_pool_publisher,
-                 viewport_name):
+                 viewport_name,
+                 browser_pool=None):
         """
         AdhocBrowserDirectorBridge should be configured per each viewport to achieve nice separation and granularity
+
+        browser_pool is the AdhocBrowserPool this bridge feeds. It is only
+        needed for per-asset `delay_seconds`/`duration_seconds`, which the
+        bridge drives by adding/removing single browsers directly rather than
+        by republishing the scene. Without it, timing is ignored.
         """
         self.viewport_name = viewport_name
         self.browser_pool_publisher = viewport_browser_pool_publisher
         self.aggregate_publisher = aggregate_publisher
+        self.browser_pool = browser_pool
+        self.lock = threading.Lock()
+        # Per-browser (delay_seconds, duration_seconds) from the scene's
+        # activity_config, keyed by browser id. Kept off the AdhocBrowser
+        # message (whose __slots__ are fixed, and whose contents are hashed into
+        # the browser id) so this needs no message rebuild.
+        self.asset_timing = {}
+        # Incremented on every scene. Every delay/duration timer captures the
+        # generation it was scheduled under and no-ops if a newer scene has
+        # since arrived -- that is how a scene change cancels pending
+        # appearances and cleanups without republishing anything.
+        self.scene_gen = 0
+
+    def _timing_for(self, browser_id):
+        """(delay_seconds, duration_seconds) for a browser, defaulting to (0, 0)."""
+        return self.asset_timing.get(browser_id, (0.0, 0.0))
+
+    def _delayed_create(self, browser, gen):
+        """Fired delay_seconds after the scene arrived: bring the browser up now."""
+        with self.lock:
+            if gen != self.scene_gen:
+                logger.info('delay timer skipped for browser %s (scene changed)' % browser.id)
+                return  # scene changed before the browser was due; skip it entirely
+            logger.info('delay elapsed, showing browser %s (%s)' % (browser.id, browser.url))
+            self.browser_pool.add_timed_browser(browser)
+            _, duration_seconds = self._timing_for(browser.id)
+            if duration_seconds > 0:
+                self._schedule_expiry(browser.id, duration_seconds, gen)
+
+    def _expire_browser(self, browser_id, gen):
+        """Fired duration_seconds after a browser appeared: tear it down."""
+        with self.lock:
+            if gen != self.scene_gen:
+                logger.info('duration timer skipped for browser %s (scene changed)' % browser_id)
+                return  # a newer scene has superseded this one; leave it alone
+            if self.browser_pool.remove_timed_browser(browser_id):
+                logger.info('duration elapsed, removing browser %s' % browser_id)
+
+    def _schedule_expiry(self, browser_id, duration_seconds, gen):
+        rospy.Timer(rospy.Duration(duration_seconds),
+                    lambda event: self._expire_browser(browser_id, gen),
+                    oneshot=True)
 
     def translate_director(self, data):
         """
@@ -62,17 +111,40 @@ class AdhocBrowserDirectorBridge():
             logger.error("Director message did not contain valid type. Type was %s, and content was: %s" % (type(message), message))
             return
 
-        adhoc_browsers_list = self._extract_browsers_from_message(data)
+        with self.lock:
+            self.scene_gen += 1
+            gen = self.scene_gen
+            adhoc_browsers_list = self._extract_browsers_from_message(data)
 
-        adhoc_browsers = AdhocBrowsers()
-        adhoc_browsers.scene_slug = slug
-        adhoc_browsers.browsers = adhoc_browsers_list
+            # Browsers with a delay are held back from this publish entirely --
+            # the pool must not see them yet, or it would bring them up now.
+            # They are added to the pool one by one as their timers fire.
+            immediate = [b for b in adhoc_browsers_list if self._timing_for(b.id)[0] <= 0]
+            deferred = [b for b in adhoc_browsers_list if self._timing_for(b.id)[0] > 0]
 
-        logger.debug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
+            adhoc_browsers = AdhocBrowsers()
+            adhoc_browsers.scene_slug = slug
+            adhoc_browsers.browsers = immediate
 
-        self.browser_pool_publisher.publish(adhoc_browsers)
-        if adhoc_browsers.browsers:
-            self.aggregate_publisher.publish(adhoc_browsers)
+            logger.debug("Publishing AdhocBrowsers: %s" % adhoc_browsers)
+
+            self.browser_pool_publisher.publish(adhoc_browsers)
+            if adhoc_browsers.browsers:
+                self.aggregate_publisher.publish(adhoc_browsers)
+
+            # Duration counts from when the asset appears. The immediate ones are
+            # up as of this publish -- including any the pool keeps from the
+            # previous scene, whose clock restarts here.
+            for browser in immediate:
+                _, duration_seconds = self._timing_for(browser.id)
+                if duration_seconds > 0:
+                    self._schedule_expiry(browser.id, duration_seconds, gen)
+
+            for browser in deferred:
+                delay_seconds, _ = self._timing_for(browser.id)
+                rospy.Timer(rospy.Duration(delay_seconds),
+                            lambda event, b=browser: self._delayed_create(b, gen),
+                            oneshot=True)
 
     def _preload_scene(self, adhoc_browsers_list):
         """
@@ -164,6 +236,7 @@ class AdhocBrowserDirectorBridge():
         browsers = extract_first_asset_from_director_message(data, 'browser', self.viewport_name)
         logger.debug("Extracted browsers _extract_browsers_from_message: %s" % browsers)
         message = json.loads(data.message)
+        self.asset_timing = {}  # fresh per scene
 
         for browser in browsers:
             adhoc_browser = AdhocBrowser()
@@ -179,7 +252,13 @@ class AdhocBrowserDirectorBridge():
 
             activity_config = browser.get('activity_config', None)
 
+            delay_seconds = 0.0
+            duration_seconds = 0.0
+
             if activity_config:
+                delay_seconds = float(activity_config.get('delay_seconds', 0) or 0)
+                duration_seconds = float(activity_config.get('duration_seconds', 0) or 0)
+
                 if activity_config.get('preload', None):
                     adhoc_browser.preload = True
 
@@ -194,12 +273,35 @@ class AdhocBrowserDirectorBridge():
                 chrome_config.update(activity_config.get('google_chrome', {}))
                 adhoc_browser = self._unpack_browser_config(adhoc_browser, chrome_config)
 
+            if delay_seconds > 0 and (self.browser_pool is None or adhoc_browser.preload):
+                # Preload means "start hidden, unhide when readiness says the
+                # scene is ready" -- there is nothing to smooth-transition from
+                # partway through a scene, and a preloaded browser added outside
+                # the readiness handshake would never be unhidden. Without a
+                # pool reference there is nothing to add the browser to later.
+                logger.warning(
+                    "Ignoring delay_seconds=%s for %s (%s)"
+                    % (delay_seconds,
+                       adhoc_browser.url,
+                       "preload is set" if adhoc_browser.preload else "bridge has no browser pool"))
+                delay_seconds = 0.0
+
+            if duration_seconds > 0 and self.browser_pool is None:
+                logger.warning("Ignoring duration_seconds=%s for %s (bridge has no browser pool)"
+                               % (duration_seconds, adhoc_browser.url))
+                duration_seconds = 0.0
+
             if adhoc_browser.preload:
                 browser_id = generate_hash(self._serialize_adhoc_browser(adhoc_browser), random_suffix=True)
             else:
                 browser_id = generate_hash(self._serialize_adhoc_browser(adhoc_browser))
 
             adhoc_browser.id = browser_id
+
+            self.asset_timing[browser_id] = (delay_seconds, duration_seconds)
+            if delay_seconds > 0 or duration_seconds > 0:
+                logger.info('scene browser %s: delay=%ss duration=%ss url=%s'
+                            % (browser_id, delay_seconds, duration_seconds, adhoc_browser.url))
 
             adhoc_browsers.append(adhoc_browser)
 

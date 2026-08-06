@@ -67,7 +67,8 @@ def main():
     adhocbrowser_director_bridge = AdhocBrowserDirectorBridge(
         adhocbrowser_aggregate_topic_publisher,
         adhocbrowser_viewport_publisher,
-        viewport_name)
+        viewport_name,
+        browser_pool=adhocbrowser_pool)
 
     rospy.Subscriber('director/scene', GenericMessage, adhocbrowser_director_bridge.translate_director)
     rospy.Subscriber('director/ready', Ready, adhocbrowser_pool.unhide_browsers)
