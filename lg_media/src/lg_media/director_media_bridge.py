@@ -1,3 +1,4 @@
+import collections
 import rospy
 import threading
 
@@ -25,10 +26,13 @@ class DirectorMediaBridge():
         MediaDirectorBridge should be configured per each viewport to properly translate
         director geometry to viewport geometry and provide separation and service granularity.
 
-        media_pool is the pool this bridge feeds. It is only needed for
-        per-asset `delay_seconds`/`duration_seconds`, which the bridge drives by
-        adding/removing single assets directly rather than by republishing the
-        scene. Without it, timing is ignored.
+        media_pool is the pool this bridge feeds, when it lives in the same
+        node (mplayer, gstreamer). Per-asset `delay_seconds`/`duration_seconds`
+        are then driven by adding/removing single assets on it directly.
+
+        browser_video has no local pool -- its consumer is a separate node -- so
+        there the bridge instead publishes the set of assets that should be up
+        right now, and the downstream pool diffs it.
         """
         self.viewport_name = viewport_name
         self.adhoc_media_pool_publisher = adhoc_media_pool_publisher
@@ -37,6 +41,9 @@ class DirectorMediaBridge():
         self.lock = threading.Lock()
         # Per-asset (delay_seconds, duration_seconds), keyed by asset id.
         self.asset_timing = {}
+        # Assets that should be up right now, keyed by id. Only used when there
+        # is no local pool to drive directly.
+        self.due = {}
         # Incremented on every scene. Every delay/duration timer captures the
         # generation it was scheduled under and no-ops if a newer scene has
         # since arrived -- that is how a scene change cancels pending
@@ -54,7 +61,11 @@ class DirectorMediaBridge():
                 logger.info('delay timer skipped for media %s (scene changed)' % media.id)
                 return  # scene changed before the asset was due; skip it entirely
             logger.info('delay elapsed, showing media %s (%s)' % (media.id, media.url))
-            self.media_pool.add_timed_media(media)
+            if self.media_pool is not None:
+                self.media_pool.add_timed_media(media)
+            else:
+                self.due[media.id] = media
+                self._publish_due()
             _, duration_seconds = self._timing_for(media.id)
             if duration_seconds > 0:
                 self._schedule_expiry(media.id, duration_seconds, gen)
@@ -65,8 +76,21 @@ class DirectorMediaBridge():
             if gen != self.scene_gen:
                 logger.info('duration timer skipped for media %s (scene changed)' % media_id)
                 return  # a newer scene has superseded this one; leave it alone
-            if self.media_pool.remove_timed_media(media_id):
+            if self.media_pool is not None:
+                if self.media_pool.remove_timed_media(media_id):
+                    logger.info('duration elapsed, removing media %s' % media_id)
+            elif self.due.pop(media_id, None) is not None:
                 logger.info('duration elapsed, removing media %s' % media_id)
+                self._publish_due()
+
+    def _publish_due(self):
+        """Publish exactly the assets that should be up right now.
+
+        Used when there is no local pool: the downstream node turns these into
+        browsers and its pool diffs them, so dropping an asset from this list
+        tears it down and adding one brings it up.
+        """
+        self.adhoc_media_pool_publisher.publish(AdhocMedias(medias=list(self.due.values())))
 
     def _schedule_expiry(self, media_id, duration_seconds, gen):
         rospy.Timer(rospy.Duration(duration_seconds),
@@ -90,6 +114,7 @@ class DirectorMediaBridge():
             deferred = [m for m in adhoc_medias.medias if self._timing_for(m.id)[0] > 0]
 
             logger.debug("Publishing AdhocMedias: %s" % immediate)
+            self.due = collections.OrderedDict((m.id, m) for m in immediate)
             self.adhoc_media_pool_publisher.publish(AdhocMedias(medias=immediate))
 
             # Duration counts from when the asset appears, and the immediate
@@ -134,17 +159,13 @@ class DirectorMediaBridge():
             delay_seconds = float(activity_config.get('delay_seconds', 0) or 0)
             duration_seconds = float(activity_config.get('duration_seconds', 0) or 0)
 
-            if (delay_seconds > 0 or duration_seconds > 0) and self.media_pool is None:
-                logger.warning("Ignoring delay_seconds=%s duration_seconds=%s for %s (bridge has no media pool)"
-                               % (delay_seconds, duration_seconds, media['path']))
-                delay_seconds = 0.0
-                duration_seconds = 0.0
-
             media_name = 'adhoc_media_' + media_type + '_' + self.viewport_name + '_' + str(media_id)
             if delay_seconds > 0 or duration_seconds > 0:
-                # Tells the pool never to carry this asset across a scene
-                # change; it has to restart on the new scene's clock.
-                media_name = mark_timed_id(media_name)
+                # The scene counter makes the id differ every scene, so a timed
+                # asset is torn down and restarted rather than carried over --
+                # consumers keyed on a stable id would otherwise keep it alive.
+                # mark_timed_id stays last: is_timed_id() tests the suffix.
+                media_name = mark_timed_id('%s_s%d' % (media_name, self.scene_gen))
 
             adhoc_media = AdhocMedia()
             adhoc_media.id = media_name
