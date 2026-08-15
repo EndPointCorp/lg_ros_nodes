@@ -80,8 +80,8 @@ Changelog for package lg_earth
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.30 (2026-08-15)
+-------------------
 
 3.9.29 (2026-03-09)
 -------------------

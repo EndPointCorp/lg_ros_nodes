@@ -58,8 +58,8 @@ Changelog for package lg_media
 * Reduce media_launcher logging verbosity
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.30 (2026-08-15)
+-------------------
 
 3.9.29 (2026-03-09)
 -------------------
