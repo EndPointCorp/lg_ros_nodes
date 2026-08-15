@@ -49,6 +49,11 @@ Changelog for package lg_activity
 3.9.26 (2025-11-14)
 -------------------
 
+Forthcoming
+-----------
+* tracker.py load global activity_timeout (`#480 <https://github.com/endpointcorp/lg_ros_nodes/issues/480>`_)
+* Contributors: Tino
+
 3.9.29 (2026-03-09)
 -------------------
 
