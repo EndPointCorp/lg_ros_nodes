@@ -12,17 +12,14 @@ VISIBLE = 'VISIBLE'
 
 
 class GateStateMirror(object):
-    """Mirror the writes made to DeviceWriter.state by the current callbacks.
-
-    This reproduces the existing last-callback-wins behavior.  It is a
-    diagnostic model, not a proposed routing implementation.
-    """
+    """Mirror the composed routing decision made by BackgroundStopper."""
 
     def __init__(self, disable_activities):
         self.disable_activities = set(disable_activities)
         self.enabled = True
         self.last_writer = 'initial default'
         self.earth_state = None
+        self.earth_visible = True
         self.current_scene_slug = ''
         self.disabled_scene_slug = ''
         self.activity_disabled = False
@@ -40,40 +37,32 @@ class GateStateMirror(object):
             'details': details or {},
         }
 
+    def _recompute(self, writer, details=None):
+        enabled = (
+            self.earth_visible and
+            not self.activity_disabled and
+            not self.slug_disabled and
+            not any(self.states.values())
+        )
+        return [self._write(enabled, writer, details)]
+
     def handle_earth_state(self, state):
         self.earth_state = state
-        return [self._write(
-            state == VISIBLE,
-            '/earth/state direct callback',
+        self.earth_visible = state == VISIBLE
+        return self._recompute(
+            '/earth/state composed callback',
             {'earth_state': state},
-        )]
-
-    def _consider_scene_slugs(self, writer):
-        if self.current_scene_slug == '':
-            return []
-        if self.disabled_scene_slug == '':
-            self.slug_disabled = False
-            return [self._write(True, writer, {
-                'current_scene_slug': self.current_scene_slug,
-                'disabled_scene_slug': self.disabled_scene_slug,
-            })]
-        if self.current_scene_slug == self.disabled_scene_slug:
-            self.slug_disabled = True
-            return [self._write(False, writer, {
-                'current_scene_slug': self.current_scene_slug,
-                'disabled_scene_slug': self.disabled_scene_slug,
-            })]
-        self.slug_disabled = False
-        return [self._write(True, writer, {
-            'current_scene_slug': self.current_scene_slug,
-            'disabled_scene_slug': self.disabled_scene_slug,
-        })]
+        )
 
     def handle_scene(self, scene):
         # BackgroundStopper clears disabled-state observations on every scene.
         self.states = {}
         self.current_scene_slug = scene.get('slug')
-        writes = self._consider_scene_slugs('/director/scene slug check')
+        self.slug_disabled = bool(
+            self.current_scene_slug and
+            self.disabled_scene_slug and
+            self.current_scene_slug == self.disabled_scene_slug
+        )
 
         activities = set(
             window.get('activity')
@@ -81,41 +70,43 @@ class GateStateMirror(object):
             if window.get('activity') is not None
         )
         matching = sorted(activities.intersection(self.disable_activities))
-        if matching:
-            self.activity_disabled = True
-            writes.append(self._write(False, '/director/scene activity check', {
-                'disabled_activities_present': matching,
-            }))
-        else:
-            # The production callback changes this flag but does not perform a
-            # final write here.  Preserve that detail in the mirror.
-            self.activity_disabled = False
-        return writes
+        self.activity_disabled = bool(matching)
+        return self._recompute('/director/scene composed callback', {
+            'disabled_activities_present': matching,
+            'current_scene_slug': self.current_scene_slug,
+            'disabled_scene_slug': self.disabled_scene_slug,
+        })
 
     def handle_slug(self, slug):
         self.disabled_scene_slug = slug
-        return self._consider_scene_slugs(
-            '/earth/disable_nav_for_scene_slug callback'
+        self.slug_disabled = bool(
+            self.current_scene_slug and
+            self.disabled_scene_slug and
+            self.current_scene_slug == self.disabled_scene_slug
+        )
+        return self._recompute(
+            '/earth/disable_nav_for_scene_slug composed callback', {
+                'current_scene_slug': self.current_scene_slug,
+                'disabled_scene_slug': self.disabled_scene_slug,
+            }
         )
 
     def handle_disabled_state(self, topic, state):
         self.states[topic] = state == VISIBLE
-        if self.activity_disabled or self.slug_disabled:
-            return []
         visible_topics = sorted(
             topic_name for topic_name, visible in self.states.items() if visible
         )
-        return [self._write(
-            not bool(visible_topics),
-            '{} disabled-state callback'.format(topic),
+        return self._recompute(
+            '{} composed disabled-state callback'.format(topic),
             {'state': state, 'visible_disabled_state_topics': visible_topics},
-        )]
+        )
 
     def snapshot(self):
         return {
             'modeled_enabled': self.enabled,
             'last_writer': self.last_writer,
             'earth_state': self.earth_state,
+            'earth_visible': self.earth_visible,
             'current_scene_slug': self.current_scene_slug,
             'disabled_scene_slug': self.disabled_scene_slug,
             'activity_disabled': self.activity_disabled,

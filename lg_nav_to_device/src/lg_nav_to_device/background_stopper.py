@@ -9,6 +9,9 @@ class BackgroundStopper:
     def __init__(self, disable_activities, device_writer):
         self.disable_activities = disable_activities
         self.device_writer = device_writer
+        # Preserve DeviceWriter's enabled startup state until Earth reports its
+        # first state, then include that state in every routing decision.
+        self._earth_visible = True
         self._current_scene_slug = ''
         self._disabled_scene_slug = ''
         self._activity_disabled = False
@@ -19,29 +22,20 @@ class BackgroundStopper:
     def _set_writer_state(self, state):
         self.device_writer.state = state
 
-    def _consider_scene_slugs(self):
-        if self._current_scene_slug == '':
-            return
-        elif self._disabled_scene_slug == '':
-            self._slug_disabled = False
-            self._set_writer_state(True)
-        elif self._current_scene_slug == self._disabled_scene_slug:
-            self._slug_disabled = True
-            self._set_writer_state(False)
-        else:
-            self._slug_disabled = False
-            self._set_writer_state(True)
+    def _recompute_writer_state(self):
+        # No callback may independently enable navigation.  It is enabled only
+        # when every known routing condition permits it.
+        self._set_writer_state(
+            self._earth_visible and
+            not self._activity_disabled and
+            not self._slug_disabled and
+            not any(self._states.values())
+        )
 
-    def _consider_disabled_states(self):
-        if self._activity_disabled or self._slug_disabled:
-            return
-
-        for topic, visible in list(self._states.items()):
-            if visible:
-                self._set_writer_state(False)
-                return
-
-        self._set_writer_state(True)
+    def handle_earth_state(self, msg):
+        with self._lock:
+            self._earth_visible = msg.state == ApplicationState.VISIBLE
+            self._recompute_writer_state()
 
     def handle_scene(self, msg):
         with self._lock:
@@ -53,16 +47,20 @@ class BackgroundStopper:
         data = load_director_message(msg)
 
         self._current_scene_slug = data.get('slug')
-        self._consider_scene_slugs()
+        self._slug_disabled = bool(
+            self._current_scene_slug and
+            self._disabled_scene_slug and
+            self._current_scene_slug == self._disabled_scene_slug
+        )
 
+        self._activity_disabled = False
         for activity in self.disable_activities:
             window = find_window_with_activity(data, activity)
             if len(window) > 0:
                 self._activity_disabled = True
-                self._set_writer_state(False)
-                return
+                break
 
-        self._activity_disabled = False
+        self._recompute_writer_state()
 
     def handle_slug(self, msg):
         with self._lock:
@@ -72,7 +70,12 @@ class BackgroundStopper:
         slug_req = msg.data
 
         self._disabled_scene_slug = slug_req
-        self._consider_scene_slugs()
+        self._slug_disabled = bool(
+            self._current_scene_slug and
+            self._disabled_scene_slug and
+            self._current_scene_slug == self._disabled_scene_slug
+        )
+        self._recompute_writer_state()
 
     def handle_disabled_state(self, topic, msg):
         with self._lock:
@@ -80,6 +83,6 @@ class BackgroundStopper:
 
     def _handle_disabled_state(self, topic, msg):
         self._states[topic] = msg.state == ApplicationState.VISIBLE
-        self._consider_disabled_states()
+        self._recompute_writer_state()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -19,7 +19,7 @@ NavigationStallDetector = DIAGNOSTICS.NavigationStallDetector
 
 
 class TestGateStateMirror(unittest.TestCase):
-    def test_models_last_callback_wins(self):
+    def test_models_composed_gate_state(self):
         gate = GateStateMirror(['cesium'])
         writes = gate.handle_scene({
             'slug': 'cesium-scene',
@@ -29,9 +29,9 @@ class TestGateStateMirror(unittest.TestCase):
         self.assertFalse(gate.enabled)
 
         writes = gate.handle_earth_state('VISIBLE')
-        self.assertTrue(writes[-1]['enabled'])
-        self.assertTrue(gate.enabled)
-        self.assertEqual('/earth/state direct callback', gate.last_writer)
+        self.assertFalse(writes[-1]['enabled'])
+        self.assertFalse(gate.enabled)
+        self.assertEqual('/earth/state composed callback', gate.last_writer)
 
     def test_disabled_state_does_not_override_activity(self):
         gate = GateStateMirror(['cesium'])
@@ -40,7 +40,7 @@ class TestGateStateMirror(unittest.TestCase):
             'windows': [{'activity': 'cesium'}],
         })
         writes = gate.handle_disabled_state('/streetview/state', 'HIDDEN')
-        self.assertEqual([], writes)
+        self.assertFalse(writes[-1]['enabled'])
         self.assertFalse(gate.enabled)
 
 

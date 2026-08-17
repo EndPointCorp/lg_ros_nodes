@@ -24,10 +24,11 @@ def main():
     scale = rospy.get_param('~scale', 512.0)
 
     device_writer = DeviceWriter(scale)
-    rospy.Subscriber('/lg_twister/twist', Twist, device_writer.make_event)
-    rospy.Subscriber('/earth/state', ApplicationState, device_writer.set_state)
-
     background_stopper = BackgroundStopper(disable_activities, device_writer)
+
+    rospy.Subscriber('/lg_twister/twist', Twist, device_writer.make_event)
+    rospy.Subscriber('/earth/state', ApplicationState,
+                     background_stopper.handle_earth_state)
     rospy.Subscriber('/director/scene', GenericMessage, background_stopper.handle_scene)
     rospy.Subscriber('/earth/disable_nav_for_scene_slug', String, background_stopper.handle_slug)
 

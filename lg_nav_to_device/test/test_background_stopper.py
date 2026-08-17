@@ -82,6 +82,23 @@ class TestBackgroundStopper(unittest.TestCase):
 
         self.assertFalse(self.writer.state)
 
+        # A later visible Earth callback must not override the active blocker.
+        self.stopper.handle_earth_state(self.visible_msg)
+        self.assertFalse(self.writer.state)
+
+    def test_hidden_earth_is_not_reenabled_by_other_callbacks(self):
+        self.stopper.handle_earth_state(self.hidden_msg)
+        self.assertFalse(self.writer.state)
+
+        scene = self._scene_gen('a_slug', 'cats')
+        self.stopper.handle_scene(scene)
+        self.stopper.handle_slug(String('some-other-slug'))
+        self.stopper.handle_disabled_state('/foo', self.hidden_msg)
+        self.assertFalse(self.writer.state)
+
+        self.stopper.handle_earth_state(self.visible_msg)
+        self.assertTrue(self.writer.state)
+
     def test_disabled_slug_first(self):
         """
         Test a disabled slug before a new scene.
