@@ -74,9 +74,9 @@ RUN \
 
 
 # Install NodeJS and test dependencies
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
- && apt-get install -y nodejs \
- && npm install -g eslint \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+ && apt-get install -y --no-install-recommends nodejs \
+ && npm install -g eslint@8.57.1 \
  && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
