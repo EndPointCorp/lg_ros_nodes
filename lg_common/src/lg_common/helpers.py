@@ -1056,9 +1056,9 @@ def director_listener_earth_state(state_pub, activity_list=list()):
         windows = msg.get('windows', [])
         for window in windows:
             if window.get('activity', None) in activity_list:
-                #state_pub.publish(ApplicationState.VISIBLE)
+                state_pub.publish(ApplicationState.VISIBLE)
                 return
-        state_pub.publish(ApplicationState.VISIBLE)
+        state_pub.publish(ApplicationState.HIDDEN)
     rospy.Subscriber('/director/scene', GenericMessage, _look_for_earth)
 
 
