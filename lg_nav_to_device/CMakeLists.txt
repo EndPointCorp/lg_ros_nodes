@@ -18,10 +18,12 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/device_writer
   scripts/device_writer.py
+  scripts/navigation_debugger.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 if (CATKIN_ENABLE_TESTING)
   set(PYTHON_EXECUTABLE /usr/bin/python3)
   catkin_add_nosetests(test/test_background_stopper.py)
+  catkin_add_nosetests(test/test_navigation_diagnostics.py)
 endif()
