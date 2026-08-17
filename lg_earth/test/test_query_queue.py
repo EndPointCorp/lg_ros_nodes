@@ -35,6 +35,17 @@ class TestQueryQueue(unittest.TestCase):
         query = consume_query()
         self.assertEquals(TEST_QUERY, query)
 
+    def test_coalesces_only_queries_with_the_same_key(self):
+        self.q.post_query('current')
+        self.q.post_query('old-camera', coalesce_key='absolute_view')
+        self.q.post_query('search=keep-me')
+        self.q.post_query('latest-camera', coalesce_key='absolute_view')
+
+        self.assertEqual([
+            ('latest-camera', 'absolute_view'),
+            ('search=keep-me', None),
+        ], list(self.q.q))
+
 
 if __name__ == '__main__':
     import rostest

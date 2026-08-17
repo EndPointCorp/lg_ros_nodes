@@ -3,6 +3,7 @@ from std_msgs.msg import String
 from .query_queue import QueryQueue
 from lg_common.logger import get_logger
 logger = get_logger('query_writer')
+ABSOLUTE_VIEW_QUERY = 'absolute_view'
 
 
 class QueryWriter:
@@ -10,9 +11,9 @@ class QueryWriter:
         self.filename = filename
         self._queue = QueryQueue(self.filename, maxlen=maxlen)
 
-    def post_query(self, query):
+    def post_query(self, query, coalesce_key=None):
         logger.debug('posting query: {}'.format(query))
-        self._queue.post_query(query)
+        self._queue.post_query(query, coalesce_key=coalesce_key)
 
     def shutdown(self):
         self._queue.stop()
@@ -20,7 +21,7 @@ class QueryWriter:
     def handle_flyto_kml(self, msg):
         kml = msg.data
         query = 'flytoview={}'.format(kml)
-        self.post_query(query)
+        self.post_query(query, coalesce_key=ABSOLUTE_VIEW_QUERY)
 
     def handle_flyto_pose_camera(self, msg):
         pose = msg
@@ -43,7 +44,7 @@ class QueryWriter:
             pose_roll)
 
         query = 'flytoview={}'.format(kml)
-        self.post_query(query)
+        self.post_query(query, coalesce_key=ABSOLUTE_VIEW_QUERY)
 
     def handle_flyto_pose_lookat(self, msg):
         pose = msg
