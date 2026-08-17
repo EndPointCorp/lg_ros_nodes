@@ -31,7 +31,7 @@ def main():
     depend_on_kmlsync = rospy.get_param('~depend_on_kmlsync', False)
     initial_state = rospy.get_param('~initial_state', 'VISIBLE')
     state_topic = rospy.get_param('~state_topic', '/earth/state')
-    activity_list = rospy.get_param('~full_screen_activities', 'earth,cesium,mapbox,streetview,panovideo,panoviewer,unreal,unity,pannellum')
+    activity_list = rospy.get_param('~full_screen_activities', 'earth,lg_earth,cesium,mapbox,streetview,panovideo,panoviewer,unreal,unity,pannellum')
 
     state_pub = rospy.Publisher(state_topic, ApplicationState, queue_size=10)
     director_listener_earth_state(state_pub, activity_list.split(','))

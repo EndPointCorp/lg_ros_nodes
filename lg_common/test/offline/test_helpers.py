@@ -160,10 +160,10 @@ class TestHelpers(unittest.TestCase):
     @patch('lg_common.helpers.rospy.Subscriber')
     def test_director_listener_publishes_earth_visibility(self, subscriber):
         state_pub = MagicMock()
-        director_listener_earth_state(state_pub, ['earth', 'cesium'])
+        director_listener_earth_state(state_pub, ['earth', 'lg_earth', 'cesium'])
         callback = subscriber.call_args[0][2]
 
-        callback(GenericMessage(message='{"windows": [{"activity": "cesium"}]}'))
+        callback(GenericMessage(message='{"windows": [{"activity": "lg_earth"}]}'))
         state_pub.publish.assert_called_with(ApplicationState.VISIBLE)
 
         callback(GenericMessage(message='{"windows": [{"activity": "video"}]}'))
