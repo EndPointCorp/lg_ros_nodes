@@ -84,7 +84,7 @@ Run with sudo.
 * `spacenav_sensitivity_x` [float] - SpaceNav relative x translation sensitivity. Default: `0.25`
 * `spacenav_sensitivity_y` [float] - SpaceNav relative y translation sensitivity. Default: `0.25`
 * `spacenav_sensitivity_z` [float] - SpaceNav relative z translation sensitivity. Default: `0.025`
-* `flyto_speed` [float] - Speed for flyTo queries. Default: `0.17`
+* `flyto_speed` [float] - Speed for flyTo queries. Default: `0.5`
 * `show_compass` [bool] - Show compass navigator. Default: `false`
 * `show_visualization` [bool] - Show SpaceNav/LEAP visualization. Default: `true`
 * `use_3d_imagery` [bool] - Show new 3D imagery. Default: `true`
