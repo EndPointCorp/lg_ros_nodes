@@ -27,6 +27,12 @@ def main():
         Pose,
         writer.handle_flyto_pose_camera
     )
+    # Internal background alignment is kept separate from user fly-to input.
+    rospy.Subscriber(
+        '/earth/query/sync_pose_camera',
+        Pose,
+        writer.handle_flyto_pose_camera
+    )
     rospy.Subscriber(
         '/earth/query/flyto_pose_lookat',
         Pose,

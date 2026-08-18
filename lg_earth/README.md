@@ -84,7 +84,7 @@ Run with sudo.
 * `spacenav_sensitivity_x` [float] - SpaceNav relative x translation sensitivity. Default: `0.25`
 * `spacenav_sensitivity_y` [float] - SpaceNav relative y translation sensitivity. Default: `0.25`
 * `spacenav_sensitivity_z` [float] - SpaceNav relative z translation sensitivity. Default: `0.025`
-* `flyto_speed` [float] - Speed for flyTo queries. Default: `0.5`
+* `flyto_speed` [float] - Speed for flyTo queries. Default: `5.0`
 * `show_compass` [bool] - Show compass navigator. Default: `false`
 * `show_visualization` [bool] - Show SpaceNav/LEAP visualization. Default: `true`
 * `use_3d_imagery` [bool] - Show new 3D imagery. Default: `true`
@@ -160,6 +160,7 @@ Listens on topics for queries to write to the Earth query file.
 
 * `/earth/query/flyto_kml` [`std_msgs/String`] - A KML `AbstractView` to fly to.
 * `/earth/query/flyto_pose_camera` [`geometry_msgs/Pose`] - A `Pose` expressed in latitude, longitude, degrees, and meters ASL. A `<Camera>` view will be generated with the absolute `Pose` values.
+* `/earth/query/sync_pose_camera` [`geometry_msgs/Pose`] - Internal latest-camera input used to keep background Earth aligned without feeding the command back into Cesium.
 * `/earth/query/flyto_pose_lookat` [`geometry_msgs/Pose`] - A `Pose` expressed in latitude, longitude, degrees, and meters relative to sea floor. A `<LookAt>` view will be generated, with heading, tilt, and roll based on the `Pose` orientation.
 * `/earth/query/search` [`std_msgs/String`] - Search string.
 * `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
