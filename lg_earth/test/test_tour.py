@@ -63,6 +63,18 @@ class TestTour(unittest.TestCase):
         self.assertEqual(1, len(earth))
         self.assertEqual('center', earth[0]['presentation_viewport'])
 
+    def test_adds_configured_solo_viewport_when_scene_has_no_earth(self):
+        result = attach_center_tour(
+            {'windows': [{'activity': 'cesium'}]},
+            'http://42-a:18112/new.kml', 'http://42-a:18112/',
+            viewport='wall_a')
+        earth = [window for window in result['windows']
+                 if window.get('activity') == 'earth']
+        self.assertEqual(1, len(earth))
+        self.assertEqual('wall_a', earth[0]['presentation_viewport'])
+        self.assertEqual(
+            ['http://42-a:18112/new.kml'], earth[0]['assets'])
+
 
 if __name__ == '__main__':
     unittest.main()
