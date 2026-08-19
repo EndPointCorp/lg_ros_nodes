@@ -10,14 +10,11 @@ import pytest
 import rospy
 import rostopic
 import unittest
-from unittest.mock import MagicMock, patch
 
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import extract_first_asset_from_director_message
-from lg_common.helpers import director_listener_earth_state
 from lg_common.helpers import load_director_message
 from lg_common.helpers import unpack_activity_sources
-from lg_msg_defs.msg import ApplicationState
 
 
 DIRECTOR_MESSAGE_ACTIVITY_CONFIG_NOT_PRESENT = """
@@ -156,18 +153,6 @@ class TestHelpers(unittest.TestCase):
         d = load_director_message(self.msg)
         self.assertIsInstance(d, dict)
         self.assertEqual(d["windows"][0]["activity_config"]["onFinish"], "nothing")
-
-    @patch('lg_common.helpers.rospy.Subscriber')
-    def test_director_listener_publishes_earth_visibility(self, subscriber):
-        state_pub = MagicMock()
-        director_listener_earth_state(state_pub, ['earth', 'lg_earth', 'cesium'])
-        callback = subscriber.call_args[0][2]
-
-        callback(GenericMessage(message='{"windows": [{"activity": "lg_earth"}]}'))
-        state_pub.publish.assert_called_with(ApplicationState.VISIBLE)
-
-        callback(GenericMessage(message='{"windows": [{"activity": "video"}]}'))
-        state_pub.publish.assert_called_with(ApplicationState.HIDDEN)
 
     def test_extract_first_asset_from_director_message_return_empty_list(self):
         self.msg.message = DIRECTOR_MESSAGE_ACTIVITY_CONFIG_NOTHING

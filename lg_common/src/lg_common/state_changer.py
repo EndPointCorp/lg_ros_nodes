@@ -15,8 +15,12 @@ class StateChanger:
     active topics exists, and then make those topics VISIBLE while making all
     other topics HIDDEN
     """
-    def __init__(self):
+    def __init__(self, protected_topics=None):
         self.pubbers = {}
+        # Base visibility has one owner. Generic activity changes may still
+        # hide/show overlays, but cannot blank or switch the globe underneath.
+        self.protected_topics = set(protected_topics or (
+            '/earth/state', '/cesium/state', '/unreal/state'))
         self.message_type_s = 'lg_msg_defs/ApplicationState'
         self.message_type = ApplicationState
         self.lock = Lock()
@@ -33,7 +37,8 @@ class StateChanger:
     def handle_state_change(self, msg):
         activities = msg.strings
         # returns a list of topics w/ the state specified
-        topics = rostopic.find_by_type(self.message_type_s)
+        topics = [topic for topic in rostopic.find_by_type(self.message_type_s)
+                  if topic not in self.protected_topics]
         self.set_pubbers(topics)
         for active in activities:
             if active not in self.pubbers:

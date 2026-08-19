@@ -16,6 +16,7 @@ catkin_install_python(PROGRAMS
   scripts/dev_webserver.py
   scripts/static_browser.py
   scripts/adhoc_browser.py
+  scripts/base_router.py
   scripts/state_setter.py
   scripts/touchscreen.py
   scripts/uscs_service.py
@@ -48,6 +49,7 @@ if (CATKIN_ENABLE_TESTING)
   set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/offline/test_helpers.py)
+  catkin_add_nosetests(test/offline/test_base_router.py)
   catkin_add_nosetests(test/offline/test_managed_adhoc_browser.py)
   catkin_add_nosetests(test/offline/test_managed_application.py)
   catkin_add_nosetests(test/offline/test_tcp_relay.py)

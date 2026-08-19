@@ -1044,50 +1044,6 @@ def write_influx_point_to_telegraf(data, host='lg-head', port=8094):
         sock.close()
 
 
-def director_listener_earth_state(state_pub, activity_list=list()):
-    from lg_msg_defs.msg import ApplicationState
-
-    def _look_for_earth(director_msg, *args, **kwargs):
-        try:
-            msg = json.loads(director_msg.message)
-        except Exception:
-            logger.error("Error loading director message, non-json-y format")
-            return
-        windows = msg.get('windows', [])
-        for window in windows:
-            if window.get('activity', None) in activity_list:
-                state_pub.publish(ApplicationState.VISIBLE)
-                return
-        state_pub.publish(ApplicationState.HIDDEN)
-    rospy.Subscriber('/director/scene', GenericMessage, _look_for_earth)
-
-
-def director_listener_state_setter(state_pub, activity_list=None, offline_state=ApplicationState.HIDDEN):
-    """
-    This is a subscriber to /director/scene. If _any_ of the activities in /director/scene match
-    _any_ of the actives in activity_list then we will publish VISIBLE to state_pub, otherwise we
-    will publish offline_state
-    """
-    from lg_msg_defs.msg import ApplicationState
-
-    def _do_stuff(director_msg, *args, **kwargs):
-        try:
-            msg = json.loads(director_msg.message)
-        except Exception:
-            logger.error("Error loading director message, non-json-y format")
-            return
-        windows = msg.get('windows', [])
-        if msg.get('slug', None) == "stop-the-presentations":
-            logger.debug("Ignoring 'stop-the-presentations' scene")
-            return
-        for window in windows:
-            if window.get('activity', None) in activity_list:
-                state_pub.publish(ApplicationState.VISIBLE)
-                return
-        state_pub.publish(offline_state)
-    rospy.Subscriber('/director/scene', GenericMessage, _do_stuff)
-
-
 def required_param(key, coercer=None):
     """
     Requires a ROS parameter to be set and returns its value, optionally
