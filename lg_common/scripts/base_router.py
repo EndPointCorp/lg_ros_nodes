@@ -5,6 +5,7 @@ import json
 import rospy
 from interactivespaces_msgs.msg import GenericMessage
 from lg_msg_defs.msg import ApplicationState
+from lg_msg_defs.srv import USCSMessage
 from std_msgs.msg import String
 
 from lg_common.base_router import BaseRouter, DEFAULT_BASE_ACTIVITIES
@@ -63,6 +64,18 @@ def main():
 
     rospy.Subscriber('/director/scene', GenericMessage, handle_scene)
     rospy.Subscriber('/base/select', String, handle_selection)
+
+    # /director/scene is not latched, so a restarted router would otherwise
+    # forget the base selected by the current scene and revert to its default.
+    # Recover that scene from USCS after the subscriptions are ready.
+    try:
+        uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage,
+                                          persistent=False)
+        uscs_service.wait_for_service(timeout=5.0)
+        handle_scene(uscs_service.call())
+    except Exception as exc:
+        rospy.logwarn('Could not recover the current Director scene: {}'.format(exc))
+
     rospy.spin()
 
 
