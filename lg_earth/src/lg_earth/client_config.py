@@ -123,9 +123,8 @@ def get_config(base_path, instance_name, viewsync_port=42001):
 
     cache_path = os.path.normpath(base_path + '/.googleearth/Cache')
     kml_path = os.path.normpath(base_path + '/.googleearth')
-    # Earth uses the same fly-to interface for live background camera sync.
-    # A high speed keeps that camera current instead of visibly catching up.
-    flyto_speed = rospy.get_param('~flyto_speed', 5.0)
+    # Keep animated transitions, but make touchscreen fly-tos respond promptly.
+    flyto_speed = rospy.get_param('~flyto_speed', 0.5)
     show_compass = rospy.get_param('~show_compass', False)
     show_visualization = rospy.get_param('~show_visualization', viewsync_send)
 
