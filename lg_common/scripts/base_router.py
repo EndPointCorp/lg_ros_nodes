@@ -32,7 +32,7 @@ def main():
     }
 
     def publish_selection(selected):
-        rospy.loginfo('Selected base application: %s', selected)
+        rospy.loginfo('Selected base application: {}'.format(selected))
         selected_pub.publish(String(selected))
         for base, publisher in state_pubs.items():
             state = (ApplicationState.VISIBLE if base == selected
@@ -53,7 +53,7 @@ def main():
         try:
             router.handle_scene(json.loads(message.message))
         except (TypeError, ValueError) as exc:
-            rospy.logerr('Could not route invalid Director scene: %s', exc)
+            rospy.logerr('Could not route invalid Director scene: {}'.format(exc))
 
     def handle_selection(message):
         try:
