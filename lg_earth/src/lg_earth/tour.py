@@ -145,5 +145,6 @@ def attach_center_tour(scene, url, url_prefix, viewport='center'):
 
     # The base router must preserve Cesium while this hidden Earth asset is
     # refreshed for background following.
+    scene.setdefault('duration', 0)
     scene['preserve_base'] = True
     return scene

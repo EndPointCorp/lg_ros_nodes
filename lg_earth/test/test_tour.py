@@ -51,6 +51,7 @@ class TestTour(unittest.TestCase):
             ['keep.kml', 'http://42-a:18112/new.kml'],
             result['windows'][1]['assets'])
         self.assertEqual(['right.kml'], result['windows'][2]['assets'])
+        self.assertEqual(0, result['duration'])
         self.assertTrue(result['preserve_base'])
 
     def test_adds_only_center_when_scene_has_no_earth(self):
