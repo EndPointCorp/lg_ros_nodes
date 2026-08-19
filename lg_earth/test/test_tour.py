@@ -31,6 +31,9 @@ class TestTour(unittest.TestCase):
         href = root.find('.//kml:href', namespace).text
         self.assertEqual(
             'http://localhost:8765/query.html?query=playtour=test-tour', href)
+        children = list(root.find('kml:Document', namespace))
+        self.assertTrue(children[0].tag.endswith('Tour'))
+        self.assertTrue(children[1].tag.endswith('NetworkLink'))
 
     def test_attaches_only_to_center_earth_and_replaces_prior_tour(self):
         scene = {'windows': [

@@ -93,8 +93,14 @@ def build_tour_kml(fragment, tour_name, duration=0):
     root = ET.Element(_tag(KML_NS, 'kml'), {'id': tour_name})
     document = ET.SubElement(root, _tag(KML_NS, 'Document'))
 
-    # Loading this link asks the center Earth's local query service to start
-    # the tour only after the definition has arrived.
+    # Define the tour before its autoplay link. Earth resolves NetworkLinks
+    # while parsing, so the opposite order can race playtour against tour
+    # registration.
+    tour = ET.SubElement(document, _tag(GX_NS, 'Tour'))
+    ET.SubElement(tour, _tag(KML_NS, 'name')).text = tour_name
+    playlist = ET.SubElement(tour, _tag(GX_NS, 'Playlist'))
+    playlist.append(flyto)
+
     network_link = ET.SubElement(document, _tag(KML_NS, 'NetworkLink'))
     link = ET.SubElement(network_link, _tag(KML_NS, 'Link'))
     ET.SubElement(link, _tag(KML_NS, 'href')).text = (
@@ -102,10 +108,6 @@ def build_tour_kml(fragment, tour_name, duration=0):
     ET.SubElement(link, _tag(KML_NS, 'refreshMode')).text = 'onChange'
     ET.SubElement(link, _tag(KML_NS, 'viewRefreshMode')).text = 'never'
 
-    tour = ET.SubElement(document, _tag(GX_NS, 'Tour'))
-    ET.SubElement(tour, _tag(KML_NS, 'name')).text = tour_name
-    playlist = ET.SubElement(tour, _tag(GX_NS, 'Playlist'))
-    playlist.append(flyto)
     return '<?xml version="1.0" encoding="UTF-8"?>\n{}'.format(
         ET.tostring(root, encoding='unicode'))
 
