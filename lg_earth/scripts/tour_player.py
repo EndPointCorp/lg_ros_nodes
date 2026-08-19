@@ -69,11 +69,18 @@ class CenterTourPlayer(object):
             self.pending_sync = pose_camera_kml(message)
 
     def flush_sync_camera(self, _event=None):
-        with self.pending_lock:
-            fragment = self.pending_sync
-            self.pending_sync = None
-        if fragment is not None:
-            self.play(fragment)
+        # Do not let timer callbacks line up behind a slow Director/KML load.
+        # Leaving the slot untouched makes the next tick use the newest pose.
+        if not self.play_lock.acquire(False):
+            return
+        try:
+            with self.pending_lock:
+                fragment = self.pending_sync
+                self.pending_sync = None
+            if fragment is not None:
+                self._play(fragment)
+        finally:
+            self.play_lock.release()
 
     def play(self, fragment):
         # A direct touchscreen request and the background timer can arrive on
