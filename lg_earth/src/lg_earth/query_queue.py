@@ -24,26 +24,15 @@ class QueryQueue(object):
     def handle_consumed_query(self):
         with self.lock:
             if len(self.q) > 0:
-                query, _coalesce_key = self.q.pop()
+                query = self.q.pop()
                 self._write_query(query)
             else:
                 self.waiting = False
 
-    def post_query(self, query, coalesce_key=None):
+    def post_query(self, query):
         with self.lock:
             if self.waiting:
-                if coalesce_key is not None:
-                    # A continuous absolute-view gesture only needs its newest
-                    # target; keep unrelated searches, tours, and planet calls.
-                    self.q = deque(
-                        [
-                            (queued_query, queued_key)
-                            for queued_query, queued_key in self.q
-                            if queued_key != coalesce_key
-                        ],
-                        maxlen=self.q.maxlen,
-                    )
-                self.q.appendleft((query, coalesce_key))
+                self.q.appendleft(query)
             else:
                 self._write_query(query)
 

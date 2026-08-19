@@ -21,6 +21,8 @@ catkin_install_python(PROGRAMS
   scripts/add_kml
   scripts/client
   scripts/client.py
+  scripts/earth_flyto
+  scripts/tour_player.py
   scripts/query
   scripts/query.py
   scripts/viewsync_relay
@@ -50,6 +52,6 @@ if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   catkin_add_nosetests(test/test_query_writer.py)
   catkin_add_nosetests(test/test_query_queue.py)
+  catkin_add_nosetests(test/test_tour.py)
   add_rostest(test/kmlsync/kmlsync.test)
 endif()
-

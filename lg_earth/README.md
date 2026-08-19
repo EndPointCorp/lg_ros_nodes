@@ -158,13 +158,24 @@ Listens on topics for queries to write to the Earth query file.
 
 ##### Subscribed Topics
 
-* `/earth/query/flyto_kml` [`std_msgs/String`] - A KML `AbstractView` to fly to.
-* `/earth/query/flyto_pose_camera` [`geometry_msgs/Pose`] - A `Pose` expressed in latitude, longitude, degrees, and meters ASL. A `<Camera>` view will be generated with the absolute `Pose` values.
-* `/earth/query/sync_pose_camera` [`geometry_msgs/Pose`] - Internal latest-camera input used to keep background Earth aligned without feeding the command back into Cesium.
-* `/earth/query/flyto_pose_lookat` [`geometry_msgs/Pose`] - A `Pose` expressed in latitude, longitude, degrees, and meters relative to sea floor. A `<LookAt>` view will be generated, with heading, tilt, and roll based on the `Pose` orientation.
 * `/earth/query/search` [`std_msgs/String`] - Search string.
 * `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
 * `/earth/query/planet` [`std_msgs/String`] - Change planets.
+
+#### tour_player
+
+Turns absolute camera requests into zero-duration KML tours. The tour asset is
+attached only to the center Earth; the remaining Earth instances follow through
+native ViewSync. Cesium background-follow updates are coalesced to one pending
+pose and sampled at `~sync_interval` (default `0.1` seconds).
+
+##### Subscribed Topics
+
+* `/earth/query/flyto_kml` [`std_msgs/String`] - A Camera, LookAt, or gx:FlyTo fragment.
+* `/earth/query/flyto_tour` [`std_msgs/String`] - A Camera, LookAt, or gx:FlyTo fragment for command-line and application callers.
+* `/earth/query/flyto_pose_camera` [`geometry_msgs/Pose`] - An absolute Camera pose.
+* `/earth/query/flyto_pose_lookat` [`geometry_msgs/Pose`] - An absolute LookAt pose.
+* `/earth/query/sync_pose_camera` [`geometry_msgs/Pose`] - Internal latest-camera input used to keep background Earth aligned without feeding the command back into Cesium.
 
 #### planet\_changer
 
