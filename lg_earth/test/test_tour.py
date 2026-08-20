@@ -55,7 +55,7 @@ class TestTour(unittest.TestCase):
         self.assertFalse(result['windows'][1]['select_base'])
         self.assertNotIn('preserve_base', result)
 
-    def test_adds_only_center_when_scene_has_no_earth(self):
+    def test_adds_only_default_leader_when_scene_has_no_earth(self):
         result = attach_leader_tour(
             {'windows': [{'activity': 'no_activity'}]},
             'http://42-a:18112/new.kml', 'http://42-a:18112/')
