@@ -148,5 +148,9 @@ def attach_leader_tour(scene, url, url_prefix, viewport='center'):
     # This Earth window delivers KML to the leader; it is not a request to
     # replace a visible Cesium or Unreal base.
     leader['select_base'] = False
+    # The copied content windows may declare the base that originally loaded
+    # the presentation. This derived scene only refreshes an internal tour and
+    # must not undo a later, content-neutral /base/select.
+    scene['select_base'] = False
     scene.setdefault('duration', 0)
     return scene

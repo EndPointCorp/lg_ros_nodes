@@ -48,6 +48,14 @@ class TestBaseRouter(unittest.TestCase):
         ]})
         self.assertEqual('cesium', self.router.selected)
 
+    def test_internal_scene_update_does_not_reselect_content_base(self):
+        self.router.select('earth')
+        self.assertFalse(self.router.handle_scene({
+            'select_base': False,
+            'windows': [{'activity': 'cesium'}],
+        }))
+        self.assertEqual('earth', self.router.selected)
+
     def test_unreal_is_a_base_option(self):
         self.router.handle_scene({'windows': [{'activity': 'unreal'}]})
         self.assertEqual('unreal', self.router.selected)

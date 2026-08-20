@@ -29,6 +29,11 @@ class BaseRouter(object):
         return True
 
     def handle_scene(self, scene):
+        # Internal updates can carry the original content windows while adding
+        # renderer-specific state. They are explicit non-selection messages.
+        if scene.get('select_base', True) is False:
+            return False
+
         for window in scene.get('windows', []):
             # Some internal windows deliver an asset to a base application
             # without requesting that application become visible.

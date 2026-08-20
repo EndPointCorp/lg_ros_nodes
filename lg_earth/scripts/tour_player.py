@@ -36,7 +36,7 @@ class LeaderTourPlayer(object):
         self.port = port
         self.viewport = viewport
         self.sequence = 0
-        self.pending_sync = None
+        self.pending_camera = None
         self.pending_lock = threading.Lock()
         self.play_lock = threading.Lock()
         self.files = deque()
@@ -54,7 +54,7 @@ class LeaderTourPlayer(object):
         return 'http://{}:{}/'.format(self.hostname, self.port)
 
     def handle_camera(self, message):
-        self.play(pose_camera_kml(message))
+        self.queue_camera(pose_camera_kml(message))
 
     def handle_lookat(self, message):
         self.play(pose_lookat_kml(message))
@@ -63,20 +63,24 @@ class LeaderTourPlayer(object):
         self.play(message.data)
 
     def handle_sync_camera(self, message):
-        # Cesium can update faster than Earth can load tours. One slot means
-        # intermediate poses disappear instead of becoming a playback queue.
-        with self.pending_lock:
-            self.pending_sync = pose_camera_kml(message)
+        self.queue_camera(pose_camera_kml(message))
 
-    def flush_sync_camera(self, _event=None):
+    def queue_camera(self, fragment):
+        # Touch controllers and background renderers can update faster than
+        # Earth loads tours. One shared slot means intermediate poses disappear
+        # instead of becoming an interrupted-fly-to playback queue.
+        with self.pending_lock:
+            self.pending_camera = fragment
+
+    def flush_camera(self, _event=None):
         # Do not let timer callbacks line up behind a slow Director/KML load.
         # Leaving the slot untouched makes the next tick use the newest pose.
         if not self.play_lock.acquire(False):
             return
         try:
             with self.pending_lock:
-                fragment = self.pending_sync
-                self.pending_sync = None
+                fragment = self.pending_camera
+                self.pending_camera = None
             if fragment is not None:
                 self._play(fragment)
         finally:
@@ -147,7 +151,7 @@ def main():
 
     sync_interval = rospy.get_param('~sync_interval', 0.1)
     rospy.Timer(rospy.Duration.from_sec(sync_interval),
-                player.flush_sync_camera)
+                player.flush_camera)
     rospy.on_shutdown(player.shutdown)
     rospy.spin()
 
