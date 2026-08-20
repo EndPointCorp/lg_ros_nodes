@@ -6,6 +6,7 @@ import unittest
 import os
 
 from lg_earth import QueryWriter
+from geometry_msgs.msg import Pose
 from std_msgs.msg import String
 
 TEST_FILE = '/tmp/query_writer_test'
@@ -13,6 +14,22 @@ TOUR_NAME = 'Amazonian Village'
 EXIT_TOUR = ''
 PLANET_NAME = 'mars'
 SEARCH_QUERY = '10010'
+TEST_POSE_LON = 20
+TEST_POSE_LAT = 31.5
+TEST_POSE_ALT = 22
+TEST_POSE_HEADING = 270
+TEST_POSE_TILT = -12
+TEST_POSE_ROLL = 0
+TEST_POSE_RANGE = 5000
+FLYTO_KML = ('<Camera><latitude>{}</latitude><longitude>{}</longitude>'
+             '<altitude>{}</altitude><heading>{}</heading><tilt>{}</tilt>'
+             '<roll>{}</roll><altitudeMode>absolute</altitudeMode></Camera>').format(
+    TEST_POSE_LAT,
+    TEST_POSE_LON,
+    TEST_POSE_ALT,
+    TEST_POSE_HEADING,
+    TEST_POSE_TILT,
+    TEST_POSE_ROLL)
 
 
 def consume_query():
@@ -69,6 +86,51 @@ class TestQueryWriter(unittest.TestCase):
 
         content = consume_query()
         self.assertEqual(content, expected)
+
+    def test_flyto_kml(self):
+        self.writer.handle_flyto_kml(String(FLYTO_KML))
+        self.assertEqual(
+            'flytoview={}'.format(FLYTO_KML), consume_query())
+
+    def test_flyto_pose_camera(self):
+        pose = Pose()
+        pose.position.x = TEST_POSE_LON
+        pose.position.y = TEST_POSE_LAT
+        pose.position.z = TEST_POSE_ALT
+        pose.orientation.z = TEST_POSE_HEADING
+        pose.orientation.x = TEST_POSE_TILT
+        pose.orientation.y = TEST_POSE_ROLL
+
+        self.writer.handle_flyto_pose_camera(pose)
+
+        self.assertEqual(
+            'flytoview=<Camera><latitude>{}</latitude>'
+            '<longitude>{}</longitude><altitude>{}</altitude>'
+            '<heading>{}</heading><tilt>{}</tilt><roll>{}</roll>'
+            '<altitudeMode>absolute</altitudeMode></Camera>'.format(
+                TEST_POSE_LAT, TEST_POSE_LON, TEST_POSE_ALT,
+                TEST_POSE_HEADING, TEST_POSE_TILT, TEST_POSE_ROLL),
+            consume_query())
+
+    def test_flyto_pose_lookat(self):
+        pose = Pose()
+        pose.position.x = TEST_POSE_LON
+        pose.position.y = TEST_POSE_LAT
+        pose.position.z = TEST_POSE_ALT
+        pose.orientation.z = TEST_POSE_HEADING
+        pose.orientation.x = TEST_POSE_TILT
+        pose.orientation.y = TEST_POSE_RANGE
+
+        self.writer.handle_flyto_pose_lookat(pose)
+
+        self.assertEqual(
+            'flytoview=<LookAt><latitude>{}</latitude>'
+            '<longitude>{}</longitude><altitude>{}</altitude>'
+            '<heading>{}</heading><tilt>{}</tilt><range>{}</range>'
+            '<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>'.format(
+                TEST_POSE_LAT, TEST_POSE_LON, TEST_POSE_ALT,
+                TEST_POSE_HEADING, TEST_POSE_TILT, TEST_POSE_RANGE),
+            consume_query())
 
 
 if __name__ == '__main__':

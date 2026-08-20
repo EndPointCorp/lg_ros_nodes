@@ -155,24 +155,30 @@ Listens on topics for queries to write to the Earth query file.
 
 * `~query_file` [string] - Path to the Earth query file. Default: `/tmp/ge_queryfile`
 * `~queue_length` [int] - Number of queries to queue up. Default: `10`
+* `~handle_view_queries` [bool] - Handle absolute Camera/LookAt topics through
+  `ge_queryfile`. Default: `true`; VP25 sets this to `false` because
+  `tour_player` owns them.
 
 ##### Subscribed Topics
 
 * `/earth/query/search` [`std_msgs/String`] - Search string.
 * `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
 * `/earth/query/planet` [`std_msgs/String`] - Change planets.
+* `/earth/query/flyto_kml` [`std_msgs/String`] - A Camera or LookAt fragment, when `~handle_view_queries` is enabled.
+* `/earth/query/flyto_pose_camera` [`geometry_msgs/Pose`] - An absolute Camera pose, when `~handle_view_queries` is enabled.
+* `/earth/query/flyto_pose_lookat` [`geometry_msgs/Pose`] - An absolute LookAt pose, when `~handle_view_queries` is enabled.
+* `/earth/query/sync_pose_camera` [`geometry_msgs/Pose`] - Compatibility handling for background synchronization when `~handle_view_queries` is enabled.
 
 #### tour_player
 
 Turns absolute camera requests into zero-duration KML tours. The tour asset is
-attached only to the center Earth; the remaining Earth instances follow through
-native ViewSync. Cesium background-follow updates are coalesced to one pending
-pose and sampled at `~sync_interval` (default `0.1` seconds).
+attached only to the configured leader Earth; any remaining Earth instances
+follow through native ViewSync. Cesium background-follow updates are coalesced
+to one pending pose and sampled at `~sync_interval` (default `0.1` seconds).
 
 ##### Subscribed Topics
 
 * `/earth/query/flyto_kml` [`std_msgs/String`] - A Camera, LookAt, or gx:FlyTo fragment.
-* `/earth/query/flyto_tour` [`std_msgs/String`] - A Camera, LookAt, or gx:FlyTo fragment for command-line and application callers.
 * `/earth/query/flyto_pose_camera` [`geometry_msgs/Pose`] - An absolute Camera pose.
 * `/earth/query/flyto_pose_lookat` [`geometry_msgs/Pose`] - An absolute LookAt pose.
 * `/earth/query/sync_pose_camera` [`geometry_msgs/Pose`] - Internal latest-camera input used to keep background Earth aligned without feeding the command back into Cesium.

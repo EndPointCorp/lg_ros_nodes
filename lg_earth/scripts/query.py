@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
+from geometry_msgs.msg import Pose
 from std_msgs.msg import String
 from lg_earth import QueryWriter
 from lg_common.helpers import run_with_influx_exception_handler
@@ -15,6 +16,31 @@ def main():
     queue_length = rospy.get_param('~queue_length', 10)
     writer = QueryWriter(query_file, queue_length)
     rospy.on_shutdown(writer.shutdown)
+
+    # Legacy and non-VP25 systems still send absolute view commands through
+    # ge_queryfile. VP25 disables these subscriptions because its leader-only
+    # tour player owns the same public endpoints.
+    if rospy.get_param('~handle_view_queries', True):
+        rospy.Subscriber(
+            '/earth/query/flyto_kml',
+            String,
+            writer.handle_flyto_kml
+        )
+        rospy.Subscriber(
+            '/earth/query/flyto_pose_camera',
+            Pose,
+            writer.handle_flyto_pose_camera
+        )
+        rospy.Subscriber(
+            '/earth/query/sync_pose_camera',
+            Pose,
+            writer.handle_flyto_pose_camera
+        )
+        rospy.Subscriber(
+            '/earth/query/flyto_pose_lookat',
+            Pose,
+            writer.handle_flyto_pose_lookat
+        )
 
     rospy.Subscriber(
         '/earth/query/search',
