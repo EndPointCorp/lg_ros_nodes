@@ -37,9 +37,15 @@ class TestBaseRouter(unittest.TestCase):
     def test_internal_earth_scene_does_not_switch_from_cesium(self):
         self.router.select('cesium')
         self.router.handle_scene({
-            'preserve_base': True,
-            'windows': [{'activity': 'earth'}],
+            'windows': [{'activity': 'earth', 'select_base': False}],
         })
+        self.assertEqual('cesium', self.router.selected)
+
+    def test_internal_window_does_not_mask_an_explicit_base(self):
+        self.router.handle_scene({'windows': [
+            {'activity': 'earth', 'select_base': False},
+            {'activity': 'cesium'},
+        ]})
         self.assertEqual('cesium', self.router.selected)
 
     def test_unreal_is_a_base_option(self):

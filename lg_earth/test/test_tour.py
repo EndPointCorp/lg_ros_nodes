@@ -9,7 +9,7 @@ MODULE_PATH = os.path.join(
 SPEC = importlib.util.spec_from_file_location('lg_earth_tour', MODULE_PATH)
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
-attach_center_tour = MODULE.attach_center_tour
+attach_leader_tour = MODULE.attach_leader_tour
 build_tour_kml = MODULE.build_tour_kml
 
 
@@ -35,7 +35,7 @@ class TestTour(unittest.TestCase):
         self.assertTrue(children[0].tag.endswith('Tour'))
         self.assertTrue(children[1].tag.endswith('NetworkLink'))
 
-    def test_attaches_only_to_center_earth_and_replaces_prior_tour(self):
+    def test_attaches_only_to_configured_leader_and_replaces_prior_tour(self):
         scene = {'windows': [
             {'activity': 'earth', 'presentation_viewport': 'left_one',
              'assets': ['left.kml']},
@@ -44,7 +44,7 @@ class TestTour(unittest.TestCase):
             {'activity': 'earth', 'presentation_viewport': 'right_one',
              'assets': ['right.kml']},
         ]}
-        result = attach_center_tour(
+        result = attach_leader_tour(
             scene, 'http://42-a:18112/new.kml', 'http://42-a:18112/')
         self.assertEqual(['left.kml'], result['windows'][0]['assets'])
         self.assertEqual(
@@ -52,10 +52,11 @@ class TestTour(unittest.TestCase):
             result['windows'][1]['assets'])
         self.assertEqual(['right.kml'], result['windows'][2]['assets'])
         self.assertEqual(0, result['duration'])
-        self.assertTrue(result['preserve_base'])
+        self.assertFalse(result['windows'][1]['select_base'])
+        self.assertNotIn('preserve_base', result)
 
     def test_adds_only_center_when_scene_has_no_earth(self):
-        result = attach_center_tour(
+        result = attach_leader_tour(
             {'windows': [{'activity': 'no_activity'}]},
             'http://42-a:18112/new.kml', 'http://42-a:18112/')
         earth = [window for window in result['windows']
@@ -64,7 +65,7 @@ class TestTour(unittest.TestCase):
         self.assertEqual('center', earth[0]['presentation_viewport'])
 
     def test_adds_configured_solo_viewport_when_scene_has_no_earth(self):
-        result = attach_center_tour(
+        result = attach_leader_tour(
             {'windows': [{'activity': 'cesium'}]},
             'http://42-a:18112/new.kml', 'http://42-a:18112/',
             viewport='wall_a')
@@ -74,6 +75,18 @@ class TestTour(unittest.TestCase):
         self.assertEqual('wall_a', earth[0]['presentation_viewport'])
         self.assertEqual(
             ['http://42-a:18112/new.kml'], earth[0]['assets'])
+        self.assertFalse(earth[0]['select_base'])
+
+    def test_state_activity_is_not_mistaken_for_a_kmlsync_instance(self):
+        result = attach_leader_tour(
+            {'windows': [
+                {'activity': 'lg_earth', 'presentation_viewport': 'center'},
+            ]},
+            'http://42-a:18112/new.kml', 'http://42-a:18112/')
+        self.assertEqual('lg_earth', result['windows'][0]['activity'])
+        self.assertEqual('earth', result['windows'][1]['activity'])
+        self.assertEqual(
+            ['http://42-a:18112/new.kml'], result['windows'][1]['assets'])
 
 
 if __name__ == '__main__':

@@ -6,7 +6,11 @@ DEFAULT_BASE_ACTIVITIES = {
 
 
 class BaseRouter(object):
-    """Remember the base globe selected by explicit Director scenes."""
+    """Remember the base globe selected by explicit Director scenes.
+
+    The configured default is used only at startup. Scenes without a base
+    declaration retain the current selection.
+    """
 
     def __init__(self, default_base='earth', activities=None, on_change=None):
         self.activities = activities or DEFAULT_BASE_ACTIVITIES
@@ -25,12 +29,11 @@ class BaseRouter(object):
         return True
 
     def handle_scene(self, scene):
-        # Internal scene mutations, such as attaching a KML tour, must not
-        # change which globe is visible.
-        if scene.get('preserve_base'):
-            return False
-
         for window in scene.get('windows', []):
+            # Some internal windows deliver an asset to a base application
+            # without requesting that application become visible.
+            if window.get('select_base', True) is False:
+                continue
             activity = window.get('activity')
             for base, activities in self.activities.items():
                 if activity in activities:

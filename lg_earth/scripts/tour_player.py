@@ -16,7 +16,7 @@ from lg_msg_defs.srv import USCSMessage
 from std_msgs.msg import String
 
 from lg_common.helpers import run_with_influx_exception_handler
-from lg_earth.tour import (attach_center_tour, build_tour_kml,
+from lg_earth.tour import (attach_leader_tour, build_tour_kml,
                            pose_camera_kml, pose_lookat_kml)
 
 
@@ -27,7 +27,7 @@ class ReusableTCPServer(socketserver.ThreadingTCPServer):
     allow_reuse_address = True
 
 
-class CenterTourPlayer(object):
+class LeaderTourPlayer(object):
     def __init__(self, uscs_service, director_pub, hostname, port,
                  viewport='center'):
         self.uscs_service = uscs_service
@@ -98,7 +98,7 @@ class CenterTourPlayer(object):
             destination.write(kml)
 
         scene = json.loads(self.uscs_service.call().message)
-        scene = attach_center_tour(
+        scene = attach_leader_tour(
             scene,
             self.url_prefix + filename,
             self.url_prefix,
@@ -128,7 +128,7 @@ def main():
                                    queue_size=1)
     uscs_service = rospy.ServiceProxy('/uscs/message', USCSMessage,
                                       persistent=False)
-    player = CenterTourPlayer(
+    player = LeaderTourPlayer(
         uscs_service=uscs_service,
         director_pub=director_pub,
         hostname=rospy.get_param('~hostname', 'localhost'),
@@ -141,8 +141,6 @@ def main():
     rospy.Subscriber('/earth/query/flyto_pose_lookat', Pose,
                      player.handle_lookat, queue_size=1)
     rospy.Subscriber('/earth/query/flyto_kml', String,
-                     player.handle_fragment, queue_size=1)
-    rospy.Subscriber('/earth/query/flyto_tour', String,
                      player.handle_fragment, queue_size=1)
     rospy.Subscriber('/earth/query/sync_pose_camera', Pose,
                      player.handle_sync_camera, queue_size=1)

@@ -21,7 +21,6 @@ catkin_install_python(PROGRAMS
   scripts/add_kml
   scripts/client
   scripts/client.py
-  scripts/earth_flyto
   scripts/tour_player.py
   scripts/query
   scripts/query.py

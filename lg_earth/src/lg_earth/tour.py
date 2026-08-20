@@ -112,7 +112,7 @@ def build_tour_kml(fragment, tour_name, duration=0):
         ET.tostring(root, encoding='unicode'))
 
 
-DEFAULT_CENTER_EARTH = {
+DEFAULT_LEADER_EARTH = {
     'activity': 'earth',
     'activity_config': {},
     'assets': [],
@@ -125,26 +125,28 @@ DEFAULT_CENTER_EARTH = {
 }
 
 
-def attach_center_tour(scene, url, url_prefix, viewport='center'):
-    """Return a scene with one managed tour asset on center Earth only."""
+def attach_leader_tour(scene, url, url_prefix, viewport='center'):
+    """Return a scene with one managed tour asset on the leader Earth only."""
     scene = copy.deepcopy(scene)
-    center = None
+    leader = None
     for window in scene.setdefault('windows', []):
-        if (window.get('activity') in ('earth', 'lg_earth') and
+        # lg_earth is the application-state activity, not a KMLSync Earth
+        # instance. Only an earth window can deliver this asset.
+        if (window.get('activity') == 'earth' and
                 window.get('presentation_viewport') == viewport):
-            center = window
+            leader = window
             break
-    if center is None:
-        center = copy.deepcopy(DEFAULT_CENTER_EARTH)
-        center['presentation_viewport'] = viewport
-        scene['windows'].append(center)
+    if leader is None:
+        leader = copy.deepcopy(DEFAULT_LEADER_EARTH)
+        leader['presentation_viewport'] = viewport
+        scene['windows'].append(leader)
 
-    center['assets'] = [asset for asset in center.get('assets', [])
+    leader['assets'] = [asset for asset in leader.get('assets', [])
                         if not asset.startswith(url_prefix)]
-    center['assets'].append(url)
+    leader['assets'].append(url)
 
-    # The base router must preserve Cesium while this hidden Earth asset is
-    # refreshed for background following.
+    # This Earth window delivers KML to the leader; it is not a request to
+    # replace a visible Cesium or Unreal base.
+    leader['select_base'] = False
     scene.setdefault('duration', 0)
-    scene['preserve_base'] = True
     return scene
