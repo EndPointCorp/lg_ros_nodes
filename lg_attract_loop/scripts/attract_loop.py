@@ -8,7 +8,6 @@ from std_msgs.msg import Bool
 from std_msgs.msg import String
 from lg_attract_loop import AttractLoop
 from lg_attract_loop import DirectorAPIProxy
-from lg_msg_defs.msg import ApplicationState
 from interactivespaces_msgs.msg import GenericMessage
 from lg_common.helpers import run_with_influx_exception_handler
 
@@ -32,10 +31,6 @@ def main():
     # initialize Director publisher
     earth_query_publisher = rospy.Publisher('/earth/query/tour', String, queue_size=1)
     earth_planet_publisher = rospy.Publisher('/earth/query/planet', String, queue_size=1)
-    earth_state_publisher = rospy.Publisher('/earth/state', ApplicationState, queue_size=1)
-
-    def set_earth(*args, **kwargs):
-        earth_state_publisher.publish(ApplicationState(ApplicationState.VISIBLE))
 
     director_scene_publisher = rospy.Publisher(director_scene_topic_name, GenericMessage, queue_size=1)
     director_presentation_publisher = rospy.Publisher(director_presentation_topic_name, GenericMessage, queue_size=1)
@@ -68,7 +63,6 @@ def main():
                                get_viewport_names,
                                default_presentation=default_presentation,
                                default_planet=default_planet,
-                               set_earth=set_earth,
                                default_duration=default_duration)
 
     # subscribe to state changes
