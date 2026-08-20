@@ -17,6 +17,7 @@
   <run_depend>message_runtime</run_depend>
   <run_depend>appctl</run_depend>
   <run_depend>std_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
   <run_depend>std_srvs</run_depend>
   <run_depend>interactivespaces_msgs</run_depend>
   <run_depend>rospy</run_depend>

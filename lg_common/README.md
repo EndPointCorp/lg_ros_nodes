@@ -141,6 +141,20 @@ Puts an always-visible browser on the screen.
 * `~extensions` [string] - list of extensions.
 * `~depend_on_url` [bool] - wait for the url to be available before launching?  Default: `false`
 
+### base\_router.py
+
+Keeps exactly one base renderer selected. Director scenes with an Earth,
+Cesium, or Unreal window select that renderer; scenes without a base keep the
+current selection. `/base/select` provides a content-neutral switch and the
+latched `/base/selected` topic reports the result.
+
+### globe\_pose\_router.py
+
+Routes `/globe/control/pose` to the base named by `/base/selected`. Only the
+selected renderer's pose feedback is authoritative. Its normalized pose is
+published on `/globe/pose` and copied to the inactive renderers so switching
+bases does not require a catch-up flight.
+
 ----------------------
 
 ### lg\_common module
