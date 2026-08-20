@@ -26,6 +26,8 @@ class TestSceneAssets(unittest.TestCase):
              'assets': ['shared.kmz', 'imagery.yaml', 'earth.kml']},
             {'activity': 'unreal', 'presentation_viewport': 'center',
              'assets': ['future.kml']},
+            {'activity': 'cesium', 'presentation_viewport': 'center',
+             'assets': ['internal-sync.kml'], 'select_base': False},
             {'activity': 'cesium', 'presentation_viewport': 'left_one',
              'assets': ['wrong-screen.kml']},
         ]}
@@ -39,6 +41,22 @@ class TestSceneAssets(unittest.TestCase):
             'activity_config': {'force_touchscreen_tab': 'free_flight'},
         }]}))
         self.assertFalse(is_base_only_scene({'slug': 'presentation'}))
+
+    def test_center_assets_are_available_to_a_solo_wall(self):
+        scene = {'windows': [
+            {'activity': 'cesium', 'presentation_viewport': 'center',
+             'assets': ['shared.kmz']},
+        ]}
+        self.assertEqual(
+            ['shared.kmz'], assets_for_renderer(scene, 'wall_a', 'earth'))
+
+    def test_wildcard_assets_are_available_to_every_wall(self):
+        scene = {'windows': [
+            {'activity': 'unreal', 'presentation_viewport': '*',
+             'assets': ['shared.kml']},
+        ]}
+        self.assertEqual(
+            ['shared.kml'], assets_for_renderer(scene, 'right_one', 'earth'))
 
 
 if __name__ == '__main__':

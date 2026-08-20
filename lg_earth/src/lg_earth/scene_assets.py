@@ -29,6 +29,12 @@ def is_base_only_scene(scene):
     )
 
 
+def is_matching_viewport(requested, presented):
+    """Match the conventional multi-screen and Solo leader names."""
+    return (presented == '*' or requested == presented or
+            {requested, presented} == {'center', 'wall_a'})
+
+
 def assets_for_renderer(scene, viewport, renderer):
     """Collect native assets plus shareable KML/KMZ for one renderer.
 
@@ -40,13 +46,16 @@ def assets_for_renderer(scene, viewport, renderer):
     result = []
 
     for window in scene.get('windows', []):
-        if window.get('presentation_viewport') != viewport:
+        if not is_matching_viewport(
+                viewport, window.get('presentation_viewport')):
             continue
         activity = window.get('activity')
         if activity not in globe:
             continue
         assets = window.get('assets', [])
         if activity not in native:
+            if window.get('select_base', True) is False:
+                continue
             assets = [asset for asset in assets if is_kml_asset(asset)]
         for asset in assets:
             if asset not in result:
