@@ -5,6 +5,7 @@ from std_msgs.msg import String
 from lg_msg_defs.srv import KmlStateResponse, PlaytourQueryResponse, PlanetQueryResponse
 import json
 from lg_common.logger import get_logger
+from .scene_assets import assets_for_renderer, is_base_only_scene
 logger = get_logger('kml_sync_state')
 
 
@@ -19,6 +20,11 @@ class KmlSyncState:
             state = json.loads(msg.message)
             assert isinstance(state, dict)
             assert 'windows' in state
+            # A base-only compatibility scene changes visibility, not content.
+            # Retaining the last content scene lets /base/select (and old
+            # open-* scenes) switch renderers without unloading KML/KMZ.
+            if is_base_only_scene(state):
+                return
             self.state = state
         except AssertionError:
             logger.warning('Invalid message - keeping previous state')
@@ -28,17 +34,8 @@ class KmlSyncState:
     def _process_service_request(self, req):
         if self.state is None:
             return KmlStateResponse(assets=[])
-        window_slug = req.window_slug
-        for window in self.state['windows']:
-            if 'presentation_viewport' not in window or 'assets' not in window:
-                continue
-            if not window['presentation_viewport'] == window_slug:
-                continue
-            if 'activity' not in window or window['activity'] != 'earth':
-                continue
-            return KmlStateResponse(assets=window['assets'])
-        # couldn't find specific window_slug inside state
-        return KmlStateResponse(assets=[])
+        return KmlStateResponse(assets=assets_for_renderer(
+            self.state, req.window_slug, 'earth'))
 
     def _send_playtour_query(self, req):
         self.playtour_pub.publish(String(req.tourname))
