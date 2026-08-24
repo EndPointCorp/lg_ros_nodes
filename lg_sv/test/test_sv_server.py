@@ -280,6 +280,13 @@ class TestSVServer(unittest.TestCase):
 
         self.check_soft_relaunch()
 
+    def test_8_empty_panoid_does_not_create_scene(self):
+        self.server.handle_panoid_msg(String(data=''))
+        self.server.handle_panoid_msg(String(data='   '))
+
+        self.assertEqual([], self.pano_pub.data)
+        self.assertEqual('', self.server.panoid)
+
 
 if __name__ == '__main__':
     rostest.rosrun(PKG, NAME, TestSVServer, sys.argv)

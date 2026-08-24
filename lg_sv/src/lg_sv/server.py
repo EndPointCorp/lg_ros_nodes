@@ -292,6 +292,9 @@ class PanoViewerServer:
         """
         Grabs the new panoid from a publisher
         """
+        if not panoid.data or not panoid.data.strip():
+            logger.warning('Ignoring empty panoid message')
+            return
         # Nothing to do here...
         if self.panoid == panoid.data:
             self.nearby_panos.set_panoid(self.panoid)
