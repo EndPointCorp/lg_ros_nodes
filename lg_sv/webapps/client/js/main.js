@@ -137,9 +137,10 @@ var initializeRes = function(ros, yawOffset) {
   handleResize();
 
   var attributionModule = new Attribution(info);
-  var handleMetadataResponse = function(response, stat) {
+  var handleMetadataResponse = function(panoId, response, stat) {
     if (stat != google.maps.StreetViewStatus.OK) {
-      throw 'Metadata request status NOT OK: ' + stat;
+      console.error('Street View metadata request failed for ' + panoId + ': ' + stat);
+      return;
     }
     attributionModule.handleMetadata(response);
     if (showLinks) {
@@ -171,7 +172,9 @@ var initializeRes = function(ros, yawOffset) {
       lastPov.w = 70;
       svClient.pubPov(lastPov);
     }
-    svService.getPanorama({ pano: panoId }, handleMetadataResponse);
+    svService.getPanorama({ pano: panoId }, function(response, stat) {
+      handleMetadataResponse(panoId, response, stat);
+    });
   }
   svClient.on('pano_changed', handlePanoChanged);
 
