@@ -73,7 +73,10 @@ def main():
                               nearby, metadata_pub, zoom_max, zoom_min, tick_rate, director_pub=director_pub,
                               server_type=server_type)
 
-    visibility_publisher = rospy.Publisher('/%s/state' % server_type, ApplicationState, queue_size=1)
+    # Keep the current visibility available to touchscreens that connect after
+    # Street View has already opened.
+    visibility_publisher = rospy.Publisher(
+        '/%s/state' % server_type, ApplicationState, latch=True, queue_size=1)
 
     rospy.Subscriber('/%s/location' % server_type, Pose2D,
                      server.handle_location_msg)
