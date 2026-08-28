@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import os
 import unittest
 
@@ -32,6 +33,8 @@ class TestGlobePoseRouter(unittest.TestCase):
     def setUp(self):
         self.commands = {base: [] for base in MODULE.BASES}
         self.sync = {base: [] for base in MODULE.BASES}
+        self.live = {base: [] for base in MODULE.BASES}
+        self.stops = {base: 0 for base in MODULE.BASES}
         self.poses = []
         self.router = GlobePoseRouter(
             command_outputs={
@@ -40,8 +43,28 @@ class TestGlobePoseRouter(unittest.TestCase):
             sync_outputs={
                 base: values.append for base, values in self.sync.items()
             },
+            live_outputs={
+                base: values.append for base, values in self.live.items()
+            },
+            live_stop_outputs={
+                base: self.stop_callback(base) for base in MODULE.BASES
+            },
             pose_output=self.poses.append,
         )
+
+    def stop_callback(self, base):
+        def stop():
+            self.stops[base] += 1
+        return stop
+
+    def session(self, action, owner='screen-a', session='gesture-1'):
+        value = Value()
+        value.data = json.dumps({
+            'action': action,
+            'owner': owner,
+            'session': session,
+        })
+        return value
 
     def test_routes_command_only_to_selected_base(self):
         self.router.select('cesium')
@@ -56,6 +79,28 @@ class TestGlobePoseRouter(unittest.TestCase):
         self.assertTrue(self.router.handle_command(
             message(source='touchscreen:screen-a')))
 
+    def test_routes_live_session_and_rejects_stale_session(self):
+        self.router.set_owner('screen-a')
+        self.assertTrue(self.router.handle_control_session(
+            self.session('begin')))
+        self.assertTrue(self.router.handle_command(
+            message(source='touchscreen:screen-a:gesture-1')))
+        self.assertEqual(1, len(self.live['earth']))
+        self.assertFalse(self.router.handle_command(
+            message(source='touchscreen:screen-a:old-gesture')))
+
+        self.assertTrue(self.router.handle_control_session(
+            self.session('end')))
+        self.assertEqual(0, self.stops['earth'])
+        self.assertFalse(self.router.handle_command(
+            message(source='touchscreen:screen-a:gesture-1')))
+
+    def test_new_owner_stops_active_control(self):
+        self.router.set_owner('screen-a')
+        self.router.handle_control_session(self.session('begin'))
+        self.router.set_owner('screen-b')
+        self.assertEqual(1, self.stops['earth'])
+
     def test_only_selected_feedback_becomes_authoritative(self):
         self.assertFalse(self.router.handle_feedback('cesium', message()))
         self.assertEqual([], self.poses)
@@ -64,13 +109,15 @@ class TestGlobePoseRouter(unittest.TestCase):
         self.assertEqual(20, self.poses[0].pose.position.x)
         self.assertEqual(10, self.poses[0].pose.position.y)
         self.assertEqual(0, len(self.sync['earth']))
+        self.assertEqual(0, len(self.sync['cesium']))
+        self.router.sync_inactive()
         self.assertEqual(1, len(self.sync['cesium']))
         self.assertEqual(1, len(self.sync['unreal']))
 
     def test_selection_replays_latest_pose_to_new_base(self):
         self.router.handle_feedback('earth', message())
         self.router.select('cesium')
-        self.assertEqual(2, len(self.sync['cesium']))
+        self.assertEqual(1, len(self.sync['cesium']))
 
 
 if __name__ == '__main__':

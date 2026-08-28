@@ -1,4 +1,5 @@
 import copy
+import json
 
 
 BASES = ('earth', 'cesium', 'unreal')
@@ -14,13 +15,17 @@ class GlobePoseRouter(object):
     """
 
     def __init__(self, selected='earth', command_outputs=None,
+                 live_outputs=None, live_stop_outputs=None,
                  sync_outputs=None, pose_output=None):
         if selected not in BASES:
             raise ValueError('unknown base application: {}'.format(selected))
         self.selected = selected
         self.owner = None
+        self.control_session = None
         self.latest_pose = None
         self.command_outputs = command_outputs or {}
+        self.live_outputs = live_outputs or {}
+        self.live_stop_outputs = live_stop_outputs or {}
         self.sync_outputs = sync_outputs or {}
         self.pose_output = pose_output
 
@@ -28,7 +33,10 @@ class GlobePoseRouter(object):
         if base not in BASES:
             raise ValueError('unknown base application: {}'.format(base))
         changed = base != self.selected
+        old_base = self.selected
         self.selected = base
+        if changed:
+            self._stop_live_output(old_base)
         # The new foreground renderer has normally followed in the background,
         # but replay the latest pose once to close any switch-time race.
         if changed and self.latest_pose is not None:
@@ -36,15 +44,49 @@ class GlobePoseRouter(object):
         return changed
 
     def set_owner(self, owner):
-        self.owner = owner or None
+        owner = owner or None
+        if owner != self.owner:
+            self._stop_control_session()
+        self.owner = owner
+
+    def handle_control_session(self, message):
+        """Begin or end an explicitly identified touchscreen gesture."""
+        try:
+            state = json.loads(message.data)
+            action = state['action']
+            owner = state['owner']
+            session = state['session']
+        except (AttributeError, KeyError, TypeError, ValueError):
+            return False
+
+        if owner != self.owner or not session:
+            return False
+        if action == 'begin':
+            self._stop_control_session()
+            self.control_session = (owner, session)
+            return True
+        if action == 'end' and self.control_session == (owner, session):
+            # Leave the last live target in place long enough for a renderer
+            # with physical-camera feedback (Earth) to finish converging. Its
+            # controller has its own short stale-target safety limit.
+            self.control_session = None
+            return True
+        return False
 
     def handle_command(self, message):
         source = getattr(message.header, 'frame_id', '')
+        live = False
         if source.startswith(TOUCHSCREEN_SOURCE_PREFIX):
-            owner = source[len(TOUCHSCREEN_SOURCE_PREFIX):]
+            identity = source[len(TOUCHSCREEN_SOURCE_PREFIX):].split(':', 1)
+            owner = identity[0]
             if not owner or owner != self.owner:
                 return False
-        return self._publish(self.command_outputs, self.selected, message.pose)
+            if len(identity) == 2:
+                live = self.control_session == (owner, identity[1])
+                if not live:
+                    return False
+        outputs = self.live_outputs if live else self.command_outputs
+        return self._publish(outputs, self.selected, message.pose)
 
     def handle_feedback(self, base, message):
         if base != self.selected:
@@ -62,10 +104,30 @@ class GlobePoseRouter(object):
 
         if self.pose_output:
             self.pose_output(canonical)
-        for follower in BASES:
-            if follower != base:
-                self._publish(self.sync_outputs, follower, canonical.pose)
         return True
+
+    def sync_inactive(self):
+        """Send only the newest canonical pose to background renderers."""
+        if self.latest_pose is None:
+            return False
+        published = False
+        for follower in BASES:
+            if follower != self.selected:
+                published = (
+                    self._publish(self.sync_outputs, follower,
+                                  self.latest_pose.pose) or published
+                )
+        return published
+
+    def _stop_control_session(self):
+        if self.control_session is not None:
+            self._stop_live_output(self.selected)
+        self.control_session = None
+
+    def _stop_live_output(self, base):
+        output = self.live_stop_outputs.get(base)
+        if output is not None:
+            output()
 
     @staticmethod
     def _publish(outputs, base, message):
