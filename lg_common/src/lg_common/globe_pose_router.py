@@ -91,7 +91,8 @@ class GlobePoseRouter(object):
                 if not live:
                     return False
         outputs = self.live_outputs if live else self.command_outputs
-        return self._publish(outputs, self.selected, message.pose)
+        return self._publish(
+            outputs, self.selected, self._normalize_pose(message.pose))
 
     def handle_feedback(self, base, message):
         if base != self.selected:
@@ -104,6 +105,7 @@ class GlobePoseRouter(object):
             # latitude y, matching KML, Cesium, and Unreal.
             canonical.pose.position.x = message.pose.position.y
             canonical.pose.position.y = message.pose.position.x
+        self._normalize_orientation(canonical.pose)
         canonical.header.frame_id = 'globe:{}'.format(base)
         self.latest_pose = canonical
 
@@ -133,6 +135,20 @@ class GlobePoseRouter(object):
         output = self.live_stop_outputs.get(base)
         if output is not None:
             output()
+
+    @staticmethod
+    def _normalize_pose(pose):
+        """Use one equivalent angle representation across globe renderers."""
+        normalized = copy.deepcopy(pose)
+        GlobePoseRouter._normalize_orientation(normalized)
+        return normalized
+
+    @staticmethod
+    def _normalize_orientation(pose):
+        pose.orientation.z = pose.orientation.z % 360.0
+        pose.orientation.y = (
+            (pose.orientation.y + 180.0) % 360.0 - 180.0
+        )
 
     @staticmethod
     def _publish(outputs, base, message):

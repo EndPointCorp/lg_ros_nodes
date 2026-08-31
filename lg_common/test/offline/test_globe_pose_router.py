@@ -26,6 +26,10 @@ def message(x=10, y=20, source=''):
     msg.pose.position = Value()
     msg.pose.position.x = x
     msg.pose.position.y = y
+    msg.pose.orientation = Value()
+    msg.pose.orientation.x = 30
+    msg.pose.orientation.y = 0
+    msg.pose.orientation.z = 0
     return msg
 
 
@@ -126,6 +130,21 @@ class TestGlobePoseRouter(unittest.TestCase):
         self.router.handle_feedback('earth', message())
         self.router.select('cesium')
         self.assertEqual(1, len(self.sync['cesium']))
+
+    def test_normalizes_equivalent_angles_at_router_boundary(self):
+        command = message()
+        command.pose.orientation.z = 360
+        command.pose.orientation.y = 360
+        self.assertTrue(self.router.handle_command(command))
+        self.assertEqual(0, self.commands['earth'][0].orientation.z)
+        self.assertEqual(0, self.commands['earth'][0].orientation.y)
+
+        feedback = message()
+        feedback.pose.orientation.z = -10
+        feedback.pose.orientation.y = 180
+        self.assertTrue(self.router.handle_feedback('earth', feedback))
+        self.assertEqual(350, self.poses[0].pose.orientation.z)
+        self.assertEqual(-180, self.poses[0].pose.orientation.y)
 
 if __name__ == '__main__':
     unittest.main()
