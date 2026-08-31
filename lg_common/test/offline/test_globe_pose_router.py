@@ -95,6 +95,14 @@ class TestGlobePoseRouter(unittest.TestCase):
         self.assertFalse(self.router.handle_command(
             message(source='touchscreen:screen-a:gesture-1')))
 
+    def test_session_begin_atomically_claims_owner(self):
+        self.router.set_owner('screen-b')
+        self.assertTrue(self.router.handle_control_session(
+            self.session('begin', owner='screen-a')))
+        self.assertEqual('screen-a', self.router.owner)
+        self.assertTrue(self.router.handle_command(
+            message(source='touchscreen:screen-a:gesture-1')))
+
     def test_new_owner_stops_active_control(self):
         self.router.set_owner('screen-a')
         self.router.handle_control_session(self.session('begin'))
@@ -118,7 +126,6 @@ class TestGlobePoseRouter(unittest.TestCase):
         self.router.handle_feedback('earth', message())
         self.router.select('cesium')
         self.assertEqual(1, len(self.sync['cesium']))
-
 
 if __name__ == '__main__':
     unittest.main()

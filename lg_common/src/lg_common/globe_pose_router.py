@@ -59,13 +59,18 @@ class GlobePoseRouter(object):
         except (AttributeError, KeyError, TypeError, ValueError):
             return False
 
-        if owner != self.owner or not session:
+        if not owner or not session:
             return False
         if action == 'begin':
+            # A control session is the authoritative ownership event for globe
+            # movement. /touchscreen/owner remains useful for scene writes and
+            # early cancellation, but may arrive later on its separate topic.
+            self.set_owner(owner)
             self._stop_control_session()
             self.control_session = (owner, session)
             return True
-        if action == 'end' and self.control_session == (owner, session):
+        if (action == 'end' and owner == self.owner and
+                self.control_session == (owner, session)):
             # Leave the last live target in place long enough for a renderer
             # with physical-camera feedback (Earth) to finish converging. Its
             # controller has its own short stale-target safety limit.
