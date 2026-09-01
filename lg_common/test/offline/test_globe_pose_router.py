@@ -35,6 +35,7 @@ def message(x=10, y=20, source=''):
 
 class TestGlobePoseRouter(unittest.TestCase):
     def setUp(self):
+        self.now = 10.0
         self.commands = {base: [] for base in MODULE.BASES}
         self.sync = {base: [] for base in MODULE.BASES}
         self.live = {base: [] for base in MODULE.BASES}
@@ -54,6 +55,7 @@ class TestGlobePoseRouter(unittest.TestCase):
                 base: self.stop_callback(base) for base in MODULE.BASES
             },
             pose_output=self.poses.append,
+            clock=lambda: self.now,
         )
 
     def stop_callback(self, base):
@@ -96,6 +98,44 @@ class TestGlobePoseRouter(unittest.TestCase):
         self.assertTrue(self.router.handle_control_session(
             self.session('end')))
         self.assertEqual(0, self.stops['earth'])
+        self.now += 0.2
+        self.assertFalse(self.router.handle_command(
+            message(source='touchscreen:screen-a:gesture-1')))
+
+    def test_routes_final_pose_when_it_arrives_just_after_end(self):
+        self.router.handle_control_session(self.session('begin'))
+        self.router.handle_control_session(self.session('end'))
+        self.assertTrue(self.router.handle_command(
+            message(source='touchscreen:screen-a:gesture-1')))
+        self.assertEqual(1, len(self.live['earth']))
+        self.assertFalse(self.router.handle_command(
+            message(source='touchscreen:screen-a:gesture-1')))
+
+    def test_replays_pose_when_it_arrives_just_before_begin(self):
+        early = message(
+            x=42,
+            source='touchscreen:screen-a:gesture-1',
+        )
+        self.assertFalse(self.router.handle_command(early))
+        self.assertEqual([], self.live['earth'])
+        self.assertTrue(self.router.handle_control_session(
+            self.session('begin')))
+        self.assertEqual(1, len(self.live['earth']))
+        self.assertEqual(42, self.live['earth'][0].position.x)
+
+    def test_different_begin_does_not_consume_buffered_pose(self):
+        self.router.handle_command(message(
+            source='touchscreen:screen-a:old-gesture',
+        ))
+        self.router.handle_control_session(self.session(
+            'begin', session='new-gesture',
+        ))
+        self.assertEqual([], self.live['earth'])
+
+    def test_new_owner_cancels_post_end_grace(self):
+        self.router.handle_control_session(self.session('begin'))
+        self.router.handle_control_session(self.session('end'))
+        self.router.set_owner('screen-b')
         self.assertFalse(self.router.handle_command(
             message(source='touchscreen:screen-a:gesture-1')))
 

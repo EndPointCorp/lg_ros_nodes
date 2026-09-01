@@ -1,9 +1,11 @@
 import copy
 import json
+import time
 
 
 BASES = ('earth', 'cesium', 'unreal')
 TOUCHSCREEN_SOURCE_PREFIX = 'touchscreen:'
+DEFAULT_SESSION_ORDER_GRACE = 0.1
 
 
 class GlobePoseRouter(object):
@@ -16,13 +18,19 @@ class GlobePoseRouter(object):
 
     def __init__(self, selected='earth', command_outputs=None,
                  live_outputs=None, live_stop_outputs=None,
-                 sync_outputs=None, pose_output=None):
+                 sync_outputs=None, pose_output=None, clock=None,
+                 session_order_grace=DEFAULT_SESSION_ORDER_GRACE):
         if selected not in BASES:
             raise ValueError('unknown base application: {}'.format(selected))
         self.selected = selected
         self.owner = None
         self.control_session = None
+        self.ended_session = None
+        self.ended_session_time = None
+        self.pending_commands = {}
         self.latest_pose = None
+        self.clock = clock or time.monotonic
+        self.session_order_grace = session_order_grace
         self.command_outputs = command_outputs or {}
         self.live_outputs = live_outputs or {}
         self.live_stop_outputs = live_stop_outputs or {}
@@ -47,6 +55,7 @@ class GlobePoseRouter(object):
         owner = owner or None
         if owner != self.owner:
             self._stop_control_session()
+            self._clear_ended_session()
         self.owner = owner
 
     def handle_control_session(self, message):
@@ -61,20 +70,30 @@ class GlobePoseRouter(object):
 
         if not owner or not session:
             return False
+        key = (owner, session)
         if action == 'begin':
             # A control session is the authoritative ownership event for globe
             # movement. /touchscreen/owner remains useful for scene writes and
             # early cancellation, but may arrive later on its separate topic.
+            pending = self._take_pending_command(key)
             self.set_owner(owner)
             self._stop_control_session()
-            self.control_session = (owner, session)
+            self._clear_ended_session()
+            self.control_session = key
+            if pending is not None:
+                self._publish(
+                    self.live_outputs, self.selected,
+                    self._normalize_pose(pending),
+                )
             return True
         if (action == 'end' and owner == self.owner and
-                self.control_session == (owner, session)):
+                self.control_session == key):
             # Leave the last live target in place long enough for a renderer
             # with physical-camera feedback (Earth) to finish converging. Its
             # controller has its own short stale-target safety limit.
             self.control_session = None
+            self.ended_session = key
+            self.ended_session_time = self.clock()
             return True
         return False
 
@@ -84,12 +103,24 @@ class GlobePoseRouter(object):
         if source.startswith(TOUCHSCREEN_SOURCE_PREFIX):
             identity = source[len(TOUCHSCREEN_SOURCE_PREFIX):].split(':', 1)
             owner = identity[0]
-            if not owner or owner != self.owner:
+            if not owner:
                 return False
             if len(identity) == 2:
-                live = self.control_session == (owner, identity[1])
-                if not live:
+                key = (owner, identity[1])
+                if owner == self.owner and self.control_session == key:
+                    live = True
+                elif owner == self.owner and self._recently_ended(key):
+                    # Session end and its final pose use separate topics. Keep
+                    # the lease for one final pose when MQTT reverses them.
+                    live = True
+                    self._clear_ended_session()
+                else:
+                    # Likewise, retain only the newest pose until a matching
+                    # begin arrives. A different begin never consumes it.
+                    self._remember_pending_command(key, message.pose)
                     return False
+            elif owner != self.owner:
+                return False
         outputs = self.live_outputs if live else self.command_outputs
         return self._publish(
             outputs, self.selected, self._normalize_pose(message.pose))
@@ -135,6 +166,33 @@ class GlobePoseRouter(object):
         output = self.live_stop_outputs.get(base)
         if output is not None:
             output()
+
+    def _recently_ended(self, key):
+        return (
+            self.ended_session == key and
+            self.ended_session_time is not None and
+            self.clock() - self.ended_session_time <= self.session_order_grace
+        )
+
+    def _clear_ended_session(self):
+        self.ended_session = None
+        self.ended_session_time = None
+
+    def _remember_pending_command(self, key, pose):
+        self._prune_pending_commands()
+        self.pending_commands[key] = (self.clock(), copy.deepcopy(pose))
+
+    def _take_pending_command(self, key):
+        self._prune_pending_commands()
+        value = self.pending_commands.pop(key, None)
+        return value[1] if value is not None else None
+
+    def _prune_pending_commands(self):
+        cutoff = self.clock() - self.session_order_grace
+        self.pending_commands = {
+            key: value for key, value in self.pending_commands.items()
+            if value[0] >= cutoff
+        }
 
     @staticmethod
     def _normalize_pose(pose):

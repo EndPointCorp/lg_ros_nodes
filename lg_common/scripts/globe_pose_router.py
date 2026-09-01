@@ -52,6 +52,9 @@ def main():
         live_stop_outputs={'earth': earth_controller.stop},
         sync_outputs={base: pub.publish for base, pub in sync_pubs.items()},
         pose_output=pose_pub.publish,
+        session_order_grace=float(
+            rospy.get_param('~session_order_grace', 0.1)
+        ),
     )
 
     def select(message):
