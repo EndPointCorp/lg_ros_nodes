@@ -94,6 +94,14 @@ Run with sudo.
 * `status_bar_visible` [bool] - Show the status bar at the bottom of the window. Default: `true`
 * `mem_cache_size` [int] - Size of the memory cache in MB. Default: `64`
 * `disk_cache_size` [int] - Size of the disk cache in MB. Default: `256`
+* `mutex_timeout_period` [int] - Consecutive main-thread futex samples before relaunching Earth. Set to `0` to disable. Default: `5`
+* `mutex_log_dir` [string] - Directory for per-instance rotating mutex event logs. Default: `/home/lg/.ros/earth_mutex`
+
+When using Enterprise Client, the unified LevelDB cache is shared by the Earth
+processes under the user's `.googleearth/Cache` directory. Individual client
+shutdowns and soft relaunches preserve this shared cache. Purge it only as an
+explicit maintenance operation after all Earth processes have stopped.
+
 * `show_state_borders` [bool] - Show state/province borders. Default: `false`
 * `show_country_borders` [bool] - Show country borders. Default: `false`
 * `show_state_labels` [bool] - Show state/province labels. Default: `false`
