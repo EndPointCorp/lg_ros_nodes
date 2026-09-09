@@ -108,7 +108,7 @@ class Client:
         self.earth_proc = ManagedApplication(cmd, window=earth_window,
                                              initial_state=initial_state,
                                              env=env, stdout=open(earth_log, 'w'),
-                                             stderr=open('earth_err_log', 'w'))
+                                             stderr=open(earth_err_log, 'w'))
         KmlAlive(self.earth_proc)
 
     def _render_configs(self):
