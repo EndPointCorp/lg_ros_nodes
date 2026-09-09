@@ -189,7 +189,6 @@ class Client:
         os.mkdir(self._get_tempdir())
         assert os.path.exists(self._get_tempdir())
         rospy.on_shutdown(self._clean_tempdir)
-        rospy.on_shutdown(self._clear_cache)
 
     def _clean_tempdir(self):
         """Attempt to delete temporary directory."""
@@ -265,27 +264,9 @@ class Client:
         shutil.copy(custom_conf_expected_path,
                     self._get_tempdir() + '/' + standard_conf_path)
 
-    def _clear_cache(self, *args, **kwargs):
-        if os.path.exists('/home/lg/.googleearth/Cache'):
-            try:
-                shutil.rmtree('/home/lg/.googleearth/Cache')
-            except OSError:
-                pass  # some other instance already deleted this
-
     def _handle_soft_relaunch(self, msg):
-        """
-        Clearing up logs is pretty important for soft relaunches
-        """
-        logger.debug('removing cache for google earth')
-        try:
-            # deleting out of OLDHOME because that's where the cache is stored
-            earth_dir = '%s/.googleearth' % os.environ['OLDHOME']
-            shutil.rmtree(earth_dir)
-            self._clear_cache()
-            os.mkdir(earth_dir)
-        except Exception as e:
-            logger.warning('found error while removing earth cache: %s, could be normal operation though' % e.message)
-        self._render_configs()
+        """Relaunch this Earth process while preserving the shared EC cache."""
+        logger.debug('soft relaunching google earth without clearing shared cache')
         self.earth_proc.handle_soft_relaunch()
 
     def _handle_staggered_soft_relaunch(self, msg):
