@@ -121,21 +121,45 @@ def registered_tests():
 
 
 def run(test_files, pytest_args):
-    results = {}
+    """Run the whole suite in one pytest process.
+
+    A process per module cost more in interpreter startup and broker handshake
+    than the tests themselves took. Module basenames are unique across the
+    packages, so one rootdir collects them all without import collisions.
+    """
+    present, missing = [], []
     for rel in test_files:
-        path = os.path.join(TESTS, rel)
-        if not os.path.isfile(path):
-            log("--- %s\n    MISSING in staging tree" % rel)
-            results[rel] = None
-            continue
-        log("--- %s" % rel)
-        proc = subprocess.run(
-            [sys.executable, "-m", "pytest", "-q", "--no-header",
-             os.path.basename(path)] + pytest_args,
-            cwd=os.path.dirname(path),
-        )
-        results[rel] = proc.returncode
-    return results
+        (present if os.path.isfile(os.path.join(TESTS, rel)) else missing).append(rel)
+
+    argv = [sys.executable, "-m", "pytest", "-q", "--no-header"]
+    argv += present + pytest_args
+    proc = subprocess.Popen(argv, cwd=TESTS, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, text=True)
+    output = []
+    for line in proc.stdout:
+        sys.stdout.write(line)
+        output.append(line)
+    sys.stdout.flush()
+    code = proc.wait()
+
+    # pytest names the offending file in every FAILED/ERROR summary line, so a
+    # module is bad if it shows up there, or if the run died without saying
+    # which module did it.
+    blamed = set()
+    for line in output:
+        match = re.match(r"^(?:FAILED|ERROR)\s+(\S+?)(?:::|\s|$)", line)
+        if match:
+            blamed.add(match.group(1))
+
+    results = {rel: None for rel in missing}
+    for rel in present:
+        if rel in blamed:
+            results[rel] = "failed"
+        elif code and not blamed:
+            results[rel] = "suite failed (exit %d)" % code
+        else:
+            results[rel] = "ok"
+    return results, code
 
 
 def main():
@@ -161,15 +185,14 @@ def main():
         [INSTALL] + [p for p in [os.environ.get("PYTHONPATH")] if p]
     )
 
-    results = run(test_files, pytest_args)
+    results, code = run(test_files, pytest_args)
 
-    failed = sorted(k for k, v in results.items() if v)
+    bad = sorted(k for k, v in results.items() if v != "ok")
     log("\n=== SUMMARY ===")
     for rel in sorted(results):
-        code = results[rel]
-        log("%-52s %s" % (rel, "ok" if code == 0 else "FAILED (exit %s)" % code))
-    log("%d/%d test modules passed" % (len(results) - len(failed), len(results)))
-    return 1 if failed else 0
+        log("%-52s %s" % (rel, results[rel] or "MISSING in staging tree"))
+    log("%d/%d test modules passed" % (len(results) - len(bad), len(results)))
+    return 1 if (bad or code) else 0
 
 
 if __name__ == "__main__":

@@ -40,16 +40,23 @@ docker run -d --rm --name "${BROKER}" --network "${NETWORK}" "${BROKER_IMAGE}" \
     sh -c 'printf "listener 1883 0.0.0.0\nallow_anonymous true\n" > /mosquitto.conf
            exec mosquitto -c /mosquitto.conf' >/dev/null
 
-# Give mosquitto a moment; vpros gives up rather than retrying a refused connect.
-for _ in $(seq 20); do
-    if docker exec "${BROKER}" sh -c 'nc -z localhost 1883' >/dev/null 2>&1; then
+# Give mosquitto a moment; vpros gives up rather than retrying a refused
+# connect. Probe with mosquitto_pub: busybox nc has no -z, so it reports
+# failure however healthy the broker is.
+for _ in $(seq 40); do
+    if docker exec "${BROKER}" mosquitto_pub -h localhost -t _probe -m up >/dev/null 2>&1; then
         break
     fi
-    sleep 0.5
+    sleep 0.25
 done
 
-exec docker run --rm -u 0 \
+# ManagedBrowser unconditionally asks lg-head for API headers on construction,
+# with a five second timeout. Point the name at the loopback so the connection
+# is refused at once instead of hanging every browser the suite builds. Tests
+# have no business reaching the network.
+docker run --rm -u 0 \
     --network "${NETWORK}" \
+    --add-host "lg-head:127.0.0.1" \
     -e "MQ_HOST=${BROKER}" \
     -e MQ_PORT=1883 \
     --volume "${REPO}:/src:ro" \
