@@ -121,6 +121,37 @@ thanks to the fact that `roslaunch` service on dispnodes is configured
 in such way that it attempts to run any development artifact (in /home/lg/catkin_ws)
 that it finds before launching production ROS nodes that are located under /opt/ros.
 
+## Running the tests
+
+### Offline suite, without a ROS toolchain
+
+`scripts/test_local.sh` runs every test registered with `catkin_add_nosetests`
+against your working tree, on any machine with docker and no ROS installed:
+
+```bash
+./scripts/test_local.sh                      # whole offline suite
+./scripts/test_local.sh -x -k handle_scene   # extra args are passed to pytest
+LG_TEST_IMAGE=endpoint/lg_ros_nonfree:1.2.36 ./scripts/test_local.sh
+```
+
+It runs inside the `lg_ros_nonfree` image, which carries the visionport runtime
+the display nodes use. `scripts/test_local_run.py` stages the working tree into
+that image's install-space layout (flattening `<pkg>/src/<pkg>/` to `<pkg>/`,
+copying `config/` alongside), transpiles it to the `vpros` dialect with the
+image's own transpiler, and puts the result first on `PYTHONPATH` -- so the
+tests exercise your checkout, not the code baked into the image.
+
+A throwaway MQTT broker runs beside it on a private docker network. `vpros`
+hands out no parameters or publishers without a node, and a node needs a
+broker; nothing in this path reaches the production broker.
+
+### Full suite, with ROS
+
+The rostest-driven online tests still need a real ROS toolchain.
+`scripts/test_docker.sh` builds the image from the repo `Dockerfile` and runs
+`scripts/test_runner.py` (nosetests, rostests, pycodestyle, cppcheck, eslint)
+inside it. That is what CI runs; expect a multi-gigabyte image build.
+
 ## Making new release
 
 - newly created ROS nodes need to be listed in the `pack-debs` script for CI
