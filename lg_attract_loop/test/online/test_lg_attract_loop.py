@@ -174,6 +174,12 @@ class TestAttractLoop(unittest.TestCase):
         self.maxDiff = None
         rospy.init_node("lg_attract_loop_testing")
 
+    def _as_published(self, scene):
+        """The loop stamps provenance on a scene before it publishes it."""
+        return dict(scene,
+                    played_from='lg_attract_loop',
+                    presentation='Test presentation')
+
     def _get_viewport_names(self):
         """The lookup the node does, over the viewports the .test file sets."""
         viewports = rospy.get_param('/viewport', {})
@@ -229,7 +235,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
         self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['description'], self.mock_api.mplayer_scene['description'])  # mplayer scene again
         self.assertEqual(self.attract_loop_controller.scene_timer > 500, True)  # scene timer should be sth lik 997 here
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self.mock_api.flights_scene)  # flights scene got published
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self._as_published(self.mock_api.flights_scene))  # flights scene got published
 
         self._activate_lg()
 
@@ -281,7 +287,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the other one in the queue
         self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
         self.assertEqual(self.attract_loop_controller.scene_timer > 500, True)  # scene timer should be sth lik 997 here
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self.mock_api.flights_scene)  # flights scene got published
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self._as_published(self.mock_api.flights_scene))  # flights scene got published
 
         self._activate_lg()
 
@@ -330,7 +336,7 @@ class TestAttractLoop(unittest.TestCase):
         self.assertEqual(len(self.attract_loop_controller.attract_loop_queue), 1)   # the other one in the queue
         self.assertEqual(self.attract_loop_controller.attract_loop_queue[0]['scenes'][0]['slug'], self.mock_api.mplayer_scene['slug'])  # mplayer scene is waiting for publication
         self.assertEqual(self.attract_loop_controller.scene_timer > 500, True)  # scene timer should be sth lik 997 here
-        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self.mock_api.flights_scene)  # flights scene got published
+        self.assertEqual(json.loads(self.mock_director_scene_publisher.published_scenes[0].message), self._as_published(self.mock_api.flights_scene))  # flights scene got published
 
         self._activate_lg()
 
