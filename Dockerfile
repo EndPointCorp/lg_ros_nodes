@@ -95,7 +95,7 @@ RUN pip install --no-cache-dir coveralls \
     pycryptodome \
     pymongo \
     gnupg \
-    pycodestyle==2.14.0
+    pycodestyle==2.12.1
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64
