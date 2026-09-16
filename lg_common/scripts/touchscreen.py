@@ -69,8 +69,8 @@ def main():
     debug_port = rospy.get_param('~debug_port', None)
     user_agent = rospy.get_param(
         '~user_agent', 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; '
-        'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) ' +
-        'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
+        'en-us AppleWebKit/531.21.10 (KHTML, like Gecko) '
+        + 'Version/4.0.4 Mobile/7B314 Safari/531.21.10'
     )
     log_level = rospy.get_param('/logging/level', 0)
 
@@ -99,7 +99,7 @@ def main():
 
     def handle_toggle(msg):
         state = None
-        if msg.data == False:
+        if msg.data is False:
             state = ApplicationState.HIDDEN
         else:
             state = ApplicationState.VISIBLE

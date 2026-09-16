@@ -291,12 +291,16 @@ class TestAdhocBrowser(unittest.TestCase):
         # no director window ready should be published
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)
         self.assertEqual(len(self.director_ready_mock.messages), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'gzJERcJ')
+        # The id is a hash of the serialised browser, so it moves whenever an
+        # AdhocBrowser field or one of its defaults does. What this test cares
+        # about is that it stays put across the three emissions below.
+        browser_id = self.browser_service_mock_center.messages[0].browsers[0].id
+        self.assertTrue(browser_id)
 
         browsers_on_center = self.get_browsers_thru_service('center')
         # self.assertEqual(browsers_on_center, 'asd')
-        browser_timestamp_before = browsers_on_center['gzJERcJ']['timestamp']
-        self.assertEqual(browsers_on_center['gzJERcJ']['uid'], 'gzJERcJ')
+        browser_timestamp_before = browsers_on_center[browser_id]['timestamp']
+        self.assertEqual(browsers_on_center[browser_id]['uid'], browser_id)
 
         # 2
         self.director_publisher.publish(self.message_factory._get_message('test_one_browser_on_center_msg'))
@@ -304,14 +308,14 @@ class TestAdhocBrowser(unittest.TestCase):
         wait_for_assert_ge(lambda: len(self.director_scene_mock.messages), 2, self.preloading_grace_time)
         self.assertEqual(len(self.director_window_ready_mock.messages), 0)
         self.assertEqual(len(self.director_ready_mock.messages), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'gzJERcJ')
-        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id, 'gzJERcJ')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, browser_id)
+        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id, browser_id)
 
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(list(browsers_on_center.items())), 1)
 
         browser_timestamp_after = list(browsers_on_center.items())[0][1]['timestamp']
-        self.assertEqual(browsers_on_center['gzJERcJ']['uid'], 'gzJERcJ')
+        self.assertEqual(browsers_on_center[browser_id]['uid'], browser_id)
 
         self.assertEqual(browser_timestamp_before, browser_timestamp_after, "Emitting same message with identical browser updated the browser instance")
 
@@ -321,14 +325,14 @@ class TestAdhocBrowser(unittest.TestCase):
         self.assertEqual(len(self.director_ready_mock.messages), 0)
         self.assertEqual(len(self.director_scene_mock.messages), 3)
         self.assertEqual(len(self.browser_service_mock_left.messages[0].browsers), 0)
-        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, 'gzJERcJ')
-        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id, 'gzJERcJ')
-        self.assertEqual(self.browser_service_mock_center.messages[2].browsers[0].id, 'gzJERcJ')
+        self.assertEqual(self.browser_service_mock_center.messages[0].browsers[0].id, browser_id)
+        self.assertEqual(self.browser_service_mock_center.messages[1].browsers[0].id, browser_id)
+        self.assertEqual(self.browser_service_mock_center.messages[2].browsers[0].id, browser_id)
 
         browsers_on_center = self.get_browsers_thru_service('center')
         self.assertEqual(len(list(browsers_on_center.items())), 1)
 
-        self.assertEqual(browsers_on_center['gzJERcJ']['uid'], 'gzJERcJ')
+        self.assertEqual(browsers_on_center[browser_id]['uid'], browser_id)
         self.assertEqual(browser_timestamp_before, browser_timestamp_after, "Emitting same message with identical browser updated the browser instance")
 
         browser_timestamp_even_after = list(browsers_on_center.items())[0][1]['timestamp']

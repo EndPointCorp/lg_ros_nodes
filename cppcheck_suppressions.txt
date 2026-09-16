@@ -3,3 +3,7 @@
 
 // ignore uWebSockets
 *:*uWebSockets/*
+
+// subscriber handles are never read; dropping them would unsubscribe
+unreadVariable:*lg_mirror/src/receiver.cpp
+unreadVariable:*spacenav_wrapper/src/spacenav-rezero.cpp

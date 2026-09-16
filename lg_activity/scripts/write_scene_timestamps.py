@@ -9,9 +9,10 @@ from interactivespaces_msgs.msg import GenericMessage
 
 IGNORED_SCENE_SLUGS = ["auto_generated_sv_scene"]
 
+
 def save_scene_played_time(data):
     """Callback for /director/scene listener, updates the played time for the scene."""
-    #input_file_path = '/media/videos/scene_times.json'
+    # input_file_path = '/media/videos/scene_times.json'
     scene_times_path = '/mnt/videos/scene_times.json'
     scene_infos_path = '/mnt/videos/scene_infos.json'
     scene_times = []
@@ -19,11 +20,11 @@ def save_scene_played_time(data):
         try:
             with open(scene_times_path, 'r') as times_file:
                 scene_times = json.load(times_file)
-        except:
+        except Exception:
             pass
     try:
         message_dict = json.loads(data.message)
-    except:
+    except Exception:
         print("failed to load message")
         return
 
@@ -55,7 +56,7 @@ def save_scene_played_time(data):
         try:
             with open(scene_infos_path, 'r') as info_file:
                 scene_infos = json.load(info_file)
-        except:
+        except Exception:
             pass
 
     if scene_infos.get(slug, {}).get("scene_name", None) != scene_name or scene_infos.get(slug, {}).get("duration", "0") != scene_duration:
@@ -71,4 +72,3 @@ if __name__ == "__main__":
     rospy.init_node('lg_active_scene')
     rospy.Subscriber('/director/scene', GenericMessage, save_scene_played_time)
     rospy.spin()
-

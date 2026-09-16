@@ -37,7 +37,7 @@ RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
-    g++ pycodestyle cppcheck \
+    g++ cppcheck \
     python3-pytest wget \
     python3-gst-1.0 \
     python3-pip \
@@ -94,7 +94,8 @@ RUN pip install --no-cache-dir coveralls \
     pycrypto \
     pycryptodome \
     pymongo \
-    gnupg
+    gnupg \
+    pycodestyle==2.14.0
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64

@@ -15,12 +15,12 @@ def escape_tag_value(value):
     """
     return value.replace(" ", "\\ ").replace(",", "\\,").replace("=", "\\=")
 
+
 def escape_field_value(value):
     """
     Escapes double quotes and backslashes in field values with a single backslash.
     """
     return value.replace('"', '\\"').replace("\\", "\\")
-
 
 
 class StatsHandler():
@@ -113,4 +113,3 @@ class StatsHandler():
             logger.debug("ignored writing attract loop messages")
 
         self.last_presentation_start_time = None
-

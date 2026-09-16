@@ -83,7 +83,7 @@ class ActivitySource:
             logger.error(msg)
             raise ActivitySourceException(msg)
 
-        if (type(topic) != str) or (type(message_type) != str):
+        if (type(topic) is not str) or (type(message_type) is not str):
             msg = "Topic and message type should be strings"
             logger.error(msg)
             raise ActivitySourceException(msg)
@@ -94,7 +94,7 @@ class ActivitySource:
             """
             if value_min and value_max and slot:
                 logger.info("Registering activity source with min=%s, max=%s and msg attribute=%s" %
-                              (value_min, value_max, slot))
+                            (value_min, value_max, slot))
             else:
                 msg = "Could not initialize 'value' stragegy for ActivitySource. All attrs are needed (min=%s, max=%s and msg attribute=%s)" % \
                     (value_min, value_max, slot)
@@ -279,7 +279,7 @@ class ActivitySource:
                         logger.debug("Setting strems state True")
                         return True
                 else:
-                    logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
+                    logger.warning("Ignoring message, expected a dict, got %" % type(self.messages[-1]))
             except (IndexError, KeyError, ValueError, TypeError) as e:
                 logger.exception("error checking stream messages")
         self.messages = []
@@ -306,7 +306,7 @@ class ActivitySource:
                     else:
                         logger.warning("Ignoring duration, it should be a number of seconds, message is: ", self.messages[-1])
                 else:
-                    logger.warning("Ignoring message, expected a dict, got %"  % type(self.messages[-1]))
+                    logger.warning("Ignoring message, expected a dict, got %" % type(self.messages[-1]))
             except (IndexError, KeyError, ValueError, TypeError):
                 logger.exception("error getting duration from message")
 
@@ -320,10 +320,11 @@ class ActivitySource:
                 return True
             else:
                 logger.debug("scene_duration returns and calls False, %s ~<~  %s" % (self.tracker.activity_states[self.topic]["time"], rospy.get_time()))
-        except Exception as e:  #no previous timestamp so inactive
+        except Exception as e:  # no previous timestamp so inactive
             logger.debug("init scene_duration, return and call False")
         self.callback(self.topic, state=False, strategy='duration')
         return False
+
 
 class ActivitySourceDetector:
     """
@@ -338,6 +339,7 @@ class ActivitySourceDetector:
                "value_max": None
              }
     """
+
     def __init__(self, sources_string):
         self.sources = unpack_activity_sources(sources_string)
         logger.info("Initialized ActivitySourceDetector: %s" % self)
@@ -523,7 +525,6 @@ class ActivityTracker:
         else:
             logger.debug("Activity state unchanged. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_timeout, self.active, self.activity_states))
 
-
         self.sources_active_within_stats_timeout = {state_name: state for state_name, state in self.activity_states.items() if self._source_is_active(state, timeout=self.stats_activity_timeout)}
 
         if self.sources_active_within_stats_timeout and (not self.stats_active):
@@ -538,8 +539,6 @@ class ActivityTracker:
             logger.debug("States: %s" % self.activity_states)
         else:
             logger.debug("Message criteria not met. Active sources: %s, state: %s, activity_states: %s" % (self.sources_active_within_stats_timeout, self.stats_active, self.activity_states))
-
-
 
     def _init_activity_sources(self):
         """
@@ -559,7 +558,7 @@ class ActivityTracker:
 
     def _validate_sources(self):
         for source in self.sources:
-            if type(source) != dict or type(self.sources) != list:
+            if type(source) is not dict or type(self.sources) is not list:
                 msg = "sources argument must be a list containing ActivitySource definition dictionaries but was: %s" % self.sources
                 logger.error(msg)
                 raise ActivitySourceException
