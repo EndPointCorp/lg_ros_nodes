@@ -73,10 +73,11 @@ RUN \
  && rm -rf /var/lib/apt/lists/*
 
 
-# Install NodeJS and test dependencies
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+# Install NodeJS and test dependencies. eslint 8 is the last line that reads
+# .eslintrc; 9 wants flat config.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
  && apt-get install -y nodejs \
- && npm install -g eslint \
+ && npm install -g eslint@8 \
  && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
