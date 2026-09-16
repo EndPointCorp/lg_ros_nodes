@@ -37,7 +37,7 @@ RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends \
     automake autoconf libtool \
-    g++ pycodestyle cppcheck \
+    g++ cppcheck \
     python3-pytest wget \
     python3-gst-1.0 \
     python3-pip \
@@ -73,10 +73,11 @@ RUN \
  && rm -rf /var/lib/apt/lists/*
 
 
-# Install NodeJS and test dependencies
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+# Install NodeJS and test dependencies. eslint 8 is the last line that reads
+# .eslintrc; 9 wants flat config.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
  && apt-get install -y nodejs \
- && npm install -g eslint \
+ && npm install -g eslint@8 \
  && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -93,7 +94,8 @@ RUN pip install --no-cache-dir coveralls \
     pycrypto \
     pycryptodome \
     pymongo \
-    gnupg
+    gnupg \
+    pycodestyle==2.12.1
 
 # Install GE
 ENV GOOGLE_EARTH_VERSION ec_7.3.0.3832_64

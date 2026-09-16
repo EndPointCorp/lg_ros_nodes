@@ -6,6 +6,8 @@ NAME = 'test_adhoc_browser_director_bridge'
 import rospy
 import unittest
 
+from unittest.mock import patch
+
 from lg_common import ManagedAdhocBrowser
 from lg_msg_defs.msg import WindowGeometry, ApplicationState
 
@@ -19,6 +21,13 @@ class TestManagedAdhocBrowser(unittest.TestCase):
         - instantiate ManagedAdhocBrowser
         - run asserts on object's parameters
         """
+
+        # ManagedBrowser reads parameters on construction, which offline means
+        # no server to read from. Answer every lookup with its default.
+        param_patch = patch('lg_common.managed_browser.rospy.get_param',
+                            side_effect=lambda name, default=None: default)
+        param_patch.start()
+        self.addCleanup(param_patch.stop)
 
         self.width = 1000
         self.height = 1001

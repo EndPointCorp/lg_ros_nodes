@@ -194,9 +194,12 @@ class TestLGStatsProcessor(object):
         msg = GenericMessage(type="json", message="""{"slug": "something1234"}""")
         pub = MockTopicPublisher()
         influx = InfluxMock()
+        # _resubmit_worker compares int(round(elapsed)) against this, so 0 is
+        # the shortest period that can elapse -- it needs half a second rather
+        # than the second and a half a period of 1 would ask for.
         p = Processor(watched_topic="/director/scene",
                       msg_slot="message.slug",
-                      inactivity_resubmission=1,
+                      inactivity_resubmission=0,
                       influxdb_client=influx,
                       debug_pub=pub)
         # do the thread testing without ROS intervening
@@ -214,7 +217,7 @@ class TestLGStatsProcessor(object):
         assert p.debug_pub.messages[0].metadata == "something1234"
         assert "/director/scene" in p.influxdb_client.messages[0]
         # how run the thread worker - directly, wait before - there is a time check
-        time.sleep(2)
+        time.sleep(0.6)
         p._resubmit_worker()
         assert len(p.debug_pub.messages) == 2
         assert len(p.influxdb_client.messages) == 2

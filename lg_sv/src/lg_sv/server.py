@@ -32,7 +32,7 @@ COEFFICIENT_HIGH = 3
 ZOOM_MIN = 40
 ZOOM_MAX = 40
 INITIAL_ZOOM = 40
-#IDLE_TIME_UNTIL_SNAP = 1.25
+# IDLE_TIME_UNTIL_SNAP = 1.25
 SNAP_DURATION = 15.0
 
 
@@ -166,12 +166,12 @@ class PanoViewerServer:
 
     def _twist_is_in_gutter(self, twist_msg):
         return (
-            abs(twist_msg.linear.x) < self.gutter_val and
-            abs(twist_msg.linear.y) < self.gutter_val and
-            abs(twist_msg.linear.z) < self.gutter_val and
-            abs(twist_msg.angular.x) < self.gutter_val and
-            abs(twist_msg.angular.y) < self.gutter_val and
-            abs(twist_msg.angular.z) < self.gutter_val
+            abs(twist_msg.linear.x) < self.gutter_val
+            and abs(twist_msg.linear.y) < self.gutter_val
+            and abs(twist_msg.linear.z) < self.gutter_val
+            and abs(twist_msg.angular.x) < self.gutter_val
+            and abs(twist_msg.angular.y) < self.gutter_val
+            and abs(twist_msg.angular.z) < self.gutter_val
         )
 
     def _tick(self, e):
@@ -278,7 +278,7 @@ class PanoViewerServer:
         coefficient = dt / self.tick_period / (1.0 / 60.0 / self.tick_period)
         heading = self.pov.z - coefficient * twist_msg.angular.z * self.nav_sensitivity
         tilt = self.tilt_method(twist_msg, coefficient)
-        #zoom = self.pov.w + coefficient * twist_msg.linear.z * self.nav_sensitivity
+        # zoom = self.pov.w + coefficient * twist_msg.linear.z * self.nav_sensitivity
         zoom = INITIAL_ZOOM
         pov_msg = Quaternion(
             x=clamp(tilt, self.tilt_min, self.tilt_max),
@@ -370,16 +370,16 @@ class PanoViewerServer:
         been that way for atleast {backward,forward}_threshold publications
         """
         if twist.linear.x > self.x_threshold:
-            if (self.move_forward == 0 or
-                    self.time_since_last_nav_msg +
-                    self.move_forward < FORWARD_THRESHOLD):
+            if (self.move_forward == 0
+                    or self.time_since_last_nav_msg
+                    + self.move_forward < FORWARD_THRESHOLD):
                 self.move_forward += self.time_since_last_nav_msg
             if self.time_since_last_nav_msg + self.move_forward > FORWARD_THRESHOLD:
                 self._move_forward()
         elif twist.linear.x < -self.x_threshold:
-            if (self.move_backward == 0 or
-                    self.time_since_last_nav_msg +
-                    self.move_backward < BACKWARDS_THRESHOLD):
+            if (self.move_backward == 0
+                    or self.time_since_last_nav_msg
+                    + self.move_backward < BACKWARDS_THRESHOLD):
                 self.move_backward += self.time_since_last_nav_msg
             if self.time_since_last_nav_msg + self.move_backward > BACKWARDS_THRESHOLD:
                 self._move_backward()

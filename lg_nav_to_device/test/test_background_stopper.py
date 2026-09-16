@@ -5,7 +5,6 @@ NAME = 'test_background_stopper'
 
 import sys
 import rospy
-import rostest
 import unittest
 from lg_nav_to_device import BackgroundStopper
 from std_msgs.msg import String
@@ -235,6 +234,7 @@ class TestBackgroundStopper(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    import rostest
     rostest.rosrun(PKG, NAME, TestBackgroundStopper, sys.argv)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

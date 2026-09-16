@@ -75,10 +75,10 @@ def geometry_compare(adhoc_browser_message, managed_adhoc_browser_instance):
     returns bool
     """
     geometry_match = (
-        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x) and
-        int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y) and
-        int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width) and
-        int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
+        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x)
+        and int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y)
+        and int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width)
+        and int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
 
     return geometry_match
 
@@ -127,10 +127,10 @@ def geometry_compare(adhoc_browser_message, managed_adhoc_browser_instance):
     returns bool
     """
     geometry_match = (
-        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x) and
-        int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y) and
-        int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width) and
-        int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
+        int(adhoc_browser_message.geometry.x) == int(managed_adhoc_browser_instance.geometry.x)
+        and int(adhoc_browser_message.geometry.y) == int(managed_adhoc_browser_instance.geometry.y)
+        and int(adhoc_browser_message.geometry.width) == int(managed_adhoc_browser_instance.geometry.width)
+        and int(adhoc_browser_message.geometry.height) == int(managed_adhoc_browser_instance.geometry.height))
 
     return geometry_match
 
@@ -305,6 +305,7 @@ def get_activity_config_from_activity(scene, activity):
     window = find_window_with_activity(scene, activity)
 
     return window.get('activity_config', {})
+
 
 def get_activity_config_or_asset(scene, activity):
     """
@@ -651,7 +652,7 @@ def dependency_available(server, port, name, timeout=None):
             # this one is different from socket.timeout
             logger.info("%s not yet available - waiting %s secs more" % (name, next_timeout))
             rospy.sleep(1)
-            if type(err.args) != tuple or err[0] != errno.ETIMEDOUT:
+            if type(err.args) is not tuple or err[0] != errno.ETIMEDOUT:
                 raise
         else:
             s.close()
@@ -770,7 +771,7 @@ def get_nested_slot_value(slot, message):
             try:
                 deserialized_msg = getattr(deserialized_msg, subslot)
             except AttributeError:
-                if type(deserialized_msg) == str:
+                if type(deserialized_msg) is str:
                     try:
                         # try to convert string to dict (works only for genericmessage)
                         deserialized_msg = json.loads(deserialized_msg)
@@ -781,7 +782,7 @@ def get_nested_slot_value(slot, message):
                     except ValueError:
                         msg = "Could not convert message '%s' to dict using subslot: '%s'" % (subslot, deserialized_msg)
                         logger.error(msg)
-                elif type(deserialized_msg) == dict:
+                elif type(deserialized_msg) is dict:
                     try:
                         deserialized_msg = deserialized_msg[subslot]
                     except KeyError:
@@ -1056,7 +1057,7 @@ def director_listener_earth_state(state_pub, activity_list=list()):
         windows = msg.get('windows', [])
         for window in windows:
             if window.get('activity', None) in activity_list:
-                #state_pub.publish(ApplicationState.VISIBLE)
+                # state_pub.publish(ApplicationState.VISIBLE)
                 return
         state_pub.publish(ApplicationState.VISIBLE)
     rospy.Subscriber('/director/scene', GenericMessage, _look_for_earth)

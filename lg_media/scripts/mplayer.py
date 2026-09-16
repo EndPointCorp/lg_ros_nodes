@@ -38,7 +38,8 @@ def main():
     adhoc_media_mplayer_director_bridge = DirectorMediaBridge(
         adhoc_media_mplayer_pool_publisher,
         viewport_name,
-        MEDIA_TYPE)
+        MEDIA_TYPE,
+        media_pool=mplayer_pool)
     rospy.Subscriber('/director/scene',
                      GenericMessage,
                      adhoc_media_mplayer_director_bridge.translate_director)

@@ -91,9 +91,9 @@ def main():
 
     # create the managed browser
 
-    slug = (server_type + "__" + "fov-" + str(field_of_view) + "__" + "yaw-" +
-            str(yaw_offset) + "__" + "pitch-" + str(pitch_offset) +
-            "__" + str(slug_suffix))
+    slug = (server_type + "__" + "fov-" + str(field_of_view) + "__" + "yaw-"
+            + str(yaw_offset) + "__" + "pitch-" + str(pitch_offset)
+            + "__" + str(slug_suffix))
 
     # add modify_cors_headers chrome extension to handle the cors error
     extensions_dir = get_package_path('lg_sv') + '/extensions/modify_cors_headers'
