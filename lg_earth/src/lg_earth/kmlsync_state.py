@@ -84,6 +84,7 @@ class KmlSyncState:
     def _send_playtour_query(self, req):
         self.playtour_pub.publish(String(req.tourname))
         return PlaytourQueryResponse(response=True)
+
     def _send_planet_query(self, req):
         self.planet_pub.publish(String(req.planetname))
         return PlanetQueryResponse(response=True)

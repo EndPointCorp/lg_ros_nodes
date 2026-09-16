@@ -134,10 +134,10 @@ class USCSService:
 
             if current_state['slug'] == new_state['slug']:
                 logger.debug("Not publishing scene '%s' as it's "
-                              "already published" % current_state['slug'])
+                             "already published" % current_state['slug'])
             else:
                 logger.debug("Publishing scene '%s' due to a callback "
-                              "for new state" % new_state['slug'])
+                             "for new state" % new_state['slug'])
                 self.director_scene_publisher.publish(scene)
 
             return True

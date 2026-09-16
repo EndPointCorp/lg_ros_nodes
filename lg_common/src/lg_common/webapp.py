@@ -44,7 +44,7 @@ class RosbridgeWebSocket(WebSocketHandler):
         cls.client_id_seed += 1
         cls.clients_connected += 1
         logger.info('Client connected.  %d clients total.',
-                      cls.clients_connected)
+                    cls.clients_connected)
 
     def on_message(self, message):
         self.protocol.incoming(message)
@@ -57,7 +57,7 @@ class RosbridgeWebSocket(WebSocketHandler):
         cls.clients_connected -= 1
         self.protocol.finish()
         logger.info('Client disconnected.  %d clients total.',
-                      cls.clients_connected)
+                    cls.clients_connected)
 
     def send_message(self, message):
         IOLoop.instance().add_callback(partial(self.write_message, message))
