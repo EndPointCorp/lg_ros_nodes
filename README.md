@@ -18,8 +18,8 @@ and...
 NOTE: all requirements specific to ros_nodes are in their respective
 README.md files
 
-- [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/)
-- [ros-melodic](http://wiki.ros.org/melodic)
+- [Ubuntu 20.04 LTS](http://releases.ubuntu.com/20.04/)
+- [ros-noetic](http://wiki.ros.org/noetic)
 - [awesome window manager](http://awesome.naquadah.org/) on the top of
   [Xorg](https://wiki.archlinux.org/index.php/Xorg) for automatic window positioning
 - only Nvidia hardware was tested but it should be running with whatever
@@ -56,8 +56,8 @@ First, clone the repos (you can replace ~/src if you want).
 
 ```bash
 $ cd ~/src
-$ git clone git://github.com/EndPointCorp/lg_ros_nodes.git
-$ git clone git://github.com/EndPointCorp/appctl.git
+$ git clone https://github.com/EndPointCorp/lg_ros_nodes.git
+$ git clone https://github.com/EndPointCorp/appctl.git
 ```
 
 Then run the init script.
@@ -78,7 +78,7 @@ Install system dependencies with `rosdep`.
 
 ```bash
 $ cd ~/src/lg_ros_nodes/catkin
-$ rosdep install --from-paths src --ignore-src --rosdistro melodic -y
+$ rosdep install --from-paths src --ignore-src --rosdistro noetic -y
 ```
 
 Build the project.
@@ -163,7 +163,7 @@ git commit -am "updated changelogs for new release"
 catkin_prepare_release
 ```
 NOTE, catkin_prepare_relase ight be a bit broken, so patch
-/opt/ros/melodic/lib/python2.7/dist-packages/catkin/package_version.py with the below
+/opt/ros/noetic/lib/python3/dist-packages/catkin/package_version.py with the below
 ```diff
 @@ -127,8 +127,8 @@ def update_changelog_sections(changelogs, new_version):
          new_changelog_data[changelog_path] = data
