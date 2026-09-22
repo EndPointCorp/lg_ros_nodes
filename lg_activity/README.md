@@ -43,6 +43,9 @@ seconds. Default: `/activity/active`
 * `~memory_limit` [int] - maximum amount of bytes that single ActivitySource
   can keep in it's state for queued messages from activity source. Default:
   `102400`
+* `~stats_activity_timeout` [int] - seconds of inactivity before the stats activity topic goes false, separate from `~activity_timeout`. Default: `5`
+* `~stats_activity_publisher_topic` [string] - topic the stats activity flag is published on. Default: `/activity/stats_active`
+* `~activity_publisher_topic` [string] - read twice by `tracker.py`: once for the activity flag topic, defaulting to `/activity/active`, and once for the status topic, defaulting to `/activity/status`. Setting it moves both.
 * `~activity_sources` [string] - No default; the node logs an error and exits if it is unset. String containing configuration
   for activity sources in following format:
 

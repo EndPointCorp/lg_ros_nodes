@@ -73,6 +73,10 @@ Creates rostopics to communicate/interact with the sv clients. Handles the space
 * `/spacenav/joy` [Joy] - Used to listen for button presses.
 * `/<server_type>/tilt_snappy` [Bool] - Sets tilt behavior. `true` means the tilt snaps back to zero (the default). `false` means the tilt is persistent and navigable.
 
+##### Parameters
+
+* `~idle_time_until_snap` [float] - Seconds of no navigation before the tilt snaps back to zero. Default: `1.25`
+
 ### launcher (wrapper to clients)
 
 ##### Overview
@@ -101,6 +105,14 @@ Uses the sv launcher to start a browser with a sv instance. Add event listeners 
 * `~zoom` [bool] - Whether or not there will be zoom. Ignored by
   `lg_sv_nonfree`. Default: `'false'`
 * `~initial_zoom` [int] - Starting zoom level. Only respected by `lg_sv`. Default: `3`
+* `~viewports` [string] - Comma-separated viewports to span. When set, the window covers their combined geometry and the first names the instance; when unset the node uses its own viewport. Default: none
+* `~viewport` [string] - Viewport naming the instance, used only when `~viewports` is unset. Default: none
+* `~show_api_links` [boolean] - Show the links the API reports, as opposed to the chevrons `~show_links` controls. Default: `False`
+* `~show_fps` [boolean] - Show a frame rate counter. Default: `False`
+* `~yaw_offsets` [string] - Per-viewport yaw offsets for a multi-viewport instance. Default: the value of `~yaw_offset`
+* `~large_viewport_hack` [string] - Workaround for viewports too wide for one pano. Default: `'false'`
+* `~kiosk` [bool] - Run the browser in kiosk mode. Default: `True`
+
 
 ##### Published Topics
 

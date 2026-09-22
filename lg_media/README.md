@@ -42,6 +42,8 @@ message translated into a URL for a local videosync server to play.
   this amount. Default: `1.0`
 * `min_playbackrate` [float] - Never set playbackRate below this. Default: `0.5`
 * `max_playbackrate` [float] - Never set playbackRate above this. Default: `1.5`
+* `autoplay` [bool] - Start playback without waiting for a user gesture. Default: `false`
+* `show_controls` [bool] - Show the player's transport controls. Default: `false`
 
 ##### Published Topics
 
@@ -55,6 +57,42 @@ message translated into a URL for a local videosync server to play.
 
 * `/media_service/<viewport>` [`lg\_media/AdhocMedias`] - Gets a list of medias
   that need to be translated into browsers.
+
+#### image\_viewer
+
+Shows a scene's images on its viewports.
+
+##### Parameters
+
+* `~viewports` [string] - Comma-separated viewports this node draws on. Default: `''`
+* `~save_dir` [string] - Directory under `/tmp` that fetched images are cached in. Default: `images`
+
+#### image\_checker
+
+Watches the images a scene asked for and reports the ones that never appeared.
+
+##### Parameters
+
+* `~viewports` [string] - Comma-separated viewports to watch. Default: `''`
+* `~timeout_length` [int] - Seconds an image may take to appear before it is reported. Default: `8`
+
+#### media\_launcher
+
+Turns director scenes into the media messages the players consume.
+
+##### Parameters
+
+* `~viewports` [string] - Comma-separated viewports to serve. Read with no default, so it must be set.
+
+#### Media pools
+
+Both the mplayer and gstreamer pools read these when building a player
+command line.
+
+##### Parameters
+
+* `~application_path` [string] - Player binary to run. Default: `mplayer` or `gst_video_sync`, depending on the pool.
+* `~application_flags` [string] - Arguments passed to it. Defaults to the flag set each pool ships.
 
 #### browser\_player
 

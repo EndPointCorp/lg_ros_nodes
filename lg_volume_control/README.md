@@ -22,6 +22,9 @@ Volume control over ROS
   Default: `'@DEFAULT_SINK@'`
 * `~default_volume`: The default volume to start at (clamped between 0
   and 100) Default: `50`
+* `~max_volume`: Ceiling the volume is clamped to. Default: `100`
+* `~increment_volume`: Step size for a single volume up or down request.
+  Default: `5`
 
 #### Publishers
 

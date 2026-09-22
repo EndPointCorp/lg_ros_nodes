@@ -29,5 +29,5 @@ Listens on port `6564` and publish on `/spacenav/twist` and `/spacenav/joy` ros 
 
 #### ROS Parameters
 
-* `port` default: `6564` - port to listen on for spacenav msgs from `client.py`
+* `listen_port` default: `6564` - port to listen on for spacenav msgs from `client.py`
 * `topic` default: `/spacenav` - topic base bath for `<topic>/joy` and `<topic>/twist`

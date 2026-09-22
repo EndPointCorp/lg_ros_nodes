@@ -108,6 +108,15 @@ Run with sudo.
 * `kml_sync_base` [string] - URL path to KML sync location. Default: `None`
 * `kml_sync_slug` [string] - Identifier for KML sync. Default: `default`
 * `default_view` [string] - KML AbstractView for starting location. Default: `<LookAt><longitude>-122.4661297737901</longitude><latitude>37.71903477888115</latitude><altitude>0</altitude><heading>42.60360249388481</heading><tilt>66.02791701475958</tilt><range>36611.51655091633</range><gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>`
+* `~no_crash_detect` [bool] - pass `--nocrashdetect` to Earth, so a previous unclean exit does not prompt. Default: `true`
+* `~measurement_units` [int] - Earth's units setting, written into its config. Default: `2`
+* `~depend_on_kmlsync` [bool] - wait for the kmlsync server to answer before launching Earth. Default: `false`
+* `~initial_state` [ApplicationState] - state to start the client in. Default: `VISIBLE`
+* `~state_topic` [string] - topic the client publishes its application state on. Default: `/earth/state`
+* `~full_screen_activities` [string] - comma-separated activities that count as full screen, so Earth hides behind them. Default: `earth,cesium,mapbox,streetview,panovideo,panoviewer,unreal,unity,pannellum`
+* `~staggered` [bool] - sleep a random 1 to 10 seconds before launching, to spread startup across a wall. Default: `false`
+* `~timeout_period` [int] - seconds without a KML poll before the keepalive watchdog restarts Earth. Default: `5`
+* `~initial_timeout` [int] - seconds the watchdog allows for the first poll after launch. Default: `60`
 
 #### viewsync\_relay
 
@@ -164,6 +173,40 @@ Listens on topics for queries to write to the Earth query file.
 * `/earth/query/search` [`std_msgs/String`] - Search string.
 * `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
 * `/earth/query/planet` [`std_msgs/String`] - Change planets.
+
+#### kmlsync
+
+Serves the KML that the Earth client polls, turning the current director
+scene into network link updates.
+
+##### Parameters
+
+* `~port` [int] - port to serve KML on. Must match the global `/kmlsync_server/port` the client reads. Default: `8765`
+* `~request_timeout` [float] - poll interval offered to Earth. Read with no default, so it must be set; zero disables polling.
+* `~global_dependency_timeout` [int] - overrides the global of the same name for this node. Default: `15`
+* `~director_topic` [string] - topic watched for scenes to serve. Default: `/director/scene`
+* `~planet_announce_topic` [string] - topic watched for planet changes. Default: `/earth/planet`
+
+#### kmlsync\_state
+
+Holds the current scene and answers the services kmlsync uses to ask what
+assets, tour and planet are in play.
+
+##### Parameters
+
+* `~director_topic` [string] - topic watched for scenes. Default: `/director/scene`
+* `~service_channel` [string] - service name answering asset queries. Default: `kmlsync/state`
+* `~playtour_channel` [string] - service name answering tour queries. Default: `kmlsync/playtour_query`
+* `~planet_channel` [string] - service name answering planet queries. Default: `kmlsync/planet_query`
+
+#### add\_kml
+
+Adds KML to the running scene on request, and serves it to Earth.
+
+##### Parameters
+
+* `~hostname` [string] - host written into the KML urls it hands out. Default: `localhost`
+* `~port` [int] - port the added KML is served on. Default: `18111`
 
 #### planet\_changer
 

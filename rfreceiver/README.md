@@ -16,7 +16,7 @@ A node that attaches to a promicro board serially and publishes button pushes.
 * `retry_attempts` : Number of times after which script will give up if
   it doesnt attach to the serial device
 
-* `device_timeout` : Number of seconds when waiting for the device
+* `serial_timeout` : Number of seconds when waiting for the device
 
 * `retry_grace_time` : Number of seconds between retry attempts
 

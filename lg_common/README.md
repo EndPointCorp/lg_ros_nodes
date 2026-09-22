@@ -33,6 +33,9 @@ Provides a browser pool for running and managing chrome browser instances with s
 
 * `~viewport` [string] - name of the viewport to run at. This is a mandatory argument.
 * `~extensions_root` [string] - absolute or relative path to directory with unpacked chrome extensions - defaults to `/opt/endpoint/chrome/extensions/`
+* `~depend_on_rosbridge` [bool] - wait for rosbridge to answer before launching. Default: `true`
+* `~hide_delay` [float] - seconds to wait after unhiding a scene's browsers before hiding the preloaded ones they replace. Default: `0.5`
+* `~destroy_delay` [float] - further seconds to wait after hiding those old browsers before destroying them. Default: `2`
 
     ```json
     {
@@ -133,13 +136,52 @@ Puts an always-visible browser on the screen.
 * `~viewport` [string] - name of the viewport to run at. This is a mandatory argument.
 * `~url` [string] - the browser will be pointed at this url.
 * `~command_line_args` [string] - the browser will run with these additional args.
-* `~scale_factor` [float] - override `devicePixelRatio` to this value.  Default: `1.0`
+* `~force_device_scale_factor` [float] - override `devicePixelRatio` to this value.  Default: `1`
 * `~extra_logging` [bool] - enabled additional logging for this instance.  Default: `false`
 * `~user_agent` [string] - override use agent to this value.  The default is to spoof an iPad.
 * `~kiosk` [bool] - run the browser in kiosk mode.  Default: `true`
 * `~state` [ApplicationState] - set the browser to this state.  Default: `VISIBLE`
 * `~extensions` [string] - list of extensions.
 * `~depend_on_url` [bool] - wait for the url to be available before launching?  Default: `false`
+* `~user_data_dir` [string] - Chrome profile directory for this browser. Default: `None`, so Chrome picks its own.
+* `~debug_port` [int] - serve the Chrome remote debugging protocol on this port. Default: `None`, which leaves it off.
+
+----------------------
+
+### touchscreen.py
+
+Puts the touchscreen web app on a viewport, pointed at the director and
+rosbridge it should talk to.
+
+#### Parameters
+
+* `~url` [string] - point the browser here instead of assembling a url from the parameters below.
+* `~url_base` [string] - base the assembled url on this. Default: `http://lg-head/ros_touchscreens/ts/`
+* `~ts_name` [string] - touchscreen name, appended to `~url_base` to select which interface to load. Default: `default`
+* `~director_host` [string] - director host embedded in the assembled url. Default: `42-a`
+* `~director_port` [int] - director port embedded in the assembled url. Default: `8060`
+* `~director_secure` [int] - use https for the director in the assembled url. Default: `0`
+* `~rosbridge_host` [string] - rosbridge host embedded in the assembled url. Default: `localhost`
+* `~depend_on_rosbridge` [bool] - wait for rosbridge to answer before launching. Default: `false`
+* `~depend_on_director` [bool] - wait for the director to answer before launching. Default: `false`
+* `~force_device_scale_factor` [float] - override `devicePixelRatio` to this value. Default: `1`
+* `~debug_port` [int] - serve the Chrome remote debugging protocol on this port. Default: `None`, which leaves it off.
+
+----------------------
+
+### uscs\_service.py
+
+Holds the state a display should return to, and republishes it on the
+director topic when the system comes online, goes offline, or changes
+activity.
+
+#### Parameters
+
+* `~director_topic` [string] - topic the service publishes scenes on. Default: `/director/scene`
+* `~message_topic` [string] - topic the service publishes its own state messages on. Default: `/uscs/message`
+* `~offline_topic` [string] - topic watched for the offline signal. Default: `/lg_offliner/offline`
+* `~activity_topic` [string] - topic watched for the activity signal. Default: `/activity/active`
+* `~depend_on_scene_repository` [bool] - wait for the scene urls below to be reachable before starting. Default: `true`
 
 ----------------------
 
@@ -166,6 +208,14 @@ A `ManagedApplication` subclass for running a browser.
   for debugging only) Default: `False`
 
 All other keyword arguments are passed on directly to the command line.
+
+##### Parameters
+
+`ManagedBrowser` reads these itself, so they apply to any node that builds one.
+
+* `~remove_default_args` [string] - strip Chrome's default argument list.
+  Falls back to the global `/remove_default_args`. Compared as a lowercased
+  string, so `"true"` enables it. Default: `"false"`
 
 See `examples/browser.py` for an example implementation.
 

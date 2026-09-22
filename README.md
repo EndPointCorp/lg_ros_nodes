@@ -183,7 +183,28 @@ ignore packges to compile ...
 
 ## Global parameters
 
+These are read from the global namespace, so one setting serves every node
+that reads it. A node's own `~` parameter of the same name, where it has one,
+takes precedence.
+
 - `/logging/level`: sets the minimum log level.
   Valid values are from 0 to 3: INFO = 0, WARNING = 1, LOG_ERROR = 2,
   LOG_FATAL = 3. This is **not** rospy log level but an argument passed
   to applications managed by appctl
+- `/viewport/<name>` [string] - Geometry of each viewport, as
+  `WIDTHxHEIGHT+X+Y`. Nodes look a viewport up by name and raise `KeyError`
+  if it is not set, so every viewport a scene mentions needs one. No default.
+- `/global_dependency_timeout` [int] - Seconds a node waits for the services
+  it depends on, such as rosbridge or the scene repository, before giving up.
+  Default: `15`
+- `/readiness/timeout` [int] - Seconds the readiness node waits for a scene's
+  windows to report themselves ready before publishing a window error.
+  Default: `10`
+- `/remove_default_args` [bool-ish string] - Strip Chrome's default argument
+  list when launching a browser. A node's own `~remove_default_args`
+  overrides it. Compared as a lowercased string, so `"true"` enables it.
+  Default: `"false"`
+- `/kmlsync_server/port` [int] - Port the Earth client fetches its KML from,
+  which must match the port `lg_earth`'s kmlsync server binds. Default: `8765`
+- `/google/maps_api_key` [string] - Maps API key passed to the Street View and
+  panoviewer web apps. Default: `None`
