@@ -86,7 +86,7 @@ Run with sudo.
 * `spacenav_sensitivity_z` [float] - SpaceNav relative z translation sensitivity. Default: `0.025`
 * `flyto_speed` [float] - Speed for flyTo queries. Default: `0.17`
 * `show_compass` [bool] - Show compass navigator. Default: `false`
-* `show_visualization` [bool] - Show SpaceNav/LEAP visualization. Default: `true`
+* `show_visualization` [bool] - Show SpaceNav/LEAP visualization. Default: follows `viewsync_send`, so `false` unless that is set
 * `use_3d_imagery` [bool] - Show new 3D imagery. Default: `true`
 * `anisotropic_filtering` [int] - Anisotropic filtering level. Can be 0, 1, or 2. Default: `2`
 * `high_quality_terrain` [bool] - Show high quality terrain. Default: `true`
@@ -94,11 +94,11 @@ Run with sudo.
 * `status_bar_visible` [bool] - Show the status bar at the bottom of the window. Default: `true`
 * `mem_cache_size` [int] - Size of the memory cache in MB. Default: `64`
 * `disk_cache_size` [int] - Size of the disk cache in MB. Default: `256`
-* `show_state_borders` [bool] - Show state/province borders. Default: `false`
-* `show_country_borders` [bool] - Show country borders. Default: `false`
-* `show_state_labels` [bool] - Show state/province labels. Default: `false`
-* `show_country_labels` [bool] - Show country labels. Default: `false`
-* `show_city_labels` [bool] - Show city labels. Default: `false`
+* `show_state_borders` [bool] - Show state/province borders. Default: `true`
+* `show_country_borders` [bool] - Show country borders. Default: `true`
+* `show_state_labels` [bool] - Show state/province labels. Default: `true`
+* `show_country_labels` [bool] - Show country labels. Default: `true`
+* `show_city_labels` [bool] - Show city labels. Default: `true`
 * `show_water_labels` [bool] - Show water body labels. Default: `false`
 * `show_gray_buildings` [bool] - Show gray (untextured) 3D buildings. Default: `false`
 * `show_buildings` [bool] - Show photorealistic (textured) 3D buildings. Default: `true`
