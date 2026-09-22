@@ -94,7 +94,7 @@ Uses the sv launcher to start a browser with a sv instance. Add event listeners 
   webserver before starting the client. Default: `False`
 * `~depend_on_rosbridge` [bool] - Whether or not we need to wait for rosbridge
   before starting the client. Default: `False`
-* `~rosbridge_host` [string] - Address of the rosbridge host. Default: `127.0.0.1`
+* `~rosbridge_host` [string] - Address of the rosbridge host. Default: `localhost`
 * `~rosbridge_port` [int] - Port number used by rosbridge. Default: `9090`
 * `~rosbridge_secure` [string] - Whether or not rosbridge will be using
   TLS(SSL?). Default: `'false'`

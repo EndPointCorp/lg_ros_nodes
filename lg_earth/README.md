@@ -115,7 +115,7 @@ Intercepts Earth viewsync datagrams, publishes the `Pose`, and re-transmits the 
 
 ##### Parameters
 
-* `listen_host` [string] - Host to bind listening socket to. Default: `127.0.0.1`
+* `listen_host` [string] - Host to bind listening socket to. Default: `localhost`
 * `listen_port` [int] - Port to bind listening socket to. Default: `42000`
 * `repeat_host` [string] - Host to repeat datagrams to. Default: `<broadcast>`
 * `repeat_port` [int] - Port to repeat datagrams to. Default: `42000`

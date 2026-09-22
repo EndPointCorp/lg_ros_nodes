@@ -41,7 +41,7 @@ message translated into a URL for a local videosync server to play.
 * `hard_sync_diff` [float] - Seek to sync if time difference is greater than
   this amount. Default: `1.0`
 * `min_playbackrate` [float] - Never set playbackRate below this. Default: `0.5`
-* `max_playbackrate` [float] - Never set playbackRate above this. Default: `1.0`
+* `max_playbackrate` [float] - Never set playbackRate above this. Default: `1.5`
 
 ##### Published Topics
 

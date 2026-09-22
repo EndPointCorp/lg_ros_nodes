@@ -43,7 +43,7 @@ seconds. Default: `/activity/active`
 * `~memory_limit` [int] - maximum amount of bytes that single ActivitySource
   can keep in it's state for queued messages from activity source. Default:
   `102400`
-* `~activity_sources` [string] - Default: `''`. string containing configuration
+* `~activity_sources` [string] - No default; the node logs an error and exits if it is unset. String containing configuration
   for activity sources in following format:
 
 `<topic_name>:<message_type>[-<slot.sub_slot.sub_sub_slot>]:<strategy>[-<value_min>,<value_max>]`

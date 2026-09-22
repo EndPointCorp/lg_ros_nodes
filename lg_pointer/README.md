@@ -27,7 +27,7 @@ Turns WiiMote `State` into `lg_mirror` touchscreen events.
 
 #### Parameters
 
-* `device_id` [str] - `lg_mirror` event device name. Default: `wiimote`
+* `device_id` [str] - `lg_mirror` event device name. Default: `default`
 * `viewports` [str] - Comma-separated list of viewports, from left to right. Required.
 * `arc_width` [float] - Angle from the left side of the screen array cylinder to the right in radians. Default: `pi / 2` (90 degrees)
 

@@ -38,10 +38,10 @@ Constantly captures video stream from a V4L2 device.
 
 #### Parameters
 
-* `device` [str] - Path to V4L2 device. Default: `/dev/video0`
+* `device` [str] - Path to V4L2 device. Default: `/dev/capture_cam`
 * `width` [int] - Width of output video stream in pixels. Default: auto selected by V4L2.
 * `height` [int] - Height of output video stream in pixels. Default: auto selected by V4L2.
-* `framerate` [int] - Frame rate of output video stream in frames per second. Default: auto selected by V4L2.
+* `framerate` [int] - Frame rate of output video stream in frames per second. Required; this node has no default and raises if it is unset.
 * `max_quantizer` [int] - Maximum quantization level. Lower is higher quality. Default: `60`
 * `target_bitrate` [int] - Target video bitrate in bits/sec. Default: `768000`
 * `janus_port` [int] - Which port to send the stream to. Required.
