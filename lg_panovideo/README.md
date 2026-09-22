@@ -29,6 +29,12 @@ Launches a panovideo browser when a panovideo scene is loaded.
 * `~leader` [bool] - If true, this instance will play audio and broadcast sync timing.  Default: `false`
 * `~clock_addr` [str] - Address to the `ws_distributor` web socket server.  Default: `ws://localhost:9091`
 * `~kiosk` [bool] - Launch browsers in kiosk mode.  Default: `true`
+* `~yaw_offset` [float] - Yaw offset for this viewport, in degrees. Default: `0`
+* `~depend_on_webserver` [bool] - Wait for the webserver to answer before launching. Default: `false`
+* `~depend_on_rosbridge` [bool] - Wait for rosbridge to answer before launching. Default: `false`
+* `~rosbridge_host` [string] - Rosbridge host embedded in the client url. Default: `localhost`
+* `~rosbridge_port` [int] - Rosbridge port embedded in the client url. Default: `9090`
+* `~rosbridge_secure` [string] - Use TLS for rosbridge in the client url. Default: `'false'`
 
 ### ws\_distributor
 

@@ -17,6 +17,7 @@ To set instead of view rfids, publish `true` on `/rfid/mode`
 * `device_path`: Path to the device. Default: `/dev/rfid_scanner`
 
 * `baudrate`: Baudrate for the device. Default: `9600`
+* `debug_timeout_seconds`: Seconds a scanned tag stays in the debug buffer. Default: `30`
 
 * `pub_topic`: Topic the cleaned up output is output on. Default:
   `/rfid/uscs/scan` (Publisher topic)
@@ -55,3 +56,12 @@ found in the message. It writes everything to an sqlite database.
 * `update_topic`: The topic that is published on when an rfid needs to
   be associated with the state passed on this topic. Default
   `/rfid/uscs/update` (Subscriber topic)
+
+### sqlite_storage.py
+
+The same sqlite storage without the USCS state handling.
+
+#### Parameters
+
+* `remote_database`: The path to the database. Default:
+  `/home/lg/rfid/rfid_storage.db`

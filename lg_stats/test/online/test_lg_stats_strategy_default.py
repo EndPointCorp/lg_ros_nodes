@@ -3,14 +3,12 @@
 """
 lg stats testing scenarios.
 
-starting roslaunch for development:
-    roslaunch --screen lg_stats/test/online/test_lg_stats.test
-    could do:
-    py.test -s -v lg_stats/test/online/test_lg_stats.py
-
 running tests manually:
-    rostest lg_stats/test/online/test_lg_stats.test
-        (as long as it contains <test> tag, it's the same as launch file)
+    rostest lg_stats/test/online/test_lg_stats_influx_mock_strategy_default.test
+        (as long as it contains a <test> tag, it's the same as a launch file)
+
+That .test is the one CMakeLists.txt registers, and the one that launches
+this module.
 
 the time period that the resubmission thread is started:
 <param name="inactivity_resubmission" value="60"/>

@@ -38,10 +38,10 @@ Constantly captures video stream from a V4L2 device.
 
 #### Parameters
 
-* `device` [str] - Path to V4L2 device. Default: `/dev/video0`
+* `device` [str] - Path to V4L2 device. Default: `/dev/capture_cam`
 * `width` [int] - Width of output video stream in pixels. Default: auto selected by V4L2.
 * `height` [int] - Height of output video stream in pixels. Default: auto selected by V4L2.
-* `framerate` [int] - Frame rate of output video stream in frames per second. Default: auto selected by V4L2.
+* `framerate` [int] - Frame rate of output video stream in frames per second. Required; this node has no default and raises if it is unset.
 * `max_quantizer` [int] - Maximum quantization level. Lower is higher quality. Default: `60`
 * `target_bitrate` [int] - Target video bitrate in bits/sec. Default: `768000`
 * `janus_port` [int] - Which port to send the stream to. Required.
@@ -84,6 +84,11 @@ The purpose of this is to mirror an application from main screens to the touchsc
 
 * `default_viewport` [str] - An optional default viewport for touch routing. Touches will be routed to this viewport's receiver unless otherwise requested by a scene.
 * `device_id` [str] - Name ID of the device this router controls.  Default: `default`
+* `spacenav_viewport` [str] - Viewport that touches are diverted to when a scene puts Earth or another navigable app on screen. Default: `fake_wall_a`
+* `divert_empty_scene` [bool] - Divert touches to the nav viewport for an empty scene too, rather than leaving them where they are. Default: `true`
+* `non_multitouch_activities` [str] - Comma-separated activities that switch diversion off entirely while present. Default: `unity`
+* `multitouch_windows` [str] - Comma-separated activities whose windows have touches diverted to the nav viewport. Default: `earth,cesium,streetview,panovideo,panoviewer,unity`
+* `events_topic` [str] - Topic suffix this router subscribes to for raw events, under `/lg_mirror/<device_id>/`. Default: `events`
 
 #### Subscribed Topics
 
@@ -92,6 +97,18 @@ The purpose of this is to mirror an application from main screens to the touchsc
 #### Published Topics
 
 * `/lg_mirror/<device_id>/active_routes` [lg\_common/StringArray] - A list of viewports which should be receiving touch events.
+
+### keyboard\_script
+
+#### Overview
+
+Turns key events from a mirrored keyboard device into routed events.
+
+#### Parameters
+
+* `event_topic` [str] - Topic the raw key events arrive on. Default: `/lg_mirror/logitech/`
+* `routes` [str] - Viewports the resulting events are routed to. Default: `''`
+* `double_click_key_code` [int] - Key code treated as a double click. Default: `-1`, which disables it
 
 ### touch\_sender
 
