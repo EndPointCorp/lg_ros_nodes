@@ -12,6 +12,7 @@ from lg_msg_defs.srv import MediaAppsInfoResponse
 from lg_common.helpers import get_app_instances_ids
 from lg_common import ManagedApplication, ManagedWindow
 from lg_common.helpers import get_app_instances_to_manage
+from .asset_timing import is_timed_id
 
 
 ROS_NODE_NAME = "lg_media"
@@ -141,11 +142,16 @@ class MplayerPool(object):
     def _partition_existing_medias(self, incoming_medias):
         """
         Determine which media id's belong to existing assets.
+
+        A timed asset (one carrying delay_seconds/duration_seconds) never counts
+        as existing, from either direction: it must not survive a scene change,
+        and it must not stop a fresh asset with the same url from starting.
         """
-        existing_media_urls = [m.url for m in list(self.mplayers.values())]
+        existing_media_urls = [m.url for mid, m in list(self.mplayers.items())
+                               if not is_timed_id(mid)]
 
         def media_exists(media):
-            return media.url in existing_media_urls
+            return not is_timed_id(media.id) and media.url in existing_media_urls
 
         existing_media_ids = [m.id for m in incoming_medias if media_exists(m)]
         fresh_media_ids = [m.id for m in incoming_medias if not media_exists(m)]
@@ -178,6 +184,40 @@ class MplayerPool(object):
                 logger.debug("Creating mplayer with id %s" % mplayer_pool_id)
                 self._create_mplayer(mplayer_pool_id, incoming_mplayers[mplayer_pool_id])
 
+            return True
+
+    def add_timed_media(self, media):
+        """
+        Start ONE asset mid-scene, without touching the rest of the pool.
+
+        Called by DirectorMediaBridge when a window's `delay_seconds` elapses.
+        Deliberately not routed through handle_ros_message: that diffs the
+        incoming set against the pool and would tear down everything the
+        delayed asset did not arrive with.
+
+        returns: bool -- whether an asset was started
+        """
+        with self.lock:
+            if media.id in self.mplayers:
+                logger.debug("Timed media %s is already playing" % media.id)
+                return False
+            logger.debug("Creating timed mplayer %s (%s)" % (media.id, media.url))
+            self._create_mplayer(media.id, media)
+            return True
+
+    def remove_timed_media(self, media_id):
+        """
+        Stop ONE asset mid-scene, without touching the rest of the pool.
+
+        Called when a window's `duration_seconds` elapses.
+
+        returns: bool -- whether an asset was stopped
+        """
+        with self.lock:
+            if media_id not in self.mplayers:
+                logger.debug("Timed media %s is not playing, nothing to remove" % media_id)
+                return False
+            self._remove_mplayer(media_id)
             return True
 
     def get_media_apps_info(self, request):

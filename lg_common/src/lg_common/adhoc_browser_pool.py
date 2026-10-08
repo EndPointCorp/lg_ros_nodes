@@ -358,6 +358,40 @@ class AdhocBrowserPool():
 
         return True
 
+    def add_timed_browser(self, browser):
+        """
+        Create ONE browser mid-scene, without touching the rest of the pool.
+
+        Called by AdhocBrowserDirectorBridge when a window's `delay_seconds`
+        elapses. Deliberately not routed through handle_ros_message: that
+        diffs the incoming set against the pool and would tear down everything
+        the delayed browser did not arrive with.
+
+        returns: bool -- whether a browser was created
+        """
+        with self.lock:
+            if browser.id in self.browsers:
+                logger.debug("Timed browser %s is already in the pool" % browser.id)
+                return False
+            logger.debug("Creating timed browser %s (%s)" % (browser.id, browser.url))
+            self._create_browser(browser.id, browser)
+            return True
+
+    def remove_timed_browser(self, browser_id):
+        """
+        Destroy ONE browser mid-scene, without touching the rest of the pool.
+
+        Called when a window's `duration_seconds` elapses.
+
+        returns: bool -- whether a browser was removed
+        """
+        with self.lock:
+            if browser_id not in self.browsers:
+                logger.debug("Timed browser %s is not in the pool, nothing to remove" % browser_id)
+                return False
+            self._remove_browser(browser_id)
+            return True
+
     def minimize_browsers(self, ids):
         """
         For now, just hide the browserts

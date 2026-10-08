@@ -3,6 +3,7 @@
 import rospy
 from lg_msg_defs.msg import AdhocBrowsers, AdhocBrowser
 from lg_common import AdhocBrowserPool
+from lg_media import is_timed_id
 from lg_msg_defs.msg import AdhocMedias
 from lg_common.helpers import add_url_params, make_soft_relaunch_callback
 from urllib.request import url2pathname
@@ -42,17 +43,28 @@ class BasicBrowserData:
         """
         msg = AdhocBrowsers()
         for media in data.medias:
+            # AdhocMedia has no `loop` field -- reading media.loop raised
+            # AttributeError in this callback, so no browser was ever launched.
+            # Derive it from on_finish, the same way MplayerPool decides whether
+            # to respawn.
+            loop = media.on_finish not in ('nothing', 'close')
             url = add_url_params(
                 self.url,
                 videoUrl=media.url,
                 master=self.leader,
-                loop=media.loop,
+                loop=loop,
                 sync=True,
             )
             url = url2pathname(url)
             logger.debug('url for media: %s' % url)
             new_browser = AdhocBrowser()
             new_browser.id = 'adhoc_media_browser_%s' % self.viewport_name
+            if is_timed_id(media.id):
+                # A timed asset must not be carried across a scene change, and
+                # the id above is constant per viewport, so the pool would keep
+                # the old browser running. The media id carries a per-scene
+                # component -- fold it in so each scene gets a fresh browser.
+                new_browser.id = '%s_%s' % (new_browser.id, media.id)
             new_browser.geometry = media.geometry
             new_browser.url = url
             msg.browsers.append(new_browser)
@@ -92,7 +104,16 @@ def main():
                                           max_playbackrate, autoplay,
                                           show_controls, viewport_name)
 
-    browser_pool = AdhocBrowserPool(viewport_name)
+    # AdhocBrowserPool grew these required args without this caller being
+    # updated, so browser_launcher crashed on startup with a TypeError.
+    # Defaults match lg_common/scripts/adhoc_browser.py.
+    extensions_root = rospy.get_param('~extensions_root', '/opt/endpoint/chrome/extensions/')
+    hide_delay = rospy.get_param('~hide_delay', 0.5)
+    destroy_delay = rospy.get_param('~destroy_delay', 2)
+    browser_pool = AdhocBrowserPool(viewport_name=viewport_name,
+                                    extensions_root=extensions_root,
+                                    hide_delay=hide_delay,
+                                    destroy_delay=destroy_delay)
     make_soft_relaunch_callback(browser_pool.handle_soft_relaunch, groups=["media"])
 
     rospy.Subscriber('/media_service/browser/%s' % viewport_name, AdhocMedias,
