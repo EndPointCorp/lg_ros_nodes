@@ -96,6 +96,40 @@ roslaunch --screen lg_common/launch/dev.launch
 
 NOTE: As new ros nodes are added to this git repo, re-run `./scripts/init_workspace` and the `rosdep install` command.
 
+## Timed scene assets
+
+A window in a director scene can appear partway through the scene, leave
+before it ends, or both, by setting two keys in its `activity_config`:
+
+- `delay_seconds` - seconds after the scene arrives before the asset appears.
+- `duration_seconds` - seconds the asset stays up once it has appeared.
+
+Either may be left out or set to `0`, which means no delay or no limit.
+
+```json
+{
+  "activity": "image",
+  "activity_config": {"delay_seconds": 5, "duration_seconds": 10},
+  "assets": ["http://lg-head:8088/roscoe_assets/caption.png"],
+  "presentation_viewport": "center",
+  "width": 742,
+  "height": 609,
+  "x_coord": 350,
+  "y_coord": 437
+}
+```
+
+These activities honour them: `browser` (adhoc_browser), `video` (mplayer and
+gstreamer), `browser_video` (browser_player and browser_launcher) and `image`
+(image_viewer). Earth KML and Cesium do not.
+
+A timed asset never carries over to the next scene. Untimed assets that match
+between two scenes are left running to avoid a flicker, but a timed one is
+torn down and started again with a fresh clock. A new scene also cancels any
+appearances and removals still pending from the old one. A browser with
+`preload` set ignores `delay_seconds`, since readiness has to reveal it with
+the rest of the scene; its `duration_seconds` still applies.
+
 ## Development
 
 If you have Liquid Galaxy hardware (headnode + displaynodes), you may
