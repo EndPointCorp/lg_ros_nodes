@@ -20,7 +20,7 @@ class Earth:
     checks_column = 36
     tabs_column = 11
     icon_colors = {}  # colors on the icons on each layer within the checkmark's y range to find where to click on
-    icon_colors["imagery"] = ["0F0F0F", "F3F8FC"]  #50, lg/solo, lg/solo-selected, ...
+    icon_colors["imagery"] = ["0F0F0F", "F3F8FC"]  # 50, lg/solo, lg/solo-selected, ...
     icon_colors["borders"] = ["89BFF4", "8FC7F7"]
     icon_colors["places"] = ["FFFF99", "E2F4B7"]
     icon_colors["photos"] = ["A8C74C", "A5CD81"]
@@ -30,7 +30,6 @@ class Earth:
     icon_colors["gallery"] = ["8EBCE8", "93C5EF"]
     icon_colors["more"] = ["E1DB8E", "FEDC5E"]
     icon_colors["terrain"] = ["BBBBBB", "67ABD5"]
-
 
     def __init__(self, win_id, offset):
         self.win_id = win_id
@@ -53,7 +52,7 @@ class Earth:
             print(f"Warning: Failed to toggle menu for window ID: {self.win_id}:\n", e)
 
     def click(self, x, y):
-        x_str = str(x+self.offset)  #TODO check strs are needed
+        x_str = str(x + self.offset)  # TODO check strs are needed
         y_str = str(y)
         try:
             subprocess.check_call(['xdotool', 'mousemove', '--clearmodifiers', x_str, y_str, 'sleep', '.001', 'click', '1'])
@@ -74,7 +73,6 @@ class Earth:
             self.layer_ys[layer] = y_coord
             self.states[layer] = self.get_state(y_coord)
 
-
     def find_color_in_column(self, x, target_colors, y_min=1):
         """ find and :return: y coordinate of matching color or None"""
         if self.icons_image is None:
@@ -84,12 +82,12 @@ class Earth:
             # Calculate the stride based on the image depth
             depth = self.icons_image.depth
             pixel_size = (depth + 7) // 8
-            self.stride = (1 * pixel_size + 3) & ~3  ## TODO check it is always 4(bytes per pixel), simplify
+            self.stride = (1 * pixel_size + 3) & ~3  # TODO check it is always 4(bytes per pixel), simplify
         try:  # Get each pixel value, check if it is in the list
             for y in range(1, 1920):
                 if y < y_min:
                     continue
-                pixel_value_bytes = self.icons_image.data[y * self.stride : (y + 1) * self.stride]
+                pixel_value_bytes = self.icons_image.data[y * self.stride: (y + 1) * self.stride]
                 pixel_value = int.from_bytes(pixel_value_bytes, byteorder='little')
                 hex_color = hex(pixel_value)[2:].zfill(6).upper()
                 if hex_color in target_colors:
@@ -107,7 +105,7 @@ class Earth:
             data = bytes(image.data)
             pixel_value = int.from_bytes(data, byteorder='little')
             hex_color = hex(pixel_value)[2:].zfill(6).upper()
-            #print(x, y, "get_pixel got: ", hex_color)
+            # print(x, y, "get_pixel got: ", hex_color)
             return hex_color
         except subprocess.CalledProcessError:
             print(f"Failed to get pixel color for window ID: {self.win_id}")
@@ -118,7 +116,7 @@ class Earth:
         while earth.get_pixel_color(Earth.checks_column, 1750) != 'FFFFFF':
             time.sleep(.1)
             keep_count += 1
-            if keep_count > 7:  #wait up to 0.7 seconds for menu, plenty at ephq could be shortened TEST
+            if keep_count > 7:  # wait up to 0.7 seconds for menu, plenty at ephq could be shortened TEST
                 if not looped:  # try to open menu and wait a second time
                     earth.toggle_menu()
                     return earth.wait_for_menu(True)
@@ -139,13 +137,14 @@ class Earth:
         pixel_value_bytes = self.states_image.data[layer_y * self.stride: (layer_y + 1) * self.stride]
         pixel_value = int.from_bytes(pixel_value_bytes, byteorder='little')
         color_state = hex(pixel_value)[2:].zfill(6).upper()
-        #print("layer_row: ", layer_y, " hex_state: ", color_state)
+        # print("layer_row: ", layer_y, " hex_state: ", color_state)
         if color_state == 'FFFFFF':
             return 1
         elif color_state in ['000000', '2F2F2F', '9A9A9A', 'BCB9B6', 'F2F2F2', 'F4F4F4']:
             return 0
         else:
             return None
+
 
 def find_and_create_earths():
     """ find earth windows create and :return: list of Earth objects """
@@ -167,7 +166,7 @@ def find_and_create_earths():
     center_index = len(sorted_earths) // 2
     if len(sorted_earths) in [3, 5, 7]:  # mark center and change order of toggle
         sorted_earths[center_index].is_master = True
-        newsort_earths = [sorted_earths[center_index]] + [x for pair in zip(sorted_earths[center_index-1::-1], sorted_earths[center_index+1:]) for x in pair]
+        newsort_earths = [sorted_earths[center_index]] + [x for pair in zip(sorted_earths[center_index - 1::-1], sorted_earths[center_index + 1:]) for x in pair]
         print("earth xdotool ids left to right on canvas:", *[earth.win_id for earth in sorted_earths])
         return newsort_earths
     else:
@@ -185,13 +184,12 @@ if __name__ == "__main__":
     imagery, borders, places, photos, roads, buildings, weather, gallery, more, terrain
     **pick 0, 1, 2 for on, off, toggle""")
 
-
     args = parser.parse_args()
     if args:
         for arg in args.values:
             try:
                 onoff = int(arg)
-            except:
+            except Exception:
                 if arg.upper() == "ON":
                     onoff = 0
                 elif arg.upper() == "OFF":
@@ -209,7 +207,7 @@ if __name__ == "__main__":
             earth.find_layer_states()
             try:
                 t_y = earth.layer_ys[layer]
-            except:
+            except Exception:
                 earth.icons_image = None
                 time.sleep(.1)
         print(earth, earth.states)
@@ -219,6 +217,6 @@ if __name__ == "__main__":
                 earth.click(Earth.checks_column, earth.layer_ys[layer])
             except Exception as e:
                 print(f"Failed to click for window ID: {earth.win_id}:\n{e}")
-        if onoff == 2:  #we only toggle first instance, rest match the first
+        if onoff == 2:  # we only toggle first instance, rest match the first
             onoff = abs(earth.states[layer] - 1)
         earth.toggle_menu()

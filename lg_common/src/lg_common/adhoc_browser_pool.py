@@ -527,7 +527,7 @@ class AdhocBrowserPool():
         # join args without encoding - browser will do the rest
         arg_list = []
         for item in list(get_args.items()):
-            if type(item[1]) == list:
+            if type(item[1]) is list:
                 for val in item[1]:
                     arg = str(item[0]) + "=" + str(val)
                     arg_list.append(arg)

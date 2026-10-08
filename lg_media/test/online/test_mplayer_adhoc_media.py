@@ -13,7 +13,6 @@ from lg_common.logger import get_logger
 logger = get_logger(NAME)
 
 
-
 class TestManagedAdhocBrowser(unittest.TestCase):
     def setUp(self):
         """
