@@ -11,8 +11,13 @@ None.
 
 ## Nodes
 
-There's one node that's responsible for initialization, activity
-tracking and activity messages emitting.
+The package provides the activity tracker and input-source nodes.
+
+### kb_mouse_activity.py
+
+Observes X11 keyboard presses, mouse button presses, and pointer motion with
+the RECORD extension, without grabbing input. It publishes throttled
+`std_msgs/Bool` messages on `/kb_mouse_activity` for the tracker to consume.
 
 ### tracker.py
 
