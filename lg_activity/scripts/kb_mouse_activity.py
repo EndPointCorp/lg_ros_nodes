@@ -38,7 +38,7 @@ def is_activity_event(event_type, xlib_constants):
 class XRecordActivityMonitor:
     """Observe X11 input with RECORD without grabbing the input devices."""
 
-    def __init__(self, publish):
+    def __init__(self, publish, interval=MIN_PUBLISH_INTERVAL_SECONDS, topic=ACTIVITY_TOPIC,):
         from Xlib import X, display
         from Xlib.ext import record
         from Xlib.protocol import rq
@@ -47,7 +47,8 @@ class XRecordActivityMonitor:
         self.record = record
         self.rq = rq
         self.publish = publish
-        self.limiter = ActivityLimiter()
+        self.topic = topic
+        self.limiter = ActivityLimiter(interval)
         self.control_display = display.Display()
         self.record_display = display.Display()
         self.context = None
@@ -85,6 +86,7 @@ class XRecordActivityMonitor:
     def stop(self, _signum=0, _frame=None):
         if self.stopping:
             return
+
         self.stopping = True
         if self.context is not None:
             try:
@@ -117,13 +119,16 @@ class XRecordActivityMonitor:
                 }
             ],
         )
+
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
+
         logger.info(
             'monitoring X11 keyboard/mouse activity display=%s topic=%s',
             self.record_display.get_display_name(),
-            ACTIVITY_TOPIC,
+            self.topic,
         )
+
         try:
             self.record_display.record_enable_context(
                 self.context,
@@ -137,20 +142,33 @@ class XRecordActivityMonitor:
                     'failed to free X11 RECORD context',
                     exc_info=True,
                 )
+
             self.record_display.close()
             self.control_display.close()
 
 
 def main():
     import rospy
+    from lg_common.helpers import x_available_or_raise
     from std_msgs.msg import Bool
 
-    logging.basicConfig(level=logging.INFO)
     rospy.init_node(NODE_NAME, anonymous=False)
-    publisher = rospy.Publisher(ACTIVITY_TOPIC, Bool, queue_size=1)
+    logging.basicConfig(level=logging.INFO)
+
+    x_available_or_raise(rospy.get_param('/global_dependency_timeout', 15))
+
+    topic = rospy.get_param('~topic', ACTIVITY_TOPIC)
+    interval = rospy.get_param('~min_interval', MIN_PUBLISH_INTERVAL_SECONDS)
+
+    publisher = rospy.Publisher(topic, Bool, queue_size=1)
+
     monitor = XRecordActivityMonitor(
         lambda: publisher.publish(Bool(data=True)),
+        interval=interval,
+        topic=topic,
     )
+
+    rospy.on_shutdown(monitor.stop)
     monitor.run()
 
 
