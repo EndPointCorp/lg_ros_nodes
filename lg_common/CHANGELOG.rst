@@ -75,6 +75,14 @@ Changelog for package lg_common
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Merge pull request `#485 <https://github.com/endpointcorp/lg_ros_nodes/issues/485>`_ from EndPointCorp/durdel
+  Durdel
+* make sure like assets don't persist if they have dur/del
+* duration and delay for adhoc browser as well
+* Contributors: Jacob Minshall
+
 3.9.30 (2026-08-15)
 -------------------
 

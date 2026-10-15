@@ -52,6 +52,15 @@ Changelog for package lg_stats
 3.9.26 (2025-11-14)
 -------------------
 
+Forthcoming
+-----------
+* fix(lg_stats): clear last presentation on stop (`#486 <https://github.com/endpointcorp/lg_ros_nodes/issues/486>`_)
+  * fix(lg_stats): clear last presentation on stop
+  * fix(lg_stats): close out and clear last presentation when attract loop starts
+  ---------
+  Co-authored-by: Michael Shelton <mcshelton@users.noreply.github.com>
+* Contributors: mcshelton
+
 3.9.30 (2026-08-15)
 -------------------
 

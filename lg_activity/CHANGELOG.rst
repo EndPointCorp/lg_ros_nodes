@@ -49,6 +49,14 @@ Changelog for package lg_activity
 3.9.26 (2025-11-14)
 -------------------
 
+Forthcoming
+-----------
+* add keyboard activity publisher node (`#482 <https://github.com/endpointcorp/lg_ros_nodes/issues/482>`_)
+  * add keyboard activity publisher node
+  * fix log_level config, wait for x, use ros params, clean shutdown
+  Thanks! @minshallj
+* Contributors: Tino
+
 3.9.30 (2026-08-15)
 -------------------
 * tracker.py load global activity_timeout (`#480 <https://github.com/endpointcorp/lg_ros_nodes/issues/480>`_)

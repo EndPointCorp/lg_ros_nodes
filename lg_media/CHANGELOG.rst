@@ -58,6 +58,17 @@ Changelog for package lg_media
 * Reduce media_launcher logging verbosity
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Merge pull request `#485 <https://github.com/endpointcorp/lg_ros_nodes/issues/485>`_ from EndPointCorp/durdel
+  Durdel
+* add browser videos as well
+* asset_timing lib file
+* media player changes added for video dur/del
+* make sure like assets don't persist if they have dur/del
+* testing durdel
+* Contributors: Jacob Minshall
+
 3.9.30 (2026-08-15)
 -------------------
 

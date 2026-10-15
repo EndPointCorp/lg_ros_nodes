@@ -80,6 +80,22 @@ Changelog for package lg_earth
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
+Forthcoming
+-----------
+* Leave Earth KML out of per-asset timing
+  Reverts 547991d1d. The CMS no longer offers delay/duration on GeoData
+  assets: kmlsync loads and unloads every KML in a scene together, so
+  per-asset timing there behaved in ways that would surprise a scene
+  author. Timing on Earth should also land alongside Cesium rather than
+  on its own, so both are better evaluated in a later change than carried
+  here unused.
+  This also restores kmlsync_state serving only the first matching Earth
+  window, as on master.
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01L488Tg5LEnLrmLGKDy6hui
+* kml not including dur/del
+* Contributors: Jacob Minshall
+
 3.9.30 (2026-08-15)
 -------------------
 
