@@ -48,8 +48,11 @@ class StatsHandler():
             logger.debug('ignoring attract-loop-break')
             return
         if scene.get('slug', '') == 'stop-the-presentations':
-            # ignore this as well
-            logger.debug('ignoring stop-the-presentations messages')
+            # close out whatever was playing and forget it, otherwise the
+            # next activity session restarts the timer on the stale scene
+            logger.debug('stop-the-presentations, clearing last_presentation')
+            self.write_data()
+            self.last_presentation = {}
             return
         if self.last_presentation_start_time is not None and self.active_state:
             # System is active and we have a new presentation starting,
@@ -113,4 +116,3 @@ class StatsHandler():
             logger.debug("ignored writing attract loop messages")
 
         self.last_presentation_start_time = None
-
