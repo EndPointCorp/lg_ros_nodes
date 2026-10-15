@@ -58,8 +58,8 @@ Changelog for package lg_media
 * Reduce media_launcher logging verbosity
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.31 (2026-10-15)
+-------------------
 * Merge pull request `#485 <https://github.com/endpointcorp/lg_ros_nodes/issues/485>`_ from EndPointCorp/durdel
   Durdel
 * add browser videos as well

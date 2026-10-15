@@ -49,8 +49,8 @@ Changelog for package lg_activity
 3.9.26 (2025-11-14)
 -------------------
 
-Forthcoming
------------
+3.9.31 (2026-10-15)
+-------------------
 * add keyboard activity publisher node (`#482 <https://github.com/endpointcorp/lg_ros_nodes/issues/482>`_)
   * add keyboard activity publisher node
   * fix log_level config, wait for x, use ros params, clean shutdown

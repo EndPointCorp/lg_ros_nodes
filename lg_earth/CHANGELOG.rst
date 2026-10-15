@@ -80,8 +80,8 @@ Changelog for package lg_earth
 * Reduce Tornado access log level
 * Contributors: Matt Vollrath
 
-Forthcoming
------------
+3.9.31 (2026-10-15)
+-------------------
 * Leave Earth KML out of per-asset timing
   Reverts 547991d1d. The CMS no longer offers delay/duration on GeoData
   assets: kmlsync loads and unloads every KML in a scene together, so
