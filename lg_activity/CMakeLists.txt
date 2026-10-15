@@ -17,6 +17,7 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
+  scripts/kb_mouse_activity.py
   scripts/write_scene_timestamps
   scripts/write_scene_timestamps.py
   scripts/tracker
@@ -27,5 +28,6 @@ catkin_install_python(PROGRAMS
 if (CATKIN_ENABLE_TESTING)
   set(PYTHON_EXECUTABLE /usr/bin/python3)
   find_package(rostest REQUIRED)
+  catkin_add_nosetests(test/offline/test_kb_mouse_activity.py)
   #add_rostest(test/online/test_tracker.test)
 endif()
