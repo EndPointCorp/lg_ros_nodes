@@ -42,10 +42,10 @@ class StatsHandler():
         if scene.get('data', None) is not None:
             scene = scene['data']
         if scene.get('played_from', '') == 'lg_attract_loop':
-            # ignore this, if it's from the attract loop it
-            # will publish activity=false and we'll handle
-            # it there.
-            logger.debug('ignoring attract-loop-break')
+            # attract loop replaced the scene, save it once and forget it
+            logger.debug('attract loop scene, clearing last_presentation')
+            self.write_data()
+            self.last_presentation = {}
             return
         if scene.get('slug', '') == 'stop-the-presentations':
             # close out whatever was playing and forget it, otherwise the
