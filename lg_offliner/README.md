@@ -35,6 +35,10 @@ defined unix commands.
    becoming offline (syntax like 'activity config')
 
 
+* `~max_num_of_rounds_to_retain` [int] - how many check rounds are kept in memory. Default: `100`
+* `~num_of_last_check_rounds_consider` [int] - how many of the most recent rounds decide online or offline. Default: `2`
+* `~socket_timeout` [int] - seconds each connectivity check waits before counting as a failure. Default: `1`
+
 ### Published Topics
 
 - `/lg_offliner/debug` - debug information for lg_offliner, outputs results of commands execution, etc

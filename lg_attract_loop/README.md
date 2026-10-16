@@ -40,6 +40,10 @@ play them back.
   - stop_playtour - stop any tours that may have been being played back
 * `~director_api_url` [string] - The url that the director should be found at.
   Default `os.getenv('DIRECTOR_API_URL', 'http://localhost:8034')`
+* `~activity_topic_name` [string] - topic watched for the activity flag that starts and stops the loop. Default: `/activity/active`
+* `~default_planet` [string] - planet to return to when a scene does not name one. Default: `earth`
+* `/viewport` - the node reads the whole viewport namespace to build its blank scene, one window per configured viewport. See Global parameters in the top level README.
+* `~default_presentation` [string] - presentation to play when none is set. Default: none
 * `~default_duration` [int] - Time that scenes with <= 0 duration should
   take. Default `120`
 

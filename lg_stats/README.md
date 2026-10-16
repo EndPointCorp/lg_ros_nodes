@@ -53,6 +53,10 @@ List all parameters.
   e.g.: "/director/scene:interactivespaces_msgs/GenericMessage:message;/appctl/mode:appctl/Mode:mode;
 
 
+* `~inactivity_resubmission` [int] - seconds of inactivity after which the last message is resubmitted. Compared as whole seconds, so `0` resubmits after half a second. Default: the value of `~resolution`
+* `~event_measurement_name` [string] - InfluxDB measurement that events are written to. Default: `lg_stats_event`
+* `~metric_measurement_name` [string] - InfluxDB measurement that metrics are written to. Default: `lg_stats_metric`
+
 ##### Published Topics
 
 `/lg_stats/debug` - debug information for lg_stats

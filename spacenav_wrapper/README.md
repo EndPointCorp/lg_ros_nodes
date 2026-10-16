@@ -32,6 +32,17 @@ is needed.
   the spacenav.
 
 
+### spacenav_antispin
+
+Rezeroes the spacenav when it reports the same non-zero value for too
+long, which is how a stuck or drifting puck presents.
+
+#### parameters
+
+* `~spacenav_topic` [string] - topic the twist messages are read from. Default: `/spacenav/twist`
+* `~seconds_before_rezero` [int] - seconds of unchanging input before a rezero is issued. Default: `30`
+* `~rate` [int] - polling rate in Hz. Default: `4`
+
 ### spacenav_rezero
 
 A node to rezero the spacenav.

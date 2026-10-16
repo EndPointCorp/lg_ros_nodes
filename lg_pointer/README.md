@@ -27,9 +27,21 @@ Turns WiiMote `State` into `lg_mirror` touchscreen events.
 
 #### Parameters
 
-* `device_id` [str] - `lg_mirror` event device name. Default: `wiimote`
+* `device_id` [str] - `lg_mirror` event device name. Default: `default`
 * `viewports` [str] - Comma-separated list of viewports, from left to right. Required.
 * `arc_width` [float] - Angle from the left side of the screen array cylinder to the right in radians. Default: `pi / 2` (90 degrees)
+
+### mouse\_to\_pointer.py
+
+#### Overview
+
+The same pointer, driven by a mouse rather than a wiimote.
+
+#### Parameters
+
+* `device_path` [str] - Path to the mouse event device. Default: `default`
+* `udev_location` [str] - Path or url of a udev rules file to install for the device. Default: `None`, so no rules are installed.
+* `mouse_timeout` [int] - Seconds without movement before the pointer is hidden. Default: `10`
 
 
 ## Configuration

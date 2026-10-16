@@ -116,13 +116,11 @@ class GstPublisher:
         self.pipeline.set_state(Gst.State.NULL)
 
 
-"""
 if __name__ == '__main__':
-    import time
+    # Smoke test: publish a generated test pattern, no capture hardware needed.
     rospy.init_node('gst_test')
     pub = rospy.Publisher('/gst_test/compressed', CompressedImage, queue_size=1)
     pipeline = 'videotestsrc is-live=true ! videoconvert ! capsfilter caps=video/x-raw,format=I420,width=1920,height=1080,framerate=30/1 ! queue ! jpegenc ! appsink name=sink'
     gst = GstPublisher(pipeline, pub)
     gst.start()
     rospy.spin()
-"""

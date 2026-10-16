@@ -14,10 +14,10 @@ ROS software for running and interfacing with the Google Earth desktop client.
 
 ### System setup
 
-Let's assume that you are using Ubuntu 14.04 and have Google Earth client, `ros-melodic-ros-base`, installed, and your `rosdep` updated.
+Let's assume that you are using Ubuntu 20.04 and have Google Earth client, `ros-noetic-ros-base`, installed, and your `rosdep` updated.
 
 * <https://dl.google.com/earth/client/current/google-earth-stable_current_i386.deb>
-* <http://wiki.ros.org/melodic/Installation/Ubuntu>
+* <http://wiki.ros.org/noetic/Installation/Ubuntu>
 
 Also, you'll need to patch Earth for the homedir fix as described in the lg\_earth README, otherwise its configuration will be unmanaged.
 
@@ -86,7 +86,7 @@ Run with sudo.
 * `spacenav_sensitivity_z` [float] - SpaceNav relative z translation sensitivity. Default: `0.025`
 * `flyto_speed` [float] - Speed for flyTo queries. Default: `0.17`
 * `show_compass` [bool] - Show compass navigator. Default: `false`
-* `show_visualization` [bool] - Show SpaceNav/LEAP visualization. Default: `true`
+* `show_visualization` [bool] - Show SpaceNav/LEAP visualization. Default: follows `viewsync_send`, so `false` unless that is set
 * `use_3d_imagery` [bool] - Show new 3D imagery. Default: `true`
 * `anisotropic_filtering` [int] - Anisotropic filtering level. Can be 0, 1, or 2. Default: `2`
 * `high_quality_terrain` [bool] - Show high quality terrain. Default: `true`
@@ -94,11 +94,11 @@ Run with sudo.
 * `status_bar_visible` [bool] - Show the status bar at the bottom of the window. Default: `true`
 * `mem_cache_size` [int] - Size of the memory cache in MB. Default: `64`
 * `disk_cache_size` [int] - Size of the disk cache in MB. Default: `256`
-* `show_state_borders` [bool] - Show state/province borders. Default: `false`
-* `show_country_borders` [bool] - Show country borders. Default: `false`
-* `show_state_labels` [bool] - Show state/province labels. Default: `false`
-* `show_country_labels` [bool] - Show country labels. Default: `false`
-* `show_city_labels` [bool] - Show city labels. Default: `false`
+* `show_state_borders` [bool] - Show state/province borders. Default: `true`
+* `show_country_borders` [bool] - Show country borders. Default: `true`
+* `show_state_labels` [bool] - Show state/province labels. Default: `true`
+* `show_country_labels` [bool] - Show country labels. Default: `true`
+* `show_city_labels` [bool] - Show city labels. Default: `true`
 * `show_water_labels` [bool] - Show water body labels. Default: `false`
 * `show_gray_buildings` [bool] - Show gray (untextured) 3D buildings. Default: `false`
 * `show_buildings` [bool] - Show photorealistic (textured) 3D buildings. Default: `true`
@@ -108,6 +108,15 @@ Run with sudo.
 * `kml_sync_base` [string] - URL path to KML sync location. Default: `None`
 * `kml_sync_slug` [string] - Identifier for KML sync. Default: `default`
 * `default_view` [string] - KML AbstractView for starting location. Default: `<LookAt><longitude>-122.4661297737901</longitude><latitude>37.71903477888115</latitude><altitude>0</altitude><heading>42.60360249388481</heading><tilt>66.02791701475958</tilt><range>36611.51655091633</range><gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode></LookAt>`
+* `~no_crash_detect` [bool] - pass `--nocrashdetect` to Earth, so a previous unclean exit does not prompt. Default: `true`
+* `~measurement_units` [int] - Earth's units setting, written into its config. Default: `2`
+* `~depend_on_kmlsync` [bool] - wait for the kmlsync server to answer before launching Earth. Default: `false`
+* `~initial_state` [ApplicationState] - state to start the client in. Default: `VISIBLE`
+* `~state_topic` [string] - topic the client publishes its application state on. Default: `/earth/state`
+* `~full_screen_activities` [string] - comma-separated activities that count as full screen, so Earth hides behind them. Default: `earth,cesium,mapbox,streetview,panovideo,panoviewer,unreal,unity,pannellum`
+* `~staggered` [bool] - sleep a random 1 to 10 seconds before launching, to spread startup across a wall. Default: `false`
+* `~timeout_period` [int] - seconds without a KML poll before the keepalive watchdog restarts Earth. Default: `5`
+* `~initial_timeout` [int] - seconds the watchdog allows for the first poll after launch. Default: `60`
 
 #### viewsync\_relay
 
@@ -115,7 +124,7 @@ Intercepts Earth viewsync datagrams, publishes the `Pose`, and re-transmits the 
 
 ##### Parameters
 
-* `listen_host` [string] - Host to bind listening socket to. Default: `127.0.0.1`
+* `listen_host` [string] - Host to bind listening socket to. Default: `localhost`
 * `listen_port` [int] - Port to bind listening socket to. Default: `42000`
 * `repeat_host` [string] - Host to repeat datagrams to. Default: `<broadcast>`
 * `repeat_port` [int] - Port to repeat datagrams to. Default: `42000`
@@ -164,6 +173,40 @@ Listens on topics for queries to write to the Earth query file.
 * `/earth/query/search` [`std_msgs/String`] - Search string.
 * `/earth/query/tour` [`std_msgs/String`] - Play a tour by its `id`. An empty string will `exittour`.
 * `/earth/query/planet` [`std_msgs/String`] - Change planets.
+
+#### kmlsync
+
+Serves the KML that the Earth client polls, turning the current director
+scene into network link updates.
+
+##### Parameters
+
+* `~port` [int] - port to serve KML on. Must match the global `/kmlsync_server/port` the client reads. Default: `8765`
+* `~request_timeout` [float] - poll interval offered to Earth. Read with no default, so it must be set; zero disables polling.
+* `~global_dependency_timeout` [int] - overrides the global of the same name for this node. Default: `15`
+* `~director_topic` [string] - topic watched for scenes to serve. Default: `/director/scene`
+* `~planet_announce_topic` [string] - topic watched for planet changes. Default: `/earth/planet`
+
+#### kmlsync\_state
+
+Holds the current scene and answers the services kmlsync uses to ask what
+assets, tour and planet are in play.
+
+##### Parameters
+
+* `~director_topic` [string] - topic watched for scenes. Default: `/director/scene`
+* `~service_channel` [string] - service name answering asset queries. Default: `kmlsync/state`
+* `~playtour_channel` [string] - service name answering tour queries. Default: `kmlsync/playtour_query`
+* `~planet_channel` [string] - service name answering planet queries. Default: `kmlsync/planet_query`
+
+#### add\_kml
+
+Adds KML to the running scene on request, and serves it to Earth.
+
+##### Parameters
+
+* `~hostname` [string] - host written into the KML urls it hands out. Default: `localhost`
+* `~port` [int] - port the added KML is served on. Default: `18111`
 
 #### planet\_changer
 

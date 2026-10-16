@@ -10,4 +10,9 @@ Liquid Galaxy can include a number of applications, such as 3D globes, panoramic
 
 The intention is that this information is used to map multi-touch events to SpaceNav inputs.  Because the multi-touch transformation occurs in a web application separate from this repo, the signal for which mode to use is distilled to a single topic.
 
+### Parameters
+
+* `~default_mode` [string] - mode published before any scene sets one. Read with no default, so it must be set.
+* `~modes` - mapping of mode name to the activities that select it. Read with no default, so it must be set.
+
 A typical configuration is for globe or "top-down" viewers (Earth, Cesium, Maps) to be a separate mode from "eye-level" viewers (Street View, Unity, panoramic images and videos).  This informs the user interface to map multi-touch events to appropriate SpaceNav axes.

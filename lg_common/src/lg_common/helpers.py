@@ -1161,38 +1161,3 @@ def get_package_path(package_name: str) -> str:
     except rospkg.ResourceNotFound:
         # Raise a more generic error for forwards compatibility.
         raise RuntimeError(f"Package '{package_name}' not found.")
-
-
-"""
-import logging
-import sys
-from logging.handlers import TimedRotatingFileHandler
-FORMATTER = logging.Formatter('[%(asctime)s] p%(process)s %(name)s - {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s', '%m-%d %H:%M:%S')
-LOG_FILE = "my_app.log"
-
-
-def get_console_handler():
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(FORMATTER)
-    return console_handler
-
-
-def get_file_handler():
-    file_handler = TimedRotatingFileHandler(LOG_FILE, when='midnight')
-    file_handler.setFormatter(FORMATTER)
-    return file_handler
-
-
-def get_logger(logger_name):
-    name = rospy.get_name() + ':' + logger_name
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)  # better to have too much log than not enough
-    logger.addHandler(get_console_handler())
-    logger.addHandler(get_file_handler())
-    # TODO add file handler with some path in /home/lg/.ros/log/latest/<logger_name>.log
-    # with this pattern, it's rarely necessary to propagate the error up to parent
-    logger.propagate = False
-    return logger
-
-
-"""

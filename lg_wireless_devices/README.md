@@ -16,6 +16,8 @@ Wireless device can be connected to display or head node of a Liquid Galaxy syst
   * `udev_location` location of `rules` file, with mapping
   between commands names and `os.execute` code.
   Both file and url allowed.
+  * `~interval` [int] - seconds between scans for connected
+  wireless devices. Default: `5`
 
 - #### command\_handler
 
