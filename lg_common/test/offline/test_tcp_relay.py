@@ -60,12 +60,20 @@ class TestTCPRelay(unittest.TestCase):
         self.relay = TCPRelay(self.local_port, self.remote_port)
         self.relay.start()
 
-        # grace delay
-        time.sleep(1.0)
-
-        remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        remote_sock.settimeout(1.0)
-        remote_sock.connect(('127.0.0.1', self.remote_port))
+        # The relay binds on its own thread, so retry until it is listening
+        # rather than guessing at a grace delay.
+        deadline = time.time() + 5.0
+        while True:
+            remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            remote_sock.settimeout(1.0)
+            try:
+                remote_sock.connect(('127.0.0.1', self.remote_port))
+                break
+            except (ConnectionRefusedError, socket.timeout, OSError):
+                remote_sock.close()
+                if time.time() >= deadline:
+                    raise
+                time.sleep(0.02)
 
         remote_sock.sendall(MAGIC)
         response = remote_sock.recv(1024)

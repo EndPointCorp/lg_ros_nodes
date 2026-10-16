@@ -78,11 +78,22 @@ class TouchRouter:
         self.spacenavving = False
         self.lock = threading.Lock()
 
-        svc_name = f"/lg_mirror/default/device_info"
-        rospy.wait_for_service(svc_name)
-        svc = rospy.ServiceProxy(svc_name, EvdevDeviceInfo)
-        svc.wait_for_service(timeout=5.0)
-        self.touchscreen = svc()
+        self._touchscreen = None
+
+    @property
+    def touchscreen(self):
+        """Device info for the touchscreen, fetched on first use.
+
+        Asking at construction meant the node could not finish starting until
+        the device node was up, so it never advertised its routes.
+        """
+        if self._touchscreen is None:
+            svc_name = "/lg_mirror/default/device_info"
+            rospy.wait_for_service(svc_name)
+            svc = rospy.ServiceProxy(svc_name, EvdevDeviceInfo)
+            svc.wait_for_service(timeout=5.0)
+            self._touchscreen = svc()
+        return self._touchscreen
 
     def handle_service_request(self, req):
         """
@@ -93,7 +104,6 @@ class TouchRouter:
                 return self.default_viewports
             else:
                 return self.route_viewports
-
 
     def handle_touchmenu_state(self, msg):
         """
@@ -188,8 +198,8 @@ class TouchRouter:
                 rects.append(ManagedWindow.lookup_viewport_geometry('touchscreen_button'))
                 rects = [g for g in rects if g is not None]
                 self.spacenav_exclusion_rects = rects
-                #logger.info(f'routing to spacenav: {self.spacenav_viewport}')
-                #publish_cb(frozenset([self.spacenav_viewport]))
+                # logger.info(f'routing to spacenav: {self.spacenav_viewport}')
+                # publish_cb(frozenset([self.spacenav_viewport]))
                 return
 
             logger.debug(f'routing to default viewports: {self.default_viewports}')

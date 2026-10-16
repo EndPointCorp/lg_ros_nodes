@@ -8,6 +8,7 @@ offline tests - not requiring the ROS node itself to run.
 
 
 import os
+import unittest
 
 import pytest
 import rospkg
@@ -64,7 +65,7 @@ class MockActivatePublisher(object):
         self.msgs.append(msgs)
 
 
-class TestOnboardRouter(object):
+class TestOnboardRouter(unittest.TestCase):
 
     def setUp(self):
         self.publisher = MockActivatePublisher()

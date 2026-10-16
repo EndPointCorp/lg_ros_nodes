@@ -124,7 +124,7 @@ class KMLAdder():
             for id in ids:
                 if id in self.id_to_file:
                     for names in self.id_to_file.pop(id):
-                        if type(names) == list:
+                        if type(names) is list:
                             for name in names:
                                 files.append(name)
                         else:

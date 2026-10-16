@@ -221,7 +221,7 @@ class AttractLoop:
         full_presentation['scene'] = full_scene.get('name', '')
         full_scene['played_from'] = 'lg_attract_loop'
         full_scene['presentation'] = full_presentation.get('name', '')
-        
+
         scene_msg = GenericMessage(type='json', message=json.dumps(full_scene))
         presentation_msg = GenericMessage(type='json', message=json.dumps(full_presentation))
 
@@ -336,7 +336,7 @@ class AttractLoop:
         try:
             presentationgroup_request = self.api_proxy.get("/director_api/presentationgroup/?attract_loop=True")
             presentationgroups = json.loads(presentationgroup_request)['objects']
-            assert(type(presentationgroups) == list), "Presentationgroups type is not list"
+            assert (type(presentationgroups) is list), "Presentationgroups type is not list"
             return presentationgroups
         except Exception as e:
             logger.exception("Could not get presentationgroups, sleeping for 10 seconds")

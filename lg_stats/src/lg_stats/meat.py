@@ -65,6 +65,7 @@ class Processor(object):
     - influxdb_client - instance of influx client
 
     """
+
     def __init__(self,
                  watched_topic=None,
                  measurement=None,
@@ -197,7 +198,7 @@ class Processor(object):
                     self.time_of_last_resubmission = time.time()
                 else:
                     logger.debug("The 'inactivity_resubmission' (%s) period has not "
-                                   "elapsed yet = %s" % (self.inactivity_resubmission, elapsed))
+                                 "elapsed yet = %s" % (self.inactivity_resubmission, elapsed))
             else:
                 logger.debug("Nothing received on topic %s so far." % self.watched_topic)
 
@@ -381,10 +382,10 @@ class Processor(object):
         logger.debug("Submitting to InfluxDB: '%s'" % influx_data)
         logger.debug("Publishing out_msg: %s" % out_msg)
         logger.debug("Types: %s, %s, %s, %s, %s" % (type(out_msg.measurement),
-                                                      type(out_msg.src_topic),
-                                                      type(out_msg.type),
-                                                      type(out_msg.metadata),
-                                                      type(out_msg.value)))
+                                                    type(out_msg.src_topic),
+                                                    type(out_msg.type),
+                                                    type(out_msg.metadata),
+                                                    type(out_msg.value)))
         self.debug_pub.publish(out_msg)
         self.influxdb_client.write_stats(influx_data)
 

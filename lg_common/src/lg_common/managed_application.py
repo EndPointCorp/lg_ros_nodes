@@ -106,8 +106,8 @@ class ManagedApplication(object):
                     self.window.converge()
                 else:
                     logger.warning(
-                        'Tried to hide a ManagedApplication ' +
-                        'without a ManagedWindow'
+                        'Tried to hide a ManagedApplication '
+                        + 'without a ManagedWindow'
                     )
                 self.proc.start()
 
